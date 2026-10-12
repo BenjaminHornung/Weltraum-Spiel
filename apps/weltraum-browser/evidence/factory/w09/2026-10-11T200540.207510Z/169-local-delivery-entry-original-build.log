@@ -1,0 +1,6 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+src/factory/factoryEntry.ts(12,36): error TS6196: 'FactoryUiReadModel' is declared but never used.
+src/factory/factoryEntry.ts(12,55): error TS6196: 'FactoryUiCommand' is declared but never used.

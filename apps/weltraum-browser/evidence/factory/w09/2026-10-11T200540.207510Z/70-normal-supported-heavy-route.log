@@ -1,0 +1,68 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w09.playwright.config.mts tests/e2e/factory-dry-flow.spec.ts
+
+[WebServer] (node:133220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 1 worker
+
+(node:133244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/factory-dry-flow.spec.ts:22:2 › W09 normal finite heavy bootstrap transport › Ready uses the unchanged real D07 source and one finite initial Cargo (13.1s)
+  ✓   2 [chromium] › tests/e2e/factory-dry-flow.spec.ts:23:2 › W09 normal finite heavy bootstrap transport › normal UI opens the finite Cargo without mutating custody (831ms)
+  ✓   3 [chromium] › tests/e2e/factory-dry-flow.spec.ts:24:2 › W09 normal finite heavy bootstrap transport › ordinary Play walks to the source-checked heavy pickup stand (2.6s)
+  ✘   4 [chromium] › tests/e2e/factory-dry-flow.spec.ts:25:2 › W09 normal finite heavy bootstrap transport › normal UI takes the complete finite341kg Former BOM at the actual supported stand (5.8s)
+  -   5 [chromium] › tests/e2e/factory-dry-flow.spec.ts:26:2 › W09 normal finite heavy bootstrap transport › normal Play walks the same paired owner toward the natural west route
+  -   6 [chromium] › tests/e2e/factory-dry-flow.spec.ts:27:2 › W09 normal finite heavy bootstrap transport › released normal corrections reach the natural west corridor with the actual341kg carrier
+  -   7 [chromium] › tests/e2e/factory-dry-flow.spec.ts:28:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase1
+  -   8 [chromium] › tests/e2e/factory-dry-flow.spec.ts:28:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase2
+  -   9 [chromium] › tests/e2e/factory-dry-flow.spec.ts:28:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase3
+  -  10 [chromium] › tests/e2e/factory-dry-flow.spec.ts:28:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase4
+  -  11 [chromium] › tests/e2e/factory-dry-flow.spec.ts:28:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase5
+  -  12 [chromium] › tests/e2e/factory-dry-flow.spec.ts:28:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase6
+  -  13 [chromium] › tests/e2e/factory-dry-flow.spec.ts:29:2 › W09 normal finite heavy bootstrap transport › actual paired walk reaches the Former service approach without changing source terrain or payload
+  -  14 [chromium] › tests/e2e/factory-dry-flow.spec.ts:30:2 › W09 normal finite heavy bootstrap transport › normal released corrections approach the closed local Former depot
+  -  15 [chromium] › tests/e2e/factory-dry-flow.spec.ts:31:2 › W09 normal finite heavy bootstrap transport › normal paired walk reaches the real supported local depot approach
+  -  16 [chromium] › tests/e2e/factory-dry-flow.spec.ts:32:2 › W09 normal finite heavy bootstrap transport › normal UI deposits the same paid body and all341kg locally without duplicating Cargo
+
+
+  1) [chromium] › tests/e2e/factory-dry-flow.spec.ts:25:2 › W09 normal finite heavy bootstrap transport › normal UI takes the complete finite341kg Former BOM at the actual supported stand 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Carrying"
+    Received: undefined
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      23 |  test("normal UI opens the finite Cargo without mutating custody",async()=>{await page.getByRole("button",{name:"Fracht öffnen",exact:true}).click();await expect.poll(async()=>(await ui(page)).interaction.cargoOpened).toBe(true);});
+      24 |  test("ordinary Play walks to the source-checked heavy pickup stand",async()=>{await page.getByRole("button",{name:"Spielen · WASD / Maus / Space",exact:true}).click();await expect.poll(async()=>(await native(page)).player.status).toBe("Walking");await walk("x",-5.75);const n=await native(page);expect(n.player.position.x).toBeLessThan(-5.563);expect(n.player.position.x).toBeGreaterThan(-6.5);expect(n.player.grounded).toBe(true);});
+    > 25 |  test("normal UI takes the complete finite341kg Former BOM at the actual supported stand",async()=>{await page.keyboard.press("Escape");await page.getByRole("button",{name:"Zur Inspektionsansicht",exact:true}).click();await page.getByRole("button",{name:"Aufnehmen: B07-BOM",exact:true}).click();await expect.poll(async()=>(await ui(page)).interaction.handling?.phase).toBe("Carrying");const state=await ui(page),n=await native(page);expect(state.interaction.handling.massMg).toBe(341000000);expect(n.factoryFacilities.carrier.nativeMassKg).toBeCloseTo(341,5);expect(n.factoryFacilities.carrier.colliderHandles).toHaveLength(5);expect(state.inventory.reduce((n:number,c:any)=>n+c.massMg,0)).toBe(2984400000);expect(state.inventory.find((c:any)=>c.role==="cargo").contents.some((s:any)=>s.itemId==="fp02.chassis.former")).toBe(false);});
+         |                                                                                                                                                                                                                                                                                                                                                                                  ^
+      26 |  test("normal Play walks the same paired owner toward the natural west route",async()=>{await page.getByRole("button",{name:"Spielen · WASD / Maus / Space",exact:true}).click();await expect.poll(async()=>(await native(page)).player.status).toBe("Walking");await walk("x",-8.25);});
+      27 |  test("released normal corrections reach the natural west corridor with the actual341kg carrier",async()=>{await walk("x",-8.25);const n=await native(page);expect(n.player.position.x).toBeGreaterThan(-8.4);expect(n.player.position.x).toBeLessThan(-8.1);expect(n.factoryFacilities.carrier.phase).toBe("Carrying");});
+      28 |  for(let step=0;step<6;step++)test(`normal paired walk south on the original terrain phase${step+1}`,async()=>{await walk("z",-1.5);});
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts:25:370
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-70/playwright-output/factory-dry-flow-W09-norma-8ee38--the-actual-supported-stand-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-70/playwright-output/factory-dry-flow-W09-norma-8ee38--the-actual-supported-stand-chromium/error-context.md
+
+    Error Context: evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-70/playwright-output/factory-dry-flow-W09-norma-8ee38--the-actual-supported-stand-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-70/playwright-output/factory-dry-flow-W09-norma-8ee38--the-actual-supported-stand-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-70/playwright-output/factory-dry-flow-W09-norma-8ee38--the-actual-supported-stand-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/factory-dry-flow.spec.ts:25:2 › W09 normal finite heavy bootstrap transport › normal UI takes the complete finite341kg Former BOM at the actual supported stand 
+  12 did not run
+  3 passed (25.2s)

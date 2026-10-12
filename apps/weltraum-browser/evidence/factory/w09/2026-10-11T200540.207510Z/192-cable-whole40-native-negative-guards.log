@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t Cable connection rejects
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 42 skipped (44)
+   Start at  23:58:11
+   Duration  3.26s (transform 396ms, setup 0ms, import 514ms, tests 2.64s, environment 0ms)
+

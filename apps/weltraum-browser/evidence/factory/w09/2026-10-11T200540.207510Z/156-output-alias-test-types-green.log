@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t isolates adopted external
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed | 30 skipped (33)
+   Start at  23:15:54
+   Duration  951ms (transform 363ms, setup 0ms, import 466ms, tests 371ms, environment 0ms)
+

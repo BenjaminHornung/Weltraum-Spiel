@@ -1,0 +1,40 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t supported technology uses
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (38 tests | 1 failed | 37 skipped) 41ms
+   × W09 supported technology uses actual Host availability without changing planned targets 40ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 supported technology uses actual Host availability without changing planned targets
+AssertionError: expected { id: 'B06', …(4) } to match object { status: 'MISSING_REQUIREMENTS' }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "MISSING_REQUIREMENTS",
++   "status": "AVAILABLE",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:455:51
+    453|   const before=session.ui.read();
+    454|   f.publish(0,{confirmed:false,holdReason:"CoverageHold"});const held=…
+    455|   expect(held.technologies.find(t=>t.id==="B06")).toMatchObject({statu…
+       |                                                   ^
+    456|   expect(held.technologies.find(t=>t.id==="B06")?.requirements.join(" …
+    457|   expect(held.technologies.find(t=>t.id==="fp05.city.archive-core.v1")…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 37 skipped (38)
+   Start at  23:51:58
+   Duration  801ms (transform 520ms, setup 0ms, import 651ms, tests 41ms, environment 0ms)
+

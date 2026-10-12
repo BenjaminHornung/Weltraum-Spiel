@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t private proposal byte guards
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 16 skipped (20)
+   Start at  23:00:30
+   Duration  715ms (transform 353ms, setup 0ms, import 459ms, tests 153ms, environment 0ms)
+

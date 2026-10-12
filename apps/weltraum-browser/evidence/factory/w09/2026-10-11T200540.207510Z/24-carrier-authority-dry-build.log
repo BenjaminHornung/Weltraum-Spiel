@@ -1,0 +1,6 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+src/hestia-prototype/physics/factoryFacilitySession.ts(252,104): error TS18048: 'carrier' is possibly 'undefined'.
+src/hestia-prototype/physics/factoryFacilitySession.ts(254,169): error TS18048: 'carrier' is possibly 'undefined'.

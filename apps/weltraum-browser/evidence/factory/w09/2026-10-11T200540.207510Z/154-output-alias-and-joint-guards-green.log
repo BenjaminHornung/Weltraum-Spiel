@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t complete private proposal|rejects changes|joint|UUID
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  19 passed | 14 skipped (33)
+   Start at  23:15:28
+   Duration  4.32s (transform 332ms, setup 0ms, import 433ms, tests 3.78s, environment 0ms)
+

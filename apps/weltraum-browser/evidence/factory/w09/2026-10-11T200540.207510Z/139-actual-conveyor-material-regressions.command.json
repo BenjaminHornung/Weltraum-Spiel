@@ -1,0 +1,17 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/conveyor.test.ts",
+    "tests/unit/factory/material.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:01:21.122316+00:00",
+  "endedAtUtc": "2026-10-11T23:01:38.513910+00:00",
+  "elapsedSeconds": 17.391969025004073,
+  "exitCode": 0,
+  "rawBytes": 391,
+  "rawSha256": "f18142c660b85c5034d2aa7391f23a12f1aa7c0c06c2e89ad53ad4c06eb01e90"
+}

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "-t",
+    "projects actual carrier mass|partially staged carrier|consumed paid depot|release enters RecoveryHold|complete Native member capture"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:33:01.260471+00:00",
+  "endedAtUtc": "2026-10-11T23:33:55.525590+00:00",
+  "elapsedSeconds": 54.265496961998,
+  "exitCode": 0,
+  "rawBytes": 500,
+  "rawSha256": "1a7c619cabe270edeeccb35bcca2e002aca50a0de3b01b88f97388232b55be50"
+}

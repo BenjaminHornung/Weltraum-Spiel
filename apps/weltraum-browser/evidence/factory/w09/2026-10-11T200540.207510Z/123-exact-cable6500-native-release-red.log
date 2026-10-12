@@ -1,0 +1,39 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t exact CABLE6500
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (33 tests | 1 failed | 32 skipped) 937ms
+   × W09 exact CABLE6500 consumes one whole reachable deposited custody with its paid graph connection 935ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 exact CABLE6500 consumes one whole reachable deposited custody with its paid graph connection
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Committed', …(1) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "receipt": {
+-     "reason": null,
++     "reason": "CableSourceUnavailable",
+    },
+-   "status": "Committed",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:399:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 32 skipped (33)
+   Start at  22:39:17
+   Duration  1.57s (transform 391ms, setup 0ms, import 502ms, tests 937ms, environment 0ms)
+

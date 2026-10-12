@@ -1,0 +1,40 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t whole two-lot MONTAGE delivery
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (35 tests | 1 failed | 34 skipped) 463ms
+   × W09 publishes a whole two-lot MONTAGE delivery to the actual reachable paid bench input 462ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 publishes a whole two-lot MONTAGE delivery to the actual reachable paid bench input
+AssertionError: expected undefined to match object { target: { …(2) }, …(1) }
+
+- Expected:
+{
+  "capability": {
+    "enabled": true,
+  },
+  "target": {
+    "id": "input_test_machine",
+    "revision": 0,
+  },
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:392:97
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 34 skipped (35)
+   Start at  23:23:21
+   Duration  1.05s (transform 382ms, setup 0ms, import 485ms, tests 463ms, environment 0ms)
+

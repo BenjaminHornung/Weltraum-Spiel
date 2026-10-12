@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/facilitySession.test.ts",
+    "-t",
+    "corrected supported battery"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:55:08.352412+00:00",
+  "endedAtUtc": "2026-10-11T23:55:29.808345+00:00",
+  "elapsedSeconds": 21.45634715000051,
+  "exitCode": 0,
+  "rawBytes": 405,
+  "rawSha256": "953ac79affdc8f5063adcbe9d7807f678910d8e6b623b9e9f96e13a2ce6e2577"
+}

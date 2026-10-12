@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/cargoHandling.test.ts",
+    "-t",
+    "Raw bin reserves usable service"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:35:09.040989+00:00",
+  "endedAtUtc": "2026-10-11T23:35:10.519874+00:00",
+  "elapsedSeconds": 1.4793302090038196,
+  "exitCode": 1,
+  "rawBytes": 1718,
+  "rawSha256": "3ad1f41cc2e3d1e66a6f90b409ed006b4d5b67d1b948beef8275a2a96a331478"
+}

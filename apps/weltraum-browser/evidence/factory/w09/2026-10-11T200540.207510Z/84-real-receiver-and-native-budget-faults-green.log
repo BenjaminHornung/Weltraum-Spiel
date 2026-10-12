@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t W09 enters RecoveryHold|W09 restores the consumed|W09 admits complete Native
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 37 skipped (42)
+   Start at  21:48:17
+   Duration  41.17s (transform 1.41s, setup 0ms, import 1.75s, tests 39.32s, environment 0ms)
+

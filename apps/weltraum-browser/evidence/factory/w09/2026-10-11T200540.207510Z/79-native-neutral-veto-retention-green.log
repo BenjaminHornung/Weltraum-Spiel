@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t publishes the actual paired Native carrier veto
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 21 skipped (22)
+   Start at  21:42:24
+   Duration  1.83s (transform 899ms, setup 0ms, import 1.19s, tests 518ms, environment 0ms)
+

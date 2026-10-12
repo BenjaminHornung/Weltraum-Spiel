@@ -1,0 +1,82 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t exact Cable joint outcome
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (44 tests | 3 failed | 40 skipped) 6210ms
+   × W09 exact Cable joint outcome preserves custody or holds unknown publish without refunds and replay 1674ms
+   × W09 exact Cable joint outcome preserves custody or holds unknown finalize without refunds and replay 1552ms
+   × W09 exact Cable joint outcome preserves custody or holds unknown commit-rollback without refunds and replay 1573ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 exact Cable joint outcome preserves custody or holds unknown publish without refunds and replay
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'RecoveryHold', …(1) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "receipt": {
+-     "reason": "FactorySessionRecoveryHold",
++     "reason": "UnitReleasePublicationUnknown",
+    },
+-   "status": "RecoveryHold",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:484:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 exact Cable joint outcome preserves custody or holds unknown finalize without refunds and replay
+AssertionError: expected { status: 'RecoveryHold', …(1) } to match object { status: 'RecoveryHold', …(1) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "receipt": {
+-     "reason": "FactorySessionRecoveryHold",
++     "reason": "Error: UnitReleaseFinalizeUnknown",
+    },
+    "status": "RecoveryHold",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:484:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 exact Cable joint outcome preserves custody or holds unknown commit-rollback without refunds and replay
+AssertionError: expected { status: 'Committed', …(1) } to match object { status: 'RecoveryHold', …(1) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "receipt": {
+-     "reason": "FactorySessionRecoveryHold",
++     "reason": null,
+    },
+-   "status": "RecoveryHold",
++   "status": "Committed",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:484:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed | 40 skipped (44)
+   Start at  00:03:26
+   Duration  6.83s (transform 409ms, setup 0ms, import 517ms, tests 6.21s, environment 0ms)
+

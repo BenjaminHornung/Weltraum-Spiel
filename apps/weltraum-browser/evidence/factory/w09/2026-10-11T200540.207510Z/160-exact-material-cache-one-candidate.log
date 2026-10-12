@@ -1,0 +1,26 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t paid-band
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (33 tests | 1 failed | 31 skipped) 8074ms
+   × W09 paid-band output blockage retains the same lot at the end until actual receiver room exists 5355ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band output blockage retains the same lot at the end until actual receiver room exists
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:179:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 31 skipped (33)
+   Start at  23:19:34
+   Duration  8.74s (transform 411ms, setup 0ms, import 540ms, tests 8.07s, environment 0ms)
+

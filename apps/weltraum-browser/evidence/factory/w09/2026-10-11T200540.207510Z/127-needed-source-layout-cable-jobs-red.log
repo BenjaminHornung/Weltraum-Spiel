@@ -1,0 +1,83 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoHandling.test.ts -t Source-layout connection
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/cargoHandling.test.ts (11 tests | 2 failed | 9 skipped) 12ms
+   × binds the concretely needed CABLE4750 Source-layout connection to one indivisible cable job 10ms
+   × binds the concretely needed CABLE8000 Source-layout connection to one indivisible cable job 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/cargoHandling.test.ts > binds the concretely needed CABLE4750 Source-layout connection to one indivisible cable job
+AssertionError: expected undefined to match object { terms: [ { …(2) } ], …(2) }
+
+- Expected:
+{
+  "massMg": 1187500,
+  "sizeMm": [
+    500,
+    1000,
+    500,
+  ],
+  "terms": [
+    {
+      "itemId": "fp02.comp.field_cable",
+      "quantityUnits": 4750,
+    },
+  ],
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/cargoHandling.test.ts:12:18
+     10| it.each([["CABLE4750",4750,4750/4*1000],["CABLE8000",8000,2000000]] as…
+     11|  const profile=readCargoHandlingProfile(fixture.catalog,id);
+     12|  expect(profile).toMatchObject({terms:[{itemId:"fp02.comp.field_cable"…
+       |                  ^
+     13|  expect(readCargoHandlingProfile(fixture.catalog,"CABLE4760")).toBeUnd…
+     14|  expect(readCargoHandlingProfile(fixture.catalog,"CABLE40")?.terms[0]?…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/cargoHandling.test.ts > binds the concretely needed CABLE8000 Source-layout connection to one indivisible cable job
+AssertionError: expected undefined to match object { terms: [ { …(2) } ], …(2) }
+
+- Expected:
+{
+  "massMg": 2000000,
+  "sizeMm": [
+    500,
+    1000,
+    500,
+  ],
+  "terms": [
+    {
+      "itemId": "fp02.comp.field_cable",
+      "quantityUnits": 8000,
+    },
+  ],
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/cargoHandling.test.ts:12:18
+     10| it.each([["CABLE4750",4750,4750/4*1000],["CABLE8000",8000,2000000]] as…
+     11|  const profile=readCargoHandlingProfile(fixture.catalog,id);
+     12|  expect(profile).toMatchObject({terms:[{itemId:"fp02.comp.field_cable"…
+       |                  ^
+     13|  expect(readCargoHandlingProfile(fixture.catalog,"CABLE4760")).toBeUnd…
+     14|  expect(readCargoHandlingProfile(fixture.catalog,"CABLE40")?.terms[0]?…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 9 skipped (11)
+   Start at  22:45:24
+   Duration  591ms (transform 328ms, setup 0ms, import 453ms, tests 12ms, environment 0ms)
+

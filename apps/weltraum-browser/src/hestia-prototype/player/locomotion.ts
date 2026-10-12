@@ -5,8 +5,9 @@ export { HVP_PLAYER_PROFILE,type HvpPlayerCheckpoint } from "../physics/profile"
 export interface HvpPlayerInput { readonly x: number; readonly z: number; readonly sprint: boolean; readonly jump: boolean }
 export interface HvpCollisionCoverage { readonly minX: number; readonly maxX: number; readonly minZ: number; readonly maxZ: number }
 
+export type HvpPairedMoveGuard = (from: Readonly<{ x: number; y: number; z: number }>, to: Readonly<{ x: number; y: number; z: number }>) => false | (() => void);
 export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number; y: number; z: number }>,
-  gravity: number, covered: (x: number, z: number) => boolean, saved?:HvpPlayerCheckpoint) => {
+  gravity: number, covered: (x: number, z: number) => boolean, saved?:HvpPlayerCheckpoint, pairedMoveGuard?: HvpPairedMoveGuard) => {
   if (![spawn.x, spawn.y, spawn.z, gravity].every(Number.isFinite) || gravity <= 0) { throw new RangeError("Invalid player admission"); }
   if(saved){validateHvpPlayerCheckpoint(saved,gravity);}
   const initial=saved?.position??spawn;
@@ -30,6 +31,7 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
   let cameraFraction = 1;
   const neutralize = (): void => { input = { x: 0, z: 0, sprint: false, jump: false }; jumpPending = false; };
   return {
+    readonlyBodyHandle: body.handle,
     setCameraOffset(offset?: Readonly<{ x: number; y: number; z: number }>): void {
       cameraFraction = 1;
       if (offset === undefined || disposed) { return; }
@@ -55,6 +57,7 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
     },
     step(): void {
       if (disposed || !enabled) { return; }
+      const previous = { grounded, velocityY, jumpCount };
       const dt = HVP_PHYSICS_DT;
       const speed = input.sprint ? profile.sprintSpeed : profile.walkSpeed;
       const norm = Math.max(1, Math.hypot(input.x, input.z));
@@ -101,7 +104,10 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
       }
       grounded = controller.computedGrounded();
       if ((grounded && velocityY < 0) || (velocityY > 0 && movement.y < desired.y - 0.0001)) { velocityY = 0; }
-      body.setNextKinematicTranslation({ x: position.x + movement.x, y: position.y + movement.y, z: position.z + movement.z });
+      const next = { x: position.x + movement.x, y: position.y + movement.y, z: position.z + movement.z };
+      const paired = pairedMoveGuard?.(position, next);
+      if (paired === false) { grounded = previous.grounded; velocityY = previous.velocityY; jumpCount = previous.jumpCount; return; }
+      paired?.(); body.setNextKinematicTranslation(next);
     },
     read: () => Object.freeze({ ownerId: "hvp:player", position: Object.freeze({ ...body.translation() }),
       grounded, velocityY, jumpCount, cameraFraction, status: enabled ? coverageHold ? "CoverageHold" : "Walking" : "Inspection" }),

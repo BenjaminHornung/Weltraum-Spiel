@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "tests/unit/factory/panels.test.ts",
+    "-t",
+    "complete known technology|technology recipe requirements|supported technology uses|planned technology|technology keyboard"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:52:28.228795+00:00",
+  "endedAtUtc": "2026-10-11T23:52:29.564328+00:00",
+  "elapsedSeconds": 1.3359138700034237,
+  "exitCode": 0,
+  "rawBytes": 528,
+  "rawSha256": "870dece83fb32d322b0371b6f02c0032187fb07a2d67dcd743f656b715075e12"
+}

@@ -1,0 +1,57 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t private proposal byte guards
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (20 tests | 2 failed | 16 skipped) 102ms
+     × preserves canonical array contents with an own map property null 27ms
+     × rejects actual Native source quantity tampering even when copied canonical receipts are unchanged 26ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > preserves canonical array contents with an own map property null
+AssertionError: value.map is not a function: expected 'Rejected' to be 'Prepared' // Object.is equality
+
+Expected: "Prepared"
+Received: "Rejected"
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:41:82
+     39|   const f=emptyDryFixture(),belts=[] as any;Object.defineProperty(belt…
+     40|   const base=freezeData({...f.state,belts}),input=f.inputFor(base,f.ma…
+     41|   expect(proposal.status,proposal.status==="Rejected"?proposal.reason:…
+       |                                                                                  ^
+     42|   if(proposal.status==="Prepared"){const {lastStep:_last,...core}=base…
+     43|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects actual Native source quantity tampering even when copied canonical receipts are unchanged
+AssertionError: expected { status: 'Committed', …(2) } to match object { status: 'Rejected' }
+(14 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "Rejected",
++   "status": "Committed",
+  }
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:48:70
+     46|   const source=f.material.containers[0]!,old=source.state.contents.fin…
+     47|   const material={...f.material,containers:f.material.containers.map(c…
+     48|   expect(commitDryFactoryStep(f.state,{...input,material},proposal)).t…
+       |                                                                      ^
+     49|  });
+     50|  it("rechecks mutable facts, frozen accessors and caller-forged immuta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed | 16 skipped (20)
+   Start at  23:00:02
+   Duration  693ms (transform 374ms, setup 0ms, import 483ms, tests 102ms, environment 0ms)
+

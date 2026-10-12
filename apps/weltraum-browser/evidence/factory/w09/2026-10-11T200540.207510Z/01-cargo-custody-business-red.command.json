@@ -1,0 +1,17 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/cargoHandling.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:05:56.675292+00:00",
+  "endedAtUtc": "2026-10-11T20:05:57.456224+00:00",
+  "elapsedSeconds": 0.7814023149985587,
+  "exitCode": 1,
+  "rawBytes": 3525,
+  "rawSha256": "7d25921b90972d09fa82c3721a8dcf20fc21df4a940f6a545d09c7c4fec54394",
+  "phase": "preimplementation scaffold admits no cargo transport; expected collected business assertions"
+}

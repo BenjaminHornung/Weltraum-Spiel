@@ -1,0 +1,49 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoHandling.test.ts -t Raw bin reserves usable service
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/cargoHandling.test.ts (12 tests | 1 failed | 11 skipped) 547ms
+   × W09 paid Raw bin reserves usable service on the approved Source-layout side without changing terrain 546ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/cargoHandling.test.ts > W09 paid Raw bin reserves usable service on the approved Source-layout side without changing terrain
+AssertionError: expected { min: [ -5250, 1500, 10500 ], …(1) } to deeply equal { min: [ -8250, 1500, 10500 ], …(1) }
+
+- Expected
++ Received
+
+  {
+    "max": [
+-     -7250,
++     -4250,
+      3000,
+      12500,
+    ],
+    "min": [
+-     -8250,
++     -5250,
+      1500,
+      10500,
+    ],
+  }
+
+ ❯ tests/unit/factory/cargoHandling.test.ts:77:45
+     75|  const built=prepareFactoryPlacement(view,{transactionId:"raw_source_i…
+     76|  expect(built).toMatchObject({status:"Prepared"});if(built.status!=="P…
+     77|  expect(built.installation.serviceBoundsMm).toEqual({min:[-8250,1500,1…
+       |                                             ^
+     78|  expect(built.materialCandidate.containers.find(c=>c.state.containerId…
+     79|  expect(readMaterialMassMg(built.materialCandidate)).toBe(readMaterial…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 skipped (12)
+   Start at  23:35:09
+   Duration  1.06s (transform 309ms, setup 0ms, import 403ms, tests 547ms, environment 0ms)
+

@@ -229,10 +229,111 @@ const stepFrame = (windowPort: FakeWindow, timestamp: number): void => {
   callback(timestamp);
 };
 
+/** Actual receiver/Host fault fixture; Native replies isolate transport, not physical admission. */
+const factoryCarrierHostFixture=async()=>{
+  const source=harness(),original=source.overrides()!,site=await import("../../src/factory/fixtures/startSite");
+  const {readCargoHandlingProfile}=await import("../../src/factory/construction/cargoHandlingProfile");
+  const profile=readCargoHandlingProfile(createFp02Fixture("cargo").catalog,"B07-BOM")!;
+  let port!:FactoryHostPort,carrier:import("../../src/hestia-prototype/physics/factoryFacilitySession").FactoryNativeCarrierRead|undefined;
+  let collisionBytes=0,carrierUploads=0,carrierRemoves=0,retireAfter=0,failStage=false,failRetire=false,failProjection=false;
+  let lastCarrierVeto:import("../../src/hestia-prototype/physics/factoryFacilitySession").FactoryCarrierVeto|undefined;
+  const prepare=vi.fn(),rollback=vi.fn();
+  const backend=new ThreeRenderBackend({canvas:source.canvas as unknown as HTMLCanvasElement,rendererFactory:()=>({setPixelRatio(){},setSize(){},render(){},dispose(){}})});
+  const dispatch=backend.dispatch.bind(backend);
+  vi.spyOn(backend,"dispatch").mockImplementation(command=>{
+    if(command.kind==="UpsertMeshArtifact"&&command.artifact.representationKey.startsWith("factory:carrier:slot:")){
+      carrierUploads++;if(failStage&&carrierUploads===2)return renderCommandResult("RejectedContentConflict","NotApplicable","FaultStage");
+    }
+    if(command.kind==="RemoveRepresentation"&&command.representationKey.startsWith("factory:carrier:slot:")){carrierRemoves++;if(failRetire&&carrierRemoves>retireAfter)return renderCommandResult("RejectedContentConflict","NotApplicable","FaultRetire");}
+    if(failProjection&&command.kind==="ApplyFrameProjection"){failProjection=false;return renderCommandResult("RejectedContentConflict","NotApplicable","FaultProjection");}
+    return dispatch(command);
+  });
+  const request={transactionId:"render_carrier_pickup",ownerId:"factory_carrier",profileId:profile.profileId,profileDigest:profile.digest,expectedRevision:0,expectedTerrainRevision:0,sourceContainerId:"fp02_wreck_cargo",custodyContainerId:"custody_render_carrier_pickup",materialBinding:"finite-transport-reply-fixture"};
+  const handle=await startHvp(source.overrides({createBackend:()=>backend,createSourceSnapshot:site.materializeFactoryStartSite,
+    factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:site.readFactorySourceColumnWorld},
+    createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+      const native=await original.createPhysics!(...args),read=native.read,cargo=args[10]!;
+      const facilities=()=>({revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null,...(carrier?{carrier}:{}),...(lastCarrierVeto?{lastCarrierVeto}:{}),cargo:{site:cargo,ownerId:cargo.ownerId,containerId:cargo.containerId,sourceDigest:cargo.sourceDigest,profileDigest:cargo.profileDigest,opened:true,positionMm:cargo.centerMm,accessBoundsMm:cargo.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}});
+      return {...native,command:async()=>{},prepareFactoryCarrier:async()=>{prepare();carrier={ownerId:request.ownerId,transactionId:request.transactionId,profileId:profile.profileId,profileDigest:profile.digest,phase:"Carrying",bodyHandle:6,colliderHandles:[7,8,9,10,11],massMg:profile.massMg,materialBinding:request.materialBinding,positionMm:[-6250,1500,-2500],containerId:request.custodyContainerId,accessible:true,nativeMassKg:341,localCom:{x:0,y:.5,z:0},principalInertia:{x:1,y:1,z:1}};return facilities();},commitFactoryCarrier:async()=>{},publishFactoryCarrier:()=>{},finalizeFactoryCarrier:async()=>{},rollbackFactoryCarrier:async()=>{rollback();carrier=undefined;},
+        prepareFactoryFacility:async()=>facilities(),commitFactoryFacility:async()=>{},publishFactoryFacility:()=>{},rollbackFactoryFacility:async()=>{},finalizeFactoryFacility:async()=>{},
+        read:()=>({...read(),collisionBytes,player:{...read().player!,position:{x:-6.25,y:2.4,z:-1.5}},factoryFacilities:facilities()})};
+    },factoryExtension:async(host:FactoryHostPort)=>{port=host;return{isQuiescent:()=>true,dispose:async()=>host.construction!.dispose()};}}));
+  return {port,request,backend,handle,prepare,rollback,source,
+    setCarrierPhase:(phase:"Carrying"|"Deposited")=>{if(carrier)carrier={...carrier,phase};},
+    clearCarrier:()=>{carrier=undefined;},
+    setCarrierVeto:(reason:string|undefined)=>{lastCarrierVeto=reason?{reason,targetMm:[-6250,1500,-2500]}:undefined;},
+    failStage:()=>{failStage=true;failRetire=true;},failReleaseRetire:()=>{failRetire=true;retireAfter=carrierRemoves+1;},failProjection:()=>{failProjection=true;},
+    setCollisionBytes:(bytes:number)=>{collisionBytes=bytes;},disableFaults:()=>{failStage=false;failRetire=false;failProjection=false;}};
+};
+
 describe("HVP T08 bootstrap lifecycle", () => {
   // Full starts materialize and mesh the region; allow generous time per test
   // instead of the 5 s default so slow environments report real failures.
   vi.setConfig({ testTimeout: 120_000 });
+
+  it("W09 projects actual carrier mass, movement veto and deposit guidance into the normal HUD",async()=>{
+    // Actual Bootstrap/HUD path with declared Native transport reply fixture; no physical admission claim.
+    const f=await factoryCarrierHostFixture();const text=(id:string)=>descendants(f.source.body).find(e=>e.id===id)!.textContent;
+    try{
+      stepFrame(f.source.windowPort,performance.now());
+      expect(text("hvp-interaction-target")).toContain("Kein Treffer innerhalb von 4 m");
+      await f.port.handling!.prepare(f.request,"pickup");await f.port.handling!.commit(f.request.transactionId);f.port.handling!.publish(f.request.transactionId);await f.port.handling!.finalize(f.request.transactionId);
+      const before=JSON.stringify(f.port.read());stepFrame(f.source.windowPort,performance.now());
+      expect(text("hvp-interaction-target")).toContain("Transport: 341.0 kg");
+      expect(text("hvp-interaction-feedback")).toContain("WASD");
+      expect(text("hvp-cut-feedback")).toContain("Hier ablegen");
+      expect(descendants(f.source.body).find(e=>e.id==="hvp-interaction")!.children[3]!.textContent).not.toContain("Schneiden");
+      expect(JSON.stringify(f.port.read())).toBe(before);
+      f.setCarrierVeto("CarrierOverlap");stepFrame(f.source.windowPort,performance.now()+17);
+      expect(text("hvp-interaction-feedback")).toContain("Hindernis");
+      f.setCarrierPhase("Deposited");stepFrame(f.source.windowPort,performance.now()+34);
+      expect(text("hvp-interaction-target")).toContain("Depot: 341.0 kg");
+      expect(text("hvp-cut-feedback")).toContain("lokalen Anlage");
+      f.clearCarrier();stepFrame(f.source.windowPort,performance.now()+51);
+      expect(text("hvp-interaction-target")).toContain("Kein Treffer innerhalb von 4 m");
+      expect(text("hvp-interaction-feedback")).toContain("F stößt");
+      expect(descendants(f.source.body).find(e=>e.id==="hvp-interaction")!.children[3]!.textContent).toContain("Schneiden");
+    }finally{await f.handle.dispose();}
+  });
+
+  it("W09 enters RecoveryHold when a partially staged carrier cannot retire its actual receiver artifact",async()=>{
+    const f=await factoryCarrierHostFixture();try{
+      f.failStage();await expect(f.port.handling!.prepare(f.request,"pickup")).rejects.toThrow(/RecoveryHold/);
+      expect(f.rollback).toHaveBeenCalledTimes(1);
+      expect(f.backend.readDiagnostics().residentRepresentationKeys.some(key=>key.startsWith("factory:carrier:slot:"))).toBe(true);
+    }finally{f.disableFaults();await f.handle.dispose();}
+  });
+
+  it("W09 restores the consumed paid depot projection after actual held publication rejects",async()=>{
+    const f=await factoryCarrierHostFixture();try{
+      await f.port.handling!.prepare(f.request,"pickup");await f.port.handling!.commit(f.request.transactionId);f.port.handling!.publish(f.request.transactionId);await f.port.handling!.finalize(f.request.transactionId);
+      const before=f.backend.readDiagnostics().visibleRepresentationKeys.filter(key=>key.startsWith("factory:carrier:slot:"));expect(before).toHaveLength(5);
+      const {createFactoryInstallationProfile}=await import("../../src/factory/construction/installationProfile");const profile=createFactoryInstallationProfile("B07");
+      const request={transactionId:"render_consume_depot",instanceId:"render_former",definitionSourceId:"B07",centerMm:[-6250,1500,-2500],quarterTurns:1};
+      await f.port.construction!.prepareNative({...request,ownerId:request.instanceId,definitionRef:profile.definitionRef,profileDigest:profile.profileDigest,expectedRevision:0,expectedTerrainRevision:0,materialBinding:"finite-install-reply-fixture",consumedCustody:{containerId:f.request.custodyContainerId,emptyCanonicalJson:"empty-fixture"}});
+      const plan={request,installation:{instanceId:request.instanceId},profile} as unknown as Parameters<NonNullable<FactoryHostPort["construction"]>["stageProjection"]>[0];
+      await f.port.construction!.stageProjection(plan);await f.port.construction!.commitNative(request.transactionId);
+      f.failProjection();expect(()=>f.port.construction!.publishNative(request.transactionId)).toThrow(/FaultProjection/);
+      await f.port.construction!.rollbackNative(request.transactionId);f.port.construction!.rollbackProjection(request.transactionId);
+      expect(f.backend.readDiagnostics().visibleRepresentationKeys.filter(key=>key.startsWith("factory:carrier:slot:"))).toEqual(before);
+    }finally{f.disableFaults();await f.handle.dispose();}
+  });
+
+  it("W09 release enters RecoveryHold after one actual carrier artifact retires and the next rejects",async()=>{
+    const f=await factoryCarrierHostFixture();try{
+      await f.port.handling!.prepare(f.request,"pickup");await f.port.handling!.commit(f.request.transactionId);f.port.handling!.publish(f.request.transactionId);await f.port.handling!.finalize(f.request.transactionId);
+      const release={...f.request,transactionId:"render_carrier_release"};await f.port.handling!.prepare(release,"release");await f.port.handling!.commit(release.transactionId);f.failReleaseRetire();
+      expect(()=>f.port.handling!.publish(release.transactionId)).toThrow(/RecoveryHold/);
+      expect(f.backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.startsWith("factory:carrier:slot:"))).toHaveLength(4);expect(f.rollback).not.toHaveBeenCalled();
+    }finally{f.disableFaults();await f.handle.dispose();}
+  });
+
+  it.each(["pickup","deposit","release"] as const)("W09 admits complete Native member capture cost before carrier %s allocation",async(operation)=>{
+    const f=await factoryCarrierHostFixture();try{
+      f.setCollisionBytes(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes);
+      await expect(f.port.handling!.prepare(f.request,operation)).rejects.toThrow(/CPU|budget|cap/i);expect(f.prepare).not.toHaveBeenCalled();
+    }finally{await f.handle.dispose();}
+  });
   it("records measured cold Ready only after the first submitted scene frame",async()=>{
     const source=harness();Object.defineProperty(source.windowPort,"location",{value:{search:"?hvpMeasure=1"}});
     const measure=vi.spyOn(performance,"measure");let handle:Awaited<ReturnType<typeof startHvp>>|undefined;
@@ -603,6 +704,26 @@ describe("HVP T08 bootstrap lifecycle", () => {
       stepFrame(source.windowPort,16);expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
     }finally{await handle.dispose();}
     expect(rendererDisposals).toBe(1);expect(backend.readDiagnostics().backendState).toBe("Disposed");expect(source.windowPort.animationFrames.size).toBe(0);
+  });
+
+  it("W09 actual UI Cargo Open passes its own command barrier while foreign native holds still refuse admission",async()=>{
+    const source=harness(),original=source.overrides()!,fixture=await import("../../src/factory/fixtures/startSite");
+    let session!:FactorySessionHandle,opened=false,revision=0,status:FactoryHostView["physicsStatus"]="Paused";
+    const open=vi.fn(async()=>{opened=true;revision++;});
+    const handle=await startHvp(source.overrides({createSourceSnapshot:fixture.materializeFactoryStartSite,
+      factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},
+      createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+        const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
+        return {...native,openFactoryCargo:open,read:()=>({...read(),status,factoryFacilities:{revision,state:"Idle",transactionId:null,owners:[],prepared:null,
+          cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}}})};
+      },factoryExtension:async(host:FactoryHostPort)=>{session=await mountFactorySession(host,createFp02Fixture("cargo").catalog);return session;}}));
+    const command=(id:string)=>({version:"fp06-ui-command-v1" as const,commandId:id,sessionId:session.ui.read().sessionId,epoch:session.ui.read().epoch,expected:session.ui.read().binding,kind:"open-cargo" as const});
+    try{
+      const result=await session.ui.submit(command("normal_ui_open"));
+      expect(result.status).toBe("Committed");expect(open).toHaveBeenCalledTimes(1);expect(session.ui.read().interaction.cargoOpened).toBe(true);
+      status="CoverageHold";stepFrame(source.windowPort,16);
+      const held=await session.ui.submit(command("held_ui_open"));expect(held.status).toBe("Rejected");expect(open).toHaveBeenCalledTimes(1);
+    }finally{await handle.dispose();}
   });
 
   it("W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0", async () => {

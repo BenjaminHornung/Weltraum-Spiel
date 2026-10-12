@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "-t",
+    "Cable connection rejects"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:58:10.915843+00:00",
+  "endedAtUtc": "2026-10-11T23:58:14.561253+00:00",
+  "elapsedSeconds": 3.645777370998985,
+  "exitCode": 0,
+  "rawBytes": 398,
+  "rawSha256": "357e7ea90580c686ca0e21d9841537c22dc6f6f0afd1c5c68651081746df6618"
+}

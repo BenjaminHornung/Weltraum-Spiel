@@ -1,0 +1,31 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+src/factory/session/factorySession.ts(8,10): error TS6133: 'readMaterialMassMg' is declared but its value is never read.
+src/factory/session/factorySession.ts(88,11): error TS2322: Type '{ id: string; revision: number; ownerId: string | undefined; role: "belt" | "cargo" | "carrier" | "depot" | "input" | "installed" | "offcut" | "output" | "wip"; accessible: boolean; massMg: number; capacityMassMg: number; capacityVolumeMm3: number; contents: { ...; }[]; pickupProfiles: { ...; }[]; }[]' is not assignable to type 'FactoryUiInventory[]'.
+  Type '{ id: string; revision: number; ownerId: string | undefined; role: "belt" | "cargo" | "carrier" | "depot" | "input" | "installed" | "offcut" | "output" | "wip"; accessible: boolean; massMg: number; capacityMassMg: number; capacityVolumeMm3: number; contents: { ...; }[]; pickupProfiles: { ...; }[]; }' is not assignable to type 'FactoryUiInventory'.
+    Types of property 'ownerId' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string | null'.
+        Type 'undefined' is not assignable to type 'string | null'.
+src/factory/session/factorySession.ts(90,371): error TS2339: Property 'kind' does not exist on type 'MaterialReceipt'.
+src/factory/session/factorySession.ts(90,397): error TS2339: Property 'outputs' does not exist on type 'MaterialReceipt'.
+src/factory/session/factorySession.ts(90,411): error TS7006: Parameter 'o' implicitly has an 'any' type.
+src/factory/session/factorySession.ts(97,5): error TS2322: Type 'Readonly<{ version: "fp06-ui-read-v1"; sessionId: string; epoch: number; publicationRevision: number; binding: FactoryUiBinding; host: FactoryHostView; factorySteps: number; ... 9 more ...; lastReceipt: FactoryUiReceipt | null; }>' is not assignable to type 'FactoryUiReadModel'.
+  Types of property 'technologies' are incompatible.
+    Type '({ id: string; name: string; status: string; requirements: string[]; reason: null; } | { id: string; name: string; status: string; requirements: string[]; reason: string; })[]' is not assignable to type 'readonly Readonly<{ id: string; name: string; status: "AVAILABLE" | "MISSING_REQUIREMENTS" | "PLANNED"; requirements: readonly string[]; reason: string | null; }>[]'.
+      Type '{ id: string; name: string; status: string; requirements: string[]; reason: null; } | { id: string; name: string; status: string; requirements: string[]; reason: string; }' is not assignable to type 'Readonly<{ id: string; name: string; status: "AVAILABLE" | "MISSING_REQUIREMENTS" | "PLANNED"; requirements: readonly string[]; reason: string | null; }>'.
+        Type '{ id: string; name: string; status: string; requirements: string[]; reason: null; }' is not assignable to type 'Readonly<{ id: string; name: string; status: "AVAILABLE" | "MISSING_REQUIREMENTS" | "PLANNED"; requirements: readonly string[]; reason: string | null; }>'.
+          Types of property 'status' are incompatible.
+            Type 'string' is not assignable to type '"AVAILABLE" | "MISSING_REQUIREMENTS" | "PLANNED"'.
+src/factory/session/factorySession.ts(100,64): error TS7006: Parameter 'listener' implicitly has an 'any' type.
+src/factory/session/factorySession.ts(100,243): error TS7006: Parameter 'panel' implicitly has an 'any' type.
+src/hvp/hvpBootstrap.ts(2255,23): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/hvp/hvpBootstrap.ts(2255,31): error TS7006: Parameter 'operation' implicitly has an 'any' type.
+src/hvp/hvpBootstrap.ts(2256,22): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/hvp/hvpBootstrap.ts(2257,18): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/hvp/hvpBootstrap.ts(2258,24): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/hvp/hvpBootstrap.ts(2259,24): error TS7006: Parameter 'id' implicitly has an 'any' type.
+src/hvp/hvpBootstrap.ts(2262,24): error TS7006: Parameter 'panel' implicitly has an 'any' type.
+tests/unit/factory/cargoHandling.test.ts(54,10): error TS6133: 'canonicalJson' is declared but its value is never read.
+tests/unit/factory/cargoHandling.test.ts(60,60): error TS6133: 'operation' is declared but its value is never read.

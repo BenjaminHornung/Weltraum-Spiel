@@ -1,0 +1,52 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t Native quarter-turn|q1 Cutter OUT
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (13 tests | 5 failed | 8 skipped) 11ms
+   × W09 Native quarter-turn 0 binds the exact installed Solid port to the accepted Belt convention 7ms
+   × W09 Native quarter-turn 1 binds the exact installed Solid port to the accepted Belt convention 1ms
+   × W09 Native quarter-turn 2 binds the exact installed Solid port to the accepted Belt convention 1ms
+   × W09 Native quarter-turn 3 binds the exact installed Solid port to the accepted Belt convention 1ms
+   × W09 q1 Cutter OUT to Former IN is exactly four metres toward Native minus-Z 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 Native quarter-turn 0 binds the exact installed Solid port to the accepted Belt convention
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 Native quarter-turn 1 binds the exact installed Solid port to the accepted Belt convention
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 Native quarter-turn 2 binds the exact installed Solid port to the accepted Belt convention
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 Native quarter-turn 3 binds the exact installed Solid port to the accepted Belt convention
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:101:22
+     99| it.each([0,1,2,3])("W09 Native quarter-turn %i binds the exact install…
+    100|  const api=await import("../../../src/factory/session/dryFactorySlice"…
+    101|  expect(typeof read).toBe("function");
+       |                      ^
+    102|  const profile=createFactoryInstallationProfile("B06"),device=fixture.…
+    103|  const owner={instanceId:"cut",definitionSourceId:"B06",profileDigest:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 q1 Cutter OUT to Former IN is exactly four metres toward Native minus-Z
+AssertionError: expected 'undefined' to be 'function' // Object.is equality
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:110:134
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 8 skipped (13)
+   Start at  22:04:12
+   Duration  561ms (transform 326ms, setup 0ms, import 443ms, tests 11ms, environment 0ms)
+

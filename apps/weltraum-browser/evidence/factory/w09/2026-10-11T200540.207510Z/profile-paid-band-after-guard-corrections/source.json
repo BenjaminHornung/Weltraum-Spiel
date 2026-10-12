@@ -1,0 +1,16 @@
+{
+  "capturedAtUtc": "2026-10-11T23:01:40.673819+00:00",
+  "phase": "candidate2 after correctness guard fixes136\u2192137 and added regression oracles138; band performance NOT rerun on this guard-corrected snapshot",
+  "files": [
+    {
+      "path": "src/factory/session/dryFactorySlice.ts",
+      "sha256": "363c5b53e590154fb903fd1070f98bd17580419d3e977ebf7289f9040ab188e3",
+      "bytes": 29703
+    },
+    {
+      "path": "tests/unit/factory/dryFactorySlice.test.ts",
+      "sha256": "806096d491faedea478163ef91813d2142c89cf7f64ed28c7ceac7a183e5cea7",
+      "bytes": 30532
+    }
+  ]
+}

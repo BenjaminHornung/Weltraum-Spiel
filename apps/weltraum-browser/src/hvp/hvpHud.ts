@@ -46,6 +46,8 @@ export interface HvpHudStats {
 }
 
 export interface HvpHudActions {
+  /** Optional presentation of confirmed host observations; carries no action or world authority. */
+  readContextHint?():Readonly<{target:string;feedback:string;cut:string;keys:string}>|undefined;
   setPreset(preset: HvpCameraPreset): void;
   resetCamera(): void;
   readWaterEnabled(): boolean;
@@ -141,7 +143,8 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
   const targetValue=documentPort.createElement("div");targetValue.id="hvp-interaction-target";
   const feedback=documentPort.createElement("div");feedback.id="hvp-interaction-feedback";feedback.setAttribute("role","status");feedback.setAttribute("aria-live","polite");
   const cutFeedback=documentPort.createElement("div");cutFeedback.id="hvp-cut-feedback";cutFeedback.setAttribute("role","status");cutFeedback.setAttribute("aria-live","polite");
-  const keysValue=documentPort.createElement("div");keysValue.textContent="1/2/3 + Linksklick: Schneiden an freigegebenen Stellen · V: Perspektive · Esc: Pause / Übersicht";
+  const defaultKeys="1/2/3 + Linksklick: Schneiden an freigegebenen Stellen · V: Perspektive · Esc: Pause / Übersicht";
+  const keysValue=documentPort.createElement("div");keysValue.textContent=defaultKeys;
   keysValue.setAttribute("style","font-size:12px;margin-top:4px");
   interaction.append(targetValue,feedback,cutFeedback,keysValue);options.host.append(interaction);interaction.hidden=true;
   const reticle=documentPort.createElement("div");reticle.id="hvp-aim-reticle";reticle.setAttribute("aria-hidden","true");
@@ -254,15 +257,17 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
     const aim=options.actions.readAimScreen();reticle.hidden=!playing||!uiVisible||!aim.visible;
     reticle.style.left=`${aim.x}%`;reticle.style.top=`${aim.y}%`;
     reticle.style.background=state.impulseTarget?.kind==="Dynamic"?"#9ce8bf":"#f2f4ec";
-    const targetText=describeHvpImpulseTarget(state.impulseTarget);
+    const context=options.actions.readContextHint?.();
+    const targetText=context?.target??describeHvpImpulseTarget(state.impulseTarget);
     if(targetValue.textContent!==targetText){targetValue.textContent=targetText;}
-    const resultText=(state.lastImpulse?"Letzter Versuch: ":"")+describeHvpImpulseResult(state.lastImpulse?.reason);
+    const resultText=context?.feedback??((state.lastImpulse?"Letzter Versuch: ":"")+describeHvpImpulseResult(state.lastImpulse?.reason));
     if(feedback.textContent!==resultText){feedback.textContent=resultText;}
     const cutStates=[tool.state,tool.structural?.state,tool.moving?.state];
-    const cutText=cutStates.includes("RecoveryHold")?"Schnitt angehalten: Wiederherstellung nicht bestätigt."
+    const cutText=context?.cut??(cutStates.includes("RecoveryHold")?"Schnitt angehalten: Wiederherstellung nicht bestätigt."
       :cutStates.includes("Pending")?"Schneiden … Zusammenhang, Geometrie und Kollision werden vorbereitet."
-        :`${tool.mode} · Linksklick: ${tool.message}`;
+        :`${tool.mode} · Linksklick: ${tool.message}`);
     if(cutFeedback.textContent!==cutText){cutFeedback.textContent=cutText;}
+    const keys=context?.keys??defaultKeys;if(keysValue.textContent!==keys)keysValue.textContent=keys;
     if(goal){
       goalText.textContent=goal.targetLost?"Bergungsstück verändert oder verloren. Gesicherten Stand laden oder neuen Auftrag starten.":goal.instruction!;
       goalSteps.textContent=`${goal.mission.objectiveStates.filter(o=>o.state==="Completed").length}/4 · WASD / Space · 1 + Klick: Verbindung · F: Schieben · Esc: Pause`;

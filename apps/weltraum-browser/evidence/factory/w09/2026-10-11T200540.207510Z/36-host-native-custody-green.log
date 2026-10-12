@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoHandling.test.ts -t Host adopts|failed actual Native
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 5 skipped (7)
+   Start at  20:49:25
+   Duration  901ms (transform 405ms, setup 0ms, import 524ms, tests 227ms, environment 0ms)
+

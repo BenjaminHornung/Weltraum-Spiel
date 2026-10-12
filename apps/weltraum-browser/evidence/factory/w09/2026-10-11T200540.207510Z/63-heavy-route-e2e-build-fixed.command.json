@@ -1,0 +1,14 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T21:18:45.033920+00:00",
+  "endedAtUtc": "2026-10-11T21:18:49.554593+00:00",
+  "elapsedSeconds": 4.5210977280003135,
+  "exitCode": 0,
+  "rawBytes": 1904,
+  "rawSha256": "e9265f165073a7313ae0995510fb14c78e7d818369306e0df1f4f79ce5e07d43"
+}

@@ -1,0 +1,32 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t W09 release enters RecoveryHold
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (43 tests | 1 failed | 42 skipped) 7143ms
+     × W09 release enters RecoveryHold after one actual carrier artifact retires and the next rejects 7141ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 release enters RecoveryHold after one actual carrier artifact retires and the next rejects
+AssertionError: expected [Function] to throw error matching /RecoveryHold/ but got 'Factory retire failed: FaultRetire'
+
+- Expected:
+/RecoveryHold/
+
++ Received:
+"Factory retire failed: FaultRetire"
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:297:67
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 42 skipped (43)
+   Start at  21:53:39
+   Duration  8.80s (transform 1.24s, setup 0ms, import 1.54s, tests 7.14s, environment 0ms)
+

@@ -1,0 +1,43 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t W09 restores the consumed
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (42 tests | 1 failed | 41 skipped) 7182ms
+     × W09 restores the consumed paid depot projection after actual held publication rejects 7181ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 restores the consumed paid depot projection after actual held publication rejects
+AssertionError: expected [] to deeply equal [ Array(5) ]
+
+- Expected
++ Received
+
+- [
+-   "factory:carrier:slot:payload",
+-   "factory:carrier:slot:support_0_0",
+-   "factory:carrier:slot:support_0_1",
+-   "factory:carrier:slot:support_1_0",
+-   "factory:carrier:slot:support_1_1",
+- ]
++ []
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:289:122
+    287|       f.failProjection();expect(()=>f.port.construction!.publishNative…
+    288|       await f.port.construction!.rollbackNative(request.transactionId)…
+    289|       expect(f.backend.readDiagnostics().visibleRepresentationKeys.fil…
+       |                                                                                                                          ^
+    290|     }finally{f.disableFaults();await f.handle.dispose();}
+    291|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 41 skipped (42)
+   Start at  21:47:15
+   Duration  8.79s (transform 1.21s, setup 0ms, import 1.51s, tests 7.18s, environment 0ms)
+

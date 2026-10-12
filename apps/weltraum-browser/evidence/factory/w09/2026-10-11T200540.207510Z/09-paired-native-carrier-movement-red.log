@@ -1,0 +1,55 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-locomotion.test.ts -t W09 paired
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-locomotion.test.ts (19 tests | 2 failed | 17 skipped) 818ms
+     × moves the player and whole 300kg carrier only through the same real solver steps 446ms
+     × vetoes BOTH poses when the capsule path is free but the actual carrier sweeps a foreign obstacle 337ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > moves the player and whole 300kg carrier only through the same real solver steps
+AssertionError: expected -5.75 to be close to -6.05000114440918, received difference is 0.3000011444091797, but expected 0.000049999999999999996
+ ❯ tests/unit/hvp-locomotion.test.ts:200:72
+    198|       expect(r.player.read().position).toEqual(before); expect(r.world…
+    199|       r.ticks(6); const player = r.player.read().position, carrier = r…
+    200|       expect(player.x).toBeLessThan(before.x - .25); expect(carrier.x)…
+       |                                                                        ^
+    201|       expect(r.player.read().grounded).toBe(true);
+    202|     } finally { r.dispose(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > vetoes BOTH poses when the capsule path is free but the actual carrier sweeps a foreign obstacle
+AssertionError: expected { x: -6.05000114440918, …(2) } to deeply equal { x: -5.75, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "x": -5.75,
+-   "y": 2.1600000858306885,
++   "x": -6.05000114440918,
++   "y": 2.1502699851989746,
+    "z": 11.875,
+  }
+
+ ❯ tests/unit/hvp-locomotion.test.ts:209:40
+    207|       const before = r.player.read(), carrier = r.world.getRigidBody(r…
+    208|       r.player.setInput({ x: -1, z: 0, sprint: false, jump: false }); …
+    209|       expect(r.player.read().position).toEqual(before.position); expec…
+       |                                        ^
+    210|       expect(r.player.read().jumpCount).toBe(before.jumpCount); expect…
+    211|     } finally { r.dispose(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 17 skipped (19)
+   Start at  20:14:48
+   Duration  1.42s (transform 359ms, setup 0ms, import 491ms, tests 818ms, environment 0ms)
+

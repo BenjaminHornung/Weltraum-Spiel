@@ -1,0 +1,5 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+tests/unit/factory/dryFactorySlice.test.ts(63,176): error TS7006: Parameter 's' implicitly has an 'any' type.

@@ -1,0 +1,40 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t caller-forged Native OUTPUT
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (26 tests | 1 failed | 25 skipped) 54ms
+     × rejects caller-forged Native OUTPUT quantity despite copied canonical proposal receipts 52ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects caller-forged Native OUTPUT quantity despite copied canonical proposal receipts
+AssertionError: expected { status: 'Committed', …(2) } to match object { status: 'Rejected' }
+(14 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "Rejected",
++   "status": "Committed",
+  }
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:54:70
+     52|   const source=proposal.material.containers[0]!,old=source.state.conte…
+     53|   const material={...proposal.material,containers:proposal.material.co…
+     54|   expect(commitDryFactoryStep(f.state,input,{...proposal,material})).t…
+       |                                                                      ^
+     55|  });
+     56|  it("rechecks mutable facts, frozen accessors and caller-forged immuta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 25 skipped (26)
+   Start at  23:05:10
+   Duration  621ms (transform 364ms, setup 0ms, import 463ms, tests 54ms, environment 0ms)
+

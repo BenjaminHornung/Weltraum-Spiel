@@ -1,0 +1,5 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+tests/unit/factory/hostLifecycle.test.ts(454,32): error TS2353: Object literal may only specify known properties, and 'holdReason' does not exist in type 'Partial<FactoryHostView>'.

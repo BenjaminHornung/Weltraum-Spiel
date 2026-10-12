@@ -1,0 +1,18 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w09.playwright.config.mts tests/e2e/factory-dry-flow.spec.ts --grep Ready uses|normal UI opens|ordinary Play|normal UI takes|normal Play walks
+
+[WebServer] (node:134878) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+(node:134902) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/factory-dry-flow.spec.ts:22:2 › W09 normal finite heavy bootstrap transport › Ready uses the unchanged real D07 source and one finite initial Cargo (11.4s)
+  ✓  2 [chromium] › tests/e2e/factory-dry-flow.spec.ts:23:2 › W09 normal finite heavy bootstrap transport › normal UI opens the finite Cargo without mutating custody (1.2s)
+  ✓  3 [chromium] › tests/e2e/factory-dry-flow.spec.ts:24:2 › W09 normal finite heavy bootstrap transport › ordinary Play walks to the source-checked heavy pickup stand (2.5s)
+  ✓  4 [chromium] › tests/e2e/factory-dry-flow.spec.ts:25:2 › W09 normal finite heavy bootstrap transport › normal UI takes the complete finite341kg Former BOM at the actual supported stand (1.2s)
+  ✓  5 [chromium] › tests/e2e/factory-dry-flow.spec.ts:26:2 › W09 normal finite heavy bootstrap transport › normal Play walks the same paired owner toward the natural west route (4.9s)
+
+  5 passed (23.5s)

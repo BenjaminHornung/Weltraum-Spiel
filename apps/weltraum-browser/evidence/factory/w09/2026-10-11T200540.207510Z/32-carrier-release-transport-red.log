@@ -1,0 +1,65 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts -t real Native carrier transport
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (25 tests | 1 failed | 24 skipped) 588ms
+   × W09 real Native carrier transport withholds every prepared and committed receipt until joint Host publication 550ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W09 real Native carrier transport withholds every prepared and committed receipt until joint Host publication
+AssertionError: expected { ownerId: 'factory_carrier', …(13) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "bodyHandle": 1.5e-323,
+  "colliderHandles": [
+    2e-323,
+    2.5e-323,
+    3e-323,
+    3.5e-323,
+    4e-323,
+  ],
+  "containerId": "carrier_transport_pickup_c27",
+  "localCom": {
+    "x": 0,
+    "y": 0.75,
+    "z": 0,
+  },
+  "massMg": 300000000,
+  "materialBinding": "{\"containers\":[{\"stateBytes\":\"{\\\"containerId\\\":\\\"carrier_transport_pickup_c27\\\",\\\"contents\\\":[],\\\"extensions\\\":{},\\\"initialContents\\\":[],\\\"ownerId\\\":\\\"fp02_wreck_owner\\\",\\\"revision\\\":0,\\\"sealed\\\":false}\"}]}",
+  "nativeMassKg": 300,
+  "ownerId": "factory_carrier",
+  "phase": "Deposited",
+  "positionMm": [
+    -5750,
+    1250,
+    10875,
+  ],
+  "principalInertia": {
+    "x": 81.24998474121094,
+    "y": 81.24998474121094,
+    "z": 49.999996185302734,
+  },
+  "profileDigest": "5921be9a",
+  "profileId": "C27-PACK",
+  "transactionId": "transport_release_c27",
+}
+
+ ❯ tests/unit/hvp-player-input.test.ts:156:52
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 24 skipped (25)
+   Start at  20:46:49
+   Duration  1.79s (transform 918ms, setup 0ms, import 1.09s, tests 588ms, environment 0ms)
+

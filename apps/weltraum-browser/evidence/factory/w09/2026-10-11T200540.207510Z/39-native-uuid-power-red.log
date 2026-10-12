@@ -1,0 +1,29 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t complete confirmed100ms
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (7 tests | 1 failed | 6 skipped) 25ms
+     × evaluates one complete confirmed100ms power interval and preserves every finite native resource with no machines 23ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > evaluates one complete confirmed100ms power interval and preserves every finite native resource with no machines
+AssertionError: expected 'Rejected' to be 'Prepared' // Object.is equality
+
+Expected: "Prepared"
+Received: "Rejected"
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:44:79
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+   Start at  20:52:48
+   Duration  516ms (transform 288ms, setup 0ms, import 382ms, tests 25ms, environment 0ms)
+

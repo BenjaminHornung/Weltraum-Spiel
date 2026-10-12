@@ -1,0 +1,21 @@
+{
+  "files": [
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "sha256": "67b223c31d76002f22097e6b9175ac6d4dab7aad583a4413ae9a2c05ce0a6910",
+      "bytes": 23052
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "sha256": "66ec6f330dc7d6cf7c25851fc20b3ae17bb0daf8faad8827efe6d45dff81198d",
+      "bytes": 175076
+    },
+    {
+      "path": "tests/unit/hvp-bootstrap.test.ts",
+      "sha256": "1af43b680ce07f6799f0f59a846abd9538a59f97d851868df24a12dd6d3cef51",
+      "bytes": 83663
+    }
+  ],
+  "phase": "171 actual Bootstrap/HUD business RED \u2192 172 focused GREEN \u2192 173 seven affected cases GREEN \u2192 174 original build PASS",
+  "limits": "Native transport replies explicitly fixture; no new Native state, controller, Material or clock authority; default labels restored without carrier. No normal Browser claim."
+}

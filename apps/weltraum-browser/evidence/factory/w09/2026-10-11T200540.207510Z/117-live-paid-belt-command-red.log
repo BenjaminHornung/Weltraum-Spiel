@@ -1,0 +1,35 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t normal connect-belt
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (31 tests | 1 failed | 30 skipped) 1683ms
+   × W09 normal connect-belt consumes an entire paid local BELT4 depot and jointly publishes one zero-credit line 1682ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 normal connect-belt consumes an entire paid local BELT4 depot and jointly publishes one zero-credit line
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Committed' }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "Committed",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:364:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 30 skipped (31)
+   Start at  22:28:33
+   Duration  2.28s (transform 378ms, setup 0ms, import 488ms, tests 1.68s, environment 0ms)
+

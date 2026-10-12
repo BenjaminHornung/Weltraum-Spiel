@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "-t",
+    "actual UI Cargo Open"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T21:24:34.935189+00:00",
+  "endedAtUtc": "2026-10-11T21:24:43.840201+00:00",
+  "elapsedSeconds": 8.905404739001824,
+  "exitCode": 0,
+  "rawBytes": 386,
+  "rawSha256": "31afa0d40e8b84fe3f9752f6b54858911548fe2d7b70eb5837a778c8199019f7"
+}

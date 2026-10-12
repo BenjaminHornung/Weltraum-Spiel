@@ -1,0 +1,352 @@
+[
+  {
+    "path": "partial-closure/provenance/fp06-w09-battery-cable-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-battery-cable-closure-review.md",
+    "bytes": 5736,
+    "sha256": "f9c8e13c114bbbd3900fc499970c5df47d2ab56ae80f3834a6b8c71af4310378",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-battery-site-source-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-battery-site-source-review.md",
+    "bytes": 4610,
+    "sha256": "8be1c97904ca4244df70bb49f7f481bd7e869ec99cc4e3f8321f86a998c0d49a",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-belt-graph-reconcile-source-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-belt-graph-reconcile-source-review.md",
+    "bytes": 6354,
+    "sha256": "e8caf8b9c69cb475324ab8c286a74287e4b2ee7b09dbf8c57922832a4f4cacea",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-brace-use-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-brace-use-preflight.md",
+    "bytes": 12682,
+    "sha256": "929f7fac186f5c294ef2eca4e1f14ee590361e654f01d3cd2964dfdb4af42b63",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-browser72-visual-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-browser72-visual-preflight.md",
+    "bytes": 4744,
+    "sha256": "db601897dbd44e5a77b0207e3edb202d7ea38ea55890c1f40b008de62acb5fbd",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-cable-host-fault-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-cable-host-fault-closure-review.md",
+    "bytes": 5673,
+    "sha256": "e71a0391809c7ade8766f0301bc27c6c078500f6e54016984331595d8edb1358",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-cargo-reach-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-cargo-reach-preflight.md",
+    "bytes": 14166,
+    "sha256": "9b6a0f65a3d81052f26a39da383f158fcd618b7dbb585b488fbaef5326bafbb7",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-cargo-s0-site-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-cargo-s0-site-preflight.md",
+    "bytes": 11705,
+    "sha256": "a1f082d5eab6bf09e6def047c3c4eae0ee7765688c3cf6c9ebd3990314da020e",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-carrier-hud-source-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-carrier-hud-source-review.md",
+    "bytes": 5378,
+    "sha256": "2c86ec0efad2af7abf9d45683db5c55abb7ca4dbd45f44700fcfc96c0de2fb27",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-closed-handling-profile-independent-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-closed-handling-profile-independent-review.md",
+    "bytes": 4086,
+    "sha256": "cf6c0d2c60e0aee0f4514ce36fd863f283ff705231b36e8cf3b921b2f6942b1a",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-composition-admission-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-composition-admission-closure-review.md",
+    "bytes": 5866,
+    "sha256": "85ce86e83d4386434c9e388c1e5a11cc99f47744966fb5309dc9e6e051f60431",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-composition-output-alias-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-composition-output-alias-closure-review.md",
+    "bytes": 5492,
+    "sha256": "0e665ef345d6a579ebe3ec9e5ce3bc597b7c9bec5c96691714548b920170cc51",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-composition-performance-source-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-composition-performance-source-review.md",
+    "bytes": 11989,
+    "sha256": "aaf8e07301cb1f71a63319a2b0e7cb1fce28ca1e71d9dd7ab82cbace0ff47819",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-consumed-depot-review-20261011T210856Z.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-consumed-depot-review-20261011T210856Z.md",
+    "bytes": 5909,
+    "sha256": "dfad392cd909bf484ac9d2e8dfd6162ad991d7ff8216ad496c852452f10057aa",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-contract-test-review-20261011T201217Z.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-contract-test-review-20261011T201217Z.md",
+    "bytes": 6289,
+    "sha256": "450249376b9c7dcde58953df8d60398df48005e3d2b02ceb4c944cfe022fe96e",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-entry-carrier-source-review-20261011T211243Z.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-entry-carrier-source-review-20261011T211243Z.md",
+    "bytes": 5061,
+    "sha256": "5a5691acb60b2728d276f833ff1d12c0667d286d095f1d89c6718bb3a2ddd69e",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-geometry-seam-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-geometry-seam-preflight.md",
+    "bytes": 4931,
+    "sha256": "0a653e2330ea3f83f90e8067f45f11c5ad6b57d940e0d700afe486def2d55bd2",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-heavy-cargo-source-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-heavy-cargo-source-preflight.md",
+    "bytes": 5140,
+    "sha256": "eb0635fd91a7b829ef2ac15dd946f81c46d54c3db008d6034666c6ba876762f0",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-manual-brace-host-source-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-manual-brace-host-source-review.md",
+    "bytes": 7539,
+    "sha256": "4af5c3968492d98bdf1871b6c2aca6f737d3451c62f92e71f0823d8cce3cb641",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-material-binding-cache-candidate-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-material-binding-cache-candidate-review.md",
+    "bytes": 7522,
+    "sha256": "d5c939c1c0b68f48ce147cb87c2c0c27b8ce0312390f09065356b3c871d99d6e",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-material-binding-cache-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-material-binding-cache-preflight.md",
+    "bytes": 7559,
+    "sha256": "7ff79edc7e150e49c514f4a0cdfabd38b37c8ec66db793bddb7e5069c39a4c30",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-native-cargo-handling-closed-profile-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-native-cargo-handling-closed-profile-preflight.md",
+    "bytes": 5847,
+    "sha256": "1b981a9f49cc852f430935e10df9334a8e3c1048c30c52698208205b150f1e8d",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-native-cargo-handling-contract-independent-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-native-cargo-handling-contract-independent-review.md",
+    "bytes": 5177,
+    "sha256": "ea289a0c224d6b52ba5f0efc89780bd481412980595e8f2161fd73ecd06fcc4b",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-native-cas-review-20261011T203859Z.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-native-cas-review-20261011T203859Z.md",
+    "bytes": 6185,
+    "sha256": "dda5abab72a1e791899c3dffb2d89e92c624ea3dd59268443e1a5eed62b9e8d0",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-native-depot-snap-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-native-depot-snap-closure-review.md",
+    "bytes": 5795,
+    "sha256": "b6cac6b570b188101c667a52f94c473c094c72344d2e98a7077ddf89b2da3995",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-native-depot-snap-source-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-native-depot-snap-source-review.md",
+    "bytes": 5274,
+    "sha256": "d29bf636e4102755179fe6b242ca730ee888dd7d42934112386c165c6a0ed380",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-native-handling-integration-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-native-handling-integration-preflight.md",
+    "bytes": 6178,
+    "sha256": "9b646635a230e1bf982ace2e70a07c238824e5d53cb51eb86e5d3a62ea38e481",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-native-production-facts-source-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-native-production-facts-source-review.md",
+    "bytes": 7400,
+    "sha256": "56ce1cb0bbd6a71e575dcffa5e624637ce6024517ea516a862d5a0658ef99221",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-normal-flow-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-normal-flow-preflight.md",
+    "bytes": 21092,
+    "sha256": "d29b04de709237cb67db73b2b91d83e8a3a0df26bd8d54a6c5ce719ac1f55931",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-normal-ui-cycle-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-normal-ui-cycle-closure-review.md",
+    "bytes": 5198,
+    "sha256": "ca3b976eca059baafb301e21e90eacc3bf8a0eeff2bfb41927de03d8edd2d585",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-normal-ui-cycle-source-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-normal-ui-cycle-source-preflight.md",
+    "bytes": 5766,
+    "sha256": "c5175d7a802b634b926cb06811a1d87706c9e519c5d39efba44646d516c6d40f",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-paid-native-belt-bridge-source-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-paid-native-belt-bridge-source-preflight.md",
+    "bytes": 5208,
+    "sha256": "e8d21f48d423c750abb78c3623274de61308eefbde656e28a664d2658b339094",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-partial-seal-boundary-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-partial-seal-boundary-review.md",
+    "bytes": 11506,
+    "sha256": "e40070539eeab8430777a2c3c723e3447537d4b8979ba916f856c5a9db44d3c2",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-power-connection-reach-source-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-power-connection-reach-source-preflight.md",
+    "bytes": 4934,
+    "sha256": "49ee77e4aa58fd136cbb77f654578684640bceaf182ab44b84be65ce4b439bc9",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-receiver-fault-followup-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-receiver-fault-followup-review.md",
+    "bytes": 6706,
+    "sha256": "f82ef76b32edd6bce59b1c6c18f315f7b3489de7354cdf296847f930219a88dc",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-receiver-release-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-receiver-release-closure-review.md",
+    "bytes": 4877,
+    "sha256": "ee188e6f7a45beda9e97e472a5d296c693af14ecd6dce502bc8d430178b4ce58",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-receiver-release-closure-review.previous.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-receiver-release-closure-review.previous.md",
+    "bytes": 4506,
+    "sha256": "a9febbc57b3f6af9939a2c41eec332508079ce657de27cabf0a01479eac75243",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-service-clock-native-supply-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-service-clock-native-supply-closure-review.md",
+    "bytes": 5432,
+    "sha256": "8418800303cd0e104beb8967fdd9551a191606c16f1e6946358260c252928c36",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-service-hold-followup-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-service-hold-followup-review.md",
+    "bytes": 7048,
+    "sha256": "78adda3f161514f0e57c97f82da0219b40499fa0e7c3c9dd645decbf18713814",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-startsite-v2-exact-scope-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-startsite-v2-exact-scope-preflight.md",
+    "bytes": 5741,
+    "sha256": "6bc09f54bb38b59d8d957274db870ceaf99d20f3f6be4f17eb5b143cb20dd548",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-technology-catalog-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-technology-catalog-closure-review.md",
+    "bytes": 7774,
+    "sha256": "8684a614b61d6191046c5d3f644f302b44dad13080599b20ab3ae34fb2a4c9b1",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-technology-catalog-source-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-technology-catalog-source-preflight.md",
+    "bytes": 11601,
+    "sha256": "5e6a7c9fcd6ed396f0eb58cf78bfd5c685fa5a355f223692ebce7e69a45ff832",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-transport-block-source-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-transport-block-source-review.md",
+    "bytes": 10239,
+    "sha256": "ea0f9ba3c42acb37d33c0e241cb7bb17b60026ed523465d5fcd04932885c3d1d",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-ui-cargo-usability-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-ui-cargo-usability-review.md",
+    "bytes": 4546,
+    "sha256": "c2869cebf2f3d7662685a4d77a9438d2299bad115951670203a907e2cf82663e",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-ui-contract-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-ui-contract-preflight.md",
+    "bytes": 6803,
+    "sha256": "ac993d334bc7471595af45f4a6a95e6ef8560849c47b829b8f9476b30c7b4807",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-ui-draft-review-20261011T202609Z.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-ui-draft-review-20261011T202609Z.md",
+    "bytes": 3530,
+    "sha256": "9701f0c308b102a8a9130e879e555b86a5eb5b094c612a99b5ca0c9e919a638c",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-ui-followup-review-20261011T205206Z.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-ui-followup-review-20261011T205206Z.md",
+    "bytes": 4669,
+    "sha256": "278a1a11360ac664e77ae5457a1c648967352b38e659d3084afb906040bc3c84",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-ui-independent-review-20261011T204439Z.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-ui-independent-review-20261011T204439Z.md",
+    "bytes": 7167,
+    "sha256": "3d71de23c03df15af70ae3e7ea13ff491f102d4b91192aa3e62e742a0360da39",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-ui-panel-red-preflight.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-ui-panel-red-preflight.md",
+    "bytes": 5349,
+    "sha256": "a8a941ee25594621dbdf95b5daa582dc33da7a8a23e781af4cce0431047caaaf",
+    "meaning": "byte-exact independent source/evidence review or explicitly labeled source-only preflight; limits in original apply"
+  },
+  {
+    "path": "partial-closure/provenance/fp06-w09-cable-host-recovery-guard-closure-review.md",
+    "sourcePath": "/workspace/.cloud-setup/fp06-w09-cable-host-recovery-guard-closure-review.md",
+    "bytes": 5568,
+    "sha256": "4961c4d28e9b2c2ee9cdbd876df369d73088ef1be13e7ff11f189e87698ce8e5",
+    "meaning": "independent final scoped recovery-guard closure; historical e71aFAIL retained separately"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/facilitySession.test.ts",
+    "-t",
+    "actual Native closed depot frame"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:09:58.694307+00:00",
+  "endedAtUtc": "2026-10-11T23:10:01.909489+00:00",
+  "elapsedSeconds": 3.2155397240057937,
+  "exitCode": 1,
+  "rawBytes": 2152,
+  "rawSha256": "743d1e6d0580f26e63f76889f09728668a1302e9961f381e096131ae1185eaf5"
+}

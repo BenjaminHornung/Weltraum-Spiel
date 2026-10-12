@@ -1,0 +1,30 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t publishes the actual paired Native carrier veto
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (22 tests | 1 failed | 21 skipped) 534ms
+   × W09 publishes the actual paired Native carrier veto without moving poses or members and clears it only on adopted movement 496ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 publishes the actual paired Native carrier veto without moving poses or members and clears it only on adopted movement
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/facilitySession.test.ts:288:179
+    286|   expect((facilities.read() as any).lastCarrierVeto).toMatchObject({re…
+    287|   expect(body.translation()).toEqual(pose);expect([world.bodies.len(),…
+    288|   const neutral=facilities.preparePlayerMove(actor,actor);expect(typeo…
+       |                                                                                                                                                                                   ^
+    289|   world.removeRigidBody(blocker);world.updateSceneQueries();const move…
+    290|   expect((facilities.read() as any).lastCarrierVeto).toBeDefined();mov…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 21 skipped (22)
+   Start at  21:37:23
+   Duration  1.94s (transform 987ms, setup 0ms, import 1.27s, tests 534ms, environment 0ms)
+

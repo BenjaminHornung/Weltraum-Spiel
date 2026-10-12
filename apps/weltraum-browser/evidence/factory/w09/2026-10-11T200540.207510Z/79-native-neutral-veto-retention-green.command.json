@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/facilitySession.test.ts",
+    "-t",
+    "publishes the actual paired Native carrier veto"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T21:42:23.721646+00:00",
+  "endedAtUtc": "2026-10-11T21:42:25.938023+00:00",
+  "elapsedSeconds": 2.21678117600095,
+  "exitCode": 0,
+  "rawBytes": 423,
+  "rawSha256": "bc82bab33684a256662d4644f13c66c14cc3142fd3582460a4b4efcb19bfefe2"
+}

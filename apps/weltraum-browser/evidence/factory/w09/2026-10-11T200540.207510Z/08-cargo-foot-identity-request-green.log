@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts tests/unit/factory/cargoHandling.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  2 passed (2)
+      Tests  21 passed (21)
+   Start at  20:13:10
+   Duration  4.39s (transform 801ms, setup 0ms, import 1.09s, tests 3.09s, environment 0ms)
+

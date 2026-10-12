@@ -1,0 +1,34 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t consumes one paid local Former
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (21 tests | 1 failed | 20 skipped) 491ms
+     × consumes one paid local Former BOM depot atomically into the fixed machine and restores all original members on rollback 457ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 paid SAME-world Native carrier > consumes one paid local Former BOM depot atomically into the fixed machine and restores all original members on rollback
+AssertionError: expected Error: FactoryFacilityRejected:NativeOver… to be undefined
+
+- Expected:
+undefined
+
++ Received:
+Error {
+  "message": "FactoryFacilityRejected:NativeOverlap",
+}
+
+ ❯ tests/unit/factory/facilitySession.test.ts:140:96
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 20 skipped (21)
+   Start at  21:06:10
+   Duration  1.72s (transform 858ms, setup 0ms, import 1.12s, tests 491ms, environment 0ms)
+

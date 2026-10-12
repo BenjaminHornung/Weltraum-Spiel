@@ -1,0 +1,26 @@
+{
+  "phase": "166 assertion RED \u2192 167 GREEN \u2192 168 affected GREEN \u2192 169 unused-type TSFAIL \u2192 170 original build PASS",
+  "files": [
+    {
+      "path": "src/factory/session/hostPort.ts",
+      "bytes": 10087,
+      "sha256": "da5fc8501828850272aeb3e55e93cce37f57c288961fb81b2c5aec9f09e9afdf"
+    },
+    {
+      "path": "src/factory/session/factorySession.ts",
+      "bytes": 46091,
+      "sha256": "81e81d62570ea63bc1833ce4c64624990dddbdd894e10d3da78a2c98ac178ef5"
+    },
+    {
+      "path": "src/factory/factoryEntry.ts",
+      "bytes": 13665,
+      "sha256": "ecba44d926e7d19ce22fb30573801d00d203a05dd950fc591945f264457b50ca"
+    },
+    {
+      "path": "tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 50961,
+      "sha256": "dd188d2f172e948beec2935fdc399261bef9be5e12bea236e75316366a69561c"
+    }
+  ],
+  "limits": "Native transport replies and initial stock declared; no fresh Former, D07, Browser or package claim"
+}

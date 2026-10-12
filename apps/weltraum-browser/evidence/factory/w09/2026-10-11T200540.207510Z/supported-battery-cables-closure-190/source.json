@@ -1,0 +1,37 @@
+{
+  "phase": 190,
+  "productFiles": [
+    {
+      "path": "src/factory/factoryEntry.ts",
+      "bytes": 13665,
+      "sha256": "d6ef6be3e810ee815857f739a832eae04e5b80d99804a870999712d5006c4dd7"
+    },
+    {
+      "path": "src/factory/construction/cargoHandlingProfile.ts",
+      "bytes": 4766,
+      "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd"
+    },
+    {
+      "path": "tests/unit/factory/facilitySession.test.ts",
+      "bytes": 39743,
+      "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+    },
+    {
+      "path": "tests/unit/factory/cargoHandling.test.ts",
+      "bytes": 17904,
+      "sha256": "74c072ca22252bdd004732fb770e67690d63eab01a825b178dc0a66ffa62542b"
+    }
+  ],
+  "verification": {
+    "187": "3 collected assertion RED new closed profiles missing;2 original z3000 Native support negative PASS",
+    "188": "5 actual unchanged Source/Native queries PASS (3 supported z2500 routes +2 z3000 rejection)",
+    "189": "10 selected finite Resources/whole-custody/source/power cases PASS;41 NOT_RUN",
+    "190": "original TypeScript/Vite build PASS"
+  },
+  "limits": [
+    "Exact bounded collision column projection of real unchanged Source, not full browser World/player walk",
+    "Reach/LOS verified from declared actor observer positions; no Source-to-source normal walk proved",
+    "W02 full finite19.75m payment independent of Native transaction; joint original6500 Host case uses Native transport stub",
+    "No Terrain masks, tolerance, yaw, material source or budgets changed"
+  ]
+}

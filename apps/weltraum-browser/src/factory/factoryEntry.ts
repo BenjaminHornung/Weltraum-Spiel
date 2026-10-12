@@ -1,6 +1,10 @@
 import { materializeFactoryStartSite,readFactorySourceColumnWorld } from "./fixtures/startSite";
 import { createFactoryBuildTool } from "./ui/buildTool";
 import { readMaterialMassMg } from "./material/resourcesAdapter";
+import {mountFactoryCargoPanel,createFactoryPanel} from "./ui/cargoPanel";
+import {mountFactoryMachinePanel} from "./ui/machinePanel";
+import {mountFactoryPowerPanel} from "./ui/powerPanel";
+import {mountFactoryTechnologyView} from "./ui/technologyView";
 import "../style.css";
 import { startHvp, type HvpBootstrapHandle } from "../hvp/hvpBootstrap";
 import { createFp02CatalogInput, loadFactoryCatalog } from "./catalog/fp02Catalog";
@@ -12,10 +16,10 @@ const extension: FactoryHostExtension = async host => {
   const session = await mountFactorySession(host, loadFactoryCatalog(createFp02CatalogInput()));
   const panel = document.createElement("section");
   panel.id = "factory-panel"; panel.setAttribute("aria-label", "Werkstatt");
-  panel.setAttribute("style", "position:fixed;right:12px;top:12px;max-width:320px;padding:14px;background:#10202aeb;color:#f1f5f7;font:14px/1.5 system-ui;z-index:21");
+  panel.setAttribute("style", "position:fixed;right:12px;top:12px;max-width:320px;padding:14px;background:#10202aeb;color:#f1f5f7;font:14px/1.5 system-ui;z-index:21;max-height:90vh;overflow:auto");
   const title = document.createElement("strong"); title.textContent = "Hestia · Werkstatt";
   const status = document.createElement("p"); status.id = "factory-status"; status.setAttribute("role", "status");
-  const note = document.createElement("p"); note.textContent = "Wähle eine Bauvorschau. Die Werkstatt pausiert; Pfeile verschieben um 25 cm, R dreht, Escape verwirft. Wrackfracht öffnen, anschließend mit Spielen und WASD zum Bauplatz gehen. Bauteile bleiben bis zur Bestätigung in der endlichen Wrackfracht. Gemeinsames Speichern folgt.";
+  const note = document.createElement("p"); note.textContent = "Wähle eine Bauvorschau. Die Werkstatt pausiert; Pfeile verschieben um 25 cm, R dreht, Escape verwirft. Wrackfracht öffnen, anschließend mit Spielen und WASD zum Bauplatz gehen. Schwere Chassis zuerst transportieren, bevor Anlagen den Weg belegen. Bauteile bleiben bis zur Bestätigung in der endlichen Wrackfracht oder dem erreichbaren Transportdepot. Gemeinsames Speichern folgt.";
   const pause = document.createElement("button"); pause.type = "button"; pause.textContent = "Werkstatt pausieren";
   const resume = document.createElement("button"); resume.type = "button"; resume.textContent = "Werkstatt fortsetzen";
   pause.setAttribute("style", "margin:4px;padding:6px"); resume.setAttribute("style", "margin:4px;padding:6px");
@@ -35,12 +39,17 @@ const extension: FactoryHostExtension = async host => {
   const choose=async(sourceId:string,centerMm:readonly number[],turns:number)=>{try{await host.pause();if(disposed)return;tool?.select({transactionId:`build_${sourceId.toLowerCase().replaceAll(".","_")}_${construction!.read().material.revision}`,instanceId:`facility_${sourceId.toLowerCase().replaceAll(".","_")}_${construction!.read().material.revision}`,definitionSourceId:sourceId,centerMm,quarterTurns:turns});projectGhost();}catch(error){buildStatus.textContent=`Bau angehalten · ${String(error)}`;}};
   const cargoOpen=button("Wrackfracht öffnen","factory-open-cargo",()=>{void host.construction?.openCargo().then(()=>{updateBuild();buildStatus.textContent="Wrackfracht geöffnet · endlicher Bestand verfügbar";}).catch(error=>{buildStatus.textContent=`Wrackfracht nicht erreichbar · ${String(error)}`;});});
   const cutter=button("Zuschnitt vorschauen","factory-build-cutter",()=>{void choose("B06",[-6250,1500,5000],1);});
-  const battery=button("Batterie vorschauen","factory-build-battery",()=>{void choose("fp02.device.battery_4kwh",[-6250,1500,11500],3);});
-  const distributor=button("Verteiler vorschauen","factory-build-distributor",()=>{void choose("fp02.device.distribution_40kw",[-10250,1500,5500],1);});
+  const battery=button("Batterie vorschauen","factory-build-battery",()=>{void choose("fp02.device.battery_4kwh",[-2250,1500,2500],1);});
+  const distributor=button("Verteiler vorschauen","factory-build-distributor",()=>{void choose("fp02.device.distribution_40kw",[-2250,1500,2000],1);});
+  const former=button("Umformung vorschauen","factory-build-former",()=>{void choose("B07",[-6250,1500,-2500],1);});
+  const rawStorage=button("Rohlager vorschauen","factory-build-raw-storage",()=>{void choose("B09",[-6250,1500,11500],1);});
+  const productStorage=button("Produktlager vorschauen","factory-build-product-storage",()=>{void choose("B09",[-6250,1500,-5500],1);});
+  const bench=button("Werkbank vorschauen","factory-build-bench",()=>{void choose("B05",[-10250,1500,5500],1);});
+  const brace=button("Neue Stütze platzieren","factory-build-brace",()=>{void choose("fp02.comp.small_brace",[-8750,1500,5500],1);});
   const rotate=button("Bauvorschau drehen","factory-build-rotate",()=>{tool?.rotate();projectGhost();});
   const cancel=button("Bauvorschau verwerfen","factory-build-cancel",()=>{tool?.cancel();projectGhost();});
   const confirm=button("Bau bestätigen","factory-build-confirm",()=>{void (async()=>{const result=await tool?.confirm();projectGhost();if(result?.status!=="Committed")buildStatus.textContent=`Bau angehalten · ${result?.reason}`;})();});
-  const onBuildKey=(event:KeyboardEvent)=>{if(!tool?.read()||construction?.busy)return;if(event.key==="Escape"){event.preventDefault();tool.cancel();}else if(event.key.toLowerCase()==="r"){event.preventDefault();tool.rotate();}else if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key)){event.preventDefault();tool.move(event.key==="ArrowLeft"?-1:event.key==="ArrowRight"?1:0,event.key==="ArrowUp"?-1:event.key==="ArrowDown"?1:0);}else return;projectGhost();};
+  const onBuildKey=(event:KeyboardEvent)=>{const target=event.target as HTMLElement|null;if(session.ui.read().focusedPanel||target?.closest?.("input,select,textarea,[contenteditable=true]"))return;if(!tool?.read()||construction?.busy)return;if(event.key==="Escape"){event.preventDefault();tool.cancel();}else if(event.key.toLowerCase()==="r"){event.preventDefault();tool.rotate();}else if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key)){event.preventDefault();tool.move(event.key==="ArrowLeft"?-1:event.key==="ArrowRight"?1:0,event.key==="ArrowUp"?-1:event.key==="ArrowDown"?1:0);}else return;projectGhost();};
   document.addEventListener("keydown",onBuildKey);
   if(!tool)buildButtons.forEach(value=>{value.disabled=true;});
   const project = (view: FactorySessionView) => {
@@ -61,18 +70,43 @@ const extension: FactoryHostExtension = async host => {
   const onPause = () => { void command("pause"); };
   const onResume = () => { void command("resume"); };
   pause.addEventListener("click", onPause); resume.addEventListener("click", onResume);
-  panel.append(title, status, note, pause, resume,cargoOpen,cutter,battery,distributor,rotate,cancel,confirm,buildStatus); document.querySelector("#app")!.append(panel);
+  panel.append(title, status, note, pause, resume,cargoOpen,cutter,former,rawStorage,productStorage,bench,brace,battery,distributor,rotate,cancel,confirm,buildStatus); document.querySelector("#app")!.append(panel);
+  const domainPanels=[mountFactoryCargoPanel(session.ui),mountFactoryMachinePanel(session.ui),mountFactoryPowerPanel(session.ui),mountFactoryTechnologyView(session.ui)];
+  for(const handle of domainPanels)panel.append(handle.element);
+  // Reuse the admitted canonical pending/receipt/session/focus lifetime for
+  // all Entry actions; unknown replies retain the same request until resolved.
+  const actions=createFactoryPanel(session.ui,document,"power","Anlagen verbinden und beliefern");
+  const connections=actions.element;connections.id="factory-connections";panel.append(connections);
+  const connectionButtons=new Map<string,HTMLButtonElement>();
+  actions.start(snapshot=>{
+    const choices=[...(snapshot.connections?.power??[]).map(choice=>({kind:"connect-power" as const,choice})),...(snapshot.connections?.belts??[]).map(choice=>({kind:"connect-belt" as const,choice})),...(snapshot.interaction.localDeposits??[]).map(choice=>({kind:"deposit" as const,choice:{...choice,id:choice.target.id}}))];
+    for(const value of connectionButtons.values())value.hidden=true;
+    for(const {kind,choice} of choices){const id=`${kind}_${choice.id}`;let value=connectionButtons.get(id);
+      if(!value){value=document.createElement("button");value.type="button";value.dataset.factoryConnection=id;value.setAttribute("style","display:block;margin:4px;padding:6px");
+        value.addEventListener("click",()=>{
+          const current=session.ui.read();if(actions.busy)return;
+          if(kind==="connect-power"){const option=current.connections?.power.find(p=>p.id===choice.id);if(option?.capability.enabled&&option.cableLot)actions.submit({kind,sourcePortId:option.sourcePortId,targetPortId:option.targetPortId,cableLot:option.cableLot});}
+          else if(kind==="connect-belt"){const option=current.connections?.belts.find(p=>p.id===choice.id);if(option?.capability.enabled)actions.submit({kind,sourcePortId:option.sourcePortId,targetPortId:option.targetPortId,sourceLots:option.sourceLots});}
+          else{const option=current.interaction.localDeposits?.find(p=>p.target.id===choice.id),handling=current.interaction.handling;if(option?.capability.enabled&&handling)actions.submit({kind,handling:{id:handling.id,revision:handling.revision},target:{kind:"container",container:option.target}});}
+        });actions.content.append(value);connectionButtons.set(id,value);
+      }
+      value.hidden=false;value.disabled=actions.busy||!choice.capability.enabled;value.title=choice.capability.reason??"";
+      value.textContent=kind==="connect-power"&&"lengthMm" in choice?`Strom: ${choice.sourcePortId} → ${choice.targetPortId} · ${choice.lengthMm/1000} m`:kind==="connect-belt"&&"sourcePortId" in choice?`Band: ${choice.sourcePortId} → ${choice.targetPortId} · 4 m`:`Gesamten Transport hier einlagern · ${"target" in choice?choice.target.id:""}`;
+    }
+  });
+  const uiUnsubscribe=session.ui.subscribe(snapshot=>{document.body.dataset.hestiaFactoryUi=JSON.stringify(snapshot);});
+  document.body.dataset.hestiaFactoryUi=JSON.stringify(session.ui.read());
   const unsubscribe = session.subscribe(project);
   const unsubscribeHost = host.subscribeConfirmed(() => { project(session.read()); });
   project(session.read());
   return Object.freeze({ isQuiescent: session.isQuiescent, canEndSession: session.canEndSession, dispose: async () => {
     if (disposed) return;
     disposed = true;document.removeEventListener("keydown",onBuildKey); unsubscribe(); unsubscribeHost(); pause.removeEventListener("click", onPause); resume.removeEventListener("click", onResume);
-    await session.dispose(); panel.remove();
+    for(const handle of domainPanels)handle.dispose();actions.dispose();uiUnsubscribe();await session.dispose(); panel.remove();
     // A stale close may not remove a replacement session's projection.
     const current = document.body.dataset.hestiaFactoryClock;
     if (current && JSON.parse(current).epoch === session.read().epoch) {
-      delete document.body.dataset.hestiaFactory; delete document.body.dataset.hestiaFactoryClock;delete document.body.dataset.hestiaFactoryConstruction;
+      delete document.body.dataset.hestiaFactory; delete document.body.dataset.hestiaFactoryClock;delete document.body.dataset.hestiaFactoryConstruction;delete document.body.dataset.hestiaFactoryUi;
     }
   } });
 };

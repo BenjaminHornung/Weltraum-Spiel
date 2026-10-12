@@ -1,0 +1,129 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t complete known technology
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (36 tests | 1 failed | 35 skipped) 38ms
+   × W09 complete known technology directory exposes later source targets and honest missing capabilities without authority 37ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 complete known technology directory exposes later source targets and honest missing capabilities without authority
+AssertionError: expected [ 'factory_dry', 'fluids' ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "B01",
+-   "B02",
+-   "B03",
+-   "B04",
+-   "B05",
+-   "B06",
+-   "B07",
+-   "B08",
+-   "B09",
+-   "B10",
+-   "B11",
+-   "B12",
+-   "B13",
+-   "B14",
+-   "B15",
+-   "ST-01",
+-   "ST-02",
+-   "ST-03",
+-   "ST-04",
+-   "ST-05",
+-   "ST-06",
+-   "ST-07",
+-   "ST-08",
+-   "ST-09",
+-   "ST-10",
+-   "ST-11",
+-   "ST-12",
+-   "ST-13",
+-   "ST-14",
+-   "ST-15",
+-   "ST-16",
+-   "fp04.surface-miner.small.v1",
+-   "fp04.survey-beacon.local.v1",
+-   "fp04.excavator.compact.v1",
+-   "fp04.earth-grader.v1",
+-   "fp04.excavator.large.v1",
+-   "fp04.biomass-harvester.v1",
+-   "fp04.crusher-interface.transfer.v1",
+-   "fp04.cargo-rover.small.v1",
+-   "fp04.cargo-hauler.bulk.v1",
+-   "fp04.depot.bulk.v1",
+-   "fp04.charging-bay.vehicle.v1",
+-   "fp04.dispatch-terminal.v1",
+-   "fp04.conveyor.bulk.upgrade.v1",
+-   "fp04.builder-crawler.v1",
+-   "fp04.builder-drone.light.v1",
+-   "fp04.gantry-loader.mobile.v1",
+-   "fp04.construction-depot.v1",
+-   "fp04.repair-bot.v1",
+-   "fp05.water.survey-stake.v1",
+-   "fp05.water.intake-skid.v1",
+-   "fp05.water.pump-skid.small.v1",
+-   "fp05.pipe.water.standard.v1",
+-   "fp05.valve.isolation.v1",
+-   "fp05.tank.water.10m3.v1",
+-   "fp05.filter.water.basic.v1",
+-   "fp05.junction.flow-meter.v1",
+-   "fp05.water.recycle.compact.v1",
+-   "fp05.thermal.coolant-skid.v1",
+-   "fp05.pipe.support.bridge.v1",
+-   "fp05.ore.wet-concentrator.v1",
+-   "fp05.tailings.thickener.v1",
+-   "fp05.tailings.dewater.v1",
+-   "fp05.scrap.industrial-sorter.v1",
+-   "fp05.foundry.recycled-metal.electric.v1",
+-   "fp05.foundry.casting-cell.v1",
+-   "fp05.industrial.mill-precision.v1",
+-   "fp05.industrial.parts-assembly.v1",
+-   "fp05.heat.exchanger.moderate.v1",
+-   "fp05.industry.power-substation.v1",
+-   "fp05.power.thermalplant.optional.v1",
+-   "fp05.gas.compressor.storage-skid.v1",
+-   "fp05.industry.waste-yard.v1",
+-   "fp05.water.storage.mobile-tanker.v1",
+-   "fp05.industry.repair-gantry.v1",
+-   "fp05.city.perimeter-gateway.v1",
+-   "fp05.city.substation-alpha.v1",
+-   "fp05.city.pumpworks.v1",
+-   "fp05.city.industrial-yard.v1",
+-   "fp05.city.robot-dock-cluster.v1",
+-   "fp05.city.archive-core.v1",
+-   "fp05.city.transport-exchange.v1",
+-   "fp05.city.public-comms.v1",
+-   "fp05.city.service-and-medbay.v1",
+-   "fp05.city.civic-concourse.v1",
+-   "fp05.city.spaceport-apron.v1",
+-   "fp05.city.grid-battery-recovery.v1",
+-   "REC-01-CUT",
+-   "REC-02-PROFILE",
+-   "REC-03-SHEET",
+-   "REC-04-CRUSH",
+-   "REC-05-BRACE",
+-   "REC-06-DRIVE",
+-   "REC-07-BELT",
++ [
++   "factory_dry",
++   "fluids",
+  ]
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:434:15
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 35 skipped (36)
+   Start at  23:48:36
+   Duration  637ms (transform 373ms, setup 0ms, import 486ms, tests 38ms, environment 0ms)
+

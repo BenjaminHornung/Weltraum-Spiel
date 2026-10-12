@@ -1,0 +1,32 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t actual Native UUID
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (7 tests | 1 failed | 6 skipped) 10ms
+     × admits an actual Native UUID without losing its full identity or colliding with other session strings 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > admits an actual Native UUID without losing its full identity or colliding with other session strings
+AssertionError: expected [Function] to not throw an error but 'Error: InvalidProductionId' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: InvalidProductionId"
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:32:221
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+   Start at  20:45:49
+   Duration  554ms (transform 314ms, setup 0ms, import 427ms, tests 10ms, environment 0ms)
+

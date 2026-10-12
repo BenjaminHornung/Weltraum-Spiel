@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/cargoHandling.test.ts",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "-t",
+    "exactly19.75m|closed paid cargo custody|partial|Source-layout connection|paid Raw bin|exact paid whole C07|only Native-bound paid power"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:55:45.099083+00:00",
+  "endedAtUtc": "2026-10-11T23:55:48.242117+00:00",
+  "elapsedSeconds": 3.1435164859940414,
+  "exitCode": 0,
+  "rawBytes": 551,
+  "rawSha256": "de513c7f25afbc3cfb1c58a1ceaf79b6c401e48c203c59eec0d5c288d4011035"
+}

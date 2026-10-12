@@ -1,0 +1,56 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t paid Former recipe|UI start is adopted
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (23 tests | 2 failed | 21 skipped) 960ms
+   × W09 paid Former recipe selection switches after a completed or idle job without changing finite material 447ms
+   × W09 UI start is adopted only by the next confirmed joint interval and actual Native machine support 512ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 paid Former recipe selection switches after a completed or idle job without changing finite material
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Committed' }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "Committed",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:50:146
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 UI start is adopted only by the next confirmed joint interval and actual Native machine support
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Rejected', …(1) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "receipt": {
+-     "reason": "NativeMachineUnavailable",
++     "reason": "UnsupportedCommand",
+    },
+    "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:62:100
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 21 skipped (23)
+   Start at  21:54:54
+   Duration  1.50s (transform 340ms, setup 0ms, import 442ms, tests 960ms, environment 0ms)
+

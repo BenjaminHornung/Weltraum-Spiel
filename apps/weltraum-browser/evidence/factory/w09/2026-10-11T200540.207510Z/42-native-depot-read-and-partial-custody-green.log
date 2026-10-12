@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts tests/unit/factory/cargoHandling.test.ts -t deposits the same paid|partial 4kg
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  2 passed (2)
+      Tests  2 passed | 25 skipped (27)
+   Start at  20:54:36
+   Duration  2.05s (transform 874ms, setup 0ms, import 1.23s, tests 600ms, environment 0ms)
+

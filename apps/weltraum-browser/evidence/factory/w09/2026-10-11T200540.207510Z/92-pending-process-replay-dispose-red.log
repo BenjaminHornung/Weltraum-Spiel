@@ -1,0 +1,67 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t queued process remains|identical pending start|closing an unadopted
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (27 tests | 3 failed | 24 skipped) 1878ms
+   × W09 queued process remains quiescent for ordinary Inspection Resume and still needs six confirmed ticks 641ms
+   × W09 identical pending start retry shares the final receipt without poisoning history 695ms
+   × W09 closing an unadopted pending process settles it without material or clock work 541ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 queued process remains quiescent for ordinary Inspection Resume and still needs six confirmed ticks
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:89:106
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 identical pending start retry shares the final receipt without poisoning history
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:100:212
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 closing an unadopted pending process settles it without material or clock work
+AssertionError: expected undefined to match object { status: 'Rejected', …(1) }
+
+- Expected:
+{
+  "receipt": {
+    "reason": "SessionDisposedBeforeAdoption",
+  },
+  "status": "Rejected",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:112:17
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 24 skipped (27)
+   Start at  22:02:22
+   Duration  2.54s (transform 416ms, setup 0ms, import 535ms, tests 1.88s, environment 0ms)
+

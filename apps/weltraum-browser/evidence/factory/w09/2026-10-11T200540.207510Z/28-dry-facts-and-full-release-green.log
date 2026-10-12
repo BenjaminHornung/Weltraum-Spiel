@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts tests/unit/factory/facilitySession.test.ts -t evaluates one complete|keeps the sole depot slot|deposits the same paid carrier
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  2 passed (2)
+      Tests  3 passed | 22 skipped (25)
+   Start at  20:39:24
+   Duration  2.60s (transform 974ms, setup 0ms, import 1.35s, tests 1.04s, environment 0ms)
+

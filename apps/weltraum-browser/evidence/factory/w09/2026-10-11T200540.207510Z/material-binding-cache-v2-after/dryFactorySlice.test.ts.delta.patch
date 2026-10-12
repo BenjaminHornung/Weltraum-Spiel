@@ -1,0 +1,26 @@
+--- before/tests/unit/factory/dryFactorySlice.test.ts
++++ after/tests/unit/factory/dryFactorySlice.test.ts
+@@ -6,6 +6,7 @@
+ import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
+ import { canonicalJson } from "../../../src/resources/serialization";
+ import { createFactoryConstruction } from "../../../src/factory/construction/buildStep";
++import {factoryMaterialBytes} from "../../../src/factory/construction/placement";
+ import { prepareDryFactoryStep, commitDryFactoryStep,reconcileDryFactoryInstallations,readDryFactorySupply, type DryFactoryState } from "../../../src/factory/session/dryFactorySlice";
+ import {createFactoryInstallationProfile} from "../../../src/factory/construction/installationProfile";
+ import { canonicalSignature } from "../../../src/resources/serialization";
+@@ -37,6 +38,15 @@
+  const freezeData=<T>(value:T):T=>{if(value&&typeof value==="object"){Object.values(value).forEach(freezeData);Object.freeze(value);}return value;};
+  const copyMaterial=(material:ReturnType<typeof initial>)=>({...material,containers:material.containers.map(c=>({...c,definition:JSON.parse(canonicalJson(c.definition)) as typeof c.definition,state:JSON.parse(canonicalJson(c.state)) as typeof c.state}))});
+  const outputValues=(state:DryFactoryState,material:ReturnType<typeof initial>)=>({powerRevision:state.power.revision,materialRevision:material.revision,steel:material.containers[0]!.state.contents.find(s=>s.resourceId==="fp02_bulk_steel_known")!.quantity});
++ it("preserves exact cold and warm material projection bytes without admitting a later mutable clone",()=>{
++  const f=emptyDryFixture(),base=freezeData(f.state),input=f.inputFor(base,f.material),expected=factoryMaterialBytes(f.material);
++  const cold=prepareDryFactoryStep(base,input),warm=prepareDryFactoryStep(base,input);
++  expect(cold.status).toBe("Prepared");expect(warm.status).toBe("Prepared");if(cold.status!=="Prepared"||warm.status!=="Prepared")return;
++  expect(cold.materialBaseBytes).toBe(expected);expect(warm.materialBaseBytes).toBe(expected);expect(warm.inputBytes).toBe(cold.inputBytes);
++  const clone=copyMaterial(f.material);expect(prepareDryFactoryStep(base,f.inputFor(base,clone)).status).toBe("Prepared");
++  const changed={...clone,containers:clone.containers.map(c=>({...c,state:{...c.state,contents:c.state.contents.map(s=>s.resourceId!=="fp02_bulk_steel_known"?s:{...s,quantity:s.quantity+1})}}))};
++  expect(prepareDryFactoryStep(base,f.inputFor(base,changed))).toMatchObject({status:"Rejected"});expect(prepareDryFactoryStep(base,input)).toMatchObject({status:"Prepared",materialBaseBytes:expected});
++ });
+  it.each([null,()=>{throw Error("Caller array map must not execute");}])("preserves canonical array contents with an own map property %s",map=>{
+   const f=emptyDryFixture(),belts=[] as any;Object.defineProperty(belts,"map",{value:map,enumerable:true});Object.freeze(belts);
+   const base=freezeData({...f.state,belts}),input=f.inputFor(base,f.material),proposal=prepareDryFactoryStep(base,input);

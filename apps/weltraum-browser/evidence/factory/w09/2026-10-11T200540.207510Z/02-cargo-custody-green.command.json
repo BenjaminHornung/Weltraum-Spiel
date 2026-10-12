@@ -1,0 +1,16 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/cargoHandling.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:07:00.411084+00:00",
+  "endedAtUtc": "2026-10-11T20:07:01.225631+00:00",
+  "elapsedSeconds": 0.8145560899938573,
+  "exitCode": 0,
+  "rawBytes": 355,
+  "rawSha256": "87fc2418fafbbb8e795d03c16e904b47e85f638ccdb50f6dc5fa992497ef1525"
+}

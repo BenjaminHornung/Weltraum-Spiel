@@ -1,0 +1,32 @@
+{
+  "goalId": "paid-band-exact-material-binding-v2",
+  "outcome": "NOT_MET",
+  "actualRuntime": "Node22.23.3/npm10.9.8",
+  "runtimeCandidates": 1,
+  "additionalCpuProfiles": 0,
+  "originalPerCaseMs": 5000,
+  "performanceCommand": "160-exact-material-cache-one-candidate.command.json",
+  "actualResults": "1PASS/1TimeoutFAIL; blocked-output5355ms",
+  "guardCommands": [
+    "161-exact-material-cache-guards.command.json",
+    "164-exact-material-cache-guards.command.json"
+  ],
+  "guardClassification": "16119PASS+1fixture-TypeError; test-only copied-identity correction;16420PASS",
+  "affected": "16245PASS Material/Conveyor/Production",
+  "build": "163PASS and165PASS on cache runtime bytes",
+  "sourceFiles": [
+    {
+      "path": "src/factory/session/dryFactorySlice.ts",
+      "sha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a",
+      "bytes": 31347
+    },
+    {
+      "path": "tests/unit/factory/dryFactorySlice.test.ts",
+      "sha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b",
+      "bytes": 36419
+    }
+  ],
+  "scenarioBytes": 6563,
+  "scenarioSha256": "ce1fb626500b8b05fcbd255f574f4a0597d1ebd864dab82d74a98dbd64951cd1",
+  "claimLimits": "No hardware/browser/D07/whole W09 PASS; no second candidate. Native/Host other mutable WIP excluded."
+}

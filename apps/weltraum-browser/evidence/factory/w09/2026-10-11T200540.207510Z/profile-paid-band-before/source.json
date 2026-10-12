@@ -1,0 +1,18 @@
+{
+  "sources": [
+    {
+      "path": "src/factory/session/dryFactorySlice.ts",
+      "bytes": 25338,
+      "sha256": "b54e9b07a020e69bc99a1fb2d4f8681e8354a1ffe788d24bea5b2e07349aa61e",
+      "snapshot": "profile-paid-band-before/dryFactorySlice.ts"
+    },
+    {
+      "path": "tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 26156,
+      "sha256": "ace6517ae8f788407f7067ae78ea382ca76633dbb9e12e36d649ccafaea495a5",
+      "snapshot": "profile-paid-band-before/dryFactorySlice.test.ts"
+    }
+  ],
+  "purpose": "One unchanged first paid-band scenario V8 CPU attribution; no GPU or Native D07 proof",
+  "baselineReceipt": "131-paid-band-real-c03-countercases.command.json"
+}

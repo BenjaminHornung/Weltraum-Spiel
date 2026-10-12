@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/cargoHandling.test.ts",
+    "-t",
+    "pays the complete remote Former"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T21:06:58.136652+00:00",
+  "endedAtUtc": "2026-10-11T21:06:59.179468+00:00",
+  "elapsedSeconds": 1.043191566997848,
+  "exitCode": 1,
+  "rawBytes": 1076,
+  "rawSha256": "600df1ad6b02e07b958298e7164952d662bc58365848c0b84c8dc0aa5b3994df"
+}

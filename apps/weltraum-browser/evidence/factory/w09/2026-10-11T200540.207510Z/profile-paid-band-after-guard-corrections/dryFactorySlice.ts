@@ -1,0 +1,280 @@
+import { prepareFactoryMaterialStep, type MaterialView } from "../material/reservations";
+import { factoryMaterialBytes } from "../construction/placement";
+import { readMaterialMassMg } from "../material/resourcesAdapter";
+import { canonicalJson as uncachedCanonicalJson } from "../../resources/serialization";
+import type { FactoryUiCommand, FactoryUiReceipt, FactoryUiResult } from "./hostPort";
+import { stepFactoryPower,FACTORY_POWER_POLICY, type FactoryPowerBinding, type FactoryPowerState, type FactoryPowerSupply, type FactoryPowerSuccess, type FactoryPowerRequest,type FactoryPowerLink,type FactoryPowerPort } from "../power/factoryPower";
+import { createFactoryProductionState, readFactoryProductionRequest, stepFactoryProduction, commitFactoryProductionStep, type ProductionState, type ProductionCommand } from "../production/productionStep";
+import { productionMaterialCanonicalJson, type ProductionHostFacts } from "../production/recipeAdmission";
+import { advanceFactoryBelt, commitFactoryBeltStep,assertFactoryBeltState, type BeltState, type BeltStepInput } from "../conveyor/beltReference";
+import type {FactoryInstallation} from "../construction/placement";
+import {createFactoryInstallationProfile,transformFactoryPoint} from "../construction/installationProfile";
+import {createResourceContainerDefinition,createResourceContainerSnapshot,createResourceContainerState} from "../../resources/containers";
+import {prepareFactoryPowerSources,type FactoryInstalledPowerAsset} from "../power/sourceAdapter";
+import type {BeltInstalledPort} from "../conveyor/beltPorts";
+// Derived bytes only: quantities and decisions remain in the existing domain
+// validators. Mutable data, accessors and exotic prototypes never enter caches.
+const canonicalBytes = new WeakMap<object,string>();
+const immutableData = new WeakSet<object>();
+const isImmutableData = (value:unknown,parents=new WeakSet<object>()):boolean => {
+ if(!value||typeof value!=="object")return typeof value!=="function"&&typeof value!=="symbol"&&(typeof value!=="number"||Number.isFinite(value));
+ if(immutableData.has(value))return true;
+ if(!Object.isFrozen(value)||parents.has(value))return false;
+ const prototype=Object.getPrototypeOf(value);
+ if(Array.isArray(value)?prototype!==Array.prototype:prototype!==Object.prototype&&prototype!==null)return false;
+ const descriptors=Object.getOwnPropertyDescriptors(value);parents.add(value);
+ const okay=Reflect.ownKeys(descriptors).every(key=>typeof key==="string")&&Object.values(descriptors).every(d=>"value" in d&&isImmutableData(d.value,parents));
+ parents.delete(value);if(okay)immutableData.add(value);return okay;
+};
+const canonicalJson = (value:unknown):string => {
+ if(!value||typeof value!=="object"||!isImmutableData(value))return uncachedCanonicalJson(value);
+ const old=canonicalBytes.get(value);if(old!==undefined)return old;
+ let bytes:string;
+ if(Array.isArray(value)){
+  for(let i=0;i<value.length;i++)if(!Object.hasOwn(value,i))return uncachedCanonicalJson(value);
+  const entries:string[]=[];for(let i=0;i<value.length;i++)entries.push(canonicalJson(value[i]));
+  bytes=`[${entries.join(",")}]`;
+ }else{
+  const record=value as Record<string,unknown>;
+  bytes=`{${Object.keys(record).sort().map(key=>`${JSON.stringify(key)}:${canonicalJson(record[key])}`).join(",")}}`;
+ }
+ canonicalBytes.set(value,bytes);return bytes;
+};
+const stateBytes = new WeakMap<DryFactoryState,string>();
+const preparedTransitions = new WeakMap<Extract<DryFactoryProposal,{status:"Prepared"}>,Readonly<{base:DryFactoryState;material:MaterialView}>>();
+const dataOnly = (value:unknown,parents=new WeakSet<object>()):boolean => {
+ if(!value||typeof value!=="object")return typeof value!=="function";
+ if(isImmutableData(value))return true;
+ const prototype=Object.getPrototypeOf(value);
+ if(Array.isArray(value)?prototype!==Array.prototype:prototype!==Object.prototype&&prototype!==null)return false;
+ if(parents.has(value))return false;parents.add(value);
+ const descriptors=Object.getOwnPropertyDescriptors(value);
+ const okay=Reflect.ownKeys(descriptors).every(key=>typeof key==="string")&&Object.values(descriptors).every(d=>"value" in d&&dataOnly(d.value,parents));
+ parents.delete(value);return okay;
+};
+/** Pure binding of the Host's already installed paid Native line, never World admission. */
+export function adoptDryFactoryBelt(state:DryFactoryState,material:MaterialView,owner:FactoryInstallation,source:BeltInstalledPort,target:BeltInstalledPort):{state:DryFactoryState;material:MaterialView}{
+ const profile=createFactoryInstallationProfile(owner.definitionSourceId),paid=material.containers.find(c=>c.state.containerId===owner.materialContainerId);
+ if(owner.definitionSourceId!=="fp06.line.belt_4m"||!paid||owner.profileDigest!==profile.profileDigest||owner.sourceDigest!==profile.sourceDigest||owner.massMg!==profile.massMg)throw Error("PaidBeltInstallationMissing");
+ if(state.belts.some(line=>line.lineId===owner.instanceId||line.installation.source.nativePortId===source.nativePortId||line.installation.target.nativePortId===target.nativePortId))throw Error("DuplicateBeltConnection");
+ const instances=(sourceId:string)=>{const item=material.catalog.items.find(i=>i.sourceId===sourceId)!,stacks=paid.state.contents.filter(s=>s.resourceId===item.resourceId);return stacks.map(s=>{const origin=s.extensions["factory.source"] as {instanceId?:string}|undefined;if(s.quantity!==1||!origin?.instanceId)throw Error("PaidBeltPieceIdentityMissing");return origin.instanceId;});};
+ const modules=instances("fp02.comp.belt_module"),drives=instances("fp02.comp.belt_drive");
+ if(modules.length!==4||drives.length!==1||paid.state.contents.length!==5)throw Error("PaidBeltTermsMismatch");
+ const expectedCenter=source.centerMm.map((value,index)=>(value+target.centerMm[index]!)/2-(index===1?1000:0));
+ if(canonicalJson(expectedCenter)!==canonicalJson(owner.centerMm)||canonicalJson(transformFactoryPoint([1,0,0],[0,0,0],owner.quarterTurns))!==canonicalJson(source.outwardNormal))throw Error("NativeBeltOwnerPoseMismatch");
+ const bandId=`belt_${owner.instanceId}`,bandIn=`band_in_${owner.instanceId}`,bandOut=`band_out_${owner.instanceId}`;
+ if(material.containers.some(c=>c.state.containerId===bandId))throw Error("DuplicateBeltCustody");
+ const band=createResourceContainerSnapshot(createResourceContainerDefinition({containerId:bandId,kind:"OutpostStorage",maxMassKg:10,maxVolumeM3:.0225,maxStackCount:1,transferPorts:[{portId:bandIn,direction:"Inbound"},{portId:bandOut,direction:"Outbound"}]}),createResourceContainerState({containerId:bandId,ownerId:paid.state.ownerId,contents:[]},material.catalog.resources),material.catalog.resources);
+ const candidate=freeze({...material,containers:[...material.containers,band]});
+ const line:BeltState=freeze({version:"fp06-one-packet-belt-v1",lineId:owner.instanceId,revision:0,binding:state.binding,tickEndUs:state.tickEndUs,creditMg:0,packetCursor:0,packet:null,lastStep:null,installation:{version:"fp06-straight-installed-belt-v1",installationId:owner.instanceId,revision:1,catalogDigest:material.catalog.catalogDigest,sourceProfileDigest:state.binding.sourceProfileDigest,source,target,lengthMm:4000,moduleInstanceIds:modules,driveInstanceId:drives[0]!,powerPortId:`power_${owner.instanceId}`,consumerId:`consumer_${owner.instanceId}`,jobId:`belt_job_${owner.instanceId}`,bandContainerId:bandId,bandInPortId:bandIn,bandOutPortId:bandOut}});
+ assertFactoryBeltState(line,candidate);
+ return {state:freeze({...state,belts:[...state.belts,line],lastStep:null}),material:candidate};
+}
+/** Native uses clockwise x/z yaw; the frozen W08 contract uses counter-clockwise. */
+export const FACTORY_NATIVE_BELT_FRAME_BINDING_VERSION="fp06-native-belt-yaw-binding-v1";
+export function readDryFactoryBeltPort(catalog:MaterialView["catalog"],owner:Pick<FactoryInstallation,"instanceId"|"definitionSourceId"|"profileDigest"|"sourceDigest"|"centerMm"|"quarterTurns">,portSourceId:string,installRevision:number):import("../conveyor/beltPorts").BeltInstalledPort{
+ const profile=createFactoryInstallationProfile(owner.definitionSourceId),device=catalog.devices.find(d=>d.sourceId===owner.definitionSourceId),port=device?.ports.find(p=>p.sourceId===portSourceId);
+ if(!device||!port||profile.profileDigest!==owner.profileDigest||profile.sourceDigest!==owner.sourceDigest||!Number.isSafeInteger(installRevision)||installRevision<1||!Number.isInteger(owner.quarterTurns)||owner.quarterTurns<0||owner.quarterTurns>3||!port.centerMm||!port.outwardNormal||!["SolidBatchIn","SolidBatchOut"].includes(port.role))throw Error("NativeBeltPortBindingMismatch");
+ const point=port.centerMm,normal=port.outwardNormal,role=device.sourceId==="B09"?"storage":port.role==="SolidBatchIn"?"input":"output";
+ return freeze({instanceId:owner.instanceId,installRevision,deviceId:device.sourceId,deviceDigest:device.digest,portSourceId:port.sourceId,containerId:`${role}_${owner.instanceId}`,nativePortId:`port_${owner.instanceId}_${port.runtimeId}`,placementCenterMm:owner.centerMm,quarterTurns:((4-owner.quarterTurns)%4) as 0|1|2|3,centerMm:transformFactoryPoint([point[0],point[2],point[1]],owner.centerMm,owner.quarterTurns),outwardNormal:transformFactoryPoint([normal[0],normal[2],normal[1]],[0,0,0],owner.quarterTurns)});
+}
+// Port ampacity includes the accepted restart reserve. The allocator still
+// delivers ONLY the actual machine/belt demand; reserved headroom is never work.
+export const FACTORY_DRY_PORT_CAPACITY_BINDING_VERSION="fp06-demand-plus-restart-ampacity-v1";
+export function readDryFactorySupply(state:DryFactoryState,material:MaterialView,installed:readonly FactoryInstallation[],links:readonly FactoryPowerLink[],end:string):FactoryPowerSupply{
+ const assets:FactoryInstalledPowerAsset[]=[],ports:FactoryPowerPort[]=[];
+ for(const owner of installed){
+  const paid=material.containers.find(c=>c.state.containerId===owner.materialContainerId);if(!paid)throw Error("PaidPowerOwnerMissing");
+  const sourceId=owner.definitionSourceId,cargoId=sourceId==="fp02.device.battery_4kwh"?"C03":sourceId==="fp02.device.wind_pack_6kw"?"C01":sourceId==="fp02.device.pv_pack_2kwp"?"C02":null;
+  if(cargoId){
+   const item=material.catalog.items.find(i=>i.sourceId===sourceId)!,origin=paid.state.contents[0]?.extensions["factory.source"] as {instanceId:string};
+   assets.push({instanceId:origin.instanceId,cargoId,itemSourceId:sourceId,definitionVersion:item.version,definitionDigest:item.digest,containerId:paid.state.containerId,ownerId:paid.state.ownerId!,portId:`power_${owner.instanceId}`,installationRevision:1,confirmed:true});
+   ports.push({portId:`power_${owner.instanceId}`,assetId:origin.instanceId,direction:cargoId==="C03"?"both":"out",active:true,maxMilliWatt:cargoId==="C03"?"8000000":cargoId==="C01"?"6000000":"2000000"});
+  }else if(sourceId==="fp02.device.distribution_40kw")ports.push({portId:`power_${owner.instanceId}`,assetId:owner.instanceId,direction:"both",active:true,maxMilliWatt:"40000000"});
+  else if(sourceId==="B06"||sourceId==="B07")ports.push({portId:`power_${owner.instanceId}`,assetId:owner.instanceId,direction:"in",active:true,maxMilliWatt:String(BigInt(sourceId==="B06"?1200000:2000000)+BigInt(FACTORY_POWER_POLICY.restartHeadroomMilliWatt))});
+ }
+ for(const line of state.belts)ports.push({portId:line.installation.powerPortId,assetId:line.installation.driveInstanceId,direction:"in",active:true,maxMilliWatt:String(100000n+BigInt(FACTORY_POWER_POLICY.restartHeadroomMilliWatt))});
+ return prepareFactoryPowerSources(material.catalog,{binding:state.binding,tickStartUs:state.tickEndUs,tickEndUs:end,installed:assets,resourceContainers:material.containers.map(c=>c.state),ports,links,observation:null});
+}
+/** Source-bound empty buffers and domain membership. Host first proves the same installed Native owners. */
+export function reconcileDryFactoryInstallations(state:DryFactoryState,material:MaterialView,installations:readonly FactoryInstallation[],netRevision=state.binding.netRevision):{state:DryFactoryState;material:MaterialView}{
+ if(!Number.isSafeInteger(netRevision)||netRevision<state.binding.netRevision)throw Error("InvalidDryGraphRevision");
+ const binding={...state.binding,netRevision},containers=[...material.containers],machines=[...state.machines];let battery=state.power.battery;
+ const empty=(id:string,massMg:number,volumeMm3:number,ports:readonly Readonly<{portId:string;direction:"Inbound"|"Outbound"|"Bidirectional"}>[]=[])=>{
+  if(containers.some(c=>c.state.containerId===id))return;
+  const owner=material.containers.find(c=>c.state.containerId==="fp02_wreck_cargo")!.state.ownerId;
+  containers.push(createResourceContainerSnapshot(createResourceContainerDefinition({containerId:id,kind:"OutpostStorage",maxMassKg:massMg/1000000,maxVolumeM3:volumeMm3/1000000000,maxStackCount:200,transferPorts:ports}),createResourceContainerState({containerId:id,ownerId:owner,contents:[]},material.catalog.resources),material.catalog.resources));
+ };
+ for(const installed of installations){
+  const profile=createFactoryInstallationProfile(installed.definitionSourceId),paid=material.containers.find(c=>c.state.containerId===installed.materialContainerId);
+  if(!paid||profile.profileDigest!==installed.profileDigest||profile.sourceDigest!==installed.sourceDigest||profile.massMg!==installed.massMg)throw Error("PaidInstallationMissing");
+  const terms=new Map<string,number>();for(const stack of paid.state.contents){const item=material.catalog.items.find(i=>i.resourceId===stack.resourceId);if(!item||stack.condition!==undefined&&stack.condition!==1)throw Error("PaidInstallationInvalid");terms.set(item.sourceId,(terms.get(item.sourceId)??0)+stack.quantity);}
+  if(canonicalJson([...terms].sort())!==canonicalJson(profile.bom.map(t=>[t.itemId,t.quantityUnits]).sort()))throw Error("PaidInstallationTermsMismatch");
+  if(installed.definitionSourceId==="fp02.device.battery_4kwh"){
+   const origin=paid.state.contents[0]?.extensions["factory.source"] as {instanceId?:string}|undefined;
+   if(origin?.instanceId!=="fp02_cargo_c03_unit_1")throw Error("PaidInstallationBatteryIdentity");
+   if(battery&&battery.instanceId!==origin.instanceId)throw Error("PaidInstallationDuplicateBattery");
+   battery??={instanceId:origin.instanceId,storedEnergy:{n:"12960000000",d:"1"}};
+  }
+  const device=material.catalog.devices.find(d=>d.sourceId===installed.definitionSourceId);if(!device)continue;
+  const port=(role:string,direction:"Inbound"|"Outbound")=>device.ports.filter(p=>p.role===role).map(p=>({portId:`port_${installed.instanceId}_${p.runtimeId}`,direction}));
+  if(device.sourceId==="B09"){empty(`storage_${installed.instanceId}`,200000000,1260000000,[...port("SolidBatchIn","Inbound"),...port("SolidBatchOut","Outbound")]);continue;}
+  if(!["B05","B06","B07"].includes(device.sourceId))continue;
+  for(const role of ["input","output","offcut"] as const){const sourceMass=device.buffers.find(b=>b.role===role)?.massMg??(role==="offcut"?600000:6000000);
+   // Explicit conservative pack envelope for the closed steel process family; no zero/solid density.
+   // Externally frozen ports keep their native direction. The separately named
+   // internal process endpoint admits actual IN→WIP and WIP→OUT/cassette transfers.
+   // B05 has no external machine ports. Its internal manual endpoint permits
+   // local player intake/export only after Native service/reach admission.
+   // This creates neither a catalog Solid port nor a conveyor connection.
+   empty(`${role}_${installed.instanceId}`,sourceMass,Math.ceil(sourceMass*9/4),[...port(role==="input"?"SolidBatchIn":role==="output"?"SolidBatchOut":"WasteCassette",role==="input"?"Inbound":"Outbound"),{portId:`internal_${role}_${installed.instanceId}`,direction:device.sourceId==="B05"?"Bidirectional":role==="input"?"Outbound":"Inbound"}]);}
+  empty(`wip_${installed.instanceId}`,device.sourceId==="B06"?8000000:device.sourceId==="B07"?7500000:6000000,device.sourceId==="B06"?18000000:device.sourceId==="B07"?16875000:13500000);
+  if(!machines.some(m=>m.machineInstanceId===installed.instanceId))machines.push(createFactoryProductionState(installed.instanceId,binding,state.tickEndUs));
+ }
+ const changed=containers.length!==material.containers.length,membership=machines.length!==state.machines.length||battery!==state.power.battery||netRevision!==state.binding.netRevision;
+ if(!changed&&!membership)return {state,material};
+ return {material:changed?freeze({...material,containers}):material,state:freeze({...state,binding,power:{...state.power,binding,battery},machines:machines.map(machine=>({...machine,binding,lastStep:null})),belts:state.belts.map(belt=>({...belt,binding})),lastStep:null})};
+}
+
+export interface DryFactoryState {
+  readonly binding: FactoryPowerBinding; readonly revision: number; readonly tickEndUs: string;
+  readonly power: FactoryPowerState; readonly machines: readonly ProductionState[]; readonly belts: readonly BeltState[];
+  readonly lastStep: Readonly<{ inputBytes: string; factsBytes: string; nextStateBytes: string; materialBytes: string }> | null;
+}
+export interface DryFactoryStepInput {
+  readonly confirmed: boolean; readonly binding: FactoryPowerBinding; readonly tickStartUs: string; readonly tickEndUs: string;
+  readonly material: MaterialView; readonly supply: FactoryPowerSupply;
+  readonly machines: readonly Readonly<{ instanceId: string; facts: ProductionHostFacts; command?: ProductionCommand }>[];
+  readonly belts: readonly Readonly<{ lineId: string; actorId: string; sourceLot: BeltStepInput["sourceLot"]; enabled: boolean }>[];
+}
+export type DryFactoryProposal = Readonly<{ status: "Prepared"; baseStateBytes: string; inputBytes: string; materialBaseBytes: string;
+  state: DryFactoryState; material: MaterialView; power: FactoryPowerSuccess }> | Readonly<{ status: "Rejected"; reason: string }>;
+const dryStateBytes = (state: DryFactoryState): string => {
+ const old=stateBytes.get(state);if(old!==undefined)return old;
+ const {lastStep:_receipt,...core}=state,bytes=canonicalJson(Object.freeze(core));
+ if(isImmutableData(state))stateBytes.set(state,bytes);return bytes;
+};
+const dryInputBytes = (input: DryFactoryStepInput): string => {const {material,...facts}=input;return canonicalJson({facts,materialBytes:factoryMaterialBytes(material)});};
+const dryFactsBytes = (input: DryFactoryStepInput): string => {const {material:_material,...facts}=input;return canonicalJson(facts);};
+export const prepareDryFactoryStep = (state: DryFactoryState, input: DryFactoryStepInput): DryFactoryProposal => {
+  try {
+    if(!input.confirmed||canonicalJson(input.binding)!==canonicalJson(state.binding)||input.tickStartUs!==state.tickEndUs
+      ||!/^(0|[1-9][0-9]{0,18})$/.test(input.tickStartUs)||!/^(0|[1-9][0-9]{0,18})$/.test(input.tickEndUs)
+      ||BigInt(input.tickEndUs)-BigInt(input.tickStartUs)!==100000n)throw Error("UnconfirmedOrStaleDryInterval");
+    // Also validate an empty domain's actual native source data, rather than
+    // trusting copied Resources canonical receipts alone.
+    productionMaterialCanonicalJson(input.material);
+    if(input.machines.length!==state.machines.length||input.belts.length!==state.belts.length||state.machines.length+state.belts.length>16)throw Error("DryDomainMembershipMismatch");
+    const machineFacts=new Map(input.machines.map(m=>[m.instanceId,m])),beltFacts=new Map(input.belts.map(b=>[b.lineId,b]));
+    if(machineFacts.size!==input.machines.length||beltFacts.size!==input.belts.length)throw Error("DuplicateDryDomainMember");
+    const requests:FactoryPowerRequest[]=[];
+    // Demand is read entirely before this interval's output/transport mutations.
+    for(const machine of state.machines){
+      const facts=machineFacts.get(machine.machineInstanceId);if(!facts)throw Error("DryMachineFactsMissing");
+      if(facts.facts.installation.definitionRef.sourceId!=="B05")requests.push(readFactoryProductionRequest(machine,{confirmed:true,binding:input.binding,
+        tickStartUs:input.tickStartUs,tickEndUs:input.tickEndUs,material:input.material,facts:facts.facts,...(facts.command?{command:facts.command}:{})}));
+    }
+    for(const belt of state.belts){const facts=beltFacts.get(belt.lineId);if(!facts)throw Error("DryBeltFactsMissing");
+      const installed=belt.installation;requests.push({consumerId:installed.consumerId,deviceInstanceId:installed.driveInstanceId,jobId:installed.jobId,
+        portId:installed.powerPortId,priority:"P2",requiredMilliWatt:"100000",enabled:facts.enabled});}
+    const power=stepFactoryPower(state.power,{confirmed:true,binding:input.binding,tickStartUs:input.tickStartUs,tickEndUs:input.tickEndUs,supply:input.supply,requests});
+    if(!power.ok)throw Error(power.reason);
+    let material=input.material;const machines:ProductionState[]=[],belts:BeltState[]=[];
+    for(const machine of [...state.machines].sort((a,b)=>a.machineInstanceId.localeCompare(b.machineInstanceId))){
+      const facts=machineFacts.get(machine.machineInstanceId)!;
+      const currentFacts={...facts.facts,interaction:facts.facts.interaction?{...facts.facts.interaction,accessibleContainers:facts.facts.interaction.accessibleContainers.map(c=>{
+        const current=material.containers.find(v=>v.state.containerId===c.containerId);if(!current)throw Error("DryLocalContainerMissing");return {containerId:c.containerId,revision:current.state.revision};})}:null};
+      const stepInput={confirmed:true,binding:input.binding,tickStartUs:input.tickStartUs,tickEndUs:input.tickEndUs,material,facts:currentFacts,power,...(facts.command?{command:facts.command}:{})};
+      const proposed=stepFactoryProduction(machine,stepInput);if(proposed.status!=="Prepared")throw Error(proposed.reason);
+      // W04 has already validated this exact result and committed every nested
+      // material plan privately. Its public commit rechecks caller proposals;
+      // no caller can replace this freshly computed immutable result here.
+      if(isImmutableData(proposed)){material=proposed.material;machines.push(proposed.nextState);}
+      else {const committed=commitFactoryProductionStep(machine,stepInput,proposed);if(committed.status==="Rejected")throw Error(committed.reason);material=committed.material;machines.push(committed.state);}
+    }
+    // New arrivals may start a machine only in the following confirmed interval.
+    for(const line of [...state.belts].sort((a,b)=>a.lineId.localeCompare(b.lineId))){
+      const facts=beltFacts.get(line.lineId)!;
+      const stepInput={confirmed:true,binding:input.binding,tickStartUs:input.tickStartUs,tickEndUs:input.tickEndUs,installation:line.installation,material,power,actorId:facts.actorId,sourceLot:facts.sourceLot};
+      const proposed=advanceFactoryBelt(line,stepInput);if(proposed.status!=="Prepared")throw Error(proposed.reason);
+      // A no-transfer W08 result has validated both old/new custody against
+      // this same material. Transfers retain the full W08 + W02 commit path.
+      if(proposed.materialPlan===null&&isImmutableData(proposed))belts.push(proposed.nextLine);
+      else {const committed=commitFactoryBeltStep(line,stepInput,proposed);if(committed.status==="Rejected")throw Error(committed.reason);material=committed.material;belts.push(committed.line);}
+    }
+    const next=freeze({...state,revision:state.revision+1,tickEndUs:input.tickEndUs,power:power.nextState,machines,belts,lastStep:null});
+    if(!Number.isSafeInteger(next.revision)||readMaterialMassMg(material)!==readMaterialMassMg(input.material))throw Error("DryMassOrRevisionMismatch");
+    const inputBytes=dryInputBytes(input),nextStateBytes=dryStateBytes(next),materialBytes=factoryMaterialBytes(material);
+    const proposal=freeze({status:"Prepared" as const,baseStateBytes:dryStateBytes(state),inputBytes,materialBaseBytes:factoryMaterialBytes(input.material),
+      state:{...next,lastStep:{inputBytes,factsBytes:dryFactsBytes(input),nextStateBytes,materialBytes}},material,power});
+    if(isImmutableData(state)&&isImmutableData(input.material)&&isImmutableData(proposal)&&dataOnly(input))
+      preparedTransitions.set(proposal,{base:state,material:input.material});
+    return proposal;
+  }catch(error){return {status:"Rejected",reason:error instanceof Error?error.message:"DryStepRejected"};}
+};
+export const commitDryFactoryStep = (state:DryFactoryState,input:DryFactoryStepInput,proposal:DryFactoryProposal):
+  Readonly<{status:"Committed"|"NoOp";state:DryFactoryState;material:MaterialView}>|Readonly<{status:"Rejected";reason:string}> => {
+  if(proposal.status!=="Prepared")return proposal;
+  try{productionMaterialCanonicalJson(input.material);}catch(error){return {status:"Rejected",reason:error instanceof Error?error.message:"InvalidDryMaterial"};}
+  if(state.lastStep?.inputBytes===proposal.inputBytes&&state.lastStep.nextStateBytes===dryStateBytes(state)
+    &&state.lastStep.factsBytes===dryFactsBytes(input)
+    &&state.lastStep.materialBytes===factoryMaterialBytes(input.material)&&dryStateBytes(proposal.state)===dryStateBytes(state))return {status:"NoOp",state,material:input.material};
+  if(dryStateBytes(state)!==proposal.baseStateBytes||dryInputBytes(input)!==proposal.inputBytes||factoryMaterialBytes(input.material)!==proposal.materialBaseBytes)return {status:"Rejected",reason:"StaleDryStep"};
+  const own=preparedTransitions.get(proposal);
+  // This exact immutable proposal was fully validated above. Fresh complete
+  // input bytes and the same immutable Native material/base still bind it.
+  if(own?.base===state&&own.material===input.material&&dataOnly(input))return {status:"Committed",state:proposal.state,material:proposal.material};
+  const checked=prepareDryFactoryStep(state,input);
+  if(checked.status!=="Prepared"||dryStateBytes(checked.state)!==dryStateBytes(proposal.state)||factoryMaterialBytes(checked.material)!==factoryMaterialBytes(proposal.material)
+    ||checked.power.canonicalJson!==proposal.power.canonicalJson)return {status:"Rejected",reason:"InvalidDryProposal"};
+  return {status:"Committed",state:proposal.state,material:proposal.material};
+};
+
+/** Private capability shared by construction, handling and the confirmed factory step. */
+export interface FactoryMaterialAuthority {
+  read(): MaterialView;
+  adopt(expected: MaterialView, candidate: MaterialView): boolean;
+}
+export const createFactoryMaterialAuthority = (initial: MaterialView): FactoryMaterialAuthority => {
+  let current = initial;
+  return Object.freeze({ read: () => current, adopt: (expected: MaterialView, candidate: MaterialView) => {
+    if (factoryMaterialBytes(current) !== factoryMaterialBytes(expected)) return false;
+    if (current.catalog.canonicalJson !== candidate.catalog.canonicalJson || readMaterialMassMg(current) !== readMaterialMassMg(candidate)) return false;
+    // Exercise the existing complete Resources/reservation/receipt validation without publishing its hypothetical empty command.
+    const ids = new Set(candidate.receipts.map(r => r.transactionId)); let ordinal = 0;
+    while (ids.has(`authority_validation_${ordinal}`)) ordinal++;
+    const checked = prepareFactoryMaterialStep(candidate, { kind: "transfer", transactionId: `authority_validation_${ordinal}`, ownerId: "factory_authority", moves: [] });
+    if (checked.status !== "Prepared") return false;
+    current = candidate; return true;
+  } });
+};
+export interface FactoryCommandHistory {
+  readReceipt(commandId: string): FactoryUiReceipt | undefined;
+  replay(command: FactoryUiCommand): FactoryUiResult | undefined;
+  accept(command: FactoryUiCommand, receipt: FactoryUiReceipt): void;
+}
+const freeze = <T>(value: T): T => { if (value && typeof value === "object" && !Object.isFrozen(value)) { Object.values(value).forEach(freeze); Object.freeze(value); } return value; };
+export const createFactoryCommandHistory = (): FactoryCommandHistory => {
+  const receipts = new Map<string, FactoryUiReceipt>();
+  return Object.freeze({ readReceipt: (id: string) => receipts.get(id), replay: (command: FactoryUiCommand) => {
+    const old = receipts.get(command.commandId); if (!old) return undefined;
+    if (old.requestCanonicalJson !== canonicalJson(command)) return freeze({ status: "Rejected" as const,
+      receipt: { ...old, status: "Rejected" as const, reason: "IdempotencyConflict" } });
+    return Object.freeze({ status: old.status === "Committed" ? "NoOp" as const : old.status, receipt: old });
+  }, accept: (command: FactoryUiCommand, receipt: FactoryUiReceipt) => {
+    if (receipt.commandId !== command.commandId || receipt.requestCanonicalJson !== canonicalJson(command)) throw new Error("InvalidCommandReceiptBinding");
+    const old = receipts.get(command.commandId);
+    if (old && old.requestCanonicalJson !== receipt.requestCanonicalJson) throw new Error("IdempotencyConflict");
+    if (!old) receipts.set(command.commandId, freeze(JSON.parse(canonicalJson(receipt)) as FactoryUiReceipt));
+  } });
+};
+
+/** Lossless UTF-16-unit encoding; Native and UI retain the original ID. W10 must rederive this binding. */
+export const bindFactoryDomainSession = (rawNativeSessionId: string) => {
+  if(typeof rawNativeSessionId!=="string"||rawNativeSessionId.length===0||rawNativeSessionId.length>37)throw Error("InvalidNativeSessionBinding");
+  let hex="";for(let i=0;i<rawNativeSessionId.length;i++)hex+=rawNativeSessionId.charCodeAt(i).toString(16).padStart(4,"0");
+  // Length preserves leading zero UTF-16 units. Base32 uses only save-safe lowercase alphanumerics.
+  const domainSessionId=`fs_${rawNativeSessionId.length.toString(36)}_${BigInt(`0x${hex}`).toString(32)}`;
+  if(domainSessionId.length>128)throw Error("InvalidNativeSessionBinding");
+  return Object.freeze({version:"fp06-native-session-binding-v2" as const,rawNativeSessionId,domainSessionId});
+};

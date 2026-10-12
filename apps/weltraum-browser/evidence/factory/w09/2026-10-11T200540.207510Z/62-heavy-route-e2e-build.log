@@ -1,0 +1,10 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+tests/e2e/factory-dry-flow.spec.ts(14,117): error TS2345: Argument of type '{ type: string; modifiers: number; key: string; windowsVirtualKeyCode: number; code: string; location: number; }' is not assignable to parameter of type 'dispatchKeyEventParameters'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type '"char" | "keyDown" | "keyUp" | "rawKeyDown"'.
+tests/e2e/factory-dry-flow.spec.ts(15,171): error TS2345: Argument of type '{ type: string; modifiers: number; key: string; windowsVirtualKeyCode: number; code: string; location: number; }' is not assignable to parameter of type 'dispatchKeyEventParameters'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type '"char" | "keyDown" | "keyUp" | "rawKeyDown"'.

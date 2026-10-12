@@ -1,0 +1,24 @@
+--- before/src/factory/session/dryFactorySlice.ts
++++ after/src/factory/session/dryFactorySlice.ts
+@@ -1,5 +1,5 @@
+ import { prepareFactoryMaterialStep, type MaterialView } from "../material/reservations";
+-import { factoryMaterialBytes } from "../construction/placement";
++import { factoryMaterialBytes as uncachedFactoryMaterialBytes } from "../construction/placement";
+ import { readMaterialMassMg } from "../material/resourcesAdapter";
+ import { canonicalJson as uncachedCanonicalJson, canonicalSignature } from "../../resources/serialization";
+ import type { FactoryUiCommand, FactoryUiReceipt, FactoryUiResult } from "./hostPort";
+@@ -62,6 +62,14 @@
+  const checked=prepareFactoryMaterialStep(material,{kind:"transfer",transactionId:`dry_validation_${ordinal}`,ownerId:"factory_authority",moves:[]});
+  if(checked.status!=="Prepared")throw Error(checked.reason);
+  if(isImmutableData(material))admittedMaterials.add(material);
++};
++const exactMaterialBindings=new WeakMap<MaterialView,string>();
++const factoryMaterialBytes=(material:MaterialView):string=>{
++ const old=exactMaterialBindings.get(material);if(old!==undefined)return old;
++ validateDryMaterial(material);
++ const bytes=uncachedFactoryMaterialBytes(material);
++ if(isImmutableData(material))exactMaterialBindings.set(material,bytes);
++ return bytes;
+ };
+ /** Pure binding of the Host's already installed paid Native line, never World admission. */
+ export function adoptDryFactoryBelt(state:DryFactoryState,material:MaterialView,owner:FactoryInstallation,source:BeltInstalledPort,target:BeltInstalledPort):{state:DryFactoryState;material:MaterialView}{

@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts tests/unit/factory/panels.test.ts -t complete known technology|technology recipe requirements|supported technology uses|planned technology|technology keyboard
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  2 passed (2)
+      Tests  5 passed | 48 skipped (53)
+   Start at  23:52:28
+   Duration  923ms (transform 456ms, setup 0ms, import 618ms, tests 97ms, environment 0ms)
+

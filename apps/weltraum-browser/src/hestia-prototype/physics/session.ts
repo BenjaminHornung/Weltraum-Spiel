@@ -17,7 +17,7 @@ import {restoreHvpBody} from "./restoreBody";
 import {createHvpNeighborCollision} from "./neighborRegion";
 import {createHvpBodyResidency} from "./bodyResidency";
 import type { FactoryCargoSite } from "../../factory/fixtures/cargoSite";
-import type { createFactoryFacilitySession, FactoryFacilityRequest,FactoryCargoOpenIntent } from "./factoryFacilitySession";
+import type { createFactoryFacilitySession, FactoryFacilityRequest,FactoryCargoOpenIntent,FactoryCarrierRequest } from "./factoryFacilitySession";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 
 export type HvpPhysicsSession = Awaited<ReturnType<typeof createHvpPhysicsSession>>;
@@ -106,7 +106,7 @@ export const createHvpPhysicsSession = async (
     const primaryCoverage=(player?.coverage??[]).filter(s=>s.maxX<=16);
     let coverage:readonly HvpCollisionCoverage[]=player?.coverage??[];
     const character = player === undefined ? undefined : createHvpLocomotion(world, player.spawn, gravity,
-      (x, z) => coverage.some(s => x >= s.minX && x < s.maxX && z >= s.minZ && z < s.maxZ),saved?.player??undefined);
+      (x, z) => coverage.some(s => x >= s.minX && x < s.maxX && z >= s.minZ && z < s.maxZ),saved?.player??undefined, factoryEnabled ? (from, to) => facilities?.preparePlayerMove(from, to) ?? (() => {}) : undefined);
     let stepCpuMs = 0;
     let stepTimings:[number,number][]|undefined;
     const tick = createHvpTick(() => {
@@ -140,7 +140,7 @@ export const createHvpPhysicsSession = async (
     const neighborMeshes=()=>neighbor?.meshes()??[];
     const allCollision=()=>[...[...collision.values()].map(c=>c.mesh),...neighborMeshes()];
     const collisionBytes = () => allCollision().reduce((n,s)=>n+s.vertices.byteLength+s.indices.byteLength,0);
-    if(factoryEnabled){const module=await import("./factoryFacilitySession");facilities=module.createFactoryFacilitySession(world,()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!neighbor?.busy&&!residency!.held&&!coverageHeld&&!bodyResidencyWork&&tick.read().status==="Paused",residentExtras,()=>terrainGeneration,initialFactoryCargo,()=>character?.read().position);}
+    if(factoryEnabled){const module=await import("./factoryFacilitySession");facilities=module.createFactoryFacilitySession(world,()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!neighbor?.busy&&!residency!.held&&!coverageHeld&&!bodyResidencyWork&&tick.read().status==="Paused",residentExtras,()=>terrainGeneration,initialFactoryCargo,()=>character?.read().position,()=>character?.readonlyBodyHandle,(x,z)=>coverage.some(s=>x>=s.minX&&x<s.maxX&&z>=s.minZ&&z<s.maxZ));}
     const extraHeld=()=>facilities?.busy||neighbor?.busy||residency!.held||coverageHeld||bodyResidencyWork!==undefined;
     let impulseTarget:HvpImpulseTarget=noImpulseTarget;
     const queryImpulse=(direction?:Readonly<{x:number;y:number;z:number}>):{
@@ -233,6 +233,13 @@ export const createHvpPhysicsSession = async (
       commitFactoryFacility(id:string){facilities!.commit(id);return facilities!.publish(id);},
       rollbackFactoryFacility(id:string){facilities!.rollback(id);},
       finalizeFactoryFacility(id:string){return facilities!.finalize(id);},
+      prepareFactoryCarrier(request:FactoryCarrierRequest,operation:"pickup"|"deposit"|"release"){
+        if(!factoryEnabled||!facilities)throw new Error("Factory carrier capability unavailable");
+        const result=operation==="pickup"?facilities.prepareCarrier(request):operation==="deposit"?facilities.prepareCarrierDeposit(request):facilities.prepareCarrierRelease(request);neutralizeFactoryInput();return result;
+      },
+      commitFactoryCarrier(id:string){if(!facilities)throw new Error("Factory carrier capability unavailable");facilities.commitCarrier(id);return facilities.publishCarrier(id);},
+      rollbackFactoryCarrier(id:string){if(!facilities)throw new Error("Factory carrier capability unavailable");return facilities.rollbackCarrier(id);},
+      finalizeFactoryCarrier(id:string){if(!facilities)throw new Error("Factory carrier capability unavailable");return facilities.finalizeCarrier(id);},
       checkpoint():HvpWorldCheckpoint {
         if(disposed){throw new Error("World checkpoint requires a confirmed paused generation");}
         if((facilities?.read().owners.length??0)>0||facilities?.read().cargo!==undefined){throw new Error("Installed Factory facilities require a combined checkpoint");}

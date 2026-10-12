@@ -1,0 +1,55 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoHandling.test.ts -t Host adopts|failed actual Native
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/cargoHandling.test.ts (7 tests | 2 failed | 5 skipped) 54ms
+   × Host adopts the indivisible real C27 custody and native owner jointly, preserving all source mass 33ms
+   × failed actual Native support keeps the complete real Resources authority unchanged 19ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/cargoHandling.test.ts > Host adopts the indivisible real C27 custody and native owner jointly, preserving all source mass
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Committed' }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "Committed",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/cargoHandling.test.ts:67:47
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/cargoHandling.test.ts > failed actual Native support keeps the complete real Resources authority unchanged
+CanonicalSerializationError: Canonical JSON only accepts JSON-compatible plain objects and arrays
+ ❯ fail src/resources/serialization.ts:30:9
+     28|
+     29| const fail = (message: string): never => {
+     30|   throw new CanonicalSerializationError(message);
+       |         ^
+     31| };
+     32|
+ ❯ canonicalize src/resources/serialization.ts:85:12
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:78:19
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalizeJsonValue src/resources/serialization.ts:102:78
+ ❯ canonicalJson src/resources/serialization.ts:124:81
+ ❯ tests/unit/factory/cargoHandling.test.ts:72:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 skipped (7)
+   Start at  20:48:20
+   Duration  612ms (transform 328ms, setup 0ms, import 439ms, tests 54ms, environment 0ms)
+

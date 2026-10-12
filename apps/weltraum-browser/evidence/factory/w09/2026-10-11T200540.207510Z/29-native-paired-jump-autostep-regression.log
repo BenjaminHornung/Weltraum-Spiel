@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-locomotion.test.ts -t full final grounded jump|real native capsule autostep
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 19 skipped (21)
+   Start at  20:40:44
+   Duration  1.42s (transform 332ms, setup 0ms, import 473ms, tests 846ms, environment 0ms)
+

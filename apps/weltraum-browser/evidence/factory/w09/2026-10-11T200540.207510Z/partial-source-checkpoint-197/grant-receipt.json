@@ -1,0 +1,54 @@
+{
+  "package": "W09",
+  "actor": "/root/fp06_integrator",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "baseCommitSha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+    "apps/weltraum-browser/package.json",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+    "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+    "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+    "apps/weltraum-browser/src/factory/session/cargoHandling.ts",
+    "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+    "apps/weltraum-browser/src/factory/construction/placement.ts",
+    "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+    "apps/weltraum-browser/src/hvp/hvpHud.ts"
+  ],
+  "evidenceWriteSet": [
+    "apps/weltraum-browser/evidence/factory/w09/<actual-run-id>/**"
+  ],
+  "controlPlane": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06",
+  "authorizedAtUtc": "2026-10-11T19:57:30.701430+00:00",
+  "scope": "W09 only; no other product writes until a new exact grant",
+  "scopeExtensions": [
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpHud.ts",
+      "reason": "Actual existing hvpHud privately rewrites generic voxel cut/keys/target/feedback text during carrier handling. Optional pure context-hint callback from existing NativeFactorystate allows correct normal gameplay hints. SharedHUDIntegrator-only; noWorldauthority/commands/newstate, preserve nonfactorydefault. New businessRED first in alreadygranted hvp-bootstrap.test.ts.",
+      "authorizedBy": "/root",
+      "authorizedAtUtc": "2026-10-11T23:28:43.034622+00:00",
+      "beforeSha256": "2e89c73b3749ec7d539ff3656cc233cc22eb774947f4bc19ab67d0e85ef3f699",
+      "beforeBytes": 22610,
+      "sourceBeforeStatus": "HEAD_CLEAN",
+      "ownerDecision": "Routine authorized W09 implementation; no product Ownerpolicy/terrain change"
+    }
+  ],
+  "latestScopeAuthorizedAtUtc": "2026-10-11T23:28:43.034622+00:00"
+}

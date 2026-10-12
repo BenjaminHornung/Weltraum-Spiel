@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "-e",
+    "const cp=require(\"node:child_process\"); console.log(JSON.stringify({nodeVersion:process.version,nodeExecPath:process.execPath,npmVersion:cp.execFileSync(\"npm\",[\"--version\"],{encoding:\"utf8\"}).trim()}));"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:04:41.542790+00:00",
+  "endedAtUtc": "2026-10-11T23:04:41.635326+00:00",
+  "elapsedSeconds": 0.09284565699636005,
+  "exitCode": 0,
+  "rawBytes": 127,
+  "rawSha256": "22d839bda25802871268bed7826377d2a5039fecfc29fa1032f945a512b67ed1"
+}

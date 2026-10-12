@@ -1,0 +1,77 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t W09 paid
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (14 tests | 3 failed | 11 skipped) 1514ms
+     × prepares exactly one disabled kinematic carrier with five colliders and real 300kg mass, then rolls back every old native member 406ms
+     × rejects a foreign kinematic collider in the actual payload hull before allocation 523ms
+     × checks all four actual footprint support patches before allocating a suspended payload 543ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 paid SAME-world Native carrier > prepares exactly one disabled kinematic carrier with five colliders and real 300kg mass, then rolls back every old native member
+AssertionError: expected undefined to be 'PreparedHeld' // Object.is equality
+
+- Expected:
+"PreparedHeld"
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:125:30
+    123|       const before = [world.bodies.len(), world.colliders.len()];
+    124|       facilities.prepareCarrier(command); const carrier = facilities.r…
+    125|       expect(carrier?.phase).toBe("PreparedHeld"); if (!carrier) retur…
+       |                              ^
+    126|       const body = world.getRigidBody(carrier.bodyHandle);
+    127|       expect(body.isKinematic()).toBe(true); expect(body.isEnabled()).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 paid SAME-world Native carrier > rejects a foreign kinematic collider in the actual payload hull before allocation
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:143:56
+    141|       world.createCollider(R.ColliderDesc.cuboid(.1, .1, .1), blocker)…
+    142|       const before = [world.bodies.len(), world.colliders.len()];
+    143|       expect(() => facilities.prepareCarrier(command)).toThrow(/Carrie…
+       |                                                        ^
+    144|       expect([world.bodies.len(), world.colliders.len()]).toEqual(befo…
+    145|     } finally { world.free(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 paid SAME-world Native carrier > checks all four actual footprint support patches before allocating a suspended payload
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:153:56
+    151|       const ground = world.getCollider(0); world.removeCollider(ground…
+    152|       const before = [world.bodies.len(), world.colliders.len()];
+    153|       expect(() => facilities.prepareCarrier(command)).toThrow(/Carrie…
+       |                                                        ^
+    154|       expect([world.bodies.len(), world.colliders.len()]).toEqual(befo…
+    155|     } finally { world.free(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 11 skipped (14)
+   Start at  20:08:11
+   Duration  2.80s (transform 866ms, setup 0ms, import 1.15s, tests 1.51s, environment 0ms)
+

@@ -1,0 +1,27 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t actual unchanged Source admits reachable
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (30 tests | 2 failed | 28 skipped) 8108ms
+   × W09 actual unchanged Source admits reachable paid sockets for fp06.line.belt_4m / CABLE4750 3974ms
+   × W09 actual unchanged Source admits reachable paid sockets for B07 / CABLE8000 4091ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 actual unchanged Source admits reachable paid sockets for fp06.line.belt_4m / CABLE4750
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 actual unchanged Source admits reachable paid sockets for B07 / CABLE8000
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/facilitySession.test.ts:407:20
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 28 skipped (30)
+   Start at  23:39:27
+   Duration  9.39s (transform 907ms, setup 0ms, import 1.15s, tests 8.11s, environment 0ms)
+

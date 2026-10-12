@@ -1,6 +1,5 @@
-import { createFp02CatalogInput, loadFactoryCatalog } from "../catalog/fp02Catalog";
 import type { FactoryTerm } from "../contracts";
-import { getFactoryAssetSource, type FactoryAssetSource } from "../presentation/factoryAssets";
+import { getFactoryAssetSource,readFactoryAssetDefinition, type FactoryAssetSource } from "../presentation/factoryAssets";
 import { canonicalJson, canonicalSignature } from "../../resources/serialization";
 
 export type FactoryVector = readonly [number, number, number];
@@ -14,7 +13,6 @@ export interface FactoryInstallationProfile {
   readonly supportPatchesMm: readonly Readonly<{ centerMm: FactoryVector; sizeMm: readonly [number, number] }>[];
   readonly boundsMm: FactoryBoundsMm; readonly sourceServiceBoundsMm: FactoryBoundsMm; readonly servicePolicy: Readonly<{ version:"fp06-normative-service-binding-v1"; sourceRefs:readonly string[]; method:string }>; readonly serviceBoundsMm: FactoryBoundsMm; readonly sweepBoundsMm: readonly FactoryBoundsMm[];
 }
-const catalog = loadFactoryCatalog(createFp02CatalogInput());
 const vectorMm = (v: readonly number[]): FactoryVector => Object.freeze([v[0]! * 1000, v[1]! * 1000, v[2]! * 1000]);
 export const transformFactoryPoint = (point: readonly number[], centerMm: readonly number[], quarterTurns: number): FactoryVector => {
   if (point.length !== 3 || centerMm.length !== 3 || ![...point, ...centerMm].every(Number.isFinite) || !Number.isInteger(quarterTurns) || quarterTurns < 0 || quarterTurns > 3) throw new Error("Invalid Factory transform");
@@ -28,7 +26,7 @@ export const transformFactoryBounds = (bounds: FactoryBoundsMm, centerMm: readon
 };
 /** Versioned technical binding. Frozen W01 POWER pose remains null; S0 authoring poses remain marked authoring-only. */
 export const createFactoryInstallationProfile = (sourceId: string): FactoryInstallationProfile => {
-  const definition = [...catalog.devices, ...catalog.items].find(value => value.sourceId === sourceId);
+  const definition = readFactoryAssetDefinition(sourceId);
   if (!definition) throw new Error("Unknown Factory installation definition");
   const source = getFactoryAssetSource(sourceId);
   const bom = "bom" in definition ? definition.bom : [{ itemId: sourceId, quantityUnits: 1 }];

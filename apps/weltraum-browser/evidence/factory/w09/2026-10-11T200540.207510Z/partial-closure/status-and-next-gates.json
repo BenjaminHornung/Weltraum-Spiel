@@ -1,0 +1,15 @@
+{
+  "package": "W09",
+  "status": "BLOCKED_PARTIAL_IMPLEMENTATION",
+  "packagePass": false,
+  "ownerSourceV2": "PENDING",
+  "performanceGoalV2": "NOT_MET: actual160 output-block5355ms exceeds original5000ms",
+  "fullFreshNativeBrowserCycle": "NOT_RUN",
+  "W10": "BLOCKED_BY_W09",
+  "W11": "BLOCKED_BY_W09",
+  "legacyFactoryPersistence": "REFUSED_UNTIL_COMBINED_FACTORY_BINDING",
+  "allowedNextWork": ["independent final partial-source/evidence/staged bindings", "authorized partial commit after staged admission"],
+  "sourceWriteHold": true,
+  "activeCli": false,
+  "port5174": "RELEASED"
+}

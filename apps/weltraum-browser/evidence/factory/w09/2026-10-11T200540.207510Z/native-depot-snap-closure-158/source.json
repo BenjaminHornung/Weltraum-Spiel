@@ -1,0 +1,17 @@
+{
+  "sourceFiles": [
+    {
+      "path": "src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "sha256": "d6b78d8f21b3c726752f72310c20e851c21dfe9589969823630830bb5ca98311",
+      "bytes": 53631
+    },
+    {
+      "path": "tests/unit/factory/facilitySession.test.ts",
+      "sha256": "08a8d961b6290c9e4e5617132c5138695916e98f4440bb90773b28a5f6b2d6b3",
+      "bytes": 34774
+    }
+  ],
+  "actualTests": "150 three genuine AssertionRED; 158 complete28NativeTests PASS",
+  "limits": "synthetic Rapier floor; not D07 browser/source terrain proof",
+  "olderOracleCorrection": "local_deposit_1 sourceContainerId now actual original.containerId instead unrelated carrier_c27 literal"
+}

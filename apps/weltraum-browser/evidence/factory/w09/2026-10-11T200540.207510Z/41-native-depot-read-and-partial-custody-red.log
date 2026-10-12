@@ -1,0 +1,57 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts tests/unit/factory/cargoHandling.test.ts -t deposits the same paid|partial 4kg
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (19 tests | 1 failed | 18 skipped) 493ms
+     × deposits the same paid carrier as one fixed local owner, and rollback restores the exact carrying membership 451ms
+ ❯ tests/unit/factory/cargoHandling.test.ts (8 tests | 1 failed | 7 skipped) 236ms
+   × rejects a partial 4kg transfer from an actual8kg carrier before either Resources or Native mass diverge 235ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/cargoHandling.test.ts > rejects a partial 4kg transfer from an actual8kg carrier before either Resources or Native mass diverge
+AssertionError: expected { status: 'Committed', reason: null } to match object { status: 'Rejected', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "reason": "PartialCarrierTransferUnsupported",
+-   "status": "Rejected",
++   "reason": null,
++   "status": "Committed",
+  }
+
+ ❯ tests/unit/factory/cargoHandling.test.ts:82:46
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 paid SAME-world Native carrier > deposits the same paid carrier as one fixed local owner, and rollback restores the exact carrying membership
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:169:32
+    167|       expect(fixed.phase).toBe("Deposited"); expect(fixed.bodyHandle).…
+    168|       expect(body.isFixed()).toBe(true); expect(body.mass()).toBeClose…
+    169|       expect(fixed.accessible).toBe(true);
+       |                                ^
+    170|       const losBlock=world.createCollider(R.ColliderDesc.cuboid(.2,.6,…
+    171|       expect(facilities.read().carrier!.accessible).toBe(false);world.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 25 skipped (27)
+   Start at  20:54:10
+   Duration  2.31s (transform 990ms, setup 0ms, import 1.36s, tests 729ms, environment 0ms)
+

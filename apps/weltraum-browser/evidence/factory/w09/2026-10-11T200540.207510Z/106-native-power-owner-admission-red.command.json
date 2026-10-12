@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "-t",
+    "unconfirmed Native electrical owner"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T22:16:40.173547+00:00",
+  "endedAtUtc": "2026-10-11T22:16:42.826287+00:00",
+  "elapsedSeconds": 2.653035515002557,
+  "exitCode": 1,
+  "rawBytes": 1059,
+  "rawSha256": "57a44fc4c6e4fbc507ba08e225a48ae736f40fabee03f1fb84ccc2c5dc1994d3"
+}

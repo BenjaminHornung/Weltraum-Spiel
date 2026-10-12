@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "-t",
+    "real paid Host installation"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T21:13:40.578245+00:00",
+  "endedAtUtc": "2026-10-11T21:13:41.934168+00:00",
+  "elapsedSeconds": 1.3563536399960867,
+  "exitCode": 1,
+  "rawBytes": 1099,
+  "rawSha256": "a60ec5c284e6ea56dfb333b99eaa300cd94b8542607838ebbf0ad046ab9a24b6"
+}

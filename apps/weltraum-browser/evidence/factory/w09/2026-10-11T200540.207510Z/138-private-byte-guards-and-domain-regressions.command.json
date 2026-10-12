@@ -1,0 +1,21 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/dryFactorySlice.test.ts",
+    "tests/unit/factory/production.test.ts",
+    "tests/unit/factory/beltReference.test.ts",
+    "tests/unit/factory/materialStep.test.ts",
+    "-t",
+    "private proposal byte guards|one Host material authority|Native quarter-turn|q1 Cutter|paid installed Cutter|T0|W04|W08|W02"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T23:00:54.293371+00:00",
+  "endedAtUtc": "2026-10-11T23:01:09.019638+00:00",
+  "elapsedSeconds": 14.726724202999321,
+  "exitCode": 0,
+  "rawBytes": 620,
+  "rawSha256": "457ab9055618e97683def54f5651a7a9c0de08daed538ef4bccf7625639cb514"
+}

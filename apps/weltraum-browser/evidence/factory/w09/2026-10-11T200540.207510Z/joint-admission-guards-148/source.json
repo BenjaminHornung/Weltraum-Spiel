@@ -1,0 +1,16 @@
+{
+  "capturedAtUtc": "2026-10-11T23:08:25.444632+00:00",
+  "phase": "after144/146/147 genuine assertionREDs and14827GREEN; performance after guard additions NOT_RUN;149originalBuild currently running",
+  "files": [
+    {
+      "path": "src/factory/session/dryFactorySlice.ts",
+      "bytes": 30938,
+      "sha256": "94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6"
+    },
+    {
+      "path": "tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 32818,
+      "sha256": "24fd55e665af3ac206791ae194a473043931b9f719a53b65406e8b33da564ac6"
+    }
+  ]
+}

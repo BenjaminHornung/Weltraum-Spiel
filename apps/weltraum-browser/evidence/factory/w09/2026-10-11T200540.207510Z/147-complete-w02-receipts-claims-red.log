@@ -1,0 +1,37 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t actual W02
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (30 tests | 2 failed | 28 skipped) 90ms
+     × validates actual W02 receipt chain even in an empty confirmed domain 55ms
+     × validates actual W02 reservation claim even in an empty confirmed domain 33ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > validates actual W02 receipt chain even in an empty confirmed domain
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > validates actual W02 reservation claim even in an empty confirmed domain
+AssertionError: expected { status: 'Prepared', …(6) } to match object { status: 'Rejected' }
+(29 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "Rejected",
++   "status": "Prepared",
+  }
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:64:48
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 28 skipped (30)
+   Start at  23:06:49
+   Duration  697ms (transform 377ms, setup 0ms, import 490ms, tests 90ms, environment 0ms)
+

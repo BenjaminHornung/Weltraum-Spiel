@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts tests/unit/factory/panels.test.ts -t whole two-lot|unknown|receipt|UUID|keyboard|closing|pending
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  2 passed (2)
+      Tests  10 passed | 40 skipped (50)
+   Start at  23:25:16
+   Duration  3.98s (transform 446ms, setup 0ms, import 613ms, tests 3.16s, environment 0ms)
+

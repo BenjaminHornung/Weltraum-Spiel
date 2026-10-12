@@ -1,0 +1,29 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoHandling.test.ts -t pays the complete remote Former
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/cargoHandling.test.ts (9 tests | 1 failed | 8 skipped) 192ms
+   × pays the complete remote Former from its reachable local BOM depot instead of unreachable original Cargo 191ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/cargoHandling.test.ts > pays the complete remote Former from its reachable local BOM depot instead of unreachable original Cargo
+AssertionError: expected 'Rejected' to be 'Prepared' // Object.is equality
+
+Expected: "Prepared"
+Received: "Rejected"
+
+ ❯ tests/unit/factory/cargoHandling.test.ts:77:24
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 skipped (9)
+   Start at  21:06:58
+   Duration  676ms (transform 289ms, setup 0ms, import 379ms, tests 192ms, environment 0ms)
+

@@ -1,0 +1,26 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t adopts only the fully paid
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (8 tests | 1 failed | 7 skipped) 266ms
+   × adopts only the fully paid installed Cutter with finite native buffers and preserves one real serialized C03 SOC across graph changes 264ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > adopts only the fully paid installed Cutter with finite native buffers and preserves one real serialized C03 SOC across graph changes
+Error: DrySupplyNotImplemented
+ ❯ readDryFactorySupply src/factory/session/dryFactorySlice.ts:13:199
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:48:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  21:12:36
+   Duration  792ms (transform 325ms, setup 0ms, import 418ms, tests 266ms, environment 0ms)
+

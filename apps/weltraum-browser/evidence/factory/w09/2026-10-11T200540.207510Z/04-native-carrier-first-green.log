@@ -1,0 +1,44 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t W09 paid
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (14 tests | 1 failed | 11 skipped) 1498ms
+     × prepares exactly one disabled kinematic carrier with five colliders and real 300kg mass, then rolls back every old native member 432ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 paid SAME-world Native carrier > prepares exactly one disabled kinematic carrier with five colliders and real 300kg mass, then rolls back every old native member
+AssertionError: expected GA{ x: 81.24998474121094, …(2) } to match object { x: 81.25, y: 81.25, z: 50 }
+
+- Expected
++ Received
+
+- {
+-   "x": 81.25,
+-   "y": 81.25,
+-   "z": 50,
++ GA {
++   "x": 81.24998474121094,
++   "y": 81.24998474121094,
++   "z": 49.999996185302734,
+  }
+
+ ❯ tests/unit/factory/facilitySession.test.ts:130:39
+    128|       expect(carrier.colliderHandles).toHaveLength(5); expect(world.bo…
+    129|       expect(body.mass()).toBeCloseTo(300, 5); expect(body.localCom())…
+    130|       expect(body.principalInertia()).toMatchObject({ x: 81.25, y: 81.…
+       |                                       ^
+    131|       facilities.commitCarrier(command.transactionId); expect(body.isE…
+    132|       facilities.rollbackCarrier(command.transactionId);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed | 11 skipped (14)
+   Start at  20:10:04
+   Duration  2.82s (transform 897ms, setup 0ms, import 1.20s, tests 1.50s, environment 0ms)
+

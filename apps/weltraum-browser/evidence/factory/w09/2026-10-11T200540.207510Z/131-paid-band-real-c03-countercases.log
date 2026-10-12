@@ -1,0 +1,35 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t paid-band
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (16 tests | 2 failed | 14 skipped) 32942ms
+   × W09 paid-band joint adoption preserves real custody and credit across blackout and a later graph revision 9514ms
+   × W09 paid-band output blockage retains the same lot at the end until actual receiver room exists 23427ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band joint adoption preserves real custody and credit across blackout and a later graph revision
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:94:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band output blockage retains the same lot at the end until actual receiver room exists
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:101:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 14 skipped (16)
+   Start at  22:49:15
+   Duration  33.48s (transform 318ms, setup 0ms, import 424ms, tests 32.94s, environment 0ms)
+

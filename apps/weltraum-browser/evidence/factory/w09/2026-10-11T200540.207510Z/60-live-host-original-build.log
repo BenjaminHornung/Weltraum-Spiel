@@ -1,0 +1,8 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+tests/unit/factory/hostLifecycle.test.ts(39,228): error TS2322: Type '{ ownerId: string; containerId: string; opened: boolean; sourceDigest: string; profileDigest: string; positionMm: number[]; accessBoundsMm: { min: number[]; max: number[]; }; bodyHandle: number; accessible: boolean; }' is not assignable to type 'FactoryCargoAccess'.
+  The types of 'accessBoundsMm.min' are incompatible between these types.
+    Type 'number[]' is not assignable to type 'FactoryVector'.
+      Target requires 3 element(s) but source may have fewer.

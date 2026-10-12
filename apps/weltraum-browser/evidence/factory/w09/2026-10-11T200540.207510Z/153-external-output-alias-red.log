@@ -1,0 +1,79 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t isolates adopted external
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (33 tests | 3 failed | 30 skipped) 334ms
+     × isolates adopted external state output from later caller mutation 129ms
+     × isolates adopted external material output from later caller mutation 99ms
+     × isolates adopted external accessor output from mutable values retained by its caller 104ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external state output from later caller mutation
+AssertionError: expected { powerRevision: 99, …(2) } to deeply equal { powerRevision: 1, …(2) }
+
+- Expected
++ Received
+
+  {
+    "materialRevision": 0,
+-   "powerRevision": 1,
++   "powerRevision": 99,
+    "steel": 96000000,
+  }
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:64:54
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external material output from later caller mutation
+AssertionError: expected { powerRevision: 1, …(2) } to deeply equal { powerRevision: 1, …(2) }
+
+- Expected
++ Received
+
+  {
+    "materialRevision": 0,
+    "powerRevision": 1,
+-   "steel": 96000000,
++   "steel": 96000001,
+  }
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:64:54
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external accessor output from mutable values retained by its caller
+AssertionError: expected { powerRevision: 1, …(2) } to deeply equal { powerRevision: 1, …(2) }
+
+- Expected
++ Received
+
+  {
+-   "materialRevision": 0,
++   "materialRevision": 99,
+    "powerRevision": 1,
+    "steel": 96000000,
+  }
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:73:54
+     71|   const before=outputValues(result.state,result.material);expect(copie…
+     72|   for(const copy of copies)(copy as {revision:number}).revision=99;
+     73|   expect(outputValues(result.state,result.material)).toEqual(before);
+       |                                                      ^
+     74|  });
+     75|  it.each(["joint receipt","power output"])("binds the complete externa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 30 skipped (33)
+   Start at  23:15:15
+   Duration  903ms (transform 353ms, setup 0ms, import 449ms, tests 334ms, environment 0ms)
+

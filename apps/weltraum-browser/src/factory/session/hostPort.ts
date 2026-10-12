@@ -1,5 +1,5 @@
 import type { FactoryPlacementView, FactoryPlacementPlan, FactoryPlacementRequest } from "../construction/placement";
-import type { FactoryFacilityRequest } from "../../hestia-prototype/physics/factoryFacilitySession";
+import type { FactoryFacilityRead,FactoryCarrierRequest, FactoryFacilityRequest } from "../../hestia-prototype/physics/factoryFacilitySession";
 import type { HvpSourceColumn } from "../../hvp/hvpCoastSource";
 export interface FactoryNativeConstructionPort {
   openCargo():Promise<void>;
@@ -15,6 +15,15 @@ export interface FactoryNativeConstructionPort {
   finalizeProjection(id:string):void;
   projectGhost(request:FactoryPlacementRequest|null):void;
   dispose():void;
+}
+/** Existing Native World capabilities. All source/reach facts are native projections. */
+export interface FactoryNativeHandlingPort {
+  read(): FactoryFacilityRead;
+  prepare(request:FactoryCarrierRequest,operation:"pickup"|"deposit"|"release"):Promise<FactoryFacilityRead>;
+  commit(id:string):Promise<void>;
+  publish(id:string):void;
+  rollback(id:string):Promise<void>;
+  finalize(id:string):Promise<void>;
 }
 export interface FactorySourceProfile { readonly version:"hvp-factory-startsite-v1"; readColumn(x:number,z:number):HvpSourceColumn }
 /** Read-only capability of the existing HVP host, never another World owner. */
@@ -32,6 +41,8 @@ export interface FactoryHostView {
 }
 export interface FactoryHostPort {
   readonly construction?:FactoryNativeConstructionPort;
+  readonly handling?:FactoryNativeHandlingPort;
+  setPanelFocus?(panel:FactoryUiPanel|null):void;
   current(): boolean;
   read(): FactoryHostView;
   readTerrainSlot(x: number, y: number, z: number): number | undefined;
@@ -111,8 +122,14 @@ export interface FactoryUiReadModel {
   readonly technologies: readonly Readonly<{ id: string; name: string; status: "AVAILABLE" | "MISSING_REQUIREMENTS" | "PLANNED";
     requirements: readonly string[]; reason: string | null }>[];
   readonly interaction: Readonly<{ cargoOpened: boolean; cargoAccessible: boolean; handling: Readonly<{ id: string; revision: number; profileId: string;
-    phase: "Carrying" | "Deposited"; massMg: number }> | null; openCargo: FactoryUiCapability; deposit: FactoryUiCapability; returnCargo: FactoryUiCapability }>;
+    phase: "Carrying" | "Deposited"; massMg: number }> | null; openCargo: FactoryUiCapability; deposit: FactoryUiCapability; returnCargo: FactoryUiCapability;
+    localDeposits?:readonly Readonly<{target:FactoryUiEntityRef;capability:FactoryUiCapability}>[] }>;
   readonly lastReceipt: FactoryUiReceipt | null;
+  /** Pure current Native/finite-lot choices. Submit always repeats admission. */
+  readonly connections?:Readonly<{
+    power:readonly Readonly<{id:string;sourcePortId:string;targetPortId:string;lengthMm:number;cableLot:FactoryUiLotRef|null;capability:FactoryUiCapability}>[];
+    belts:readonly Readonly<{id:string;sourcePortId:string;targetPortId:string;sourceLots:readonly FactoryUiLotRef[];capability:FactoryUiCapability}>[];
+  }>;
 }
 export interface FactoryUiResult { readonly status: "Committed" | "NoOp" | "Rejected" | "RecoveryHold"; readonly receipt: FactoryUiReceipt }
 export interface FactoryUiPort {

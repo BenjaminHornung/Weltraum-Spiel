@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/dryFactorySlice.test.ts",
+    "tests/unit/factory/facilitySession.test.ts",
+    "-t",
+    "evaluates one complete|keeps the sole depot slot|deposits the same paid carrier"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:39:24.488399+00:00",
+  "endedAtUtc": "2026-10-11T20:39:27.498708+00:00",
+  "elapsedSeconds": 3.0126397689964506,
+  "exitCode": 0,
+  "rawBytes": 498,
+  "rawSha256": "37397b018dfe57cb68e2dad472128f009166f56a1a55aad617809150ec1fbbbe"
+}

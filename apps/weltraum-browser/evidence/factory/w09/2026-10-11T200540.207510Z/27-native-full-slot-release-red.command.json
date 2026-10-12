@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/facilitySession.test.ts",
+    "-t",
+    "keeps the sole depot slot"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:38:47.056573+00:00",
+  "endedAtUtc": "2026-10-11T20:38:49.074953+00:00",
+  "elapsedSeconds": 2.018751115996565,
+  "exitCode": 1,
+  "rawBytes": 1674,
+  "rawSha256": "6fc4edb903b92f9c1b8b0fd2dba9302fee142483372d53276a95828998c5e68e"
+}

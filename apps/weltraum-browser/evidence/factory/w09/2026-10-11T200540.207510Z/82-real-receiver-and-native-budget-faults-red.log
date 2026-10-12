@@ -1,0 +1,201 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t W09 enters RecoveryHold|W09 restores the consumed|W09 admits complete Native
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (42 tests | 5 failed | 37 skipped) 37872ms
+     × W09 enters RecoveryHold when a partially staged carrier cannot retire its actual receiver artifact 7449ms
+     × W09 restores the consumed paid depot projection after actual held publication rejects 7687ms
+     × W09 admits complete Native member capture cost before carrier pickup allocation 7808ms
+     × W09 admits complete Native member capture cost before carrier deposit allocation 7411ms
+     × W09 admits complete Native member capture cost before carrier release allocation 7516ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 enters RecoveryHold when a partially staged carrier cannot retire its actual receiver artifact
+AssertionError: expected [Function] to throw error matching /RecoveryHold/ but got 'Factory retire failed: FaultRetire'
+
+- Expected:
+/RecoveryHold/
+
++ Received:
+"Factory retire failed: FaultRetire"
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:272:79
+    270|   it("W09 enters RecoveryHold when a partially staged carrier cannot r…
+    271|     const f=await factoryCarrierHostFixture();try{
+    272|       f.failStage();await expect(f.port.handling!.prepare(f.request,"p…
+       |                                                                               ^
+    273|       expect(f.rollback).toHaveBeenCalledTimes(1);
+    274|       expect(f.backend.readDiagnostics().residentRepresentationKeys.so…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 restores the consumed paid depot projection after actual held publication rejects
+Error: Factory staged identity mismatch
+ ❯ Object.stageProjection src/hvp/hvpBootstrap.ts:2252:249
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:286:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 admits complete Native member capture cost before carrier pickup allocation
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 admits complete Native member capture cost before carrier deposit allocation
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 admits complete Native member capture cost before carrier release allocation
+AssertionError: promise resolved "{ revision: +0, state: 'Idle', …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "cargo": {
++     "accessBoundsMm": {
++       "max": [
++         -4750,
++         3500,
++         12625,
++       ],
++       "min": [
++         -6250,
++         1500,
++         11625,
++       ],
++     },
++     "accessible": true,
++     "bodyHandle": 4,
++     "colliderHandles": [
++       5,
++     ],
++     "containerId": "fp02_wreck_cargo",
++     "openReceipt": null,
++     "opened": true,
++     "ownerId": "fp02_wreck_owner",
++     "positionMm": [
++       -5500,
++       2000,
++       13125,
++     ],
++     "profileDigest": "da3d7be8",
++     "site": {
++       "accessBoundsMm": {
++         "max": [
++           -4750,
++           3500,
++           12625,
++         ],
++         "min": [
++           -6250,
++           1500,
++           11625,
++         ],
++       },
++       "accessPointMm": [
++         -5500,
++         2250,
++         12625,
++       ],
++       "boundsMm": {
++         "max": [
++           -4750,
++           2750,
++           13625,
++         ],
++         "min": [
++           -6250,
++           1250,
++           12625,
++         ],
++       },
++       "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
++       "centerMm": [
++         -5500,
++         2000,
++         13125,
++       ],
++       "containerId": "fp02_wreck_cargo",
++       "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
++       "ownerId": "fp02_wreck_owner",
++       "profileDigest": "da3d7be8",
++       "sizeMm": [
++         1500,
++         1500,
++         1000,
++       ],
++       "sourceDigest": "e62aea8a",
++       "sourceRefs": [
++         "FP01:5.5:source-access",
++         "FP01:E00:permanently-grounded-cargo",
++         "FP02:6.4:finite-reachable-depot",
++         "FP02:9.1:cargo-outside-machine-zone",
++       ],
++       "spawnMm": [
++         -5500,
++         2420,
++         11875,
++       ],
++       "version": "fp06-initial-cargo-s0-v1",
++     },
++     "sourceDigest": "e62aea8a",
++   },
++   "carrier": {
++     "accessible": true,
++     "bodyHandle": 6,
++     "colliderHandles": [
++       7,
++       8,
++       9,
++       10,
++       11,
++     ],
++     "containerId": "custody_render_carrier_pickup",
++     "localCom": {
++       "x": 0,
++       "y": 0.5,
++       "z": 0,
++     },
++     "massMg": 341000000,
++     "materialBinding": "finite-transport-reply-fixture",
++     "nativeMassKg": 341,
++     "ownerId": "factory_carrier",
++     "phase": "Carrying",
++     "positionMm": [
++       -6250,
++       1500,
++       -2500,
++     ],
++     "principalInertia": {
++       "x": 1,
++       "y": 1,
++       "z": 1,
++     },
++     "profileDigest": "5e3eb9ef",
++     "profileId": "B07-BOM",
++     "transactionId": "render_carrier_pickup",
++   },
++   "owners": [],
++   "prepared": null,
++   "revision": 0,
++   "state": "Idle",
++   "transactionId": null,
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:296:66
+    294|     const f=await factoryCarrierHostFixture();try{
+    295|       f.setCollisionBytes(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes);
+    296|       await expect(f.port.handling!.prepare(f.request,operation)).reje…
+       |                                                                  ^
+    297|     }finally{await f.handle.dispose();}
+    298|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 37 skipped (42)
+   Start at  21:46:21
+   Duration  39.53s (transform 1.25s, setup 0ms, import 1.54s, tests 37.87s, environment 0ms)
+

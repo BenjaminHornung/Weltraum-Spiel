@@ -1,0 +1,35 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t paid Native cable connection
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (28 tests | 1 failed | 27 skipped) 840ms
+   × W09 a paid Native cable connection consumes only its exact reachable C07 length and powers actual CUT work 839ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 a paid Native cable connection consumes only its exact reachable C07 length and powers actual CUT work
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Committed' }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "Committed",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:317:44
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 27 skipped (28)
+   Start at  22:08:21
+   Duration  1.47s (transform 397ms, setup 0ms, import 509ms, tests 840ms, environment 0ms)
+

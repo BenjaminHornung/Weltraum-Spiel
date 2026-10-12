@@ -1,0 +1,37 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+tests/unit/factory/dryFactorySlice.test.ts(136,103): error TS2322: Type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: MaterialView; }' is not assignable to type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: { catalog: FactoryCatalog; revision: number; reservations: readonly MaterialReservation[]; receipts: readonly MaterialReceipt[]; containers: ResourceContainerSnapshot[]; }; }'.
+  The types of 'material.containers' are incompatible between these types.
+    The type 'readonly ResourceContainerSnapshot[]' is 'readonly' and cannot be assigned to the mutable type 'ResourceContainerSnapshot[]'.
+tests/unit/factory/dryFactorySlice.test.ts(137,2): error TS2322: Type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: MaterialView; }' is not assignable to type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: { catalog: FactoryCatalog; revision: number; reservations: readonly MaterialReservation[]; receipts: readonly MaterialReceipt[]; containers: ResourceContainerSnapshot[]; }; }'.
+  The types of 'material.containers' are incompatible between these types.
+    The type 'readonly ResourceContainerSnapshot[]' is 'readonly' and cannot be assigned to the mutable type 'ResourceContainerSnapshot[]'.
+tests/unit/factory/dryFactorySlice.test.ts(139,226): error TS2322: Type '{ state: DryFactoryState; material: MaterialView; owners: FactoryInstallation[]; }' is not assignable to type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: { catalog: FactoryCatalog; revision: number; reservations: readonly MaterialReservation[]; receipts: readonly MaterialReceipt[]; containers: ResourceContainerSnapshot[]; }; }'.
+  The types of 'material.containers' are incompatible between these types.
+    The type 'readonly ResourceContainerSnapshot[]' is 'readonly' and cannot be assigned to the mutable type 'ResourceContainerSnapshot[]'.
+tests/unit/factory/dryFactorySlice.test.ts(140,23): error TS2322: Type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: MaterialView; }' is not assignable to type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: { catalog: FactoryCatalog; revision: number; reservations: readonly MaterialReservation[]; receipts: readonly MaterialReceipt[]; containers: ResourceContainerSnapshot[]; }; }'.
+  The types of 'material.containers' are incompatible between these types.
+    The type 'readonly ResourceContainerSnapshot[]' is 'readonly' and cannot be assigned to the mutable type 'ResourceContainerSnapshot[]'.
+tests/unit/factory/dryFactorySlice.test.ts(140,102): error TS2322: Type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: MaterialView; }' is not assignable to type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: { catalog: FactoryCatalog; revision: number; reservations: readonly MaterialReservation[]; receipts: readonly MaterialReceipt[]; containers: ResourceContainerSnapshot[]; }; }'.
+  The types of 'material.containers' are incompatible between these types.
+    The type 'readonly ResourceContainerSnapshot[]' is 'readonly' and cannot be assigned to the mutable type 'ResourceContainerSnapshot[]'.
+tests/unit/factory/dryFactorySlice.test.ts(145,23): error TS2322: Type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: MaterialView; }' is not assignable to type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: { catalog: FactoryCatalog; revision: number; reservations: readonly MaterialReservation[]; receipts: readonly MaterialReceipt[]; containers: ResourceContainerSnapshot[]; }; }'.
+  The types of 'material.containers' are incompatible between these types.
+    The type 'readonly ResourceContainerSnapshot[]' is 'readonly' and cannot be assigned to the mutable type 'ResourceContainerSnapshot[]'.
+tests/unit/factory/dryFactorySlice.test.ts(146,51): error TS2322: Type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: MaterialView; }' is not assignable to type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: { catalog: FactoryCatalog; revision: number; reservations: readonly MaterialReservation[]; receipts: readonly MaterialReceipt[]; containers: ResourceContainerSnapshot[]; }; }'.
+  The types of 'material.containers' are incompatible between these types.
+    The type 'readonly ResourceContainerSnapshot[]' is 'readonly' and cannot be assigned to the mutable type 'ResourceContainerSnapshot[]'.
+tests/unit/factory/dryFactorySlice.test.ts(147,290): error TS2322: Type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: MaterialView; }' is not assignable to type '{ owners: FactoryInstallation[]; state: DryFactoryState; material: { catalog: FactoryCatalog; revision: number; reservations: readonly MaterialReservation[]; receipts: readonly MaterialReceipt[]; containers: ResourceContainerSnapshot[]; }; }'.
+  The types of 'material.containers' are incompatible between these types.
+    The type 'readonly ResourceContainerSnapshot[]' is 'readonly' and cannot be assigned to the mutable type 'ResourceContainerSnapshot[]'.
+tests/unit/factory/hostLifecycle.test.ts(122,536): error TS2304: Cannot find name 'actorPositionMm'.
+tests/unit/factory/hostLifecycle.test.ts(122,1350): error TS2304: Cannot find name 'carrierRequest'.
+tests/unit/factory/hostLifecycle.test.ts(122,1373): error TS2304: Cannot find name 'carrierOperation'.
+tests/unit/factory/hostLifecycle.test.ts(122,1864): error TS2304: Cannot find name 'actorPositionMm'.
+tests/unit/factory/hostLifecycle.test.ts(122,1888): error TS2304: Cannot find name 'actorPositionMm'.
+tests/unit/factory/hostLifecycle.test.ts(122,2111): error TS2304: Cannot find name 'carrierOperation'.
+tests/unit/factory/hostLifecycle.test.ts(122,2241): error TS2304: Cannot find name 'carrierRequest'.
+tests/unit/factory/hostLifecycle.test.ts(122,2276): error TS2304: Cannot find name 'carrierOperation'.
+tests/unit/factory/hostLifecycle.test.ts(122,2344): error TS2304: Cannot find name 'carrierRequest'.

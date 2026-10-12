@@ -1,0 +1,61 @@
+{
+  "createdAtUtc": "2026-10-12T00:07:46.177368+00:00",
+  "head": "aa2e5d7c335453fc555a98ccd35e9f564c596e93",
+  "indexEmpty": true,
+  "currentlyGrantedProducts": 26,
+  "currentTrackedChangedProducts": 20,
+  "currentNewProducts": 6,
+  "aggregateW09Products": 31,
+  "fullSourceCheckpoint": "partial-source-checkpoint-197/source.json",
+  "sourceCheckpointSha256": "968f2e348f34a4986656c33e1639a535e06f610f756c1f1c7e1f0ea86cc78e05",
+  "outsideOwnRunOrGrantChanges": [],
+  "protectedChecks": [
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-core",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/package-lock.json",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/playwright.config.ts",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/main.ts",
+      "unchangedFromCurrentHead": true
+    },
+    {
+      "path": "tools/factory/verify-evidence.mjs + all existing Factoryfixtures + CoastSource",
+      "unchangedFromCurrentHead": true
+    }
+  ],
+  "sourceWriteHold": true,
+  "ownerSourceV2Status": "PENDING / five paths UNGRANTED",
+  "packageStatus": "BLOCKED"
+}

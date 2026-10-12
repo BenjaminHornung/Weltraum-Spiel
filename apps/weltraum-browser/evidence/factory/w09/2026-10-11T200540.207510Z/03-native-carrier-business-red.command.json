@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/facilitySession.test.ts",
+    "-t",
+    "W09 paid"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:08:11.244791+00:00",
+  "endedAtUtc": "2026-10-11T20:08:14.528765+00:00",
+  "elapsedSeconds": 3.283980952001002,
+  "exitCode": 1,
+  "rawBytes": 3470,
+  "rawSha256": "b34782f2e02485859764d49ebcd69ba4a22f1bb67ea045213b8064c6b99fec60",
+  "fixture": "synthetic real Rapier floor+source Cargo; no claim actual D07 route"
+}

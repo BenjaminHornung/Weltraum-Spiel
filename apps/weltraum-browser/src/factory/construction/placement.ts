@@ -3,6 +3,7 @@ import { prepareFactoryMaterialStep, commitFactoryMaterialStep } from "../materi
 import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../resources/containers";
 import { canonicalJson } from "../../resources/serialization";
 import { isSaveSafeResourceId } from "../../resources/ids";
+import { readCargoHandlingProfile } from "./cargoHandlingProfile";
 import { createFactoryInstallationProfile, transformFactoryBounds, type FactoryVector, type FactoryBoundsMm, type FactoryInstallationProfile } from "./installationProfile";
 
 export interface FactoryCargoAccess {
@@ -20,6 +21,7 @@ export interface FactoryInstallation {
 }
 export interface FactoryPlacementView {
   readonly cargoAccess?:FactoryCargoAccess;
+  readonly buildDepot?:Readonly<{containerId:string;profileId:string;profileDigest:string;accessible:boolean;bodyHandle:number}>;
   readonly binding: Readonly<{ sessionId: string; epoch: number; terrainRevision: number; sourceDigest: string; baseDigest: string; facilityRevision: number }>;
   readonly material: MaterialView; readonly installations: readonly FactoryInstallation[];
   readonly actor: Readonly<{ actorId: string; ownerId?: string; positionMm: readonly number[]; canBuild: boolean }>;
@@ -28,12 +30,13 @@ export interface FactoryPlacementView {
 export interface FactoryPlacementPlan {
   readonly status: "Prepared"; readonly request: FactoryPlacementRequest; readonly baseBytes: string;
   readonly profile: FactoryInstallationProfile; readonly installation: FactoryInstallation; readonly materialCandidate: MaterialView;
+  readonly consumedCustody?:Readonly<{containerId:string;emptyCanonicalJson:string}>;
 }
 export interface FactoryPlacementRejected { readonly status: "Rejected"; readonly reason: string }
 export const factoryMaterialBytes = (material: MaterialView): string => canonicalJson({ catalogBytes: material.catalog.canonicalJson, revision: material.revision,
   containers: material.containers.map(snapshot => ({ definitionBytes: snapshot.definition.canonicalJson, stateBytes: snapshot.state.canonicalJson })), reservations: material.reservations, receipts: material.receipts });
 export const factoryPlacementBytes = (view: FactoryPlacementView): string => canonicalJson({ binding: view.binding, materialBytes: factoryMaterialBytes(view.material), installations: view.installations,
-  actor: { ...view.actor, ownerId: view.actor.ownerId ?? null }, cargoAccess: view.cargoAccess ?? null, terrain: { cellMm: view.terrain.cellMm, originMm: view.terrain.originMm, size: view.terrain.size } });
+  actor: { ...view.actor, ownerId: view.actor.ownerId ?? null }, cargoAccess: view.cargoAccess ?? null,buildDepot:view.buildDepot??null, terrain: { cellMm: view.terrain.cellMm, originMm: view.terrain.originMm, size: view.terrain.size } });
 const overlap = (a: FactoryBoundsMm,b: FactoryBoundsMm): boolean => a.min.every((v,i) => v < b.max[i]! - .5 && a.max[i]! > b.min[i]! + .5);
 const reason = (code: string): never => { throw new Error(code); };
 const readSlot = (view: FactoryPlacementView,x: number,y: number,z: number): number => {
@@ -60,12 +63,14 @@ export const prepareFactoryPlacement = (view: FactoryPlacementView, request: Fac
     const cargo=view.cargoAccess;
     if(!cargo || cargo.ownerId!==view.actor.ownerId || cargo.containerId!=="fp02_wreck_cargo") reason("CARGO_UNAVAILABLE");
     if(!cargo!.opened) reason("CARGO_CLOSED");
-    if(cargo!.accessible===false)reason("OUT_OF_REACH");
+    const depot=view.buildDepot,paidProfile=depot?readCargoHandlingProfile(view.material.catalog,depot.profileId):undefined;
+    const useDepot=Boolean(depot?.accessible&&Number.isFinite(depot.bodyHandle)&&paidProfile?.digest===depot.profileDigest&&canonicalJson(paidProfile.terms)===canonicalJson(profile.bom));
+    if(!useDepot&&cargo!.accessible===false)reason("OUT_OF_REACH");
     if(cargo!.sourceDigest!==view.binding.baseDigest || !cargo!.profileDigest || !Number.isFinite(cargo!.bodyHandle)) reason("CARGO_BINDING_MISMATCH");
     // Player reaches a local service edge and the actual immutable native Cargo access volume.
     const service=transformFactoryBounds(profile.serviceBoundsMm,request.centerMm,request.quarterTurns);
     const distance=(point:readonly number[],bounds:FactoryBoundsMm)=>Math.hypot(...point.map((v,i)=>Math.max(bounds.min[i]!-v,0,v-bounds.max[i]!)));
-    if (distance(view.actor.positionMm,service)>3000 || distance(view.actor.positionMm,cargo!.accessBoundsMm)>4000) reason("OUT_OF_REACH");
+    if (distance(view.actor.positionMm,service)>3000 || (!useDepot&&distance(view.actor.positionMm,cargo!.accessBoundsMm)>4000)) reason("OUT_OF_REACH");
     const bounds=transformFactoryBounds(profile.boundsMm,request.centerMm,request.quarterTurns);
     if(view.installations.some(v=>overlap(v.boundsMm,bounds)||overlap(v.boundsMm,service)||overlap(v.serviceBoundsMm,bounds))) reason("FACILITY_OVERLAP");
     const playerBounds={min:view.actor.positionMm.map((v,i)=>v-(i===1?900:350)) as unknown as FactoryVector,max:view.actor.positionMm.map((v,i)=>v+(i===1?900:350)) as unknown as FactoryVector};
@@ -91,7 +96,7 @@ export const prepareFactoryPlacement = (view: FactoryPlacementView, request: Fac
       createResourceContainerState({containerId,ownerId:view.actor.ownerId,contents:[]},view.material.catalog.resources),view.material.catalog.resources);
     const moves:MaterialMove[]=[];
     for(const term of profile.bom){let remaining=term.quantityUnits;const item=view.material.catalog.items.find(v=>v.sourceId===term.itemId)!;
-      for(const container of view.material.containers){if(container.state.containerId!=="fp02_wreck_cargo" || container.state.ownerId!==view.actor.ownerId || container.state.containerId.startsWith("installed_") || view.material.reservations.some(v=>v.wipContainerId===container.state.containerId))continue;
+      for(const container of view.material.containers){if(container.state.containerId!==(useDepot?depot!.containerId:"fp02_wreck_cargo") || container.state.ownerId!==view.actor.ownerId || container.state.containerId.startsWith("installed_") || view.material.reservations.some(v=>v.wipContainerId===container.state.containerId))continue;
         for(const stack of container.state.contents){if(stack.resourceId!==item.resourceId||remaining===0)continue;const amount=Math.min(remaining,stack.quantity);moves.push({sourceContainerId:container.state.containerId,sourceStackId:stack.stackId,targetContainerId:containerId,targetStackId:amount===stack.quantity?stack.stackId:`${request.instanceId}_part_${moves.length}`,itemId:term.itemId,quantityUnits:amount});remaining-=amount;}}
       if(remaining!==0)reason("BOM_MISSING");}
     const augmented:MaterialView={...view.material,containers:[...view.material.containers,target]};
@@ -99,7 +104,9 @@ export const prepareFactoryPlacement = (view: FactoryPlacementView, request: Fac
     if(materialPlan.status!=="Prepared")reason(materialPlan.reason);
     if(materialPlan.status!=="Prepared")throw new Error("Unreachable");
     const committed=commitFactoryMaterialStep(augmented,materialPlan);if(committed.status==="Rejected")reason(committed.reason);
+    const empty=useDepot?committed.view.containers.find(c=>c.state.containerId===depot!.containerId):undefined;
+    if(useDepot&&(!empty||empty.state.contents.length))reason("BUILD_DEPOT_NOT_FULLY_CONSUMED");
     const installation:FactoryInstallation=Object.freeze({instanceId:request.instanceId,definitionSourceId:request.definitionSourceId,profileDigest:profile.profileDigest,sourceDigest:profile.sourceDigest,massMg:profile.massMg,materialContainerId:containerId,centerMm:Object.freeze([...request.centerMm]) as FactoryVector,quarterTurns:request.quarterTurns,boundsMm:bounds,serviceBoundsMm:service});
-    return Object.freeze({status:"Prepared",request:Object.freeze({...request,centerMm:Object.freeze([...request.centerMm])}),baseBytes:factoryPlacementBytes(view),profile,installation,materialCandidate:committed.view});
+    return Object.freeze({status:"Prepared",request:Object.freeze({...request,centerMm:Object.freeze([...request.centerMm])}),baseBytes:factoryPlacementBytes(view),profile,installation,materialCandidate:committed.view,...(empty?{consumedCustody:Object.freeze({containerId:empty.state.containerId,emptyCanonicalJson:empty.state.canonicalJson})}:{})});
   }catch(error){return Object.freeze({status:"Rejected",reason:error instanceof Error?error.message:"INVALID_BUILD_REQUEST"});}
 };

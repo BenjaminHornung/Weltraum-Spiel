@@ -1,0 +1,37 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t source-bound paid B05
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (20 tests | 1 failed | 19 skipped) 43ms
+   × admits source-bound paid B05 bench, B09 bin and REC05 brace as closed installation profiles with real support surfaces 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > admits source-bound paid B05 bench, B09 bin and REC05 brace as closed installation profiles with real support surfaces
+AssertionError: expected [Function] to not throw an error but 'ReferenceError: createFactoryInstalla…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"ReferenceError: createFactoryInstallationProfile is not defined"
+
+ ❯ tests/unit/factory/facilitySession.test.ts:247:67
+    245|  for(const [id,mass] of [["B05",40000000],["B09",60000000],["fp02.comp…
+    246|   let profile:ReturnType<typeof createFactoryInstallationProfile>|unde…
+    247|   expect(()=>{profile=createFactoryInstallationProfile(id);}).not.toTh…
+       |                                                                   ^
+    248|   expect(profile!.massMg).toBe(mass);expect(profile!.supportPatchesMm.…
+    249|   expect(profile!.source.sourceRefs.some(ref=>ref.includes("technical-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 skipped (20)
+   Start at  20:56:47
+   Duration  1.23s (transform 810ms, setup 0ms, import 1.07s, tests 43ms, environment 0ms)
+

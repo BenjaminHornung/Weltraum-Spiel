@@ -1,0 +1,15 @@
+{
+  "id": "paid-band-step-budget-v1",
+  "metric": "vitest.case.wall_time",
+  "statistic": "single observed case",
+  "unit": "ms",
+  "direction": "lower",
+  "target": 5000,
+  "maximumIterations": 2,
+  "allowedPaths": [
+    "src/factory/session/dryFactorySlice.ts"
+  ],
+  "limits": "Original5000ms/complete23and56transitions and all business assertions unchanged",
+  "hardwareComparability": "Same local Node20 runtime/workspace/serial lease, no hardware performance claim",
+  "gameDevCli": "Previously unavailable; standardNodeV8 profile fallback"
+}

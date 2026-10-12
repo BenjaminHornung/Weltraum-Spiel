@@ -1,0 +1,103 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (4 tests | 4 failed) 104ms
+     × adopts an exact real Resources candidate once and lets every consumer read the same complete view 98ms
+     × answers the exact historical handling command from its receipt before any current revision or Native allocation 2ms
+     × rejects changed revision bytes under an accepted handling ID even after the carrier slot is reused 2ms
+     × rejects changed lot bytes under an accepted handling ID even after the carrier slot is reused 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > adopts an exact real Resources candidate once and lets every consumer read the same complete view
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:26:40
+     24|  it("adopts an exact real Resources candidate once and lets every cons…
+     25|    const { base, next } = candidate(), authority = createFactoryMateri…
+     26|    expect(authority.adopt(base, next)).toBe(true); expect(authority.re…
+       |                                        ^
+     27|    expect(authority.adopt(base, next)).toBe(false); expect(authority.r…
+     28|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > answers the exact historical handling command from its receipt before any current revision or Native allocation
+AssertionError: expected undefined to deeply equal { status: 'NoOp', receipt: { …(6) } }
+
+- Expected:
+{
+  "receipt": {
+    "binding": {
+      "catalogDigest": "fnv1a:f3a8c642",
+      "facilityRevision": 0,
+      "handlingRevision": 0,
+      "materialRevision": 1,
+      "netRevision": 0,
+      "powerSourceProfileDigest": "source-bound-power-v1",
+      "terrainRevision": 0,
+      "terrainSourceDigest": "synthetic-unit-source-v1",
+    },
+    "commandId": "pickup_c27",
+    "publicationRevision": 1,
+    "reason": null,
+    "requestCanonicalJson": "{\"commandId\":\"pickup_c27\",\"epoch\":0,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":0,\"handlingRevision\":0,\"materialRevision\":0,\"netRevision\":0,\"powerSourceProfileDigest\":\"source-bound-power-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"synthetic-unit-source-v1\"},\"kind\":\"pickup\",\"profileId\":\"C27-PACK\",\"sessionId\":\"same_unit_session\",\"sourceLots\":[{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c27_unit_1\"}],\"version\":\"fp06-ui-command-v1\"}",
+    "status": "Committed",
+  },
+  "status": "NoOp",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:31:63
+     29|  it("answers the exact historical handling command from its receipt be…
+     30|    const history = createFactoryCommandHistory(); history.accept(comma…
+     31|    expect(history.replay(JSON.parse(canonicalJson(command)))).toEqual(…
+       |                                                               ^
+     32|    expect(history.readReceipt(command.commandId)).toEqual(receipt);
+     33|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > rejects changed revision bytes under an accepted handling ID even after the carrier slot is reused
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > rejects changed lot bytes under an accepted handling ID even after the carrier slot is reused
+AssertionError: expected undefined to match object { status: 'Rejected', …(1) }
+
+- Expected:
+{
+  "receipt": {
+    "reason": "IdempotencyConflict",
+  },
+  "status": "Rejected",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:38:36
+     36|    const changed = JSON.parse(canonicalJson(command));
+     37|    if (change === "revision") changed.expected.materialRevision = 2; e…
+     38|    expect(history.replay(changed)).toMatchObject({ status: "Rejected",…
+       |                                    ^
+     39|  });
+     40| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  20:19:58
+   Duration  464ms (transform 173ms, setup 0ms, import 245ms, tests 104ms, environment 0ms)
+

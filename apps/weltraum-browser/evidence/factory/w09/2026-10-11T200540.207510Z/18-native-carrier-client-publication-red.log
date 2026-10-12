@@ -1,0 +1,37 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts -t W09 real Native carrier transport
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (25 tests | 1 failed | 24 skipped) 695ms
+   × W09 real Native carrier transport withholds every prepared and committed receipt until joint Host publication 662ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W09 real Native carrier transport withholds every prepared and committed receipt until joint Host publication
+AssertionError: expected undefined to be 'PreparedHeld' // Object.is equality
+
+- Expected:
+"PreparedHeld"
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-player-input.test.ts:138:98
+    136|   const port=client as any; let error:unknown;
+    137|   try { if(port.prepareFactoryCarrier) await port.prepareFactoryCarrie…
+    138|   expect(error).toBeUndefined(); expect(worker.session.read().factoryF…
+       |                                                                                                  ^
+    139|   expect(client.read()).toBe(before);
+    140|   await port.commitFactoryCarrier(request.transactionId); expect(worke…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 24 skipped (25)
+   Start at  20:29:19
+   Duration  1.85s (transform 860ms, setup 0ms, import 1.04s, tests 695ms, environment 0ms)
+

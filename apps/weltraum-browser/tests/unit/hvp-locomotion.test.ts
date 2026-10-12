@@ -167,3 +167,65 @@ describe("HVP solver-owned locomotion", () => {
     } finally { r.dispose(); }
   });
 });
+
+import { createFactoryFacilitySession } from "../../src/hestia-prototype/physics/factoryFacilitySession";
+import { createFactoryCargoSite } from "../../src/factory/fixtures/cargoSite";
+import { materializeFactoryStartSite } from "../../src/factory/fixtures/startSite";
+import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
+import { readCargoHandlingProfile } from "../../src/factory/construction/cargoHandlingProfile";
+const pairedCarrierRig = () => {
+  const world = new R.World({ x: 0, y: -9.81, z: 0 }); world.timestep = 1 / 60;
+  world.createCollider(R.ColliderDesc.cuboid(16, .125, 16).setTranslation(0, 1.125, 0));
+  let facilities: ReturnType<typeof createFactoryFacilitySession> | undefined;
+  const player = createHvpLocomotion(world, { x: -5.75, y: 2.17, z: 11.875 }, 9.81, () => true, undefined,
+    (from, to) => facilities?.preparePlayerMove(from, to) ?? (() => {}));
+  let playerHandle: number | undefined; world.forEachRigidBody(body => { if (body.isKinematic()) playerHandle = body.handle; });
+  player.setEnabled(true); const ticks = (n: number) => { for (let i = 0; i < n; i++) { player.step(); world.step(); } }; ticks(10);
+  facilities = createFactoryFacilitySession(world, () => true, () => 0, () => 0, createFactoryCargoSite(materializeFactoryStartSite()), () => player.read().position, () => playerHandle);
+  const cargo = facilities.read().cargo!; facilities.openCargo({ ownerId: cargo.ownerId, profileDigest: cargo.profileDigest, expectedRevision: 0, expectedTerrainRevision: 0 });
+  const profile = readCargoHandlingProfile(createFp02Fixture("cargo").catalog, "C27-PACK")!;
+  const request = { transactionId: "pair_carrier", ownerId: "factory_carrier", profileId: profile.profileId, profileDigest: profile.digest,
+    expectedRevision: facilities.read().revision, expectedTerrainRevision: 0, sourceContainerId: cargo.containerId, materialBinding: "synthetic-native-paired-c27-custody" };
+  facilities.prepareCarrier(request); facilities.commitCarrier(request.transactionId); facilities.publishCarrier(request.transactionId); facilities.finalizeCarrier(request.transactionId);
+  return { world, player, ticks, facilities, dispose: () => { player.dispose(); world.free(); } };
+};
+describe("W09 paired actual Native carrier locomotion", () => {
+  it("checks the full final grounded jump move before either pose and never replays a vetoed jump edge", () => {
+    const r=pairedCarrierRig();try{
+      r.world.createCollider(R.ColliderDesc.cuboid(.01,.2,.1).setTranslation(-6.525,2,10.875));r.world.updateSceneQueries();
+      const before=r.player.read(),carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),position=carrier.translation();
+      r.player.setInput({x:-1,z:0,sprint:false,jump:true});r.ticks(1);
+      expect(r.player.read().position).toEqual(before.position);expect(r.player.read().jumpCount).toBe(before.jumpCount);expect(carrier.translation()).toEqual(position);
+      r.player.setInput({x:0,z:0,sprint:false,jump:false});r.ticks(3);expect(r.player.read().jumpCount).toBe(before.jumpCount);expect(r.player.read().grounded).toBe(true);
+    }finally{r.dispose();}
+  });
+  it("adopts a real native capsule autostep with the carrier on its separately proven level wheel support", () => {
+    const r=pairedCarrierRig();try{
+      r.world.createCollider(R.ColliderDesc.cuboid(.5,.0625,.3).setTranslation(-6.65,1.3125,11.875));r.world.updateSceneQueries();
+      const before=r.player.read().position;r.player.setInput({x:-1,z:0,sprint:false,jump:false});r.ticks(16);
+      const player=r.player.read(),carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle);
+      expect(player.position.x).toBeLessThan(before.x-.5);expect(player.position.y).toBeGreaterThan(before.y+.1);
+      expect(carrier.translation().x).toBeCloseTo(player.position.x,4);expect(carrier.translation().y).toBeCloseTo(1.25,4);expect(player.grounded).toBe(true);
+    }finally{r.dispose();}
+  });
+  it("moves the player and whole 300kg carrier only through the same real solver steps", () => {
+    const r = pairedCarrierRig(); try {
+      expect(r.player.read().grounded).toBe(true);
+      const before = r.player.read().position, carrierBefore = r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle).translation();
+      r.player.setInput({ x: -1, z: 0, sprint: false, jump: false });
+      expect(r.player.read().position).toEqual(before); expect(r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle).translation()).toEqual(carrierBefore);
+      r.ticks(6); const player = r.player.read().position, carrier = r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle).translation();
+      expect(player.x).toBeLessThan(before.x - .25); expect(carrier.x).toBeCloseTo(player.x, 4); expect(carrier.z).toBeCloseTo(player.z - 1, 4);
+      expect(r.player.read().grounded).toBe(true);
+    } finally { r.dispose(); }
+  });
+  it("vetoes BOTH poses when the capsule path is free but the actual carrier sweeps a foreign obstacle", () => {
+    const r = pairedCarrierRig(); try {
+      r.world.createCollider(R.ColliderDesc.cuboid(.01, .2, .1).setTranslation(-6.525, 2, 10.875)); r.world.updateSceneQueries();
+      const before = r.player.read(), carrier = r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle), carrierBefore = carrier.translation();
+      r.player.setInput({ x: -1, z: 0, sprint: false, jump: false }); r.ticks(6);
+      expect(r.player.read().position).toEqual(before.position); expect(carrier.translation()).toEqual(carrierBefore);
+      expect(r.player.read().jumpCount).toBe(before.jumpCount); expect(r.player.read().grounded).toBe(true);
+    } finally { r.dispose(); }
+  });
+});

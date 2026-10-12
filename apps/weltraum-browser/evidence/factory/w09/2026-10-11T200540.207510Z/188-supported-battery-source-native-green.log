@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t corrected supported battery
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 28 skipped (33)
+   Start at  23:55:08
+   Duration  21.06s (transform 920ms, setup 0ms, import 1.19s, tests 19.76s, environment 0ms)
+

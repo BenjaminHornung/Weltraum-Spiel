@@ -1,0 +1,30 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t complete private proposal|rejects changes|joint|UUID
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (34 tests | 1 failed | 14 skipped) 4164ms
+     × preserves exact cold and warm material projection bytes without admitting a later mutable clone 213ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > preserves exact cold and warm material projection bytes without admitting a later mutable clone
+TypeError: Cannot assign to read only property 'containers' of object '#<Object>'
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:47:9
+     45|   expect(cold.materialBaseBytes).toBe(expected);expect(warm.materialBa…
+     46|   const clone=copyMaterial(f.material);expect(prepareDryFactoryStep(ba…
+     47|   clone.containers=clone.containers.map(c=>({...c,state:{...c.state,co…
+       |         ^
+     48|   expect(prepareDryFactoryStep(base,f.inputFor(base,clone))).toMatchOb…
+     49|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed | 14 skipped (34)
+   Start at  23:20:52
+   Duration  4.72s (transform 346ms, setup 0ms, import 450ms, tests 4.16s, environment 0ms)
+

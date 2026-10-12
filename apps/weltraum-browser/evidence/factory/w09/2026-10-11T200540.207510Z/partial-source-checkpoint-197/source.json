@@ -1,0 +1,271 @@
+{
+  "package": "W09",
+  "phase": "PARTIAL_SOURCE_CHECKPOINT_197_POST_RECOVERY_GUARD",
+  "createdAtUtc": "2026-10-12T00:05:48.701329+00:00",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "implementationParentSha": "aa2e5d7c335453fc555a98ccd35e9f564c596e93",
+  "grantBaseCommitSha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
+  "grantSha256": "4d60df6150fbf052d915d7df95ca12509cae43ad1d8d3b3d3a09840bb6990cb5",
+  "writeSetCount": 26,
+  "changedProductCount": 26,
+  "aggregateW09ProductCount": 31,
+  "aggregateW09ProductPaths": [
+    "apps/weltraum-browser/package.json",
+    "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+    "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+    "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+    "apps/weltraum-browser/src/factory/construction/placement.ts",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "apps/weltraum-browser/src/factory/session/cargoHandling.ts",
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+    "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/hvp/hvpHud.ts",
+    "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+    "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+  ],
+  "productFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 31347,
+      "sha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a",
+      "headGitBlobExists": false,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+      "bytes": 7458,
+      "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f",
+      "headGitBlobExists": false,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "bytes": 2605,
+      "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 13665,
+      "sha256": "d6ef6be3e810ee815857f739a832eae04e5b80d99804a870999712d5006c4dd7",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 10087,
+      "sha256": "da5fc8501828850272aeb3e55e93cce37f57c288961fb81b2c5aec9f09e9afdf",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 66208,
+      "sha256": "ea8d8cdee5ea1826a9b00f0dd7d2d7cbfc4408cdeb7cb2e3f880893ea86a448a",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 175076,
+      "sha256": "66ec6f330dc7d6cf7c25851fc20b3ae17bb0daf8faad8827efe6d45dff81198d",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 62333,
+      "sha256": "20f4480c965480cf097e1c4541a31868c02595ea4dbaae4445718b6a315917cc",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 83663,
+      "sha256": "1af43b680ce07f6799f0f59a846abd9538a59f97d851868df24a12dd6d3cef51",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 36419,
+      "sha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b",
+      "headGitBlobExists": false,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "bytes": 5568,
+      "sha256": "4e5d3f027da5aef0ba68243b911c55d7558eab86477e2ebd3e134a26f82d8b8b",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+      "bytes": 14061,
+      "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+      "bytes": 4766,
+      "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+      "headGitBlobExists": false,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/cargoHandling.ts",
+      "bytes": 13892,
+      "sha256": "b5c4e663c2c0796d65b86e2af9c2bc4d403a710fd37d180f9403be10cb293018",
+      "headGitBlobExists": false,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+      "bytes": 17904,
+      "sha256": "74c072ca22252bdd004732fb770e67690d63eab01a825b178dc0a66ffa62542b",
+      "headGitBlobExists": false,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 53631,
+      "sha256": "d6b78d8f21b3c726752f72310c20e851c21dfe9589969823630830bb5ca98311",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 39185,
+      "sha256": "5d5fa4b98d1a5f05d5d4bf562c0b88397e0c9cb7ead4eaeacab19e03e2019f0c",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "bytes": 40784,
+      "sha256": "d27eab2d45683ec7155261578204343d014f7d33a1fd2dc6384777900d5a574a",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 17473,
+      "sha256": "4516a3978ac10b0996fa9c48f6a5a0bf3d3cb297a34cf414c05408cf1bb2d4c4",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "bytes": 8069,
+      "sha256": "46920ca84d41dac5ea82c7bf88a4650646ff62756f7479dfa3e408129d18a4ad",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 39743,
+      "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
+      "bytes": 14935,
+      "sha256": "ed2b303a82cb9a75a178e40f74e48a3c7c0539b4f0000ef7ffc0d8d08157eae2",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "bytes": 30906,
+      "sha256": "702c3abd2090d9e7fb5a63c9bb5f91c284118b441e8dba43ed2e9e7d2de61707",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/placement.ts",
+      "bytes": 12277,
+      "sha256": "9b75688f1ad743246559d0e46c2c423cfd29c584932fdbae7b64c740f9ad75a3",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+      "bytes": 7035,
+      "sha256": "f64de80d77e9f04323f49b4f5743889d71faf7e203aa430e4069c018b2601bcf",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpHud.ts",
+      "bytes": 23052,
+      "sha256": "67b223c31d76002f22097e6b9175ac6d4dab7aad583a4413ae9a2c05ce0a6910",
+      "headGitBlobExists": true,
+      "changedFromCurrentHead": true
+    }
+  ],
+  "patches": [
+    {
+      "path": "product-current-grant-base.patch",
+      "sha256": "f5b2f2aaac90850e935083e99db646e3fe532db9278590e1e905397a331a4337",
+      "bytes": 445404,
+      "meaning": "26 currently granted Integrator products only",
+      "base": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
+      "productCount": 26
+    },
+    {
+      "path": "product-current-grant-head.patch",
+      "sha256": "200bdae1247883457494d61ed2471f922938c4cbebcb34bedab666df019db2b7",
+      "bytes": 439618,
+      "meaning": "26 currently granted Integrator products only",
+      "base": "HEAD",
+      "productCount": 26
+    },
+    {
+      "path": "product-w09-aggregate-base.patch",
+      "sha256": "872f4a596d02d6f8a63f73796b02bd3a1794a54e321743c77959e92cd6900326",
+      "bytes": 495956,
+      "meaning": "all 31 aggregate W09 products including separately committed UI/protocol",
+      "base": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
+      "productCount": 31
+    }
+  ],
+  "changedFrom193": [
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts"
+  ],
+  "unchangedFrom193": 24,
+  "indexEmpty": true,
+  "packageStatus": "BLOCKED",
+  "sourceWriteHold": true,
+  "lastOriginalBuild": "197 PASS",
+  "latestAffectedTests": "196:59/59 Host/UI PASS",
+  "openGates": [
+    "Approved SourceV1 heavy q1 route is physically blocked; additive SourceV2 owner answer PENDING; no extra terrain writes",
+    "Bounded performance goals exhausted NOT_MET; actual160 OUTPUTBLOCK >5000ms original limit",
+    "Full fresh CUT\u2192Belt\u2192Former\u2192C05\u2192usable brace normal browser gate NOT_RUN",
+    "No W10 combined save/recovery or W11 end gate begun"
+  ]
+}

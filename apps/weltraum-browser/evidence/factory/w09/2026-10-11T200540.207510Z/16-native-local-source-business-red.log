@@ -1,0 +1,39 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t picks up fresh stock only
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (18 tests | 1 failed | 17 skipped) 480ms
+     × picks up fresh stock only from the actual reachable installed output owner and rejects its remote or forged endpoint 443ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 paid SAME-world Native carrier > picks up fresh stock only from the actual reachable installed output owner and rejects its remote or forged endpoint
+AssertionError: expected Error: FactoryFacilityRejected:CarrierSou… to be undefined
+
+- Expected:
+undefined
+
++ Received:
+Error {
+  "message": "FactoryFacilityRejected:CarrierSourceAccess",
+}
+
+ ❯ tests/unit/factory/facilitySession.test.ts:130:24
+    128|         sourceContainerId: `output_${machine.instanceId}`, sourceInsta…
+    129|       let rejected: unknown; try { facilities.prepareCarrier(pickup); …
+    130|       expect(rejected).toBeUndefined(); expect(facilities.read().carri…
+       |                        ^
+    131|       facilities.rollbackCarrier(pickup.transactionId);
+    132|       expect(() => facilities.prepareCarrier({ ...pickup, sourceContai…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 skipped (18)
+   Start at  20:27:37
+   Duration  1.72s (transform 886ms, setup 0ms, import 1.13s, tests 480ms, environment 0ms)
+

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--",
+    "--config=/workspace/.cloud-setup/fp06-w09.playwright.config.mts",
+    "tests/e2e/factory-dry-flow.spec.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T21:29:29.103304+00:00",
+  "endedAtUtc": "2026-10-11T21:29:58.437131+00:00",
+  "elapsedSeconds": 29.334360375003598,
+  "exitCode": 1,
+  "rawBytes": 8620,
+  "rawSha256": "4fedbf3f39e65dfeffe9b702c7e6e4c3dda93bd790ab4a88b4defb35b2f68828"
+}

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "-t",
+    "W09 restores the consumed"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T21:47:15.484912+00:00",
+  "endedAtUtc": "2026-10-11T21:47:24.661394+00:00",
+  "elapsedSeconds": 9.177105971000856,
+  "exitCode": 1,
+  "rawBytes": 1674,
+  "rawSha256": "1f970dc971f461a5133e49f909d27fa5acce076b695b0bde762bced003893a7c"
+}

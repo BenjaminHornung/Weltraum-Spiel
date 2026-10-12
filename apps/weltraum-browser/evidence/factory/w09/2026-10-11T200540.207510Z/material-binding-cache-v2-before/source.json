@@ -1,0 +1,21 @@
+{
+  "productFiles": [
+    {
+      "path": "src/factory/session/dryFactorySlice.ts",
+      "sha256": "ddd2ff8cd718be451624bb3e5e709f86a48372a77a1e4899ced57f46e2ea6015",
+      "bytes": 30936
+    },
+    {
+      "path": "tests/unit/factory/dryFactorySlice.test.ts",
+      "sha256": "c1b65afb114370f0a4fc856e5fe41ace3e6ffe72faba9803643ac516b35d3a65",
+      "bytes": 35206
+    }
+  ],
+  "scenarioBytes": 6563,
+  "scenarioSha256": "ce1fb626500b8b05fcbd255f574f4a0597d1ebd864dab82d74a98dbd64951cd1",
+  "actualRuntime": "Node22.23.3/npm10.9.8 (actual143)",
+  "candidateLimit": 1,
+  "additionalProfiles": 0,
+  "budgetMs": 5000,
+  "historicalGoalOutcome": "NOT_MET"
+}

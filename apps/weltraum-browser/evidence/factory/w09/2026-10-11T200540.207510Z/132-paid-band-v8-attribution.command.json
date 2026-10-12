@@ -1,0 +1,19 @@
+{
+  "command": [
+    "node",
+    "--cpu-prof",
+    "--cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/profile-paid-band-before",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/factory/dryFactorySlice.test.ts",
+    "-t",
+    "paid-band joint adoption"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T22:51:11.926413+00:00",
+  "endedAtUtc": "2026-10-11T22:51:22.841205+00:00",
+  "elapsedSeconds": 10.91517699999531,
+  "exitCode": 1,
+  "rawBytes": 1002,
+  "rawSha256": "5297e5d38572ba4bf4752cbcecd6b838e7af00900b54ba50ccb111f7a4eeb544"
+}

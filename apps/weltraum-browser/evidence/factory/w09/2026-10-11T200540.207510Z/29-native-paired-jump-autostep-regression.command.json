@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-locomotion.test.ts",
+    "-t",
+    "full final grounded jump|real native capsule autostep"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:40:43.848393+00:00",
+  "endedAtUtc": "2026-10-11T20:40:45.651238+00:00",
+  "elapsedSeconds": 1.8031857080059126,
+  "exitCode": 0,
+  "rawBytes": 420,
+  "rawSha256": "052255a25a30c5e8ab2587df9444a3353c2dc94a2e4b6233bda2ad86866370be"
+}

@@ -1,0 +1,22 @@
+{
+  "phase": "186",
+  "productFiles": [
+    {
+      "path": "src/factory/session/factorySession.ts",
+      "bytes": 66113,
+      "sha256": "2999c2846cdf2249733ad57fd7e9362a53b8d9aa01de843cc2857ba61c6d0bc3"
+    },
+    {
+      "path": "tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 55693,
+      "sha256": "ce886618d38f92c42b307a4c4db6a4b6677672cc38d7d5cb6e2b4fba1365044d"
+    }
+  ],
+  "sourcePlanOnly": true,
+  "tests": "179/181/182 genuine assertion RED;183 five selected tests PASS;184 TS2353 test fixture FAIL;185 typed fixture PASS;186 original TypeScript/Vite build PASS",
+  "limitations": [
+    "Metadata and current Host/material deficits only; no later simulations/World grants",
+    "Full W09 browser/fresh factory loop NOT_RUN",
+    "AVAILABLE means closed prototype support, operational/material checks remain separate"
+  ]
+}

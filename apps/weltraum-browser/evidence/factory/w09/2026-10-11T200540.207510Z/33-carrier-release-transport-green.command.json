@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-player-input.test.ts",
+    "-t",
+    "real Native carrier transport"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:47:03.208880+00:00",
+  "endedAtUtc": "2026-10-11T20:47:05.433976+00:00",
+  "elapsedSeconds": 2.2254952910006978,
+  "exitCode": 0,
+  "rawBytes": 398,
+  "rawSha256": "fce91c8e81a494bc8b5603bbdf8269f8ff0ac7bcba86a3d6d6206cdc08836312"
+}

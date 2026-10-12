@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+    "tools/factory/verify-evidence.mjs",
+    "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "startedAtUtc": "2026-10-12T00:11:00.584385+00:00",
+  "endedAtUtc": "2026-10-12T00:11:00.989026+00:00",
+  "elapsedSeconds": 0.4047908490028931,
+  "exitCode": 0,
+  "rawBytes": 342,
+  "rawSha256": "65edb16c950be2b2196950bfb8ba8770b94601b4f1524525e5dc9180e5b945d2",
+  "manifestSha256": "f0849275c1471a6ebec4ddcb22537dd2e614885ed0b44bf23d1d11b510248c19",
+  "scope": "actual W09 OwnRun only; BLOCKED partial status preserved; no global history fsck/packagePASS"
+}

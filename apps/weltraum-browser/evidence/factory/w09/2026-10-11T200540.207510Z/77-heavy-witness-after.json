@@ -1,0 +1,31 @@
+{
+  "atUtc": "2026-10-11T21:37:00.162886+00:00",
+  "sourceMismatches": [],
+  "artifacts": [
+    {
+      "path": "heavy-route-taps.json",
+      "bytes": 1114849,
+      "sha256": "edb2223f9fbebcd34e289e6e3fe4e9decc3d0224d16844b56c07ea692262eaac"
+    },
+    {
+      "path": "heavy-route-final.json",
+      "bytes": 1298633,
+      "sha256": "9e2bdfdc199ea7bf854aa7a0d3e35351c103b97e486365a62b88f7cc3284d077"
+    },
+    {
+      "path": "playwright-output/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "playwright-report/index.html",
+      "bytes": 534142,
+      "sha256": "3d43ba1895bbe856bc4b00ca823aee43a474add04cd9dd4c2868425f05e7bc44"
+    }
+  ],
+  "selectedCaseCounts": {
+    "PASS": 5,
+    "FAIL": 0
+  },
+  "route": "NOT_PROVEN; observes lastVeto only"
+}

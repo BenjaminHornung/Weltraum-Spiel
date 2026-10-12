@@ -7,7 +7,7 @@ import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission} fr
 import {prepareHvpWorldReplacement,type HvpWorldReplacement} from "./worldReplacement";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import type { FactoryCargoSite } from "../../factory/fixtures/cargoSite";
-import type { FactoryFacilityRequest,FactoryCargoOpenIntent } from "./factoryFacilitySession";
+import type { FactoryFacilityRequest,FactoryCargoOpenIntent,FactoryCarrierRequest } from "./factoryFacilitySession";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 
 export type HvpPhysicsSnapshot = ReturnType<HvpPhysicsSession["read"]>;
@@ -42,6 +42,8 @@ export type HvpPhysicsMessage = { readonly id: number } & (
   | {readonly kind:"OpenFactoryCargo";readonly intent:FactoryCargoOpenIntent}
   | {readonly kind:"PrepareFactoryFacility";readonly request:FactoryFacilityRequest}
   | {readonly kind:"CommitFactoryFacility"|"RollbackFactoryFacility"|"FinalizeFactoryFacility";readonly transactionId:string}
+  | {readonly kind:"PrepareFactoryCarrier";readonly request:FactoryCarrierRequest;readonly operation:"pickup"|"deposit"|"release"}
+  | {readonly kind:"CommitFactoryCarrier"|"RollbackFactoryCarrier"|"FinalizeFactoryCarrier";readonly transactionId:string}
   | {readonly kind:"ParkDistantBodies"|"RestoreNearBodies"}
   | {readonly kind:"PrepareBodyResidency"|"CommitBodyResidency"|"FinalizeBodyResidency"|"RollbackBodyResidency";readonly transactionId:string}
 );
@@ -157,6 +159,10 @@ port.onmessage = async ({ data }) => {
         case "CommitFactoryFacility":session.commitFactoryFacility(data.transactionId);break;
         case "RollbackFactoryFacility":session.rollbackFactoryFacility(data.transactionId);break;
         case "FinalizeFactoryFacility":session.finalizeFactoryFacility(data.transactionId);break;
+        case "PrepareFactoryCarrier":session.prepareFactoryCarrier(data.request,data.operation);break;
+        case "CommitFactoryCarrier":session.commitFactoryCarrier(data.transactionId);break;
+        case "RollbackFactoryCarrier":session.rollbackFactoryCarrier(data.transactionId);break;
+        case "FinalizeFactoryCarrier":session.finalizeFactoryCarrier(data.transactionId);break;
         case "Read": if (!factoryEnabled&&data.input !== undefined) { session.input(data.input); } session.camera(data.cameraOffset);session.aimBranch(data.cutAim); break;
         case "Pause": session.pause(); break;
         case "Resume": session.resume(); break;
@@ -202,7 +208,8 @@ port.onmessage = async ({ data }) => {
       ||data.kind==="PrepareNeighbor"||data.kind==="CommitNeighbor"||data.kind==="RollbackNeighbor"||data.kind==="FinalizeNeighbor"
       ||data.kind==="ParkDistantBodies"||data.kind==="RestoreNearBodies"||data.kind==="PrepareBodyResidency"||data.kind==="CommitBodyResidency"
       ||data.kind==="FinalizeBodyResidency"||data.kind==="RollbackBodyResidency"
-      ||data.kind==="OpenFactoryCargo"||data.kind==="PrepareFactoryFacility"||data.kind==="CommitFactoryFacility"||data.kind==="RollbackFactoryFacility"||data.kind==="FinalizeFactoryFacility"||restore!==undefined) {
+      ||data.kind==="OpenFactoryCargo"||data.kind==="PrepareFactoryFacility"||data.kind==="CommitFactoryFacility"||data.kind==="RollbackFactoryFacility"||data.kind==="FinalizeFactoryFacility"
+      ||data.kind==="PrepareFactoryCarrier"||data.kind==="CommitFactoryCarrier"||data.kind==="RollbackFactoryCarrier"||data.kind==="FinalizeFactoryCarrier"||restore!==undefined) {
       reply({id:data.id,rejected:error instanceof Error?error.message:"Transaction rejected",snapshot:session?.read(),
         restoreState:restore?.recoveryHold?"RecoveryHold":restore?.transaction?.state});
       return;

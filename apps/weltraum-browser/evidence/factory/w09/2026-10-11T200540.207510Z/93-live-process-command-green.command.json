@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "-t",
+    "paid Former recipe|UI start is adopted|start reply stays pending|queued process remains|identical pending start|closing an unadopted"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T22:02:47.059799+00:00",
+  "endedAtUtc": "2026-10-11T22:02:51.913361+00:00",
+  "elapsedSeconds": 4.854010497998388,
+  "exitCode": 0,
+  "rawBytes": 506,
+  "rawSha256": "98abc5fe35a35ebaba384f1f5ea6e7d82e5ce720b413fa425065dd83fb702dd1"
+}

@@ -1,0 +1,66 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w09.playwright.config.mts tests/e2e/factory-dry-flow.spec.ts
+
+[WebServer] (node:132739) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 14 tests using 1 worker
+
+(node:132763) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/factory-dry-flow.spec.ts:22:2 › W09 normal finite heavy bootstrap transport › Ready uses the unchanged real D07 source and one finite initial Cargo (12.0s)
+  ✘   2 [chromium] › tests/e2e/factory-dry-flow.spec.ts:23:2 › W09 normal finite heavy bootstrap transport › normal UI opens Cargo and takes the complete finite341kg Former BOM (7.2s)
+  -   3 [chromium] › tests/e2e/factory-dry-flow.spec.ts:24:2 › W09 normal finite heavy bootstrap transport › normal Play walks the same paired owner toward the natural west route
+  -   4 [chromium] › tests/e2e/factory-dry-flow.spec.ts:25:2 › W09 normal finite heavy bootstrap transport › released normal corrections reach the natural west corridor with the actual341kg carrier
+  -   5 [chromium] › tests/e2e/factory-dry-flow.spec.ts:26:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase1
+  -   6 [chromium] › tests/e2e/factory-dry-flow.spec.ts:26:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase2
+  -   7 [chromium] › tests/e2e/factory-dry-flow.spec.ts:26:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase3
+  -   8 [chromium] › tests/e2e/factory-dry-flow.spec.ts:26:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase4
+  -   9 [chromium] › tests/e2e/factory-dry-flow.spec.ts:26:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase5
+  -  10 [chromium] › tests/e2e/factory-dry-flow.spec.ts:26:31 › W09 normal finite heavy bootstrap transport › normal paired walk south on the original terrain phase6
+  -  11 [chromium] › tests/e2e/factory-dry-flow.spec.ts:27:2 › W09 normal finite heavy bootstrap transport › actual paired walk reaches the Former service approach without changing source terrain or payload
+  -  12 [chromium] › tests/e2e/factory-dry-flow.spec.ts:28:2 › W09 normal finite heavy bootstrap transport › normal released corrections approach the closed local Former depot
+  -  13 [chromium] › tests/e2e/factory-dry-flow.spec.ts:29:2 › W09 normal finite heavy bootstrap transport › normal paired walk reaches the real supported local depot approach
+  -  14 [chromium] › tests/e2e/factory-dry-flow.spec.ts:30:2 › W09 normal finite heavy bootstrap transport › normal UI deposits the same paid body and all341kg locally without duplicating Cargo
+
+
+  1) [chromium] › tests/e2e/factory-dry-flow.spec.ts:23:2 › W09 normal finite heavy bootstrap transport › normal UI opens Cargo and takes the complete finite341kg Former BOM 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Carrying"
+    Received: undefined
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      21 |  };
+      22 |  test("Ready uses the unchanged real D07 source and one finite initial Cargo",async()=>{await page.goto("/factory.html");await expect(page.locator("#factory-status")).toContainText("Werkstatt bereit",{timeout:20000});origin=await ui(page);expect(origin.inventory.reduce((n:number,c:any)=>n+c.massMg,0)).toBe(2984400000);expect((await native(page)).factoryFacilities.owners).toEqual([]);expect(await page.evaluate(()=>"TestBridge" in window)).toBe(false);});
+    > 23 |  test("normal UI opens Cargo and takes the complete finite341kg Former BOM",async()=>{await page.getByRole("button",{name:"Fracht öffnen",exact:true}).click();await expect.poll(async()=>(await ui(page)).interaction.cargoOpened).toBe(true);await page.getByRole("button",{name:"Aufnehmen: B07-BOM",exact:true}).click();await expect.poll(async()=>(await ui(page)).interaction.handling?.phase).toBe("Carrying");const state=await ui(page),n=await native(page);expect(state.interaction.handling.massMg).toBe(341000000);expect(n.factoryFacilities.carrier.nativeMassKg).toBeCloseTo(341,5);expect(n.factoryFacilities.carrier.colliderHandles).toHaveLength(5);expect(state.inventory.reduce((n:number,c:any)=>n+c.massMg,0)).toBe(2984400000);expect(state.inventory.find((c:any)=>c.role==="cargo").contents.some((s:any)=>s.itemId==="fp02.chassis.former")).toBe(false);});
+         |                                                                                                                                                                                                                                                                                                                                                                                                       ^
+      24 |  test("normal Play walks the same paired owner toward the natural west route",async()=>{await page.getByRole("button",{name:"Spielen · WASD / Maus / Space",exact:true}).click();await expect.poll(async()=>(await native(page)).player.status).toBe("Walking");await walk("x",-8.25);});
+      25 |  test("released normal corrections reach the natural west corridor with the actual341kg carrier",async()=>{await walk("x",-8.25);const n=await native(page);expect(n.player.position.x).toBeGreaterThan(-8.4);expect(n.player.position.x).toBeLessThan(-8.1);expect(n.factoryFacilities.carrier.phase).toBe("Carrying");});
+      26 |  for(let step=0;step<6;step++)test(`normal paired walk south on the original terrain phase${step+1}`,async()=>{await walk("z",-1.5);});
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts:23:391
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-68/playwright-output/factory-dry-flow-W09-norma-faeed-lete-finite341kg-Former-BOM-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-68/playwright-output/factory-dry-flow-W09-norma-faeed-lete-finite341kg-Former-BOM-chromium/error-context.md
+
+    Error Context: evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-68/playwright-output/factory-dry-flow-W09-norma-faeed-lete-finite341kg-Former-BOM-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-68/playwright-output/factory-dry-flow-W09-norma-faeed-lete-finite341kg-Former-BOM-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-68/playwright-output/factory-dry-flow-W09-norma-faeed-lete-finite341kg-Former-BOM-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/factory-dry-flow.spec.ts:23:2 › W09 normal finite heavy bootstrap transport › normal UI opens Cargo and takes the complete finite341kg Former BOM 
+  12 did not run
+  1 passed (21.5s)

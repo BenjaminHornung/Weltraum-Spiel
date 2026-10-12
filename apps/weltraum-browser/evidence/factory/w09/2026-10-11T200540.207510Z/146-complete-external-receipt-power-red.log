@@ -1,0 +1,37 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t complete external
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (28 tests | 2 failed | 26 skipped) 93ms
+     × binds the complete external joint receipt payload rather than its copied signature 52ms
+     × binds the complete external power output payload rather than its copied signature 39ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > binds the complete external joint receipt payload rather than its copied signature
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > binds the complete external power output payload rather than its copied signature
+AssertionError: expected { status: 'Committed', …(2) } to match object { status: 'Rejected' }
+(14 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "Rejected",
++   "status": "Committed",
+  }
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:59:55
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 26 skipped (28)
+   Start at  23:06:05
+   Duration  717ms (transform 423ms, setup 0ms, import 520ms, tests 93ms, environment 0ms)
+

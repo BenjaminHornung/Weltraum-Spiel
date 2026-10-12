@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/facilitySession.test.ts",
+    "-t",
+    "deposits the same paid carrier"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:25:56.911131+00:00",
+  "endedAtUtc": "2026-10-11T20:25:59.017875+00:00",
+  "elapsedSeconds": 2.1071688829979394,
+  "exitCode": 1,
+  "rawBytes": 1137,
+  "rawSha256": "ecbd059e0a5082798fa9fc324911251ff5f1cb7173c8760de7e193a627dffe78"
+}

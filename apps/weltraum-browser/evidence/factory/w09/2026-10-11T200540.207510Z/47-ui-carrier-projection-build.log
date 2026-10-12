@@ -1,0 +1,6 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+src/factory/presentation/factoryAssets.ts(136,16): error TS2352: Conversion of type '{ assetId: string; definitionId: string; revision: number; parts: FactoryAssetPart[]; }' to type 'FactoryAssetSource' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ assetId: string; definitionId: string; revision: number; parts: FactoryAssetPart[]; }' is missing the following properties from type 'FactoryAssetSource': kind, frameId, origin, metersPerUnit, and 9 more.

@@ -10,7 +10,7 @@ import type { HvpBranchRequest } from "./branchSession";
 import type {HvpTerrainFragmentRequest} from "./terrainFragment";
 import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission} from "./bodyCutSession";
 import type { FactoryCargoSite } from "../../factory/fixtures/cargoSite";
-import type { FactoryFacilityRequest, FactoryFacilityRead,FactoryCargoOpenIntent } from "./factoryFacilitySession";
+import type { FactoryFacilityRequest, FactoryFacilityRead,FactoryCargoOpenIntent,FactoryCarrierRequest } from "./factoryFacilitySession";
 import { canonicalJson } from "../../resources/serialization";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import {validateHvpNeighborCheckpoint,type HvpNeighborCheckpoint} from "../runtime/residency";
@@ -68,6 +68,11 @@ export interface HvpPhysicsClient {
   publishFactoryFacility?(id:string):void;
   rollbackFactoryFacility?(id:string):Promise<void>;
   finalizeFactoryFacility?(id:string):Promise<void>;
+  prepareFactoryCarrier?(request:FactoryCarrierRequest,operation:"pickup"|"deposit"|"release"):Promise<FactoryFacilityRead>;
+  commitFactoryCarrier?(id:string):Promise<void>;
+  publishFactoryCarrier?(id:string):void;
+  rollbackFactoryCarrier?(id:string):Promise<void>;
+  finalizeFactoryCarrier?(id:string):Promise<void>;
   dispose(): Promise<void>;
 }
 
@@ -159,6 +164,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let mutating = false;
   let bodyPending=false;
   let factoryPending:{request:FactoryFacilityRequest;before:HvpPhysicsSnapshot;promoted:boolean}|undefined;
+  let carrierPending:{request:FactoryCarrierRequest;operation:"pickup"|"deposit"|"release";before:HvpPhysicsSnapshot;promoted:boolean}|undefined;
   let neighborPending:{id:string;next:HvpNeighborCheckpoint}|undefined;
   let restorePhase:string|undefined;
   let heldSnapshot: {id:number;value:HvpPhysicsSnapshot}|undefined;
@@ -235,6 +241,59 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     read() { if (failure !== undefined) { throw failure; } return snapshot!; },
     get clock(){return clock;},
     async openFactoryCargo(intent){if(mutating||bodyPending||!snapshot?.factoryFacilities||snapshot.factoryFacilities.state!=="Idle"||!["Running","Paused"].includes(snapshot.status))throw new Error("Factory Cargo Host unavailable");await send({kind:"OpenFactoryCargo",intent});const cargo=snapshot!.factoryFacilities!;if(!cargo.cargo?.opened||cargo.cargo.ownerId!==intent.ownerId||cargo.cargo.profileDigest!==intent.profileDigest)throw new Error("RecoveryHold: Cargo open receipt mismatch");return cargo;},
+    async prepareFactoryCarrier(request,operation){
+      if(!factoryEnabled||mutating||bodyPending||snapshot?.status!=="Paused"||snapshot.factoryFacilities?.state!=="Idle")throw new Error("Factory carrier requires an idle paused World");
+      const before=snapshot;mutating=true;heldSnapshot=undefined;carrierPending={request,operation,before,promoted:false};
+      try{await send({kind:"PrepareFactoryCarrier",request,operation},[],false);
+        const held=readHeldSnapshot()?.value,facilities=held?.factoryFacilities,c=facilities?.carrier;
+        if(!held||facilities?.state!=="PreparedHeld"||facilities.transactionId!==request.transactionId||facilities.revision!==request.expectedRevision
+          ||c?.transactionId!==request.transactionId||c.phase!=="PreparedHeld"||c.ownerId!==request.ownerId||c.profileDigest!==request.profileDigest||c.materialBinding!==request.materialBinding
+          ||c.colliderHandles.length!==5||held.ticks!==before.ticks||held.bodyCount!==before.bodyCount+(operation==="pickup"?1:0)||held.colliderCount!==before.colliderCount+(operation==="pickup"?5:0)
+          ||canonicalJson(facilities.owners)!==canonicalJson(before.factoryFacilities!.owners)
+          ||(operation!=="pickup"&&(c.bodyHandle!==before.factoryFacilities!.carrier?.bodyHandle||canonicalJson(c.colliderHandles)!==canonicalJson(before.factoryFacilities!.carrier?.colliderHandles))))throw new Error("Missing bound prepared carrier receipt");
+        return facilities;
+      }catch(error){
+        const held=readHeldSnapshot()?.value.factoryFacilities;
+        if(failure||held?.state==="RecoveryHold")throw new Error(`RecoveryHold: Carrier prepare uncertain: ${String(error)}`);
+        if(held?.transactionId===request.transactionId&&held.state!=="Idle"){
+          await send({kind:"RollbackFactoryCarrier",transactionId:request.transactionId});
+          if(canonicalJson(snapshot!.factoryFacilities)!==canonicalJson(before.factoryFacilities)||snapshot!.bodyCount!==before.bodyCount||snapshot!.colliderCount!==before.colliderCount||snapshot!.ticks!==before.ticks)throw new Error("RecoveryHold: Carrier prepare rollback not proven");
+        }
+        carrierPending=undefined;heldSnapshot=undefined;mutating=false;throw error;
+      }
+    },
+    async commitFactoryCarrier(id){
+      if(carrierPending?.request.transactionId!==id)throw new Error("Carrier transaction mismatch");
+      const prepared=readHeldSnapshot()?.value.factoryFacilities?.carrier;if(!prepared)throw new Error("Missing prepared carrier");
+      await send({kind:"CommitFactoryCarrier",transactionId:id},[],false);
+      const held=readHeldSnapshot()?.value,f=held?.factoryFacilities,c=f?.carrier;
+      if(!held||f?.state!=="PublishedHeld"||f.transactionId!==id||f.revision!==carrierPending.request.expectedRevision+1||c?.phase!=="PublishedHeld"
+        ||c.bodyHandle!==prepared.bodyHandle||canonicalJson(c.colliderHandles)!==canonicalJson(prepared.colliderHandles)||c.materialBinding!==prepared.materialBinding||c.profileDigest!==prepared.profileDigest
+        ||c.nativeMassKg!==prepared.nativeMassKg||held.ticks!==carrierPending.before.ticks)throw new Error("RecoveryHold: Missing exact committed carrier receipt");
+    },
+    publishFactoryCarrier(id){
+      const held=readHeldSnapshot();
+      if(!mutating||carrierPending?.request.transactionId!==id||carrierPending.promoted||held?.value.factoryFacilities?.state!=="PublishedHeld"||held.value.factoryFacilities.transactionId!==id)throw new Error("Missing exact held carrier publication");
+      snapshot=held.value;lastId=held.id;heldSnapshot=undefined;carrierPending.promoted=true;
+    },
+    async rollbackFactoryCarrier(id){
+      if(carrierPending?.request.transactionId!==id)throw new Error("Carrier rollback identity mismatch");
+      const before=carrierPending.before;await send({kind:"RollbackFactoryCarrier",transactionId:id});
+      if(canonicalJson(snapshot!.factoryFacilities)!==canonicalJson(before.factoryFacilities)||snapshot!.bodyCount!==before.bodyCount||snapshot!.colliderCount!==before.colliderCount||snapshot!.ticks!==before.ticks)throw new Error("RecoveryHold: Carrier rollback incomplete");
+      carrierPending=undefined;heldSnapshot=undefined;mutating=false;
+    },
+    async finalizeFactoryCarrier(id){
+      if(carrierPending?.request.transactionId!==id||!carrierPending.promoted)throw new Error("Carrier finalize requires publication");
+      const expected=snapshot!,c=expected.factoryFacilities!.carrier!,phase=carrierPending.operation==="pickup"?"Carrying":"Deposited";
+      await send({kind:"FinalizeFactoryCarrier",transactionId:id});const after=snapshot!,f=after.factoryFacilities;
+      const releasing=carrierPending.operation==="release";
+      if(f?.state!=="Idle"||f.revision!==expected.factoryFacilities!.revision||after.ticks!==expected.ticks
+        ||canonicalJson(f.owners)!==canonicalJson(expected.factoryFacilities!.owners)
+        ||(releasing?(f.carrier!==undefined||after.bodyCount!==expected.bodyCount-1||after.colliderCount!==expected.colliderCount-5):
+          (f.carrier?.phase!==phase||f.carrier.bodyHandle!==c.bodyHandle||canonicalJson(f.carrier.colliderHandles)!==canonicalJson(c.colliderHandles)
+            ||f.carrier.materialBinding!==c.materialBinding||after.bodyCount!==expected.bodyCount||after.colliderCount!==expected.colliderCount)))throw new Error("RecoveryHold: Carrier finalize receipt incomplete");
+      carrierPending=undefined;heldSnapshot=undefined;mutating=false;
+    },
     async prepareFactoryFacility(request){
       if(mutating||bodyPending||snapshot?.status!=="Paused"||snapshot.factoryFacilities?.state!=="Idle")throw new Error("Factory requires an idle paused World");
       mutating=true;heldSnapshot=undefined;factoryPending={request,before:snapshot,promoted:false};

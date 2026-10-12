@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-locomotion.test.ts",
+    "-t",
+    "W09 paired"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:14:48.301464+00:00",
+  "endedAtUtc": "2026-10-11T20:14:50.099853+00:00",
+  "elapsedSeconds": 1.798398904997157,
+  "exitCode": 1,
+  "rawBytes": 2583,
+  "rawSha256": "d10b5613bf9d2d7ece06537c2788633e1ae2712f85c20770456d975c43196118",
+  "fixture": "explicit synthetic supported real Rapier world; actual native player/300kg carrier and world.step, not D07 route proof"
+}

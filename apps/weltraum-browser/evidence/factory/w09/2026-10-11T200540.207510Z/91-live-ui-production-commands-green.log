@@ -1,0 +1,38 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t paid Former recipe|UI start is adopted|start reply stays pending
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (24 tests | 1 failed | 21 skipped) 1594ms
+   × W09 UI start is adopted only by the next confirmed joint interval and actual Native machine support 507ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 UI start is adopted only by the next confirmed joint interval and actual Native machine support
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Rejected', …(1) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "receipt": {
+-     "reason": "NativeMachineUnavailable",
++     "reason": "Error: NativeMachineUnavailable",
+    },
+    "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:62:100
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed | 21 skipped (24)
+   Start at  21:58:20
+   Duration  2.32s (transform 469ms, setup 0ms, import 596ms, tests 1.59s, environment 0ms)
+

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/facilitySession.test.ts",
+    "tests/unit/factory/cargoHandling.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:10:31.877119+00:00",
+  "endedAtUtc": "2026-10-11T20:10:36.030273+00:00",
+  "elapsedSeconds": 4.153161214002466,
+  "exitCode": 0,
+  "rawBytes": 401,
+  "rawSha256": "851cef7724bc690132b0049fd298035c3f343bccb1ba063b41c0dcc9cec26fe5",
+  "oracleAdjustment": "real Rapier float32 principal inertia compared within declared max(1e-6,2ULP32), prior strict-equality FAIL kept"
+}

@@ -1,0 +1,23 @@
+{
+  "sourceFiles": [
+    {
+      "path": "src/factory/session/dryFactorySlice.ts",
+      "sha256": "ddd2ff8cd718be451624bb3e5e709f86a48372a77a1e4899ced57f46e2ea6015",
+      "bytes": 30936
+    },
+    {
+      "path": "tests/unit/factory/dryFactorySlice.test.ts",
+      "sha256": "c1b65afb114370f0a4fc856e5fe41ace3e6ffe72faba9803643ac516b35d3a65",
+      "bytes": 35206
+    }
+  ],
+  "evidencePhases": {
+    "151": "FixtureFAIL canonical snapshot methods; no runtime correction",
+    "152": "one actual state alias AssertionRED plus two read-only mutation TypeError oracles",
+    "153": "three actual external output alias AssertionRED",
+    "154": "19 focused Guards PASS",
+    "155": "test typecheck TS7006 FAIL",
+    "156": "3 alias assertions PASS after test type annotation",
+    "157": "original build receipt authoritative"
+  }
+}

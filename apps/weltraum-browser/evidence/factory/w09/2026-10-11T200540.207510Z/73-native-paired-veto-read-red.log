@@ -1,0 +1,44 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t publishes the actual paired Native carrier veto
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (22 tests | 1 failed | 21 skipped) 478ms
+   × W09 publishes the actual paired Native carrier veto without moving poses or members and clears it only on adopted movement 442ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 publishes the actual paired Native carrier veto without moving poses or members and clears it only on adopted movement
+AssertionError: expected undefined to match object { reason: 'CarrierOverlap', …(1) }
+
+- Expected:
+{
+  "reason": "CarrierOverlap",
+  "targetMm": [
+    -6750,
+    2170,
+    11875,
+  ],
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:286:54
+    284|   const carrier=facilities.read().carrier!,body=world.getRigidBody(car…
+    285|   const target={...actor,x:-6.75};expect(facilities.preparePlayerMove(…
+    286|   expect((facilities.read() as any).lastCarrierVeto).toMatchObject({re…
+       |                                                      ^
+    287|   expect(body.translation()).toEqual(pose);expect([world.bodies.len(),…
+    288|   world.removeRigidBody(blocker);world.updateSceneQueries();const move…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 21 skipped (22)
+   Start at  21:33:25
+   Duration  1.77s (transform 897ms, setup 0ms, import 1.18s, tests 478ms, environment 0ms)
+

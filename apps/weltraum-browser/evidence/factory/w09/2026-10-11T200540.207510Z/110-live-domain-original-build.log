@@ -1,0 +1,15 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+src/factory/session/factorySession.ts(8,32): error TS2724: '"../production/productionStep"' has no exported member named 'ProductionStart'. Did you mean 'ProductionState'?
+src/factory/session/factorySession.ts(164,9): error TS2322: Type 'Readonly<{ read: () => FactoryUiReadModel; subscribe: (listener: (snapshot: FactoryUiReadModel) => void) => () => boolean; readReceipt: (commandId: string) => FactoryUiReceipt | undefined; setPanelFocus: (panel: FactoryUiPanel | null) => void; submit: (incoming: FactoryUiCommand) => Promise<...>; }>' is not assignable to type 'FactoryUiPort'.
+  The types returned by 'submit(...)' are incompatible between these types.
+    Type 'Promise<FactoryUiResult | { status: string; receipt: { commandId: string; requestCanonicalJson: string; status: string; reason: string; publicationRevision: number; binding: FactoryUiBinding; }; }>' is not assignable to type 'Promise<FactoryUiResult>'.
+      Type 'FactoryUiResult | { status: string; receipt: { commandId: string; requestCanonicalJson: string; status: string; reason: string; publicationRevision: number; binding: FactoryUiBinding; }; }' is not assignable to type 'FactoryUiResult'.
+        Type '{ status: string; receipt: { commandId: string; requestCanonicalJson: string; status: string; reason: string; publicationRevision: number; binding: FactoryUiBinding; }; }' is not assignable to type 'FactoryUiResult'.
+          Types of property 'status' are incompatible.
+            Type 'string' is not assignable to type '"Committed" | "NoOp" | "RecoveryHold" | "Rejected"'.
+tests/unit/factory/hostLifecycle.test.ts(37,113): error TS6133: 'profile' is declared but its value is never read.
+tests/unit/hvp-bootstrap.test.ts(285,18): error TS2352: Conversion of type '{ request: { transactionId: string; instanceId: string; definitionSourceId: string; centerMm: number[]; quarterTurns: number; }; installation: { instanceId: string; }; profile: FactoryInstallationProfile; }' to type 'FactoryPlacementPlan' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ request: { transactionId: string; instanceId: string; definitionSourceId: string; centerMm: number[]; quarterTurns: number; }; installation: { instanceId: string; }; profile: FactoryInstallationProfile; }' is missing the following properties from type 'FactoryPlacementPlan': status, baseBytes, materialCandidate

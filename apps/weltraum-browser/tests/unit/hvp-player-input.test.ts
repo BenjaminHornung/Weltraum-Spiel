@@ -8,6 +8,11 @@ import { HVP_PLAYER_PROFILE, type HvpPlayerInput } from "../../src/hestia-protot
 import type { HvpPhysicsMessage, HvpPhysicsReply } from "../../src/hestia-prototype/physics/physicsWorker";
 import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
 import { HVP_SOURCE_MIN_METERS } from "../../src/hvp/hvpCoastSource";
+import { createFactoryCargoSite } from "../../src/factory/fixtures/cargoSite";
+import { materializeFactoryStartSite } from "../../src/factory/fixtures/startSite";
+import { createResourceContainerState } from "../../src/resources/containers";
+import { canonicalJson } from "../../src/resources/serialization";
+import { readCargoHandlingProfile } from "../../src/factory/construction/cargoHandlingProfile";
 
 // Explicit transport harness only: empty sources need no collision jobs. Native
 // snapshots below come from real Rapier sessions; no simulated axis pose or tick.
@@ -79,15 +84,16 @@ class NativeTransport {
   onerror = null; onmessageerror = null; terminated = false;
   messages: HvpPhysicsMessage[] = []; reads: HvpPhysicsMessage[] = []; session!: HvpPhysicsSession;
   supportedFixture = false;
+  factoryCargoFixture = false;
   holdInputAcks=false;inputAcks:number[]=[];
   constructor() { NativeTransport.current = this; }
   postMessage(message: HvpPhysicsMessage) {
     this.messages.push(structuredClone(message));
     void (async () => {
-      if (message.kind === "Initialize") this.session = await createHvpPhysicsSession(this.supportedFixture ? [supportedGround()]
-        : message.sectors, message.spawn, message.gravity, this.supportedFixture ? {
+      if (message.kind === "Initialize") this.session = await createHvpPhysicsSession(this.factoryCargoFixture ? [{ vertices: new Float32Array([-16,1.25,-16,-16,1.25,16,16,1.25,16,16,1.25,-16]),indices:new Uint32Array([0,1,2,0,2,3]) }] : this.supportedFixture ? [supportedGround()]
+        : message.sectors, message.spawn, message.gravity, this.factoryCargoFixture ? {spawn:{x:-5.75,y:2.17,z:11.875},coverage:[{minX:-16,minZ:-16,maxX:16,maxZ:16}]} : this.supportedFixture ? {
         spawn: { x: 0, y: 0.92, z: 0 }, coverage: [{ minX: -4, minZ: -4, maxX: 4, maxZ: 4 }]
-      } : message.player, message.inertiaSpawn, message.branchSpawn, message.sessionId, undefined, message.branchKind, message.factoryEnabled);
+      } : message.player, message.inertiaSpawn, message.branchSpawn, message.sessionId, undefined, message.branchKind, message.factoryEnabled,message.initialFactoryCargo);
       else if (message.kind === "Read") { if (message.input) this.session.input(message.input); this.reads.push(message); return; }
       else if(message.kind==="FactoryInput"){
         this.session.factoryInput(message.input,message.cancelPendingJump);
@@ -101,6 +107,11 @@ class NativeTransport {
       else if (message.kind === "PrepareFactoryFacility") this.session.prepareFactoryFacility(message.request);
       else if (message.kind === "CommitFactoryFacility") this.session.commitFactoryFacility(message.transactionId);
       else if (message.kind === "RollbackFactoryFacility") this.session.rollbackFactoryFacility(message.transactionId);
+      else if (message.kind === "OpenFactoryCargo") this.session.openFactoryCargo(message.intent);
+      else if (message.kind === "PrepareFactoryCarrier") this.session.prepareFactoryCarrier(message.request,message.operation);
+      else if (message.kind === "CommitFactoryCarrier") this.session.commitFactoryCarrier(message.transactionId);
+      else if (message.kind === "RollbackFactoryCarrier") this.session.rollbackFactoryCarrier(message.transactionId);
+      else if (message.kind === "FinalizeFactoryCarrier") this.session.finalizeFactoryCarrier(message.transactionId);
       else if (message.kind === "Dispose") this.session.dispose();
       this.reply(message.id);
     })().catch(error => { this.onmessage?.({ data: { id: message.id, rejected: String(error) } } as MessageEvent<HvpPhysicsReply>); });
@@ -116,6 +127,35 @@ const clientHarness = async (factory = true, supported = false, onTimings?:(batc
     { x: 0, y: 2, z: 0 }, undefined, undefined, undefined, "branch", onTimings, factory);
   const worker = NativeTransport.current; cleanup.push(() => client.dispose()); return { client, worker };
 };
+
+it("W09 real Native carrier transport withholds every prepared and committed receipt until joint Host publication", async () => {
+  vi.stubGlobal("Worker", class extends NativeTransport { factoryCargoFixture = true; });
+  const site = createFactoryCargoSite(materializeFactoryStartSite());
+  const client = await createHvpPhysicsClient([], {x:10,y:4,z:10}, new AbortController().signal, undefined, undefined, undefined, undefined, "branch", undefined, true, site);
+  cleanup.push(() => client.dispose()); const worker = NativeTransport.current;
+  await client.command("Play"); for (let i=0;i<10;i++) worker.session.advance(1/60); await client.command("Pause");
+  const cargo = client.read().factoryFacilities!.cargo!;
+  await client.openFactoryCargo!({ownerId:cargo.ownerId,profileDigest:cargo.profileDigest,expectedRevision:client.read().factoryFacilities!.revision,expectedTerrainRevision:0});
+  const before=client.read(), profile=readCargoHandlingProfile(createFp02Fixture("cargo").catalog,"C27-PACK")!;
+  const request={transactionId:"transport_pickup_c27",ownerId:"factory_carrier",profileId:profile.profileId,profileDigest:profile.digest,expectedRevision:before.factoryFacilities!.revision,
+    expectedTerrainRevision:0,sourceContainerId:site.containerId,materialBinding:"complete-real-unit-material-candidate"};
+  const port=client as any; let error:unknown;
+  try { if(port.prepareFactoryCarrier) await port.prepareFactoryCarrier(request,"pickup"); } catch(e){error=e;}
+  expect(error).toBeUndefined(); expect(worker.session.read().factoryFacilities?.carrier?.phase).toBe("PreparedHeld");
+  expect(client.read()).toBe(before);
+  await port.commitFactoryCarrier(request.transactionId); expect(worker.session.read().factoryFacilities?.carrier?.phase).toBe("PublishedHeld"); expect(client.read()).toBe(before);
+  port.publishFactoryCarrier(request.transactionId); expect(client.read().factoryFacilities?.carrier?.phase).toBe("PublishedHeld");
+  await port.finalizeFactoryCarrier(request.transactionId); expect(client.read().factoryFacilities?.carrier?.phase).toBe("Carrying");
+  expect(client.read().ticks).toBe(before.ticks); expect(client.read().bodyCount).toBe(before.bodyCount+1); expect(client.read().colliderCount).toBe(before.colliderCount+5);
+  const carrying=client.read(),cid=carrying.factoryFacilities!.carrier!.containerId;
+  const empty=createResourceContainerState({containerId:cid,ownerId:"fp02_wreck_owner",contents:[]},createFp02Fixture("cargo").catalog.resources);
+  const release={...request,transactionId:"transport_release_c27",expectedRevision:carrying.factoryFacilities!.revision,sourceContainerId:cid,emptyCustodyCanonicalJson:empty.canonicalJson,materialBinding:canonicalJson({containers:[{stateBytes:empty.canonicalJson}]})};
+  await port.prepareFactoryCarrier(release,"release");expect(client.read()).toBe(carrying);
+  await port.commitFactoryCarrier(release.transactionId);expect(client.read()).toBe(carrying);
+  port.publishFactoryCarrier(release.transactionId);await port.finalizeFactoryCarrier(release.transactionId);
+  expect(client.read().factoryFacilities!.carrier).toBeUndefined();expect(client.read().bodyCount).toBe(before.bodyCount);expect(client.read().colliderCount).toBe(before.colliderCount);expect(client.read().ticks).toBe(before.ticks);
+
+});
 
 // Explicit physical test fixture, not a claim about source/Factory site support.
 // The floor is a real Native static trimesh and its complete coverage contains

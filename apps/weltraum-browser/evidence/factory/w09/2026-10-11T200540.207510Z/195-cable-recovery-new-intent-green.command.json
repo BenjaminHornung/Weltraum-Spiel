@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "-t",
+    "exact Cable joint outcome|Native-bound Cable connection"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-12T00:04:04.906019+00:00",
+  "endedAtUtc": "2026-10-12T00:04:13.948966+00:00",
+  "elapsedSeconds": 9.043317674004356,
+  "exitCode": 0,
+  "rawBytes": 429,
+  "rawSha256": "874e2213c4f291a2423ecd371815e46441754e15409b420af5d25ca385b6c882"
+}

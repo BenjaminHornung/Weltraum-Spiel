@@ -1,0 +1,20 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/cargoHandling.test.ts",
+    "tests/unit/factory/facilitySession.test.ts",
+    "tests/unit/factory/dryFactorySlice.test.ts",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "tests/unit/hvp-player-input.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T21:08:41.736614+00:00",
+  "endedAtUtc": "2026-10-11T21:08:52.987583+00:00",
+  "elapsedSeconds": 11.272650298997178,
+  "exitCode": 0,
+  "rawBytes": 522,
+  "rawSha256": "02a2cc8bc7c3c99a0e715bafa63ad16e7e77563da1ad5c00e745422a2d479a58"
+}

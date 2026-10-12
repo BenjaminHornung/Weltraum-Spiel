@@ -1,0 +1,17 @@
+[
+  {
+    "path": "tests/unit/factory/facilitySession.test.ts",
+    "sha256": "4f43c12b966185530099c2f7abdf1fd792854d5406721d2d7f0ac04684193cb9",
+    "bytes": 39158
+  },
+  {
+    "path": "src/factory/construction/cargoHandlingProfile.ts",
+    "sha256": "6c26cc64eb03e62dbe7bacc44b72101feeae645e4dabdd105a424a9bb64e0369",
+    "bytes": 4599
+  },
+  {
+    "path": "src/factory/factoryEntry.ts",
+    "sha256": "ecba44d926e7d19ce22fb30573801d00d203a05dd950fc591945f264457b50ca",
+    "bytes": 13665
+  }
+]

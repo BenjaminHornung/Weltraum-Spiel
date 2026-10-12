@@ -1,0 +1,34 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t keeps the sole depot slot
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (19 tests | 1 failed | 18 skipped) 477ms
+     × keeps the sole depot slot occupied until an exact empty-custody receipt releases all five colliders, then permits reuse 441ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 paid SAME-world Native carrier > keeps the sole depot slot occupied until an exact empty-custody receipt releases all five colliders, then permits reuse
+AssertionError: expected 'Carrying' to be 'PreparedHeld' // Object.is equality
+
+Expected: "PreparedHeld"
+Received: "Carrying"
+
+ ❯ tests/unit/factory/facilitySession.test.ts:129:90
+    127|       const release={...command,transactionId:"release_full_custody",s…
+    128|         emptyCustodyCanonicalJson:empty.canonicalJson,materialBinding:…
+    129|       facilities.prepareCarrierRelease(release);expect(facilities.read…
+       |                                                                                          ^
+    130|       facilities.commitCarrier(release.transactionId);facilities.rollb…
+    131|       facilities.prepareCarrierRelease(release);facilities.commitCarri…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 18 skipped (19)
+   Start at  20:38:47
+   Duration  1.62s (transform 794ms, setup 0ms, import 1.03s, tests 477ms, environment 0ms)
+

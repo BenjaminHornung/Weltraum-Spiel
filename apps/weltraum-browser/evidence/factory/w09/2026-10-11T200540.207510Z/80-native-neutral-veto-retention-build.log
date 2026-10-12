@@ -1,0 +1,30 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+vite v8.1.5 building client environment for production...
+[2Ktransforming...✓ 305 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/factory.html                                0.80 kB │ gzip:   0.40 kB
+dist/index.html                                 40.84 kB │ gzip:   7.37 kB
+dist/assets/streamingWorker-CZ5H7ot8.js        200.14 kB
+dist/assets/physicsWorker-D3b4UvNh.js        2,462.60 kB
+dist/assets/hvpBootstrap-GeJ96uLU.css          170.33 kB │ gzip:  27.08 kB
+dist/assets/hash-_jyFVLd7.js                     1.15 kB │ gzip:   0.62 kB │ map:     4.67 kB
+dist/assets/cargoSite-CFzAlcVO.js                1.93 kB │ gzip:   1.01 kB │ map:     5.93 kB
+dist/assets/installationProfile-DMR3QCRc.js      2.59 kB │ gzip:   1.28 kB │ map:     8.77 kB
+dist/assets/hvp-DIF1-VIU.js                      4.03 kB │ gzip:   1.65 kB
+dist/assets/surface-lab-DYlx7_wk.js             56.21 kB │ gzip:  18.42 kB │ map:   221.66 kB
+dist/assets/browserBridge-D6Vr7JMl.js           61.70 kB │ gzip:  14.08 kB │ map:   179.80 kB
+dist/assets/factoryAssets-BvSq_Tbs.js           63.39 kB │ gzip:  16.38 kB │ map:   207.48 kB
+dist/assets/factory-D2TR6MPH.js                132.42 kB │ gzip:  39.43 kB │ map:   418.25 kB
+dist/assets/main-D06CXf8Q.js                   336.48 kB │ gzip:  91.93 kB │ map: 1,220.83 kB
+dist/assets/hvpBootstrap-mlRCSrj0.js         1,257.61 kB │ gzip: 337.77 kB │ map: 5,195.24 kB
+
+✓ built in 1.53s
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

@@ -1,0 +1,33 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t actual unchanged Source admits reachable
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+stdout | tests/unit/factory/facilitySession.test.ts > W09 actual unchanged Source admits reachable paid sockets for fp06.line.belt_4m / CABLE4750
+{"diagnostic":"bounded actual Source socket admission","definitionId":"fp06.line.belt_4m","sourceDigest":"e62aea8a","candidates":150,"nearestCandidate":{"x":-4.125,"y":2.17,"z":3.125,"score":4.132745804757331},"ports":[{"portId":"power_battery","sourcePortId":"fp02.device.battery_4kwh:POWER","instanceId":"battery","profileDigest":"04958937","sourceDigest":"658cb4f4","installationRevision":1,"terrainRevision":0,"facilityRevision":2,"positionMm":[-1750,2500,3000],"outwardNormal":[1,0,0],"role":"PowerBidirectional","confirmed":false,"accessible":false},{"portId":"power_target","sourcePortId":"fp06.line.belt_4m:POWER-IN","instanceId":"target","profileDigest":"dc0c0a5c","sourceDigest":"67d0eaf6","installationRevision":2,"terrainRevision":0,"facilityRevision":2,"positionMm":[-5875,2250,3250],"outwardNormal":[1,0,0],"role":"PowerConsumer","confirmed":true,"accessible":true}],"production":[]}
+
+stdout | tests/unit/factory/facilitySession.test.ts > W09 actual unchanged Source admits reachable paid sockets for B07 / CABLE8000
+{"diagnostic":"bounded actual Source socket admission","definitionId":"B07","sourceDigest":"e62aea8a","candidates":13,"nearestCandidate":{"x":-3.375,"y":2.17,"z":0.5,"score":5.6858785670671335},"ports":[{"portId":"power_battery","sourcePortId":"fp02.device.battery_4kwh:POWER","instanceId":"battery","profileDigest":"04958937","sourceDigest":"658cb4f4","installationRevision":1,"terrainRevision":0,"facilityRevision":2,"positionMm":[-1750,2500,3000],"outwardNormal":[1,0,0],"role":"PowerBidirectional","confirmed":false,"accessible":false},{"portId":"power_target","sourcePortId":"B07:POWER-IN","instanceId":"target","profileDigest":"e567f7ef","sourceDigest":"13c8ba14","installationRevision":2,"terrainRevision":0,"facilityRevision":2,"positionMm":[-4875,2625,-1750],"outwardNormal":[1,0,0],"role":"PowerConsumer","confirmed":true,"accessible":true}],"production":[{"instanceId":"target","profileDigest":"e567f7ef","sourceDigest":"13c8ba14","installationRevision":2,"terrainRevision":0,"facilityRevision":2,"confirmed":true,"supported":true,"serviceClear":true,"sweepClear":true,"accessible":true}]}
+
+ ❯ tests/unit/factory/facilitySession.test.ts (30 tests | 2 failed | 28 skipped) 7921ms
+   × W09 actual unchanged Source admits reachable paid sockets for fp06.line.belt_4m / CABLE4750 3836ms
+   × W09 actual unchanged Source admits reachable paid sockets for B07 / CABLE8000 4051ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 actual unchanged Source admits reachable paid sockets for fp06.line.belt_4m / CABLE4750
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 actual unchanged Source admits reachable paid sockets for B07 / CABLE8000
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/facilitySession.test.ts:408:20
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 28 skipped (30)
+   Start at  23:40:43
+   Duration  9.15s (transform 883ms, setup 0ms, import 1.13s, tests 7.92s, environment 0ms)
+

@@ -1,0 +1,34 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t technology recipe requirements
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (37 tests | 1 failed | 36 skipped) 37ms
+   × W09 technology recipe requirements retain exact physical units and actual Host availability 36ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W09 technology recipe requirements retain exact physical units and actual Host availability
+AssertionError: expected '8000000 mm Geprüfter Schiffsstahl; pa…' to contain '8 kg'
+
+Expected: "8 kg"
+Received: "8000000 mm Geprüfter Schiffsstahl; passende bezahlte Maschine/Werkzeuge, lokaler Input und freie Ausgänge Im Prototyp als technische S0-/Prozessfähigkeit unterstützt; Material, Aufbau und Betrieb werden separat geprüft Quelle: FP02:5.2:REC-01-CUT"
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:448:115
+    446| it("W09 technology recipe requirements retain exact physical units and…
+    447|  const f=hostFixture(0),session=await mountFactorySession(f.host,catal…
+    448|   const before=session.ui.read();expect(before.technologies.find(t=>t.…
+       |                                                                                                                   ^
+    449|   f.publish(0,{confirmed:false,holdReason:"CoverageHold"});const held=…
+    450|   expect(held.technologies.find(t=>t.id==="B06")).toMatchObject({statu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 36 skipped (37)
+   Start at  23:51:48
+   Duration  708ms (transform 442ms, setup 0ms, import 560ms, tests 37ms, environment 0ms)
+

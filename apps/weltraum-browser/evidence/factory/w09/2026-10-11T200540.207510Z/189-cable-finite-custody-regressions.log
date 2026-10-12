@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoHandling.test.ts tests/unit/factory/hostLifecycle.test.ts -t exactly19.75m|closed paid cargo custody|partial|Source-layout connection|paid Raw bin|exact paid whole C07|only Native-bound paid power
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  2 passed (2)
+      Tests  10 passed | 41 skipped (51)
+   Start at  23:55:45
+   Duration  2.77s (transform 420ms, setup 0ms, import 628ms, tests 1.93s, environment 0ms)
+

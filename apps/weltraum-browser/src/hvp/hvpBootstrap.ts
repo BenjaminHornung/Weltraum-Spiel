@@ -1,7 +1,7 @@
 import type { FactoryPlacementPlan, FactoryPlacementRequest } from "../factory/construction/placement";
-import type { FactoryFacilityRequest } from "../hestia-prototype/physics/factoryFacilitySession";
+import type { FactoryCarrierRequest, FactoryFacilityRequest } from "../hestia-prototype/physics/factoryFacilitySession";
 import type { FactorySourceProfile, FactoryNativeConstructionPort } from "../factory/session/hostPort";
-import type { FactoryHostExtension, FactoryHostExtensionHandle, FactoryHostPort, FactoryHostView } from "../factory/session/hostPort";
+import type { FactoryHostExtension, FactoryHostExtensionHandle, FactoryHostPort, FactoryHostView, FactoryNativeHandlingPort,FactoryUiPanel } from "../factory/session/hostPort";
 import * as THREE from "three";
 import {createHvpListeners} from "../hestia-prototype/runtime/listeners";
 import {createHvpNeighborController,type HvpNeighborStage} from "../hestia-prototype/runtime/neighborController";
@@ -784,6 +784,7 @@ export const startHvp = async (
   let factoryMount: Promise<FactoryHostExtensionHandle> | undefined;
   let factoryHandle: FactoryHostExtensionHandle | undefined;
   const factoryListeners = new Set<(view: FactoryHostView) => void>();
+  let factoryPanelFocused=false;
   const factoryBlocked = () => factoryHandle !== undefined && !factoryHandle.isQuiescent();
   let publishFactoryView: (() => FactoryHostView) | undefined;
   let readFactoryView: (() => FactoryHostView) | undefined;
@@ -1362,7 +1363,7 @@ export const startHvp = async (
       isInputBlocked: () => playerInput?.active ?? false });
     playerInput = createHvpPlayerInput(canvas, backend.camera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
-    },{confirm:()=>{if (!factoryBlocked()) void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||factoryBlocked()||Boolean(dormancy?.read().recoveryHold)||Boolean(overrides.factoryExtension&&!factoryCanResume()),overrides.factorySourceProfile!==undefined);
+    },{confirm:()=>{if (!factoryBlocked()) void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||factoryPanelFocused||factoryBlocked()||Boolean(dormancy?.read().recoveryHold)||Boolean(overrides.factoryExtension&&!factoryCanResume()),overrides.factorySourceProfile!==undefined);
     if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
     const dropProfile = createMaterialProfile({ id: materialProfileId("hvp:drop-limestone-v1"), kind: "BasicLit",
       baseColor: { r: 0.8, g: 0.35, b: 0.12 }, opacity: 1, doubleSided: false, wireframe: false, depthWrite: true });
@@ -2108,6 +2109,17 @@ export const startHvp = async (
           hud!.update("Ready", camera!.readPose(), stats);
         },
         readPhysics: () => physics!.read(),
+        readContextHint:()=>{
+          if(!overrides.factoryExtension)return undefined;
+          const facilities=physics!.read().factoryFacilities,carrier=facilities?.carrier;
+          if(!facilities||!carrier)return undefined;
+          const mass=(carrier.massMg/1_000_000).toFixed(1),keys="WASD: Gehen und Transportieren · Esc: Pause / Frachtsteuerung · V: Perspektive";
+          if(facilities.state==="RecoveryHold"||!["Carrying","Deposited"].includes(carrier.phase))return{
+            target:`Transport angehalten: ${mass} kg`,feedback:"Transportübergang noch nicht bestätigt.",cut:"Fracht bleibt gebunden; bestätigten Zustand abwarten.",keys};
+          if(carrier.phase==="Deposited")return{target:`Depot: ${mass} kg`,feedback:carrier.accessible?"Fracht liegt am erreichbaren Depot.":"Zum Depot zurückgehen, um die Fracht zu bedienen.",cut:"Über Frachtsteuerung zur lokalen Anlage liefern oder zur Quelle zurückbringen.",keys};
+          const reasons:Record<string,string>={CarrierOverlap:"Hindernis im Transportweg. Einen freien Weg wählen.",CarrierSweep:"Hindernis im Transportweg. Einen freien Weg wählen.",CarrierSupport:"Transportfläche trägt die Fracht nicht vollständig.",CarrierCoverage:"Transportfläche noch nicht vollständig bestätigt.",CarrierGroundHeight:"Transport benötigt eine ebene Fläche."};
+          return{target:`Transport: ${mass} kg`,feedback:facilities.lastCarrierVeto?(reasons[facilities.lastCarrierVeto.reason]??"Bewegung angehalten: Transportweg nicht bestätigt."):"WASD bewegt Spieler und Fracht gemeinsam; Hindernisse stoppen beide.",cut:"In der Frachtsteuerung: Hier ablegen, lokal liefern oder zurückbringen.",keys};
+        },
         physicsCommand: kind => {
           if (overrides.factoryExtension && (kind === "Resume" || kind === "Drop") && !factoryCanResume()) {
             return Promise.reject(new Error("Factory host busy, hidden or unconfirmed"));
@@ -2162,6 +2174,8 @@ export const startHvp = async (
 
     if (overrides.factoryExtension) {
       const current = () => !disposed && hvpMountEpoch === myEpoch;
+      // An admitted internal command owns the Factory barrier; all native/host holds still apply.
+      const nativeFactoryConfirmed=()=>{const native=physics!.read();return confirmed(true)&&!saveBusy&&!saveHold&&(!native.factoryFacilities||native.factoryFacilities.state==="Idle")&&["Running","Paused"].includes(native.status);};
       const read = (): FactoryHostView => {
         if (!current()) throw new Error("Factory host disposed or superseded");
         const root = terrainRoot.read(), native = physics!.read();
@@ -2171,7 +2185,9 @@ export const startHvp = async (
             baseDigest: root.baseDigest, cellMeters: root.cellMeters, originMeters: root.originMeters,
             sizeX: root.sizeX, sizeY: root.sizeY, sizeZ: root.sizeZ }) });
       };
+      let syncCarrierProjection=()=>{};
       publishFactoryView = () => {
+        syncCarrierProjection();
         const view = read();
         for (const listener of factoryListeners) listener(view);
         return view;
@@ -2181,11 +2197,12 @@ export const startHvp = async (
       const installationProfiles=await import("../factory/construction/installationProfile");
       type FactoryScene={id:string;keys:readonly RepresentationKey[];artifacts:MeshArtifact[];transforms:readonly RepresentationTransformSnapshot[];published:boolean};
       const factoryScenes=new Map<string,FactoryScene>();
-      const factoryStages=new Map<string,{request:FactoryFacilityRequest;scene?:FactoryScene}>();
+      const factoryStages=new Map<string,{request:FactoryFacilityRequest;scene?:FactoryScene;consumedProjection?:{scene:FactoryScene;published:boolean;activeKeys:readonly RepresentationKey[];registered:boolean}}>();
+      let carrierScene:FactoryScene|undefined,carrierProjectionRevision=0,carrierPoseKey="",carrierOperation:"pickup"|"deposit"|"release"|undefined,carrierCaptureCostKey:string|undefined;
       let ghost:FactoryScene|undefined;
       let ghostDefinition:string|undefined;
       // Closed S0 definitions share bounded presentation slots; paid Native instance IDs stay separate.
-      const ghostSlots=new Map(["B06","B07","fp02.device.battery_4kwh","fp02.device.distribution_40kw","fp02.device.pv_pack_2kwp","fp02.device.wind_pack_6kw"].map((definition,index)=>[definition,{id:`ghost:slot_${index}`,revision:0}]));
+      const ghostSlots=new Map(["B06","B07","B05","B09","fp02.comp.small_brace","fp02.device.battery_4kwh","fp02.device.distribution_40kw","fp02.device.pv_pack_2kwp","fp02.device.wind_pack_6kw"].map((definition,index)=>[definition,{id:`ghost:slot_${index}`,revision:0}]));
       const factoryPose=(keys:readonly RepresentationKey[],request:FactoryPlacementRequest):readonly RepresentationTransformSnapshot[]=>{
         if(request.centerMm.length!==3||!request.centerMm.every(Number.isFinite)||!Number.isInteger(request.quarterTurns)||request.quarterTurns<0||request.quarterTurns>3)throw new Error("Invalid Factory projection pose");
         return keys.map(key=>({representationKey:key,positionRelative:{x:request.centerMm[0]!/1000,y:request.centerMm[1]!/1000,z:request.centerMm[2]!/1000},orientation:{x:0,y:Math.sin(request.quarterTurns*Math.PI/4),z:0,w:Math.cos(request.quarterTurns*Math.PI/4)},scale:{x:1,y:1,z:1}}));
@@ -2219,25 +2236,40 @@ export const startHvp = async (
           factoryScenes.set(initialFactoryCargo.ownerId,{id:initialFactoryCargo.ownerId,keys:[key],artifacts:[artifact],transforms:[{representationKey:key,positionRelative:{x:-5.5,y:2,z:13.125},orientation:{x:0,y:0,z:0,w:1},scale:{x:1,y:1,z:1}}],published:true});refreshFactoryProjection();
         }finally{geometry.dispose();}
       }
+      const stageCarrierScene=(native:import("../hestia-prototype/physics/factoryFacilitySession").FactoryNativeCarrierRead|undefined):FactoryScene=>{
+        if(!native||!Number.isSafeInteger(carrierProjectionRevision+1))throw Error("Carrier projection unavailable");
+        carrierProjectionRevision++;
+        const parts=factoryAssets.createFactoryCarrierProjection(native.profileId,native.profileDigest,carrierProjectionRevision),keys=parts.map(part=>part.artifact.representationKey);
+        for(const key of keys)managedFactoryKeys.add(key);
+        const scene:FactoryScene={id:"carrier:slot",keys,artifacts:[],transforms:factoryPose(keys,{transactionId:native.transactionId,instanceId:native.ownerId,definitionSourceId:native.profileId,centerMm:native.positionMm,quarterTurns:1}),published:false};
+        try{for(const part of parts){const artifact=createMeshArtifact({...part.artifact,frameId:frame});requireAccepted(presentation.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact,materialProfiles:part.materialProfiles})),"Carrier hidden mesh stage");scene.artifacts.push(artifact);plainTerrainLeases.push({nodeKey:artifact.representationKey,lease:materialFactory.acquire(part.materialProfiles)});}}
+        catch(error){try{dropFactoryScene(scene);}catch(rollback){carrierScene=scene;throw new Error(`RecoveryHold: Carrier hidden projection retirement unproven: ${String(error)}; ${String(rollback)}`);}throw error;}return scene;
+      };
+      syncCarrierProjection=()=>{const carrier=physics!.read().factoryFacilities?.carrier;if(!carrierScene?.published||!carrier)return;const key=JSON.stringify(carrier.positionMm);if(key===carrierPoseKey)return;carrierPoseKey=key;carrierScene.transforms=factoryPose(carrierScene.keys,{transactionId:carrier.transactionId,instanceId:carrier.ownerId,definitionSourceId:carrier.profileId,centerMm:carrier.positionMm,quarterTurns:1});refreshFactoryProjection();};
       const construction:FactoryNativeConstructionPort=Object.freeze({
-        openCargo:async()=>{const native=physics!.read(),cargo=native.factoryFacilities?.cargo;if(!cargo||!physics!.openFactoryCargo||!read().confirmed)throw new Error("Factory Cargo host unavailable");await physics!.openFactoryCargo({ownerId:cargo.ownerId,profileDigest:cargo.profileDigest,expectedTerrainRevision:native.terrainGeneration,expectedRevision:native.factoryFacilities!.revision});publishFactoryView!();},
+        openCargo:async()=>{const native=physics!.read(),cargo=native.factoryFacilities?.cargo;if(!cargo||!physics!.openFactoryCargo||!nativeFactoryConfirmed())throw new Error("Factory Cargo host unavailable");await physics!.openFactoryCargo({ownerId:cargo.ownerId,profileDigest:cargo.profileDigest,expectedTerrainRevision:native.terrainGeneration,expectedRevision:native.factoryFacilities!.revision});publishFactoryView!();},
         readFacts:()=>{const native=physics!.read(),view=read(),position=native.player?.position;
           if(!position)throw new Error("Factory requires the actual native player");
           return {binding:{sessionId:view.sessionId,epoch:view.epoch,terrainRevision:view.terrain.revision,sourceDigest:view.terrain.sourceDigest,baseDigest:view.terrain.baseDigest,facilityRevision:native.factoryFacilities?.revision??0},
             cargoAccess:native.factoryFacilities?.cargo,
+            ...(native.factoryFacilities?.carrier?.phase==="Deposited"?{buildDepot:{containerId:native.factoryFacilities.carrier.containerId,profileId:native.factoryFacilities.carrier.profileId,profileDigest:native.factoryFacilities.carrier.profileDigest,accessible:native.factoryFacilities.carrier.accessible===true,bodyHandle:native.factoryFacilities.carrier.bodyHandle}}:{}),
             actor:{actorId:"hvp_player",ownerId:"fp02_wreck_owner",positionMm:[position.x*1000,position.y*1000,position.z*1000],canBuild:confirmed(true)&&["Running","Paused"].includes(native.status)},
             terrain:{cellMm:125,originMm:[view.terrain.originMeters.x*1000,view.terrain.originMeters.y*1000,view.terrain.originMeters.z*1000],size:[view.terrain.sizeX,view.terrain.sizeY,view.terrain.sizeZ],readSlot:(x:number,y:number,z:number)=>hostPort.readTerrainSlot(x,y,z)}};},
         prepareNative:async(request:FactoryFacilityRequest)=>{if(!physics!.prepareFactoryFacility)throw new Error("Native Factory capability missing");const estimate=costFor(request.definitionRef.sourceId,request.materialBinding.length),native=physics!.read();factoryCosts.set(request.instanceId,{...estimate,cpu:estimate.cpu+native.collisionBytes*2+(native.colliderCount+native.bodyCount)*2048});
           try{admitFactory();const receipt=await physics!.prepareFactoryFacility(request);factoryStages.set(request.transactionId,{request});return receipt;}catch(error){factoryCosts.delete(request.instanceId);throw error;}},
         commitNative:async(id:string)=>{if(!physics!.commitFactoryFacility)throw new Error("Native Factory capability missing");await physics!.commitFactoryFacility(id);},
-        publishNative:(id:string)=>{if(!physics!.publishFactoryFacility)throw new Error("Native Factory capability missing");physics!.publishFactoryFacility(id);},
+        publishNative:(id:string)=>{if(!physics!.publishFactoryFacility)throw new Error("Native Factory capability missing");const stage=factoryStages.get(id);
+          if(stage?.request.consumedCustody&&carrierScene)stage.consumedProjection={scene:carrierScene,published:carrierScene.published,activeKeys:carrierScene.keys.filter(key=>activeFactoryKeys.has(key)),registered:factoryScenes.has(carrierScene.id)};
+          physics!.publishFactoryFacility(id);if(stage?.consumedProjection){carrierScene!.published=false;for(const key of carrierScene!.keys)activeFactoryKeys.delete(key);refreshFactoryProjection();}},
         rollbackNative:async(id:string)=>{if(!physics!.rollbackFactoryFacility)throw new Error("Native Factory capability missing");await physics!.rollbackFactoryFacility(id);},
-        finalizeNative:async(id:string)=>{if(!physics!.finalizeFactoryFacility)throw new Error("Native Factory capability missing");await physics!.finalizeFactoryFacility(id);},
+        finalizeNative:async(id:string)=>{if(!physics!.finalizeFactoryFacility)throw new Error("Native Factory capability missing");await physics!.finalizeFactoryFacility(id);if(factoryStages.get(id)?.request.consumedCustody&&carrierScene){factoryScenes.delete(carrierScene.id);dropFactoryScene(carrierScene);carrierScene=undefined;refreshFactoryProjection();}},
         stageProjection:async(plan:FactoryPlacementPlan)=>{const stage=factoryStages.get(plan.request.transactionId);if(!stage||stage.request.instanceId!==plan.installation.instanceId||stage.request.profileDigest!==plan.profile.profileDigest)throw new Error("Factory staged identity mismatch");
           stage.scene=stageFactoryScene(plan.request,plan.installation.instanceId,false);},
         publishProjection:(plan:FactoryPlacementPlan)=>{const stage=factoryStages.get(plan.request.transactionId),scene=stage?.scene;if(!scene)throw new Error("Factory projection not prepared");
           scene.published=true;for(const key of scene.keys)activeFactoryKeys.add(key);factoryScenes.set(scene.id,scene);refreshFactoryProjection();},
-        rollbackProjection:(id:string)=>{const stage=factoryStages.get(id);if(!stage)throw new Error("Factory rollback stage missing");if(stage.scene){factoryScenes.delete(stage.scene.id);dropFactoryScene(stage.scene);}else factoryCosts.delete(stage.request.instanceId);factoryStages.delete(id);refreshFactoryProjection();},
+        rollbackProjection:(id:string)=>{const stage=factoryStages.get(id);if(!stage)throw new Error("Factory rollback stage missing");if(stage.scene){factoryScenes.delete(stage.scene.id);dropFactoryScene(stage.scene);}else factoryCosts.delete(stage.request.instanceId);
+          if(stage.consumedProjection){const saved=stage.consumedProjection;carrierScene=saved.scene;carrierScene.published=saved.published;for(const key of carrierScene.keys)activeFactoryKeys.delete(key);for(const key of saved.activeKeys)activeFactoryKeys.add(key);if(saved.registered)factoryScenes.set(carrierScene.id,carrierScene);}
+          refreshFactoryProjection();factoryStages.delete(id);},
         finalizeProjection:(id:string)=>{if(!factoryStages.get(id)?.scene?.published)throw new Error("Factory finalize scene missing");factoryStages.delete(id);},
         projectGhost:(request:FactoryPlacementRequest|null)=>{
           if(request&&ghost&&ghostDefinition===request.definitionSourceId){ghost.transforms=factoryPose(ghost.keys,request);refreshFactoryProjection();return;}
@@ -2246,10 +2278,29 @@ export const startHvp = async (
           if(request)factoryPose([],request);
           if(ghost){dropFactoryScene(ghost);ghost=undefined;ghostDefinition=undefined;refreshFactoryProjection();}if(!request)return;
           const id=slot!.id;factoryCosts.set(id,costFor(request.definitionSourceId));try{admitFactory();slot!.revision++;ghost=stageFactoryScene(request,id,true,slot!.revision);ghostDefinition=request.definitionSourceId;ghost.published=true;for(const key of ghost.keys)activeFactoryKeys.add(key);refreshFactoryProjection();}catch(error){factoryCosts.delete(id);throw error;}},
-        dispose:()=>{for(const stage of factoryStages.values())if(stage.scene&&!factoryScenes.has(stage.scene.id))dropFactoryScene(stage.scene);for(const scene of factoryScenes.values())dropFactoryScene(scene);if(ghost)dropFactoryScene(ghost);
+        dispose:()=>{if(carrierScene&&!factoryScenes.has(carrierScene.id))dropFactoryScene(carrierScene);carrierScene=undefined;syncCarrierProjection=()=>{};for(const stage of factoryStages.values())if(stage.scene&&!factoryScenes.has(stage.scene.id))dropFactoryScene(stage.scene);for(const scene of factoryScenes.values())dropFactoryScene(scene);if(ghost)dropFactoryScene(ghost);
           ghost=undefined;ghostDefinition=undefined;factoryScenes.clear();factoryStages.clear();factoryCosts.clear();factoryTransforms=[];presentation.updateProjection();}
       });
-      const hostPort: FactoryHostPort = Object.freeze({ current, read,construction,
+      const handling:FactoryNativeHandlingPort=Object.freeze({
+        read:()=>{if(!current())throw Error("Factory Host disposed");const value=physics!.read().factoryFacilities;if(!value)throw Error("Factory Native authority unavailable");return value;},
+        prepare:async(request:FactoryCarrierRequest,operation:"pickup"|"deposit"|"release")=>{
+          if(!physics!.prepareFactoryCarrier)throw Error("Factory carrier unavailable");
+          const native=physics!.read(),captureKey=`carrier:capture:${request.transactionId}`;
+          if(operation==="pickup")factoryCosts.set("carrier:slot",{cpu:5*648*3,mesh:5*648*2,triangles:60,draws:5});
+          factoryCosts.set(captureKey,{cpu:request.materialBinding.length*2+native.collisionBytes*2+(native.colliderCount+native.bodyCount)*2048,mesh:0,triangles:0,draws:0});
+          try{admitFactory();carrierCaptureCostKey=captureKey;}catch(error){factoryCosts.delete(captureKey);if(operation==="pickup")factoryCosts.delete("carrier:slot");throw error;}
+          try{const prepared=await physics!.prepareFactoryCarrier(request,operation);carrierOperation=operation;if(operation==="pickup")carrierScene=stageCarrierScene(prepared.carrier);return prepared;}
+          catch(error){if(carrierOperation===operation){try{await physics!.rollbackFactoryCarrier!(request.transactionId);carrierOperation=undefined;}catch(rollback){throw Error(`RecoveryHold: Carrier projection rollback: ${String(error)}; ${String(rollback)}`);}}
+            if(!String(error).includes("RecoveryHold")){factoryCosts.delete(captureKey);carrierCaptureCostKey=undefined;if(operation==="pickup")factoryCosts.delete("carrier:slot");}throw error;}
+        },
+        commit:async(id:string)=>{if(!physics!.commitFactoryCarrier)throw Error("Factory carrier unavailable");await physics!.commitFactoryCarrier(id);},
+        publish:(id:string)=>{if(!physics!.publishFactoryCarrier)throw Error("Factory carrier unavailable");physics!.publishFactoryCarrier(id);if(carrierOperation==="pickup"){if(!carrierScene)throw Error("RecoveryHold: Missing carrier projection");carrierScene.published=true;for(const key of carrierScene.keys)activeFactoryKeys.add(key);factoryScenes.set(carrierScene.id,carrierScene);carrierPoseKey="";syncCarrierProjection();}else if(carrierOperation==="release"&&carrierScene){
+          try{factoryScenes.delete(carrierScene.id);dropFactoryScene(carrierScene);carrierScene=undefined;refreshFactoryProjection();}catch(error){throw Error(`RecoveryHold: Published carrier retirement unproven: ${String(error)}`);}}},
+        rollback:async(id:string)=>{if(!physics!.rollbackFactoryCarrier)throw Error("Factory carrier unavailable");await physics!.rollbackFactoryCarrier(id);if(carrierOperation==="pickup"&&carrierScene){dropFactoryScene(carrierScene);carrierScene=undefined;refreshFactoryProjection();}if(carrierCaptureCostKey)factoryCosts.delete(carrierCaptureCostKey);carrierCaptureCostKey=undefined;carrierOperation=undefined;},
+        finalize:async(id:string)=>{if(!physics!.finalizeFactoryCarrier)throw Error("Factory carrier unavailable");await physics!.finalizeFactoryCarrier(id);if(carrierCaptureCostKey)factoryCosts.delete(carrierCaptureCostKey);carrierCaptureCostKey=undefined;carrierOperation=undefined;publishFactoryView!();}
+      });
+      const hostPort: FactoryHostPort = Object.freeze({ current, read,construction,handling,
+        setPanelFocus:(panel:FactoryUiPanel|null)=>{factoryPanelFocused=panel!==null;playerInput!.stop();},
         readTerrainSlot: (x: number, y: number, z: number) => {
           if (!current()) throw new Error("Factory host disposed or superseded");
           const root = terrainRoot.read();

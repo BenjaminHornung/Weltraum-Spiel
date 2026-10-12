@@ -1,0 +1,16 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/dryFactorySlice.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:25:22.948284+00:00",
+  "endedAtUtc": "2026-10-11T20:25:23.891825+00:00",
+  "elapsedSeconds": 0.9439025539977592,
+  "exitCode": 0,
+  "rawBytes": 358,
+  "rawSha256": "3ac8021d0f4d0086161c43024f1bfa9a5bcfaac48555f5961584c816dccbecb5"
+}

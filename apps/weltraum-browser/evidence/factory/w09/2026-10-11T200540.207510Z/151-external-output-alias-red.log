@@ -1,0 +1,57 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/dryFactorySlice.test.ts -t isolates adopted external
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (33 tests | 3 failed | 30 skipped) 190ms
+     × isolates adopted external state output from later caller mutation 81ms
+     × isolates adopted external material output from later caller mutation 60ms
+     × isolates adopted external accessor output from mutable values retained by its caller 47ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external state output from later caller mutation
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external material output from later caller mutation
+CanonicalSerializationError: Canonical JSON only accepts JSON-compatible plain objects and arrays
+ ❯ fail src/resources/serialization.ts:30:9
+     28|
+     29| const fail = (message: string): never => {
+     30|   throw new CanonicalSerializationError(message);
+       |         ^
+     31| };
+     32|
+ ❯ canonicalize src/resources/serialization.ts:85:12
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:78:19
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalizeJsonValue src/resources/serialization.ts:102:78
+ ❯ canonicalJson src/resources/serialization.ts:124:81
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:58:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external accessor output from mutable values retained by its caller
+AssertionError: expected 'Rejected' to be 'Committed' // Object.is equality
+
+Expected: "Committed"
+Received: "Rejected"
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:68:83
+     66|   const copies:typeof proposal.material[]=[];
+     67|   const external={...proposal,get material(){const copy=JSON.parse(can…
+     68|   const result=commitDryFactoryStep(f.state,input,external);expect(res…
+       |                                                                                   ^
+     69|   const before=canonicalJson(result.material);expect(copies.length).to…
+     70|   for(const copy of copies)(copy.containers[0]!.state.contents.find(s=…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 30 skipped (33)
+   Start at  23:14:06
+   Duration  791ms (transform 382ms, setup 0ms, import 486ms, tests 190ms, environment 0ms)
+

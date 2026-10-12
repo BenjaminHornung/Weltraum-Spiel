@@ -1,0 +1,92 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t corrected supported battery
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (33 tests | 3 failed | 28 skipped) 19775ms
+   × W09 unchanged Source corrected supported battery and closed cable B06 / CABLE7000 4283ms
+   × W09 unchanged Source corrected supported battery and closed cable fp06.line.belt_4m / CABLE5250 3826ms
+   × W09 unchanged Source corrected supported battery and closed cable B07 / CABLE7500 3738ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 unchanged Source corrected supported battery and closed cable B06 / CABLE7000
+AssertionError: expected undefined to deeply equal [ { …(2) } ]
+
+- Expected:
+[
+  {
+    "itemId": "fp02.comp.field_cable",
+    "quantityUnits": 7000,
+  },
+]
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:404:87
+    402|   expect(battery.positionMm).toEqual([-1750,2500,batteryZ]);expect(tar…
+    403|   const manhattan=battery.positionMm.reduce((n,v,i)=>n+Math.abs(v-targ…
+    404|   expect(readCargoHandlingProfile(createFp02Fixture("cargo").catalog,c…
+       |                                                                                       ^
+    405|   const candidates:{x:number;y:number;z:number;score:number}[]=[];
+    406|   for(let z=-2;z<=5;z+=.125)for(let x=-6;x<=-1.625;x+=.125){const h=to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 unchanged Source corrected supported battery and closed cable fp06.line.belt_4m / CABLE5250
+AssertionError: expected undefined to deeply equal [ { …(2) } ]
+
+- Expected:
+[
+  {
+    "itemId": "fp02.comp.field_cable",
+    "quantityUnits": 5250,
+  },
+]
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:404:87
+    402|   expect(battery.positionMm).toEqual([-1750,2500,batteryZ]);expect(tar…
+    403|   const manhattan=battery.positionMm.reduce((n,v,i)=>n+Math.abs(v-targ…
+    404|   expect(readCargoHandlingProfile(createFp02Fixture("cargo").catalog,c…
+       |                                                                                       ^
+    405|   const candidates:{x:number;y:number;z:number;score:number}[]=[];
+    406|   for(let z=-2;z<=5;z+=.125)for(let x=-6;x<=-1.625;x+=.125){const h=to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 unchanged Source corrected supported battery and closed cable B07 / CABLE7500
+AssertionError: expected undefined to deeply equal [ { …(2) } ]
+
+- Expected:
+[
+  {
+    "itemId": "fp02.comp.field_cable",
+    "quantityUnits": 7500,
+  },
+]
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:404:87
+    402|   expect(battery.positionMm).toEqual([-1750,2500,batteryZ]);expect(tar…
+    403|   const manhattan=battery.positionMm.reduce((n,v,i)=>n+Math.abs(v-targ…
+    404|   expect(readCargoHandlingProfile(createFp02Fixture("cargo").catalog,c…
+       |                                                                                       ^
+    405|   const candidates:{x:number;y:number;z:number;score:number}[]=[];
+    406|   for(let z=-2;z<=5;z+=.125)for(let x=-6;x<=-1.625;x+=.125){const h=to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 2 passed | 28 skipped (33)
+   Start at  23:53:55
+   Duration  21.10s (transform 915ms, setup 0ms, import 1.21s, tests 19.77s, environment 0ms)
+

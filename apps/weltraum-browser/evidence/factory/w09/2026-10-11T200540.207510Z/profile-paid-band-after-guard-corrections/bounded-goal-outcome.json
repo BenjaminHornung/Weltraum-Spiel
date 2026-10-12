@@ -1,0 +1,24 @@
+{
+  "goal": "preserve exact paid-band transition workload and original5000ms/case; max2candidates; dryFactorySlice.ts only",
+  "baseline131Ms": [
+    9514,
+    23427
+  ],
+  "candidate1_133Ms": [
+    4384,
+    9907
+  ],
+  "candidate2_134Ms": [
+    2786,
+    5586
+  ],
+  "status": "NOT_MET",
+  "limitsChanged": false,
+  "protectedDomainFilesChanged": false,
+  "notes": [
+    "Candidate1 snapshot was not contemporaneously copied; raw command and patch history remain, no invented byte snapshot.",
+    "135 was a bad fixture/oracle,136 contains two actual assertions,137corrects both.",
+    "138 collected DrySlice+Production only; wrong two nonexistent command paths are not tests.",
+    "No material, packet, tick, credit, receipt or loop-count shortcut."
+  ]
+}

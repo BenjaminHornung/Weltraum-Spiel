@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/dryFactorySlice.test.ts",
+    "-t",
+    "Native quarter-turn|q1 Cutter OUT"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T22:04:11.973444+00:00",
+  "endedAtUtc": "2026-10-11T22:04:12.936368+00:00",
+  "elapsedSeconds": 0.9634676870045951,
+  "exitCode": 1,
+  "rawBytes": 2709,
+  "rawSha256": "f0e90c015b582c258e787f46f8b5ede43a689291c2063ac700f2358425a885e8"
+}

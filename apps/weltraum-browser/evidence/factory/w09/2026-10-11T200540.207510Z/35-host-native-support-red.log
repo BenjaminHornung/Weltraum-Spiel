@@ -1,0 +1,40 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoHandling.test.ts -t failed actual Native
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/cargoHandling.test.ts (7 tests | 1 failed | 6 skipped) 29ms
+   × failed actual Native support keeps the complete real Resources authority unchanged 27ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/cargoHandling.test.ts > failed actual Native support keeps the complete real Resources authority unchanged
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Rejected', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "reason": "CarrierSupport",
++   "reason": "HandlingNotImplemented",
+    "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/cargoHandling.test.ts:74:47
+     72| it("failed actual Native support keeps the complete real Resources aut…
+     73|  const h=hostHandlingFixture(),bytes=factoryMaterialBytes(h.authority.…
+     74|  expect(await h.controller.submit(h.command)).toMatchObject({status:"R…
+       |                                               ^
+     75| });
+     76|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+   Start at  20:48:27
+   Duration  578ms (transform 307ms, setup 0ms, import 410ms, tests 29ms, environment 0ms)
+

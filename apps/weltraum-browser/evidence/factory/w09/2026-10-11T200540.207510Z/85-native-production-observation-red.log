@@ -1,0 +1,43 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t production observation proves actual
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (23 tests | 1 failed | 22 skipped) 125ms
+   × W09 production observation proves actual support coverage and clear service independently of immutable paid ownership 87ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W09 production observation proves actual support coverage and clear service independently of immutable paid ownership
+AssertionError: expected undefined to match object { profileDigest: '288390f5', …(9) }
+
+- Expected:
+{
+  "accessible": true,
+  "confirmed": true,
+  "facilityRevision": 1,
+  "installationRevision": 1,
+  "profileDigest": "288390f5",
+  "serviceClear": true,
+  "sourceDigest": "fa99c5df",
+  "supported": true,
+  "sweepClear": true,
+  "terrainRevision": 4,
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:302:25
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 22 skipped (23)
+   Start at  21:49:38
+   Duration  1.46s (transform 952ms, setup 0ms, import 1.22s, tests 125ms, environment 0ms)
+
