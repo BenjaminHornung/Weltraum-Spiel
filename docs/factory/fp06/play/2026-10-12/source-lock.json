@@ -450,8 +450,9 @@
       "hestiaBlendCount": 23,
       "olderReferenceCount": 1,
       "renderStatus": "NOT_RUN",
-      "secondWriter": "/root/visual_review_assets",
-      "grant": "grants/play-visual-review-assets.json"
+      "secondWriter": "/root/visual_preview_recovery",
+      "grant": "grants/play-visual-review-assets.json",
+      "actorTransferReason": "Same actor still fails before tools even after actual environmentREADY; fresh no-history actor avoids unavailable inherited attachments; no source reset/rerender/restart of actual work"
     }
   },
   "supplementalBalanceOwnerRequest": {

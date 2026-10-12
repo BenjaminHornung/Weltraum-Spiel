@@ -1,7 +1,7 @@
 {
   "schema": "hestia.fp06.visual-review-art-grant/v1",
   "milestone": "OWNER_REQUESTED_COMPLETE_MARKDOWN_IMAGE_REVIEW",
-  "actor": "/root/visual_review_assets",
+  "actor": "/root/visual_preview_recovery",
   "branch": "codex/hestia-fp06-visual-review-2026-10-12",
   "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-visual-review-2026-10-12",
   "baseCommitSha": "f85d1379c3458488d225105156adfb66837799ce",
@@ -40,5 +40,27 @@
     "fallback": "If existingEGL/Workbench unsupported, one Cycles8sample1thread pilot with reduced temporarylight/exposure; noinstall/provider/source changes",
     "gameEngineAndAuthority": "UNCHANGED",
     "seriesGate": "Root mustactuallyview improvedpilot beforebulkserialrenders"
+  },
+  "actorTransfer": {
+    "atUtc": "2026-10-12T14:59:32.845244+00:00",
+    "previousActor": "/root/visual_review_assets",
+    "previousStatus": "ERRORED_503_FILE_DOWNLOAD_ROOT_INTERRUPT_CONFIRMED",
+    "newActor": "/root/visual_preview_recovery",
+    "reason": "Same actor still fails before tools even after actual environmentREADY; fresh no-history actor avoids unavailable inherited attachments; no source reset/rerender/restart of actual work",
+    "sameBranchWorktree": true,
+    "preservedDrafts": [
+      {
+        "path": "docs/factory/fp06/play/2026-10-12/visual-review/render_blend_previews.py",
+        "bytes": 11152,
+        "sha256": "6981f549ff5dc7493aeac5409051d9603b6f051ce96f690f6018eda3c660c101"
+      },
+      {
+        "path": "docs/factory/fp06/play/2026-10-12/visual-review/run_blend_previews.py",
+        "bytes": 5246,
+        "sha256": "808ea453689694415892e48b01eb158ce9cb02ff6b960844508f5aa13433f70b"
+      }
+    ],
+    "actualPreviewCompleted": "Pilot01localdenoisefail +Pilot02actual2CyclesPNG; WorkbenchpilotNOT_RUN",
+    "maxWriters": 2
   }
 }
