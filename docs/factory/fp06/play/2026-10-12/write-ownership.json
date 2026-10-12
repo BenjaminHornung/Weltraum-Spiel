@@ -6,8 +6,7 @@
   "controlPlaneRoot": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
   "previousOwnership": "../../write-ownership.json",
   "activeImplementationWriters": [
-    "/root/play_integrator",
-    "/root/play_cell_bridge"
+    "/root/play_integrator"
   ],
   "activeDocumentationWriter": "/root",
   "browserCpuLease": "/root/play_integrator input/Host/native runtime; other jobs coordinate directly",
@@ -26,7 +25,8 @@
       "branch": "codex/hestia-fp06-play-art-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-art-2026-10-12",
       "grant": "grants/play-02-art-corrections.json",
-      "implementationWriteHold": true
+      "implementationWriteHold": true,
+      "sourceCommitSha": "1314e813b39ba460bdc6c470c37416b65498fbac"
     },
     {
       "actor": "/root/play_ui",
@@ -43,7 +43,8 @@
       "branch": "codex/hestia-fp06-play-cells-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-cells-2026-10-12",
       "grant": "grants/play-02-partcells-writer.json",
-      "implementationWriteHold": false
+      "implementationWriteHold": true,
+      "sourceCommitSha": "214ff98a07ea76dce50e5382f842decd2ce9a6a0"
     }
   ],
   "readOnlyAgents": [
@@ -1705,6 +1706,246 @@
         "Existing normalHVP callers preserved, no unhandledrejected promises; sessionfocus no-op/null idempotence checked underexistingHostgrants",
         "GenuineBusinessREDs for lateACK+stop/cancel/error/focuslosstwoepochs, focusedplayer-input+affectedHostregressions/build thenactualnormalbrowser",
         "No timeouts/queue/physicsbudget increases, nativeWorldauthorityshift, engine/dependency changes/mainmerge/push/publish"
+      ]
+    },
+    "PLAY-02-art-correction-admission": {
+      "schema": "hestia.fp06.play-immutable-admission/v1",
+      "milestone": "PLAY-02-art-correction-admission",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "authorizedAtUtc": "2026-10-12T09:31:41.192693+00:00",
+      "status": "GRANTED_IMMUTABLE_REVIEWED_PAYLOAD_ONLY",
+      "sourceCommitSha": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "sourceParentSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
+      "destinationHeadAtCheck": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+      "writeSet": [
+        "art/factory/play-2026-10-12/build_assets.py",
+        "art/factory/play-2026-10-12/manifest.json",
+        "art/factory/play-2026-10-12/README.md",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+        "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+        "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+        "art/factory/play-2026-10-12/storage/storage-open/provenance.json",
+        "art/factory/play-2026-10-12/storage/storage-open/model-spec.json",
+        "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+        "art/factory/play-2026-10-12/storage/storage-open/storage-open.blend",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.glb",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.hestia-authoring-report.json"
+      ],
+      "verifiedFiles": [
+        {
+          "path": "art/factory/play-2026-10-12/build_assets.py",
+          "before": {
+            "state": "EXISTS",
+            "bytes": 32459,
+            "sha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9"
+          },
+          "source": {
+            "bytes": 36161,
+            "sha256": "9017f6aa208d1b84e2d3e381d6c44a8c9f36d790be2f43489a7a8b5b20ceece9",
+            "gitBlobSha256": "9017f6aa208d1b84e2d3e381d6c44a8c9f36d790be2f43489a7a8b5b20ceece9",
+            "lfs": false
+          }
+        },
+        {
+          "path": "art/factory/play-2026-10-12/manifest.json",
+          "before": {
+            "state": "EXISTS",
+            "bytes": 79571,
+            "sha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2"
+          },
+          "source": {
+            "bytes": 83735,
+            "sha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+            "gitBlobSha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+            "lfs": false
+          }
+        },
+        {
+          "path": "art/factory/play-2026-10-12/README.md",
+          "before": {
+            "state": "EXISTS",
+            "bytes": 5090,
+            "sha256": "4452e303786fc7873e1fe76ef783745b75c70201e46973916c22c0551f9d3905"
+          },
+          "source": {
+            "bytes": 6874,
+            "sha256": "7f9b30d1f6b43ed638668ace999c139dd2f9d20c7c5f85492595af9ba952656c",
+            "gitBlobSha256": "7f9b30d1f6b43ed638668ace999c139dd2f9d20c7c5f85492595af9ba952656c",
+            "lfs": false
+          }
+        },
+        {
+          "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+          "before": {
+            "state": "EXISTS",
+            "bytes": 79571,
+            "sha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2"
+          },
+          "source": {
+            "bytes": 83735,
+            "sha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+            "gitBlobSha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+            "lfs": false
+          }
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+          "before": {
+            "state": "EXISTS",
+            "bytes": 12013,
+            "sha256": "7c317f610f6f00d302a2c9dfed2da8fea706b5b03bfcb29f40106eb6d8fd0893"
+          },
+          "source": {
+            "bytes": 18140,
+            "sha256": "cfc7bc73598f084d251a9bcdf8d9aa1d84ac9fefd3e2aa5284b68a190b4b65a4",
+            "gitBlobSha256": "cfc7bc73598f084d251a9bcdf8d9aa1d84ac9fefd3e2aa5284b68a190b4b65a4",
+            "lfs": false
+          }
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 14061,
+            "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+            "gitBlobSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+            "lfs": false
+          }
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/provenance.json",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 1801,
+            "sha256": "8716b613ce66a68259beac8c2a600759b194f9306ad69b3dce4e66cc39bb9e35",
+            "gitBlobSha256": "8716b613ce66a68259beac8c2a600759b194f9306ad69b3dce4e66cc39bb9e35",
+            "lfs": false
+          }
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/model-spec.json",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 5439,
+            "sha256": "dbb1e4a91d5a5aa08db8a5e148f42935626e1185132682e26166e5157ac7269d",
+            "gitBlobSha256": "dbb1e4a91d5a5aa08db8a5e148f42935626e1185132682e26166e5157ac7269d",
+            "lfs": false
+          }
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 3866,
+            "sha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+            "gitBlobSha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+            "lfs": false
+          }
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/storage-open.blend",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 587660,
+            "sha256": "e5ace75bd20e8f3888efeb8708cc6b3c374f610191c205c77c25ce00b9beec4a",
+            "gitBlobSha256": "d9199efe77d598bd58f0aa9456333347178b206028851e379cef2d9128266e90",
+            "lfs": true
+          }
+        },
+        {
+          "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.glb",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 24380,
+            "sha256": "569557420499f023373f1f5fd7fc1ac0f7d72c9cd89f9b91277c8787dd7054d4",
+            "gitBlobSha256": "cbeada17c46246283985d5b90530b7e1ee2b4bebfd54d398e62103c75db2babd",
+            "lfs": true
+          }
+        },
+        {
+          "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.hestia-authoring-report.json",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 5729,
+            "sha256": "94ec756ef3773588dd754b0d96e8fd67c7a05c853f989752cc24232ba1ccb649",
+            "gitBlobSha256": "94ec756ef3773588dd754b0d96e8fd67c7a05c853f989752cc24232ba1ccb649",
+            "lfs": false
+          }
+        }
+      ],
+      "independentReview": {
+        "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/corrections/independent-review.md",
+        "sha256": "182e17d605962cd74f456875aa36cbd829698bc4fe26ff1ab78d821ae92832b9"
+      },
+      "constraints": [
+        "Copy exactly five reviewed replacements and seven additions from immutable full source commit, materialize both real LFS payloads; repeat before-byte/absence checks immediately before mutation",
+        "No regeneration or other Art/runtime/Source/Native/Host/Save/catalog/recipe edits authorized by this admission; preserve all ongoing authorized Integrator drafts",
+        "Retain original22 entries and all other157 Artfiles/protected originals; same Native body and confirmed-local-inspection-only variant",
+        "Technical payload admission only; runtime/controller/S1/normal-game/Owner acceptance remain separate gates",
+        "Record actual admission diff/commit/evidence in own authorized evidence tree; no mainmerge/push/publish"
+      ]
+    },
+    "PLAY-02-partcells-admission": {
+      "schema": "hestia.fp06.play-immutable-admission/v1",
+      "milestone": "PLAY-02-partcells-admission",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "authorizedAtUtc": "2026-10-12T09:31:41.192693+00:00",
+      "status": "GRANTED_IMMUTABLE_REVIEWED_COMPILER_ONLY",
+      "sourceCommitSha": "214ff98a07ea76dce50e5382f842decd2ce9a6a0",
+      "destinationHeadAtCheck": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+        "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts"
+      ],
+      "verifiedFiles": [
+        {
+          "path": "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 14059,
+            "sha256": "59572d57d473c26e58898c6f6417cbd68777d53a0e570268114e36d70c9ccdd8"
+          }
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
+          "before": {
+            "state": "ABSENT"
+          },
+          "source": {
+            "bytes": 10788,
+            "sha256": "127c6db8a63c952917884738af2cb8cdb5c813aa30588647e8e28f06b7f80d69"
+          }
+        }
+      ],
+      "independentReview": {
+        "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/partcells/independent-review.md",
+        "sha256": "c6a9f33229509a5ac6e6d8d9d013d72c7976bcb819bf714ec826311f0649995f"
+      },
+      "constraints": [
+        "Copy exactly two new source-commit blobs after fresh destination-absence check, preserve all other drafts; no source modification by this immutable admission",
+        "44/44 focused tests and original tsc independently verified for sourcecommit; no native/runtime/S1/Owner claim",
+        "Later shared Native/Host/work/controller binding remains sole Integrator under existing nine-path S1 and runtime grants",
+        "Second writer enters HOLD after immutable handoff; no mainmerge/push/publish"
       ]
     }
   },

@@ -138,7 +138,8 @@
       "runtimeAdoption": "SOURCE_PAYLOAD_IMPORT_ONLY_RUNTIME_BINDING_NOT_RUN",
       "integratorImportCommitSha": "0dd5cdb6400aac5df3f0fe7937a6d612d8a76bd6",
       "correctionGrant": "grants/play-02-art-corrections.json",
-      "s1BridgeStatus": "PURE_COMPILER_44_FOCUSED_TESTS_PASS_INDEPENDENT_REVIEW_PENDING"
+      "s1BridgeStatus": "PURE_COMPILER_COMMITTED_REVIEWED_ADMISSION_GRANTED",
+      "correctionCommitSha": "1314e813b39ba460bdc6c470c37416b65498fbac"
     },
     "PLAY-03/04/06": {
       "status": "PARTIAL_TECHNICAL_PASS_NATIVE_UI_AND_FULL_FLOW_IN_PROGRESS",
@@ -305,7 +306,7 @@
     "normalHeavyRoute": "341kg pickup/depot/playerexit/paidFormer native PASS (partial W09); battery/cable/full16kg NOT_RUN",
     "simulationIdleHold": "Observed FAIL during normal idle; independent attribution OPEN; fast successful route does not waive this",
     "artHead": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
-    "artAcceptance": "Original22 payloads admitted; R2/R6/R3 twelve-path correction independent BOUNDED PASS, unchanged staged bytes awaiting closure commit; writer HOLD",
+    "artAcceptance": "Twelve-path correction independently reviewed/committed clean; Root exact immutable admission issued, runtime pending",
     "uiWriter": "/root/play_ui HOLD; source admitted; normal-browser Host wiring ongoing by sole Integrator",
     "composition": "Bounded C1 reviewPASS: bothP1closed,11guards/25conveyor/build/2originalpairPASS5000ms; final source2e8a33..; noFPS/hardwareclaim",
     "w09Endgate": "NOT_RUN",
@@ -322,8 +323,10 @@
     "v3": "Owner-approved exact 3-mask candidate Source/Cargo13PASS and Bootstrap2PASS/44skip/buildPASS; first normal run 085310 FAIL before margin trial; no full-route conclusion",
     "integratorHead": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
     "inputActivation": "11 genuine business assertions RED; minimal ACK/cancel lifecycle implementation ongoing in exact two-path grant",
-    "partCells": "28 new compiler plus16 existing presentation =44PASS and original tscPASS; independent review pending; no S1/Native/Owner acceptance",
-    "portableDelivery": "Read-only current-package preflight dispatched; old instance2 remains historical, final clean-copy verification NOT_RUN"
+    "partCells": "44 focusedPASS/tscPASS and independent boundedPASS, two-file cleancommit, exact immutable admission issued; S1/native/runtime pending",
+    "portableDelivery": "Read-only current-package preflight dispatched; old instance2 remains historical, final clean-copy verification NOT_RUN",
+    "artCorrectionCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+    "partCellsCommit": "214ff98a07ea76dce50e5382f842decd2ce9a6a0"
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {
