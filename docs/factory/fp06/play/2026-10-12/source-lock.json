@@ -299,7 +299,7 @@
     }
   ],
   "currentProgress": {
-    "atUtc": "2026-10-12T12:30:43.804438+00:00",
+    "atUtc": "2026-10-12T12:58:35.617032+00:00",
     "candidateDigest": "913c0c46",
     "v2ChangedSlots": 2890,
     "materialCreditMg": 0,
@@ -355,13 +355,37 @@
     "s1": "Runtime readonly preflight Rootread;15 scaffold businessREDs; B09 readonly inspection integrity exact addendum55c75585, no thirdcompiler/physicalschema. Actual runtime/part/work/Owner acceptance pending",
     "gameUiImportCommit": "f29501516afa2afd0802aa00dd2e43ebda7ba7fe",
     "nativePartFoundationCommit": "69a804fd53988334c6cbfc056951ed1c79b454f9",
-    "s1PureController": "ActualNative69a foundation and exacttwoHOLDseeds transferredtoCellin ownWT; initial modelcapacityfailure+oneactualsuccessfulretry, nowgenuine3P2RED-preparation. Sharedpaths remainsoleIntegrator",
+    "s1PureController": {
+      "sourceCommitSha": "572c247bd96757d194e12524548a3ea538caab90",
+      "state": "3P2_SOURCE_CLOSED_REVIEWED58PASS_TSC_CLEAN_HOLD_EXACT_ADMISSION_GRANTED",
+      "reviewSha256": "520559aed5e1e60b388b8515307ffdab44e90c1f16c0018860d2140e1750c8b8",
+      "grant": "grants/play-02-s1-controller-admission.json",
+      "actualRuntime": "NOT_RUN"
+    },
     "gameUiBrowserWitness": "actual-gamefeel-root-witness.json",
     "freshLineagePreflight": {
       "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/fresh-lineage-data-preflight.md",
       "sha256": "9111002a16da9278052af65cfe00ba036f8aa44e6168e2b3e340175df85f6516",
       "verdict": "Readonlycomplete; adoptedcumulativeMaterial+Machinecommandreceipts suffice, no liveGoaljournal; implementation/actual16kgNOT_RUN"
-    }
+    },
+    "actualUiPauseHelpReview": "ActualPausefalseerror09GREEN andAvatarScene15GREEN17.273s aftergenuine12RED+2focused13P/build14. DOMnopauseoverlay; sameGLBCargo09stilldark→only3lineFactoryEgoAvatarvisibility15darkregiongone. Boundedpixelcauseclosed; broaderUI/S1/Ownerpending, actual800x600NOT_RUN.",
+    "actualUiIndependentReview": {
+      "artifact": "reviews/play-03-actual-gamefeel-review.md",
+      "sha256": "0b8bcf04d4c0e0143c8403fae96f852e9bda27757e02fd9cef2145920d49b6a4",
+      "verdict": "Start/Cargo/Walk/actionreach/NativeinputboundedPASS; Pause falseerrorP2 plus canvasbackdropcausepending;800x600NOT_RUN;Ownerpending"
+    },
+    "nativePartFoundationReview": {
+      "artifact": "reviews/play-02-nativepart-foundation-review.md",
+      "sha256": "d41c933cb6c069edd39a0b9ffb9fe872529636d1c4309fe0aa71b403dc5d4af5",
+      "verdict": "BoundedFoundationPASS0newP1/P2; wrapper/pureS1/runtimepending"
+    },
+    "nativeSolidPort": {
+      "status": "B09_NO_PRODUCTION_UI_PORT_GAP_EXACT_READONLY4PATH_ADDENDUM_GRANTED",
+      "grant": "grants/play-04-native-solidport-addendum.json"
+    },
+    "activeImplementationWriters": [
+      "/root/play_integrator"
+    ]
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {

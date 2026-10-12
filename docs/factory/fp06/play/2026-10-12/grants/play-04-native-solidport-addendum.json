@@ -1,0 +1,80 @@
+{
+  "schema": "hestia.fp06.play-native-solidport-read-addendum/v1",
+  "milestone": "PLAY-04-actual-B09-solid-port-source",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "baseCommitSha": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+  "authorizedAtUtc": "2026-10-12T12:58:35.617032+00:00",
+  "status": "GRANTED_EXACT_FOUR_EXISTING_PATHS",
+  "authorization": "Explicit normalstorage-cutter-belt-former prototype; readonlySourcegap because B09 has no productionrow. MinimumIntegratorproposal, no new productdecision or Worldcreationpolicy.",
+  "writeSet": [
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 59908,
+      "sha256": "4024e9f47e4a568e04304ba139191ad3c26f743e740dd02c96b732216b595b68"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 50744,
+      "sha256": "a710442a9499aabc36fdfc5332c74b34dbb77640fd68ca88be1d8aa57e32e585"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 68789,
+      "sha256": "75022319e76c562a5a10fb421cf750107912f3ec751ccc656b0fad484baf6941"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 66329,
+      "sha256": "71b966af6347e7781f25851dc3dec18a847c994af15bdeb6d07a4c6df4271ec6"
+    }
+  ],
+  "contract": {
+    "name": "FactoryFacilityRead.solidPorts",
+    "closedDefinitions": [
+      "B06",
+      "B07",
+      "B09"
+    ],
+    "fields": [
+      "portId",
+      "sourcePortId",
+      "instanceId",
+      "definitionRef",
+      "sourceDigest",
+      "profileDigest",
+      "installationRevision",
+      "terrainRevision",
+      "facilityRevision",
+      "positionMm",
+      "outwardNormal",
+      "role",
+      "confirmed",
+      "supported",
+      "serviceClear",
+      "sweepClear",
+      "accessible"
+    ],
+    "roles": [
+      "SolidBatchIn",
+      "SolidBatchOut"
+    ]
+  },
+  "constraints": [
+    "Read-only existingactual Nativeowners/member/partobservation +genericgeometrysupport/service/sweepproof +sourceportquarterturn worldframe andactor reach/LOS; source-definition IDs neverproof. No newCollider/SourceProfile/Terrain/mass/BOM/material/recipe/production/Power/Worldmutation.",
+    "Publicproduction[] remainsB05/B06/B07 only; B09 noProductionState/newtool/cellcompiler/door. Allclosednativeprofile/Owner/source/install/terrain/facility/currentSession/epoch/nativeTick binding failclosed.",
+    "Within ONEsynchronousRead reuse existinglocalproofMap peractualowner; noCrossRead/terrain/actorcache/queryskip/unknownCoverageacceptance/timingbudgetraise. AddedcurrentB09groundsupport proofcost explicitboundedbyexisting16Owner/64Body/4096Colliderbudgets; nativecost/longholdmeasurepending.",
+    "Session ui offerings and connect-belt admission bothjoin exactpublishedNativeport+currentlogicalpaidowner+actualpart/header/frame/support. ExistingB06/B07 compatibility, endpoints/direction/4mroute/existingW08quantizedfinitecapacity/power preserved. CannotenablemerelyUIoffer.",
+    "BusinessREDbeforeminimalpatch: realRapierB09(currentSource/support/unknown/actor/LOS/member), actualsessionoffer and stale/forged endpoint/owner rejection; B09 remains noProductionrow. Focusedtests/regressions/tsc/build thennormalRawStorage→Cutteractualboundline evidence.",
+    "Allfourpaths soleIntegrator; currentotherShareddrafts and newlyadmittedpurecontroller retained. OriginalNative69areviewhistoricalremainsunchanged, newaddendumrequiresitsownindependentreview.",
+    "No newUI/Art/Cellwriter; formerwriterscleanHOLD. Rootonlycontrol. MaterialoneLotperRecipeTerm andlegacyrecipes/goldens/saves protected; normalflow2actual8kgLots withfiniteCargo.",
+    "No W12–29/mainmerge/push/forcepush/PR/publish/engine/dependency/queue/probe/budget/timeoutchange; humanacceptanceOWNER_REVIEW_PENDING."
+  ]
+}

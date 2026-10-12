@@ -2618,7 +2618,7 @@
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-s1-controller-2026-10-12",
       "baseCommitSha": "69a804fd53988334c6cbfc056951ed1c79b454f9",
       "authorizedAtUtc": "2026-10-12T12:18:39.754660+00:00",
-      "status": "GRANTED_SECOND_WRITER_EXACT_TWO_FILES",
+      "status": "COMMITTED_CLEAN_HOLD_572C_REVIEWED_IMMUTABLE_ADMISSION_GRANTED",
       "authorization": "Explicit playable source-bound machine/model/energy-authority task and Integrator request for disjoint pure-helper ownership; UI finalizedcleanHOLD, no thirdwriter",
       "writeSet": [
         "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
@@ -2683,6 +2683,146 @@
         "External evidence /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-controller-fix/; final exacttwofileFullSHAcommit/cleanHOLD, independentclosureReview by DIFFERENTreadonlyactor+Rootfresh targetBefore/importgrant. No self-review PASS",
         "No independent paid provider/image/blender/perf/profile/broad native reruns; existingcompositionC1closed, NativeReadcandidateclosed. NeededGeometryCost/Hostjoin/instanceRender runtime gates not promoted from pure helperP",
         "No W12–29/mainmerge/push/forcepush/PR/publishing/engine/dependency/queue/probe/budget/timeout/sourcegeometry changes. Humanterrain/Art/visual/gameplay/hardware OWNER_REVIEW_PENDING"
+      ]
+    },
+    "PLAY-02-S1-controller-immutable-admission": {
+      "schema": "hestia.fp06.play-s1-controller-admission/v1",
+      "milestone": "PLAY-02-S1-controller-immutable-admission",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "baseCommitSha": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+      "authorizedAtUtc": "2026-10-12T12:58:35.617032+00:00",
+      "status": "GRANTED_EXACT_IMMUTABLE_TWO_BLOBS",
+      "sourceCommitSha": "572c247bd96757d194e12524548a3ea538caab90",
+      "sourceWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-s1-controller-2026-10-12",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+        "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts"
+      ],
+      "files": [
+        {
+          "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+          "before": {
+            "bytes": 8499,
+            "sha256": "740ba925876067b4b6e2a8aa5c5a4ca1ed549c64308c5cae69b49d95995561b5",
+            "state": "EXACT_ORIGINAL_UNTRACKED_HOLD_SEED"
+          },
+          "source": {
+            "bytes": 10747,
+            "sha256": "cb3e400ef173aa397bf35a096c9038b3d3e1aafb1990228f4fbf83a33f80fe21"
+          }
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+          "before": {
+            "bytes": 7097,
+            "sha256": "a62f2a3b86fd139f43fa2e87cb2203c7bded221a2b8f07b1ca344183a49ee082",
+            "state": "EXACT_ORIGINAL_UNTRACKED_HOLD_SEED"
+          },
+          "source": {
+            "bytes": 15097,
+            "sha256": "54c666c2517d7ca6c41903b1765f34cb6b23146527eb96fc442e371fb9c4fbb1"
+          }
+        }
+      ],
+      "independentReview": {
+        "artifact": "reviews/play-02-s1-controller-p2-closure-review.md",
+        "sha256": "520559aed5e1e60b388b8515307ffdab44e90c1f16c0018860d2140e1750c8b8",
+        "verdict": "BoundedpureSourcePASS3P2closed; runtimeNOT_ACCEPTED"
+      },
+      "handoff": {
+        "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-controller-fix/06-committed-clean-handoff.json",
+        "sha256": "ddb2a5c3afd2d6d8355d5f9f25815049cbe4161212257bf34a4c262ea2e3c402"
+      },
+      "constraints": [
+        "Repeat both exactoriginalHOLDseed and immutableSource2filehash checks immediately beforecopy; replace onlythese2blobs, preserve every V4/Input/Avatar/Cargo/Host/Session/Bootstrap draft; no broadreset/cherry-pick/rebase.",
+        "Native69a foundation4024e9 reviewed separately; actual wrapper must receive private latestphysics.read object and identicalnativeRow, actual committedpaidjob work, source/profile/installation/currentepoch/nativeTick. No UI copy/time/sourceIDs asWorldproof.",
+        "Work unconfirmed/FAULT/hold explicit emptyPose means suppress new motion; keep validstaticgeometry/lastsafePose onlyunder currentNativePresence. Pausedinspector mustnot hide allintactmachines orresurrect absentsemanticparents.",
+        "58focused=42S1+16presentation/tsc0 receipts +genuine16F17P and22F20P RED verified, no actualS1/geometryCost/runtime/paidW09/Save/Owner inferred.",
+        "CellsourceBranchcleanHOLD; no secondactivewriter now. SoleIntegrator owns sharedNative/Host/Session/Bootstrap/Entry/Save. Furthercontrolleredits requireconcreteexactscope, no independentmass/clock/recipe/Sourcechanges.",
+        "Preserve priorhistorical receipts andmissing2newfilebindinglimitations; ownadmission+runtime evidence undercurrentOwnPLAY02.",
+        "No W12–29/mainmerge/push/forcepush/PR/publish/engine/dependency/budget/probe/queue/timeoutchanges; humanreviewsOWNER_REVIEW_PENDING."
+      ]
+    },
+    "PLAY-04-actual-B09-solid-port-source": {
+      "schema": "hestia.fp06.play-native-solidport-read-addendum/v1",
+      "milestone": "PLAY-04-actual-B09-solid-port-source",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "baseCommitSha": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+      "authorizedAtUtc": "2026-10-12T12:58:35.617032+00:00",
+      "status": "GRANTED_EXACT_FOUR_EXISTING_PATHS",
+      "authorization": "Explicit normalstorage-cutter-belt-former prototype; readonlySourcegap because B09 has no productionrow. MinimumIntegratorproposal, no new productdecision or Worldcreationpolicy.",
+      "writeSet": [
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+          "bytes": 59908,
+          "sha256": "4024e9f47e4a568e04304ba139191ad3c26f743e740dd02c96b732216b595b68"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+          "bytes": 50744,
+          "sha256": "a710442a9499aabc36fdfc5332c74b34dbb77640fd68ca88be1d8aa57e32e585"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+          "bytes": 68789,
+          "sha256": "75022319e76c562a5a10fb421cf750107912f3ec751ccc656b0fad484baf6941"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+          "bytes": 66329,
+          "sha256": "71b966af6347e7781f25851dc3dec18a847c994af15bdeb6d07a4c6df4271ec6"
+        }
+      ],
+      "contract": {
+        "name": "FactoryFacilityRead.solidPorts",
+        "closedDefinitions": [
+          "B06",
+          "B07",
+          "B09"
+        ],
+        "fields": [
+          "portId",
+          "sourcePortId",
+          "instanceId",
+          "definitionRef",
+          "sourceDigest",
+          "profileDigest",
+          "installationRevision",
+          "terrainRevision",
+          "facilityRevision",
+          "positionMm",
+          "outwardNormal",
+          "role",
+          "confirmed",
+          "supported",
+          "serviceClear",
+          "sweepClear",
+          "accessible"
+        ],
+        "roles": [
+          "SolidBatchIn",
+          "SolidBatchOut"
+        ]
+      },
+      "constraints": [
+        "Read-only existingactual Nativeowners/member/partobservation +genericgeometrysupport/service/sweepproof +sourceportquarterturn worldframe andactor reach/LOS; source-definition IDs neverproof. No newCollider/SourceProfile/Terrain/mass/BOM/material/recipe/production/Power/Worldmutation.",
+        "Publicproduction[] remainsB05/B06/B07 only; B09 noProductionState/newtool/cellcompiler/door. Allclosednativeprofile/Owner/source/install/terrain/facility/currentSession/epoch/nativeTick binding failclosed.",
+        "Within ONEsynchronousRead reuse existinglocalproofMap peractualowner; noCrossRead/terrain/actorcache/queryskip/unknownCoverageacceptance/timingbudgetraise. AddedcurrentB09groundsupport proofcost explicitboundedbyexisting16Owner/64Body/4096Colliderbudgets; nativecost/longholdmeasurepending.",
+        "Session ui offerings and connect-belt admission bothjoin exactpublishedNativeport+currentlogicalpaidowner+actualpart/header/frame/support. ExistingB06/B07 compatibility, endpoints/direction/4mroute/existingW08quantizedfinitecapacity/power preserved. CannotenablemerelyUIoffer.",
+        "BusinessREDbeforeminimalpatch: realRapierB09(currentSource/support/unknown/actor/LOS/member), actualsessionoffer and stale/forged endpoint/owner rejection; B09 remains noProductionrow. Focusedtests/regressions/tsc/build thennormalRawStorage→Cutteractualboundline evidence.",
+        "Allfourpaths soleIntegrator; currentotherShareddrafts and newlyadmittedpurecontroller retained. OriginalNative69areviewhistoricalremainsunchanged, newaddendumrequiresitsownindependentreview.",
+        "No newUI/Art/Cellwriter; formerwriterscleanHOLD. Rootonlycontrol. MaterialoneLotperRecipeTerm andlegacyrecipes/goldens/saves protected; normalflow2actual8kgLots withfiniteCargo.",
+        "No W12–29/mainmerge/push/forcepush/PR/publish/engine/dependency/queue/probe/budget/timeoutchange; humanacceptanceOWNER_REVIEW_PENDING."
       ]
     }
   },
