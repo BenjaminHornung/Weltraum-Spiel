@@ -10,7 +10,7 @@
   "branch": "codex/hestia-fp06-w00-2026-10-11",
   "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
   "evidenceRun": "2026-10-11T090924Z",
-  "status": "W00_PASS; W00-W11_IN_PROGRESS; authoritative per-package statuses in packageScopes",
+  "status": "W00_PASS; W01-W08_PASS; W09_PARTIAL_BLOCKED; W10-W11_BLOCKED; authoritative per-package statuses in packageScopes",
   "integrator": "/root/fp06_integrator",
   "tranche": {
     "authorized": [
@@ -3518,14 +3518,14 @@
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w09/<actual-run-id>/**"
       ],
-      "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "evidenceGrant": false,
+      "status": "BLOCKED",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "commitSha": null,
+      "commitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -3822,7 +3822,7 @@
         "originalImmutableSchemas": "HistoricalW04/W08 fp06-package-evidence-v1 retained unchanged; no aggregateFactoryTreeCheckerPASS claimed"
       },
       "baseCommitSha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T19:57:30.701430+00:00",
       "completedAtUtc": null,
       "initialBusinessRed": {
@@ -4185,7 +4185,42 @@
         "regularOwnRunBytes": 57670191,
         "regularOwnRunFiles": 683,
         "limits": "Metadata only, no sealedmanifest/LFS/schema/fullSource/test/Packagegate"
-      }
+      },
+      "partialCommitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "commitKind": "PARTIAL_IMPLEMENTATION_NO_PACKAGE_ACCEPTANCE",
+      "packageAcceptanceCommitSha": null,
+      "endGateStatus": "NOT_RUN",
+      "stoppedAtUtc": "2026-10-12T00:21:57.963431+00:00",
+      "blockers": [
+        "OWNER_STARTSITE_V2_PENDING_ONLY_FIVE_ADDITIONAL_SOURCE_PATHS",
+        "PERFORMANCE_GOAL_V2_NOT_MET_5355MS_OVER_ORIGINAL_5000MS",
+        "FULL_FRESH_NORMAL_NATIVE_BROWSER_FACTORY_CYCLE_NOT_RUN"
+      ],
+      "partialPackageReport": {
+        "path": "docs/factory/fp06/reviews/w09-package-report.md",
+        "sha256": "a82fdfa15531d1faa41dd1f33f4e593cc7de15edf4bb7a254d6c848fb9ff7e9d"
+      },
+      "partialHeadProof": {
+        "path": "docs/factory/fp06/reviews/w09-partial-head-proof.json",
+        "sha256": "9a0ed3ddb323444123df84c5c865fde7529f5d286e0026f8328309a03a08454a"
+      },
+      "partialBoundaryReview": {
+        "path": "docs/factory/fp06/reviews/w09-partial-commit-boundary-review.md",
+        "sha256": "a0d619742261b2397a35231bad29770952c912fc1da720918db352019daa808c"
+      },
+      "partialSourceCheckpointSha256": "968f2e348f34a4986656c33e1639a535e06f610f756c1f1c7e1f0ea86cc78e05",
+      "partialManifestSha256": "e38d24f427525ec3f1eb27656b9395a924ff3223c74e67e63870e392e74e14f6",
+      "partialIndexedTreeSha": "dda99d001486a4aab71209a3c17ee934bf0ca9a7",
+      "partialChangedPathCounts": {
+        "currentProducts": 26,
+        "ownRunFiles": 898,
+        "commitPaths": 924,
+        "aggregateW09Products": 31
+      },
+      "partialSourceReviewStatus": "SCOPED_PASS_NOT_PACKAGE_ACCEPTANCE",
+      "partialEvidenceGitLfsStatus": "SCOPED_PASS",
+      "wholeStagedDiffCheckStatus": "EXIT2_HISTORICAL_EVIDENCE_WHITESPACE_PRESERVED",
+      "targetedProductAndAuthoredClosureDiffCheckStatus": "EXIT0"
     },
     "W10": {
       "dependencies": [
@@ -4284,7 +4319,9 @@
         "proposedAddedPath": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
         "reason": "Private installation registry needs validated restored initializer; Host published installations must match full paid saved world. Refresh source hashes against actual completed W09 before W10 grant.",
         "noAdditionalHandlingPathJustified": true
-      }
+      },
+      "implementationWriteHold": true,
+      "blocker": "W09_PASS_REQUIRED"
     },
     "W11": {
       "dependencies": [
@@ -4345,7 +4382,9 @@
         "status": "SOURCE_ONLY_NOT_GRANTED_NOT_RUN",
         "path": "docs/factory/fp06/reviews/w09-ui-ci-compatibility-delta.md",
         "sha256": "d1c00d15c0febef0e18ad7f13bbfe134493c3d0e15fa181c7bcdaf63f207aa53"
-      }
+      },
+      "implementationWriteHold": true,
+      "blocker": "W10_PASS_REQUIRED"
     }
   },
   "baseline": {
@@ -4517,6 +4556,13 @@
       "sha256": "d7dbd1b046526d7d177fa86d1905d993dccd13d6e9b4fdd25e6a7a8449a45eaa",
       "verifiedRemoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
       "observedAtUtc": "2026-10-11T23:47:58Z",
+      "exitCode": 0
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w09-main-and-partial-commit-root-witness.json",
+      "sha256": "9afb16a19e71cb29a3c61b2009cdbe872999e84b8448e82e079849e25547861e",
+      "verifiedRemoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "observedAtUtc": "2026-10-12T00:18:57Z",
       "exitCode": 0
     }
   ],

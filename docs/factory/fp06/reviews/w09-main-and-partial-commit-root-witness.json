@@ -1,0 +1,25 @@
+{
+  "observedAtUtc": "2026-10-12T00:18:57Z",
+  "command": [
+    "git",
+    "ls-remote",
+    "origin",
+    "refs/heads/main"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel",
+  "exitCode": 0,
+  "actualOutput": "e40592c113b72a8dc93725187f92cf948e07f44d\trefs/heads/main\n",
+  "verifiedRemoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "rootActualIntegratorRead": {
+    "head": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+    "parent": "aa2e5d7c335453fc555a98ccd35e9f564c596e93",
+    "tree": "dda99d001486a4aab71209a3c17ee934bf0ca9a7",
+    "worktreeStatusExitCode": 0,
+    "actualStatusOutput": "",
+    "clean": true
+  },
+  "limits": [
+    "Read-only; no fetch, merge, push or publication",
+    "External PR/writer visibility remains incomplete"
+  ]
+}

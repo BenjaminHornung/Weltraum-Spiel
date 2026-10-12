@@ -29,43 +29,7 @@
     "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
   ],
   "sharedPathGrant": "ONLY exact packageScopes.grantedWriteSet after recorded gates; no blanket shared-path permission. Shared contract/host/physics/save/config files remain integrator-exclusive.",
-  "activeImplementationWriters": [
-    {
-      "agent": "/root/fp06_integrator",
-      "package": "W09",
-      "branch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "baseCommitSha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
-      "writeSet": [
-        "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
-        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
-        "apps/weltraum-browser/package.json",
-        "apps/weltraum-browser/src/factory/factoryEntry.ts",
-        "apps/weltraum-browser/src/factory/session/hostPort.ts",
-        "apps/weltraum-browser/src/factory/session/factorySession.ts",
-        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
-        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
-        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
-        "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
-        "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
-        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
-        "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
-        "apps/weltraum-browser/src/factory/session/cargoHandling.ts",
-        "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
-        "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
-        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
-        "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
-        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
-        "apps/weltraum-browser/src/factory/construction/placement.ts",
-        "apps/weltraum-browser/src/factory/construction/buildStep.ts",
-        "apps/weltraum-browser/src/hvp/hvpHud.ts"
-      ]
-    }
-  ],
+  "activeImplementationWriters": [],
   "activeDocumentationWriter": {
     "agent": "/root",
     "branch": "codex/hestia-fp06-w00-2026-10-11",
@@ -140,7 +104,7 @@
     "W00": {
       "dependencies": [],
       "decisionGates": [],
-      "sourceReadSections": "FP01 \u00a71; FP02 \u00a71; FP03 \u00a71; FP04 \u00a71; FP05 \u00a71; Repository-Regeln.",
+      "sourceReadSections": "FP01 §1; FP02 §1; FP03 §1; FP04 §1; FP05 §1; Repository-Regeln.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -189,7 +153,7 @@
         "D01",
         "W01_SOURCE_QUANTITY_FREEZE"
       ],
-      "sourceReadSections": "FP02 \u00a7\u00a74\u20136, 9\u201310; FP03 \u00a71.2; FP04 \u00a71.2.",
+      "sourceReadSections": "FP02 §§4–6, 9–10; FP03 §1.2; FP04 §1.2.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -266,7 +230,7 @@
         "D02",
         "W01_SOURCE_QUANTITY_FREEZE"
       ],
-      "sourceReadSections": "FP02 \u00a7\u00a74\u20136, 12; FP03 \u00a713; Cargo-Core.",
+      "sourceReadSections": "FP02 §§4–6, 12; FP03 §13; Cargo-Core.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -350,7 +314,7 @@
         "W01_SOURCE_QUANTITY_FREEZE",
         "D03_RESTART_POLICY"
       ],
-      "sourceReadSections": "FP01 \u00a7\u00a76\u20137, 13; FP02 \u00a71.1; Power/Thermal-Core.",
+      "sourceReadSections": "FP01 §§6–7, 13; FP02 §1.1; Power/Thermal-Core.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -432,7 +396,7 @@
       "decisionGates": [
         "D05"
       ],
-      "sourceReadSections": "FP02 \u00a7\u00a75, 7, 12; FP01 \u00a76.",
+      "sourceReadSections": "FP02 §§5, 7, 12; FP01 §6.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -612,7 +576,7 @@
       "decisionGates": [
         "W01_SOURCE_QUANTITY_FREEZE"
       ],
-      "sourceReadSections": "FP01 \u00a7\u00a73, 8, 14; FP02 \u00a7\u00a73, 7; FP03 \u00a73.",
+      "sourceReadSections": "FP01 §§3, 8, 14; FP02 §§3, 7; FP03 §3.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -705,7 +669,7 @@
         "D05",
         "D07"
       ],
-      "sourceReadSections": "FP01 \u00a713; FP03 \u00a7\u00a713\u201315; main.ts; hvpBootstrap.ts.",
+      "sourceReadSections": "FP01 §13; FP03 §§13–15; main.ts; hvpBootstrap.ts.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -843,7 +807,7 @@
         "D01",
         "D11"
       ],
-      "sourceReadSections": "FP02 \u00a7\u00a76\u201310; FP03 \u00a7\u00a74\u20136, 13.",
+      "sourceReadSections": "FP02 §§6–10; FP03 §§4–6, 13.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -990,7 +954,7 @@
         "Finite paid C03+C04+C07 battery-first energy loop is permitted by existing sources, not renewable or WX-FAV benchmark evidence; unique SOC owner.",
         "Actual battery support/body/service/cable route required outside blocked paths; no extra terrainmask, freeplatform, or Unknown wind air admitted.",
         "Stage native fixedfacilities under real paused ACK, material completeview-CAS and hidden renderer; full owner/member/globalbudget rollback proof, no Worldhandle exposure.",
-        "Source-verified technicalB06InstallationProfile ServiceNorth1.0..2.0 directlyadjacent actualBodyNorthmax1.0; unchangedW05AuthoringBounds1.25..2.25 retained as originalSourcefacts. NormativeFP03\u22651m service and exactacceptedCutterSiteNorth7..8. ClosedexplicitversionedOverride+trueRED+actualAir/support/clearance/provenance required, noCatalogue/art/mask/Formerchange. Rootreport reviews/w07-service-zone-admission.md.",
+        "Source-verified technicalB06InstallationProfile ServiceNorth1.0..2.0 directlyadjacent actualBodyNorthmax1.0; unchangedW05AuthoringBounds1.25..2.25 retained as originalSourcefacts. NormativeFP03≥1m service and exactacceptedCutterSiteNorth7..8. ClosedexplicitversionedOverride+trueRED+actualAir/support/clearance/provenance required, noCatalogue/art/mask/Formerchange. Rootreport reviews/w07-service-zone-admission.md.",
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
@@ -1175,7 +1139,7 @@
           "source": "/workspace/.cloud-setup/fp06-w07-input-intent-preflight.md",
           "originalSha256": "a7f715c5b0d2abc1ff12e09dbdf9fd9ecaa982f7ecb8f4382dc2fdeee9d0e7f7",
           "originalBytes": 10220,
-          "purpose": "Read-only technische Vorpr\u00fcfung; Root hat die zwei zus\u00e4tzlichen exakten Pfade anschlie\u00dfend freigegeben. Umsetzung und Endgate sind getrennt."
+          "purpose": "Read-only technische Vorprüfung; Root hat die zwei zusätzlichen exakten Pfade anschließend freigegeben. Umsetzung und Endgate sind getrennt."
         },
         "observedBusinessRed": {
           "actor": "/root/fp06_integrator",
@@ -1234,7 +1198,7 @@
           ],
           "kind": "DIAGNOSTIC_ONLY",
           "globalBrowserLease": "/root/fp06_integrator",
-          "allowed": "Passively record actual trusted keyevents/outgoing existing NativeWorker Read(input) and replies/tick/pose, forward unchanged if observing transport, bounded true250\u2013700ms ordinary holds then release before RPCread; unchanged existing30s/20s/trace. One targeted diagnostic, not blind fullrun.",
+          "allowed": "Passively record actual trusted keyevents/outgoing existing NativeWorker Read(input) and replies/tick/pose, forward unchanged if observing transport, bounded true250–700ms ordinary holds then release before RPCread; unchanged existing30s/20s/trace. One targeted diagnostic, not blind fullrun.",
           "forbidden": "No production source writes, fake input/tick/pose, new Native IPC/message, authority bridge, new product/public API, tempo/reach/terrain/budget/queue/timeout change. Any diagnostic instrumentation never qualifies normal no-TestBridge gameplay gate."
         },
         "diagnosticActual": {
@@ -1245,7 +1209,7 @@
           "endedAtUtc": "2026-10-11T15:00:58.310Z",
           "gameplayGate": "NOT_ADMITTED",
           "observed100ms": "Trusted Down20403.8/Up20606.4 within busyRead30; Reply20784.4 sent neutralRead31 only; no nonzeroSend, deltaX0 despite80ticks",
-          "observed600ms": "Trusted Down22819.3/Up23516.3 survives Read42; actualRead43\u201345 x=-1; final neutralRead46; deltaX=-2.250m over105ticks",
+          "observed600ms": "Trusted Down22819.3/Up23516.3 survives Read42; actualRead43–45 x=-1; final neutralRead46; deltaX=-2.250m over105ticks",
           "telemetryDropped": 0,
           "runtimeChanged": false,
           "normalE2eRestoredSha256": "488439fa85e682a90e28a9781581d4d419d3c691bd37d3ed675c53fcad36bc9e"
@@ -1255,7 +1219,7 @@
           "writeSet": [
             "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
           ],
-          "allowed": "boundedtrusted250\u2013350mskeys release beforeRPC, sourcevalidatedbroaderstandregion or actualNative cargo/service/support admissibility, optionalboundedreadonly nativeTick/stablepose confirmation; ownnormalflow only; typecheck/newseal before8thrun",
+          "allowed": "boundedtrusted250–350mskeys release beforeRPC, sourcevalidatedbroaderstandregion or actualNative cargo/service/support admissibility, optionalboundedreadonly nativeTick/stablepose confirmation; ownnormalflow only; typecheck/newseal before8thrun",
           "forbidden": "All runtimeheld; no observationalWorkerwrapper/debugbridge in normalgate; no artificial pose/input/tick/tempo/reach/source/queue/budget/timeout change",
           "sourceRegionActor": "/root/w07_second_cutter_site"
         },
@@ -1319,7 +1283,7 @@
           "source": "/workspace/.cloud-setup/fp06-w07-native-review-fourth-seal.md",
           "originalSha256": "d49a6ae4dcce9f281674974bfed6224c020d51890a38ef2da8e1d6d3160f3a94",
           "originalBytes": 9800,
-          "purpose": "Historisches Review des vierten 27-Pfad-Seals; die sp\u00e4teren Inputkorrekturen sind hier nicht gepr\u00fcft."
+          "purpose": "Historisches Review des vierten 27-Pfad-Seals; die späteren Inputkorrekturen sind hier nicht geprüft."
         },
         {
           "report": "docs/factory/fp06/reviews/w07-runtime-review-before-input.md",
@@ -1357,7 +1321,7 @@
         "notRun": 11,
         "cliSeconds": 80.1268,
         "observedFailure": "Actual native player x=-5.5 after8trusted100ms D taps; paid build NOT_RUN",
-        "traceDiagnosis": "All native transactions Idle and Walking/grounded; InputPlayer/locked=true/neutralizations1; last4press APIs496.9\u2013544.5ms. Busy/latest-coalescing cause not yet directly witnessed."
+        "traceDiagnosis": "All native transactions Idle and Walking/grounded; InputPlayer/locked=true/neutralizations1; last4press APIs496.9–544.5ms. Busy/latest-coalescing cause not yet directly witnessed."
       },
       "browserEighthActual": {
         "log": 58,
@@ -1386,7 +1350,7 @@
           "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
         ],
-        "contract": "Actual rendererReceiver/realBackend Ghostpreview\u2192Move\u2192Rotate\u2192Cancel\u2192Newpreview; preserve native/material counts; test the real tombstone lifecycle, not a permissivefake. No source/renderContractvalidationrelax/NativeGhostAuthority/errorfilter/newunboundedkeychurn. RuntimeBootstrap-only proposal awaits actualbusinessRED.",
+        "contract": "Actual rendererReceiver/realBackend Ghostpreview→Move→Rotate→Cancel→Newpreview; preserve native/material counts; test the real tombstone lifecycle, not a permissivefake. No source/renderContractvalidationrelax/NativeGhostAuthority/errorfilter/newunboundedkeychurn. RuntimeBootstrap-only proposal awaits actualbusinessRED.",
         "businessRed": {
           "log": 59,
           "status": "FAIL",
@@ -1691,7 +1655,7 @@
         ],
         "cpuLease": "EXCLUSIVE_FOCUSED_UNIT_AFFECTED_REGRESSION_BUILD",
         "constraints": "Factory-only independent typed smallACK through existing bounded max8/20s transport; Read input-free only in Factory; no ACK clock/timing/restore/public/held publication; Release independent fromACK; no retained queue/latch/catchup/Nativeadvance/timer; Legacy same; actual private Hold/Pause/Restore/Dispose barriers and explicit Native Jumpcancel.",
-        "guardGates": "Real guard counterexample before fix where applicable; already native-staged Level/Jump must be neutralized across actual transient Hold\u2192resume, without changing velocity/clock.",
+        "guardGates": "Real guard counterexample before fix where applicable; already native-staged Level/Jump must be neutralized across actual transient Hold→resume, without changing velocity/clock.",
         "browser": "NOT_GRANTED",
         "status": "EXECUTED_GREEN_BUILD_PRODUCT_HOLD_SEAL_REVIEW_PENDING"
       },
@@ -2500,7 +2464,7 @@
         "actualArtifactBytes": 987748,
         "renderer": "ANGLE Google Vulkan1.3 SwiftShader Subzero; actualdebugrendererinfo, noGPUhardwaretiming",
         "renderWall": "60calls median0.6ms p95~1.2ms max28.8ms sum66.6ms; dispatch120 median2.35ms max22.3ms sum435.2ms",
-        "observedLongtasks": "59 post-first-render longtasks:136\u2013236ms median166ms sum9899ms, render overlap66ms; earlier141\u2013202ms was narrower tail sample. Dominant specific native task NOT_OBSERVED.",
+        "observedLongtasks": "59 post-first-render longtasks:136–236ms median166ms sum9899ms, render overlap66ms; earlier141–202ms was narrower tail sample. Dominant specific native task NOT_OBSERVED.",
         "observedInput": "trusted125S DOMstamp127ms->handlers0.7ms; actualzeroXYZ/ticks+78; noAuthoritychange",
         "rootRawArtifactHashesCheckedAtUtc": "2026-10-11T18:57:12.328480+00:00",
         "cpuGpuPortLease": "RELEASED",
@@ -2939,7 +2903,7 @@
       "decisionGates": [
         "D06"
       ],
-      "sourceReadSections": "FP02 \u00a7\u00a78\u201310; FP03 \u00a77.",
+      "sourceReadSections": "FP02 §§8–10; FP03 §7.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -2997,7 +2961,7 @@
       "narrowFixAuthorizations": [
         {
           "authorizedAtUtc": "2026-10-11T12:20:45.001775+00:00",
-          "scope": "Same three existing W08 paths only: optional exact positive SourceLot quantityUnits native transfer admission, \u226410kg and available source, default full bounded packet unchanged. Genuine8kg-from20kg/Cutter8kg RED, focused GREEN/build and new seal + independent followup required. No ledger/source/catalog/World authority change.",
+          "scope": "Same three existing W08 paths only: optional exact positive SourceLot quantityUnits native transfer admission, ≤10kg and available source, default full bounded packet unchanged. Genuine8kg-from20kg/Cutter8kg RED, focused GREEN/build and new seal + independent followup required. No ledger/source/catalog/World authority change.",
           "reason": "W09 source-bound Cutter8kg admission needs explicit packet quantity instead automatic10kg from large lot."
         }
       ],
@@ -3053,7 +3017,7 @@
         "W08"
       ],
       "decisionGates": [],
-      "sourceReadSections": "FP01 \u00a7\u00a79\u201312; FP02 \u00a7\u00a72, 9\u201313; FP03 \u00a714.",
+      "sourceReadSections": "FP01 §§9–12; FP02 §§2, 9–13; FP03 §14.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -3123,14 +3087,14 @@
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w09/<actual-run-id>/**"
       ],
-      "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "evidenceGrant": false,
+      "status": "BLOCKED",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "commitSha": null,
+      "commitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -3172,7 +3136,7 @@
       },
       "normalFlowDomainCheck": "docs/factory/fp06/reviews/w09-normal-flow-domain-check.md",
       "geometrySeamPreflight": "docs/factory/fp06/reviews/w09-geometry-seam-preflight.md",
-      "geometrySeamScopeNote": "PLANNED ONLY after W07PASS: Source registration+closed exactbytes/composite4mline reference validation require factoryAssets. B05/B09/brace catalog refs already exist; B10 absent catalogdevices/items, use narrow sourcebound4m technicalcompoundref on frozenconveyor/layout +4C14+1C23,26kg; no W01catalog/fixture change. OriginalLayoutAbench(7,2) andactualproduct carry(18,6)\u2192bench; no extraSource masks.",
+      "geometrySeamScopeNote": "PLANNED ONLY after W07PASS: Source registration+closed exactbytes/composite4mline reference validation require factoryAssets. B05/B09/brace catalog refs already exist; B10 absent catalogdevices/items, use narrow sourcebound4m technicalcompoundref on frozenconveyor/layout +4C14+1C23,26kg; no W01catalog/fixture change. OriginalLayoutAbench(7,2) andactualproduct carry(18,6)→bench; no extraSource masks.",
       "heavyCargoSourcePreflight": {
         "report": "docs/factory/fp06/reviews/w09-heavy-cargo-source-preflight.md",
         "originalBytes": 5140,
@@ -3181,7 +3145,7 @@
         "scope": "SOURCE_ONLY_NOT_IMPLEMENTED",
         "sourceRule": "FP01 415-417 andFP02 366/438/771 allow finite rollframe/montagepalette heavy chassis handling without full vehicle/future prerequisites. No universal carrymass/volume/toolprofile frozen;20kg sentence is not default;B09/shipcapacity notcarrierlimit.",
         "closedFixtures": "C26/C27/C28 each1Piece180/300/450kg unchanged, carrier/packmass included per sources",
-        "missingRuntime": "ActualNativepickup\u2192walk\u2192deposit/localdepotcontract not present; W09afterW07 must implement without copy/freeRemoteTransfer.",
+        "missingRuntime": "ActualNativepickup→walk→deposit/localdepotcontract not present; W09afterW07 must implement without copy/freeRemoteTransfer.",
         "decisions": "No new ownerdecision or grant inferred"
       },
       "nativeCargoHandlingProposal": {
@@ -3232,7 +3196,7 @@
         "status": "ACCEPTED_BY_USER",
         "proposal": "docs/factory/fp06/proposals/native-handling-v1.md",
         "proposalSha256": "c1aa59de0a2159e7ec2c81af5bd64f5c7d867751e0af274736e737fc26803a6c",
-        "scope": "W09\u2013W11 exactlyoneversionedKinematicNativeTransportowner<=5Colliders; ordinaryPlayerinputs/completepairedSweepSupportCoverage; finiteMaterialCustody/localfixedDepot/fullCombinedSave; <=16Factoryowners INCLUDINGCargo+Carrier; same64/32/4096budgets; noVehicles/generalCreateBody/W12\u2013W29."
+        "scope": "W09–W11 exactlyoneversionedKinematicNativeTransportowner<=5Colliders; ordinaryPlayerinputs/completepairedSweepSupportCoverage; finiteMaterialCustody/localfixedDepot/fullCombinedSave; <=16Factoryowners INCLUDINGCargo+Carrier; same64/32/4096budgets; noVehicles/generalCreateBody/W12–W29."
       },
       "predecessorCopyAuthorization": {
         "authorizedAtUtc": "2026-10-11T19:52:25.494031+00:00",
@@ -3427,7 +3391,7 @@
         "originalImmutableSchemas": "HistoricalW04/W08 fp06-package-evidence-v1 retained unchanged; no aggregateFactoryTreeCheckerPASS claimed"
       },
       "baseCommitSha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T19:57:30.701430+00:00",
       "completedAtUtc": null,
       "initialBusinessRed": {
@@ -3462,7 +3426,7 @@
           "native local depot reach/LOS read facts",
           "partial carrier transfer mass/custody mismatch"
         ],
-        "actualPhases": "26\u201331 and39\u201342 independently read/hash verified; jump/autostep actual29; UUID39 RED\u219240twoPASS; depot/partial41twoRED\u219242twoPASS",
+        "actualPhases": "26–31 and39–42 independently read/hash verified; jump/autostep actual29; UUID39 RED→40twoPASS; depot/partial41twoRED→42twoPASS",
         "remaining": "Actual paid machine/belt whole loop, native approved source route, public browser controls/usable product, complete Save and full package gate remain pending."
       },
       "uiIntegratorCopy": {
@@ -3575,7 +3539,7 @@
         "path": "docs/factory/fp06/reviews/w09-native-production-facts-source-review.md",
         "sha256": "56ce1cb0bbd6a71e575dcffa5e624637ce6024517ea516a862d5a0658ef99221",
         "reviewEndAtUtc": "2026-10-11T22:07:35Z",
-        "laterWriterReportedActualPhases": "101 powered finite cable/WIP/SOC GREEN;102 transient activeJob serviceblock RED\u2192103 GREEN;104 restart-port-capacity RED,105 not independently assessed yet",
+        "laterWriterReportedActualPhases": "101 powered finite cable/WIP/SOC GREEN;102 transient activeJob serviceblock RED→103 GREEN;104 restart-port-capacity RED,105 not independently assessed yet",
         "laterIndependentFollowup": "IN_PROGRESS_READONLY_W00_ARCHITECTURE",
         "limits": "Mutable source drift disclosed. Synthetic Native terrain/sourceproof test and scoped Host tests do not prove complete normal browser route/loop, shared save or package gate."
       },
@@ -3583,7 +3547,7 @@
         "status": "R1_RELEASE_RETIREMENT_SCOPED_SOURCE_AND_RECEIVER_PASS_NO_PACKAGE_GATE",
         "path": "docs/factory/fp06/reviews/w09-receiver-release-closure-review.md",
         "sha256": "ee188e6f7a45beda9e97e472a5d296c693af14ecd6dce502bc8d430178b4ce58",
-        "supersedesOnly": "R1 of immutable earlier f82ef76b32edd6bce59b1c6c18f315f7b3489de7354cdf296847f930219a88dc report;87 actualassertionRED\u219288singleGREEN42skipped; actualFourReceiverKeys retained after one accepted remove and second rejected remove",
+        "supersedesOnly": "R1 of immutable earlier f82ef76b32edd6bce59b1c6c18f315f7b3489de7354cdf296847f930219a88dc report;87 actualassertionRED→88singleGREEN42skipped; actualFourReceiverKeys retained after one accepted remove and second rejected remove",
         "headerCorrection": {
           "preservedPreviousPath": "docs/factory/fp06/reviews/w09-receiver-release-closure-review.previous.md",
           "sha256": "a9febbc57b3f6af9939a2c41eec332508079ce657de27cabf0a01479eac75243",
@@ -3597,14 +3561,14 @@
         "status": "TERMINAL_SERVICE_RECOVERY_CLOSED_FIRST_CLEAR_CREDIT_OPEN_AT_HISTORICAL_REVIEW_END_D03_PORT_RESERVE_SCOPED_PASS",
         "path": "docs/factory/fp06/reviews/w09-service-hold-followup-review.md",
         "sha256": "78adda3f161514f0e57c97f82da0219b40499fa0e7c3c9dd645decbf18713814",
-        "laterWriterActualPhases": "108 first-clear-credit AssertionRED\u2192109 GREEN1/29skipped;107 native-confirmation-loss GREEN1/29skipped; independent closure followup IN_PROGRESS",
+        "laterWriterActualPhases": "108 first-clear-credit AssertionRED→109 GREEN1/29skipped;107 native-confirmation-loss GREEN1/29skipped; independent closure followup IN_PROGRESS",
         "limits": "Source drift recorded;109 is later and does not rewrite historical open finding. SourceSupply actual native confirmation and full cable/paid-belt/browser/material loop not inferred from105 alone."
       },
       "powerConnectionReachSourcePreflight": {
         "status": "SOURCE_ONLY_WHOLE_REGION_REACH_SUPPORT_POSITIVE_NATIVE_LOS_ROUTE_AND_CONNECTION_NOT_RUN",
         "path": "docs/factory/fp06/reviews/w09-power-connection-reach-source-preflight.md",
         "sha256": "49ee77e4aa58fd136cbb77f654578684640bceaf182ab44b84be65ce4b439bc9",
-        "actualSourceWitness": "78 natural125mm columns ix94\u201399/iz157\u2013169; whole player standwindow x[-3.94,-3.81]/z[3.935,4.94], naturalTop1.25m; concrete Actor[-3.875,2.16,4.9375]/CABLE depot[-3.875,1.25,3.9375]; both socket distances<3m; finite cablecost6500mm",
+        "actualSourceWitness": "78 natural125mm columns ix94–99/iz157–169; whole player standwindow x[-3.94,-3.81]/z[3.935,4.94], naturalTop1.25m; concrete Actor[-3.875,2.16,4.9375]/CABLE depot[-3.875,1.25,3.9375]; both socket distances<3m; finite cablecost6500mm",
         "commandBlockerAtReviewEnd": "connect-power rejects same native carrier custody evenDeposited; partial40m cannot silently change fixed Native mass",
         "routineImplementationDirection": "Sourcebound exact neededCableJob6500mm;33500mm retains inCargo; wholedepotcustody jointNativeRelease+Material+Graph; existingCABLE40 partialrejection stays. Within existing granted closedjob/profile/scope; no broad profilefamily or newOwnerdecision."
       },
@@ -3612,7 +3576,7 @@
         "status": "SCOPED_SOURCE_SPEC_PASS_FIRST_CLEAR_CREDIT_AND_LINKED_NATIVE_POWER_OWNER_ADMISSION_LOSS",
         "path": "docs/factory/fp06/reviews/w09-service-clock-native-supply-closure-review.md",
         "sha256": "8418800303cd0e104beb8967fdd9551a191606c16f1e6946358260c252928c36",
-        "actualPhases": "108 AssertionRED\u2192109 1GREEN29skip;106 AssertionRED\u2192107 1GREEN29skip; raw/receipt digests independently validated",
+        "actualPhases": "108 AssertionRED→109 1GREEN29skip;106 AssertionRED→107 1GREEN29skip; raw/receipt digests independently validated",
         "sourceBinding": "ActualHEADaa2e5d7c335453fc555a98ccd35e9f564c596e93; FactorySessionhash drift and guarded paths re-read; W04unchanged",
         "supersedesOnly": "First-clear credit open seam in78adda historicalreport and linked-ownerconfirmation WIP in that snapshot; historicalreports retained unchanged",
         "limits": "Hostunit declared Native facts; actual Native socket query97 separately. Does not establish unlinked assets, restore/fullpaidbelt/pipeline/normalBrowser route or W09 package gate."
@@ -3629,7 +3593,7 @@
           "path": "docs/factory/fp06/reviews/w09-paid-native-belt-bridge-end.json",
           "sha256": "fd15bea5af0a66a7d972f7bf77b14c357a957abaff73cce75c9328d6b8f500f1"
         },
-        "sourceChecks": "13source hashes; FactorySession drift captured;26kg BOM/oneNativeaggregateOwner/4supports; explicitNative\u2192W08yaw mapping; sourceOUT/IN exact4m; paidC23 domain identity vsPhysicalaggregate alias consistent; W01/W08 byte-exact",
+        "sourceChecks": "13source hashes; FactorySession drift captured;26kg BOM/oneNativeaggregateOwner/4supports; explicitNative→W08yaw mapping; sourceOUT/IN exact4m; paidC23 domain identity vsPhysicalaggregate alias consistent; W01/W08 byte-exact",
         "limits": "113 syntheticRapierfloor+unitmaterialBinding proves geometry/profile/socket, not actualledgerpayment. ConnectBelt/adopt before Powerport exposure. Entry normalcontrol/fullNative custody+payment+power+packet route/rollback remain runtime gates.118 targetedHostGREEN reported after sourcewindow and not inferred from report."
       },
       "manualBraceHostSourceReview": {
@@ -3637,7 +3601,7 @@
         "path": "docs/factory/fp06/reviews/w09-manual-brace-host-source-review.md",
         "sha256": "4af5c3968492d98bdf1871b6c2aca6f737d3451c62f92e71f0823d8cce3cb641",
         "actualPhases": "119 genuineAssertionRED;120 AccessDeniedAssertionRED;1211PASS31skipped;3rawgzip retained originals/receipts verified",
-        "materialAndTool": "Paid40kgC05/healthyMechanicaltool; exact4kgProfile+2kgSheet\u21926kgWIP\u21925.8kgBrace+.2kgOffcut;0W/nullTime; wholefreshBracecustody\u2192onepaidInstalledOwner; total2984400000mg",
+        "materialAndTool": "Paid40kgC05/healthyMechanicaltool; exact4kgProfile+2kgSheet→6kgWIP→5.8kgBrace+.2kgOffcut;0W/nullTime; wholefreshBracecustody→onepaidInstalledOwner; total2984400000mg",
         "limits": "Initialprofile/sheet stock; directHostcommands bypass normal fresh-lotselector. ControlledNativeSupport/reach/transport stubs. Replay/duplicate guards Sourceonly;121doesnot execute replay or duplicateinstall countercase. MutableSource drift disclosed; W04 threeprotected files byte-exact. No fullFormer/CUT/Belt/FORM/browser/package/humanArt gate."
       },
       "beltGraphReconcileSourceReview": {
@@ -3646,7 +3610,7 @@
         "sha256": "e8caf8b9c69cb475324ab8c286a74287e4b2ee7b09dbf8c57922832a4f4cacea",
         "sourceChecks": "Outerlinebinding newnet only; fullinstallation/ports/credit/packet/cursor/tick/revision/lastStep preserved; newLinealonezeroCredit; freshfullW03grant required; stalePrepared canonicalguards; no W08changes",
         "actual124": "1PASS32skipped/wholeCable6500Hostfixture NativeStubs; includes no activeband packet graphtransition",
-        "remainingMeaningfulOracle": "W02NativeResourceCustody/injectionreceipt+W03actualgrant\u2192positivecredit/packetprogress\u2192paidgraphrevision\u2192unchanged completebandstate\u2192oldgrant/preparedreject\u2192newgrantcontinues; no fabricatedRED ifexisting implementation already passes",
+        "remainingMeaningfulOracle": "W02NativeResourceCustody/injectionreceipt+W03actualgrant→positivecredit/packetprogress→paidgraphrevision→unchanged completebandstate→oldgrant/preparedreject→newgrantcontinues; no fabricatedRED ifexisting implementation already passes",
         "limits": "MutableFactorySession/Hosttestdriftexplicit; no fullSourceSeal/Native/normalUI/browser/W09package gate."
       },
       "bandCompositionPerformanceWitness": {
@@ -3657,13 +3621,175 @@
         "rawSha256": "ebe692acc9b6a861660f8bfb4bea5f8cf342fce9414f7db0fd31113eb84360fd",
         "next": "One boundedCPUprofile and evidence-based narrow optimization within current25scope; W04/W08/timeout/globalcaps unchanged"
       },
+      "bandCompositionCandidatesWitness": {
+        "status": "COMMAND_RAW_RECEIPTS_VERIFIED_ORIGINAL_PERFORMANCE_GOAL_NOT_MET_OUTPUT_FORGERY_FINDING_OPEN",
+        "path": "docs/factory/fp06/reviews/w09-band-composition-candidates-witness.json",
+        "sha256": "e06da38a8ac02bcc4f0972a7fc34e680677510da8af24052c3dd17b401da621a",
+        "phases": "132 boundedoneCLI/2profiles;1331PASS1Timeout;1341PASS1Timeout;135FixtureFAIL;1362genuineRED;1374PASS;138onlyDryProduction38PASS3skipped;139ConveyorMaterial29PASS;140TSFAIL;141Host1PASS33skipped;142originalTSVitePASS;143currentActivatedRuntimeNode22.23.3/npm10.9.8",
+        "remaining": "Readonly OUTPUTproposal Nativequantity counterpath awaits actual businessRED/fix; no third performance candidate authorized yet; scoped unit/source facts no W09package/fullNative/browser gate"
+      },
+      "compositionPerformanceSourceReview": {
+        "status": "READONLY_SOURCE_FAIL_OPEN_ACTUAL146_147_GUARDS_PERFORMANCE_NOT_MET",
+        "path": "docs/factory/fp06/reviews/w09-composition-performance-source-review.md",
+        "sha256": "aaf8e07301cb1f71a63319a2b0e7cb1fce28ca1e71d9dd7ab82cbace0ff47819",
+        "scope": "Independentexistingprofiles/rawreceipts/source review only; original2candidateGoalNOT_MET. NativeOUTPUTF1 actual144RED→14523PASS3skip closes. Actual146receipt+power and147W02chain+claims REDs awaitfix. CurrentactivatedNode22.23.3/npm10.9.8 observed143; historicalNode20/56goal labels inaccurate, secondcase57actualadvances. No tests/build/profile ownjobs.",
+        "protected": "W03W04W08 observedunchanged; mutable2d836d Source not finalseal"
+      },
+      "materialBindingCacheGoalV2": {
+        "status": "EXHAUSTED_ONE_CANDIDATE_ACTUAL160_NOT_MET_ONE_PASS_ONE_ORIGINAL_TIMEOUT",
+        "path": "docs/factory/fp06/reviews/w09-material-binding-cache-bounded-goal-v2.json",
+        "sha256": "c2d16d1fbb9b81105383c99f85461cacee387881395bc8ea5cc7ed88f3e2f521",
+        "maxCandidates": 1,
+        "extraProfiles": 0,
+        "originalTimeoutMs": 5000,
+        "historicalGoalOutcome": "NOT_MET",
+        "ownerDecision": "No product Ownerdecision changed; startsiteV2 still pending",
+        "activationReceipt": {
+          "path": "docs/factory/fp06/reviews/w09-material-binding-cache-v2-activation.json",
+          "sha256": "2d7e0f0efa96ba0715c44f22832a1d6ed7d46aec77dde20b4c8f7415e21cd4fa"
+        },
+        "actual160": {
+          "exitCode": 1,
+          "outputCaseMs": 5355,
+          "elapsedSeconds": 9.152665,
+          "rawBytes": 1094,
+          "rawSha256": "807c8a726a9ab47f5aa622578d4ec7ea339c62a572bb4731fcc2d1fe6044db9c",
+          "limitsChanged": false,
+          "remainingCandidates": 0,
+          "additionalCpuProfiles": 0,
+          "guardReview": "pending161165guard/affectedregs/build/currentSourceReview"
+        }
+      },
+      "materialBindingCachePreflight": {
+        "status": "READONLY_INITIAL_W02_ADMISSION_GAP_CLOSED148149_SAFE_CACHE_RECOMMENDATION_ONLY",
+        "path": "docs/factory/fp06/reviews/w09-material-binding-cache-preflight.md",
+        "sha256": "7ff79edc7e150e49c514f4a0cdfabd38b37c8ec66db793bddb7e5069c39a4c30",
+        "currentSource": "94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6",
+        "limits": "Source/evidence read only, noownjobs/newruntimecandidate/performancePASS. Aliasfinding subsequent separateArchitectureReview notclosedbythisreport."
+      },
+      "compositionAdmissionClosureReview": {
+        "status": "READONLY146147_CLOSED148149_EXTERNAL_MUTABLE_OUTPUT_ALIAS_OPEN_SOURCEFAIL",
+        "path": "docs/factory/fp06/reviews/w09-composition-admission-closure-review.md",
+        "sha256": "85ce86e83d4386434c9e388c1e5a11cc99f47744966fb5309dc9e6e051f60431",
+        "source": "94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6",
+        "actual": "14827PASS3skipped/149originalTSVitePASS verified originalrawreceipts",
+        "remaining": "Externalfallback returnscaller-ownedmutable proposal graphs; actual countertest/minimalfreshlycheckedreturn requested. No additional performance candidate yet."
+      },
+      "compositionOutputAliasClosureReview": {
+        "status": "READONLY_SPEC_QUALITY_PASS_CURRENT_GUARDS_CLOSED_NOT_PERFORMANCE_OR_PACKAGE_PASS",
+        "path": "docs/factory/fp06/reviews/w09-composition-output-alias-closure-review.md",
+        "sha256": "0e665ef345d6a579ebe3ec9e5ce3bc597b7c9bec5c96691714548b920170cc51",
+        "actual": "1533 genuineAssertionsRED→15419PASS14skip;155TSFAIL→1563AliasPASS30skip→157originalBuildPASS",
+        "runtimeSha256": "ddd2ff8cd718be451624bb3e5e709f86a48372a77a1e4899ced57f46e2ea6015",
+        "testSha256": "c1b65afb114370f0a4fc856e5fe41ace3e6ffe72faba9803643ac516b35d3a65"
+      },
+      "jointAdmissionAliasWitness": {
+        "path": "docs/factory/fp06/reviews/w09-joint-admission-and-alias-witness.json",
+        "sha256": "69b4ab733a6e2801aed30087078f5dd19f27f308ca686392e9560adf4d1132da",
+        "status": "ROOT_VERIFIED14_RAW_RECEIPTS_ACTUAL_CLASSIFICATION"
+      },
+      "nativeDepotSnapSourceReview": {
+        "status": "READONLY_NATIVE1503ASSERTION_RED_SOURCEFAIL_OPEN",
+        "path": "docs/factory/fp06/reviews/w09-native-depot-snap-source-review.md",
+        "sha256": "d29bf636e4102755179fe6b242ca730ee888dd7d42934112386c165c6a0ed380",
+        "limits": "SyntheticRapierfloor/C27declared300kgCustody; no wholeWorld/Resourcesconservation/NativeSourceBrowsergate. Nativefixnotyetobserved."
+      },
+      "nativeDepotSnapClosureReview": {
+        "status": "READONLY_SCOPED_NATIVE_SPEC_QUALITY_PASS_150RED158GREEN159BUILD",
+        "path": "docs/factory/fp06/reviews/w09-native-depot-snap-closure-review.md",
+        "sha256": "b6cac6b570b188101c667a52f94c473c094c72344d2e98a7077ddf89b2da3995",
+        "actual": "1503 genuineRapierassertRED→15828/28PASS/159originalTSVitePASS verifiedreceipt/raw/snapshot",
+        "limits": "SyntheticRapierfloor anddeclaredC27custody; NativeSnap/custody/sweep/rollback only. No wholeD07SourceWorld/finiteResources/browser/Save/Packageproof."
+      },
+      "normalUiCycleSourcePreflight": {
+        "status": "READONLY_SOURCE_ONLY_CONCRETE_WHOLEMONTAGE_ENTRY_CONNECTION_RECEIPT_GAPS_OPEN",
+        "path": "docs/factory/fp06/reviews/w09-normal-ui-cycle-source-preflight.md",
+        "sha256": "c5175d7a802b634b926cb06811a1d87706c9e519c5d39efba44646d516c6d40f",
+        "limits": "Nojobs/productwrites; freshCUTFORM+normalUI/browserpipeline notrun. Actual121/126 stubs/startstock/commandchoices limited; pending5sitepathsunread. Integrator authorized existing Entry/Host boundaryfixes."
+      },
+      "materialBindingCacheCandidateReview": {
+        "status": "READONLY_SCOPED_SPEC_QUALITY_PASS_PERFORMANCE_NOT_MET_ONE_CANDIDATE_EXHAUSTED",
+        "path": "docs/factory/fp06/reviews/w09-material-binding-cache-candidate-review.md",
+        "sha256": "d5c939c1c0b68f48ce147cb87c2c0c27b8ce0312390f09065356b3c871d99d6e",
+        "sourceSha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a",
+        "testSha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b",
+        "actual": "1601PASS1original5000Timeout5355ms;16119PASS1fixtureTypeError;16245PASS;16420GuardsPASS;165OriginalBuildPASS",
+        "limits": "Source/canonical-byte identity Soundness only. No measured baseline afterguard changes or hardware/browser/speedup/PackagePASS. No additional candidate/profile authorized."
+      },
+      "materialBindingCacheV2Witness": {
+        "path": "docs/factory/fp06/reviews/w09-material-binding-cache-v2-witness.json",
+        "sha256": "1b818f8f5cd90813208d5c3ca0aa30175b83383463ef14ad17742a139a2ad1df",
+        "records": 6,
+        "status": "ROOT_RAW_RECEIPT_SOURCE_SNAPSHOT_SCENARIO_EXACTLY_VERIFIED"
+      },
+      "outputAlias151ProvenanceCorrection": {
+        "path": "docs/factory/fp06/reviews/w09-output-alias-151-provenance-correction.md",
+        "sha256": "f5bb25ddbdbbc0fa57f4dd890796b773487dff2d97731290e67bb563043371b6",
+        "facts": "PlainResourcesSnapshot optionaldepletionundefined caused151fixturecanonicalfailure; noMethods. Originalreport/raw preserved,153actualAliasRED unchanged."
+      },
       "carrierHudScopeExtension": {
         "status": "AUTHORIZED_EXACT_ONE_SOURCE_PATH_BEFORE_WRITES",
         "path": "apps/weltraum-browser/src/hvp/hvpHud.ts",
         "authorAtUtc": "2026-10-11T23:28:43.034622+00:00",
         "sourceBeforeSha256": "2e89c73b3749ec7d539ff3656cc233cc22eb774947f4bc19ab67d0e85ef3f699",
         "limits": "OptionalreadOnlyNative-derivedhint; originalHUDdefaultunchanged; no newinputaction/pose/material/power authority; tests onlyalreadygrantedBootstraptest; startsiteV2fivepathsstillUNGRANTED"
-      }
+      },
+      "normalUiCycleClosureReview": {
+        "status": "READONLY_SCOPED_CURRENT_SOURCE_CONTRACT_F1F2_PASS_166RED167168GREEN170BUILD",
+        "path": "docs/factory/fp06/reviews/w09-normal-ui-cycle-closure-review.md",
+        "sha256": "ca3b976eca059baafb301e21e90eacc3bf8a0eeff2bfb41927de03d8edd2d585",
+        "actual": "1661AssertionFAIL34skip→1671PASS34skip;16810PASS40skip;169TS6196FAIL→170originalTSVitePASS4.578209",
+        "uiCore": "Fouradmittedcore sources byteexact accepted28de0ce; Entryreuse noownBooleanPendingController",
+        "limits": "NativecontrolledReplies/initialProfileSheetstock; FreshCUT-Belt-FORM-Montage/NativeFullMembership/Worldroute/browser/W09PackageNOT_RUN. Snapshot source stable currentEightFiles; futureHUDchanges separate."
+      },
+      "wholeLocalDeliveryUiWitness": {
+        "path": "docs/factory/fp06/reviews/w09-whole-local-delivery-ui-witness.json",
+        "sha256": "75ee7d70aa4c6527a87ed9f8edc769851394b29bf74574e96fcb1ae66857c260",
+        "status": "ROOT_VERIFIED_FIVE_COMMAND_RAW_RECEIPTS"
+      },
+      "currentExactScopeCensus": {
+        "status": "EXACT26_GRANTED_MIRRORS_1WRITER_ZERO_OUTSIDE_PENDING_SITE5_UNMODIFIED",
+        "path": "docs/factory/fp06/reviews/w09-current-exact-scope-census.json",
+        "sha256": "36f38a3e3baa571981c078696ab0ac452d6ee2ecdf8161c11a4eec460a6ec21c",
+        "regularOwnRunBytes": 57670191,
+        "regularOwnRunFiles": 683,
+        "limits": "Metadata only, no sealedmanifest/LFS/schema/fullSource/test/Packagegate"
+      },
+      "partialCommitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "commitKind": "PARTIAL_IMPLEMENTATION_NO_PACKAGE_ACCEPTANCE",
+      "packageAcceptanceCommitSha": null,
+      "endGateStatus": "NOT_RUN",
+      "stoppedAtUtc": "2026-10-12T00:21:57.963431+00:00",
+      "blockers": [
+        "OWNER_STARTSITE_V2_PENDING_ONLY_FIVE_ADDITIONAL_SOURCE_PATHS",
+        "PERFORMANCE_GOAL_V2_NOT_MET_5355MS_OVER_ORIGINAL_5000MS",
+        "FULL_FRESH_NORMAL_NATIVE_BROWSER_FACTORY_CYCLE_NOT_RUN"
+      ],
+      "partialPackageReport": {
+        "path": "docs/factory/fp06/reviews/w09-package-report.md",
+        "sha256": "a82fdfa15531d1faa41dd1f33f4e593cc7de15edf4bb7a254d6c848fb9ff7e9d"
+      },
+      "partialHeadProof": {
+        "path": "docs/factory/fp06/reviews/w09-partial-head-proof.json",
+        "sha256": "9a0ed3ddb323444123df84c5c865fde7529f5d286e0026f8328309a03a08454a"
+      },
+      "partialBoundaryReview": {
+        "path": "docs/factory/fp06/reviews/w09-partial-commit-boundary-review.md",
+        "sha256": "a0d619742261b2397a35231bad29770952c912fc1da720918db352019daa808c"
+      },
+      "partialSourceCheckpointSha256": "968f2e348f34a4986656c33e1639a535e06f610f756c1f1c7e1f0ea86cc78e05",
+      "partialManifestSha256": "e38d24f427525ec3f1eb27656b9395a924ff3223c74e67e63870e392e74e14f6",
+      "partialIndexedTreeSha": "dda99d001486a4aab71209a3c17ee934bf0ca9a7",
+      "partialChangedPathCounts": {
+        "currentProducts": 26,
+        "ownRunFiles": 898,
+        "commitPaths": 924,
+        "aggregateW09Products": 31
+      },
+      "partialSourceReviewStatus": "SCOPED_PASS_NOT_PACKAGE_ACCEPTANCE",
+      "partialEvidenceGitLfsStatus": "SCOPED_PASS",
+      "wholeStagedDiffCheckStatus": "EXIT2_HISTORICAL_EVIDENCE_WHITESPACE_PRESERVED",
+      "targetedProductAndAuthoredClosureDiffCheckStatus": "EXIT0"
     },
     "W10": {
       "dependencies": [
@@ -3673,7 +3799,7 @@
         "D04",
         "D11"
       ],
-      "sourceReadSections": "FP01 \u00a713; FP02 \u00a712; FP03 \u00a713; HVP-Checkpoint/SaveStore.",
+      "sourceReadSections": "FP01 §13; FP02 §12; FP03 §13; HVP-Checkpoint/SaveStore.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -3753,7 +3879,7 @@
         "source": "/workspace/.cloud-setup/fp06-w10-cargo-scene-preflight.md",
         "originalSha256": "c8f7217df442a9a78af6372d4c01af551c12da5e71da70475c5a88f1da9ccc5a",
         "originalBytes": 32122,
-        "purpose": "Read-only Vorpr\u00fcfung, W10 bleibt bis W09-PASS gesperrt; kein Produktwrite und kein Save-PASS."
+        "purpose": "Read-only Vorprüfung, W10 bleibt bis W09-PASS gesperrt; kein Produktwrite und kein Save-PASS."
       },
       "restoreSeamDelta": {
         "report": "docs/factory/fp06/reviews/w10-w09-restore-seam-delta-v1.md",
@@ -3762,7 +3888,9 @@
         "proposedAddedPath": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
         "reason": "Private installation registry needs validated restored initializer; Host published installations must match full paid saved world. Refresh source hashes against actual completed W09 before W10 grant.",
         "noAdditionalHandlingPathJustified": true
-      }
+      },
+      "implementationWriteHold": true,
+      "blocker": "W09_PASS_REQUIRED"
     },
     "W11": {
       "dependencies": [
@@ -3771,7 +3899,7 @@
       "decisionGates": [
         "D10"
       ],
-      "sourceReadSections": "FP01 \u00a715; FP02 \u00a714; FP03 \u00a716; G17-Testtrennung.",
+      "sourceReadSections": "FP01 §15; FP02 §14; FP03 §16; G17-Testtrennung.",
       "readSet": [
         "AGENTS.md",
         ".agent/PLANS.md",
@@ -3823,7 +3951,9 @@
         "status": "SOURCE_ONLY_NOT_GRANTED_NOT_RUN",
         "path": "docs/factory/fp06/reviews/w09-ui-ci-compatibility-delta.md",
         "sha256": "d1c00d15c0febef0e18ad7f13bbfe134493c3d0e15fa181c7bcdaf63f207aa53"
-      }
+      },
+      "implementationWriteHold": true,
+      "blocker": "W10_PASS_REQUIRED"
     }
   },
   "remoteConflictCandidates": [
@@ -3967,7 +4097,7 @@
     {
       "receivedAtUtc": "2026-10-11T09:23:32Z",
       "source": "direct user async question reply",
-      "decisionReply": "Alle vier f\u00fcr W00\u2013W11 freigeben",
+      "decisionReply": "Alle vier für W00–W11 freigeben",
       "freezeReply": "W01-Freeze freigeben",
       "scope": "W00-W11 only",
       "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
