@@ -2398,6 +2398,73 @@
         "Independent source/contract review before bounded candidate commit and later normal-browser Native route. W09/full16kg/blackout/fulloutput/save/visual/hardware gates remain separate",
         "No new dependencies/engine/Collidergeometry/worldauthority/material/recipe/golden/save changes; no W12–29/mainmerge/push/forcepush/PR/publishing"
       ]
+    },
+    "PLAY-02-S1-B09-readonly-inspection": {
+      "schema": "hestia.fp06.play-s1-inspection-addendum/v1",
+      "milestone": "PLAY-02-S1-B09-readonly-inspection",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "observedHeadSha": "694570bac7ce7d59f7f1dd87266a777ac14c1b10",
+      "authorizedAtUtc": "2026-10-12T11:25:40.071375+00:00",
+      "status": "GRANTED_NARROW_READONLY_INSPECTION_EXTENSION",
+      "authorization": "Explicit user normal-build readable Lager/asset/inspection requirement; implementation of same existing paid B09 owner, no product policy/physical-schema change",
+      "extendsGrant": "play-02-s1-bridge.json",
+      "writeSet": [
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+          "state": "EXISTS",
+          "bytes": 54137,
+          "sha256": "a864f3b04001bbe8d7d89bf175858c700a325c12de16eaf2d677efddb1594c27"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "state": "EXISTS",
+          "bytes": 10851,
+          "sha256": "26785cb037051b29604d2e0d91d5e9d2d5358adabcaeace3f213e37cb02fd5bd"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+          "state": "EXISTS",
+          "bytes": 2636,
+          "sha256": "1f861ff175406ef4e500c8c93d56b6a78884ce9745fcf3659f2ee72e49b1d762"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+          "state": "EXISTS",
+          "bytes": 45004,
+          "sha256": "11fe63fa52d0b14a6515523f96e98e8e9124140233b19f45b32aa69fe00e9128"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+          "state": "EXISTS",
+          "bytes": 6187,
+          "sha256": "6683371f1b9af451967b60ce44c59cda8c182ff377b24c5e27cfbe03b3ddf5e0"
+        }
+      ],
+      "preflight": {
+        "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/runtime-integration-preflight.md",
+        "bytes": 26640,
+        "sha256": "bc500aa624a196033b49cfd5a1e0d3fd7755643ebc517e200f73b6da505413cf"
+      },
+      "constraints": [
+        "B06/B07 remain the only per-part125mm compiler/S1 machine definitions. Add only closed existing B09 readonly full-owner/body/collider/part integrity and local inspection evidence; no third compiler, HVOX ingest, per-voxel bodies or new physical definitions",
+        "B09 has no production-row: do not invent one or use model source list as Native presence. Derive integrity from actual same-World enabled fixed body, unchanged part recipes, own members/shape/parent/world pose/rotation/sensor facts, matching definition/source/profile/install/terrain/facility/session binding",
+        "Closed inspection-open derivative only while the current corresponding B09 inventory and Native sources/access are confirmed local and the cargo/inspection UI surface deliberately open. Close/Hold/stale/access loss/parent absence/late loader must close or suppress actualmodel; no Native door/opening state, collision or inventory change",
+        "Part/joint/source/visual roles never confer work/mass/inventory; no texture/material density extraction. Tool and stock custody remains existing paid Material/Native authority",
+        "Existing stageProjection before commit is PreparedHeld/disabled: hidden source/candidate verification distinct from published enabled presence; all actual visibility/work only on completecurrentNativeowner. No gray fallback success on failed import",
+        "Five exact existing/new S1-owned paths only, other already-authorized shared integrations retain existinggrants; Entry/Session/Bootstrap regular grants unchanged and all UI eight paths remain soleotherWriter",
+        "BusinessRED with actual invalid/missing/moved/disabled/unknown owner and near/far/stale inspection; minimalreadonly implementation, scopedaffectedtests/tsc/build and actualnormalinGame variant/inventory evidence, independentreview. Standalone compiler/loader tests notWorld/OwnerPASS",
+        "NativeRead17-line fix bytes and finalreview provenance preserved; no cached proof across reads or bypass/limit/throttle changes. Original definitions/sourcepalette/recipes/BOM/ports/colliders/sweep/service/masses/budgets unchanged",
+        "No W12–29/dependency/engine/save sidecar/physics command/owner budget/mainmerge/push/forcepush/PR/publication. Human terrain/Art/visual/gameplay/hardware OWNER_REVIEW_PENDING"
+      ]
     }
   },
   "actorTransfers": [
