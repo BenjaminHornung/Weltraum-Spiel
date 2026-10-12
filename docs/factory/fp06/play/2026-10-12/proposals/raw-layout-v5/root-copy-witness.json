@@ -1,0 +1,40 @@
+{
+  "atUtc": "2026-10-12T13:58:07.783520+00:00",
+  "copyOnly": true,
+  "originalEvidenceRoot": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/raw-layout-v5-proposal-census-20261012T135152Z",
+  "files": {
+    "01-readonly-v4-to-proposed-v5-census.command.json": {
+      "bytes": 1480,
+      "sha256": "b10782d6e858e9cfb71ec9cd6ea4b55a5a86a3d7ef08c4a3148745f6f066f137"
+    },
+    "01-readonly-v4-to-proposed-v5-census.raw.log.gz": {
+      "bytes": 876,
+      "sha256": "bcaa45a7add9b151961876559ee8ca0f1b187212ce34e01dc09981a37126f9b4"
+    },
+    "02-sealed-census-arithmetic-read-receipt.json": {
+      "bytes": 4714,
+      "sha256": "e285947a89ac38c8382c7ed45b5a4ba217da2a634654557a23cc1d649c6917d8"
+    },
+    "per-column-census.json": {
+      "bytes": 79027,
+      "sha256": "1cf768c7f31976b97d2e92aef2c5fe57bd012ac73409dc1bd21251be38414d83"
+    },
+    "raw-layout-v5-readonly-census.mjs": {
+      "bytes": 8983,
+      "sha256": "58b8f5515d227c10fe74ef4472398e9adb1cd8cc43c2685939685d929b6951af"
+    },
+    "run-raw-layout-v5-census.py": {
+      "bytes": 2049,
+      "sha256": "56737502cc5893050079e2a66465f30c91b7756ae16bda2213c569cdeaa44a1d"
+    },
+    "source-census.json": {
+      "bytes": 8572,
+      "sha256": "a17bd31087c17ecb61ae16b01dc5cd5c3fe1523ac60408e7d1f05ec0c20491fe"
+    },
+    "v4-to-proposed-v5-sparse-slot-diff.json": {
+      "bytes": 29906,
+      "sha256": "31beb508272de396959323ba478200025b4391a247e71e6e3cddf6a21454f3ac"
+    }
+  },
+  "independentReadChecks": "Sparse1246unique rawindices, coordinates, target floor slots, transition214/1032 and artifact SHA PASS; source script read; no repeated source census/World/Native/Browser run"
+}

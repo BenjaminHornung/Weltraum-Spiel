@@ -1,0 +1,28 @@
+{
+  "schema": "hestia.play.bound-readonly-command/v1",
+  "argv": [
+    "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+    "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/raw-layout-v5-readonly-census.mjs",
+    "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/raw-layout-v5-proposal-census-20261012T135152Z/census-output"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-12T13:51:52.461404+00:00",
+  "endUtc": "2026-10-12T13:51:55.080392+00:00",
+  "elapsedSeconds": 2.618728003999422,
+  "exitCode": 0,
+  "rawBytes": 1492,
+  "rawSha256": "b82ed73fd08f5f9badb63dea9e76721877d13def217c03bddfde79c08224730d",
+  "rawGzipPath": "01-readonly-v4-to-proposed-v5-census.raw.log.gz",
+  "script": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/raw-layout-v5-readonly-census.mjs",
+    "bytes": 8983,
+    "sha256": "58b8f5515d227c10fe74ef4472398e9adb1cd8cc43c2685939685d929b6951af"
+  },
+  "wrapper": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/run-raw-layout-v5-census.py",
+    "bytes": 2049,
+    "sha256": "56737502cc5893050079e2a66465f30c91b7756ae16bda2213c569cdeaa44a1d"
+  },
+  "cpuLease": "Root-authorized single unpublished-copy census, coordinated with Cell and Integrator before start",
+  "scope": "Readonly actual V4 source constructor/copy, exactly 192 new columns; external evidence only; no World/Native/Test/Build/Browser/Profile"
+}

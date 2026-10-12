@@ -62,7 +62,8 @@
       "branch": "codex/hestia-fp06-play-ui-gamefeel-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-ui-gamefeel-2026-10-12",
       "grant": "grants/play-03-gamefeel-ui-writer.json",
-      "implementationWriteHold": false
+      "implementationWriteHold": true,
+      "sourceCommitSha": "6b2e53eb0f1fd3b42a5d16ebe244fe7d0bc57199"
     }
   ],
   "readOnlyAgents": [
@@ -1262,7 +1263,7 @@
         "Actual GLB and current native definition/geometry binding, neutral roots exactoneworldtransform; no GLB authority",
         "Business RED/GREEN, actual Rapier part-negative guards, affected regressions/build, normal paid process/WAIT/pose/import screenshots",
         "S1 candidate acceptance only after independent runtime/source review; all human terrain/Art/usability/hardware OWNER_REVIEW_PENDING",
-        "No free material/fragments, member/budget/quantity/policy/limit increases, W12–29, engine/dependency changes or publishing"
+        "No free material/fragments, member/budget/quantity/policy/limit increases, W12\u201329, engine/dependency changes or publishing"
       ],
       "delegation": {
         "actor": "/root/play_cell_bridge",
@@ -1340,7 +1341,7 @@
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
       "baseCommitSha": "393670fccd4789b562d31b721f15d02457420935",
       "authorizedAtUtc": "2026-10-12T08:40:57.706040+00:00",
-      "authorization": "Actual owner reply: Diesen V3-Kandidaten freigeben to exact2492slot/5.9375m² proposal; final terrain not accepted",
+      "authorization": "Actual owner reply: Diesen V3-Kandidaten freigeben to exact2492slot/5.9375m\u00b2 proposal; final terrain not accepted",
       "status": "GRANTED_ISOLATED_CANDIDATE_ONLY",
       "writeSet": [
         "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
@@ -1586,7 +1587,7 @@
       "constraints": [
         "R6 Frozen includes exactfp02Catalog.ts23335B/SHAe746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3; expectedcatalogDigestfnv1a:f3a8c642 checked immediatelyafterSSR beforeanySnapshotwrite",
         "R2 newstorage-open visualinspection derivative only, same five originalNativepartroots/supports/ports/definition/OBB and mass; no newCollider/Worldstate",
-        "Door folded centers[±0.475,1.44,0.390],dimensions[0.925,0.07,1.13]m withinexistingBodybounds; panels/handlesfollow; validateactualunionbounds",
+        "Door folded centers[\u00b10.475,1.44,0.390],dimensions[0.925,0.07,1.13]m withinexistingBodybounds; panels/handlesfollow; validateactualunionbounds",
         "Variant selection awaits Integratorconfirmed local inventory inspection/access projection; notclaiming actual native doorbody/persistentopening state",
         "Old22blends/GLBs/nativeJSON/provenance and20protectedoriginals remain byte-identical; exportONLYnewstorage-open rather than unnecessaryregeneration",
         "GenuinebusinessRED for missingCatalogearlyguard/variantbinding, focusedGREEN and freshpropertscreceipt; realBlendernewblend saved/reopened/export/report/LFSpayload",
@@ -1686,7 +1687,7 @@
       ],
       "destinationsBefore": "ABSENT",
       "constraints": [
-        "Pure closed B06/B07 SourceScene/authoring→125mm partcells only; existingoccupancy mesher reuse, noWorldauthority",
+        "Pure closed B06/B07 SourceScene/authoring\u2192125mm partcells only; existingoccupancy mesher reuse, noWorldauthority",
         "Sameoriginal12/13Parts/33/34nativeboxgeometry/ports/joints/supports/BOM/mass unchanged; no mass/densityfromproxycells/renderroles",
         "Source/definition/authoring/partparent/versiondigest admission and exactgrid/noRotation/noRounding beforeallocation",
         "Retainpartidentity acrossoverlap; deterministic documentedboxpriority; frozen/copy-safe output, budgets below existingmesh/ledger limits",
@@ -1694,7 +1695,7 @@
         "TDD meaningfulBusinessRED thenminimalCompiler/focusedGREEN/typecheck; noNativeWorld/browser/Blender/profile/generalbenchmarks",
         "Readonlypreflight /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-bridge-preflight.md isdesign, notacceptedS1evidence",
         "Finalruntime/controller/nativepart/work/restore/owner acceptance separate; compileralonecannotclaimS1",
-        "Exacttwofiles, no dependency/limit/engine/mainmerge/push/publish/W12–29",
+        "Exacttwofiles, no dependency/limit/engine/mainmerge/push/publish/W12\u201329",
         "CPUlease directcoordinateIntegrator; own evidence outsideProductscope /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/partcells"
       ]
     },
@@ -1999,7 +2000,7 @@
         "Expose frozen copies of pending FactoryInput IDs (existing maximum8), buffered level and existing commandDepth/closing/enabled/canDispatch; no mutable pending map or write API",
         "Preserve small bare ACK no-public/no-held-readview authority guard and original withheld-Read semantics; existing Native state remains authority",
         "Meaningful business RED then focused input/client/affected Host GREEN and typecheck; integrate actual native ACK/neutral/focus facts into next normal browser capture, no teleports/pose/clock injection",
-        "No general instrumentation framework, new protocol fields, timeout/queue/budget increases, dependency/engine/mainmerge/push/publish/W12–29"
+        "No general instrumentation framework, new protocol fields, timeout/queue/budget increases, dependency/engine/mainmerge/push/publish/W12\u201329"
       ]
     },
     "PLAY-02-pure-model-loader": {
@@ -2037,7 +2038,7 @@
         "Read selected archived rules/specs and existing ThreeGLTFLoader/managed renderer, use locked installed deps, no Blender/regeneration/Native/browser/profiles/generalbenchmarks/fullsuite/timeoutincrease",
         "CPUlease directly coordinate Integrator for focused tests/typecheck; no standalone build/browser job before grant; logs outside product under /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/loader",
         "Independent readonly review before fullSHAcommit and HOLD; Root exact immutable admission required before Integrator copies two new modules; no Owner/runtime/S1/browserPASS from pure module",
-        "No W12–29, mainmerge/push/forcepush/PR/publishing/externalupload, no unrequested dependency/engine/budgetchanges"
+        "No W12\u201329, mainmerge/push/forcepush/PR/publishing/externalupload, no unrequested dependency/engine/budgetchanges"
       ]
     },
     "PLAY-03-onboarding-power-hint": {
@@ -2065,14 +2066,14 @@
         }
       ],
       "exactTextReplacement": {
-        "from": "Batterie, Verteiler und die vorhandenen Kabel über die sichtbaren Anschlüsse verbinden.",
-        "to": "Batterie und die vorhandenen Kabel über die sichtbaren Anschlüsse verbinden."
+        "from": "Batterie, Verteiler und die vorhandenen Kabel \u00fcber die sichtbaren Anschl\u00fcsse verbinden.",
+        "to": "Batterie und die vorhandenen Kabel \u00fcber die sichtbaren Anschl\u00fcsse verbinden."
       },
       "constraints": [
         "Only the one false mandatory Distribution prerequisite phrase is removed; existing optional finite B04/source remains unchanged",
         "Onboarding logic/facts/tasks/actions/unknown handling and Native Power/recipes/cargo/source/placement unchanged",
         "Focused hint assertion may be added or adapted to existing onboarding test; use current focused UI verification, no invented extra gameplay gate",
-        "No other module/style/Host/World files or dependency/budget/mainmerge/push/publish/W12–29 authorization"
+        "No other module/style/Host/World files or dependency/budget/mainmerge/push/publish/W12\u201329 authorization"
       ]
     },
     "PLAY-01-V4": {
@@ -2206,14 +2207,14 @@
         "Only exact three new initial-floor masks, same y<=75 slot1/else0 rule. Closed separately named versionV4, original Coast/V1/V2/V3 constructor semantics and slotbytes unchanged; reject unknownV5/stale/mismatchedprofiles",
         "Raw candidate8MslotSHA must equal ea7ccf99cb3ec14f284793664df4535544a76aa7e26a83ff107f98504a1c977d; 5190c339 is old-header offline checksum only, finalV4headerdigest must be computed/bound honestly",
         "No live/source hotreplacement or migration of prior saves/generations; only new initialcandidate and futurecombinedSavepins exact sourceprofile",
-        "All15 original+3V3 ranges remain; 5688flatcols/88.875m². Outside three newmasks every8Mslotbyte identical; 1058Airadd/106solidremaps/0removed; noResources/Inventorycredit or mining/material/wood/Rigbonus",
-        "Current97flora planner records unchanged, same one decorativebed52-220 exclusion→96valid; no additional flora/woodSource/NativeCollider modifications under this grant. Native regression verifies existing sameSources, no modelcull to evadeobstacles",
+        "All15 original+3V3 ranges remain; 5688flatcols/88.875m\u00b2. Outside three newmasks every8Mslotbyte identical; 1058Airadd/106solidremaps/0removed; noResources/Inventorycredit or mining/material/wood/Rigbonus",
+        "Current97flora planner records unchanged, same one decorativebed52-220 exclusion\u219296valid; no additional flora/woodSource/NativeCollider modifications under this grant. Native regression verifies existing sameSources, no modelcull to evadeobstacles",
         "Cargo/recipes/goldens/BOM/ports/supports/carriergeometry/probeOffsets/reach/LOS thresholds/massNativebudgets/atmost16factoryowners inclcarrier/body64/dynamic32/colliders4096/queues/timeouts unchanged",
         "Preserve all concurrentauthorizedInput/Shell/Hostdrafts on same Integratorbranch; beforeBytes are observation bindings, never reset or overwrite other legitimate work to recreate them",
         "Meaningful SourceBusinessRED/GREEN, exactcensus/profile/Coast/V1/V2/V3/sourceflora regressions and build, then normal keyboard/mouse 341kg route/depot/playerexit/paidFormer+50kgBattery+finiteCable access with actualNativefacts",
         "Three static cable standpoints/distances are planningfacts, no NativeFloor/LOS approval or injectedpose; any additionalgeometry requires its own exactOwnerapproval",
-        "Census support positions used 5µm-approximated inneroffsets, all200 fall on identical125mmgridadresses vs exactNative offsets; correctedlabel/clarification preservesoriginalEvidence. RuntimeNativeoffsets neverchanged",
-        "No W12–29/vehicle/fluid/engine/dependency/limit changes/mainmerge/push/forcepush/PR/publishing; finalTerrain/Art/usability/hardware OWNER_REVIEW_PENDING"
+        "Census support positions used 5\u00b5m-approximated inneroffsets, all200 fall on identical125mmgridadresses vs exactNative offsets; correctedlabel/clarification preservesoriginalEvidence. RuntimeNativeoffsets neverchanged",
+        "No W12\u201329/vehicle/fluid/engine/dependency/limit changes/mainmerge/push/forcepush/PR/publishing; finalTerrain/Art/usability/hardware OWNER_REVIEW_PENDING"
       ]
     },
     "PLAY-02-model-loader-admission": {
@@ -2262,7 +2263,7 @@
         "All23 manifest/runtimeproducts unchanged, Native/S1/work/controller/inspection/ledger integration remain soleIntegrator existinggrants; no SourceAssetregeneration/physics/Worldauthority",
         "CurrentV4/Source/UI/Inputdrafts preserved; onlythese2newfiles and ownbounded evidence may be added/committed for admission",
         "Genuine4newRED/final66focused+originaltsc bounded reviewPASS; no Native/world/browser/S1/Owner performanceclaim from pure helper",
-        "No mainmerge/push/forcepush/PR/publishing/dependencies/engine/budgetchanges/W12–29"
+        "No mainmerge/push/forcepush/PR/publishing/dependencies/engine/budgetchanges/W12\u201329"
       ]
     },
     "PLAY-03-gamefeel-ui": {
@@ -2346,7 +2347,7 @@
         "CPUjobs coordinate directly with Integrator; optional single isolatedactualDOM-layoutcapture with existinglockedPlaywright/staticuserreferencedworldbackground is explicitly UI_LAYOUT_PROBE not actualNativeGameplayproof; neverfakeprogress/Worldvalues",
         "Actual normalgamebefore/afterPixelreview and measuredbudget/nativefunctionalacceptance stays Integrator + independent reviewer. Delivercandidate screenshot evidence; no production/publication or acceptedOwnerstyle claim",
         "ExternalOwnEvidence /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-03/ui-gamefeel/; independentreadonlyreview/fullSHAcommit/HOLD before Rootfreshimmutableadmission; Art+Loader+oldUI/Cells remainHOLD",
-        "No W12–29, engine/dep/budget/timeout/queue/mainmerge/push/forcepush/PR/publishing/externalupload"
+        "No W12\u201329, engine/dep/budget/timeout/queue/mainmerge/push/forcepush/PR/publishing/externalupload"
       ]
     },
     "PLAY-06-native-read-same-snapshot": {
@@ -2396,7 +2397,7 @@
         "Record actual before/after source hashes, count/timing scenario/input facts and raw receipts; read reuse itself is not automatic SimulationHold closure/FPS/general hardware acceptance. Preserve all route FAILs and current913c0c46 actual source bindings",
         "This new NativeRead problem is separate from CLOSED original composition C1 profile budget; no new composition profiling/candidates/global cache. At most one scoped paired NativeRead observation scenario; CPU coordinate directly with UI writer",
         "Independent source/contract review before bounded candidate commit and later normal-browser Native route. W09/full16kg/blackout/fulloutput/save/visual/hardware gates remain separate",
-        "No new dependencies/engine/Collidergeometry/worldauthority/material/recipe/golden/save changes; no W12–29/mainmerge/push/forcepush/PR/publishing"
+        "No new dependencies/engine/Collidergeometry/worldauthority/material/recipe/golden/save changes; no W12\u201329/mainmerge/push/forcepush/PR/publishing"
       ]
     },
     "PLAY-02-S1-B09-readonly-inspection": {
@@ -2463,7 +2464,7 @@
         "Five exact existing/new S1-owned paths only, other already-authorized shared integrations retain existinggrants; Entry/Session/Bootstrap regular grants unchanged and all UI eight paths remain soleotherWriter",
         "BusinessRED with actual invalid/missing/moved/disabled/unknown owner and near/far/stale inspection; minimalreadonly implementation, scopedaffectedtests/tsc/build and actualnormalinGame variant/inventory evidence, independentreview. Standalone compiler/loader tests notWorld/OwnerPASS",
         "NativeRead17-line fix bytes and finalreview provenance preserved; no cached proof across reads or bypass/limit/throttle changes. Original definitions/sourcepalette/recipes/BOM/ports/colliders/sweep/service/masses/budgets unchanged",
-        "No W12–29/dependency/engine/save sidecar/physics command/owner budget/mainmerge/push/forcepush/PR/publication. Human terrain/Art/visual/gameplay/hardware OWNER_REVIEW_PENDING"
+        "No W12\u201329/dependency/engine/save sidecar/physics command/owner budget/mainmerge/push/forcepush/PR/publication. Human terrain/Art/visual/gameplay/hardware OWNER_REVIEW_PENDING"
       ]
     },
     "PLAY-03-gamefeel-ui-admission": {
@@ -2607,7 +2608,7 @@
         "Newstyle/UI/terrain/art/gameplay/generalhardware stillOWNER_REVIEW_PENDING. S1 actual model/part/work/stock and full fresh16kg/blackout/fulloutput/Save gates remain open. No new independentisolatedProbe job",
         "Ownsourceadmission/independentreview evidence maybe retained under currentPLAY03 OwnRun and exact provenance; no copyingexternaltool caches/profiles/credentials/metadata into product",
         "UIwriter6b2 branch/worktree cleanHOLD, activeimplementationwriters nowonlyIntegrator; do not revive writer/alter immutable eight files without a concrete subsequent contractscope",
-        "No W12–29/mainmerge/push/forcepush/PR/publish/dependency/physicsbudget/probe/timeout/queue raising"
+        "No W12\u201329/mainmerge/push/forcepush/PR/publish/dependency/physicsbudget/probe/timeout/queue raising"
       ]
     },
     "PLAY-02-S1-pure-controller-P2-closure": {
@@ -2682,7 +2683,7 @@
         "Only bounded CPUfocusedtests+tsc under directIntegratorlease; actualNativeGame/World/render/import/generation/budget/browser evidence and SharedW10/Map/goal wiring remainIntegrator. ActualUIBrowser run currentlyexclusive, no new CPUjob untillease returned",
         "External evidence /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-controller-fix/; final exacttwofileFullSHAcommit/cleanHOLD, independentclosureReview by DIFFERENTreadonlyactor+Rootfresh targetBefore/importgrant. No self-review PASS",
         "No independent paid provider/image/blender/perf/profile/broad native reruns; existingcompositionC1closed, NativeReadcandidateclosed. NeededGeometryCost/Hostjoin/instanceRender runtime gates not promoted from pure helperP",
-        "No W12–29/mainmerge/push/forcepush/PR/publishing/engine/dependency/queue/probe/budget/timeout/sourcegeometry changes. Humanterrain/Art/visual/gameplay/hardware OWNER_REVIEW_PENDING"
+        "No W12\u201329/mainmerge/push/forcepush/PR/publishing/engine/dependency/queue/probe/budget/timeout/sourcegeometry changes. Humanterrain/Art/visual/gameplay/hardware OWNER_REVIEW_PENDING"
       ]
     },
     "PLAY-02-S1-controller-immutable-admission": {
@@ -2742,7 +2743,7 @@
         "58focused=42S1+16presentation/tsc0 receipts +genuine16F17P and22F20P RED verified, no actualS1/geometryCost/runtime/paidW09/Save/Owner inferred.",
         "CellsourceBranchcleanHOLD; no secondactivewriter now. SoleIntegrator owns sharedNative/Host/Session/Bootstrap/Entry/Save. Furthercontrolleredits requireconcreteexactscope, no independentmass/clock/recipe/Sourcechanges.",
         "Preserve priorhistorical receipts andmissing2newfilebindinglimitations; ownadmission+runtime evidence undercurrentOwnPLAY02.",
-        "No W12–29/mainmerge/push/forcepush/PR/publish/engine/dependency/budget/probe/queue/timeoutchanges; humanreviewsOWNER_REVIEW_PENDING."
+        "No W12\u201329/mainmerge/push/forcepush/PR/publish/engine/dependency/budget/probe/queue/timeoutchanges; humanreviewsOWNER_REVIEW_PENDING."
       ]
     },
     "PLAY-04-actual-B09-solid-port-source": {
@@ -2819,10 +2820,10 @@
         "Publicproduction[] remainsB05/B06/B07 only; B09 noProductionState/newtool/cellcompiler/door. Allclosednativeprofile/Owner/source/install/terrain/facility/currentSession/epoch/nativeTick binding failclosed.",
         "Within ONEsynchronousRead reuse existinglocalproofMap peractualowner; noCrossRead/terrain/actorcache/queryskip/unknownCoverageacceptance/timingbudgetraise. AddedcurrentB09groundsupport proofcost explicitboundedbyexisting16Owner/64Body/4096Colliderbudgets; nativecost/longholdmeasurepending.",
         "Session ui offerings and connect-belt admission bothjoin exactpublishedNativeport+currentlogicalpaidowner+actualpart/header/frame/support. ExistingB06/B07 compatibility, endpoints/direction/4mroute/existingW08quantizedfinitecapacity/power preserved. CannotenablemerelyUIoffer.",
-        "BusinessREDbeforeminimalpatch: realRapierB09(currentSource/support/unknown/actor/LOS/member), actualsessionoffer and stale/forged endpoint/owner rejection; B09 remains noProductionrow. Focusedtests/regressions/tsc/build thennormalRawStorage→Cutteractualboundline evidence.",
+        "BusinessREDbeforeminimalpatch: realRapierB09(currentSource/support/unknown/actor/LOS/member), actualsessionoffer and stale/forged endpoint/owner rejection; B09 remains noProductionrow. Focusedtests/regressions/tsc/build thennormalRawStorage\u2192Cutteractualboundline evidence.",
         "Allfourpaths soleIntegrator; currentotherShareddrafts and newlyadmittedpurecontroller retained. OriginalNative69areviewhistoricalremainsunchanged, newaddendumrequiresitsownindependentreview.",
         "No newUI/Art/Cellwriter; formerwriterscleanHOLD. Rootonlycontrol. MaterialoneLotperRecipeTerm andlegacyrecipes/goldens/saves protected; normalflow2actual8kgLots withfiniteCargo.",
-        "No W12–29/mainmerge/push/forcepush/PR/publish/engine/dependency/queue/probe/budget/timeoutchange; humanacceptanceOWNER_REVIEW_PENDING."
+        "No W12\u201329/mainmerge/push/forcepush/PR/publish/engine/dependency/queue/probe/budget/timeoutchange; humanacceptanceOWNER_REVIEW_PENDING."
       ]
     },
     "PLAY-04-pure-fresh-lineage": {
@@ -2906,14 +2907,148 @@
       "constraints": [
         "ExactlytwoNEWpurefiles and ownexternalEvidence only. SharedFactorySession/Host/Native/Bootstrap/Entry/map/onboarding/contracts/Save/catalog/recipe/material/core unchanged; soleIntegratorproducesactualcurrentread/header/session/epoch/tick andconsumesprojector.",
         "SourceOrigin from actualretainedinitialMaterial C10/source-event/definition/version/digest/stackquantities +currentadoptedmetadata/receipts; noProjectorfixture/source/materialconstructor orWorldquery/generation. No journal/clock/progression-authority/commands/World/animation/UIflag/store.",
-        "ActualcumulativeMachine start/finish/manualWorkreceipts↔Material reserve/finish/build/transfer/split receiptgraph. UniquecompletedJobs/finishtransactions, exactfrozenRecipeRef/inputs/outputs/work; preservehistoricalMaterialrevision/Origin+creationIDs; currentselectedrecipe/latestjob/freshBoolean/recursiveparentsums neverenough.",
-        "Meaningfulpartialfacts: afteractual2CUTs exactlyinput16M/cutBatches2/output15M/offcut1M; downstream7Mprofile/7Msheet/formerOffcut1M/brace5.8M/offcut.2M onlyactuallinkedadoptedJobs. Do not leaveCUTobjectiveuntilalreadyfinalBrace. Deterministicspecificwitnessset fromactualgenealogy, neverBatchOrdinal%-pairing/newpolicy/arbitraryglobalsums; ambiguity/missing/stale→null/unconfirmed.",
+        "ActualcumulativeMachine start/finish/manualWorkreceipts\u2194Material reserve/finish/build/transfer/split receiptgraph. UniquecompletedJobs/finishtransactions, exactfrozenRecipeRef/inputs/outputs/work; preservehistoricalMaterialrevision/Origin+creationIDs; currentselectedrecipe/latestjob/freshBoolean/recursiveparentsums neverenough.",
+        "Meaningfulpartialfacts: afteractual2CUTs exactlyinput16M/cutBatches2/output15M/offcut1M; downstream7Mprofile/7Msheet/formerOffcut1M/brace5.8M/offcut.2M onlyactuallinkedadoptedJobs. Do not leaveCUTobjectiveuntilalreadyfinalBrace. Deterministicspecificwitnessset fromactualgenealogy, neverBatchOrdinal%-pairing/newpolicy/arbitraryglobalsums; ambiguity/missing/stale\u2192null/unconfirmed.",
         "Massbalanceuniquejobs exactly16M=5.8Minstalled+3Mremainingprofile+5Mremainingsheet+2.2Moffcut. Cumulative7/7outputs aredifferentfromcurrent3/5remainders, actualtransfers/extra legitimate consumptioncannotpretendcurrentrestexists. ReturnedexistingGoalFacts includescumulativefields only; testlineageboundremainingbalance separately.",
         "PaidBrace onlyactualConstructionReady projection/currentNativeIdle/header/logicalNativeowner definition/profile/source/pose/currentrevision +actualpaidBuildMaterialreceipt+sameinstalledproducedunit/extensions. Preview/produced/depot/finalizing/hold/unknownNative notpaidcompletion. PrivateactualNativeproducer remainsIntegratorresponsibility; pureID/digest alone notWorldproof.",
         "TDD genuinebusinessREDbeforeminimalpatch, usingexistingactual Material/Production owner transitions/receipts in clearlysyntheticpure fixtures. Cover2CUTpartial, Recipechange/Joboverwrite +linkedcompletionhistory, fresh4/2manualwork/finish/installedBrace, starter/fakefresh/mixedunrelatedmetadata/absentfinish/stale/ambiguous/replay/doublecount/wait/preview/hold negatives. One8+8 rawpair retainednormalW09flow, no protectedSource/recipe/golden rewrites.",
         "Priorallhistoricalreceipts/readpreflights immutable. Newbefore/afterinputsealsbothnewfiles+dependencies; focusedtests+originaltsc underdirectIntegratorCPUlease, no broaderNative/Browser/profiling/perf/Blender/providerJobs. ExistingcompositionC1closed.",
         "OwnEvidence /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/fresh-lineage-writer/. ExacttwofileFullSHAcommit/cleanHOLD +differentreadonlyActorreview thenRootfreshTargetAbsent/hash/immutableadmission. No self-reviewacceptance.",
-        "Max2implementationwritersnowIntegrator+CellpureGoal; Art/UI/Loader/S1/CellsoldworktreesremainHOLD. NoSourcebranch/reset/remoteMainrestart/mainmerge/push/forcepush/PR/publish/engine/dep/budget/queue/probe/timeoutraising/W12–29. HumanreviewsOWNER_REVIEW_PENDING."
+        "Max2implementationwritersnowIntegrator+CellpureGoal; Art/UI/Loader/S1/CellsoldworktreesremainHOLD. NoSourcebranch/reset/remoteMainrestart/mainmerge/push/forcepush/PR/publish/engine/dep/budget/queue/probe/timeoutraising/W12\u201329. HumanreviewsOWNER_REVIEW_PENDING."
+      ]
+    },
+    "PLAY-01-owner-approved-V5-raw-belt-floor-candidate": {
+      "schema": "hestia.fp06.play-grant/v1",
+      "milestone": "PLAY-01-owner-approved-V5-raw-belt-floor-candidate",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "headAtRead": "f85d1379c3458488d225105156adfb66837799ce",
+      "authorizedAtUtc": "2026-10-12T14:00:36.388387+00:00",
+      "status": "GRANTED_EXACT_ISOLATED_CANDIDATE",
+      "ownerAnswer": "Diesen exakten V5-Kandidaten freigeben",
+      "authorization": "Explicit owner async answer to complete separate3m\u00b2/1246slot proposal; finalterrainacceptance still pending",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+        "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+          "bytes": 7628,
+          "sha256": "6a50d30c7299ba4fca46493ac5b92d6d8a93d7b13b4f603e953e580e87bab936"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+          "bytes": 39990,
+          "sha256": "0fb64bd936208872a0e5a21ef5362a930289e5e789f8798eb2ac2c40bca35e06"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+          "bytes": 4208,
+          "sha256": "1cd7288ba8e44c1b8c47a8adf6e22279e69172661f0948cc222e0481bfb272e1"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "bytes": 12091,
+          "sha256": "6bb753d7bb8b30523df034b4aa7c51de5650c5081d644d9881691eab7b38ead9"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+          "bytes": 191297,
+          "sha256": "723f266458245735bd4283f91a6bf6c8d45cb9276dc0c44321b3cbeead74890e"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+          "bytes": 17326,
+          "sha256": "7db2d8a3ea36066a355fccbb1dc28cf203874ebc70af0aa2900b75dc7734f4ac"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+          "bytes": 9295,
+          "sha256": "da2b7fb3f93babd7caa87385678c9bab8e9fbd99249338c1b69b69c0c47dd975"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+          "bytes": 5283,
+          "sha256": "507fe4e331eaa5fb1d0d864482220683846d5aa079530afe8762cfc889160d2a"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+          "bytes": 25321,
+          "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+          "bytes": 100474,
+          "sha256": "e6288fe4ce5f6f5375ad2fa314e07cf6adcd7b87be319aeea3167f29a7780c7b"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+          "bytes": 70328,
+          "sha256": "ce9b9bef3389988995a3c2c609fa7172fd0cb932cb4d17cbbe28dd959d429448"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+          "bytes": 53598,
+          "sha256": "50b7bf46b50816744246c95ab2bf68def7449c51c860c3394fc3af16d351f589"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+          "bytes": 7458,
+          "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
+        }
+      ],
+      "proposal": "../../proposals/raw-storage-belt-floor-candidate-v5.md",
+      "exactNewMasks": [
+        [
+          2,
+          6,
+          5,
+          5.5
+        ],
+        [
+          11,
+          13,
+          5,
+          5.5
+        ]
+      ],
+      "baseV4Digest": "913c0c46",
+      "baseV4SlotsSha256": "ea7ccf99cb3ec14f284793664df4535544a76aa7e26a83ff107f98504a1c977d",
+      "proposalSlotsSha256": "106a3c5ba17e7bb8861d853e1889d71ebf42a686f3d0605d0cb8efabb20c7911",
+      "runtimeDigest": "NOT_IMPLEMENTED_COMPUTE_AND_REPORT_UNDER_NEW_VERSION",
+      "sparseDiff": {
+        "path": "proposals/raw-layout-v5/v4-to-proposed-v5-sparse-slot-diff.json",
+        "bytes": 29906,
+        "sha256": "31beb508272de396959323ba478200025b4391a247e71e6e3cddf6a21454f3ac"
+      },
+      "changedSlots": 1246,
+      "changedColumns": 185,
+      "newColumns": 192,
+      "extraAreaMm2": 3000000,
+      "materialCreditMg": 0,
+      "constraints": [
+        "Exactlytwo newhalfopenmaskstrips and sameinitialy<=75slot1/else0 rule,5880unioncols/91.875m\u00b2; V4existing9-11/5-5.5 strip notduplicate. ExactRawSHA+1246slotdiff/nooutsidewrites;0inventory/geology/woodcredit.",
+        "Closed separately named V5initialversion; Coast/V1/V2/V3/V4oldconstructor/header/slotsemantics unchanged. NewknownV5explicitSource/Cargo/Host/Native binding; rejectunknownversions/staleprofiles. NeverhotreplaceSource orautosave-migrateexistingWorldgenerations.",
+        "NormalB09/B06/B07proposedbuildtargetwest1m onlyordinaryplacement throughunchangedNativeadmission. Allactualbody/foot/service/sweep/reach/LOS proof and paidCargo/materialconservation remain; noforcedposes/accessbypass/teleport/collidershrink.",
+        "CargoC01-C28/materialhistory/recipes/goldens/BOM/sourceports/carrier/staticFacilityprofiles/Physicsprobes/thresholds/budgets/16owners/64bodies/32dynamic/4096colliders/timeouts/queues/limits unchanged. PreservecurrentauthorizedShareddrafts, beforebindings areobservations notreset instructions.",
+        "CurrentvegetationSource/explicitinitialexclusions unchanged. Inspect actualderivedplanner/headerSource differences; anynewFlora/sourceexclusion/collideredit requires concrete separate scope, cannot inventunchangedFloraPASS fromSourcehash.",
+        "GenuineSourceBusinessRED/GREEN/exactRawdiff+profile/Cargo/Coast/V1-V4regressions/tsc/build beforedependentnormalroute. ActualNative ground/body/service/ports/paidRaw\u2192Cutter\u2192Former needed; Sourcecensus notgameplayproof. Cablerange/powercontrol/nativeS1/fresh16kg/Save independentexistinggrants continue.",
+        "PrivateIntegrator actualphysics/session/epoch/tick snapshots authoritative; noWorldauthority inrenderer/UI/GLB/pureGoal. Max2writersIntegrator+Cellnew2purefiles; alloldArt/UI/S1/LoaderwritersHOLD.",
+        "OwnnewEvidence/commits/diffs, immutablehistoricalreceipts, independentboundedreview. RootSourceReview snapshot beforeV5 protects prior167PASS/runtimev1scope; do notattributeV5tohistoricalV4captures.",
+        "NoW12-W29/fluid/vehicle/engine/dependency/budget/queue/timeoutchanges/remote-mainrestart/mainmerge/push/forcepush/PR/publish. Finalterrain/art/UI/gameplay/hardwareOWNER_REVIEW_PENDING."
       ]
     }
   },

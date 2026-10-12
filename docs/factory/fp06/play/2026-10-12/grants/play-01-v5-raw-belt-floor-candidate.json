@@ -1,0 +1,134 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-01-owner-approved-V5-raw-belt-floor-candidate",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "headAtRead": "f85d1379c3458488d225105156adfb66837799ce",
+  "authorizedAtUtc": "2026-10-12T14:00:36.388387+00:00",
+  "status": "GRANTED_EXACT_ISOLATED_CANDIDATE",
+  "ownerAnswer": "Diesen exakten V5-Kandidaten freigeben",
+  "authorization": "Explicit owner async answer to complete separate3m\u00b2/1246slot proposal; finalterrainacceptance still pending",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+    "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+    "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 7628,
+      "sha256": "6a50d30c7299ba4fca46493ac5b92d6d8a93d7b13b4f603e953e580e87bab936"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 39990,
+      "sha256": "0fb64bd936208872a0e5a21ef5362a930289e5e789f8798eb2ac2c40bca35e06"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4208,
+      "sha256": "1cd7288ba8e44c1b8c47a8adf6e22279e69172661f0948cc222e0481bfb272e1"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 12091,
+      "sha256": "6bb753d7bb8b30523df034b4aa7c51de5650c5081d644d9881691eab7b38ead9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 191297,
+      "sha256": "723f266458245735bd4283f91a6bf6c8d45cb9276dc0c44321b3cbeead74890e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 17326,
+      "sha256": "7db2d8a3ea36066a355fccbb1dc28cf203874ebc70af0aa2900b75dc7734f4ac"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "bytes": 9295,
+      "sha256": "da2b7fb3f93babd7caa87385678c9bab8e9fbd99249338c1b69b69c0c47dd975"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "bytes": 5283,
+      "sha256": "507fe4e331eaa5fb1d0d864482220683846d5aa079530afe8762cfc889160d2a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "bytes": 25321,
+      "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 100474,
+      "sha256": "e6288fe4ce5f6f5375ad2fa314e07cf6adcd7b87be319aeea3167f29a7780c7b"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 70328,
+      "sha256": "ce9b9bef3389988995a3c2c609fa7172fd0cb932cb4d17cbbe28dd959d429448"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 53598,
+      "sha256": "50b7bf46b50816744246c95ab2bf68def7449c51c860c3394fc3af16d351f589"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+      "bytes": 7458,
+      "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
+    }
+  ],
+  "proposal": "../../proposals/raw-storage-belt-floor-candidate-v5.md",
+  "exactNewMasks": [
+    [
+      2,
+      6,
+      5,
+      5.5
+    ],
+    [
+      11,
+      13,
+      5,
+      5.5
+    ]
+  ],
+  "baseV4Digest": "913c0c46",
+  "baseV4SlotsSha256": "ea7ccf99cb3ec14f284793664df4535544a76aa7e26a83ff107f98504a1c977d",
+  "proposalSlotsSha256": "106a3c5ba17e7bb8861d853e1889d71ebf42a686f3d0605d0cb8efabb20c7911",
+  "runtimeDigest": "NOT_IMPLEMENTED_COMPUTE_AND_REPORT_UNDER_NEW_VERSION",
+  "sparseDiff": {
+    "path": "proposals/raw-layout-v5/v4-to-proposed-v5-sparse-slot-diff.json",
+    "bytes": 29906,
+    "sha256": "31beb508272de396959323ba478200025b4391a247e71e6e3cddf6a21454f3ac"
+  },
+  "changedSlots": 1246,
+  "changedColumns": 185,
+  "newColumns": 192,
+  "extraAreaMm2": 3000000,
+  "materialCreditMg": 0,
+  "constraints": [
+    "Exactlytwo newhalfopenmaskstrips and sameinitialy<=75slot1/else0 rule,5880unioncols/91.875m\u00b2; V4existing9-11/5-5.5 strip notduplicate. ExactRawSHA+1246slotdiff/nooutsidewrites;0inventory/geology/woodcredit.",
+    "Closed separately named V5initialversion; Coast/V1/V2/V3/V4oldconstructor/header/slotsemantics unchanged. NewknownV5explicitSource/Cargo/Host/Native binding; rejectunknownversions/staleprofiles. NeverhotreplaceSource orautosave-migrateexistingWorldgenerations.",
+    "NormalB09/B06/B07proposedbuildtargetwest1m onlyordinaryplacement throughunchangedNativeadmission. Allactualbody/foot/service/sweep/reach/LOS proof and paidCargo/materialconservation remain; noforcedposes/accessbypass/teleport/collidershrink.",
+    "CargoC01-C28/materialhistory/recipes/goldens/BOM/sourceports/carrier/staticFacilityprofiles/Physicsprobes/thresholds/budgets/16owners/64bodies/32dynamic/4096colliders/timeouts/queues/limits unchanged. PreservecurrentauthorizedShareddrafts, beforebindings areobservations notreset instructions.",
+    "CurrentvegetationSource/explicitinitialexclusions unchanged. Inspect actualderivedplanner/headerSource differences; anynewFlora/sourceexclusion/collideredit requires concrete separate scope, cannot inventunchangedFloraPASS fromSourcehash.",
+    "GenuineSourceBusinessRED/GREEN/exactRawdiff+profile/Cargo/Coast/V1-V4regressions/tsc/build beforedependentnormalroute. ActualNative ground/body/service/ports/paidRaw\u2192Cutter\u2192Former needed; Sourcecensus notgameplayproof. Cablerange/powercontrol/nativeS1/fresh16kg/Save independentexistinggrants continue.",
+    "PrivateIntegrator actualphysics/session/epoch/tick snapshots authoritative; noWorldauthority inrenderer/UI/GLB/pureGoal. Max2writersIntegrator+Cellnew2purefiles; alloldArt/UI/S1/LoaderwritersHOLD.",
+    "OwnnewEvidence/commits/diffs, immutablehistoricalreceipts, independentboundedreview. RootSourceReview snapshot beforeV5 protects prior167PASS/runtimev1scope; do notattributeV5tohistoricalV4captures.",
+    "NoW12-W29/fluid/vehicle/engine/dependency/budget/queue/timeoutchanges/remote-mainrestart/mainmerge/push/forcepush/PR/publish. Finalterrain/art/UI/gameplay/hardwareOWNER_REVIEW_PENDING."
+  ]
+}

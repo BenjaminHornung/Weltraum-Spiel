@@ -1,0 +1,215 @@
+{
+  "atUtc": "2026-10-12T13:53:34.130179+00:00",
+  "scope": "Read and arithmetic over sealed census JSON/raw only; no source constructor, Native, browser, test, build or profile invocation",
+  "checks": {
+    "rawBytesMatch": true,
+    "rawHashMatch": true,
+    "sparseArtifactSizeMatch": true,
+    "sparseArtifactHashMatch": true,
+    "perColumnArtifactSizeMatch": true,
+    "perColumnArtifactHashMatch": true,
+    "allSparseIndicesMatchCoords": true,
+    "allSparseTargetValuesMatch": true,
+    "allSparseInside192Cols": true,
+    "strictlyIncreasingSparseIndices": true,
+    "columnsExactly192Distinct": true,
+    "allTransitionCountsMatch": true,
+    "perColumnSumMatches": true
+  },
+  "allChecksTrue": true,
+  "censusArtifact": {
+    "bytes": 8572,
+    "sha256": "a17bd31087c17ecb61ae16b01dc5cd5c3fe1523ac60408e7d1f05ec0c20491fe"
+  },
+  "newStripUpperFootSamples": [
+    {
+      "foot": "raw-side",
+      "east": 2.25,
+      "north": 5.25,
+      "samples": [
+        {
+          "east": 2.188,
+          "north": 5.188,
+          "x": 71,
+          "z": 210,
+          "beforeTopMeters": 3,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 2.188,
+          "north": 5.2505,
+          "x": 72,
+          "z": 210,
+          "beforeTopMeters": 2.5,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 2.2505,
+          "north": 5.188,
+          "x": 71,
+          "z": 209,
+          "beforeTopMeters": 3,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 2.2505,
+          "north": 5.2505,
+          "x": 72,
+          "z": 209,
+          "beforeTopMeters": 3,
+          "afterTopMeters": 1.5
+        }
+      ]
+    },
+    {
+      "foot": "cutter-side",
+      "east": 5.75,
+      "north": 5.25,
+      "samples": [
+        {
+          "east": 5.688,
+          "north": 5.188,
+          "x": 71,
+          "z": 182,
+          "beforeTopMeters": 1.25,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 5.688,
+          "north": 5.2505,
+          "x": 72,
+          "z": 182,
+          "beforeTopMeters": 1.25,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 5.7505,
+          "north": 5.188,
+          "x": 71,
+          "z": 181,
+          "beforeTopMeters": 1.25,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 5.7505,
+          "north": 5.2505,
+          "x": 72,
+          "z": 181,
+          "beforeTopMeters": 1.25,
+          "afterTopMeters": 1.5
+        }
+      ]
+    },
+    {
+      "foot": "former-side",
+      "east": 12.75,
+      "north": 5.25,
+      "samples": [
+        {
+          "east": 12.688,
+          "north": 5.188,
+          "x": 71,
+          "z": 126,
+          "beforeTopMeters": 1.25,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 12.688,
+          "north": 5.2505,
+          "x": 72,
+          "z": 126,
+          "beforeTopMeters": 1.25,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 12.7505,
+          "north": 5.188,
+          "x": 71,
+          "z": 125,
+          "beforeTopMeters": 1.25,
+          "afterTopMeters": 1.5
+        },
+        {
+          "east": 12.7505,
+          "north": 5.2505,
+          "x": 72,
+          "z": 125,
+          "beforeTopMeters": 1.25,
+          "afterTopMeters": 1.5
+        }
+      ]
+    }
+  ],
+  "existingV4FootAtE9_25": "Excluded from new geometry; original V4 mask [9,11,5,5.5] supplies both addressed ray columns at 1.5m",
+  "cableSourcePortsMm": {
+    "battery": [
+      -2250,
+      2500,
+      2500
+    ],
+    "cutter": [
+      -6375,
+      2625,
+      5750
+    ],
+    "former": [
+      -5875,
+      2625,
+      -1750
+    ],
+    "rawBelt": [
+      -6875,
+      2250,
+      10250
+    ],
+    "formerBelt": [
+      -6875,
+      2250,
+      3250
+    ],
+    "distributor": [
+      -4250,
+      2500,
+      5500
+    ]
+  },
+  "cables": [
+    {
+      "source": "battery",
+      "target": "cutter",
+      "rawL1Mm": 7500,
+      "requiredMm": 7500,
+      "existingClosedProfile": true
+    },
+    {
+      "source": "battery",
+      "target": "former",
+      "rawL1Mm": 8000,
+      "requiredMm": 8000,
+      "existingClosedProfile": true
+    },
+    {
+      "source": "battery",
+      "target": "formerBelt",
+      "rawL1Mm": 5625,
+      "requiredMm": 5750,
+      "existingClosedProfile": false
+    },
+    {
+      "source": "battery",
+      "target": "distributor",
+      "rawL1Mm": 5000,
+      "requiredMm": 5000,
+      "existingClosedProfile": false
+    },
+    {
+      "source": "distributor",
+      "target": "rawBelt",
+      "rawL1Mm": 7625,
+      "requiredMm": 7750,
+      "existingClosedProfile": false
+    }
+  ],
+  "totalCableMm": 34000,
+  "cableBudgetMm": 40000
+}

@@ -299,7 +299,7 @@
     }
   ],
   "currentProgress": {
-    "atUtc": "2026-10-12T13:09:52.829402+00:00",
+    "atUtc": "2026-10-12T14:00:36.388387+00:00",
     "candidateDigest": "913c0c46",
     "v2ChangedSlots": 2890,
     "materialCreditMg": 0,
@@ -350,7 +350,7 @@
       "testBridge": false,
       "materialMassMg": 2984400000,
       "finalNativeStatus": "Paused",
-      "supportCountScope": "Synthetic realRapier B06 fixture512Facility/1024publicSession before→256after; not B07 timing benchmark; individualAfterMs NOT_REPORTED"
+      "supportCountScope": "Synthetic realRapier B06 fixture512Facility/1024publicSession before\u2192256after; not B07 timing benchmark; individualAfterMs NOT_REPORTED"
     },
     "s1": "Runtime readonly preflight Rootread;15 scaffold businessREDs; B09 readonly inspection integrity exact addendum55c75585, no thirdcompiler/physicalschema. Actual runtime/part/work/Owner acceptance pending",
     "gameUiImportCommit": "f29501516afa2afd0802aa00dd2e43ebda7ba7fe",
@@ -362,7 +362,7 @@
       "sha256": "9111002a16da9278052af65cfe00ba036f8aa44e6168e2b3e340175df85f6516",
       "verdict": "Readonlycomplete; adoptedcumulativeMaterial+Machinecommandreceipts suffice, no liveGoaljournal; implementation/actual16kgNOT_RUN"
     },
-    "actualUiPauseHelpReview": "ActualPausefalseerror09GREEN andAvatarScene15GREEN17.273s aftergenuine12RED+2focused13P/build14. DOMnopauseoverlay; sameGLBCargo09stilldark→only3lineFactoryEgoAvatarvisibility15darkregiongone. Boundedpixelcauseclosed; broaderUI/S1/Ownerpending, actual800x600NOT_RUN.",
+    "actualUiPauseHelpReview": "ActualPausefalseerror09GREEN andAvatarScene15GREEN17.273s aftergenuine12RED+2focused13P/build14. DOMnopauseoverlay; sameGLBCargo09stilldark\u2192only3lineFactoryEgoAvatarvisibility15darkregiongone. Boundedpixelcauseclosed; broaderUI/S1/Ownerpending, actual800x600NOT_RUN.",
     "actualUiIndependentReview": {
       "artifact": "reviews/play-03-actual-gamefeel-review.md",
       "sha256": "0b8bcf04d4c0e0143c8403fae96f852e9bda27757e02fd9cef2145920d49b6a4",
@@ -392,6 +392,31 @@
       ],
       "requiredInitialMaterial": "actualretainedreadonlySourcebaseline no constructor/duplicateWorld",
       "status": "GRANTED_EXACT_TWO_NEW_FILES_SECOND_WRITER"
+    },
+    "helpPause": "Actual RED12 \u2192 Unit13/build14/normalBrowser15 PASS; Root pixel+raw verified, 3Factory-avatarvisibility lines fix actualCanvashelm; finalSharedreview pending",
+    "v5Proposal": {
+      "status": "OWNER_APPROVED_EXACT_ISOLATED_RUNTIME_GRANT",
+      "proposal": "../../proposals/raw-storage-belt-floor-candidate-v5.md",
+      "additionalMasks": [
+        [
+          2,
+          6,
+          5,
+          5.5
+        ],
+        [
+          11,
+          13,
+          5,
+          5.5
+        ]
+      ],
+      "additionalAreaSquareMeters": 3,
+      "additionalColumns": 192,
+      "changedSlots": 1246,
+      "materialCreditMg": 0,
+      "runtimeSourceDigest": "NOT_IMPLEMENTED",
+      "humanTerrainAcceptance": "OWNER_REVIEW_PENDING"
     }
   },
   "supplementalBalanceOwnerRequest": {
@@ -418,8 +443,15 @@
   "v4CandidateOwnerApproval": {
     "answer": "Diesen exakten V4-Kandidaten freigeben",
     "recordedAtUtc": "2026-10-12T10:25:42.973191+00:00",
-    "scope": "exactthreeconnectorMasks/7m²/1164slots isolatedRuntimecandidate",
+    "scope": "exactthreeconnectorMasks/7m\u00b2/1164slots isolatedRuntimecandidate",
     "finalTerrainAcceptance": "OWNER_REVIEW_PENDING",
     "runtimeGrant": "grants/play-01-v4-connector-candidate.json"
+  },
+  "v5CandidateOwnerApproval": {
+    "answer": "Diesen exakten V5-Kandidaten freigeben",
+    "recordedAtUtc": "2026-10-12T14:00:36.388387+00:00",
+    "scope": "exacttwo3m\u00b2/192columns/1246slots isolatedinitialruntimecandidate",
+    "finalTerrainAcceptance": "OWNER_REVIEW_PENDING",
+    "runtimeGrant": "grants/play-01-v5-raw-belt-floor-candidate.json"
   }
 }

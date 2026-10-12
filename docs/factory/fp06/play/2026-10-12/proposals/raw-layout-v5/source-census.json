@@ -1,0 +1,290 @@
+{
+  "schema": "hestia.play.readonly-source-proposal-census/v1",
+  "status": "UNGRANTED_GEOMETRY_PROPOSAL_ONLY",
+  "atUtc": "2026-10-12T13:51:54.057Z",
+  "node": "v22.23.3",
+  "invocation": {
+    "argv": [
+      "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+      "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/raw-layout-v5-readonly-census.mjs",
+      "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/raw-layout-v5-proposal-census-20261012T135152Z/census-output"
+    ],
+    "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser"
+  },
+  "executedSourceModules": [
+    "src/factory/fixtures/startSite.ts",
+    "src/hvp/hvpCoastSource.ts",
+    "src/core/hash.ts"
+  ],
+  "bindings": [
+    {
+      "path": "src/factory/fixtures/startSite.ts",
+      "bytes": 7628,
+      "sha256": "6a50d30c7299ba4fca46493ac5b92d6d8a93d7b13b4f603e953e580e87bab936"
+    },
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "bytes": 39990,
+      "sha256": "0fb64bd936208872a0e5a21ef5362a930289e5e789f8798eb2ac2c40bca35e06"
+    },
+    {
+      "path": "src/core/hash.ts",
+      "bytes": 3099,
+      "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "path": "src/factory/fixtures/cargoSite.ts",
+      "bytes": 4208,
+      "sha256": "1cd7288ba8e44c1b8c47a8adf6e22279e69172661f0948cc222e0481bfb272e1"
+    },
+    {
+      "path": "src/factory/construction/installationProfile.ts",
+      "bytes": 5568,
+      "sha256": "4e5d3f027da5aef0ba68243b911c55d7558eab86477e2ebd3e134a26f82d8b8b"
+    },
+    {
+      "path": "src/factory/construction/cargoHandlingProfile.ts",
+      "bytes": 4766,
+      "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd"
+    },
+    {
+      "path": "src/factory/construction/placement.ts",
+      "bytes": 12277,
+      "sha256": "9b75688f1ad743246559d0e46c2c423cfd29c584932fdbae7b64c740f9ad75a3"
+    },
+    {
+      "path": "src/factory/presentation/factoryAssets.ts",
+      "bytes": 16222,
+      "sha256": "8b027d2a9eb30cdc65a30fd7fd7792dfd6ddb6c2a06233f89f75e1b78b42be8f"
+    },
+    {
+      "path": "src/factory/catalog/fp02Catalog.ts",
+      "bytes": 23335,
+      "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3"
+    },
+    {
+      "path": "src/factory/factoryEntry.ts",
+      "bytes": 17326,
+      "sha256": "7db2d8a3ea36066a355fccbb1dc28cf203874ebc70af0aa2900b75dc7734f4ac"
+    },
+    {
+      "path": "src/factory/session/factorySession.ts",
+      "bytes": 70289,
+      "sha256": "4b6b461f3c514c6bf3d35e5b117f6ce2e6ba6c28385eab551cd1b4df36169400"
+    },
+    {
+      "path": "src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 62998,
+      "sha256": "704ea0aa636cb20babe83309dcc5f5592bf97a6dfaa5a4d2b40a70d710e6697b"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 22422,
+      "sha256": "a6c6996706591f5fd77f31ea9a445fa421f6e1e02ee7162904a58834b5008dd3"
+    },
+    {
+      "path": "src/hvp/hvpTerrain.ts",
+      "bytes": 17581,
+      "sha256": "93019417d3f022ead0ee3f9bf42eefce6e249fe135fa61916424d78b19ba1a11"
+    },
+    {
+      "path": "../../art/factory/fp02/cutter/source.scene.json",
+      "bytes": 19222,
+      "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd"
+    },
+    {
+      "path": "../../art/factory/fp02/former/source.scene.json",
+      "bytes": 19487,
+      "sha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d"
+    },
+    {
+      "path": "../../art/factory/fp01/power-kit/source.scene.json",
+      "bytes": 27070,
+      "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2605,
+      "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 59899,
+      "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890"
+    }
+  ],
+  "sourceFrame": {
+    "nativeX": "north-12.25",
+    "nativeZ": "12.5-east",
+    "nativeY": "height",
+    "originMeters": [
+      -16,
+      -8,
+      -16
+    ],
+    "cellMeters": 0.125,
+    "dimensions": [
+      256,
+      128,
+      256
+    ],
+    "index": "x+256*(y+128*z)"
+  },
+  "actualBaseline": {
+    "version": "hvp-factory-startsite-v4",
+    "sourceDigest": "913c0c46",
+    "seedName": "hestia-factory-layout-a-001",
+    "registryDigest": "c1be281a",
+    "initializationReceipt": {
+      "maskCount": 21,
+      "columnCount": 5688,
+      "areaMm2": 88875000,
+      "materialCreditMg": 0,
+      "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    "rawSlotBytes": 8388608,
+    "rawSlotsSha256": "ea7ccf99cb3ec14f284793664df4535544a76aa7e26a83ff107f98504a1c977d"
+  },
+  "proposal": {
+    "name": "raw-storage-cargo-access-belt-floor-candidate-v5",
+    "runtimeVersion": "NOT_IMPLEMENTED",
+    "runtimeHeader": "NOT_IMPLEMENTED",
+    "runtimeSourceDigest": "NOT_COMPUTED_OR_CLAIMED",
+    "rawSlotsSha256": "106a3c5ba17e7bb8861d853e1889d71ebf42a686f3d0605d0cb8efabb20c7911",
+    "newHalfOpenSourceMasks": [
+      [
+        2,
+        6,
+        5,
+        5.5
+      ],
+      [
+        11,
+        13,
+        5,
+        5.5
+      ]
+    ],
+    "newColumns": 192,
+    "newAreaMm2": 3000000,
+    "newAreaSquareMeters": 3,
+    "operation": "On an unpublished defensive copy only: slot[x+256*(y+128*z)] = (y<=75 ? 1 : 0) for exactly the 192 addressed columns",
+    "proposedUnionColumns": 5880,
+    "proposedUnionAreaMm2": 91875000,
+    "materialCreditMg": 0,
+    "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING"
+  },
+  "existingV4NorthBeltStripExcluded": {
+    "mask": [
+      9,
+      11,
+      5,
+      5.5
+    ],
+    "columns": 64,
+    "areaMm2": 1000000
+  },
+  "perMask": [
+    {
+      "id": "RAW-CUTTER-NORTH-HALF-METRE",
+      "mask": [
+        2,
+        6,
+        5,
+        5.5
+      ],
+      "columns": 128,
+      "changedColumns": 121,
+      "changedSlots": 1064,
+      "airToSolid": 32,
+      "solidToAir": 1032,
+      "solidToSolidRemap": 0
+    },
+    {
+      "id": "CUTTER-FORMER-REMAINING-NORTH-HALF-METRE",
+      "mask": [
+        11,
+        13,
+        5,
+        5.5
+      ],
+      "columns": 64,
+      "changedColumns": 64,
+      "changedSlots": 182,
+      "airToSolid": 182,
+      "solidToAir": 0,
+      "solidToSolidRemap": 0
+    }
+  ],
+  "changedColumns": 185,
+  "changedSlots": 1246,
+  "airToSolid": 214,
+  "solidToAir": 1032,
+  "solidToSolidRemap": 0,
+  "transitionCounts": {
+    "0->1": 214,
+    "1->0": 1018,
+    "3->0": 14
+  },
+  "slotPalette": {
+    "0": "known-air",
+    "1": "limestone-dry",
+    "2": "limestone-wet",
+    "3": "soil",
+    "4": "moss"
+  },
+  "fullComparison": {
+    "slots": 8388608,
+    "outsideChangedSlots": 0,
+    "statement": "Every slot outside the exact 192 proposed columns is byte-identical"
+  },
+  "sparseArtifact": {
+    "path": "v4-to-proposed-v5-sparse-slot-diff.json",
+    "columns": [
+      "rawIndex",
+      "x",
+      "y",
+      "z",
+      "beforeSlot",
+      "afterSlot"
+    ],
+    "rows": 1246,
+    "bytes": 29906,
+    "sha256": "31beb508272de396959323ba478200025b4391a247e71e6e3cddf6a21454f3ac"
+  },
+  "perColumnArtifact": {
+    "path": "per-column-census.json",
+    "rows": 192,
+    "bytes": 79027,
+    "sha256": "1cf768c7f31976b97d2e92aef2c5fe57bd012ac73409dc1bd21251be38414d83"
+  },
+  "protectedFacts": {
+    "sourceFilesWritten": 0,
+    "worldWrites": 0,
+    "nativeActorWrites": 0,
+    "resourcesWrites": 0,
+    "colliderOrProfileMutations": 0,
+    "headerMutations": 0,
+    "budgetMutations": 0,
+    "approvedMasksMutations": 0,
+    "cargoGeometryMutations": 0,
+    "vegetationSourceMutations": 0,
+    "vegetationEvidence": "Source bytes are bound and unchanged during this read. No planner, habitat, plant/collider, Flora diff or Native acceptance was run or inferred.",
+    "nativeFloorSupportClearanceAndLineOfSight": "NOT_RUN",
+    "browser": "NOT_RUN",
+    "testsBuildProfiling": "NOT_RUN"
+  },
+  "readonlyMathProbe20261012T133405Z": {
+    "startUtc": "2026-10-12T13:34:05.423Z",
+    "endUtc": "2026-10-12T13:34:06.273Z",
+    "internalElapsedSeconds": 0.849608135,
+    "exitCode": 0,
+    "argv": [
+      "node",
+      "--input-type=module"
+    ],
+    "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+    "stdoutRawHash": "NOT_REPORTED_FULL_STDOUT_WAS_NOT_PERSISTED_AND_TOOL_OUTPUT_WAS_TRUNCATED",
+    "note": "Historical column/profile probe kept separate; the fresh census receipt does not rewrite or invent its raw output."
+  }
+}
