@@ -8,7 +8,7 @@ infeed rollers, bench vise/tools/channel legs, storage access, carrier locking
 points, belt ribs, photovoltaic cell groups and five distinct material families.
 They use the existing graphite, warm grey, petrol, amber and dark PV palette.
 
-The 22 real `.blend` sources were saved, reopened from disk and exported using
+The original 22 real `.blend` sources were saved, reopened from disk and exported using
 Blender 4.3.2 and the existing Hestia exporter / glTF addon 4.3.47. The generator
 is included for reproducibility. It is not a replacement for those source files.
 
@@ -60,13 +60,41 @@ visual anchors for an actual paid route. The one-metre link must only be mapped
 to the approved route, without changing its paid millimetre length or ports.
 Storage is empty geometry; visible goods must come from actual local stock.
 
-Use the existing installed dependencies. Reproduction from the pinned source
-head, in the repository root:
+The R2 correction adds `play_storage_inspection_open_v1` at
+`/factory/play-2026-10-12/storage-open.glb`. It is an alternative inspection pose
+of the same B09 definition and five native roots. Both front leaves fold upward
+inside the original body: centers `[±0.475,1.44,0.390]`, dimensions
+`[0.925,0.07,1.13]` metres; panels and handles follow the fold. Original side
+ports, supports, bounds, collision and mass remain unchanged. Selection requires
+the Integrator's confirmed local inventory inspection/access projection. No
+native door body, persistent opening state or independent door animation is
+defined. Removing `body` removes all folded leaf detail; a variant switch must
+never recreate an absent native part.
+
+The original 22 asset entries, blends, GLBs, native snapshots and provenance are
+retained byte-for-byte from Art commit
+`e752cc7fce43a50b4bcb4800d9d27584b44b6a0e`. Manifest `generatorReceipts` identifies
+their historical generator and the new correction generator separately. The
+R6 guard now includes the exact seventh owner `fp02Catalog.ts` SHA and checks
+catalog digest `fnv1a:f3a8c642` immediately after SSR, before snapshot writes.
+The current library contains 23 alternatives, not 23 installed objects.
+
+Use the existing installed dependencies. Reproduction against the pinned native
+source bytes, with the delivered Art files retained, in the repository root:
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 python3 -B art/factory/play-2026-10-12/build_assets.py --snapshot
 PYTHONDONTWRITEBYTECODE=1 BLENDER_USER_RESOURCES=/tmp/hestia-play02-blender blender --background --threads 1 --python-exit-code 1 --python art/factory/play-2026-10-12/build_assets.py -- --build-blender
 ```
+
+Only the new inspection derivative is regenerated for this correction:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 -B art/factory/play-2026-10-12/build_assets.py --snapshot-storage-open
+PYTHONDONTWRITEBYTECODE=1 BLENDER_USER_RESOURCES=/tmp/hestia-play02-blender blender --background --threads 1 --python-exit-code 1 --python art/factory/play-2026-10-12/build_assets.py -- --build-blender --only-new storage-open
+```
+
+`--only-new` rejects replacing any asset from the original 22-entry baseline.
 
 Focused verification from `apps/weltraum-browser`:
 

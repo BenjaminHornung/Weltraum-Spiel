@@ -1,0 +1,47 @@
+{
+  "schema": "hestia.fp06.play-immutable-admission/v1",
+  "milestone": "PLAY-02-partcells-admission",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T09:31:41.192693+00:00",
+  "status": "GRANTED_IMMUTABLE_REVIEWED_COMPILER_ONLY",
+  "sourceCommitSha": "214ff98a07ea76dce50e5382f842decd2ce9a6a0",
+  "destinationHeadAtCheck": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts"
+  ],
+  "verifiedFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+      "before": {
+        "state": "ABSENT"
+      },
+      "source": {
+        "bytes": 14059,
+        "sha256": "59572d57d473c26e58898c6f6417cbd68777d53a0e570268114e36d70c9ccdd8"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
+      "before": {
+        "state": "ABSENT"
+      },
+      "source": {
+        "bytes": 10788,
+        "sha256": "127c6db8a63c952917884738af2cb8cdb5c813aa30588647e8e28f06b7f80d69"
+      }
+    }
+  ],
+  "independentReview": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/partcells/independent-review.md",
+    "sha256": "c6a9f33229509a5ac6e6d8d9d013d72c7976bcb819bf714ec826311f0649995f"
+  },
+  "constraints": [
+    "Copy exactly two new source-commit blobs after fresh destination-absence check, preserve all other drafts; no source modification by this immutable admission",
+    "44/44 focused tests and original tsc independently verified for sourcecommit; no native/runtime/S1/Owner claim",
+    "Later shared Native/Host/work/controller binding remains sole Integrator under existing nine-path S1 and runtime grants",
+    "Second writer enters HOLD after immutable handoff; no mainmerge/push/publish"
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "actor": "/root/play_integrator",
+  "headBefore": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+  "startedAtUtc": "2026-10-12T09:43:43.098119+00:00",
+  "endedAtUtc": "2026-10-12T09:43:43.100831+00:00",
+  "status": "IMMUTABLE_PAYLOAD_ADMITTED",
+  "technicalScope": "12 Art correction paths + 2 closed B06/B07 compiler paths; no runtime/native/S1/Owner acceptance",
+  "files": [
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "art/factory/play-2026-10-12/build_assets.py",
+      "before": {
+        "state": "EXISTS",
+        "bytes": 32459,
+        "sha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9"
+      },
+      "admitted": {
+        "bytes": 36161,
+        "sha256": "9017f6aa208d1b84e2d3e381d6c44a8c9f36d790be2f43489a7a8b5b20ceece9",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "art/factory/play-2026-10-12/manifest.json",
+      "before": {
+        "state": "EXISTS",
+        "bytes": 79571,
+        "sha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2"
+      },
+      "admitted": {
+        "bytes": 83735,
+        "sha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "art/factory/play-2026-10-12/README.md",
+      "before": {
+        "state": "EXISTS",
+        "bytes": 5090,
+        "sha256": "4452e303786fc7873e1fe76ef783745b75c70201e46973916c22c0551f9d3905"
+      },
+      "admitted": {
+        "bytes": 6874,
+        "sha256": "7f9b30d1f6b43ed638668ace999c139dd2f9d20c7c5f85492595af9ba952656c",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+      "before": {
+        "state": "EXISTS",
+        "bytes": 79571,
+        "sha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2"
+      },
+      "admitted": {
+        "bytes": 83735,
+        "sha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+      "before": {
+        "state": "EXISTS",
+        "bytes": 12013,
+        "sha256": "7c317f610f6f00d302a2c9dfed2da8fea706b5b03bfcb29f40106eb6d8fd0893"
+      },
+      "admitted": {
+        "bytes": 18140,
+        "sha256": "cfc7bc73598f084d251a9bcdf8d9aa1d84ac9fefd3e2aa5284b68a190b4b65a4",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 14061,
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "art/factory/play-2026-10-12/storage/storage-open/provenance.json",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 1801,
+        "sha256": "8716b613ce66a68259beac8c2a600759b194f9306ad69b3dce4e66cc39bb9e35",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "art/factory/play-2026-10-12/storage/storage-open/model-spec.json",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 5439,
+        "sha256": "dbb1e4a91d5a5aa08db8a5e148f42935626e1185132682e26166e5157ac7269d",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 3866,
+        "sha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "art/factory/play-2026-10-12/storage/storage-open/storage-open.blend",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 587660,
+        "sha256": "e5ace75bd20e8f3888efeb8708cc6b3c374f610191c205c77c25ce00b9beec4a",
+        "actualLfs": true
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.glb",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 24380,
+        "sha256": "569557420499f023373f1f5fd7fc1ac0f7d72c9cd89f9b91277c8787dd7054d4",
+        "actualLfs": true
+      }
+    },
+    {
+      "grant": "play-02-art-correction-admission.json",
+      "sourceCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.hestia-authoring-report.json",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 5729,
+        "sha256": "94ec756ef3773588dd754b0d96e8fd67c7a05c853f989752cc24232ba1ccb649",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-partcells-admission.json",
+      "sourceCommit": "214ff98a07ea76dce50e5382f842decd2ce9a6a0",
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 14059,
+        "sha256": "59572d57d473c26e58898c6f6417cbd68777d53a0e570268114e36d70c9ccdd8",
+        "actualLfs": false
+      }
+    },
+    {
+      "grant": "play-02-partcells-admission.json",
+      "sourceCommit": "214ff98a07ea76dce50e5382f842decd2ce9a6a0",
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
+      "before": {
+        "state": "ABSENT"
+      },
+      "admitted": {
+        "bytes": 10788,
+        "sha256": "127c6db8a63c952917884738af2cb8cdb5c813aa30588647e8e28f06b7f80d69",
+        "actualLfs": false
+      }
+    }
+  ]
+}

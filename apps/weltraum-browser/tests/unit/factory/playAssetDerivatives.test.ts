@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -57,6 +59,7 @@ interface PlayEntry {
   visualOnlyAnchor: {kind: string} | null; partIds: string[];
   sourceFile: FileRef; sourceBlob: FileRef; sourceSnapshot: FileRef; nativeBlend: FileRef; runtimeGlb: FileRef & {url: string};
   exporterReport: FileRef; provenance: FileRef; license: FileRef;
+  visualVariant?: {baseAssetId: string; kind: string; pose: string; requiresConfirmedLocalAccess: boolean};
 }
 interface Gltf {
   nodes: (ReturnType<typeof binding>["nodes"][number] & {mesh: number})[];
@@ -86,11 +89,72 @@ const hashRef = (ref: FileRef) => {
   return bytes;
 };
 
+const ownerPaths = ["art/factory/fp02/cutter/source.scene.json", "art/factory/fp02/former/source.scene.json", "art/factory/fp01/power-kit/source.scene.json",
+  "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts", "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+  "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts", "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts"];
+const correctionBase = "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e";
+
+describe("R2/R6 correction admission", () => {
+  it("rejects a catalog-only source change before any snapshot is written", () => {
+    const temporary = mkdtempSync(join(tmpdir(), "play-catalog-guard-"));
+    try {
+      for (const path of ownerPaths) {mkdirSync(dirname(join(temporary, path)), {recursive: true}); copyFileSync(`${repo}${path}`, join(temporary, path));}
+      const code = `import importlib.util,json\nfrom pathlib import Path\nspec=importlib.util.spec_from_file_location('play',${JSON.stringify(script)})\nm=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)\nm.ROOT=Path(${JSON.stringify(temporary)})\np=m.ROOT/'apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts'\np.write_bytes(p.read_bytes()+b'\\n// changed catalog source\\n')\ntry:\n m.check_sources();result={'blocked':False,'reason':None}\nexcept ValueError as error:\n result={'blocked':True,'reason':str(error)}\nprint(json.dumps(result))`;
+      const result = spawnSync("python3", ["-B", "-c", code], {encoding: "utf8"});
+      expect(result.status, result.stderr).toBe(0);
+      expect(JSON.parse(result.stdout)).toEqual({blocked: true, reason: "Frozen source changed: apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts"});
+    } finally {rmSync(temporary, {recursive: true, force: true});}
+  });
+
+  it("rejects an incompatible catalog digest immediately after SSR before snapshot writes", () => {
+    const temporary = mkdtempSync(join(tmpdir(), "play-catalog-digest-"));
+    try {
+      for (const path of ownerPaths) {mkdirSync(dirname(join(temporary, path)), {recursive: true}); copyFileSync(`${repo}${path}`, join(temporary, path));}
+      const catalog = JSON.parse(readFileSync(`${repo}art/factory/play-2026-10-12/materials/catalog-read.json`, "utf8")) as {items: unknown[]};
+      // SSR is a read dependency. Simulate a stale/mismatched returned catalog,
+      // while its source bytes stay exact; observe actual writes in a temporary root.
+      const code = `import importlib.util,json,types\nfrom pathlib import Path\nspec=importlib.util.spec_from_file_location('play',${JSON.stringify(script)})\nm=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)\nm.ROOT=Path(${JSON.stringify(temporary)})\nm.ART=m.ROOT/'art/factory/play-2026-10-12'\nm.PUBLIC=m.ROOT/'public'\ndata=json.loads(${JSON.stringify(JSON.stringify({assets: [], items: catalog.items, catalogDigest: "fnv1a:wrong"}))})\nm.subprocess.run=lambda *args,**kwargs:types.SimpleNamespace(stdout='PLAY_JSON='+json.dumps(data))\ntry:\n m.snapshot();result={'blocked':False,'reason':None}\nexcept ValueError as error:\n result={'blocked':True,'reason':str(error)}\nresult['writtenSnapshots']=len(list(m.ART.rglob('native-source.json')))\nprint(json.dumps(result))`;
+      const result = spawnSync("python3", ["-B", "-c", code], {encoding: "utf8"});
+      expect(result.status, result.stderr).toBe(0);
+      expect(JSON.parse(result.stdout.trim().split("\n").at(-1)!)).toEqual({blocked: true, reason: "Frozen catalog digest mismatch", writtenSnapshots: 0});
+    } finally {rmSync(temporary, {recursive: true, force: true});}
+  });
+
+  it("provides an inspection-open storage variant with original native identity and clear front access", () => {
+    const manifest = readManifest();
+    const entry = manifest.assets.find(a => a.assetId === "play_storage_inspection_open_v1");
+    expect(entry, "missing confirmed-access visual derivative").toBeDefined();
+    if (!entry) return;
+    const closed = manifest.assets.find(a => a.assetId === "play_storage_v1")!;
+    expect(entry.visualVariant).toEqual({baseAssetId: closed.assetId, kind: "confirmed-local-inventory-inspection", pose: "access-open", requiresConfirmedLocalAccess: true});
+    expect(entry.definitionRef).toEqual(closed.definitionRef);
+    expect(entry.partIds).toEqual(closed.partIds);
+    expect(hashRef(entry.sourceSnapshot)).toEqual(hashRef(closed.sourceSnapshot));
+    const {json, bin} = glb(entry);
+    expect(json.nodes.map(n => n.name).sort()).toEqual(["body", "support_0", "support_1", "support_2", "support_3"]);
+    const body = json.nodes.find(n => n.name === "body")!;
+    const points: number[][] = [];
+    for (const primitive of json.meshes[body.mesh]!.primitives) {
+      const accessor = json.accessors[primitive.attributes.POSITION]!, view = json.bufferViews[accessor.bufferView]!;
+      for (let vertex = 0; vertex < accessor.count; vertex++) points.push([0,1,2].map(axis => bin.readFloatLE(view.byteOffset + (accessor.byteOffset ?? 0) + vertex * (view.byteStride ?? 12) + axis * 4)));
+    }
+    expect(points.filter(([x,y,z]) => Math.abs(x!) < .8 && y! > .4 && y! < 1.35 && z! > .93)).toEqual([]);
+    for (const centerX of [-.475, .475]) for (const dx of [-.4625, .4625]) for (const dy of [-.035, .035]) for (const dz of [-.565, .565]) {
+      const expected = [centerX+dx, 1.44+dy, .390+dz];
+      expect(points.some(point => point.every((value, axis) => Math.abs(value-expected[axis]!) < .00001)), `missing folded door corner ${expected}`).toBe(true);
+    }
+    const original = spawnSync("git", ["show", `${correctionBase}:art/factory/play-2026-10-12/manifest.json`], {cwd: repo, encoding: "utf8"});
+    expect(original.status).toBe(0);
+    const originalEntries = (JSON.parse(original.stdout) as {assets: PlayEntry[]}).assets;
+    expect(manifest.assets.filter(a => a.assetId !== entry.assetId)).toEqual(originalEntries);
+  });
+});
+
 describe("real saved/reopened Factory art payloads", () => {
   it("binds every file to actual payload bytes and every installed definition to the frozen native source", () => {
     const manifest = readManifest();
     expect(manifest.schema).toBe("hestia.factory.play-assets/v1");
-    expect(manifest.assets).toHaveLength(22);
+    expect(manifest.assets).toHaveLength(23);
     expect(new Set(manifest.assets.map(a => a.family))).toEqual(new Set(["cutter", "former", "wreck-cargo", "carrier", "workbench", "storage", "belt", "power-kit", "materials", "brace"]));
     for (const entry of manifest.assets) {
       expect(entry.sourceHead).toBe("96cced23cd285b57f8a557d01ac9ed8a158c927f");

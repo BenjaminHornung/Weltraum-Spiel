@@ -44,6 +44,8 @@ def validate_binding(value):
 ART = ROOT / "art/factory/play-2026-10-12"
 PUBLIC = ROOT / "apps/weltraum-browser/public/factory/play-2026-10-12"
 SOURCE_HEAD = "96cced23cd285b57f8a557d01ac9ed8a158c927f"
+BASE_ART_COMMIT = "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e"
+EXPECTED_CATALOG_DIGEST = "fnv1a:f3a8c642"
 PALETTE = {"EX-STRUCT": "30383D", "EX-SHELL": "B6BDB8", "EX-FUNCTION": "407A79", "EX-HAZARD": "D8A94E", "EX-PV": "1D2E3C"}
 FROZEN = {
     "art/factory/fp02/cutter/source.scene.json": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
@@ -52,6 +54,7 @@ FROZEN = {
     "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
     "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
     "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+    "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
 }
 
 
@@ -74,7 +77,7 @@ def check_sources():
             raise ValueError(f"Frozen source changed: {path}")
 
 
-def snapshot():
+def read_snapshot_data():
     """Read existing TS projections, without recreating catalog or source authority."""
     check_sources()
     script = '''
@@ -91,6 +94,13 @@ try {
     result = subprocess.run(["node", "--input-type=module", "-e", script], cwd=ROOT / "apps/weltraum-browser", text=True, capture_output=True, check=True)
     payload = next(line[len("PLAY_JSON="):] for line in result.stdout.splitlines() if line.startswith("PLAY_JSON="))
     data = json.loads(payload)
+    if data["catalogDigest"] != EXPECTED_CATALOG_DIGEST:
+        raise ValueError("Frozen catalog digest mismatch")
+    return data
+
+
+def snapshot():
+    data = read_snapshot_data()
     families = {"B06": "cutter", "B07": "former", "B05": "workbench", "B09": "storage", "fp06.line.belt_4m": "belt", "fp02.comp.small_brace": "brace"}
     primary = {"B06": "art/factory/fp02/cutter/source.scene.json", "B07": "art/factory/fp02/former/source.scene.json"}
     jobs = []
@@ -139,6 +149,25 @@ try {
     print(f"Snapshotted {len(jobs)} source-bound visual assets")
 
 
+def snapshot_storage_open():
+    """Prepare only the granted inspection pose, retaining the original native definition."""
+    data = read_snapshot_data()
+    closed_path = ART / "storage/storage/model-spec.json"
+    job = json.loads(closed_path.read_text())
+    native = next(a for a in data["assets"] if a["source"]["definitionId"] == "B09")
+    if native["source"] != job["source"] or native["definitionRef"] != job["definitionRef"]:
+        raise ValueError("Storage inspection native definition mismatch")
+    directory = ART / "storage/storage-open"
+    directory.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ROOT / job["sourceSnapshot"]["path"], directory / "native-source.json")
+    shutil.copyfile(ROOT / job["sourceBlob"]["path"], directory / "native-owner-source.blob")
+    job.update({"assetId": "play_storage_inspection_open_v1", "slug": "storage-open",
+        "sourceSnapshot": record(directory / "native-source.json"), "sourceBlob": record(directory / "native-owner-source.blob"),
+        "visualVariant": {"baseAssetId": "play_storage_v1", "kind": "confirmed-local-inventory-inspection", "pose": "access-open", "requiresConfirmedLocalAccess": True}})
+    write_json(directory / "model-spec.json", job)
+    print("Snapshotted only storage-open; native parts/ports/supports/definition unchanged")
+
+
 def visual_job(family, slug, parts, source_path, anchor):
     ident = "visual_anchor_" + slug.replace("-", "_")
     source = {"assetId": ident, "definitionId": ident, "revision": 1, "kind": "visual-only-derived", "origin": "ground-center", "metersPerUnit": 1,
@@ -184,7 +213,7 @@ def decorate(mesh, box, role, slug, part_id):
         add([.5, .042, .1], [.36, .025, .06], "EX-STRUCT")
         add([.63, .054, .1], [.1, .05, .16], "EX-FUNCTION")
         return
-    if slug == "storage" and part_id == "body":
+    if slug in ["storage", "storage-open"] and part_id == "body":
         # Empty shell: contents are supplied only by a current actual lot readview.
         for xx in [-x/2+.06, x/2-.06]:
             for zz in [-z/2+.06, z/2-.06]:
@@ -192,11 +221,20 @@ def decorate(mesh, box, role, slug, part_id):
         for yy in [-y/2+.035, y/2-.035]:
             add([0, yy, 0], [x, .07, z], "EX-SHELL")
         add([0, 0, -z/2+.045], [x-.15, y-.12, .09], "EX-SHELL")
-        for xx in [-.475, .475]:
-            add([xx, 0, z/2-.045], [.925, y-.12, .07], "EX-SHELL")
-            add([xx, -.025, z/2-.005], [.775, .4, .01], "EX-FUNCTION")
-        for xx in [-.125, .125]:
-            add([xx, .05, z/2-.008], [.075, .2, .016], "EX-STRUCT")
+        if slug == "storage-open":
+            # Fold each leaf +90 degrees about its upper horizontal edge, inside
+            # the existing body envelope; original side material ports stay clear.
+            for xx in [-.475, .475]:
+                add([xx, .565, .390], [.925, .07, 1.13], "EX-SHELL")
+                add([xx, .525, .365], [.775, .01, .4], "EX-FUNCTION")
+            for xx in [-.125, .125]:
+                add([xx, .528, .440], [.075, .016, .2], "EX-STRUCT")
+        else:
+            for xx in [-.475, .475]:
+                add([xx, 0, z/2-.045], [.925, y-.12, .07], "EX-SHELL")
+                add([xx, -.025, z/2-.005], [.775, .4, .01], "EX-FUNCTION")
+            for xx in [-.125, .125]:
+                add([xx, .05, z/2-.008], [.075, .2, .016], "EX-STRUCT")
         # Side MAT-IN/MAT-OUT openings retain exactly the source port planes.
         for xx in [-x/2+.03, x/2-.03]:
             for yy in [-.48, .53]:
@@ -340,12 +378,17 @@ def native_bounds(source):
     return {"min": [min(p[i] for p in points) for i in range(3)], "max": [max(p[i] for p in points) for i in range(3)]}
 
 
-def build_blender():
+def build_blender(only_new=None):
     import bpy
     from hestia_asset_authoring import export_hestia_glb
     check_sources()
     PUBLIC.mkdir(parents=True, exist_ok=True)
     jobs = [json.loads(path.read_text()) for path in sorted(ART.glob("*/*/model-spec.json"))]
+    if only_new is not None:
+        baseline = json.loads(subprocess.check_output(["git", "show", BASE_ART_COMMIT + ":art/factory/play-2026-10-12/manifest.json"], cwd=ROOT))
+        if only_new in {a["slug"] for a in baseline["assets"]}:
+            raise ValueError("Only-new export cannot replace a baseline asset")
+        jobs = [job for job in jobs if job["slug"] == only_new]
     if not jobs:
         raise ValueError("Run --snapshot before Blender authoring")
     for job in jobs:
@@ -415,7 +458,7 @@ def build_blender():
                 point = reference.get("centerM", reference.get("pivotM", [0,0,0]))
                 helper.location = (point[0], -point[2], point[1])
                 helper["nativeReferenceJson"] = json.dumps(reference, sort_keys=True)
-        scene["playProvenance"] = json.dumps({"sourceHead": SOURCE_HEAD, "sourceFile": job["sourceFile"], "sourceBlob": job["sourceBlob"], "sourceSnapshot": job["sourceSnapshot"], "generatorSHA256": sha(Path(__file__)), "nativeAuthority": "frozen source; model is visual-only", "blenderAxes": "+X east, +Y south, +Z up", "runtimeAxes": "+X east, +Y up, +Z north"}, sort_keys=True)
+        scene["playProvenance"] = json.dumps({"sourceHead": SOURCE_HEAD, "sourceFile": job["sourceFile"], "sourceBlob": job["sourceBlob"], "sourceSnapshot": job["sourceSnapshot"], "generatorSHA256": sha(Path(__file__)), "nativeAuthority": "frozen source; model is visual-only", "visualVariant": job.get("visualVariant"), "blenderAxes": "+X east, +Y south, +Z up", "runtimeAxes": "+X east, +Y up, +Z north"}, sort_keys=True)
         directory = ART / job["family"] / job["slug"]
         blend = directory / (job["slug"] + ".blend")
         bpy.ops.wm.save_as_mainfile(filepath=str(blend), check_existing=False)
@@ -430,7 +473,7 @@ def build_blender():
         write_json(directory / "provenance.json", {"schema": "hestia.play-model-provenance/v1", "sourceHead": SOURCE_HEAD, "sourceFile": job["sourceFile"], "sourceBlob": job["sourceBlob"], "sourceSnapshot": job["sourceSnapshot"], "generator": record(Path(__file__)), "nativeBlend": record(blend),
             "reopened": True, "runtimeGlb": record(output), "exporter": record(ROOT / "tools/blender/hestia_asset_authoring/export_hestia_glb.py"), "blenderVersion": bpy.app.version_string, "gltfExporterVersion": "4.3.47", "origin": "project-original hard cuboid modeling; no provider/remote textures", "license": "LicenseRef-Hestia-Project-Original", "assetToVoxelCompiler": "KNOWN_GAP_NOT_DELIVERED"})
         print("PLAY_SAVED_REOPENED_EXPORTED=" + job["slug"])
-    manifest()
+    manifest(only_new)
 
 
 def glb_json(path):
@@ -444,11 +487,13 @@ def glb_json(path):
     return json.loads(data[20:20+chunk_length])
 
 
-def manifest():
+def manifest(only_new=None):
     check_sources()
     entries = []
     for path in sorted(ART.glob("*/*/model-spec.json")):
         job = json.loads(path.read_text())
+        if only_new is not None and job["slug"] != only_new:
+            continue
         source = job["source"]
         output = PUBLIC / (job["slug"] + ".glb")
         gltf = glb_json(output)
@@ -475,11 +520,20 @@ def manifest():
             "nativeBlend": record(path.parent / (job["slug"] + ".blend")), "runtimeGlb": {**record(output), "url": "/factory/play-2026-10-12/" + output.name}, "exporterReport": record(report_path), "provenance": record(path.parent / "provenance.json"),
             "license": {"id": "LicenseRef-Hestia-Project-Original", **record(ART / "LICENSE.txt")}, "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
             "runtimeAdoption": "PENDING_INTEGRATOR", "ownerArtAcceptance": "OWNER_REVIEW_PENDING"}
+        if "visualVariant" in job:
+            entry["visualVariant"] = job["visualVariant"]
         entries.append(entry)
     document = {"schema": "hestia.factory.play-assets/v1", "sourceHead": SOURCE_HEAD, "assets": entries, "palette": PALETTE, "authority": "derived render meshes only; no collider/material/quantity/energy/save authority", "knownGaps": ["accepted Asset-to-Voxel/Structural-S1 bridge not delivered", "runtime adoption and confirmed animation are Integrator scope", "human Art/usability/hardware acceptance pending"]}
+    if only_new is not None:
+        document = json.loads((ART / "manifest.json").read_text())
+        replacements = {entry["assetId"] for entry in entries}
+        document["assets"] = [entry for entry in document["assets"] if entry["assetId"] not in replacements] + entries
+        document["generatorReceipts"] = {"baseArtifactCommit": BASE_ART_COMMIT,
+            "baseGeneratorSha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9",
+            "correctionGenerator": record(Path(__file__)), "exportSelection": [only_new]}
     write_json(ART / "manifest.json", document)
     shutil.copyfile(ART / "manifest.json", PUBLIC / "manifest.json")
-    print(f"Verified manifest: {len(entries)} real saved/reopened GLBs")
+    print(f"Verified manifest: {len(document['assets'])} real saved/reopened GLBs; updated {len(entries)} entries")
 
 
 if __name__ == "__main__":
@@ -487,8 +541,11 @@ if __name__ == "__main__":
         print(json.dumps(validate_binding(json.load(sys.stdin))))
     elif "--snapshot" in sys.argv:
         snapshot()
+    elif "--snapshot-storage-open" in sys.argv:
+        snapshot_storage_open()
     elif "--build-blender" in sys.argv:
-        build_blender()
+        only_new = sys.argv[sys.argv.index("--only-new") + 1] if "--only-new" in sys.argv else None
+        build_blender(only_new)
     elif "--manifest" in sys.argv:
         manifest()
     else:
