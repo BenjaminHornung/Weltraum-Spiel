@@ -1,0 +1,87 @@
+{
+  "observedAtUtc": "2026-10-12T00:00:45.739330+00:00",
+  "status": "ROOT_ACTUAL_FAULT_RAW_RECEIPTS_VERIFIED_SCOPED_PASS",
+  "records": [
+    {
+      "phase": 191,
+      "classification": "FOUR_EXISTING_HOST_FAULT_ORACLE_PASSES_38_SKIPPED_NO_RUNTIME_CHANGE",
+      "receiptPath": "191-cable-rollback-publication-history-oracles.command.json",
+      "receiptSha256": "5cbacb060231d80a5231b7efcaca56b2547054574d811a21a573e93528dbc97d",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/hostLifecycle.test.ts",
+          "-t",
+          "Cable joint outcome"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:57:20.685519+00:00",
+        "endedAtUtc": "2026-10-11T23:57:27.178884+00:00",
+        "elapsedSeconds": 6.493766846004291,
+        "exitCode": 0,
+        "rawBytes": 393,
+        "rawSha256": "48755cd8c39af0979dce1e189db2f778a69e380376fbaa4d028c27cbf0f555a0"
+      },
+      "rawGzipSha256": "d9d912c3d066574dc4cd2b2cc3da4e2a5e8f7db01d691d75788d0749d44d0d3c",
+      "rawVerified": true
+    },
+    {
+      "phase": 192,
+      "classification": "TWO_PRE_MUTATION_ADMISSION_GUARD_PASSES_42_SKIPPED",
+      "receiptPath": "192-cable-whole40-native-negative-guards.command.json",
+      "receiptSha256": "b19416def1fab2e4c3d00d76fb8c8a38d48ab4250e3d5d4556bbb67b6b9d4eba",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/hostLifecycle.test.ts",
+          "-t",
+          "Cable connection rejects"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:58:10.915843+00:00",
+        "endedAtUtc": "2026-10-11T23:58:14.561253+00:00",
+        "elapsedSeconds": 3.645777370998985,
+        "exitCode": 0,
+        "rawBytes": 398,
+        "rawSha256": "357e7ea90580c686ca0e21d9841537c22dc6f6f0afd1c5c68651081746df6618"
+      },
+      "rawGzipSha256": "6e1012a4f28be446099a41622de8f0c68fa2759ddedc339e8ce9a3e49eb3d62e",
+      "rawVerified": true
+    },
+    {
+      "phase": 193,
+      "classification": "ORIGINAL_TYPESCRIPT_VITE_BUILD_PASS",
+      "receiptPath": "193-cable-fault-typed-original-build.command.json",
+      "receiptSha256": "dd1af97c54bae28d3747ba166eed7e60abf6281697edf5aa455a095bff0c8d80",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:58:14.594530+00:00",
+        "endedAtUtc": "2026-10-11T23:58:18.862839+00:00",
+        "elapsedSeconds": 4.268769775000692,
+        "exitCode": 0,
+        "rawBytes": 1904,
+        "rawSha256": "b12236b22ee90c3c348b8b6700d9d93becad697e54f4a605bb77688c348a76eb"
+      },
+      "rawGzipSha256": "597b90fc442d6056647a71f59f54b22374752afd06df2a82f66648358ec65190",
+      "rawVerified": true
+    }
+  ],
+  "fullSourceSnapshot193Sha256": "6f85f73dd1c454c98d16710afb9e262d9abd09be4b125c90b3155d1f0e6a1887",
+  "limits": [
+    "Existing correct Host oracle passes without a Runtime fix; no fabricated RED",
+    "Transport-reply fixtures are not proof of real Rapier rollback or browser movement",
+    "Independent Fault review and partial-commit seal remain pending",
+    "No W09 endgate or performance pass"
+  ]
+}
