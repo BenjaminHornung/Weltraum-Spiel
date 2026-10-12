@@ -1,0 +1,22 @@
+{
+  "recordedAtUtc": "2026-10-12T11:20:59.087022+00:00",
+  "actor": "/root/play_integrator",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 39221,
+      "sha256": "0255e1c83ac0428326dcc90408568a10183add31725a50ebc0e6ef09dd063e3d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 54137,
+      "sha256": "a864f3b04001bbe8d7d89bf175858c700a325c12de16eaf2d677efddb1594c27"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 45004,
+      "sha256": "11fe63fa52d0b14a6515523f96e98e8e9124140233b19f45b32aa69fe00e9128"
+    }
+  ],
+  "nativeRuntimeScope": "Same synchronous read only; no cross-read reuse, probe/LOS/World/hold/timer/queue changes"
+}

@@ -1,5 +1,5 @@
 import {createFactoryInstallationProfile} from "../../../src/factory/construction/installationProfile";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { R, initializeHvpRapier } from "../../../src/hestia-prototype/physics/rapierPort";
 import { createFactoryFacilitySession } from "../../../src/hestia-prototype/physics/factoryFacilitySession";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
@@ -417,4 +417,58 @@ it.each([
   const oldActor=actor;actor={x:10,y:oldActor.y,z:10};expect(facilities.read().powerPorts!.every(p=>!p.accessible)).toBe(true);actor=oldActor;
   expect(source.initializationReceipt).toMatchObject({maskCount:15,columnCount:4480,areaMm2:70000000,materialCreditMg:0});
  }finally{world.free();}
+});
+
+
+// This bounded native read scenario is synthetic floor geometry; it proves
+// exact query work and fresh authority, not normal V4 terrain usability.
+const nativeReadProbeBudget = (profile: ReturnType<typeof createFactoryInstallationProfile>) =>
+  profile.supportPatchesMm.reduce((sum, patch) => sum + Math.ceil((patch.sizeMm[0] - .5) / 62.5) * Math.ceil((patch.sizeMm[1] - .5) / 62.5), 0);
+const nativeReadFixture = () => {
+  const world=new R.World({x:0,y:-9.81,z:0}), floor=world.createCollider(R.ColliderDesc.cuboid(16,.125,16).setTranslation(0,1.375,0));
+  const actor={x:-4,y:2.4,z:5},coverage={valid:true},profile=createFactoryInstallationProfile("B06");
+  const facility=createFactoryFacilitySession(world,()=>true,()=>0,()=>0,undefined,()=>actor,()=>undefined,()=>coverage.valid);
+  facility.prepare(request);facility.commit(request.transactionId);facility.publish(request.transactionId);facility.finalize(request.transactionId);
+  const power=facility.read().powerPorts![0]!;actor.x=power.positionMm[0]/1000+.5;actor.y=power.positionMm[1]/1000;actor.z=power.positionMm[2]/1000;
+  world.updateSceneQueries();return {world,floor,actor,coverage,profile,facility};
+};
+it("PLAY06 NativeRead uses one full support proof for coherent production and power in each facility snapshot",()=>{
+ const f=nativeReadFixture(),probe=vi.spyOn(f.world,"castRayAndGetNormal");try{
+  const observedStart=performance.now(),current=f.facility.read();console.info("NATIVE_READ_SCENARIO",JSON.stringify({case:"facility-snapshot",elapsedMs:performance.now()-observedStart,probeCount:probe.mock.calls.length,singleProofBudget:nativeReadProbeBudget(f.profile),revision:current.revision,profileDigest:f.profile.profileDigest}));expect(current.production![0]).toMatchObject({confirmed:true,supported:true});
+  expect(current.powerPorts![0]).toMatchObject({confirmed:true,accessible:true});
+  expect(probe).toHaveBeenCalledTimes(nativeReadProbeBudget(f.profile));
+  expect(current.owners[0].massMg).toBe(208000000);expect(current.owners[0].colliderHandles).toHaveLength(33);
+ }finally{probe.mockRestore();f.world.free();}
+});
+it("PLAY06 NativeRead uses one facility snapshot in the actual public native session read",async()=>{
+ const ground={vertices:new Float32Array([-16,1.5,-16,-16,1.5,16,16,1.5,16,16,1.5,-16]),indices:new Uint32Array([0,1,2,0,2,3])};
+ const session=await createHvpPhysicsSession([ground],{x:10,y:4,z:10},undefined,{spawn:{x:10,y:2.42,z:10},coverage:[{minX:-16,maxX:16,minZ:-16,maxZ:16}]},undefined,undefined,undefined,undefined,undefined,true);
+ const probe=vi.spyOn(R.World.prototype,"castRayAndGetNormal");try{
+  session.pause();session.prepareFactoryFacility(request);session.commitFactoryFacility(request.transactionId);session.finalizeFactoryFacility(request.transactionId);probe.mockClear();
+  const observedStart=performance.now(),current=session.read();console.info("NATIVE_READ_SCENARIO",JSON.stringify({case:"public-session-snapshot",elapsedMs:performance.now()-observedStart,probeCount:probe.mock.calls.length,singleProofBudget:nativeReadProbeBudget(createFactoryInstallationProfile("B06")),ticks:current.ticks,status:current.status}));expect(current.status).toBe("Paused");expect(current.factoryFacilities!.production![0]).toMatchObject({confirmed:true,supported:true});
+  expect(probe).toHaveBeenCalledTimes(nativeReadProbeBudget(createFactoryInstallationProfile("B06")));
+ }finally{probe.mockRestore();session.dispose();}
+});
+it("PLAY06 NativeRead recomputes actor access on later reads even at the same tick and revisions",()=>{
+ const f=nativeReadFixture();try{
+  const first=f.facility.read();expect(first.powerPorts![0].accessible).toBe(true);f.actor.x=100;
+  const far=f.facility.read();expect(far.revision).toBe(first.revision);expect(far.powerPorts![0].accessible).toBe(false);
+  const p=first.powerPorts![0].positionMm;f.actor.x=p[0]/1000+.5;expect(f.facility.read().powerPorts![0].accessible).toBe(true);
+ }finally{f.world.free();}
+});
+it("PLAY06 NativeRead recomputes coverage and disabled native ground on each later read",()=>{
+ const f=nativeReadFixture();try{
+  const first=f.facility.read();expect(first.production![0].supported).toBe(true);f.coverage.valid=false;
+  expect(f.facility.read().production![0].supported).toBe(false);f.coverage.valid=true;
+  f.floor.setEnabled(false);f.world.updateSceneQueries();const unsupported=f.facility.read();
+  expect(unsupported.revision).toBe(first.revision);expect(unsupported.production![0].supported).toBe(false);expect(unsupported.powerPorts![0].confirmed).toBe(false);
+  f.floor.setEnabled(true);f.world.updateSceneQueries();expect(f.facility.read().production![0].supported).toBe(true);
+ }finally{f.world.free();}
+});
+it("PLAY06 NativeRead rejects a newly removed real facility collider without cross-read proof reuse",()=>{
+ const f=nativeReadFixture();try{
+  const first=f.facility.read();expect(first.production![0].confirmed).toBe(true);
+  f.world.removeCollider(f.world.getCollider(first.owners[0].colliderHandles[0]!),true);f.world.updateSceneQueries();
+  const removed=f.facility.read();expect(removed.revision).toBe(first.revision);expect(removed.production![0].confirmed).toBe(false);expect(removed.powerPorts![0].confirmed).toBe(false);
+ }finally{f.world.free();}
 });

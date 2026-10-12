@@ -1,0 +1,93 @@
+{
+  "createdAtUtc": "2026-10-12T11:26:48.084714+00:00",
+  "actor": "/root/play_integrator",
+  "boundedStatus": "NativeRead source/contract PASS, normal post-fix native route pending",
+  "independentReview": {
+    "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/native-read-independent-review.md",
+    "bytes": 13552,
+    "sha256": "f51234ea91dfd379579586000672eecba3ac8830cdb0fa4dc55eb29f5260b552"
+  },
+  "files": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/01-native-snapshot-business-red.command.json",
+      "bytes": 4042,
+      "sha256": "530d890ae5250dd6f6e63a375c666ffd2420b9b24a04094d48bfc668412f60cb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/01-native-snapshot-business-red.raw.log.gz",
+      "bytes": 1024,
+      "sha256": "293d786b52054511403f0e2b2a6d978e962b5e0e3f308b9d272a2103b4bb8be1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/02-complete-native-snapshot-business-red.command.json",
+      "bytes": 4064,
+      "sha256": "21db848a0891c6b72a29302fccb3dd7d0667708580e91f7f0df196c977cbbe08"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/02-complete-native-snapshot-business-red.raw.log.gz",
+      "bytes": 757,
+      "sha256": "251d2f65d9da32743795340c383d92bbbe6675120a48ef6792f22ecd05e27a77"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/03-native-snapshot-business-green.command.json",
+      "bytes": 4472,
+      "sha256": "513f47c5030d6bd85110c8d2a4d8069e3d0fa8aa9ee4c0a20332e2504383768c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/03-native-snapshot-business-green.raw.log.gz",
+      "bytes": 267,
+      "sha256": "f392284d13e3a45f600e9ab8bb06a67a26fb2436c0592db9ed737b04aefc4334"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/04-native-affected-regression.command.json",
+      "bytes": 4496,
+      "sha256": "783a3368227cdfab47eda2d0b82e057165b4728aada9ba9c64538f633d315b91"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/04-native-affected-regression.raw.log.gz",
+      "bytes": 258,
+      "sha256": "c959c6209329b7fbbbdeb347afc87fa6753d1565dd3fd1be5ba4ea5822096494"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/05-original-typecheck.command.json",
+      "bytes": 4347,
+      "sha256": "455862604d3d3f11bf8ffc5279393496548067d9bde55e24908d8bdb9b0edc25"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/05-original-typecheck.raw.log.gz",
+      "bytes": 50,
+      "sha256": "528a5927ee9a7f3e0dc01b5eb36c445e34fde28eea91495df3e864274ff9a308"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/06-original-build.command.json",
+      "bytes": 4317,
+      "sha256": "5c4c6684e9a34bfaf955ff44f424c8c55c810a169df24833c4795d0307d8f77c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/06-original-build.raw.log.gz",
+      "bytes": 915,
+      "sha256": "c38fbd061586a591ca55807464bde48948cc4424618105898c838afb2bf92dfc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/candidate-source-bindings.json",
+      "bytes": 837,
+      "sha256": "55d4d4372956c7b3a89c0d91c3a5dda9ebb91964ca67f89d3af50cf79a88e0bf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/candidate.diff",
+      "bytes": 13268,
+      "sha256": "15dbc4bd8e689df73cf56acd4583d3e35800fd2799de1f6429b973d23cebffec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/native-read-candidate-report.md",
+      "bytes": 1993,
+      "sha256": "d690a82497fbf0bc5b12e8cbf0cb87e6d3ff75e724e80a5de9620c6c9df978a1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/native-read-independent-review.md",
+      "bytes": 13552,
+      "sha256": "f51234ea91dfd379579586000672eecba3ac8830cdb0fa4dc55eb29f5260b552"
+    }
+  ],
+  "excluded": "Ignored convenience .log duplicates; exact raw bytes in included .raw.log.gz and receipts"
+}

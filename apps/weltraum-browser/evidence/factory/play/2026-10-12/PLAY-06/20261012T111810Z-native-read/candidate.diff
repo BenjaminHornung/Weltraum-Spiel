@@ -1,0 +1,119 @@
+diff --git a/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts b/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts
+index f0170f17..d9e75f45 100644
+--- a/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts
+@@ -162,11 +162,11 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+     };
+     return Object.freeze({instanceId:owner.instanceId,profileDigest:owner.profileDigest,sourceDigest:owner.sourceDigest,installationRevision:owner.installationRevision,terrainRevision:terrainRevision(),facilityRevision:revision,confirmed,supported,serviceClear:confirmed&&clear(profile.serviceBoundsMm),sweepClear:confirmed&&profile.sweepBoundsMm.every(clear),accessible:localSourceAccess(`input_${owner.instanceId}`,owner.instanceId)});
+   };
+-  const powerSocketObservation=(owner:FactoryFacilityOwner)=>{
++  const powerSocketObservation=(owner:FactoryFacilityOwner,readProof:()=>ReturnType<typeof productionObservation>)=>{
+     const profile=ownerProfiles.get(owner.instanceId)??createFactoryInstallationProfile(owner.definitionRef.sourceId);
+     ownerProfiles.set(owner.instanceId,profile);
+     const ports=profile.source.ports.filter(port=>port.role.startsWith("Power"));if(!ports.length)return [];
+-    const proof=productionObservation(owner),actor=actorPosition(),body=world.getRigidBody(owner.bodyHandle);
++    const proof=readProof(),actor=actorPosition(),body=world.getRigidBody(owner.bodyHandle);
+     return ports.map(port=>{
+       const positionMm=transformFactoryPoint(port.centerM.map(n=>n*1000),owner.centerMm,owner.quarterTurns),outwardNormal=transformFactoryPoint(port.normal,[0,0,0],owner.quarterTurns);
+       const distance=actor?Math.hypot(positionMm[0]/1000-actor.x,positionMm[1]/1000-actor.y,positionMm[2]/1000-actor.z):Infinity;
+@@ -281,7 +281,13 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+   };
+   return {
+     get busy(): boolean { return !!pending || !!carrierWork || recovery; },
+-    read(): FactoryFacilityRead { const cargo=readCargo(), currentCarrier=readCarrier();return Object.freeze({ ...(lastCarrierVeto?{lastCarrierVeto}:{}),powerPorts:Object.freeze(owners.flatMap(powerSocketObservation)),production:Object.freeze(owners.filter(owner=>["B05","B06","B07"].includes(owner.definitionRef.sourceId)).map(productionObservation)),sources:Object.freeze(owners.flatMap(owner=>(owner.definitionRef.sourceId==="B09"?["storage"]:["B05","B06","B07"].includes(owner.definitionRef.sourceId)?["input","output","offcut"]:[]).map(role=>Object.freeze({containerId:`${role}_${owner.instanceId}`,instanceId:owner.instanceId,accessible:localSourceAccess(`${role}_${owner.instanceId}`,owner.instanceId)})))), ...(cargo?{cargo}:{}), ...(currentCarrier?{carrier:currentCarrier}:{}), revision, state: recovery ? "RecoveryHold" : pending?.state ?? (carrierWork ? carrier!.phase as "PreparedHeld" | "CommittedHeld" | "PublishedHeld" : "Idle"), transactionId: pending?.owner.transactionId ?? (carrierWork ? carrier!.transactionId : null),
++    read(): FactoryFacilityRead {
++      const cargo=readCargo(), currentCarrier=readCarrier();
++      // This map belongs to ONE synchronous observation. Every later Read
++      // recomputes the actual current World/coverage/actor/LOS proofs.
++      const proofs=new Map<FactoryFacilityOwner,ReturnType<typeof productionObservation>>();
++      const observeProduction=(owner:FactoryFacilityOwner)=>{let proof=proofs.get(owner);if(!proof){proof=productionObservation(owner);proofs.set(owner,proof);}return proof;};
++      return Object.freeze({ ...(lastCarrierVeto?{lastCarrierVeto}:{}),powerPorts:Object.freeze(owners.flatMap(owner=>powerSocketObservation(owner,()=>observeProduction(owner)))),production:Object.freeze(owners.filter(owner=>["B05","B06","B07"].includes(owner.definitionRef.sourceId)).map(observeProduction)),sources:Object.freeze(owners.flatMap(owner=>(owner.definitionRef.sourceId==="B09"?["storage"]:["B05","B06","B07"].includes(owner.definitionRef.sourceId)?["input","output","offcut"]:[]).map(role=>Object.freeze({containerId:`${role}_${owner.instanceId}`,instanceId:owner.instanceId,accessible:localSourceAccess(`${role}_${owner.instanceId}`,owner.instanceId)})))), ...(cargo?{cargo}:{}), ...(currentCarrier?{carrier:currentCarrier}:{}), revision, state: recovery ? "RecoveryHold" : pending?.state ?? (carrierWork ? carrier!.phase as "PreparedHeld" | "CommittedHeld" | "PublishedHeld" : "Idle"), transactionId: pending?.owner.transactionId ?? (carrierWork ? carrier!.transactionId : null),
+       owners, prepared: pending?.owner ?? null }); },
+     openCargo(intent:FactoryCargoOpenIntent):FactoryFacilityRead{
+       if(pending||carrierWork||recovery)reject("CargoBusy");
+diff --git a/apps/weltraum-browser/src/hestia-prototype/physics/session.ts b/apps/weltraum-browser/src/hestia-prototype/physics/session.ts
+index c478b86f..d010db59 100644
+--- a/apps/weltraum-browser/src/hestia-prototype/physics/session.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/session.ts
+@@ -198,9 +198,10 @@ export const createHvpPhysicsSession = async (
+     const read = (includeBranchCells=false) => {const structural=disposed?null:branch?.read(includeBranchCells)??null;
+       let activeDynamic=0,residentDynamic=disposed?0:residency!.count;
+       if(!disposed){world.bodies.forEach(b=>{if(b.isDynamic()){residentDynamic+=1;if(!b.isSleeping()){activeDynamic+=1;}}});}
+-      return Object.freeze({ ...tick.read(), status:!disposed&&facilities?.read().state==="RecoveryHold"?"RecoveryHold" as const:bodyResidencyWork?.hold?"RecoveryHold" as const:coverageHeld?"CoverageHold" as const:tick.read().status,gravity, gravityProfile: "local-tangent-gravity-v1",activeDynamic,residentDynamic,
++      const factoryFacilities=disposed?undefined:facilities?.read();
++      return Object.freeze({ ...tick.read(), status:factoryFacilities?.state==="RecoveryHold"?"RecoveryHold" as const:bodyResidencyWork?.hold?"RecoveryHold" as const:coverageHeld?"CoverageHold" as const:tick.read().status,gravity, gravityProfile: "local-tangent-gravity-v1",activeDynamic,residentDynamic,
+       solver: `rapier-${R.version()}`, stepCpuMs, bodyCount: disposed ? 0 : world.bodies.len(),
+-      ...(!disposed&&facilities?{factoryFacilities:facilities.read()}:{}),
++      ...(factoryFacilities?{factoryFacilities}:{}),
+       colliderCount: disposed ? 0 : world.colliders.len(), nativeBytes: "unsupported", terrainGeneration,
+        collisionBytes: disposed ? 0 : collisionBytes(), terrainTransaction: terrainHeld?"RecoveryHold":staged === undefined ? "Idle" : staged.committed ? "CommittedHeld" : "PreparedHeld",
+          terrainFragments:disposed?[]:[...[...movingBodies.values()].filter(f=>f.family!=="branch").map(fragmentView),...residency!.sources()],
+diff --git a/apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts b/apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts
+index 902cfc8f..730570b8 100644
+--- a/apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts
++++ b/apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts
+@@ -1,5 +1,5 @@
+ import {createFactoryInstallationProfile} from "../../../src/factory/construction/installationProfile";
+-import { beforeAll, describe, expect, it } from "vitest";
++import { beforeAll, describe, expect, it, vi } from "vitest";
+ import { R, initializeHvpRapier } from "../../../src/hestia-prototype/physics/rapierPort";
+ import { createFactoryFacilitySession } from "../../../src/hestia-prototype/physics/factoryFacilitySession";
+ import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
+@@ -418,3 +418,57 @@ it.each([
+   expect(source.initializationReceipt).toMatchObject({maskCount:15,columnCount:4480,areaMm2:70000000,materialCreditMg:0});
+  }finally{world.free();}
+ });
++
++
++// This bounded native read scenario is synthetic floor geometry; it proves
++// exact query work and fresh authority, not normal V4 terrain usability.
++const nativeReadProbeBudget = (profile: ReturnType<typeof createFactoryInstallationProfile>) =>
++  profile.supportPatchesMm.reduce((sum, patch) => sum + Math.ceil((patch.sizeMm[0] - .5) / 62.5) * Math.ceil((patch.sizeMm[1] - .5) / 62.5), 0);
++const nativeReadFixture = () => {
++  const world=new R.World({x:0,y:-9.81,z:0}), floor=world.createCollider(R.ColliderDesc.cuboid(16,.125,16).setTranslation(0,1.375,0));
++  const actor={x:-4,y:2.4,z:5},coverage={valid:true},profile=createFactoryInstallationProfile("B06");
++  const facility=createFactoryFacilitySession(world,()=>true,()=>0,()=>0,undefined,()=>actor,()=>undefined,()=>coverage.valid);
++  facility.prepare(request);facility.commit(request.transactionId);facility.publish(request.transactionId);facility.finalize(request.transactionId);
++  const power=facility.read().powerPorts![0]!;actor.x=power.positionMm[0]/1000+.5;actor.y=power.positionMm[1]/1000;actor.z=power.positionMm[2]/1000;
++  world.updateSceneQueries();return {world,floor,actor,coverage,profile,facility};
++};
++it("PLAY06 NativeRead uses one full support proof for coherent production and power in each facility snapshot",()=>{
++ const f=nativeReadFixture(),probe=vi.spyOn(f.world,"castRayAndGetNormal");try{
++  const observedStart=performance.now(),current=f.facility.read();console.info("NATIVE_READ_SCENARIO",JSON.stringify({case:"facility-snapshot",elapsedMs:performance.now()-observedStart,probeCount:probe.mock.calls.length,singleProofBudget:nativeReadProbeBudget(f.profile),revision:current.revision,profileDigest:f.profile.profileDigest}));expect(current.production![0]).toMatchObject({confirmed:true,supported:true});
++  expect(current.powerPorts![0]).toMatchObject({confirmed:true,accessible:true});
++  expect(probe).toHaveBeenCalledTimes(nativeReadProbeBudget(f.profile));
++  expect(current.owners[0].massMg).toBe(208000000);expect(current.owners[0].colliderHandles).toHaveLength(33);
++ }finally{probe.mockRestore();f.world.free();}
++});
++it("PLAY06 NativeRead uses one facility snapshot in the actual public native session read",async()=>{
++ const ground={vertices:new Float32Array([-16,1.5,-16,-16,1.5,16,16,1.5,16,16,1.5,-16]),indices:new Uint32Array([0,1,2,0,2,3])};
++ const session=await createHvpPhysicsSession([ground],{x:10,y:4,z:10},undefined,{spawn:{x:10,y:2.42,z:10},coverage:[{minX:-16,maxX:16,minZ:-16,maxZ:16}]},undefined,undefined,undefined,undefined,undefined,true);
++ const probe=vi.spyOn(R.World.prototype,"castRayAndGetNormal");try{
++  session.pause();session.prepareFactoryFacility(request);session.commitFactoryFacility(request.transactionId);session.finalizeFactoryFacility(request.transactionId);probe.mockClear();
++  const observedStart=performance.now(),current=session.read();console.info("NATIVE_READ_SCENARIO",JSON.stringify({case:"public-session-snapshot",elapsedMs:performance.now()-observedStart,probeCount:probe.mock.calls.length,singleProofBudget:nativeReadProbeBudget(createFactoryInstallationProfile("B06")),ticks:current.ticks,status:current.status}));expect(current.status).toBe("Paused");expect(current.factoryFacilities!.production![0]).toMatchObject({confirmed:true,supported:true});
++  expect(probe).toHaveBeenCalledTimes(nativeReadProbeBudget(createFactoryInstallationProfile("B06")));
++ }finally{probe.mockRestore();session.dispose();}
++});
++it("PLAY06 NativeRead recomputes actor access on later reads even at the same tick and revisions",()=>{
++ const f=nativeReadFixture();try{
++  const first=f.facility.read();expect(first.powerPorts![0].accessible).toBe(true);f.actor.x=100;
++  const far=f.facility.read();expect(far.revision).toBe(first.revision);expect(far.powerPorts![0].accessible).toBe(false);
++  const p=first.powerPorts![0].positionMm;f.actor.x=p[0]/1000+.5;expect(f.facility.read().powerPorts![0].accessible).toBe(true);
++ }finally{f.world.free();}
++});
++it("PLAY06 NativeRead recomputes coverage and disabled native ground on each later read",()=>{
++ const f=nativeReadFixture();try{
++  const first=f.facility.read();expect(first.production![0].supported).toBe(true);f.coverage.valid=false;
++  expect(f.facility.read().production![0].supported).toBe(false);f.coverage.valid=true;
++  f.floor.setEnabled(false);f.world.updateSceneQueries();const unsupported=f.facility.read();
++  expect(unsupported.revision).toBe(first.revision);expect(unsupported.production![0].supported).toBe(false);expect(unsupported.powerPorts![0].confirmed).toBe(false);
++  f.floor.setEnabled(true);f.world.updateSceneQueries();expect(f.facility.read().production![0].supported).toBe(true);
++ }finally{f.world.free();}
++});
++it("PLAY06 NativeRead rejects a newly removed real facility collider without cross-read proof reuse",()=>{
++ const f=nativeReadFixture();try{
++  const first=f.facility.read();expect(first.production![0].confirmed).toBe(true);
++  f.world.removeCollider(f.world.getCollider(first.owners[0].colliderHandles[0]!),true);f.world.updateSceneQueries();
++  const removed=f.facility.read();expect(removed.revision).toBe(first.revision);expect(removed.production![0].confirmed).toBe(false);expect(removed.powerPorts![0].confirmed).toBe(false);
++ }finally{f.world.free();}
++});

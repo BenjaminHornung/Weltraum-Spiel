@@ -162,11 +162,11 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
     };
     return Object.freeze({instanceId:owner.instanceId,profileDigest:owner.profileDigest,sourceDigest:owner.sourceDigest,installationRevision:owner.installationRevision,terrainRevision:terrainRevision(),facilityRevision:revision,confirmed,supported,serviceClear:confirmed&&clear(profile.serviceBoundsMm),sweepClear:confirmed&&profile.sweepBoundsMm.every(clear),accessible:localSourceAccess(`input_${owner.instanceId}`,owner.instanceId)});
   };
-  const powerSocketObservation=(owner:FactoryFacilityOwner)=>{
+  const powerSocketObservation=(owner:FactoryFacilityOwner,readProof:()=>ReturnType<typeof productionObservation>)=>{
     const profile=ownerProfiles.get(owner.instanceId)??createFactoryInstallationProfile(owner.definitionRef.sourceId);
     ownerProfiles.set(owner.instanceId,profile);
     const ports=profile.source.ports.filter(port=>port.role.startsWith("Power"));if(!ports.length)return [];
-    const proof=productionObservation(owner),actor=actorPosition(),body=world.getRigidBody(owner.bodyHandle);
+    const proof=readProof(),actor=actorPosition(),body=world.getRigidBody(owner.bodyHandle);
     return ports.map(port=>{
       const positionMm=transformFactoryPoint(port.centerM.map(n=>n*1000),owner.centerMm,owner.quarterTurns),outwardNormal=transformFactoryPoint(port.normal,[0,0,0],owner.quarterTurns);
       const distance=actor?Math.hypot(positionMm[0]/1000-actor.x,positionMm[1]/1000-actor.y,positionMm[2]/1000-actor.z):Infinity;
@@ -281,7 +281,13 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
   };
   return {
     get busy(): boolean { return !!pending || !!carrierWork || recovery; },
-    read(): FactoryFacilityRead { const cargo=readCargo(), currentCarrier=readCarrier();return Object.freeze({ ...(lastCarrierVeto?{lastCarrierVeto}:{}),powerPorts:Object.freeze(owners.flatMap(powerSocketObservation)),production:Object.freeze(owners.filter(owner=>["B05","B06","B07"].includes(owner.definitionRef.sourceId)).map(productionObservation)),sources:Object.freeze(owners.flatMap(owner=>(owner.definitionRef.sourceId==="B09"?["storage"]:["B05","B06","B07"].includes(owner.definitionRef.sourceId)?["input","output","offcut"]:[]).map(role=>Object.freeze({containerId:`${role}_${owner.instanceId}`,instanceId:owner.instanceId,accessible:localSourceAccess(`${role}_${owner.instanceId}`,owner.instanceId)})))), ...(cargo?{cargo}:{}), ...(currentCarrier?{carrier:currentCarrier}:{}), revision, state: recovery ? "RecoveryHold" : pending?.state ?? (carrierWork ? carrier!.phase as "PreparedHeld" | "CommittedHeld" | "PublishedHeld" : "Idle"), transactionId: pending?.owner.transactionId ?? (carrierWork ? carrier!.transactionId : null),
+    read(): FactoryFacilityRead {
+      const cargo=readCargo(), currentCarrier=readCarrier();
+      // This map belongs to ONE synchronous observation. Every later Read
+      // recomputes the actual current World/coverage/actor/LOS proofs.
+      const proofs=new Map<FactoryFacilityOwner,ReturnType<typeof productionObservation>>();
+      const observeProduction=(owner:FactoryFacilityOwner)=>{let proof=proofs.get(owner);if(!proof){proof=productionObservation(owner);proofs.set(owner,proof);}return proof;};
+      return Object.freeze({ ...(lastCarrierVeto?{lastCarrierVeto}:{}),powerPorts:Object.freeze(owners.flatMap(owner=>powerSocketObservation(owner,()=>observeProduction(owner)))),production:Object.freeze(owners.filter(owner=>["B05","B06","B07"].includes(owner.definitionRef.sourceId)).map(observeProduction)),sources:Object.freeze(owners.flatMap(owner=>(owner.definitionRef.sourceId==="B09"?["storage"]:["B05","B06","B07"].includes(owner.definitionRef.sourceId)?["input","output","offcut"]:[]).map(role=>Object.freeze({containerId:`${role}_${owner.instanceId}`,instanceId:owner.instanceId,accessible:localSourceAccess(`${role}_${owner.instanceId}`,owner.instanceId)})))), ...(cargo?{cargo}:{}), ...(currentCarrier?{carrier:currentCarrier}:{}), revision, state: recovery ? "RecoveryHold" : pending?.state ?? (carrierWork ? carrier!.phase as "PreparedHeld" | "CommittedHeld" | "PublishedHeld" : "Idle"), transactionId: pending?.owner.transactionId ?? (carrierWork ? carrier!.transactionId : null),
       owners, prepared: pending?.owner ?? null }); },
     openCargo(intent:FactoryCargoOpenIntent):FactoryFacilityRead{
       if(pending||carrierWork||recovery)reject("CargoBusy");
