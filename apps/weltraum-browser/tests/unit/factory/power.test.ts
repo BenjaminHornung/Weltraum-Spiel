@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import * as catalogLoader from "../../../src/factory/catalog/fp02Catalog";
 import { createResourceContainerState } from "../../../src/resources/containers";
 import { prepareFactoryPowerSources, type FactoryPowerSourceSnapshot } from "../../../src/factory/power/sourceAdapter";
 import { readFactoryPower } from "../../../src/factory/power/powerReadView";
@@ -151,6 +152,42 @@ const sourceFixture=(allSources=false):FactoryPowerSourceSnapshot=>{
       quality:"confirmed",values:[{instanceId:"fp02_cargo_c01_unit_1",availableMilliWatt:"3500000"}]}};
 };
 describe("FP06 W03 finite installed source and read projection",()=>{
+  it("validates cold source catalog bytes once and reuses only the same exact current raw bytes",()=>{
+    const snapshot=sourceFixture(),current={...catalog},spy=vi.spyOn(catalogLoader,"loadFactoryCatalog");
+    try{
+      const cold=prepareFactoryPowerSources(current,snapshot);expect(spy).toHaveBeenCalledTimes(1);spy.mockClear();
+      for(let i=0;i<3;i++)expect(prepareFactoryPowerSources(current,snapshot)).toEqual(cold);
+      expect(spy).not.toHaveBeenCalled();
+      expect(prepareFactoryPowerSources({...current},snapshot)).toEqual(cold);expect(spy).toHaveBeenCalledTimes(1);
+      current.canonicalJson=` ${catalog.canonicalJson}`;
+      expect(prepareFactoryPowerSources(current,snapshot)).toEqual(cold);expect(spy).toHaveBeenCalledTimes(2);
+      expect(prepareFactoryPowerSources(current,snapshot)).toEqual(cold);expect(spy).toHaveBeenCalledTimes(2);
+    }finally{spy.mockRestore();}
+  });
+  it("rechecks current digest, binding and malformed raw catalog bytes after a warm source read",()=>{
+    const snapshot=sourceFixture(),current={...catalog},cold=prepareFactoryPowerSources(current,snapshot);
+    current.catalogDigest="forged";expect(()=>prepareFactoryPowerSources(current,snapshot)).toThrow(/SourceCatalogMismatch/);
+    current.catalogDigest=catalog.catalogDigest;
+    expect(()=>prepareFactoryPowerSources(current,{...snapshot,binding:{...snapshot.binding,catalogDigest:"forged"}})).toThrow(/SourceCatalogMismatch/);
+    for(const bytes of ["{", "{}"]){current.canonicalJson=bytes;expect(()=>prepareFactoryPowerSources(current,snapshot)).toThrow();}
+    current.canonicalJson=catalog.canonicalJson;expect(prepareFactoryPowerSources(current,snapshot)).toEqual(cold);
+    const invalid={...snapshot,resourceContainers:snapshot.resourceContainers.map(c=>({...c,contents:c.contents.map(stack=>stack.resourceId==="fp02_bulk_steel_known"?{...stack,quantity:stack.quantity+1}:stack)}))};
+    expect(()=>prepareFactoryPowerSources(current,invalid)).toThrow(/ResourceBytes/);
+  });
+  it("reads a caller canonical getter once per source read and observes its changed bytes",()=>{
+    const snapshot=sourceFixture();let bytes=catalog.canonicalJson,reads=0;
+    const current=new Proxy({...catalog},{get(target,key,receiver){if(key==="canonicalJson"){reads++;return bytes;}return Reflect.get(target,key,receiver);}});
+    const cold=prepareFactoryPowerSources(current,snapshot);expect(reads).toBe(1);
+    expect(prepareFactoryPowerSources(current,snapshot)).toEqual(cold);expect(reads).toBe(2);
+    bytes="{}";expect(()=>prepareFactoryPowerSources(current,snapshot)).toThrow();expect(reads).toBe(3);
+    bytes=catalog.canonicalJson;expect(prepareFactoryPowerSources(current,snapshot)).toEqual(cold);expect(reads).toBe(4);
+  });
+  it("retains uncached JSON parsing for non-string canonical source inputs",()=>{
+    const snapshot=sourceFixture();
+    expect(()=>prepareFactoryPowerSources({...catalog,canonicalJson:undefined as never},snapshot)).toThrow(SyntaxError);
+    const current={...catalog,canonicalJson:new String(catalog.canonicalJson) as never},spy=vi.spyOn(catalogLoader,"loadFactoryCatalog");
+    try{const cold=prepareFactoryPowerSources(current,snapshot);expect(prepareFactoryPowerSources(current,snapshot)).toEqual(cold);expect(spy).toHaveBeenCalledTimes(2);}finally{spy.mockRestore();}
+  });
   it("actual installed serials from Resources admit fixed net-side observations, not cargo nameplate",()=>{
     const snapshot=sourceFixture(); const before=JSON.stringify(snapshot);
     const supply=prepareFactoryPowerSources(catalog,snapshot);

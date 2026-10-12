@@ -36,13 +36,19 @@ const unique=<T>(values:readonly T[],key:(value:T)=>string,max:number):void=>{
   if(!Array.isArray(values)||values.length>max) throw new Error("SourceCollectionBound");
   const seen=new Set<string>(); for(const v of values) {const k=key(v); if(seen.has(k)) throw new Error("DuplicateSourceIdentity"); seen.add(k);}
 };
+// Retain only loader-validated derived data, bound to freshly read exact bytes.
+const validatedCatalogs=new WeakMap<FactoryCatalog,Readonly<{sourceBytes:string;checked:FactoryCatalog}>>();
 /** Consumes confirmed installation and CURRENT real Resources snapshots. It
  * never installs, transfers, creates cargo, initializes/fills SOC, or samples
  * the renderer. Unknown climate/curves yield zero, not nameplate generation. */
 export const prepareFactoryPowerSources=(catalog:FactoryCatalog,snapshot:FactoryPowerSourceSnapshot):FactoryPowerSupply=>{
   if(snapshot.binding.sourceProfileDigest!==FACTORY_POWER_POLICY.sourceObservationVersion) throw new Error("UnsupportedSourceProfile");
-  const checked=loadFactoryCatalog(JSON.parse(catalog.canonicalJson));
+  const sourceBytes=catalog.canonicalJson;
+  const cacheable=typeof sourceBytes==="string"&&typeof catalog==="object"&&catalog!==null;
+  const previous=cacheable?validatedCatalogs.get(catalog):undefined;
+  const checked=previous&&previous.sourceBytes===sourceBytes?previous.checked:loadFactoryCatalog(JSON.parse(sourceBytes));
   if(checked.catalogDigest!==catalog.catalogDigest||snapshot.binding.catalogDigest!==checked.catalogDigest) throw new Error("SourceCatalogMismatch");
+  if(cacheable&&previous?.sourceBytes!==sourceBytes)validatedCatalogs.set(catalog,{sourceBytes,checked});
   requireUint(snapshot.tickStartUs,9_223_372_036_854_775_807n); requireUint(snapshot.tickEndUs,9_223_372_036_854_775_807n);
   if(BigInt(snapshot.tickEndUs)<=BigInt(snapshot.tickStartUs)) throw new Error("InvalidSourceInterval");
   unique(snapshot.installed,a=>a.instanceId,7); unique(snapshot.resourceContainers,c=>c.containerId,128);
