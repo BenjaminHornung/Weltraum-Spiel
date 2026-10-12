@@ -1,0 +1,357 @@
+{
+  "assetId": "play_pv_v1",
+  "family": "power-kit",
+  "slug": "pv",
+  "source": {
+    "assetId": "fp01_solar_s0_v1",
+    "definitionId": "fp02.device.pv_pack_2kwp",
+    "revision": 1,
+    "kind": "S0-proxy",
+    "frameId": "fp02_east_north_height_xyz_v1",
+    "origin": "ground-center",
+    "metersPerUnit": 1,
+    "authoringGridM": 0.25,
+    "terrainCellM": 0.125,
+    "dimensionsM": [
+      4,
+      1.25,
+      3
+    ],
+    "parts": [
+      {
+        "partId": "solar_feet",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              -1.875,
+              0.25,
+              -1.375
+            ],
+            "sizeM": [
+              0.25,
+              0.5,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          },
+          {
+            "centerM": [
+              -1.875,
+              0.25,
+              1.375
+            ],
+            "sizeM": [
+              0.25,
+              0.5,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          },
+          {
+            "centerM": [
+              1.875,
+              0.25,
+              -1.375
+            ],
+            "sizeM": [
+              0.25,
+              0.5,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          },
+          {
+            "centerM": [
+              1.875,
+              0.25,
+              1.375
+            ],
+            "sizeM": [
+              0.25,
+              0.5,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "solar_frame",
+        "role": "structure",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              0.625,
+              0
+            ],
+            "sizeM": [
+              4,
+              0.25,
+              3
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "solar_panels",
+        "role": "pv",
+        "boxes": [
+          {
+            "centerM": [
+              -1,
+              0.875,
+              -0.625
+            ],
+            "sizeM": [
+              2,
+              0.25,
+              1.25
+            ],
+            "material": "EX-PV"
+          },
+          {
+            "centerM": [
+              -1,
+              0.875,
+              0.625
+            ],
+            "sizeM": [
+              2,
+              0.25,
+              1.25
+            ],
+            "material": "EX-PV"
+          },
+          {
+            "centerM": [
+              1,
+              0.875,
+              -0.625
+            ],
+            "sizeM": [
+              2,
+              0.25,
+              1.25
+            ],
+            "material": "EX-PV"
+          },
+          {
+            "centerM": [
+              1,
+              0.875,
+              0.625
+            ],
+            "sizeM": [
+              2,
+              0.25,
+              1.25
+            ],
+            "material": "EX-PV"
+          }
+        ]
+      },
+      {
+        "partId": "solar_hinge",
+        "role": "joint",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              1.125,
+              0
+            ],
+            "sizeM": [
+              0.25,
+              0.25,
+              2.5
+            ],
+            "material": "EX-FUNCTION"
+          }
+        ]
+      },
+      {
+        "partId": "solar_power_socket",
+        "role": "power-marker",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              0.875,
+              1.375
+            ],
+            "sizeM": [
+              0.25,
+              0.25,
+              0.25
+            ],
+            "material": "EX-FUNCTION"
+          }
+        ]
+      }
+    ],
+    "ports": [
+      {
+        "sourceId": "fp02.device.pv_pack_2kwp:POWER-OUT",
+        "role": "PowerProducer",
+        "centerM": [
+          0,
+          0.875,
+          1.5
+        ],
+        "normal": [
+          0,
+          0,
+          1
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "binding": "authoring-only"
+      }
+    ],
+    "supportsM": [
+      [
+        -1.875,
+        0,
+        -1.375
+      ],
+      [
+        -1.875,
+        0,
+        1.375
+      ],
+      [
+        1.875,
+        0,
+        -1.375
+      ],
+      [
+        1.875,
+        0,
+        1.375
+      ]
+    ],
+    "joints": [],
+    "serviceClearanceM": 1,
+    "sourceRefs": [
+      "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+      "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+      "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
+    ],
+    "authoringChoices": [
+      "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
+      "Feet belong to paid device BOM; no extra C09 material.",
+      "Power/waste marker poses are authoring-only until explicit installation binding.",
+      "Source-required protected Power-Out socket is an authoring marker only; native electrical admission belongs to W07.",
+      "Paid socket stands on the frame/foot beam; exposed +Z face binds its authoring port without coplanar structural surfaces."
+    ],
+    "license": "LicenseRef-Hestia-Project-Original",
+    "supportPatchesM": [
+      {
+        "partId": "solar_feet",
+        "centerM": [
+          -1.875,
+          0,
+          -1.375
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      },
+      {
+        "partId": "solar_feet",
+        "centerM": [
+          -1.875,
+          0,
+          1.375
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      },
+      {
+        "partId": "solar_feet",
+        "centerM": [
+          1.875,
+          0,
+          -1.375
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      },
+      {
+        "partId": "solar_feet",
+        "centerM": [
+          1.875,
+          0,
+          1.375
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      }
+    ],
+    "serviceBoundsM": {
+      "min": [
+        -2,
+        0,
+        1.5
+      ],
+      "max": [
+        2,
+        1.25,
+        2.5
+      ]
+    }
+  },
+  "definitionRef": {
+    "sourceId": "fp02.device.pv_pack_2kwp",
+    "version": 1,
+    "digest": "fnv1a:0dc8fe24"
+  },
+  "sourceFile": {
+    "path": "art/factory/fp01/power-kit/source.scene.json",
+    "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+    "bytes": 27070
+  },
+  "visualOnlyAnchor": null,
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/power-kit/pv/native-source.json",
+    "sha256": "2b1579cae334aa5f9c445a2e13fb5cd0b9ea820a54289c388af74b866ef7bb52",
+    "bytes": 5786
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/power-kit/pv/native-owner-source.blob",
+    "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+    "bytes": 27070
+  }
+}

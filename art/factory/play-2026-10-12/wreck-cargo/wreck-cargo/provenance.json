@@ -1,0 +1,45 @@
+{
+  "schema": "hestia.play-model-provenance/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+    "bytes": 4071
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-owner-source.blob",
+    "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+    "bytes": 4071
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-source.json",
+    "sha256": "8ae8a479af6e4311d2123c1e2f7e4cbafbbe340b1c107cb54966a6bddc8aa40a",
+    "bytes": 636
+  },
+  "generator": {
+    "path": "art/factory/play-2026-10-12/build_assets.py",
+    "sha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9",
+    "bytes": 32459
+  },
+  "nativeBlend": {
+    "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/wreck-cargo.blend",
+    "sha256": "ee777aabf3e48bda17f0446091e455a601d574d303812ca2f7590b9dd77b5a54",
+    "bytes": 536168
+  },
+  "reopened": true,
+  "runtimeGlb": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo.glb",
+    "sha256": "4b16d587014cba2587b8cf7ca34f674f3352c77c25aecfac3dca2073bd17a639",
+    "bytes": 15108
+  },
+  "exporter": {
+    "path": "tools/blender/hestia_asset_authoring/export_hestia_glb.py",
+    "sha256": "96732611048d3ff0d215e5c69ccfeed68234d552e75eed8c871572caf07b5b27",
+    "bytes": 18150
+  },
+  "blenderVersion": "4.3.2",
+  "gltfExporterVersion": "4.3.47",
+  "origin": "project-original hard cuboid modeling; no provider/remote textures",
+  "license": "LicenseRef-Hestia-Project-Original",
+  "assetToVoxelCompiler": "KNOWN_GAP_NOT_DELIVERED"
+}

@@ -1,0 +1,168 @@
+{
+  "assetId": "play_brace_v1",
+  "family": "brace",
+  "slug": "brace",
+  "source": {
+    "assetId": "fp06_s0_fp02_comp_small_brace",
+    "definitionId": "fp02.comp.small_brace",
+    "revision": 1,
+    "kind": "S0-proxy",
+    "frameId": "fp02_east_north_height_xyz_v1",
+    "origin": "ground-center",
+    "metersPerUnit": 1,
+    "authoringGridM": 0.25,
+    "terrainCellM": 0.125,
+    "dimensionsM": [
+      1,
+      0.25,
+      0.25
+    ],
+    "parts": [
+      {
+        "partId": "body",
+        "role": "usable_brace",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              0.1875,
+              0
+            ],
+            "sizeM": [
+              1,
+              0.125,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "support_0",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              -0.375,
+              0.0625,
+              0
+            ],
+            "sizeM": [
+              0.125,
+              0.125,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "support_1",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              0.375,
+              0.0625,
+              0
+            ],
+            "sizeM": [
+              0.125,
+              0.125,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      }
+    ],
+    "ports": [],
+    "sourceRefs": [
+      "FP02:5.2:REC-05-BRACE",
+      "FP03:brace-1m-family",
+      "fp06-technical-s0-local-factory-v1"
+    ],
+    "supportsM": [
+      [
+        -0.375,
+        0,
+        0
+      ],
+      [
+        0.375,
+        0,
+        0
+      ]
+    ],
+    "supportPatchesM": [
+      {
+        "partId": "support_0",
+        "centerM": [
+          -0.375,
+          0,
+          0
+        ],
+        "sizeM": [
+          0.125,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      },
+      {
+        "partId": "support_1",
+        "centerM": [
+          0.375,
+          0,
+          0
+        ],
+        "sizeM": [
+          0.125,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      }
+    ],
+    "serviceBoundsM": {
+      "min": [
+        -0.5,
+        0,
+        0.125
+      ],
+      "max": [
+        0.5,
+        1,
+        1.125
+      ]
+    },
+    "joints": []
+  },
+  "definitionRef": {
+    "sourceId": "fp02.comp.small_brace",
+    "version": 1,
+    "digest": "fnv1a:460437f1"
+  },
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  },
+  "visualOnlyAnchor": null,
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/brace/brace/native-source.json",
+    "sha256": "d530696b79364bc5c3441069354c0216f6a3eee0d1e8d784bc470cb82341cec8",
+    "bytes": 2168
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/brace/brace/native-owner-source.blob",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  }
+}

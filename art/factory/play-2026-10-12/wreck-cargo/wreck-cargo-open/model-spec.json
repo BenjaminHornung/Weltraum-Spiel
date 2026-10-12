@@ -1,0 +1,83 @@
+{
+  "assetId": "play_wreck_cargo_open_v1",
+  "family": "wreck-cargo",
+  "slug": "wreck-cargo-open",
+  "source": {
+    "assetId": "visual_anchor_wreck_cargo_open",
+    "definitionId": "visual_anchor_wreck_cargo_open",
+    "revision": 1,
+    "kind": "visual-only-derived",
+    "origin": "ground-center",
+    "metersPerUnit": 1,
+    "parts": [
+      {
+        "partId": "cargo_access",
+        "role": "finite_cargo_access",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              0.75,
+              0
+            ],
+            "sizeM": [
+              1.5,
+              1.5,
+              1
+            ],
+            "material": "EX-SHELL"
+          }
+        ]
+      }
+    ],
+    "ports": [],
+    "joints": [],
+    "supportsM": [],
+    "supportPatchesM": [],
+    "serviceBoundsM": null
+  },
+  "definitionRef": {
+    "sourceId": "visual_anchor_wreck_cargo_open",
+    "version": 1,
+    "digest": "visual-anchor-no-catalog-definition"
+  },
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+    "bytes": 4071
+  },
+  "visualOnlyAnchor": {
+    "kind": "visual-only-cargo",
+    "ownerId": "fp02_wreck_owner",
+    "containerId": "fp02_wreck_cargo",
+    "worldCenterMm": [
+      -5500,
+      2000,
+      13125
+    ],
+    "nativeBoundsMm": {
+      "min": [
+        -6250,
+        1250,
+        12625
+      ],
+      "max": [
+        -4750,
+        2750,
+        13625
+      ]
+    },
+    "quantityAuthority": "existing finite cargo readview",
+    "opened": true
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-source.json",
+    "sha256": "55cfe6ebf268c87c386286aefbfc7da8df55a7d97d761f1cd5135b9c09897203",
+    "bytes": 646
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-owner-source.blob",
+    "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+    "bytes": 4071
+  }
+}

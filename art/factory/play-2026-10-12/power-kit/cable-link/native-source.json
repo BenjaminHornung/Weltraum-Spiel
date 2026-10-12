@@ -1,0 +1,34 @@
+{
+  "assetId": "visual_anchor_cable_link",
+  "definitionId": "visual_anchor_cable_link",
+  "revision": 1,
+  "kind": "visual-only-derived",
+  "origin": "ground-center",
+  "metersPerUnit": 1,
+  "parts": [
+    {
+      "partId": "paid_route",
+      "role": "actual_paid_cable_route",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            0.025,
+            0
+          ],
+          "sizeM": [
+            0.05,
+            0.05,
+            1
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    }
+  ],
+  "ports": [],
+  "joints": [],
+  "supportsM": [],
+  "supportPatchesM": [],
+  "serviceBoundsM": null
+}

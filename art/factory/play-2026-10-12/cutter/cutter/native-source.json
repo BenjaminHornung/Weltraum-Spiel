@@ -1,0 +1,906 @@
+{
+  "assetId": "fp02_cutter_s0_v1",
+  "definitionId": "B06",
+  "revision": 1,
+  "kind": "S0-proxy",
+  "frameId": "fp02_east_north_height_xyz_v1",
+  "origin": "ground-center",
+  "metersPerUnit": 1,
+  "authoringGridM": 0.25,
+  "terrainCellM": 0.125,
+  "dimensionsM": [
+    3,
+    2,
+    2.5
+  ],
+  "parts": [
+    {
+      "partId": "cutter_feet",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            -1.25,
+            0.125,
+            -0.75
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            -1.25,
+            0.125,
+            0.75
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            1.25,
+            0.125,
+            -0.75
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            1.25,
+            0.125,
+            0.75
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_frame",
+      "role": "structure",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            0.625,
+            -0.625
+          ],
+          "sizeM": [
+            3,
+            0.25,
+            0.25
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            0,
+            0.625,
+            0.625
+          ],
+          "sizeM": [
+            3,
+            0.25,
+            0.25
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            -0.75,
+            1.5,
+            -0.75
+          ],
+          "sizeM": [
+            0.25,
+            2,
+            0.25
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            -0.75,
+            1.5,
+            0.75
+          ],
+          "sizeM": [
+            0.25,
+            2,
+            0.25
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            0.75,
+            1.5,
+            -0.75
+          ],
+          "sizeM": [
+            0.25,
+            2,
+            0.25
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            0.75,
+            1.5,
+            0.75
+          ],
+          "sizeM": [
+            0.25,
+            2,
+            0.25
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            -1.25,
+            0.375,
+            -0.75
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            -1.25,
+            0.375,
+            0.75
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            1.25,
+            0.375,
+            -0.75
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            1.25,
+            0.375,
+            0.75
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            -1,
+            0.625,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.25,
+            1.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            1,
+            0.625,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.25,
+            1.5
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_infeed",
+      "role": "infeed-housing",
+      "boxes": [
+        {
+          "centerM": [
+            -1,
+            0.875,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.25,
+            0.75
+          ],
+          "material": "EX-FUNCTION"
+        },
+        {
+          "centerM": [
+            -1,
+            1.75,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.25,
+            1.25
+          ],
+          "material": "EX-SHELL"
+        },
+        {
+          "centerM": [
+            -1.25,
+            1.5,
+            0
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            1
+          ],
+          "material": "EX-SHELL"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_chamber",
+      "role": "guard",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            2.375,
+            0
+          ],
+          "sizeM": [
+            1.5,
+            0.25,
+            1.75
+          ],
+          "material": "EX-SHELL"
+        },
+        {
+          "centerM": [
+            0,
+            1.875,
+            -0.75
+          ],
+          "sizeM": [
+            1.5,
+            1,
+            0.25
+          ],
+          "material": "EX-SHELL"
+        },
+        {
+          "centerM": [
+            0,
+            2.125,
+            0.625
+          ],
+          "sizeM": [
+            1.5,
+            0.5,
+            0.25
+          ],
+          "material": "EX-SHELL"
+        },
+        {
+          "centerM": [
+            0,
+            1.5,
+            0.625
+          ],
+          "sizeM": [
+            1.5,
+            0.25,
+            0.25
+          ],
+          "material": "EX-SHELL"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_clamp",
+      "role": "clamp",
+      "boxes": [
+        {
+          "centerM": [
+            -0.5,
+            1.375,
+            0
+          ],
+          "sizeM": [
+            0.25,
+            0.25,
+            0.75
+          ],
+          "material": "EX-HAZARD"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_tool",
+      "role": "tool",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            1.5,
+            0
+          ],
+          "sizeM": [
+            0.25,
+            0.25,
+            0.5
+          ],
+          "material": "EX-HAZARD"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_outfeed",
+      "role": "outfeed-housing",
+      "boxes": [
+        {
+          "centerM": [
+            1,
+            0.875,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.25,
+            0.75
+          ],
+          "material": "EX-FUNCTION"
+        },
+        {
+          "centerM": [
+            1,
+            1,
+            -0.625
+          ],
+          "sizeM": [
+            1,
+            0.5,
+            0.25
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            1,
+            1,
+            0.625
+          ],
+          "sizeM": [
+            1,
+            0.5,
+            0.25
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_service",
+      "role": "service",
+      "boxes": [
+        {
+          "centerM": [
+            -0.25,
+            0.875,
+            0.875
+          ],
+          "sizeM": [
+            1,
+            0.75,
+            0.25
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_power",
+      "role": "power-marker",
+      "boxes": [
+        {
+          "centerM": [
+            -0.75,
+            1.125,
+            0.875
+          ],
+          "sizeM": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "material": "EX-HAZARD"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_offcut",
+      "role": "waste",
+      "boxes": [
+        {
+          "centerM": [
+            0.75,
+            0.5,
+            0.875
+          ],
+          "sizeM": [
+            0.5,
+            0.5,
+            0.25
+          ],
+          "material": "EX-SHELL"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_infeed_carriage",
+      "role": "infeed",
+      "boxes": [
+        {
+          "centerM": [
+            -0.75,
+            1.125,
+            0
+          ],
+          "sizeM": [
+            0.25,
+            0.25,
+            0.5
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    },
+    {
+      "partId": "cutter_outfeed_carriage",
+      "role": "outfeed",
+      "boxes": [
+        {
+          "centerM": [
+            0.875,
+            1.125,
+            0
+          ],
+          "sizeM": [
+            0.25,
+            0.25,
+            0.5
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    }
+  ],
+  "ports": [
+    {
+      "sourceId": "B06:IN-STEEL",
+      "role": "SolidBatchIn",
+      "centerM": [
+        -1.5,
+        1,
+        0
+      ],
+      "normal": [
+        -1,
+        0,
+        0
+      ],
+      "sizeM": [
+        0.75,
+        0.75
+      ],
+      "binding": "source-solid"
+    },
+    {
+      "sourceId": "B06:OUT-SEMI",
+      "role": "SolidBatchOut",
+      "centerM": [
+        1.5,
+        1,
+        0
+      ],
+      "normal": [
+        1,
+        0,
+        0
+      ],
+      "sizeM": [
+        0.75,
+        0.75
+      ],
+      "binding": "source-solid"
+    },
+    {
+      "sourceId": "B06:POWER-IN",
+      "role": "PowerConsumer",
+      "centerM": [
+        -0.75,
+        1.125,
+        0.875
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "sizeM": [
+        0.25,
+        0.25
+      ],
+      "binding": "authoring-only"
+    }
+  ],
+  "supportsM": [
+    [
+      -1.25,
+      0,
+      -0.75
+    ],
+    [
+      -1.25,
+      0,
+      0.75
+    ],
+    [
+      1.25,
+      0,
+      -0.75
+    ],
+    [
+      1.25,
+      0,
+      0.75
+    ]
+  ],
+  "joints": [
+    {
+      "partId": "cutter_tool",
+      "pivotM": [
+        0,
+        1.5,
+        0
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "limitsM": [
+        -0.25,
+        0.25
+      ],
+      "sweepBoundsM": {
+        "min": [
+          -0.125,
+          1.375,
+          -0.5
+        ],
+        "max": [
+          0.125,
+          1.625,
+          0.5
+        ]
+      }
+    },
+    {
+      "partId": "cutter_infeed_carriage",
+      "pivotM": [
+        -0.75,
+        1.125,
+        0
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "limitsM": [
+        0,
+        0.25
+      ],
+      "sweepBoundsM": {
+        "min": [
+          -0.875,
+          1,
+          -0.25
+        ],
+        "max": [
+          -0.375,
+          1.25,
+          0.25
+        ]
+      }
+    },
+    {
+      "partId": "cutter_clamp",
+      "pivotM": [
+        -0.5,
+        1.375,
+        0
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "limitsM": [
+        -0.25,
+        0
+      ],
+      "sweepBoundsM": {
+        "min": [
+          -0.625,
+          1,
+          -0.375
+        ],
+        "max": [
+          -0.375,
+          1.5,
+          0.375
+        ]
+      }
+    },
+    {
+      "partId": "cutter_outfeed_carriage",
+      "pivotM": [
+        0.875,
+        1.125,
+        0
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "limitsM": [
+        0,
+        0.25
+      ],
+      "sweepBoundsM": {
+        "min": [
+          0.75,
+          1,
+          -0.25
+        ],
+        "max": [
+          1.25,
+          1.25,
+          0.25
+        ]
+      }
+    }
+  ],
+  "serviceClearanceM": 1,
+  "sourceRefs": [
+    "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+    "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+    "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
+  ],
+  "authoringChoices": [
+    "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
+    "Feet belong to paid device BOM; no extra C09 material.",
+    "Power/waste marker poses are authoring-only until explicit installation binding.",
+    "Versioned technical phase profile v1 uses only confirmed work; carriages and clamp are paid machine mechanisms, not visual product lots.",
+    "Continuous paid frame/support paths and overlapping telescopic press rods are render proxies, not structural or collider authority.",
+    "Front chamber guard inset0.125m inside original shell bounds avoids coplanar post surfaces; source-solid ports/support/load paths unchanged."
+  ],
+  "license": "LicenseRef-Hestia-Project-Original",
+  "supportPatchesM": [
+    {
+      "partId": "cutter_feet",
+      "centerM": [
+        -1.25,
+        0,
+        -0.75
+      ],
+      "sizeM": [
+        0.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "cutter_feet",
+      "centerM": [
+        -1.25,
+        0,
+        0.75
+      ],
+      "sizeM": [
+        0.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "cutter_feet",
+      "centerM": [
+        1.25,
+        0,
+        -0.75
+      ],
+      "sizeM": [
+        0.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "cutter_feet",
+      "centerM": [
+        1.25,
+        0,
+        0.75
+      ],
+      "sizeM": [
+        0.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    }
+  ],
+  "serviceBoundsM": {
+    "min": [
+      -1.5,
+      0,
+      1.25
+    ],
+    "max": [
+      1.5,
+      2,
+      2.25
+    ]
+  },
+  "phaseMotionProfile": {
+    "version": 1,
+    "phaseEndsMs": [
+      5000,
+      7000,
+      24000,
+      27000,
+      30000
+    ],
+    "toolCycles": 1,
+    "channels": [
+      {
+        "partId": "cutter_infeed_carriage",
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "segments": [
+          {
+            "startMs": 0,
+            "endMs": 5000,
+            "fromM": 0,
+            "toM": 0.25
+          },
+          {
+            "startMs": 5000,
+            "endMs": 27000,
+            "fromM": 0.25,
+            "toM": 0.25
+          },
+          {
+            "startMs": 27000,
+            "endMs": 30000,
+            "fromM": 0.25,
+            "toM": 0
+          }
+        ]
+      },
+      {
+        "partId": "cutter_clamp",
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "segments": [
+          {
+            "startMs": 5000,
+            "endMs": 7000,
+            "fromM": 0,
+            "toM": -0.25
+          },
+          {
+            "startMs": 7000,
+            "endMs": 24000,
+            "fromM": -0.25,
+            "toM": -0.25
+          },
+          {
+            "startMs": 24000,
+            "endMs": 27000,
+            "fromM": -0.25,
+            "toM": 0
+          }
+        ]
+      },
+      {
+        "partId": "cutter_outfeed_carriage",
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "segments": [
+          {
+            "startMs": 27000,
+            "endMs": 28500,
+            "fromM": 0,
+            "toM": 0.25
+          },
+          {
+            "startMs": 28500,
+            "endMs": 30000,
+            "fromM": 0.25,
+            "toM": 0
+          }
+        ]
+      }
+    ]
+  }
+}

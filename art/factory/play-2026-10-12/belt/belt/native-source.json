@@ -1,0 +1,320 @@
+{
+  "assetId": "fp06_s0_paid_belt_4m",
+  "definitionId": "fp06.line.belt_4m",
+  "revision": 1,
+  "kind": "S0-proxy",
+  "frameId": "fp02_east_north_height_xyz_v1",
+  "origin": "ground-center",
+  "metersPerUnit": 1,
+  "authoringGridM": 0.25,
+  "terrainCellM": 0.125,
+  "dimensionsM": [
+    4,
+    1,
+    0.75
+  ],
+  "parts": [
+    {
+      "partId": "segment_0",
+      "role": "paid_passive_metre",
+      "boxes": [
+        {
+          "centerM": [
+            -1.5,
+            0.9375,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.125,
+            0.75
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    },
+    {
+      "partId": "segment_1",
+      "role": "paid_passive_metre",
+      "boxes": [
+        {
+          "centerM": [
+            -0.5,
+            0.9375,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.125,
+            0.75
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    },
+    {
+      "partId": "segment_2",
+      "role": "paid_passive_metre",
+      "boxes": [
+        {
+          "centerM": [
+            0.5,
+            0.9375,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.125,
+            0.75
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    },
+    {
+      "partId": "segment_3",
+      "role": "paid_passive_metre",
+      "boxes": [
+        {
+          "centerM": [
+            1.5,
+            0.9375,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.125,
+            0.75
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    },
+    {
+      "partId": "drive",
+      "role": "paid_dedicated_C23_drive",
+      "boxes": [
+        {
+          "centerM": [
+            -1.75,
+            0.75,
+            0.25
+          ],
+          "sizeM": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "material": "EX-HAZARD"
+        }
+      ]
+    },
+    {
+      "partId": "support_0_0",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            -1.75,
+            0.4375,
+            -0.25
+          ],
+          "sizeM": [
+            0.125,
+            0.875,
+            0.125
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "support_0_1",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            -1.75,
+            0.4375,
+            0.25
+          ],
+          "sizeM": [
+            0.125,
+            0.875,
+            0.125
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "support_1_0",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            1.75,
+            0.4375,
+            -0.25
+          ],
+          "sizeM": [
+            0.125,
+            0.875,
+            0.125
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "support_1_1",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            1.75,
+            0.4375,
+            0.25
+          ],
+          "sizeM": [
+            0.125,
+            0.875,
+            0.125
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    }
+  ],
+  "ports": [
+    {
+      "sourceId": "fp06.line.belt_4m:POWER-IN",
+      "role": "PowerConsumer",
+      "centerM": [
+        -1.75,
+        0.75,
+        0.375
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "sizeM": [
+        0.125,
+        0.125
+      ],
+      "binding": "authoring-only"
+    }
+  ],
+  "sourceRefs": [
+    "FP02:C14:finite-passive-1m-modules",
+    "FP02:C23:dedicated-belt-drive",
+    "fp06-technical-s0-paid-belt-4m-v1"
+  ],
+  "supportsM": [
+    [
+      -1.75,
+      0,
+      -0.25
+    ],
+    [
+      -1.75,
+      0,
+      0.25
+    ],
+    [
+      1.75,
+      0,
+      -0.25
+    ],
+    [
+      1.75,
+      0,
+      0.25
+    ]
+  ],
+  "supportPatchesM": [
+    {
+      "partId": "support_0_0",
+      "centerM": [
+        -1.75,
+        0,
+        -0.25
+      ],
+      "sizeM": [
+        0.125,
+        0.125
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "support_0_1",
+      "centerM": [
+        -1.75,
+        0,
+        0.25
+      ],
+      "sizeM": [
+        0.125,
+        0.125
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "support_1_0",
+      "centerM": [
+        1.75,
+        0,
+        -0.25
+      ],
+      "sizeM": [
+        0.125,
+        0.125
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "support_1_1",
+      "centerM": [
+        1.75,
+        0,
+        0.25
+      ],
+      "sizeM": [
+        0.125,
+        0.125
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    }
+  ],
+  "serviceBoundsM": {
+    "min": [
+      -2,
+      0,
+      0.375
+    ],
+    "max": [
+      2,
+      1,
+      1.375
+    ]
+  },
+  "joints": []
+}

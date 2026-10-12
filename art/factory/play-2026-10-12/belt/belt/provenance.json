@@ -1,0 +1,45 @@
+{
+  "schema": "hestia.play-model-provenance/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/belt/belt/native-owner-source.blob",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/belt/belt/native-source.json",
+    "sha256": "9b7de3af7baa62674bf9d0dd24bb1628013b2f5807e468c9d1a378ea4821aa30",
+    "bytes": 5057
+  },
+  "generator": {
+    "path": "art/factory/play-2026-10-12/build_assets.py",
+    "sha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9",
+    "bytes": 32459
+  },
+  "nativeBlend": {
+    "path": "art/factory/play-2026-10-12/belt/belt/belt.blend",
+    "sha256": "bc70199ab32cc6f328c5fb9016812421e01bd47d0d3663e21603c74a52dac88f",
+    "bytes": 635508
+  },
+  "reopened": true,
+  "runtimeGlb": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/belt.glb",
+    "sha256": "412b734ea5ae0f14b5dbeb2449b4098c2b360c0257624b3348896dc673cb0c49",
+    "bytes": 49004
+  },
+  "exporter": {
+    "path": "tools/blender/hestia_asset_authoring/export_hestia_glb.py",
+    "sha256": "96732611048d3ff0d215e5c69ccfeed68234d552e75eed8c871572caf07b5b27",
+    "bytes": 18150
+  },
+  "blenderVersion": "4.3.2",
+  "gltfExporterVersion": "4.3.47",
+  "origin": "project-original hard cuboid modeling; no provider/remote textures",
+  "license": "LicenseRef-Hestia-Project-Original",
+  "assetToVoxelCompiler": "KNOWN_GAP_NOT_DELIVERED"
+}

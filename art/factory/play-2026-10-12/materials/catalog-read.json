@@ -1,0 +1,181 @@
+{
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "catalogDigest": "fnv1a:f3a8c642",
+  "items": [
+    {
+      "sourceId": "fp02.device.wind_pack_6kw",
+      "version": 1,
+      "digest": "fnv1a:f343dc84"
+    },
+    {
+      "sourceId": "fp02.device.pv_pack_2kwp",
+      "version": 1,
+      "digest": "fnv1a:0dc8fe24"
+    },
+    {
+      "sourceId": "fp02.device.battery_4kwh",
+      "version": 1,
+      "digest": "fnv1a:58bffb41"
+    },
+    {
+      "sourceId": "fp02.device.distribution_40kw",
+      "version": 1,
+      "digest": "fnv1a:006549f4"
+    },
+    {
+      "sourceId": "fp02.device.field_workbench",
+      "version": 1,
+      "digest": "fnv1a:d93cb131"
+    },
+    {
+      "sourceId": "fp02.device.thermal_generator_core",
+      "version": 1,
+      "digest": "fnv1a:bb76b461"
+    },
+    {
+      "sourceId": "fp02.comp.field_cable",
+      "version": 1,
+      "digest": "fnv1a:f02fd7a7"
+    },
+    {
+      "sourceId": "fp02.device.material_container",
+      "version": 1,
+      "digest": "fnv1a:924d78dc"
+    },
+    {
+      "sourceId": "fp02.comp.foundation_foot",
+      "version": 1,
+      "digest": "fnv1a:b26fb65c"
+    },
+    {
+      "sourceId": "fp02.bulk.steel_known",
+      "version": 1,
+      "digest": "fnv1a:e6cd3ae3"
+    },
+    {
+      "sourceId": "fp02.bulk.steel_profile",
+      "version": 1,
+      "digest": "fnv1a:c76030aa"
+    },
+    {
+      "sourceId": "fp02.bulk.steel_sheet",
+      "version": 1,
+      "digest": "fnv1a:7d581c64"
+    },
+    {
+      "sourceId": "fp02.bulk.elastomer_reclaimed",
+      "version": 1,
+      "digest": "fnv1a:6138d7c0"
+    },
+    {
+      "sourceId": "fp02.comp.belt_module",
+      "version": 1,
+      "digest": "fnv1a:c6c66667"
+    },
+    {
+      "sourceId": "fp02.comp.machine_drive",
+      "version": 1,
+      "digest": "fnv1a:0f3cb9ca"
+    },
+    {
+      "sourceId": "fp02.comp.machine_controller",
+      "version": 1,
+      "digest": "fnv1a:c083d64f"
+    },
+    {
+      "sourceId": "fp02.comp.wiring_harness",
+      "version": 1,
+      "digest": "fnv1a:5ad8b2d8"
+    },
+    {
+      "sourceId": "fp02.tool.cutter_head",
+      "version": 1,
+      "digest": "fnv1a:ef4fdde1"
+    },
+    {
+      "sourceId": "fp02.tool.forming_die",
+      "version": 1,
+      "digest": "fnv1a:e41c7ec9"
+    },
+    {
+      "sourceId": "fp02.tool.crusher_jaw",
+      "version": 1,
+      "digest": "fnv1a:e67a5c56"
+    },
+    {
+      "sourceId": "fp02.tool.assembly_fixture",
+      "version": 1,
+      "digest": "fnv1a:e76a582c"
+    },
+    {
+      "sourceId": "fp02.tool.pit_head",
+      "version": 1,
+      "digest": "fnv1a:9b50a867"
+    },
+    {
+      "sourceId": "fp02.comp.belt_drive",
+      "version": 1,
+      "digest": "fnv1a:b284a9e2"
+    },
+    {
+      "sourceId": "fp02.comp.field_generator_core",
+      "version": 1,
+      "digest": "fnv1a:14f5c3e8"
+    },
+    {
+      "sourceId": "fp02.comp.rotor_hub_kit",
+      "version": 1,
+      "digest": "fnv1a:a4652fa0"
+    },
+    {
+      "sourceId": "fp02.chassis.cutter",
+      "version": 1,
+      "digest": "fnv1a:92e666eb"
+    },
+    {
+      "sourceId": "fp02.chassis.former",
+      "version": 1,
+      "digest": "fnv1a:864b3a1d"
+    },
+    {
+      "sourceId": "fp02.chassis.crusher",
+      "version": 1,
+      "digest": "fnv1a:f12324e0"
+    },
+    {
+      "sourceId": "fp02.bulk.steel_semi",
+      "version": 1,
+      "digest": "fnv1a:bf0280fa"
+    },
+    {
+      "sourceId": "fp02.bulk.steel_offcut",
+      "version": 1,
+      "digest": "fnv1a:0596a9ce"
+    },
+    {
+      "sourceId": "fp02.comp.small_brace",
+      "version": 1,
+      "digest": "fnv1a:460437f1"
+    },
+    {
+      "sourceId": "fp02.comp.drive_module",
+      "version": 1,
+      "digest": "fnv1a:5cf3cc5d"
+    },
+    {
+      "sourceId": "fp02.bulk.rock_raw",
+      "version": 1,
+      "digest": "fnv1a:ff7d8890"
+    },
+    {
+      "sourceId": "fp02.bulk.gravel_mix",
+      "version": 1,
+      "digest": "fnv1a:3599acea"
+    }
+  ],
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+    "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+    "bytes": 23335
+  }
+}

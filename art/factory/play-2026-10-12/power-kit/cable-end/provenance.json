@@ -1,0 +1,45 @@
+{
+  "schema": "hestia.play-model-provenance/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+    "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+    "bytes": 4766
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-owner-source.blob",
+    "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+    "bytes": 4766
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-source.json",
+    "sha256": "523a14aefedb8e84fce6d4e3f11f5b7641aa69bb01d1f5a95ef9dfbf758e2f87",
+    "bytes": 644
+  },
+  "generator": {
+    "path": "art/factory/play-2026-10-12/build_assets.py",
+    "sha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9",
+    "bytes": 32459
+  },
+  "nativeBlend": {
+    "path": "art/factory/play-2026-10-12/power-kit/cable-end/cable-end.blend",
+    "sha256": "5ca71dda2f83c696ae7b4e2dd2da422e1b4e31d79bc3c761020c726105971b19",
+    "bytes": 530600
+  },
+  "reopened": true,
+  "runtimeGlb": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-end.glb",
+    "sha256": "1b8edbe550707072c325a1f699af14284518b3b58733be836327a0801b83d78c",
+    "bytes": 6140
+  },
+  "exporter": {
+    "path": "tools/blender/hestia_asset_authoring/export_hestia_glb.py",
+    "sha256": "96732611048d3ff0d215e5c69ccfeed68234d552e75eed8c871572caf07b5b27",
+    "bytes": 18150
+  },
+  "blenderVersion": "4.3.2",
+  "gltfExporterVersion": "4.3.47",
+  "origin": "project-original hard cuboid modeling; no provider/remote textures",
+  "license": "LicenseRef-Hestia-Project-Original",
+  "assetToVoxelCompiler": "KNOWN_GAP_NOT_DELIVERED"
+}

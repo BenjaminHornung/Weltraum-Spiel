@@ -1,0 +1,2156 @@
+{
+  "schema": "hestia.factory.play-assets/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "assets": [
+    {
+      "assetId": "play_belt_v1",
+      "family": "belt",
+      "slug": "belt",
+      "definitionRef": {
+        "sourceId": "fp06.line.belt_4m",
+        "version": 1,
+        "digest": "fnv1a64:ec3fbdf3c420fe0f"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/belt/belt/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/belt/belt/native-source.json",
+        "sha256": "9b7de3af7baa62674bf9d0dd24bb1628013b2f5807e468c9d1a378ea4821aa30",
+        "bytes": 5057
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "segment_0",
+        "segment_1",
+        "segment_2",
+        "segment_3",
+        "drive",
+        "support_0_0",
+        "support_0_1",
+        "support_1_0",
+        "support_1_1"
+      ],
+      "parentPartIds": {
+        "segment_0": null,
+        "segment_1": null,
+        "segment_2": null,
+        "segment_3": null,
+        "drive": null,
+        "support_0_0": null,
+        "support_0_1": null,
+        "support_1_0": null,
+        "support_1_1": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -2.0,
+          0.0,
+          -0.375
+        ],
+        "max": [
+          2.0,
+          1.0,
+          0.375
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/belt/belt/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/belt/belt/belt.blend",
+        "sha256": "bc70199ab32cc6f328c5fb9016812421e01bd47d0d3663e21603c74a52dac88f",
+        "bytes": 635508
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/belt.glb",
+        "sha256": "412b734ea5ae0f14b5dbeb2449b4098c2b360c0257624b3348896dc673cb0c49",
+        "bytes": 49004,
+        "url": "/factory/play-2026-10-12/belt.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/belt.hestia-authoring-report.json",
+        "sha256": "ee38992649863c8503cd9e7fbc67032a18acbb733db3f1d6c7974edf6e31926b",
+        "bytes": 12016
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/belt/belt/provenance.json",
+        "sha256": "9c21c6b008b876f75ef1c59b02b000ca719f427c3eafec7a2b7ad45f45224b98",
+        "bytes": 1752
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_brace_v1",
+      "family": "brace",
+      "slug": "brace",
+      "definitionRef": {
+        "sourceId": "fp02.comp.small_brace",
+        "version": 1,
+        "digest": "fnv1a:460437f1"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/brace/brace/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/brace/brace/native-source.json",
+        "sha256": "d530696b79364bc5c3441069354c0216f6a3eee0d1e8d784bc470cb82341cec8",
+        "bytes": 2168
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "body",
+        "support_0",
+        "support_1"
+      ],
+      "parentPartIds": {
+        "body": null,
+        "support_0": null,
+        "support_1": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.125
+        ],
+        "max": [
+          0.5,
+          0.25,
+          0.125
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/brace/brace/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/brace/brace/brace.blend",
+        "sha256": "10236ac041cb3f1ae58049ca06016c9c9c21ee7ecf052883b563b6e885afb27a",
+        "bytes": 553136
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/brace.glb",
+        "sha256": "074d92de4c24cf088b54c5ea21d5fdede1e666b43fdbd0d38e471166645bcd61",
+        "bytes": 8616,
+        "url": "/factory/play-2026-10-12/brace.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/brace.hestia-authoring-report.json",
+        "sha256": "2d26905a5a78a65fcd17043f8bc5e619b3f567be3a2880be56a6a6df8c38b714",
+        "bytes": 3830
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/brace/brace/provenance.json",
+        "sha256": "5a8becd4796d880ea2987f51f7a9f89ddee76eab1023b3759c94a20a990b8622",
+        "bytes": 1759
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_carrier_heavy_v1",
+      "family": "carrier",
+      "slug": "carrier-heavy",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-carrier",
+        "owner": "existing Native carrier",
+        "profileSizeMm": [
+          1000,
+          1000,
+          1500
+        ],
+        "quantityAuthority": "closed CargoHandlingProfile and active custody readview"
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/native-source.json",
+        "sha256": "78c75189ee0f21a6840a22b1b5c361c0ba97f4053ab1769aefde262b79ac3aeb",
+        "bytes": 1939
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "payload",
+        "support_0_0",
+        "support_0_1",
+        "support_1_0",
+        "support_1_1"
+      ],
+      "parentPartIds": {
+        "payload": null,
+        "support_0_0": null,
+        "support_0_1": null,
+        "support_1_0": null,
+        "support_1_1": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.75
+        ],
+        "max": [
+          0.5,
+          1.25,
+          0.75
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/carrier/carrier-heavy/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/carrier-heavy.blend",
+        "sha256": "7f19867a80a1c28bc47ab24c0e2003ac183b69dce49b366df01485cff2bd6b4e",
+        "bytes": 572432
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-heavy.glb",
+        "sha256": "9045f845b953062bb29bda043031b956ed707fab306c94266936ac812c0f65cc",
+        "bytes": 18444,
+        "url": "/factory/play-2026-10-12/carrier-heavy.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-heavy.hestia-authoring-report.json",
+        "sha256": "7671a1b730b30bfe2b8cf5533897639eb37011140cee959ebcf35093b143a381",
+        "bytes": 6099
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/provenance.json",
+        "sha256": "ef3cab74975956479f853abb35dd1dc34cf5e699354384e45e6b1b8bfd122f31",
+        "bytes": 1806
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_carrier_light_v1",
+      "family": "carrier",
+      "slug": "carrier-light",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-carrier",
+        "owner": "existing Native carrier",
+        "profileSizeMm": [
+          500,
+          1000,
+          500
+        ],
+        "quantityAuthority": "closed CargoHandlingProfile and active custody readview"
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-light/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-light/native-source.json",
+        "sha256": "308a0957f1c271c75434812b9487c5bce2d1fa0fd64aa0556b2298ea170410b0",
+        "bytes": 1957
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "payload",
+        "support_0_0",
+        "support_0_1",
+        "support_1_0",
+        "support_1_1"
+      ],
+      "parentPartIds": {
+        "payload": null,
+        "support_0_0": null,
+        "support_0_1": null,
+        "support_1_0": null,
+        "support_1_1": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          1.25,
+          0.25
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/carrier/carrier-light/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-light/carrier-light.blend",
+        "sha256": "56d301ef82b4d73a0359f573d3f57f78fb93061fea612dcac752c454d1a4571e",
+        "bytes": 572448
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-light.glb",
+        "sha256": "249135d35ca49d2f466cb162766a406f0b18f42dac6b0d0f86ce766a400663a4",
+        "bytes": 18400,
+        "url": "/factory/play-2026-10-12/carrier-light.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-light.hestia-authoring-report.json",
+        "sha256": "eef224e67b719396d0b3043426ad163a3183a44bb755b5e224c8aa739ce2dfaf",
+        "bytes": 6049
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-light/provenance.json",
+        "sha256": "05f9a0656a10d16bd98fb0cdac5abc7ce4e0e82dc163c7f03e4316c95bec102e",
+        "bytes": 1806
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_carrier_medium_v1",
+      "family": "carrier",
+      "slug": "carrier-medium",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-carrier",
+        "owner": "existing Native carrier",
+        "profileSizeMm": [
+          1000,
+          1000,
+          1000
+        ],
+        "quantityAuthority": "closed CargoHandlingProfile and active custody readview"
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-medium/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-medium/native-source.json",
+        "sha256": "0773be4d3bb231ca5eeb67962cdd806fe88a869a462ffcfceb15b9924929646e",
+        "bytes": 1939
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "payload",
+        "support_0_0",
+        "support_0_1",
+        "support_1_0",
+        "support_1_1"
+      ],
+      "parentPartIds": {
+        "payload": null,
+        "support_0_0": null,
+        "support_0_1": null,
+        "support_1_0": null,
+        "support_1_1": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          1.25,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/carrier/carrier-medium/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-medium/carrier-medium.blend",
+        "sha256": "2e0b2beebf8dcfec3f8b981d83d5f9c47002d8bfff074fa4f23d835d14010427",
+        "bytes": 572472
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-medium.glb",
+        "sha256": "7f8b0643689b660ed9e974fb8c4756f65706d211f7d82ccb8df4c8c7ea419efc",
+        "bytes": 18456,
+        "url": "/factory/play-2026-10-12/carrier-medium.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-medium.hestia-authoring-report.json",
+        "sha256": "13347d61cbe1e7690ac96751592fe96cf2beb32decd469baf60a2ef8821c1ad3",
+        "bytes": 6099
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/carrier/carrier-medium/provenance.json",
+        "sha256": "63b79a003a8c386ce44df413cd1727bb45539c9fcf829d2eb9b53275d7cac06e",
+        "bytes": 1811
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_cutter_v1",
+      "family": "cutter",
+      "slug": "cutter",
+      "definitionRef": {
+        "sourceId": "B06",
+        "version": 1,
+        "digest": "fnv1a:9f35228b"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp02/cutter/source.scene.json",
+        "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+        "bytes": 19222
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/cutter/cutter/native-owner-source.blob",
+        "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+        "bytes": 19222
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/cutter/cutter/native-source.json",
+        "sha256": "79c429c1cc9d545eb5ab1bcec1417bc872d75b5aa5e6d957f5aac6ae48f5f2ce",
+        "bytes": 15515
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "cutter_feet",
+        "cutter_frame",
+        "cutter_infeed",
+        "cutter_chamber",
+        "cutter_clamp",
+        "cutter_tool",
+        "cutter_outfeed",
+        "cutter_service",
+        "cutter_power",
+        "cutter_offcut",
+        "cutter_infeed_carriage",
+        "cutter_outfeed_carriage"
+      ],
+      "parentPartIds": {
+        "cutter_feet": null,
+        "cutter_frame": null,
+        "cutter_infeed": null,
+        "cutter_chamber": null,
+        "cutter_clamp": null,
+        "cutter_tool": null,
+        "cutter_outfeed": null,
+        "cutter_service": null,
+        "cutter_power": null,
+        "cutter_offcut": null,
+        "cutter_infeed_carriage": null,
+        "cutter_outfeed_carriage": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.5,
+          0.0,
+          -1.0
+        ],
+        "max": [
+          1.5,
+          2.5,
+          1.0
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/cutter/cutter/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/cutter/cutter/cutter.blend",
+        "sha256": "62d503483ecbaa1a26154ebcd452ca081e90951ca50e4bf1f1fe74126e67e31f",
+        "bytes": 717388
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter.glb",
+        "sha256": "94bb74a02431d8d08f004a7f7220c56a8e6d25eb07c7f6afed24f6b5efa1f5ea",
+        "bytes": 60724,
+        "url": "/factory/play-2026-10-12/cutter.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter.hestia-authoring-report.json",
+        "sha256": "9e1c29296e3ef517442475d16628ca519ebe72b762819fc21eb9d4acd21cf618",
+        "bytes": 13776
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/cutter/cutter/provenance.json",
+        "sha256": "ec463ef81943bf4afe3a61a4b615c045e11d389f507bc0c68e049df43bfdfdcf",
+        "bytes": 1747
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_former_v1",
+      "family": "former",
+      "slug": "former",
+      "definitionRef": {
+        "sourceId": "B07",
+        "version": 1,
+        "digest": "fnv1a:1cb654af"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp02/former/source.scene.json",
+        "sha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+        "bytes": 19487
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/former/former/native-owner-source.blob",
+        "sha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+        "bytes": 19487
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/former/former/native-source.json",
+        "sha256": "512f442effa422b2101c6ca3c261cbcfa098c41281df2546e3158f1dabef6960",
+        "bytes": 15696
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "former_feet",
+        "former_frame",
+        "former_infeed",
+        "former_bed",
+        "former_tool",
+        "former_actuators",
+        "former_outfeed",
+        "former_service",
+        "former_power",
+        "former_offcut",
+        "former_clamp",
+        "former_infeed_carriage",
+        "former_outfeed_carriage"
+      ],
+      "parentPartIds": {
+        "former_feet": null,
+        "former_frame": null,
+        "former_infeed": null,
+        "former_bed": null,
+        "former_tool": null,
+        "former_actuators": null,
+        "former_outfeed": null,
+        "former_service": null,
+        "former_power": null,
+        "former_offcut": null,
+        "former_clamp": null,
+        "former_infeed_carriage": null,
+        "former_outfeed_carriage": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -2.0,
+          0.0,
+          -1.5
+        ],
+        "max": [
+          2.0,
+          3.0,
+          1.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/former/former/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/former/former/former.blend",
+        "sha256": "426c2d5ee238432a1023b74004513efd69ff755b1379064ca8036b7c5448ec01",
+        "bytes": 726892
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former.glb",
+        "sha256": "6cf637ede540e0072d76160f85b37a07501150b1ef7666b384b3dfa2d77c0f4a",
+        "bytes": 63180,
+        "url": "/factory/play-2026-10-12/former.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former.hestia-authoring-report.json",
+        "sha256": "6758218fe8f9e31c5d4f2db20b06418bd2451667a452c20f37ab6c6f15037fc7",
+        "bytes": 15124
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/former/former/provenance.json",
+        "sha256": "951ca76e33dd39ec05b56e6ad397930e71e2cd823046bb336428cca91085125b",
+        "bytes": 1747
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_offcut_v1",
+      "family": "materials",
+      "slug": "offcut",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-material",
+        "itemId": "fp02.bulk.steel_offcut",
+        "catalogDigest": "fnv1a:f3a8c642",
+        "quantityAuthority": "existing unique actual lot custody; never a quantity encoded by triangles",
+        "itemRef": {
+          "sourceId": "fp02.bulk.steel_offcut",
+          "version": 1,
+          "digest": "fnv1a:0596a9ce"
+        }
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/materials/offcut/native-owner-source.blob",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/materials/offcut/native-source.json",
+        "sha256": "d579a0bcdd7a8c7b55678ca0e1460e38ebcdec11b8b963ea048641816cd3458d",
+        "bytes": 620
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "lot"
+      ],
+      "parentPartIds": {
+        "lot": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/materials/offcut/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/materials/offcut/offcut.blend",
+        "sha256": "b25859cced8cae819c121c17ad70280541331f7c7bdf220c9a024a40aaff28c8",
+        "bytes": 533344
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/offcut.glb",
+        "sha256": "e5e41308100c6e11235841302e0eaa6d8a44e01b07f1c5b9c0fd0b26ff7f9240",
+        "bytes": 9872,
+        "url": "/factory/play-2026-10-12/offcut.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/offcut.hestia-authoring-report.json",
+        "sha256": "33b53c65266896ddf68fe2d8f79bf183d23a9c04f1d7ccc81ca539ea1722937d",
+        "bytes": 2508
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/materials/offcut/provenance.json",
+        "sha256": "ead72ba0f94683663b0cc5d4b2c9a7d722f50d7e6e40695c7fba66336fe1a39b",
+        "bytes": 1768
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_profile_v1",
+      "family": "materials",
+      "slug": "profile",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-material",
+        "itemId": "fp02.bulk.steel_profile",
+        "catalogDigest": "fnv1a:f3a8c642",
+        "quantityAuthority": "existing unique actual lot custody; never a quantity encoded by triangles",
+        "itemRef": {
+          "sourceId": "fp02.bulk.steel_profile",
+          "version": 1,
+          "digest": "fnv1a:c76030aa"
+        }
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/materials/profile/native-owner-source.blob",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/materials/profile/native-source.json",
+        "sha256": "d3fe47fd8d8d3aafaf3efbb80259edb6f4e79ae6bdcb8690f8da04df3cc9333e",
+        "bytes": 622
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "lot"
+      ],
+      "parentPartIds": {
+        "lot": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/materials/profile/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/materials/profile/profile.blend",
+        "sha256": "ef3fd26b1d53c2fe8d7b7bcc83effcb589c20a0143ac93470347e14485bf25e8",
+        "bytes": 531944
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/profile.glb",
+        "sha256": "c6d4f3680616cff9074a2cc8d1c13dc3d87c67694407f210221c5ee6c904f9f8",
+        "bytes": 7532,
+        "url": "/factory/play-2026-10-12/profile.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/profile.hestia-authoring-report.json",
+        "sha256": "f99a03c04397fb42a14ef67c987953b4f4c81167bc042166a3ba421c1ffa2634",
+        "bytes": 2245
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/materials/profile/provenance.json",
+        "sha256": "21e595a539dc5849d3dda1049515c32681de3f2e6adbbf9c6dcbeaa7b573449d",
+        "bytes": 1773
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_semi_v1",
+      "family": "materials",
+      "slug": "semi",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-material",
+        "itemId": "fp02.bulk.steel_semi",
+        "catalogDigest": "fnv1a:f3a8c642",
+        "quantityAuthority": "existing unique actual lot custody; never a quantity encoded by triangles",
+        "itemRef": {
+          "sourceId": "fp02.bulk.steel_semi",
+          "version": 1,
+          "digest": "fnv1a:bf0280fa"
+        }
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/materials/semi/native-owner-source.blob",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/materials/semi/native-source.json",
+        "sha256": "3d2c2ae542644f6750ff4bdf097c6510ec402b2698a59e016b1b9675911bbec9",
+        "bytes": 616
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "lot"
+      ],
+      "parentPartIds": {
+        "lot": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/materials/semi/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/materials/semi/semi.blend",
+        "sha256": "55ffb996db8b953abb1bbf6f02ede9cdb530d3bf22686fcaa4708af02d7fa142",
+        "bytes": 531004
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/semi.glb",
+        "sha256": "bac62fed71ec68492bd089837ca914c84c9012419f82fe17689964256c2e0fc0",
+        "bytes": 5344,
+        "url": "/factory/play-2026-10-12/semi.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/semi.hestia-authoring-report.json",
+        "sha256": "8843ed5f899e437be0c63bd0ccf7d16ba83915dbfc31b3385744eb581f63b999",
+        "bytes": 1941
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/materials/semi/provenance.json",
+        "sha256": "e35f1685ba25770cd0dc12425db358ad475c04906dab18e05af0817b1b26826d",
+        "bytes": 1758
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_sheet_v1",
+      "family": "materials",
+      "slug": "sheet",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-material",
+        "itemId": "fp02.bulk.steel_sheet",
+        "catalogDigest": "fnv1a:f3a8c642",
+        "quantityAuthority": "existing unique actual lot custody; never a quantity encoded by triangles",
+        "itemRef": {
+          "sourceId": "fp02.bulk.steel_sheet",
+          "version": 1,
+          "digest": "fnv1a:7d581c64"
+        }
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/materials/sheet/native-owner-source.blob",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/materials/sheet/native-source.json",
+        "sha256": "4870354e400dd207fd0c5a6cac3cf14d37037b08f25858d37fec00a82945f699",
+        "bytes": 618
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "lot"
+      ],
+      "parentPartIds": {
+        "lot": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/materials/sheet/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/materials/sheet/sheet.blend",
+        "sha256": "88ad5273fd4a98bff7c744cdafb9b05ae1184130129f636a1183ba6f5a96991e",
+        "bytes": 531472
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/sheet.glb",
+        "sha256": "9785393205454931648a7a6dba9c088be68fbb1ef5f5598de9aa2909fd1396aa",
+        "bytes": 5988,
+        "url": "/factory/play-2026-10-12/sheet.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/sheet.hestia-authoring-report.json",
+        "sha256": "e20d407da835369c83ecdd2694e30573a479f5f105a62737aa86e9f54aeb46b3",
+        "bytes": 1929
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/materials/sheet/provenance.json",
+        "sha256": "da62b1d0058da4be81081e6b8762bbd159b70f65bd0fa33c754192995f704410",
+        "bytes": 1763
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_steel_v1",
+      "family": "materials",
+      "slug": "steel",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-material",
+        "itemId": "fp02.bulk.steel_known",
+        "catalogDigest": "fnv1a:f3a8c642",
+        "quantityAuthority": "existing unique actual lot custody; never a quantity encoded by triangles",
+        "itemRef": {
+          "sourceId": "fp02.bulk.steel_known",
+          "version": 1,
+          "digest": "fnv1a:e6cd3ae3"
+        }
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/materials/steel/native-owner-source.blob",
+        "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "bytes": 23335
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/materials/steel/native-source.json",
+        "sha256": "59cbd863f2824bebf8b16410fabbbca9e1ad70b6014dde66212518ab17effd45",
+        "bytes": 618
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "lot"
+      ],
+      "parentPartIds": {
+        "lot": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.25,
+          0.0,
+          -0.25
+        ],
+        "max": [
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/materials/steel/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/materials/steel/steel.blend",
+        "sha256": "52b961bed4c0dfb1be74bf0b7a34d6031047c7b8c3ea760c4e4fff7b45c8f1ce",
+        "bytes": 531004
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/steel.glb",
+        "sha256": "7765bb857837752841390fa4f724d1e9eab21506b5a0bc2ba56fdeb8d98dbc2f",
+        "bytes": 5964,
+        "url": "/factory/play-2026-10-12/steel.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/steel.hestia-authoring-report.json",
+        "sha256": "954285f3cc928cbdb1c18d43752ff95516009619d48c2695b9b228a03ef39e11",
+        "bytes": 2242
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/materials/steel/provenance.json",
+        "sha256": "8227a22d85c54be97d2953a82ff1a355e8927cd0d417090984fe3a1afcfb950d",
+        "bytes": 1763
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_battery_v1",
+      "family": "power-kit",
+      "slug": "battery",
+      "definitionRef": {
+        "sourceId": "fp02.device.battery_4kwh",
+        "version": 1,
+        "digest": "fnv1a:58bffb41"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp01/power-kit/source.scene.json",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/power-kit/battery/native-owner-source.blob",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/power-kit/battery/native-source.json",
+        "sha256": "79e8ffa5d81f31c18fa2f7433b46cc9446f9e33d46d160c3d3e2fae667c49e10",
+        "bytes": 4523
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "battery_feet",
+        "battery_frame",
+        "battery_shell",
+        "battery_panel"
+      ],
+      "parentPartIds": {
+        "battery_feet": null,
+        "battery_frame": null,
+        "battery_shell": null,
+        "battery_panel": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.0,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          1.0,
+          1.5,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/power-kit/battery/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/power-kit/battery/battery.blend",
+        "sha256": "216f38a66be8c3ea9faecd9db0bd84d945905839eafa1aa380bcfad3c824580e",
+        "bytes": 579716
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/battery.glb",
+        "sha256": "eab84e1fd9742059f14675fe546006ba1f0321fb84ae18aaa628f32ef7f3caa8",
+        "bytes": 20632,
+        "url": "/factory/play-2026-10-12/battery.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/battery.hestia-authoring-report.json",
+        "sha256": "d8564b0d15fccce4d75900e743fd1c19f40eb5fb6bb2ef560f29f2e2658d9bfa",
+        "bytes": 5328
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/power-kit/battery/provenance.json",
+        "sha256": "af4b2b02333e1a783904fa150aea4f3a64fa2d55c167453d3b9a353c82458b76",
+        "bytes": 1763
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_cable_end_v1",
+      "family": "power-kit",
+      "slug": "cable-end",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-cable",
+        "itemId": "fp02.comp.field_cable",
+        "quantityAuthority": "installed_cable routeMm from confirmed paid job",
+        "deformation": "only approved route; visual scale cannot add length, ports, mass or material"
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+        "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+        "bytes": 4766
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-owner-source.blob",
+        "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+        "bytes": 4766
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-source.json",
+        "sha256": "523a14aefedb8e84fce6d4e3f11f5b7641aa69bb01d1f5a95ef9dfbf758e2f87",
+        "bytes": 644
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "paid_route"
+      ],
+      "parentPartIds": {
+        "paid_route": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.0625,
+          0.0,
+          -0.125
+        ],
+        "max": [
+          0.0625,
+          0.125,
+          0.125
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/power-kit/cable-end/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/power-kit/cable-end/cable-end.blend",
+        "sha256": "5ca71dda2f83c696ae7b4e2dd2da422e1b4e31d79bc3c761020c726105971b19",
+        "bytes": 530600
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-end.glb",
+        "sha256": "1b8edbe550707072c325a1f699af14284518b3b58733be836327a0801b83d78c",
+        "bytes": 6140,
+        "url": "/factory/play-2026-10-12/cable-end.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-end.hestia-authoring-report.json",
+        "sha256": "7be311d6758447937264fd30052b36aa84401d577724795dae05b28bf1fdaeca",
+        "bytes": 2594
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/power-kit/cable-end/provenance.json",
+        "sha256": "aa65a141547ca9e18c2f38e53fc67f93e4ae37a2970b4d61dd96a3564108118d",
+        "bytes": 1795
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_cable_link_v1",
+      "family": "power-kit",
+      "slug": "cable-link",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-cable",
+        "itemId": "fp02.comp.field_cable",
+        "quantityAuthority": "installed_cable routeMm from confirmed paid job",
+        "deformation": "only approved route; visual scale cannot add length, ports, mass or material"
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+        "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+        "bytes": 4766
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/power-kit/cable-link/native-owner-source.blob",
+        "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+        "bytes": 4766
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/power-kit/cable-link/native-source.json",
+        "sha256": "f3f0c9322adf04dbc641115e4793e417586316dc0f189114250987b71645ac15",
+        "bytes": 640
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "paid_route"
+      ],
+      "parentPartIds": {
+        "paid_route": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.025,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.025,
+          0.05,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/power-kit/cable-link/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/power-kit/cable-link/cable-link.blend",
+        "sha256": "8889af2a9bbaa83f5e6998cddcd5f5cc03c6c4050ae552aba03426ed350b2f74",
+        "bytes": 529676
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-link.glb",
+        "sha256": "c7d707a61f1b4a4b3c8f444359c6399a0796d480cc7da31b451b3487e7876b3c",
+        "bytes": 3500,
+        "url": "/factory/play-2026-10-12/cable-link.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-link.hestia-authoring-report.json",
+        "sha256": "0c0437981e5924b3fc4dd4619fd1368f3665a7fa67e9e9e0b2fb86b80e418bec",
+        "bytes": 2017
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/power-kit/cable-link/provenance.json",
+        "sha256": "ba3fa30be7b90c7bce89e1c52935b53cc93c4ee44ac5e41d84244322f9c35be3",
+        "bytes": 1800
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_distribution_v1",
+      "family": "power-kit",
+      "slug": "distribution",
+      "definitionRef": {
+        "sourceId": "fp02.device.distribution_40kw",
+        "version": 1,
+        "digest": "fnv1a:006549f4"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp01/power-kit/source.scene.json",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/power-kit/distribution/native-owner-source.blob",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/power-kit/distribution/native-source.json",
+        "sha256": "bb7f354d637878e6303573088d24a9019ee01f6a430885ca34154161ad41abc5",
+        "bytes": 4575
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "distribution_feet",
+        "distribution_frame",
+        "distribution_shell",
+        "distribution_panel"
+      ],
+      "parentPartIds": {
+        "distribution_feet": null,
+        "distribution_frame": null,
+        "distribution_shell": null,
+        "distribution_panel": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.0,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          1.0,
+          2.0,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/power-kit/distribution/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/power-kit/distribution/distribution.blend",
+        "sha256": "11419661fafa1d86e3d2bc41d22c2fbabbcc80a6e06c7db617eed0196b7ab922",
+        "bytes": 579824
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution.glb",
+        "sha256": "985f4c5627cc884c549dbe8aed9683798ef7a2d44c2f8340a3c2ef5fd9238b51",
+        "bytes": 20764,
+        "url": "/factory/play-2026-10-12/distribution.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution.hestia-authoring-report.json",
+        "sha256": "bd5f8d3da3175b57c133e50b94769cf367914f63b602753634fb7dafe4ce3e61",
+        "bytes": 5483
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/power-kit/distribution/provenance.json",
+        "sha256": "6822e36e731a1aa03bd453139e5977863f6890a31c10b972be6af08bedffdd43",
+        "bytes": 1788
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_pv_v1",
+      "family": "power-kit",
+      "slug": "pv",
+      "definitionRef": {
+        "sourceId": "fp02.device.pv_pack_2kwp",
+        "version": 1,
+        "digest": "fnv1a:0dc8fe24"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp01/power-kit/source.scene.json",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/power-kit/pv/native-owner-source.blob",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/power-kit/pv/native-source.json",
+        "sha256": "2b1579cae334aa5f9c445a2e13fb5cd0b9ea820a54289c388af74b866ef7bb52",
+        "bytes": 5786
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "solar_feet",
+        "solar_frame",
+        "solar_panels",
+        "solar_hinge",
+        "solar_power_socket"
+      ],
+      "parentPartIds": {
+        "solar_feet": null,
+        "solar_frame": null,
+        "solar_panels": null,
+        "solar_hinge": null,
+        "solar_power_socket": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -2.0,
+          0.0,
+          -1.5
+        ],
+        "max": [
+          2.0,
+          1.25,
+          1.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/power-kit/pv/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/power-kit/pv/pv.blend",
+        "sha256": "8fb74a2d1bd402c7ea11814503fc86f812fcfecd2895e6ac7f7702e203aa3d90",
+        "bytes": 656624
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/pv.glb",
+        "sha256": "4deebf38cd039f529f7c191600985e4df8ab0fddd0b7211e6385d18589d6c8bc",
+        "bytes": 108824,
+        "url": "/factory/play-2026-10-12/pv.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/pv.hestia-authoring-report.json",
+        "sha256": "6490ca14e5341014134b0f1b6d6d67ad727ace7af1251ab38e9eadb7e8c6cea0",
+        "bytes": 6162
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/power-kit/pv/provenance.json",
+        "sha256": "964e5e07cffd6362c995ea5583831e857e26a72bb99ef77a714a7fcf9f107ccf",
+        "bytes": 1739
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_wind_v1",
+      "family": "power-kit",
+      "slug": "wind",
+      "definitionRef": {
+        "sourceId": "fp02.device.wind_pack_6kw",
+        "version": 1,
+        "digest": "fnv1a:f343dc84"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp01/power-kit/source.scene.json",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/power-kit/wind/native-owner-source.blob",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/power-kit/wind/native-source.json",
+        "sha256": "74faf9b605cc2a3562c14f67fc5830cad0ff94d255c21f99ab71b1016383c9e1",
+        "bytes": 6971
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "wind_feet",
+        "wind_mast",
+        "wind_hub",
+        "wind_blade_1",
+        "wind_blade_2",
+        "wind_blade_3",
+        "wind_power_socket"
+      ],
+      "parentPartIds": {
+        "wind_feet": null,
+        "wind_mast": null,
+        "wind_hub": null,
+        "wind_blade_1": null,
+        "wind_blade_2": null,
+        "wind_blade_3": null,
+        "wind_power_socket": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -2.5065698604072066,
+          0.0,
+          -1.5
+        ],
+        "max": [
+          2.5065698604072058,
+          12.75,
+          1.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/power-kit/wind/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/power-kit/wind/wind.blend",
+        "sha256": "019a6f93ea411cc6c599c9d6649fd1591e2dbf5a13ca072b88fc669f5551ae26",
+        "bytes": 612084
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wind.glb",
+        "sha256": "5b81ca1f116330815e3dca685166ba45c04cf7fbb75ea38cf0f47d2a129d6ed2",
+        "bytes": 20308,
+        "url": "/factory/play-2026-10-12/wind.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wind.hestia-authoring-report.json",
+        "sha256": "4927ab59f8624b6b458d0a6d7db6032d5c1b602f2c2d3ac84359031846aa3f98",
+        "bytes": 7488
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/power-kit/wind/provenance.json",
+        "sha256": "20125da81cf9a46c5ece2d91a975167a8d534d1c519e3d784b77f94f68083a1d",
+        "bytes": 1748
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_storage_v1",
+      "family": "storage",
+      "slug": "storage",
+      "definitionRef": {
+        "sourceId": "B09",
+        "version": 1,
+        "digest": "fnv1a:b4a9402f"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/storage/storage/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/storage/storage/native-source.json",
+        "sha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+        "bytes": 3866
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "body",
+        "support_0",
+        "support_1",
+        "support_2",
+        "support_3"
+      ],
+      "parentPartIds": {
+        "body": null,
+        "support_0": null,
+        "support_1": null,
+        "support_2": null,
+        "support_3": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.0,
+          0.0,
+          -1.0
+        ],
+        "max": [
+          1.0,
+          1.5,
+          1.0
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/storage/storage/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/storage/storage/storage.blend",
+        "sha256": "05ee52ad8c3da3ee77b50de2affd3f1df4991d00b88ee1d32388de5d0d2050ef",
+        "bytes": 587472
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage.glb",
+        "sha256": "e7ddc40fd2be52f8886b8acd42561fcc5fb403b1630d674bd7be5e28190e1e03",
+        "bytes": 24160,
+        "url": "/factory/play-2026-10-12/storage.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage.hestia-authoring-report.json",
+        "sha256": "b96fedc75ee66af35c707180cf70ab9abb8b2bfe97ffff24470bff0d95b5136a",
+        "bytes": 5708
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/storage/storage/provenance.json",
+        "sha256": "f4216e3400e173a0cdd55aeb98c48b5d9d028a75de333f16535df322ec950918",
+        "bytes": 1776
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_workbench_v1",
+      "family": "workbench",
+      "slug": "workbench",
+      "definitionRef": {
+        "sourceId": "B05",
+        "version": 1,
+        "digest": "fnv1a:5509cc87"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/workbench/workbench/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/workbench/workbench/native-source.json",
+        "sha256": "dc94c2080c0d87eaf776baed76a6461d7a6725e4402fe020a9031099e428217a",
+        "bytes": 3295
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "body",
+        "support_0",
+        "support_1",
+        "support_2",
+        "support_3"
+      ],
+      "parentPartIds": {
+        "body": null,
+        "support_0": null,
+        "support_1": null,
+        "support_2": null,
+        "support_3": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.0,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          1.0,
+          1.1,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/workbench/workbench/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/workbench/workbench/workbench.blend",
+        "sha256": "3cb961cdbe61b443cdb6a2aaf6ae27e83bd091c2efdf6b6aeb9298d2a12575af",
+        "bytes": 584796
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/workbench.glb",
+        "sha256": "c957db9f660663be30c882b74c3df6f53fa27c8277823cb2d79a4e3499c1cfb0",
+        "bytes": 27888,
+        "url": "/factory/play-2026-10-12/workbench.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/workbench.hestia-authoring-report.json",
+        "sha256": "e992070e0dfc1cdf908f00f16712a41dc1a5762efb9bb14da38eba6043cc36ed",
+        "bytes": 7944
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/workbench/workbench/provenance.json",
+        "sha256": "67fafaebef463aa96a91aaae1b18911b237d8b7c8c6982ff16dc590e7462030f",
+        "bytes": 1792
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_wreck_cargo_v1",
+      "family": "wreck-cargo",
+      "slug": "wreck-cargo",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-cargo",
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "worldCenterMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "nativeBoundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        },
+        "quantityAuthority": "existing finite cargo readview",
+        "opened": false
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-owner-source.blob",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-source.json",
+        "sha256": "8ae8a479af6e4311d2123c1e2f7e4cbafbbe340b1c107cb54966a6bddc8aa40a",
+        "bytes": 636
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "cargo_access"
+      ],
+      "parentPartIds": {
+        "cargo_access": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.75,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.75,
+          1.5,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/wreck-cargo.blend",
+        "sha256": "ee777aabf3e48bda17f0446091e455a601d574d303812ca2f7590b9dd77b5a54",
+        "bytes": 536168
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo.glb",
+        "sha256": "4b16d587014cba2587b8cf7ca34f674f3352c77c25aecfac3dca2073bd17a639",
+        "bytes": 15108,
+        "url": "/factory/play-2026-10-12/wreck-cargo.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo.hestia-authoring-report.json",
+        "sha256": "a3507a9e792952fc140d4264c68d46ac338e324a66be8476186b0d34c02f1b41",
+        "bytes": 2927
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/provenance.json",
+        "sha256": "c6d815df257286552e1f1ad4b357ce85035bb652c62aa488eb3d454200bfcf70",
+        "bytes": 1797
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    {
+      "assetId": "play_wreck_cargo_open_v1",
+      "family": "wreck-cargo",
+      "slug": "wreck-cargo-open",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-cargo",
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "worldCenterMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "nativeBoundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        },
+        "quantityAuthority": "existing finite cargo readview",
+        "opened": true
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-owner-source.blob",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-source.json",
+        "sha256": "55cfe6ebf268c87c386286aefbfc7da8df55a7d97d761f1cd5135b9c09897203",
+        "bytes": 646
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "cargo_access"
+      ],
+      "parentPartIds": {
+        "cargo_access": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.75,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.75,
+          1.5,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/wreck-cargo-open.blend",
+        "sha256": "cf1b5c5793eb5238767b8896131763bd008b8fd53d013a74fb7b358b3dd83807",
+        "bytes": 535264
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-open.glb",
+        "sha256": "304daec645c51a27e1735db2dc0b173cbbd01a8276d5b1862b54049af991c03a",
+        "bytes": 13648,
+        "url": "/factory/play-2026-10-12/wreck-cargo-open.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-open.hestia-authoring-report.json",
+        "sha256": "b316016cb025e8f3f5dc2b781e3540aedfdd84ddcd1da69eb7cf6d018d22958f",
+        "bytes": 2936
+      },
+      "provenance": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/provenance.json",
+        "sha256": "3fd8c91735b6d5010cd4cecd9458855ffd0f99f76b3c06cf72175bc6f7555ab8",
+        "bytes": 1822
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    }
+  ],
+  "palette": {
+    "EX-STRUCT": "30383D",
+    "EX-SHELL": "B6BDB8",
+    "EX-FUNCTION": "407A79",
+    "EX-HAZARD": "D8A94E",
+    "EX-PV": "1D2E3C"
+  },
+  "authority": "derived render meshes only; no collider/material/quantity/energy/save authority",
+  "knownGaps": [
+    "accepted Asset-to-Voxel/Structural-S1 bridge not delivered",
+    "runtime adoption and confirmed animation are Integrator scope",
+    "human Art/usability/hardware acceptance pending"
+  ]
+}

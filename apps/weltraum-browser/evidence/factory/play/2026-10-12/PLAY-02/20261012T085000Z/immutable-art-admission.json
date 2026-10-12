@@ -1,0 +1,1307 @@
+{
+  "schema": "hestia.fp06.play-art-immutable-admission/v1",
+  "observedAtUtc": "2026-10-12T08:48:13.859814+00:00",
+  "sourceCommitSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
+  "fileCount": 162,
+  "lfsPayloadCount": 44,
+  "payloadBytes": 14218085,
+  "rows": [
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/.gitattributes",
+      "gitBlobSha256": "69ded8f0d75a2b0d2b2b67a157fe21ac5a602c2d4e2e042e6b59b03edc66a152",
+      "payloadBytes": 42,
+      "payloadSha256": "69ded8f0d75a2b0d2b2b67a157fe21ac5a602c2d4e2e042e6b59b03edc66a152",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/battery.glb",
+      "gitBlobSha256": "bce5ed3a9999e874c9df30f2a6e8f70fd672cdbe1dfeee6cd4a127622827912a",
+      "payloadBytes": 20632,
+      "payloadSha256": "eab84e1fd9742059f14675fe546006ba1f0321fb84ae18aaa628f32ef7f3caa8",
+      "lfsOid": "eab84e1fd9742059f14675fe546006ba1f0321fb84ae18aaa628f32ef7f3caa8",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/battery.hestia-authoring-report.json",
+      "gitBlobSha256": "d8564b0d15fccce4d75900e743fd1c19f40eb5fb6bb2ef560f29f2e2658d9bfa",
+      "payloadBytes": 5328,
+      "payloadSha256": "d8564b0d15fccce4d75900e743fd1c19f40eb5fb6bb2ef560f29f2e2658d9bfa",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/belt.glb",
+      "gitBlobSha256": "29c42cbe86b72d0b06d026319eb96c5eed6be8370698e1daa58df5ffc9b963a8",
+      "payloadBytes": 49004,
+      "payloadSha256": "412b734ea5ae0f14b5dbeb2449b4098c2b360c0257624b3348896dc673cb0c49",
+      "lfsOid": "412b734ea5ae0f14b5dbeb2449b4098c2b360c0257624b3348896dc673cb0c49",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/belt.hestia-authoring-report.json",
+      "gitBlobSha256": "ee38992649863c8503cd9e7fbc67032a18acbb733db3f1d6c7974edf6e31926b",
+      "payloadBytes": 12016,
+      "payloadSha256": "ee38992649863c8503cd9e7fbc67032a18acbb733db3f1d6c7974edf6e31926b",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/brace.glb",
+      "gitBlobSha256": "a65687ba9b18332a10c69667eebd81d14488e56e09f24bf9eecb874143d6949f",
+      "payloadBytes": 8616,
+      "payloadSha256": "074d92de4c24cf088b54c5ea21d5fdede1e666b43fdbd0d38e471166645bcd61",
+      "lfsOid": "074d92de4c24cf088b54c5ea21d5fdede1e666b43fdbd0d38e471166645bcd61",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/brace.hestia-authoring-report.json",
+      "gitBlobSha256": "2d26905a5a78a65fcd17043f8bc5e619b3f567be3a2880be56a6a6df8c38b714",
+      "payloadBytes": 3830,
+      "payloadSha256": "2d26905a5a78a65fcd17043f8bc5e619b3f567be3a2880be56a6a6df8c38b714",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-end.glb",
+      "gitBlobSha256": "b4daecc00dd83763882a5b7b8faf7af353677be38d7ba73b2524e6db44455803",
+      "payloadBytes": 6140,
+      "payloadSha256": "1b8edbe550707072c325a1f699af14284518b3b58733be836327a0801b83d78c",
+      "lfsOid": "1b8edbe550707072c325a1f699af14284518b3b58733be836327a0801b83d78c",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-end.hestia-authoring-report.json",
+      "gitBlobSha256": "7be311d6758447937264fd30052b36aa84401d577724795dae05b28bf1fdaeca",
+      "payloadBytes": 2594,
+      "payloadSha256": "7be311d6758447937264fd30052b36aa84401d577724795dae05b28bf1fdaeca",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-link.glb",
+      "gitBlobSha256": "59bb07d11fe47da91d7babfa0269ca5bfa4fd0a1f4ae0a4bf04e5e34e7e632e2",
+      "payloadBytes": 3500,
+      "payloadSha256": "c7d707a61f1b4a4b3c8f444359c6399a0796d480cc7da31b451b3487e7876b3c",
+      "lfsOid": "c7d707a61f1b4a4b3c8f444359c6399a0796d480cc7da31b451b3487e7876b3c",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cable-link.hestia-authoring-report.json",
+      "gitBlobSha256": "0c0437981e5924b3fc4dd4619fd1368f3665a7fa67e9e9e0b2fb86b80e418bec",
+      "payloadBytes": 2017,
+      "payloadSha256": "0c0437981e5924b3fc4dd4619fd1368f3665a7fa67e9e9e0b2fb86b80e418bec",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-heavy.glb",
+      "gitBlobSha256": "9ac57aadba4b9f48da6cee3df62e527bdde5aaf06a9c157ae36e9ba55ab0fb9c",
+      "payloadBytes": 18444,
+      "payloadSha256": "9045f845b953062bb29bda043031b956ed707fab306c94266936ac812c0f65cc",
+      "lfsOid": "9045f845b953062bb29bda043031b956ed707fab306c94266936ac812c0f65cc",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-heavy.hestia-authoring-report.json",
+      "gitBlobSha256": "7671a1b730b30bfe2b8cf5533897639eb37011140cee959ebcf35093b143a381",
+      "payloadBytes": 6099,
+      "payloadSha256": "7671a1b730b30bfe2b8cf5533897639eb37011140cee959ebcf35093b143a381",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-light.glb",
+      "gitBlobSha256": "342383e62444f2dd35297da272d3361213c7f61437035832c1afe9962bae131c",
+      "payloadBytes": 18400,
+      "payloadSha256": "249135d35ca49d2f466cb162766a406f0b18f42dac6b0d0f86ce766a400663a4",
+      "lfsOid": "249135d35ca49d2f466cb162766a406f0b18f42dac6b0d0f86ce766a400663a4",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-light.hestia-authoring-report.json",
+      "gitBlobSha256": "eef224e67b719396d0b3043426ad163a3183a44bb755b5e224c8aa739ce2dfaf",
+      "payloadBytes": 6049,
+      "payloadSha256": "eef224e67b719396d0b3043426ad163a3183a44bb755b5e224c8aa739ce2dfaf",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-medium.glb",
+      "gitBlobSha256": "928553dc781a376d159198cfe4bf981bd8869fbd30dab7fc4df00808960686a1",
+      "payloadBytes": 18456,
+      "payloadSha256": "7f8b0643689b660ed9e974fb8c4756f65706d211f7d82ccb8df4c8c7ea419efc",
+      "lfsOid": "7f8b0643689b660ed9e974fb8c4756f65706d211f7d82ccb8df4c8c7ea419efc",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/carrier-medium.hestia-authoring-report.json",
+      "gitBlobSha256": "13347d61cbe1e7690ac96751592fe96cf2beb32decd469baf60a2ef8821c1ad3",
+      "payloadBytes": 6099,
+      "payloadSha256": "13347d61cbe1e7690ac96751592fe96cf2beb32decd469baf60a2ef8821c1ad3",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter.glb",
+      "gitBlobSha256": "3a5171a0edcf0947536831bdaaf19420417f94bac311c82216c76a1d454c6a6e",
+      "payloadBytes": 60724,
+      "payloadSha256": "94bb74a02431d8d08f004a7f7220c56a8e6d25eb07c7f6afed24f6b5efa1f5ea",
+      "lfsOid": "94bb74a02431d8d08f004a7f7220c56a8e6d25eb07c7f6afed24f6b5efa1f5ea",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter.hestia-authoring-report.json",
+      "gitBlobSha256": "9e1c29296e3ef517442475d16628ca519ebe72b762819fc21eb9d4acd21cf618",
+      "payloadBytes": 13776,
+      "payloadSha256": "9e1c29296e3ef517442475d16628ca519ebe72b762819fc21eb9d4acd21cf618",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution.glb",
+      "gitBlobSha256": "d4139f357fa6dd87568d71d5e0e5d2d28d4d5ee6fb3af525bd0f6cf0f6120e46",
+      "payloadBytes": 20764,
+      "payloadSha256": "985f4c5627cc884c549dbe8aed9683798ef7a2d44c2f8340a3c2ef5fd9238b51",
+      "lfsOid": "985f4c5627cc884c549dbe8aed9683798ef7a2d44c2f8340a3c2ef5fd9238b51",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution.hestia-authoring-report.json",
+      "gitBlobSha256": "bd5f8d3da3175b57c133e50b94769cf367914f63b602753634fb7dafe4ce3e61",
+      "payloadBytes": 5483,
+      "payloadSha256": "bd5f8d3da3175b57c133e50b94769cf367914f63b602753634fb7dafe4ce3e61",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former.glb",
+      "gitBlobSha256": "de322cd8b02cc67b677cd991c6dacdfa022d2b2e893fb91eb7aaf3a7bb825500",
+      "payloadBytes": 63180,
+      "payloadSha256": "6cf637ede540e0072d76160f85b37a07501150b1ef7666b384b3dfa2d77c0f4a",
+      "lfsOid": "6cf637ede540e0072d76160f85b37a07501150b1ef7666b384b3dfa2d77c0f4a",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former.hestia-authoring-report.json",
+      "gitBlobSha256": "6758218fe8f9e31c5d4f2db20b06418bd2451667a452c20f37ab6c6f15037fc7",
+      "payloadBytes": 15124,
+      "payloadSha256": "6758218fe8f9e31c5d4f2db20b06418bd2451667a452c20f37ab6c6f15037fc7",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+      "gitBlobSha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2",
+      "payloadBytes": 79571,
+      "payloadSha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/offcut.glb",
+      "gitBlobSha256": "a36a35dd1e6f3ea8200639adb3980c6dc05e91f2b2be409c9b288a8041f176f1",
+      "payloadBytes": 9872,
+      "payloadSha256": "e5e41308100c6e11235841302e0eaa6d8a44e01b07f1c5b9c0fd0b26ff7f9240",
+      "lfsOid": "e5e41308100c6e11235841302e0eaa6d8a44e01b07f1c5b9c0fd0b26ff7f9240",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/offcut.hestia-authoring-report.json",
+      "gitBlobSha256": "33b53c65266896ddf68fe2d8f79bf183d23a9c04f1d7ccc81ca539ea1722937d",
+      "payloadBytes": 2508,
+      "payloadSha256": "33b53c65266896ddf68fe2d8f79bf183d23a9c04f1d7ccc81ca539ea1722937d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/profile.glb",
+      "gitBlobSha256": "e4e1d36544d93193f1815d0b9443b48193579a168e28dc60cee9f11144833e4f",
+      "payloadBytes": 7532,
+      "payloadSha256": "c6d4f3680616cff9074a2cc8d1c13dc3d87c67694407f210221c5ee6c904f9f8",
+      "lfsOid": "c6d4f3680616cff9074a2cc8d1c13dc3d87c67694407f210221c5ee6c904f9f8",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/profile.hestia-authoring-report.json",
+      "gitBlobSha256": "f99a03c04397fb42a14ef67c987953b4f4c81167bc042166a3ba421c1ffa2634",
+      "payloadBytes": 2245,
+      "payloadSha256": "f99a03c04397fb42a14ef67c987953b4f4c81167bc042166a3ba421c1ffa2634",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/pv.glb",
+      "gitBlobSha256": "4684212531cb73b1f50602a92abc8de010794b66afb6eb3279b74df089912e4e",
+      "payloadBytes": 108824,
+      "payloadSha256": "4deebf38cd039f529f7c191600985e4df8ab0fddd0b7211e6385d18589d6c8bc",
+      "lfsOid": "4deebf38cd039f529f7c191600985e4df8ab0fddd0b7211e6385d18589d6c8bc",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/pv.hestia-authoring-report.json",
+      "gitBlobSha256": "6490ca14e5341014134b0f1b6d6d67ad727ace7af1251ab38e9eadb7e8c6cea0",
+      "payloadBytes": 6162,
+      "payloadSha256": "6490ca14e5341014134b0f1b6d6d67ad727ace7af1251ab38e9eadb7e8c6cea0",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/semi.glb",
+      "gitBlobSha256": "49c5acc52a8fdb151554e53335b9d34f4f0d65a3de542a40d15e7d7390eb338d",
+      "payloadBytes": 5344,
+      "payloadSha256": "bac62fed71ec68492bd089837ca914c84c9012419f82fe17689964256c2e0fc0",
+      "lfsOid": "bac62fed71ec68492bd089837ca914c84c9012419f82fe17689964256c2e0fc0",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/semi.hestia-authoring-report.json",
+      "gitBlobSha256": "8843ed5f899e437be0c63bd0ccf7d16ba83915dbfc31b3385744eb581f63b999",
+      "payloadBytes": 1941,
+      "payloadSha256": "8843ed5f899e437be0c63bd0ccf7d16ba83915dbfc31b3385744eb581f63b999",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/sheet.glb",
+      "gitBlobSha256": "c9b55c2c224120a88f2f0b619e9bc99cda67a42f80329f35fcbc399a4f644785",
+      "payloadBytes": 5988,
+      "payloadSha256": "9785393205454931648a7a6dba9c088be68fbb1ef5f5598de9aa2909fd1396aa",
+      "lfsOid": "9785393205454931648a7a6dba9c088be68fbb1ef5f5598de9aa2909fd1396aa",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/sheet.hestia-authoring-report.json",
+      "gitBlobSha256": "e20d407da835369c83ecdd2694e30573a479f5f105a62737aa86e9f54aeb46b3",
+      "payloadBytes": 1929,
+      "payloadSha256": "e20d407da835369c83ecdd2694e30573a479f5f105a62737aa86e9f54aeb46b3",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/steel.glb",
+      "gitBlobSha256": "da0ee7c16e8362a71d8df2032e5fa093dadabf904565351846b1839e710eb921",
+      "payloadBytes": 5964,
+      "payloadSha256": "7765bb857837752841390fa4f724d1e9eab21506b5a0bc2ba56fdeb8d98dbc2f",
+      "lfsOid": "7765bb857837752841390fa4f724d1e9eab21506b5a0bc2ba56fdeb8d98dbc2f",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/steel.hestia-authoring-report.json",
+      "gitBlobSha256": "954285f3cc928cbdb1c18d43752ff95516009619d48c2695b9b228a03ef39e11",
+      "payloadBytes": 2242,
+      "payloadSha256": "954285f3cc928cbdb1c18d43752ff95516009619d48c2695b9b228a03ef39e11",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage.glb",
+      "gitBlobSha256": "65fbcf29ebe47e494a0ab30e662e937f124f402fe2e78e2c39784ace130be4cc",
+      "payloadBytes": 24160,
+      "payloadSha256": "e7ddc40fd2be52f8886b8acd42561fcc5fb403b1630d674bd7be5e28190e1e03",
+      "lfsOid": "e7ddc40fd2be52f8886b8acd42561fcc5fb403b1630d674bd7be5e28190e1e03",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage.hestia-authoring-report.json",
+      "gitBlobSha256": "b96fedc75ee66af35c707180cf70ab9abb8b2bfe97ffff24470bff0d95b5136a",
+      "payloadBytes": 5708,
+      "payloadSha256": "b96fedc75ee66af35c707180cf70ab9abb8b2bfe97ffff24470bff0d95b5136a",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wind.glb",
+      "gitBlobSha256": "6679afa4a14bc920f337b102e3374890847d0e1fb70ee9c32d3000a86fd820e0",
+      "payloadBytes": 20308,
+      "payloadSha256": "5b81ca1f116330815e3dca685166ba45c04cf7fbb75ea38cf0f47d2a129d6ed2",
+      "lfsOid": "5b81ca1f116330815e3dca685166ba45c04cf7fbb75ea38cf0f47d2a129d6ed2",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wind.hestia-authoring-report.json",
+      "gitBlobSha256": "4927ab59f8624b6b458d0a6d7db6032d5c1b602f2c2d3ac84359031846aa3f98",
+      "payloadBytes": 7488,
+      "payloadSha256": "4927ab59f8624b6b458d0a6d7db6032d5c1b602f2c2d3ac84359031846aa3f98",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/workbench.glb",
+      "gitBlobSha256": "2d9aa1da0dfd5b718ccbea5a858e80748568c97c5cd3c1d09398aae557f4fe1b",
+      "payloadBytes": 27888,
+      "payloadSha256": "c957db9f660663be30c882b74c3df6f53fa27c8277823cb2d79a4e3499c1cfb0",
+      "lfsOid": "c957db9f660663be30c882b74c3df6f53fa27c8277823cb2d79a4e3499c1cfb0",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/workbench.hestia-authoring-report.json",
+      "gitBlobSha256": "e992070e0dfc1cdf908f00f16712a41dc1a5762efb9bb14da38eba6043cc36ed",
+      "payloadBytes": 7944,
+      "payloadSha256": "e992070e0dfc1cdf908f00f16712a41dc1a5762efb9bb14da38eba6043cc36ed",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-open.glb",
+      "gitBlobSha256": "e404430facd5ff86f9b5dbe9a65af14813123bacd22a00515c7d44571adcc8e0",
+      "payloadBytes": 13648,
+      "payloadSha256": "304daec645c51a27e1735db2dc0b173cbbd01a8276d5b1862b54049af991c03a",
+      "lfsOid": "304daec645c51a27e1735db2dc0b173cbbd01a8276d5b1862b54049af991c03a",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-open.hestia-authoring-report.json",
+      "gitBlobSha256": "b316016cb025e8f3f5dc2b781e3540aedfdd84ddcd1da69eb7cf6d018d22958f",
+      "payloadBytes": 2936,
+      "payloadSha256": "b316016cb025e8f3f5dc2b781e3540aedfdd84ddcd1da69eb7cf6d018d22958f",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo.glb",
+      "gitBlobSha256": "7d7c80c6c40ec5d53d537aedb86944212ff2ec16be7ef8f71b06fad7ff2c4b7a",
+      "payloadBytes": 15108,
+      "payloadSha256": "4b16d587014cba2587b8cf7ca34f674f3352c77c25aecfac3dca2073bd17a639",
+      "lfsOid": "4b16d587014cba2587b8cf7ca34f674f3352c77c25aecfac3dca2073bd17a639",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo.hestia-authoring-report.json",
+      "gitBlobSha256": "a3507a9e792952fc140d4264c68d46ac338e324a66be8476186b0d34c02f1b41",
+      "payloadBytes": 2927,
+      "payloadSha256": "a3507a9e792952fc140d4264c68d46ac338e324a66be8476186b0d34c02f1b41",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+      "gitBlobSha256": "7c317f610f6f00d302a2c9dfed2da8fea706b5b03bfcb29f40106eb6d8fd0893",
+      "payloadBytes": 12013,
+      "payloadSha256": "7c317f610f6f00d302a2c9dfed2da8fea706b5b03bfcb29f40106eb6d8fd0893",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/LICENSE.txt",
+      "gitBlobSha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "payloadBytes": 326,
+      "payloadSha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/README.md",
+      "gitBlobSha256": "4452e303786fc7873e1fe76ef783745b75c70201e46973916c22c0551f9d3905",
+      "payloadBytes": 5090,
+      "payloadSha256": "4452e303786fc7873e1fe76ef783745b75c70201e46973916c22c0551f9d3905",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/belt/belt/belt.blend",
+      "gitBlobSha256": "35aba2102fddad7e7087bcd97c649c133ed6d62cc6e79c8a2a32fbe514667b47",
+      "payloadBytes": 635508,
+      "payloadSha256": "bc70199ab32cc6f328c5fb9016812421e01bd47d0d3663e21603c74a52dac88f",
+      "lfsOid": "bc70199ab32cc6f328c5fb9016812421e01bd47d0d3663e21603c74a52dac88f",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/belt/belt/model-spec.json",
+      "gitBlobSha256": "3dc8d47c0d9d4141c6b4e3107e4bfbf85437f14ba82780889518c9dbc1a47c7d",
+      "payloadBytes": 6532,
+      "payloadSha256": "3dc8d47c0d9d4141c6b4e3107e4bfbf85437f14ba82780889518c9dbc1a47c7d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/belt/belt/native-owner-source.blob",
+      "gitBlobSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "payloadBytes": 14061,
+      "payloadSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/belt/belt/native-source.json",
+      "gitBlobSha256": "9b7de3af7baa62674bf9d0dd24bb1628013b2f5807e468c9d1a378ea4821aa30",
+      "payloadBytes": 5057,
+      "payloadSha256": "9b7de3af7baa62674bf9d0dd24bb1628013b2f5807e468c9d1a378ea4821aa30",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/belt/belt/provenance.json",
+      "gitBlobSha256": "9c21c6b008b876f75ef1c59b02b000ca719f427c3eafec7a2b7ad45f45224b98",
+      "payloadBytes": 1752,
+      "payloadSha256": "9c21c6b008b876f75ef1c59b02b000ca719f427c3eafec7a2b7ad45f45224b98",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/brace/brace/brace.blend",
+      "gitBlobSha256": "bb4c330f028ee11b5e041f36915743c2cedf9b887b773d536f6a3b79c3ca0ad1",
+      "payloadBytes": 553136,
+      "payloadSha256": "10236ac041cb3f1ae58049ca06016c9c9c21ee7ecf052883b563b6e885afb27a",
+      "lfsOid": "10236ac041cb3f1ae58049ca06016c9c9c21ee7ecf052883b563b6e885afb27a",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/brace/brace/model-spec.json",
+      "gitBlobSha256": "9537c6d465e82f28566a4fdb43c6fd142fb69898441dbcec1bc213f5d0c7f75d",
+      "payloadBytes": 3288,
+      "payloadSha256": "9537c6d465e82f28566a4fdb43c6fd142fb69898441dbcec1bc213f5d0c7f75d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/brace/brace/native-owner-source.blob",
+      "gitBlobSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "payloadBytes": 14061,
+      "payloadSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/brace/brace/native-source.json",
+      "gitBlobSha256": "d530696b79364bc5c3441069354c0216f6a3eee0d1e8d784bc470cb82341cec8",
+      "payloadBytes": 2168,
+      "payloadSha256": "d530696b79364bc5c3441069354c0216f6a3eee0d1e8d784bc470cb82341cec8",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/brace/brace/provenance.json",
+      "gitBlobSha256": "5a8becd4796d880ea2987f51f7a9f89ddee76eab1023b3759c94a20a990b8622",
+      "payloadBytes": 1759,
+      "payloadSha256": "5a8becd4796d880ea2987f51f7a9f89ddee76eab1023b3759c94a20a990b8622",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/build_assets.py",
+      "gitBlobSha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9",
+      "payloadBytes": 32459,
+      "payloadSha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/carrier-heavy.blend",
+      "gitBlobSha256": "2420742e539a92f148907672a64f2b3560c60117ddd973588d5c6ef014ae0a66",
+      "payloadBytes": 572432,
+      "payloadSha256": "7f19867a80a1c28bc47ab24c0e2003ac183b69dce49b366df01485cff2bd6b4e",
+      "lfsOid": "7f19867a80a1c28bc47ab24c0e2003ac183b69dce49b366df01485cff2bd6b4e",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/model-spec.json",
+      "gitBlobSha256": "f9371bafb5c102e7be17b6a2c52962455991ce626bbbb28a7ba42531b5774c6c",
+      "payloadBytes": 3284,
+      "payloadSha256": "f9371bafb5c102e7be17b6a2c52962455991ce626bbbb28a7ba42531b5774c6c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/native-owner-source.blob",
+      "gitBlobSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "payloadBytes": 14061,
+      "payloadSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/native-source.json",
+      "gitBlobSha256": "78c75189ee0f21a6840a22b1b5c361c0ba97f4053ab1769aefde262b79ac3aeb",
+      "payloadBytes": 1939,
+      "payloadSha256": "78c75189ee0f21a6840a22b1b5c361c0ba97f4053ab1769aefde262b79ac3aeb",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/provenance.json",
+      "gitBlobSha256": "ef3cab74975956479f853abb35dd1dc34cf5e699354384e45e6b1b8bfd122f31",
+      "payloadBytes": 1806,
+      "payloadSha256": "ef3cab74975956479f853abb35dd1dc34cf5e699354384e45e6b1b8bfd122f31",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-light/carrier-light.blend",
+      "gitBlobSha256": "be04b53b56da0dbbc42944aea30476d98ea690a8d8ba079a7a805bc77bf07427",
+      "payloadBytes": 572448,
+      "payloadSha256": "56d301ef82b4d73a0359f573d3f57f78fb93061fea612dcac752c454d1a4571e",
+      "lfsOid": "56d301ef82b4d73a0359f573d3f57f78fb93061fea612dcac752c454d1a4571e",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-light/model-spec.json",
+      "gitBlobSha256": "81cdb7b3c66daca1aa902bb26b078749d85e14ddf5a8c74778294186b72c9576",
+      "payloadBytes": 3300,
+      "payloadSha256": "81cdb7b3c66daca1aa902bb26b078749d85e14ddf5a8c74778294186b72c9576",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-light/native-owner-source.blob",
+      "gitBlobSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "payloadBytes": 14061,
+      "payloadSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-light/native-source.json",
+      "gitBlobSha256": "308a0957f1c271c75434812b9487c5bce2d1fa0fd64aa0556b2298ea170410b0",
+      "payloadBytes": 1957,
+      "payloadSha256": "308a0957f1c271c75434812b9487c5bce2d1fa0fd64aa0556b2298ea170410b0",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-light/provenance.json",
+      "gitBlobSha256": "05f9a0656a10d16bd98fb0cdac5abc7ce4e0e82dc163c7f03e4316c95bec102e",
+      "payloadBytes": 1806,
+      "payloadSha256": "05f9a0656a10d16bd98fb0cdac5abc7ce4e0e82dc163c7f03e4316c95bec102e",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-medium/carrier-medium.blend",
+      "gitBlobSha256": "44f120da6442e2114243e043134fa0f1e98a04101451d2d6095902d3d933bc0d",
+      "payloadBytes": 572472,
+      "payloadSha256": "2e0b2beebf8dcfec3f8b981d83d5f9c47002d8bfff074fa4f23d835d14010427",
+      "lfsOid": "2e0b2beebf8dcfec3f8b981d83d5f9c47002d8bfff074fa4f23d835d14010427",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-medium/model-spec.json",
+      "gitBlobSha256": "83e0783ab4bfa8e58019546b31d2a0f9b27e691ba1c2dd161787a381c49e5d8b",
+      "payloadBytes": 3289,
+      "payloadSha256": "83e0783ab4bfa8e58019546b31d2a0f9b27e691ba1c2dd161787a381c49e5d8b",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-medium/native-owner-source.blob",
+      "gitBlobSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "payloadBytes": 14061,
+      "payloadSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-medium/native-source.json",
+      "gitBlobSha256": "0773be4d3bb231ca5eeb67962cdd806fe88a869a462ffcfceb15b9924929646e",
+      "payloadBytes": 1939,
+      "payloadSha256": "0773be4d3bb231ca5eeb67962cdd806fe88a869a462ffcfceb15b9924929646e",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-medium/provenance.json",
+      "gitBlobSha256": "63b79a003a8c386ce44df413cd1727bb45539c9fcf829d2eb9b53275d7cac06e",
+      "payloadBytes": 1811,
+      "payloadSha256": "63b79a003a8c386ce44df413cd1727bb45539c9fcf829d2eb9b53275d7cac06e",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/cutter/cutter/cutter.blend",
+      "gitBlobSha256": "1856bf5cb2cab408ae42150d58a4f4e8a167dfbade3cf5ac37a00f7d88725253",
+      "payloadBytes": 717388,
+      "payloadSha256": "62d503483ecbaa1a26154ebcd452ca081e90951ca50e4bf1f1fe74126e67e31f",
+      "lfsOid": "62d503483ecbaa1a26154ebcd452ca081e90951ca50e4bf1f1fe74126e67e31f",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/cutter/cutter/model-spec.json",
+      "gitBlobSha256": "e631c34a610ef2cf614d9f3dad1f8177ac09e05f938ac184439310339c0ad738",
+      "payloadBytes": 18131,
+      "payloadSha256": "e631c34a610ef2cf614d9f3dad1f8177ac09e05f938ac184439310339c0ad738",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/cutter/cutter/native-owner-source.blob",
+      "gitBlobSha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+      "payloadBytes": 19222,
+      "payloadSha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/cutter/cutter/native-source.json",
+      "gitBlobSha256": "79c429c1cc9d545eb5ab1bcec1417bc872d75b5aa5e6d957f5aac6ae48f5f2ce",
+      "payloadBytes": 15515,
+      "payloadSha256": "79c429c1cc9d545eb5ab1bcec1417bc872d75b5aa5e6d957f5aac6ae48f5f2ce",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/cutter/cutter/provenance.json",
+      "gitBlobSha256": "ec463ef81943bf4afe3a61a4b615c045e11d389f507bc0c68e049df43bfdfdcf",
+      "payloadBytes": 1747,
+      "payloadSha256": "ec463ef81943bf4afe3a61a4b615c045e11d389f507bc0c68e049df43bfdfdcf",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/former/former/former.blend",
+      "gitBlobSha256": "48aa2b2c6989fa36f74a3513652b2f071225769d1a0d7b4e42ce48067bcd6972",
+      "payloadBytes": 726892,
+      "payloadSha256": "426c2d5ee238432a1023b74004513efd69ff755b1379064ca8036b7c5448ec01",
+      "lfsOid": "426c2d5ee238432a1023b74004513efd69ff755b1379064ca8036b7c5448ec01",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/former/former/model-spec.json",
+      "gitBlobSha256": "6ebfa2a44e2368d1fe9fb67ada07360d1e35533ff374c0814ed11d35d4e29a0a",
+      "payloadBytes": 18348,
+      "payloadSha256": "6ebfa2a44e2368d1fe9fb67ada07360d1e35533ff374c0814ed11d35d4e29a0a",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/former/former/native-owner-source.blob",
+      "gitBlobSha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+      "payloadBytes": 19487,
+      "payloadSha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/former/former/native-source.json",
+      "gitBlobSha256": "512f442effa422b2101c6ca3c261cbcfa098c41281df2546e3158f1dabef6960",
+      "payloadBytes": 15696,
+      "payloadSha256": "512f442effa422b2101c6ca3c261cbcfa098c41281df2546e3158f1dabef6960",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/former/former/provenance.json",
+      "gitBlobSha256": "951ca76e33dd39ec05b56e6ad397930e71e2cd823046bb336428cca91085125b",
+      "payloadBytes": 1747,
+      "payloadSha256": "951ca76e33dd39ec05b56e6ad397930e71e2cd823046bb336428cca91085125b",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/manifest.json",
+      "gitBlobSha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2",
+      "payloadBytes": 79571,
+      "payloadSha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/catalog-read.json",
+      "gitBlobSha256": "33b74bff6b13ad5feb6a7b1649cf89052c3b6f9f959c6123359a6f5c29880bbf",
+      "payloadBytes": 4095,
+      "payloadSha256": "33b74bff6b13ad5feb6a7b1649cf89052c3b6f9f959c6123359a6f5c29880bbf",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/offcut/model-spec.json",
+      "gitBlobSha256": "9cbffab78b8fc5ee0716fca5a77d0966395c04505a50799e43b672267472c421",
+      "payloadBytes": 1890,
+      "payloadSha256": "9cbffab78b8fc5ee0716fca5a77d0966395c04505a50799e43b672267472c421",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/offcut/native-owner-source.blob",
+      "gitBlobSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "payloadBytes": 23335,
+      "payloadSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/offcut/native-source.json",
+      "gitBlobSha256": "d579a0bcdd7a8c7b55678ca0e1460e38ebcdec11b8b963ea048641816cd3458d",
+      "payloadBytes": 620,
+      "payloadSha256": "d579a0bcdd7a8c7b55678ca0e1460e38ebcdec11b8b963ea048641816cd3458d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/offcut/offcut.blend",
+      "gitBlobSha256": "05227e691780a2a2cd91302eedcc565641dfd1a28760859cbcb06f5ff9947870",
+      "payloadBytes": 533344,
+      "payloadSha256": "b25859cced8cae819c121c17ad70280541331f7c7bdf220c9a024a40aaff28c8",
+      "lfsOid": "b25859cced8cae819c121c17ad70280541331f7c7bdf220c9a024a40aaff28c8",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/offcut/provenance.json",
+      "gitBlobSha256": "ead72ba0f94683663b0cc5d4b2c9a7d722f50d7e6e40695c7fba66336fe1a39b",
+      "payloadBytes": 1768,
+      "payloadSha256": "ead72ba0f94683663b0cc5d4b2c9a7d722f50d7e6e40695c7fba66336fe1a39b",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/profile/model-spec.json",
+      "gitBlobSha256": "be39656939517a4fe8fbe5805c50b9ee8cd951078cc8d1a525412207cc005db0",
+      "payloadBytes": 1899,
+      "payloadSha256": "be39656939517a4fe8fbe5805c50b9ee8cd951078cc8d1a525412207cc005db0",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/profile/native-owner-source.blob",
+      "gitBlobSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "payloadBytes": 23335,
+      "payloadSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/profile/native-source.json",
+      "gitBlobSha256": "d3fe47fd8d8d3aafaf3efbb80259edb6f4e79ae6bdcb8690f8da04df3cc9333e",
+      "payloadBytes": 622,
+      "payloadSha256": "d3fe47fd8d8d3aafaf3efbb80259edb6f4e79ae6bdcb8690f8da04df3cc9333e",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/profile/profile.blend",
+      "gitBlobSha256": "0893bd5d96fbd1cb954763985625f5bd6787c21d68147a977ada1478125a3e7b",
+      "payloadBytes": 531944,
+      "payloadSha256": "ef3fd26b1d53c2fe8d7b7bcc83effcb589c20a0143ac93470347e14485bf25e8",
+      "lfsOid": "ef3fd26b1d53c2fe8d7b7bcc83effcb589c20a0143ac93470347e14485bf25e8",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/profile/provenance.json",
+      "gitBlobSha256": "21e595a539dc5849d3dda1049515c32681de3f2e6adbbf9c6dcbeaa7b573449d",
+      "payloadBytes": 1773,
+      "payloadSha256": "21e595a539dc5849d3dda1049515c32681de3f2e6adbbf9c6dcbeaa7b573449d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/semi/model-spec.json",
+      "gitBlobSha256": "56c15c4d06cab517a2bc438e6ce62047a4ae7cacb0ebeb0f6a91568b080a4b16",
+      "payloadBytes": 1872,
+      "payloadSha256": "56c15c4d06cab517a2bc438e6ce62047a4ae7cacb0ebeb0f6a91568b080a4b16",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/semi/native-owner-source.blob",
+      "gitBlobSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "payloadBytes": 23335,
+      "payloadSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/semi/native-source.json",
+      "gitBlobSha256": "3d2c2ae542644f6750ff4bdf097c6510ec402b2698a59e016b1b9675911bbec9",
+      "payloadBytes": 616,
+      "payloadSha256": "3d2c2ae542644f6750ff4bdf097c6510ec402b2698a59e016b1b9675911bbec9",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/semi/provenance.json",
+      "gitBlobSha256": "e35f1685ba25770cd0dc12425db358ad475c04906dab18e05af0817b1b26826d",
+      "payloadBytes": 1758,
+      "payloadSha256": "e35f1685ba25770cd0dc12425db358ad475c04906dab18e05af0817b1b26826d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/semi/semi.blend",
+      "gitBlobSha256": "490cfc118502752331d5658360885d663d5abbbd69049fd457d889ac43557134",
+      "payloadBytes": 531004,
+      "payloadSha256": "55ffb996db8b953abb1bbf6f02ede9cdb530d3bf22686fcaa4708af02d7fa142",
+      "lfsOid": "55ffb996db8b953abb1bbf6f02ede9cdb530d3bf22686fcaa4708af02d7fa142",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/sheet/model-spec.json",
+      "gitBlobSha256": "2120092b0edfd88cb8e43fe44fe92c1b67efc437e487df7fc374e13cf71df3e8",
+      "payloadBytes": 1881,
+      "payloadSha256": "2120092b0edfd88cb8e43fe44fe92c1b67efc437e487df7fc374e13cf71df3e8",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/sheet/native-owner-source.blob",
+      "gitBlobSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "payloadBytes": 23335,
+      "payloadSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/sheet/native-source.json",
+      "gitBlobSha256": "4870354e400dd207fd0c5a6cac3cf14d37037b08f25858d37fec00a82945f699",
+      "payloadBytes": 618,
+      "payloadSha256": "4870354e400dd207fd0c5a6cac3cf14d37037b08f25858d37fec00a82945f699",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/sheet/provenance.json",
+      "gitBlobSha256": "da62b1d0058da4be81081e6b8762bbd159b70f65bd0fa33c754192995f704410",
+      "payloadBytes": 1763,
+      "payloadSha256": "da62b1d0058da4be81081e6b8762bbd159b70f65bd0fa33c754192995f704410",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/sheet/sheet.blend",
+      "gitBlobSha256": "0995b17480ab0ae4b90066df9f6548ae919892f4ab4db7b99335a427f172dfa4",
+      "payloadBytes": 531472,
+      "payloadSha256": "88ad5273fd4a98bff7c744cdafb9b05ae1184130129f636a1183ba6f5a96991e",
+      "lfsOid": "88ad5273fd4a98bff7c744cdafb9b05ae1184130129f636a1183ba6f5a96991e",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/steel/model-spec.json",
+      "gitBlobSha256": "7c54f8baf41a3c2b8aeb9b988f0703602844cae1dbe3a42ce65edbb4af64ab69",
+      "payloadBytes": 1881,
+      "payloadSha256": "7c54f8baf41a3c2b8aeb9b988f0703602844cae1dbe3a42ce65edbb4af64ab69",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/steel/native-owner-source.blob",
+      "gitBlobSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "payloadBytes": 23335,
+      "payloadSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/steel/native-source.json",
+      "gitBlobSha256": "59cbd863f2824bebf8b16410fabbbca9e1ad70b6014dde66212518ab17effd45",
+      "payloadBytes": 618,
+      "payloadSha256": "59cbd863f2824bebf8b16410fabbbca9e1ad70b6014dde66212518ab17effd45",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/steel/provenance.json",
+      "gitBlobSha256": "8227a22d85c54be97d2953a82ff1a355e8927cd0d417090984fe3a1afcfb950d",
+      "payloadBytes": 1763,
+      "payloadSha256": "8227a22d85c54be97d2953a82ff1a355e8927cd0d417090984fe3a1afcfb950d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/steel/steel.blend",
+      "gitBlobSha256": "da7b16c56f425f28b6c49b880647266f31ede17bbd8684c26227deb6d6ef02f6",
+      "payloadBytes": 531004,
+      "payloadSha256": "52b961bed4c0dfb1be74bf0b7a34d6031047c7b8c3ea760c4e4fff7b45c8f1ce",
+      "lfsOid": "52b961bed4c0dfb1be74bf0b7a34d6031047c7b8c3ea760c4e4fff7b45c8f1ce",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/battery/battery.blend",
+      "gitBlobSha256": "4f0d930338ca7ba9627051bddf2f44c06cf66138efe8550670d3dbfb14e60793",
+      "payloadBytes": 579716,
+      "payloadSha256": "216f38a66be8c3ea9faecd9db0bd84d945905839eafa1aa380bcfad3c824580e",
+      "lfsOid": "216f38a66be8c3ea9faecd9db0bd84d945905839eafa1aa380bcfad3c824580e",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/battery/model-spec.json",
+      "gitBlobSha256": "036b549b09fc04cef779e010dd4c4fb40b12396a56dc47a5cb92ff0461f565f4",
+      "payloadBytes": 5905,
+      "payloadSha256": "036b549b09fc04cef779e010dd4c4fb40b12396a56dc47a5cb92ff0461f565f4",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/battery/native-owner-source.blob",
+      "gitBlobSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "payloadBytes": 27070,
+      "payloadSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/battery/native-source.json",
+      "gitBlobSha256": "79e8ffa5d81f31c18fa2f7433b46cc9446f9e33d46d160c3d3e2fae667c49e10",
+      "payloadBytes": 4523,
+      "payloadSha256": "79e8ffa5d81f31c18fa2f7433b46cc9446f9e33d46d160c3d3e2fae667c49e10",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/battery/provenance.json",
+      "gitBlobSha256": "af4b2b02333e1a783904fa150aea4f3a64fa2d55c167453d3b9a353c82458b76",
+      "payloadBytes": 1763,
+      "payloadSha256": "af4b2b02333e1a783904fa150aea4f3a64fa2d55c167453d3b9a353c82458b76",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-end/cable-end.blend",
+      "gitBlobSha256": "d242399d4db31c7a4ea4a2415922b17bf3e36a42d1c60fcf071f8898f6a92f18",
+      "payloadBytes": 530600,
+      "payloadSha256": "5ca71dda2f83c696ae7b4e2dd2da422e1b4e31d79bc3c761020c726105971b19",
+      "lfsOid": "5ca71dda2f83c696ae7b4e2dd2da422e1b4e31d79bc3c761020c726105971b19",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-end/model-spec.json",
+      "gitBlobSha256": "0af3cf66391e4cb078c68cfad67b723ef19c7f5eea0a9a1ab77a7720fa6b9031",
+      "payloadBytes": 1850,
+      "payloadSha256": "0af3cf66391e4cb078c68cfad67b723ef19c7f5eea0a9a1ab77a7720fa6b9031",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-owner-source.blob",
+      "gitBlobSha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+      "payloadBytes": 4766,
+      "payloadSha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-source.json",
+      "gitBlobSha256": "523a14aefedb8e84fce6d4e3f11f5b7641aa69bb01d1f5a95ef9dfbf758e2f87",
+      "payloadBytes": 644,
+      "payloadSha256": "523a14aefedb8e84fce6d4e3f11f5b7641aa69bb01d1f5a95ef9dfbf758e2f87",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-end/provenance.json",
+      "gitBlobSha256": "aa65a141547ca9e18c2f38e53fc67f93e4ae37a2970b4d61dd96a3564108118d",
+      "payloadBytes": 1795,
+      "payloadSha256": "aa65a141547ca9e18c2f38e53fc67f93e4ae37a2970b4d61dd96a3564108118d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-link/cable-link.blend",
+      "gitBlobSha256": "4e13f8edc0310aebf7f283dd74a23cf12d3174df026cddf4ddf1eabc629001ee",
+      "payloadBytes": 529676,
+      "payloadSha256": "8889af2a9bbaa83f5e6998cddcd5f5cc03c6c4050ae552aba03426ed350b2f74",
+      "lfsOid": "8889af2a9bbaa83f5e6998cddcd5f5cc03c6c4050ae552aba03426ed350b2f74",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-link/model-spec.json",
+      "gitBlobSha256": "1f92ce4526a19af07dba300c06bdbc0ae843d074ff025e31a909038b2bb752ce",
+      "payloadBytes": 1851,
+      "payloadSha256": "1f92ce4526a19af07dba300c06bdbc0ae843d074ff025e31a909038b2bb752ce",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-link/native-owner-source.blob",
+      "gitBlobSha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+      "payloadBytes": 4766,
+      "payloadSha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-link/native-source.json",
+      "gitBlobSha256": "f3f0c9322adf04dbc641115e4793e417586316dc0f189114250987b71645ac15",
+      "payloadBytes": 640,
+      "payloadSha256": "f3f0c9322adf04dbc641115e4793e417586316dc0f189114250987b71645ac15",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-link/provenance.json",
+      "gitBlobSha256": "ba3fa30be7b90c7bce89e1c52935b53cc93c4ee44ac5e41d84244322f9c35be3",
+      "payloadBytes": 1800,
+      "payloadSha256": "ba3fa30be7b90c7bce89e1c52935b53cc93c4ee44ac5e41d84244322f9c35be3",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/distribution/distribution.blend",
+      "gitBlobSha256": "d74866e60aa00c58e580b9c2dd545a246f3f61c9373aa347f259984cb98bb538",
+      "payloadBytes": 579824,
+      "payloadSha256": "11419661fafa1d86e3d2bc41d22c2fbabbcc80a6e06c7db617eed0196b7ab922",
+      "lfsOid": "11419661fafa1d86e3d2bc41d22c2fbabbcc80a6e06c7db617eed0196b7ab922",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/distribution/model-spec.json",
+      "gitBlobSha256": "b20db6b6910a8713ece18a04ef8adb8e6133bbee57b3efae315b90425ef0d437",
+      "payloadBytes": 5982,
+      "payloadSha256": "b20db6b6910a8713ece18a04ef8adb8e6133bbee57b3efae315b90425ef0d437",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/distribution/native-owner-source.blob",
+      "gitBlobSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "payloadBytes": 27070,
+      "payloadSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/distribution/native-source.json",
+      "gitBlobSha256": "bb7f354d637878e6303573088d24a9019ee01f6a430885ca34154161ad41abc5",
+      "payloadBytes": 4575,
+      "payloadSha256": "bb7f354d637878e6303573088d24a9019ee01f6a430885ca34154161ad41abc5",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/distribution/provenance.json",
+      "gitBlobSha256": "6822e36e731a1aa03bd453139e5977863f6890a31c10b972be6af08bedffdd43",
+      "payloadBytes": 1788,
+      "payloadSha256": "6822e36e731a1aa03bd453139e5977863f6890a31c10b972be6af08bedffdd43",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/pv/model-spec.json",
+      "gitBlobSha256": "d62709a9239dcce6ed594f75f83aecad327fcd2671a375784ce89db2a0a00d26",
+      "payloadBytes": 7268,
+      "payloadSha256": "d62709a9239dcce6ed594f75f83aecad327fcd2671a375784ce89db2a0a00d26",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/pv/native-owner-source.blob",
+      "gitBlobSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "payloadBytes": 27070,
+      "payloadSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/pv/native-source.json",
+      "gitBlobSha256": "2b1579cae334aa5f9c445a2e13fb5cd0b9ea820a54289c388af74b866ef7bb52",
+      "payloadBytes": 5786,
+      "payloadSha256": "2b1579cae334aa5f9c445a2e13fb5cd0b9ea820a54289c388af74b866ef7bb52",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/pv/provenance.json",
+      "gitBlobSha256": "964e5e07cffd6362c995ea5583831e857e26a72bb99ef77a714a7fcf9f107ccf",
+      "payloadBytes": 1739,
+      "payloadSha256": "964e5e07cffd6362c995ea5583831e857e26a72bb99ef77a714a7fcf9f107ccf",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/pv/pv.blend",
+      "gitBlobSha256": "e210819825845418440c968b3f9e84723780d6f40c5d4f593fd78b4febd1164b",
+      "payloadBytes": 656624,
+      "payloadSha256": "8fb74a2d1bd402c7ea11814503fc86f812fcfecd2895e6ac7f7702e203aa3d90",
+      "lfsOid": "8fb74a2d1bd402c7ea11814503fc86f812fcfecd2895e6ac7f7702e203aa3d90",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/wind/model-spec.json",
+      "gitBlobSha256": "6f84a9966ec5c00eeaacd0226b7ed87e580ed33e02c5732a8d1b157d89adbb08",
+      "payloadBytes": 8598,
+      "payloadSha256": "6f84a9966ec5c00eeaacd0226b7ed87e580ed33e02c5732a8d1b157d89adbb08",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/wind/native-owner-source.blob",
+      "gitBlobSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "payloadBytes": 27070,
+      "payloadSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/wind/native-source.json",
+      "gitBlobSha256": "74faf9b605cc2a3562c14f67fc5830cad0ff94d255c21f99ab71b1016383c9e1",
+      "payloadBytes": 6971,
+      "payloadSha256": "74faf9b605cc2a3562c14f67fc5830cad0ff94d255c21f99ab71b1016383c9e1",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/wind/provenance.json",
+      "gitBlobSha256": "20125da81cf9a46c5ece2d91a975167a8d534d1c519e3d784b77f94f68083a1d",
+      "payloadBytes": 1748,
+      "payloadSha256": "20125da81cf9a46c5ece2d91a975167a8d534d1c519e3d784b77f94f68083a1d",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/wind/wind.blend",
+      "gitBlobSha256": "3fbec43e89ee26db822859aa3906c2c04e1d763d51d6d69ec571c060ba7304e8",
+      "payloadBytes": 612084,
+      "payloadSha256": "019a6f93ea411cc6c599c9d6649fd1591e2dbf5a13ca072b88fc669f5551ae26",
+      "lfsOid": "019a6f93ea411cc6c599c9d6649fd1591e2dbf5a13ca072b88fc669f5551ae26",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage/model-spec.json",
+      "gitBlobSha256": "2ec1c062ed0f8734ea551c98caaa2521fe48fe629e1a92783d1d585d39a17c70",
+      "payloadBytes": 5224,
+      "payloadSha256": "2ec1c062ed0f8734ea551c98caaa2521fe48fe629e1a92783d1d585d39a17c70",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage/native-owner-source.blob",
+      "gitBlobSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "payloadBytes": 14061,
+      "payloadSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage/native-source.json",
+      "gitBlobSha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+      "payloadBytes": 3866,
+      "payloadSha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage/provenance.json",
+      "gitBlobSha256": "f4216e3400e173a0cdd55aeb98c48b5d9d028a75de333f16535df322ec950918",
+      "payloadBytes": 1776,
+      "payloadSha256": "f4216e3400e173a0cdd55aeb98c48b5d9d028a75de333f16535df322ec950918",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage/storage.blend",
+      "gitBlobSha256": "63c4a18c62222151b3e16d10483bac0a1f0e9b3532ce766f6e348451fa5602a1",
+      "payloadBytes": 587472,
+      "payloadSha256": "05ee52ad8c3da3ee77b50de2affd3f1df4991d00b88ee1d32388de5d0d2050ef",
+      "lfsOid": "05ee52ad8c3da3ee77b50de2affd3f1df4991d00b88ee1d32388de5d0d2050ef",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/workbench/workbench/model-spec.json",
+      "gitBlobSha256": "825ae2b2893371a38ea253c86b425543f187470342d5139547b2cb6117ddf7fd",
+      "payloadBytes": 4589,
+      "payloadSha256": "825ae2b2893371a38ea253c86b425543f187470342d5139547b2cb6117ddf7fd",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/workbench/workbench/native-owner-source.blob",
+      "gitBlobSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "payloadBytes": 14061,
+      "payloadSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/workbench/workbench/native-source.json",
+      "gitBlobSha256": "dc94c2080c0d87eaf776baed76a6461d7a6725e4402fe020a9031099e428217a",
+      "payloadBytes": 3295,
+      "payloadSha256": "dc94c2080c0d87eaf776baed76a6461d7a6725e4402fe020a9031099e428217a",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/workbench/workbench/provenance.json",
+      "gitBlobSha256": "67fafaebef463aa96a91aaae1b18911b237d8b7c8c6982ff16dc590e7462030f",
+      "payloadBytes": 1792,
+      "payloadSha256": "67fafaebef463aa96a91aaae1b18911b237d8b7c8c6982ff16dc590e7462030f",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/workbench/workbench/workbench.blend",
+      "gitBlobSha256": "58f294f256487b9c7b319cd181fb566c87f895601f5fd802d65f1fb84b0d08bc",
+      "payloadBytes": 584796,
+      "payloadSha256": "3cb961cdbe61b443cdb6a2aaf6ae27e83bd091c2efdf6b6aeb9298d2a12575af",
+      "lfsOid": "3cb961cdbe61b443cdb6a2aaf6ae27e83bd091c2efdf6b6aeb9298d2a12575af",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/model-spec.json",
+      "gitBlobSha256": "ace340f33086e9588a5e051ab3e803f7fe5385c531952f48811a2a1e1d1a517c",
+      "payloadBytes": 2048,
+      "payloadSha256": "ace340f33086e9588a5e051ab3e803f7fe5385c531952f48811a2a1e1d1a517c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-owner-source.blob",
+      "gitBlobSha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+      "payloadBytes": 4071,
+      "payloadSha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-source.json",
+      "gitBlobSha256": "55cfe6ebf268c87c386286aefbfc7da8df55a7d97d761f1cd5135b9c09897203",
+      "payloadBytes": 646,
+      "payloadSha256": "55cfe6ebf268c87c386286aefbfc7da8df55a7d97d761f1cd5135b9c09897203",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/provenance.json",
+      "gitBlobSha256": "3fd8c91735b6d5010cd4cecd9458855ffd0f99f76b3c06cf72175bc6f7555ab8",
+      "payloadBytes": 1822,
+      "payloadSha256": "3fd8c91735b6d5010cd4cecd9458855ffd0f99f76b3c06cf72175bc6f7555ab8",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/wreck-cargo-open.blend",
+      "gitBlobSha256": "c5a79472ceda52425e29d3b2ad5c6f6b012b650a0e250de193d232a4b57ded4e",
+      "payloadBytes": 535264,
+      "payloadSha256": "cf1b5c5793eb5238767b8896131763bd008b8fd53d013a74fb7b358b3dd83807",
+      "lfsOid": "cf1b5c5793eb5238767b8896131763bd008b8fd53d013a74fb7b358b3dd83807",
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/model-spec.json",
+      "gitBlobSha256": "249a80775313dbcfe330e5236c5493dd4b70d97885a8bc3948db1b005f63edba",
+      "payloadBytes": 2014,
+      "payloadSha256": "249a80775313dbcfe330e5236c5493dd4b70d97885a8bc3948db1b005f63edba",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-owner-source.blob",
+      "gitBlobSha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+      "payloadBytes": 4071,
+      "payloadSha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-source.json",
+      "gitBlobSha256": "8ae8a479af6e4311d2123c1e2f7e4cbafbbe340b1c107cb54966a6bddc8aa40a",
+      "payloadBytes": 636,
+      "payloadSha256": "8ae8a479af6e4311d2123c1e2f7e4cbafbbe340b1c107cb54966a6bddc8aa40a",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/provenance.json",
+      "gitBlobSha256": "c6d815df257286552e1f1ad4b357ce85035bb652c62aa488eb3d454200bfcf70",
+      "payloadBytes": 1797,
+      "payloadSha256": "c6d815df257286552e1f1ad4b357ce85035bb652c62aa488eb3d454200bfcf70",
+      "lfsOid": null,
+      "before": "ABSENT"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/wreck-cargo.blend",
+      "gitBlobSha256": "d61c21930c358800aa1424b58c26ce52b2aa4a0f683a610c5368997613a4dd26",
+      "payloadBytes": 536168,
+      "payloadSha256": "ee777aabf3e48bda17f0446091e455a601d574d303812ca2f7590b9dd77b5a54",
+      "lfsOid": "ee777aabf3e48bda17f0446091e455a601d574d303812ca2f7590b9dd77b5a54",
+      "before": "ABSENT"
+    }
+  ],
+  "scope": "reviewedtechnicalrenderderivativesonly; S1/runtime/Owneracceptancepending; laterArtcorrectionsseparategrant"
+}

@@ -1,0 +1,399 @@
+{
+  "assetId": "fp01_wind_s0_v1",
+  "definitionId": "fp02.device.wind_pack_6kw",
+  "revision": 1,
+  "kind": "S0-proxy",
+  "frameId": "fp02_east_north_height_xyz_v1",
+  "origin": "ground-center",
+  "metersPerUnit": 1,
+  "authoringGridM": 0.25,
+  "terrainCellM": 0.125,
+  "dimensionsM": [
+    6,
+    13,
+    3
+  ],
+  "parts": [
+    {
+      "partId": "wind_feet",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            -1.25,
+            0.125,
+            -1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            -1.25,
+            0.125,
+            1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            1.25,
+            0.125,
+            -1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            1.25,
+            0.125,
+            1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "wind_mast",
+      "role": "structure",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            5.125,
+            0
+          ],
+          "sizeM": [
+            0.5,
+            9.75,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            0,
+            9.875,
+            0
+          ],
+          "sizeM": [
+            1,
+            0.25,
+            1
+          ],
+          "material": "EX-SHELL"
+        },
+        {
+          "centerM": [
+            0,
+            0.375,
+            -1.25
+          ],
+          "sizeM": [
+            3,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            0,
+            0.375,
+            1.25
+          ],
+          "sizeM": [
+            3,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        },
+        {
+          "centerM": [
+            0,
+            0.375,
+            0
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            3
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "wind_hub",
+      "role": "joint",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            10,
+            0.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    },
+    {
+      "partId": "wind_blade_1",
+      "role": "rotor-blade",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            11.375,
+            0.5
+          ],
+          "sizeM": [
+            0.5,
+            2.75,
+            0.25
+          ],
+          "material": "EX-SHELL",
+          "rotationZRadians": 0
+        }
+      ]
+    },
+    {
+      "partId": "wind_blade_2",
+      "role": "rotor-blade",
+      "boxes": [
+        {
+          "centerM": [
+            -1.1907849302036033,
+            9.3125,
+            0.5
+          ],
+          "sizeM": [
+            0.5,
+            2.75,
+            0.25
+          ],
+          "material": "EX-SHELL",
+          "rotationZRadians": 2.0943951023931953
+        }
+      ]
+    },
+    {
+      "partId": "wind_blade_3",
+      "role": "rotor-blade",
+      "boxes": [
+        {
+          "centerM": [
+            1.1907849302036029,
+            9.3125,
+            0.5
+          ],
+          "sizeM": [
+            0.5,
+            2.75,
+            0.25
+          ],
+          "material": "EX-SHELL",
+          "rotationZRadians": 4.1887902047863905
+        }
+      ]
+    },
+    {
+      "partId": "wind_power_socket",
+      "role": "power-marker",
+      "boxes": [
+        {
+          "centerM": [
+            0.375,
+            0.625,
+            1.375
+          ],
+          "sizeM": [
+            0.25,
+            0.25,
+            0.25
+          ],
+          "material": "EX-FUNCTION"
+        }
+      ]
+    }
+  ],
+  "ports": [
+    {
+      "sourceId": "fp02.device.wind_pack_6kw:POWER-OUT",
+      "role": "PowerProducer",
+      "centerM": [
+        0.375,
+        0.625,
+        1.5
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "sizeM": [
+        0.25,
+        0.25
+      ],
+      "binding": "authoring-only"
+    }
+  ],
+  "supportsM": [
+    [
+      -1.25,
+      0,
+      -1.25
+    ],
+    [
+      -1.25,
+      0,
+      1.25
+    ],
+    [
+      1.25,
+      0,
+      -1.25
+    ],
+    [
+      1.25,
+      0,
+      1.25
+    ]
+  ],
+  "joints": [],
+  "serviceClearanceM": 1,
+  "sourceRefs": [
+    "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+    "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+    "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
+  ],
+  "authoringChoices": [
+    "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
+    "Feet belong to paid device BOM; no extra C09 material.",
+    "Power/waste marker poses are authoring-only until explicit installation binding.",
+    "Source-required protected Power-Out socket is an authoring marker only; native electrical admission belongs to W07.",
+    "Paid socket stands on the frame/foot beam; exposed +Z face binds its authoring port without coplanar structural surfaces."
+  ],
+  "license": "LicenseRef-Hestia-Project-Original",
+  "rotorDiameterM": 6,
+  "hubHeightM": 10,
+  "rotorSweepBoundsM": {
+    "min": [
+      -3,
+      7,
+      -1.5
+    ],
+    "max": [
+      3,
+      13,
+      1.5
+    ]
+  },
+  "supportPatchesM": [
+    {
+      "partId": "wind_feet",
+      "centerM": [
+        -1.25,
+        0,
+        -1.25
+      ],
+      "sizeM": [
+        0.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "wind_feet",
+      "centerM": [
+        -1.25,
+        0,
+        1.25
+      ],
+      "sizeM": [
+        0.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "wind_feet",
+      "centerM": [
+        1.25,
+        0,
+        -1.25
+      ],
+      "sizeM": [
+        0.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    },
+    {
+      "partId": "wind_feet",
+      "centerM": [
+        1.25,
+        0,
+        1.25
+      ],
+      "sizeM": [
+        0.5,
+        0.5
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    }
+  ],
+  "serviceBoundsM": {
+    "min": [
+      -3,
+      0,
+      1.5
+    ],
+    "max": [
+      3,
+      13,
+      2.5
+    ]
+  }
+}

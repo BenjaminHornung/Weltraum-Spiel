@@ -1,0 +1,110 @@
+{
+  "assetId": "visual_anchor_carrier_heavy",
+  "definitionId": "visual_anchor_carrier_heavy",
+  "revision": 1,
+  "kind": "visual-only-derived",
+  "origin": "ground-center",
+  "metersPerUnit": 1,
+  "parts": [
+    {
+      "partId": "payload",
+      "role": "paid_payload",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            0.75,
+            0
+          ],
+          "sizeM": [
+            1,
+            1,
+            1.5
+          ],
+          "material": "EX-HAZARD"
+        }
+      ]
+    },
+    {
+      "partId": "support_0_0",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            -0.25,
+            0.125,
+            -0.25
+          ],
+          "sizeM": [
+            0.125,
+            0.25,
+            0.125
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "support_0_1",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            -0.25,
+            0.125,
+            0.25
+          ],
+          "sizeM": [
+            0.125,
+            0.25,
+            0.125
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "support_1_0",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            0.25,
+            0.125,
+            -0.25
+          ],
+          "sizeM": [
+            0.125,
+            0.25,
+            0.125
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    },
+    {
+      "partId": "support_1_1",
+      "role": "support",
+      "boxes": [
+        {
+          "centerM": [
+            0.25,
+            0.125,
+            0.25
+          ],
+          "sizeM": [
+            0.125,
+            0.25,
+            0.125
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    }
+  ],
+  "ports": [],
+  "joints": [],
+  "supportsM": [],
+  "supportPatchesM": [],
+  "serviceBoundsM": null
+}

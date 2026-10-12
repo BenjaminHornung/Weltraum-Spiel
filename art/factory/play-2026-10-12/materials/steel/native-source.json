@@ -1,0 +1,34 @@
+{
+  "assetId": "visual_anchor_steel",
+  "definitionId": "visual_anchor_steel",
+  "revision": 1,
+  "kind": "visual-only-derived",
+  "origin": "ground-center",
+  "metersPerUnit": 1,
+  "parts": [
+    {
+      "partId": "lot",
+      "role": "actual_finite_lot",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            0.125,
+            0
+          ],
+          "sizeM": [
+            0.5,
+            0.25,
+            0.5
+          ],
+          "material": "EX-STRUCT"
+        }
+      ]
+    }
+  ],
+  "ports": [],
+  "joints": [],
+  "supportsM": [],
+  "supportPatchesM": [],
+  "serviceBoundsM": null
+}

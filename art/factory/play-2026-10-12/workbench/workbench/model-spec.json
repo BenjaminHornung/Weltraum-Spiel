@@ -1,0 +1,250 @@
+{
+  "assetId": "play_workbench_v1",
+  "family": "workbench",
+  "slug": "workbench",
+  "source": {
+    "assetId": "fp06_s0_b05",
+    "definitionId": "B05",
+    "revision": 1,
+    "kind": "S0-proxy",
+    "frameId": "fp02_east_north_height_xyz_v1",
+    "origin": "ground-center",
+    "metersPerUnit": 1,
+    "authoringGridM": 0.25,
+    "terrainCellM": 0.125,
+    "dimensionsM": [
+      2,
+      1.1,
+      1
+    ],
+    "parts": [
+      {
+        "partId": "body",
+        "role": "basic_mechanical_bench",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              1,
+              0
+            ],
+            "sizeM": [
+              2,
+              0.2,
+              1
+            ],
+            "material": "EX-FUNCTION"
+          }
+        ]
+      },
+      {
+        "partId": "support_0",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              -0.75,
+              0.45,
+              -0.25
+            ],
+            "sizeM": [
+              0.25,
+              0.9,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "support_1",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              -0.75,
+              0.45,
+              0.25
+            ],
+            "sizeM": [
+              0.25,
+              0.9,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "support_2",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              0.75,
+              0.45,
+              -0.25
+            ],
+            "sizeM": [
+              0.25,
+              0.9,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "support_3",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              0.75,
+              0.45,
+              0.25
+            ],
+            "sizeM": [
+              0.25,
+              0.9,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      }
+    ],
+    "ports": [],
+    "sourceRefs": [
+      "FP02:7:B05",
+      "W01:device-dimensions",
+      "fp06-technical-s0-local-factory-v1"
+    ],
+    "supportsM": [
+      [
+        -0.75,
+        0,
+        -0.25
+      ],
+      [
+        -0.75,
+        0,
+        0.25
+      ],
+      [
+        0.75,
+        0,
+        -0.25
+      ],
+      [
+        0.75,
+        0,
+        0.25
+      ]
+    ],
+    "supportPatchesM": [
+      {
+        "partId": "support_0",
+        "centerM": [
+          -0.75,
+          0,
+          -0.25
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      },
+      {
+        "partId": "support_1",
+        "centerM": [
+          -0.75,
+          0,
+          0.25
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      },
+      {
+        "partId": "support_2",
+        "centerM": [
+          0.75,
+          0,
+          -0.25
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      },
+      {
+        "partId": "support_3",
+        "centerM": [
+          0.75,
+          0,
+          0.25
+        ],
+        "sizeM": [
+          0.25,
+          0.25
+        ],
+        "normal": [
+          0,
+          -1,
+          0
+        ]
+      }
+    ],
+    "serviceBoundsM": {
+      "min": [
+        -1,
+        0,
+        0.5
+      ],
+      "max": [
+        1,
+        1.1,
+        1.5
+      ]
+    },
+    "joints": []
+  },
+  "definitionRef": {
+    "sourceId": "B05",
+    "version": 1,
+    "digest": "fnv1a:5509cc87"
+  },
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  },
+  "visualOnlyAnchor": null,
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/workbench/workbench/native-source.json",
+    "sha256": "dc94c2080c0d87eaf776baed76a6461d7a6725e4402fe020a9031099e428217a",
+    "bytes": 3295
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/workbench/workbench/native-owner-source.blob",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  }
+}

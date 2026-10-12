@@ -1,0 +1,145 @@
+{
+  "assetId": "play_carrier_light_v1",
+  "family": "carrier",
+  "slug": "carrier-light",
+  "source": {
+    "assetId": "visual_anchor_carrier_light",
+    "definitionId": "visual_anchor_carrier_light",
+    "revision": 1,
+    "kind": "visual-only-derived",
+    "origin": "ground-center",
+    "metersPerUnit": 1,
+    "parts": [
+      {
+        "partId": "payload",
+        "role": "paid_payload",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              0.75,
+              0
+            ],
+            "sizeM": [
+              0.5,
+              1,
+              0.5
+            ],
+            "material": "EX-HAZARD"
+          }
+        ]
+      },
+      {
+        "partId": "support_0_0",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              -0.0625,
+              0.125,
+              -0.0625
+            ],
+            "sizeM": [
+              0.125,
+              0.25,
+              0.125
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "support_0_1",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              -0.0625,
+              0.125,
+              0.0625
+            ],
+            "sizeM": [
+              0.125,
+              0.25,
+              0.125
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "support_1_0",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              0.0625,
+              0.125,
+              -0.0625
+            ],
+            "sizeM": [
+              0.125,
+              0.25,
+              0.125
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      },
+      {
+        "partId": "support_1_1",
+        "role": "support",
+        "boxes": [
+          {
+            "centerM": [
+              0.0625,
+              0.125,
+              0.0625
+            ],
+            "sizeM": [
+              0.125,
+              0.25,
+              0.125
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      }
+    ],
+    "ports": [],
+    "joints": [],
+    "supportsM": [],
+    "supportPatchesM": [],
+    "serviceBoundsM": null
+  },
+  "definitionRef": {
+    "sourceId": "visual_anchor_carrier_light",
+    "version": 1,
+    "digest": "visual-anchor-no-catalog-definition"
+  },
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  },
+  "visualOnlyAnchor": {
+    "kind": "visual-only-carrier",
+    "owner": "existing Native carrier",
+    "profileSizeMm": [
+      500,
+      1000,
+      500
+    ],
+    "quantityAuthority": "closed CargoHandlingProfile and active custody readview"
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/carrier/carrier-light/native-source.json",
+    "sha256": "308a0957f1c271c75434812b9487c5bce2d1fa0fd64aa0556b2298ea170410b0",
+    "bytes": 1957
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/carrier/carrier-light/native-owner-source.blob",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  }
+}

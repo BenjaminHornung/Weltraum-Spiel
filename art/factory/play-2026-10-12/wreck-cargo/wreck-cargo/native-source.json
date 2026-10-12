@@ -1,0 +1,34 @@
+{
+  "assetId": "visual_anchor_wreck_cargo",
+  "definitionId": "visual_anchor_wreck_cargo",
+  "revision": 1,
+  "kind": "visual-only-derived",
+  "origin": "ground-center",
+  "metersPerUnit": 1,
+  "parts": [
+    {
+      "partId": "cargo_access",
+      "role": "finite_cargo_access",
+      "boxes": [
+        {
+          "centerM": [
+            0,
+            0.75,
+            0
+          ],
+          "sizeM": [
+            1.5,
+            1.5,
+            1
+          ],
+          "material": "EX-SHELL"
+        }
+      ]
+    }
+  ],
+  "ports": [],
+  "joints": [],
+  "supportsM": [],
+  "supportPatchesM": [],
+  "serviceBoundsM": null
+}

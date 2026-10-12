@@ -1,0 +1,70 @@
+{
+  "assetId": "play_sheet_v1",
+  "family": "materials",
+  "slug": "sheet",
+  "source": {
+    "assetId": "visual_anchor_sheet",
+    "definitionId": "visual_anchor_sheet",
+    "revision": 1,
+    "kind": "visual-only-derived",
+    "origin": "ground-center",
+    "metersPerUnit": 1,
+    "parts": [
+      {
+        "partId": "lot",
+        "role": "actual_finite_lot",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              0.125,
+              0
+            ],
+            "sizeM": [
+              0.5,
+              0.25,
+              0.5
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      }
+    ],
+    "ports": [],
+    "joints": [],
+    "supportsM": [],
+    "supportPatchesM": [],
+    "serviceBoundsM": null
+  },
+  "definitionRef": {
+    "sourceId": "visual_anchor_sheet",
+    "version": 1,
+    "digest": "visual-anchor-no-catalog-definition"
+  },
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+    "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+    "bytes": 23335
+  },
+  "visualOnlyAnchor": {
+    "kind": "visual-only-material",
+    "itemId": "fp02.bulk.steel_sheet",
+    "catalogDigest": "fnv1a:f3a8c642",
+    "quantityAuthority": "existing unique actual lot custody; never a quantity encoded by triangles",
+    "itemRef": {
+      "sourceId": "fp02.bulk.steel_sheet",
+      "version": 1,
+      "digest": "fnv1a:7d581c64"
+    }
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/materials/sheet/native-source.json",
+    "sha256": "4870354e400dd207fd0c5a6cac3cf14d37037b08f25858d37fec00a82945f699",
+    "bytes": 618
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/materials/sheet/native-owner-source.blob",
+    "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+    "bytes": 23335
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "assetId": "play_cable_end_v1",
+  "family": "power-kit",
+  "slug": "cable-end",
+  "source": {
+    "assetId": "visual_anchor_cable_end",
+    "definitionId": "visual_anchor_cable_end",
+    "revision": 1,
+    "kind": "visual-only-derived",
+    "origin": "ground-center",
+    "metersPerUnit": 1,
+    "parts": [
+      {
+        "partId": "paid_route",
+        "role": "actual_paid_cable_route",
+        "boxes": [
+          {
+            "centerM": [
+              0,
+              0.0625,
+              0
+            ],
+            "sizeM": [
+              0.125,
+              0.125,
+              0.25
+            ],
+            "material": "EX-STRUCT"
+          }
+        ]
+      }
+    ],
+    "ports": [],
+    "joints": [],
+    "supportsM": [],
+    "supportPatchesM": [],
+    "serviceBoundsM": null
+  },
+  "definitionRef": {
+    "sourceId": "visual_anchor_cable_end",
+    "version": 1,
+    "digest": "visual-anchor-no-catalog-definition"
+  },
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+    "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+    "bytes": 4766
+  },
+  "visualOnlyAnchor": {
+    "kind": "visual-only-cable",
+    "itemId": "fp02.comp.field_cable",
+    "quantityAuthority": "installed_cable routeMm from confirmed paid job",
+    "deformation": "only approved route; visual scale cannot add length, ports, mass or material"
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-source.json",
+    "sha256": "523a14aefedb8e84fce6d4e3f11f5b7641aa69bb01d1f5a95ef9dfbf758e2f87",
+    "bytes": 644
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-owner-source.blob",
+    "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd",
+    "bytes": 4766
+  }
+}
