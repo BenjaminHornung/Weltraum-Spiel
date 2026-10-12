@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/workspace/.cloud-setup/toolchain/node_modules/.bin/node",
+    "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/v4-connector-census.mjs",
+    "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01/connector-proposal-20261012T101244Z/census-output"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startedUtc": "2026-10-12T10:12:44.285809+00:00",
+  "finishedUtc": "2026-10-12T10:12:45.866295+00:00",
+  "elapsedSeconds": 1.5806589490020997,
+  "exit": 0,
+  "nodeVersion": "v22.23.3",
+  "scriptSha256": "4f3f1fbbbb072b661925de8c7418559c37d4305c5545b16873e6288cec0e8faf",
+  "rawLog": {
+    "bytes": 2908,
+    "sha256": "86231421efc1392800ce54bccd122de5a5934e6fae8234b8f219fc93817d138e"
+  },
+  "scope": "Exactly one offline-source-proposal census; no Native/world/browser/profile/product mutation"
+}
