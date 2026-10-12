@@ -299,7 +299,7 @@
     }
   ],
   "currentProgress": {
-    "atUtc": "2026-10-12T11:59:25.129256+00:00",
+    "atUtc": "2026-10-12T12:18:39.754660+00:00",
     "candidateDigest": "913c0c46",
     "v2ChangedSlots": 2890,
     "materialCreditMg": 0,
@@ -321,7 +321,7 @@
     "route19": "NormalCarrierOverlap at7.081mm deviation, separateBatteryCarrierSupport; custody preserved; fullflowFAIL",
     "balance": "Fourreviewedplanningartifacts adopted docs/factory/balance;26rationalChecksPASS, productV2inactive/legacyW09unchanged",
     "v3": "Owner-approved exact 3-mask candidate Source/Cargo13PASS and Bootstrap2PASS/44skip/buildPASS; first normal run 085310 FAIL before margin trial; no full-route conclusion",
-    "integratorHead": "4ba4728f29cd27c00ff0d64ba9b21c9aa8d9f26d",
+    "integratorHead": "69a804fd53988334c6cbfc056951ed1c79b454f9",
     "inputActivation": "Business REDs, repeat/ACK/pointer-lock P2 fixes and focused120/Input/Host/UI PASS; actual normal Browser28 Native movement/pause/heldrepeat/freshpress PASS. Final shared draft independent review still pending",
     "partCells": "Exact reviewed two source blobs admitted by sole Integrator9a2c9397; 44 scoped PASS/tsc. Native part/S1/runtime join pending",
     "portableDelivery": "Read-only current-package preflight dispatched; old instance2 remains historical, final clean-copy verification NOT_RUN",
@@ -352,7 +352,10 @@
       "finalNativeStatus": "Paused",
       "supportCountScope": "Synthetic realRapier B06 fixture512Facility/1024publicSession before→256after; not B07 timing benchmark; individualAfterMs NOT_REPORTED"
     },
-    "s1": "Runtime readonly preflight Rootread;15 scaffold businessREDs; B09 readonly inspection integrity exact addendum55c75585, no thirdcompiler/physicalschema. Actual runtime/part/work/Owner acceptance pending"
+    "s1": "Runtime readonly preflight Rootread;15 scaffold businessREDs; B09 readonly inspection integrity exact addendum55c75585, no thirdcompiler/physicalschema. Actual runtime/part/work/Owner acceptance pending",
+    "gameUiImportCommit": "f29501516afa2afd0802aa00dd2e43ebda7ba7fe",
+    "nativePartFoundationCommit": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+    "s1PureController": "Original2HOLDdrafts 3independentP2; Source699foundation+exact2byte seeds in newWT transferredtoCellas2ndwriter, SharedNative/Host/Session/Bootstrap/Entry remainIntegrator. Current actualGameUIbrowsercapturesrunning, helperjobsneedlease"
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {

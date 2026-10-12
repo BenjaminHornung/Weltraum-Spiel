@@ -6,7 +6,8 @@
   "controlPlaneRoot": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
   "previousOwnership": "../../write-ownership.json",
   "activeImplementationWriters": [
-    "/root/play_integrator"
+    "/root/play_integrator",
+    "/root/play_cell_bridge"
   ],
   "activeDocumentationWriter": "/root",
   "browserCpuLease": "/root/play_integrator input/Host/native runtime; other jobs coordinate directly",
@@ -2608,6 +2609,81 @@
         "UIwriter6b2 branch/worktree cleanHOLD, activeimplementationwriters nowonlyIntegrator; do not revive writer/alter immutable eight files without a concrete subsequent contractscope",
         "No W12–29/mainmerge/push/forcepush/PR/publish/dependency/physicsbudget/probe/timeout/queue raising"
       ]
+    },
+    "PLAY-02-S1-pure-controller-P2-closure": {
+      "schema": "hestia.fp06.play-s1-pure-writer-transfer/v1",
+      "milestone": "PLAY-02-S1-pure-controller-P2-closure",
+      "actor": "/root/play_cell_bridge",
+      "branch": "codex/hestia-fp06-play-s1-controller-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-s1-controller-2026-10-12",
+      "baseCommitSha": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+      "authorizedAtUtc": "2026-10-12T12:18:39.754660+00:00",
+      "status": "GRANTED_SECOND_WRITER_EXACT_TWO_FILES",
+      "authorization": "Explicit playable source-bound machine/model/energy-authority task and Integrator request for disjoint pure-helper ownership; UI finalizedcleanHOLD, no thirdwriter",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+        "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+          "bytes": 8499,
+          "sha256": "740ba925876067b4b6e2a8aa5c5a4ca1ed549c64308c5cae69b49d95995561b5",
+          "seed": "exact unchanged Integrator HOLD snapshot; not Root-authored code"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+          "bytes": 7097,
+          "sha256": "a62f2a3b86fd139f43fa2e87cb2203c7bded221a2b8f07b1ca344183a49ee082",
+          "seed": "exact unchanged Integrator HOLD snapshot; not Root-authored code"
+        }
+      ],
+      "nativeFoundation": {
+        "commitSha": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+        "sourcePath": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "bytes": 59908,
+        "sha256": "4024e9f47e4a568e04304ba139191ad3c26f743e740dd02c96b732216b595b68"
+      },
+      "preTransferReview": {
+        "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-controller-independent-review.md",
+        "sha256": "65f4cbaa817acd42765cf3062587a5ec545f6cff029790f506992e1adc3f9eb4",
+        "verdict": "CHANGES_REQUIRED threeP2; reviewauthor becomes narrowfixauthor; another actor required for closure"
+      },
+      "worktreePreparation": {
+        "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-controller-transfer/root-worktree-preparation.json",
+        "sha256": "a7a91f2e3024d53f23c97031552b0263cdf1c18bd635713917ea8f7d9ddd374d",
+        "existingLockedDependencySymlinks": 53,
+        "hydratedRuntimeAssets": [
+          {
+            "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter.glb",
+            "bytes": 60724,
+            "sha256": "94bb74a02431d8d08f004a7f7220c56a8e6d25eb07c7f6afed24f6b5efa1f5ea"
+          },
+          {
+            "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former.glb",
+            "bytes": 63180,
+            "sha256": "6cf637ede540e0072d76160f85b37a07501150b1ef7666b384b3dfa2d77c0f4a"
+          }
+        ],
+        "noDependencyInstallOrUpgrade": true
+      },
+      "apiContract": [
+        "Native observation must be wrapped with actual Host sessionId/epoch/nativeTick; sample also receives actual immutable currentPhysicsSnapshot containing ticks/factoryFacilities. No new caller-generated counter/Worldproof from IDs",
+        "Require native header equals current trusted Host/read header and actualcurrentSnapshot.ticks; rawObservation identity equals the relevant currentSnapshot.factoryFacilities.partObservations row; require actualcurrent published owner/ref/source/profile/installationRevision/observationDigest bindings. Wrong/missing/earlier snapshot/row/owner fails closed, even when terrain/facility revision or tick unchanged after colliderloss",
+        "Work only from actual committed-domain job.start.jobId+recipeRef+confirmedWorkMs and typedcurrent native/domain fields, no UI.selectedRecipe/lastReceipt/currentStock/animationTime as authority. RUNNING requires non-null valid currentpaidJob; prestart WAIT/idle/completed states separately truthful",
+        "Unconfirmed/stale/FAULT/Hold/WAIT/pause cannot use unconfirmed or substituted work numbers to move parts. Use owned last safe confirmed snapshot/pose or explicit suppress/Hold result; semanticparent/part absence always suppresses descendants and no cached import/reload resurrects them",
+        "Public exported helper API may change only as required by these explicit guards. Freeze exactType/API with Integrator before runtimewiring; SharedNative/Host/Session/Bootstrap/Entry/source/profile/clock/power/material/save files exclusivelyIntegrator and prohibited tothiswriter"
+      ],
+      "constraints": [
+        "Exactly2files, newisolatedbranch/worktree; originalIntegrator2HOLDdrafts8499/7097 excludedfromIntegratorwrites until Rootreviewedimmutableadmission. UI/Art/Loader/Partcells oldbranches remainHOLD; max2implementwriters inclIntegrator",
+        "Genuine focusedbusinessREDs for changedunconfirmedWork, stalecachedNative/currentSnapshot and RUNNING-withoutcurrentpaidJob before minimalpatch; preserve the prior15+1/16+17 historical receipts and missing2newpathbinding limitation honestly; newrun binds bothnewfiles+actualNativebase dependencies before/after",
+        "Retain existing closed B06/B07 cell/source/GLB/checksum/geometry/custody/parent/instance/disposal/recipe guards and versionFNV8vsSHA64 namespaces, no FrameTime/work clock or Worldcreate/physicsmessage/nativePart/mass/receipt authority",
+        "Native Source physical budget and callback API immutable in this WT; hydration only actual2 B06/B07 GLBs verifiedSHA, no LFS/catalog/source/art/recipe/deps changes or pointer-only tests. CopiedHOLDdrafts are unfixed baseline, not an accepted16caseSourceGate",
+        "Only bounded CPUfocusedtests+tsc under directIntegratorlease; actualNativeGame/World/render/import/generation/budget/browser evidence and SharedW10/Map/goal wiring remainIntegrator. ActualUIBrowser run currentlyexclusive, no new CPUjob untillease returned",
+        "External evidence /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-controller-fix/; final exacttwofileFullSHAcommit/cleanHOLD, independentclosureReview by DIFFERENTreadonlyactor+Rootfresh targetBefore/importgrant. No self-review PASS",
+        "No independent paid provider/image/blender/perf/profile/broad native reruns; existingcompositionC1closed, NativeReadcandidateclosed. NeededGeometryCost/Hostjoin/instanceRender runtime gates not promoted from pure helperP",
+        "No W12–29/mainmerge/push/forcepush/PR/publishing/engine/dependency/queue/probe/budget/timeout/sourcegeometry changes. Humanterrain/Art/visual/gameplay/hardware OWNER_REVIEW_PENDING"
+      ]
     }
   },
   "actorTransfers": [
@@ -2659,6 +2735,16 @@
           "sha256": "1f37638fbb02b04e47c0e60b1a9f11f0cb68bfad968d40e218a64caac410e618"
         }
       ]
+    },
+    {
+      "atUtc": "2026-10-12T12:18:39.754660+00:00",
+      "scope": [
+        "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+        "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts"
+      ],
+      "previousActor": "/root/play_integrator",
+      "newActor": "/root/play_cell_bridge",
+      "reason": "Usermax2writers and explicitIntegrator disjointpurehelpertransfer; sameexact2 draftbytes in isolatedNative69a base; Sharedfiles remainsoleIntegrator"
     }
   ]
 }
