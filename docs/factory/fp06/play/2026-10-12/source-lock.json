@@ -299,7 +299,7 @@
     }
   ],
   "currentProgress": {
-    "atUtc": "2026-10-12T12:58:35.617032+00:00",
+    "atUtc": "2026-10-12T13:09:52.829402+00:00",
     "candidateDigest": "913c0c46",
     "v2ChangedSlots": 2890,
     "materialCreditMg": 0,
@@ -321,7 +321,7 @@
     "route19": "NormalCarrierOverlap at7.081mm deviation, separateBatteryCarrierSupport; custody preserved; fullflowFAIL",
     "balance": "Fourreviewedplanningartifacts adopted docs/factory/balance;26rationalChecksPASS, productV2inactive/legacyW09unchanged",
     "v3": "Owner-approved exact 3-mask candidate Source/Cargo13PASS and Bootstrap2PASS/44skip/buildPASS; first normal run 085310 FAIL before margin trial; no full-route conclusion",
-    "integratorHead": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+    "integratorHead": "f85d1379c3458488d225105156adfb66837799ce",
     "inputActivation": "Business REDs, repeat/ACK/pointer-lock P2 fixes and focused120/Input/Host/UI PASS; actual normal Browser28 Native movement/pause/heldrepeat/freshpress PASS. Final shared draft independent review still pending",
     "partCells": "Exact reviewed two source blobs admitted by sole Integrator9a2c9397; 44 scoped PASS/tsc. Native part/S1/runtime join pending",
     "portableDelivery": "Read-only current-package preflight dispatched; old instance2 remains historical, final clean-copy verification NOT_RUN",
@@ -355,13 +355,7 @@
     "s1": "Runtime readonly preflight Rootread;15 scaffold businessREDs; B09 readonly inspection integrity exact addendum55c75585, no thirdcompiler/physicalschema. Actual runtime/part/work/Owner acceptance pending",
     "gameUiImportCommit": "f29501516afa2afd0802aa00dd2e43ebda7ba7fe",
     "nativePartFoundationCommit": "69a804fd53988334c6cbfc056951ed1c79b454f9",
-    "s1PureController": {
-      "sourceCommitSha": "572c247bd96757d194e12524548a3ea538caab90",
-      "state": "3P2_SOURCE_CLOSED_REVIEWED58PASS_TSC_CLEAN_HOLD_EXACT_ADMISSION_GRANTED",
-      "reviewSha256": "520559aed5e1e60b388b8515307ffdab44e90c1f16c0018860d2140e1750c8b8",
-      "grant": "grants/play-02-s1-controller-admission.json",
-      "actualRuntime": "NOT_RUN"
-    },
+    "s1PureController": "Reviewed3P2closed572cimmutable2blobs admittedf85d; actualS1runtimeinprogress",
     "gameUiBrowserWitness": "actual-gamefeel-root-witness.json",
     "freshLineagePreflight": {
       "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/fresh-lineage-data-preflight.md",
@@ -384,8 +378,21 @@
       "grant": "grants/play-04-native-solidport-addendum.json"
     },
     "activeImplementationWriters": [
-      "/root/play_integrator"
-    ]
+      "/root/play_integrator",
+      "/root/play_cell_bridge"
+    ],
+    "freshLineageWriter": {
+      "actor": "/root/play_cell_bridge",
+      "branch": "codex/hestia-fp06-play-fresh-lineage-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-fresh-lineage-2026-10-12",
+      "baseCommitSha": "f85d1379c3458488d225105156adfb66837799ce",
+      "scope": [
+        "apps/weltraum-browser/src/factory/session/freshLineageProjection.ts",
+        "apps/weltraum-browser/tests/unit/factory/freshLineageProjection.test.ts"
+      ],
+      "requiredInitialMaterial": "actualretainedreadonlySourcebaseline no constructor/duplicateWorld",
+      "status": "GRANTED_EXACT_TWO_NEW_FILES_SECOND_WRITER"
+    }
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {

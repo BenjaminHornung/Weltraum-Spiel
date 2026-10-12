@@ -1,0 +1,91 @@
+{
+  "schema": "hestia.fp06.play-pure-fresh-lineage-writer/v1",
+  "milestone": "PLAY-04-pure-fresh-lineage",
+  "actor": "/root/play_cell_bridge",
+  "branch": "codex/hestia-fp06-play-fresh-lineage-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-fresh-lineage-2026-10-12",
+  "baseCommitSha": "f85d1379c3458488d225105156adfb66837799ce",
+  "authorizedAtUtc": "2026-10-12T13:09:52.829402+00:00",
+  "status": "GRANTED_EXACT_TWO_NEW_FILES_SECOND_WRITER",
+  "authorization": "Explicit fullfresh16kg prototype + exact disjointminimum requestedbysoleIntegrator; no newOwnerproductpolicy. PriorCell572cbranchcleanHOLD, sameactorownsnewisolatedWT only.",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/freshLineageProjection.ts",
+    "apps/weltraum-browser/tests/unit/factory/freshLineageProjection.test.ts"
+  ],
+  "before": {
+    "apps/weltraum-browser/src/factory/session/freshLineageProjection.ts": "ABSENT_IN_WRITER_AND_INTEGRATOR",
+    "apps/weltraum-browser/tests/unit/factory/freshLineageProjection.test.ts": "ABSENT_IN_WRITER_AND_INTEGRATOR"
+  },
+  "api": {
+    "export": "projectFactoryProductionGoals",
+    "input": {
+      "initialMaterial": "MaterialView: actual immutable retained initial owner snapshot, required; no constructor",
+      "material": "MaterialView: actual adopted current owner read",
+      "machines": "readonly Pick<ProductionState,'machineInstanceId'|'commandReceipts'>[]",
+      "installations": "readonly FactoryInstallation[]",
+      "native": "FactoryFacilityRead: current privateHost observation",
+      "binding": "{catalogDigest:string,terrainRevision:number,facilityRevision:number,confirmed:boolean}"
+    },
+    "output": "FactoryProductionGoalFacts|null (existing ui/onboarding.ts type, unchanged)"
+  },
+  "sourceBindings": [
+    {
+      "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+      "bytes": 22417,
+      "sha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "bytes": 29154,
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+      "bytes": 23335,
+      "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+      "bytes": 5134,
+      "sha256": "0792b419b6d5ce8420632fcf99af11672891e4b1a360bca00bbce53c3e1bc97a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/placement.ts",
+      "bytes": 12277,
+      "sha256": "9b75688f1ad743246559d0e46c2c423cfd29c584932fdbae7b64c740f9ad75a3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 59908,
+      "sha256": "4024e9f47e4a568e04304ba139191ad3c26f743e740dd02c96b732216b595b68"
+    }
+  ],
+  "readPreflights": [
+    {
+      "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/fresh-lineage-data-preflight.md",
+      "bytes": 17083,
+      "sha256": "9111002a16da9278052af65cfe00ba036f8aa44e6168e2b3e340175df85f6516"
+    },
+    {
+      "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/normal-flow-ui-actions-preflight.md",
+      "bytes": 16839,
+      "sha256": "302dc3c183256edd76943d10bb6e57aab036f6c05c9f8bcb59d26af02d4bc8ec"
+    }
+  ],
+  "preparation": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/fresh-lineage-writer/root-worktree-preparation.json",
+    "sha256": "499b4a4a6d6a17c7a09c32e98c9dc3f828e13c301206c090104c0276e0a59b7a"
+  },
+  "constraints": [
+    "ExactlytwoNEWpurefiles and ownexternalEvidence only. SharedFactorySession/Host/Native/Bootstrap/Entry/map/onboarding/contracts/Save/catalog/recipe/material/core unchanged; soleIntegratorproducesactualcurrentread/header/session/epoch/tick andconsumesprojector.",
+    "SourceOrigin from actualretainedinitialMaterial C10/source-event/definition/version/digest/stackquantities +currentadoptedmetadata/receipts; noProjectorfixture/source/materialconstructor orWorldquery/generation. No journal/clock/progression-authority/commands/World/animation/UIflag/store.",
+    "ActualcumulativeMachine start/finish/manualWorkreceipts↔Material reserve/finish/build/transfer/split receiptgraph. UniquecompletedJobs/finishtransactions, exactfrozenRecipeRef/inputs/outputs/work; preservehistoricalMaterialrevision/Origin+creationIDs; currentselectedrecipe/latestjob/freshBoolean/recursiveparentsums neverenough.",
+    "Meaningfulpartialfacts: afteractual2CUTs exactlyinput16M/cutBatches2/output15M/offcut1M; downstream7Mprofile/7Msheet/formerOffcut1M/brace5.8M/offcut.2M onlyactuallinkedadoptedJobs. Do not leaveCUTobjectiveuntilalreadyfinalBrace. Deterministicspecificwitnessset fromactualgenealogy, neverBatchOrdinal%-pairing/newpolicy/arbitraryglobalsums; ambiguity/missing/stale→null/unconfirmed.",
+    "Massbalanceuniquejobs exactly16M=5.8Minstalled+3Mremainingprofile+5Mremainingsheet+2.2Moffcut. Cumulative7/7outputs aredifferentfromcurrent3/5remainders, actualtransfers/extra legitimate consumptioncannotpretendcurrentrestexists. ReturnedexistingGoalFacts includescumulativefields only; testlineageboundremainingbalance separately.",
+    "PaidBrace onlyactualConstructionReady projection/currentNativeIdle/header/logicalNativeowner definition/profile/source/pose/currentrevision +actualpaidBuildMaterialreceipt+sameinstalledproducedunit/extensions. Preview/produced/depot/finalizing/hold/unknownNative notpaidcompletion. PrivateactualNativeproducer remainsIntegratorresponsibility; pureID/digest alone notWorldproof.",
+    "TDD genuinebusinessREDbeforeminimalpatch, usingexistingactual Material/Production owner transitions/receipts in clearlysyntheticpure fixtures. Cover2CUTpartial, Recipechange/Joboverwrite +linkedcompletionhistory, fresh4/2manualwork/finish/installedBrace, starter/fakefresh/mixedunrelatedmetadata/absentfinish/stale/ambiguous/replay/doublecount/wait/preview/hold negatives. One8+8 rawpair retainednormalW09flow, no protectedSource/recipe/golden rewrites.",
+    "Priorallhistoricalreceipts/readpreflights immutable. Newbefore/afterinputsealsbothnewfiles+dependencies; focusedtests+originaltsc underdirectIntegratorCPUlease, no broaderNative/Browser/profiling/perf/Blender/providerJobs. ExistingcompositionC1closed.",
+    "OwnEvidence /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/fresh-lineage-writer/. ExacttwofileFullSHAcommit/cleanHOLD +differentreadonlyActorreview thenRootfreshTargetAbsent/hash/immutableadmission. No self-reviewacceptance.",
+    "Max2implementationwritersnowIntegrator+CellpureGoal; Art/UI/Loader/S1/CellsoldworktreesremainHOLD. NoSourcebranch/reset/remoteMainrestart/mainmerge/push/forcepush/PR/publish/engine/dep/budget/queue/probe/timeoutraising/W12–29. HumanreviewsOWNER_REVIEW_PENDING."
+  ]
+}
