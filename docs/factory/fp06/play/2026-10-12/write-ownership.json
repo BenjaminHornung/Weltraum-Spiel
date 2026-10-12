@@ -3050,6 +3050,51 @@
         "OwnnewEvidence/commits/diffs, immutablehistoricalreceipts, independentboundedreview. RootSourceReview snapshot beforeV5 protects prior167PASS/runtimev1scope; do notattributeV5tohistoricalV4captures.",
         "NoW12-W29/fluid/vehicle/engine/dependency/budget/queue/timeoutchanges/remote-mainrestart/mainmerge/push/forcepush/PR/publish. Finalterrain/art/UI/gameplay/hardwareOWNER_REVIEW_PENDING."
       ]
+    },
+    "PLAY-04-V5-closed-socket-cable-jobs": {
+      "schema": "hestia.fp06.play-closed-cable-job-addendum/v1",
+      "milestone": "PLAY-04-V5-closed-socket-cable-jobs",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "headAtRead": "f85d1379c3458488d225105156adfb66837799ce",
+      "authorizedAtUtc": "2026-10-12T14:05:22.477949+00:00",
+      "status": "GRANTED_EXACT_TWO_EXISTING_PATHS",
+      "authorization": "Already-authorized playable finite-cable installation and normalplacement; no recipe/productpolicychange. Closed declared measuredroutes, no caller-sized carrier; actualNativeplacement/LOS stillrequired.",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+        "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+          "bytes": 4766,
+          "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+          "bytes": 17904,
+          "sha256": "74c072ca22252bdd004732fb770e67690d63eab01a825b178dc0a66ffa62542b"
+        }
+      ],
+      "newClosedJobs": {
+        "CABLE5000": 5000,
+        "CABLE5750": 5750,
+        "CABLE7750": 7750
+      },
+      "sourcePreflight": {
+        "path": "reviews/raw-storage-layout-source-preflight.md",
+        "bytes": 15060,
+        "sha256": "9a141646ab36b49c2bac0f8b54cfc7cc0e9e2add1a4399dd13e24b436bc7a345"
+      },
+      "constraints": [
+        "Add exactly these3 profileIDs with exact integer field_cable quantity(mm) and immutable 500\u00d71000\u00d7500mmlightenvelope. Derive mass/ceilingvolume using unchangedreal catalog; never caller-sized genericCABLEregex, no new freeCable40portion.",
+        "All historical CABLE4750/6500/8000/7000/5250/7500 and CABLE40 profileIDs/terms/mass/size/sourceRefs/canonicalJSON/digests remain byte-identical in outputs. NewIDs alone maycarry versionedv3technicalsourceRef. No oldMaterial/Saves/recipes/Golden/sourcecatalog changes.",
+        "Current Session already enumerates Object.keys(CLOSED_CABLE_JOBS) and rejects wrongquantities. Use existing actualfinitePickup/Nativecarry/deposit/wholecustody/connecttransaction. ActualmeasuredSocketL1 quantizedceil250mm equalscorrespondingjob; matchNativecurrentownedFrame/Reach3m/LOS/role; no admissionbypass or injectedPose.",
+        "Expected5-linklayout uses7.5m+8m+5.75m+5m+7.75m=34m ofactualfinite40m;6mremaining. SeparateactualSource/Cargo/Material/Nativeconstruction/support/port proof needed; B04 ownServiceairnotyetproven, do notassertpoweredroutefrom arithmetic.",
+        "GenuineRED for3profiles thenfocusedSource/mass/transfer/replay/oldprofileimmutability GREEN/regression/tsc/build. Exact2pathssoleIntegrator, existingSharedSession/Host scopes unchanged; oldui/ArtWriterHOLD, CellpureGoal only.",
+        "No additionalTerrain/Flora/sourcegeometry/collider/budget/queue/timeout/Dependency/Engine/W12-W29/Saveadoption/forcepush/Mainmerge/push/publishing; ownerhumanacceptancepending."
+      ]
     }
   },
   "actorTransfers": [

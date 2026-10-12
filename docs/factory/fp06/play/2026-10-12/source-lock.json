@@ -417,6 +417,17 @@
       "materialCreditMg": 0,
       "runtimeSourceDigest": "NOT_IMPLEMENTED",
       "humanTerrainAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    "closedV5CableJobs": {
+      "grant": "grants/play-04-closed-v5-cable-jobs.json",
+      "newJobs": {
+        "CABLE5000": 5000,
+        "CABLE5750": 5750,
+        "CABLE7750": 7750
+      },
+      "status": "GRANTED_NOT_IMPLEMENTED",
+      "historicalProfiles": "UNCHANGED",
+      "actualNativeRoutes": "NOT_RUN"
     }
   },
   "supplementalBalanceOwnerRequest": {
