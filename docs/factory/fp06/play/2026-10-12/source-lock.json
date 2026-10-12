@@ -123,7 +123,7 @@
       "rootWitness": "play00-root-witness.json"
     },
     "PLAY-01": {
-      "status": "SOURCE_TESTS_PASS_NORMAL_V3_ROUTE_FAIL_BEFORE_MARGIN_TARGET",
+      "status": "V4_SOURCE_AND_REAL_HEAVY_BATTERY_ROUTE_PASS_SCOPE_ONLY_CABLES_OPEN",
       "grant": "grants/play-01-integrator.json",
       "implementationWriteHold": false,
       "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING",
@@ -131,11 +131,11 @@
       "v3Grant": "grants/play-01-v3-candidate.json"
     },
     "PLAY-02": {
-      "status": "ORIGINAL_ARTIFACTS_ADMITTED_CORRECTION_REVIEW_PASS_COMMIT_PENDING",
+      "status": "ART_CORRECTIONS_COMPILER_LOADER_ADMITTED_NATIVEPART_FOUNDATION_COMMITTED_S1_RUNTIME_PENDING",
       "grant": "grants/play-02-art.json",
       "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
       "sealedCommitSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
-      "runtimeAdoption": "SOURCE_PAYLOAD_IMPORT_ONLY_RUNTIME_BINDING_NOT_RUN",
+      "runtimeAdoption": "PURE_LOADER_AND_NATIVE_PART_FOUNDATION_ONLY_NORMAL_GLB_WIRING_IN_PROGRESS",
       "integratorImportCommitSha": "0dd5cdb6400aac5df3f0fe7937a6d612d8a76bd6",
       "correctionGrant": "grants/play-02-art-corrections.json",
       "s1BridgeStatus": "PURE_COMPILER_COMMITTED_REVIEWED_ADMISSION_GRANTED",
@@ -145,7 +145,7 @@
       "status": "PARTIAL_TECHNICAL_PASS_NATIVE_UI_AND_FULL_FLOW_IN_PROGRESS",
       "uiSourceCommitSha": "3cc40cc604ffbd4e47ced3411274f32fa406affa",
       "uiImportCommitSha": "3e4acefc18a543e27fbfd97378d6a6929f194b8f",
-      "uiRuntimeStatus": "NOT_RUN",
+      "uiRuntimeStatus": "PASS_SCOPED_NORMAL_START_CARGO_NATIVE_INPUT; MAP_LINEAGE_FULLFLOW_PENDING",
       "inputActivationGrant": "grants/play-03-input-activation.json",
       "compositionCommitSha": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
       "browserPerformanceStatus": "NOT_RUN"
@@ -299,7 +299,7 @@
     }
   ],
   "currentProgress": {
-    "atUtc": "2026-10-12T12:18:39.754660+00:00",
+    "atUtc": "2026-10-12T12:30:43.804438+00:00",
     "candidateDigest": "913c0c46",
     "v2ChangedSlots": 2890,
     "materialCreditMg": 0,
@@ -307,7 +307,7 @@
     "simulationIdleHold": "Observed FAIL during normal idle; independent attribution OPEN; fast successful route does not waive this",
     "artHead": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
     "artAcceptance": "Reviewed correction source+2actualLFS and pure compiler admitted by sole Integrator; runtime/S1/Owner pending",
-    "uiWriter": "/root/play_ui cleanfinal6b2e53eb0f1fd3b42a5d16ebe244fe7d0bc57199 HOLD; exact8immutableadmission granted to soleIntegrator",
+    "uiWriter": "/root/play_ui final6b2e53eb cleanHOLD; eight immutable blobs admittedf295",
     "composition": "Bounded C1 reviewPASS: bothP1closed,11guards/25conveyor/build/2originalpairPASS5000ms; final source2e8a33..; noFPS/hardwareclaim",
     "w09Endgate": "NOT_RUN; current route partialPASS does not establish complete fresh16kg W09, cable/power/fulloutput/UIMap/S1 gates remain open",
     "w10": "BLOCKED_ON_W09; read-only combined-restore preflight complete, no implementation grant",
@@ -317,7 +317,7 @@
     "uiSourceCommit": "3cc40cc604ffbd4e47ced3411274f32fa406affa",
     "uiImportCommit": "3e4acefc18a543e27fbfd97378d6a6929f194b8f",
     "artImportCommit": "0dd5cdb6400aac5df3f0fe7937a6d612d8a76bd6",
-    "uiAcceptance": "Original displayedUI OWNER_UI_REJECTED; newfinal54P Sourcecandidate6b2e53eb admittedscope only, normalGamevisual/UI functional acceptance NOT_RUN",
+    "uiAcceptance": "ActualnormalStart/Cargo/Walk/modal/repeatneutral/freshpress scopedPASS at69a; genericconsole404unresolved. Ownerstyle/S1/Save/fullW09pending",
     "route19": "NormalCarrierOverlap at7.081mm deviation, separateBatteryCarrierSupport; custody preserved; fullflowFAIL",
     "balance": "Fourreviewedplanningartifacts adopted docs/factory/balance;26rationalChecksPASS, productV2inactive/legacyW09unchanged",
     "v3": "Owner-approved exact 3-mask candidate Source/Cargo13PASS and Bootstrap2PASS/44skip/buildPASS; first normal run 085310 FAIL before margin trial; no full-route conclusion",
@@ -334,7 +334,7 @@
     "shellInputBrowser": "NormalBrowser28actualNativeACK/move/pause/held-repeat/freshPress PASS with 8 captures; fullMap/History/S1/W09/Save pending",
     "modelLoader": "Final immutable1b635619 exacttwo source blobs admitted by Integrator694570bac7ce7d59f7f1dd87266a777ac14c1b10; actual Native/S1/runtime model connection pending",
     "ownerUiFeedback": "OWNER_UI_REJECTED: user rejects current form/toolbar/largepanel appearance as notgame; coordinated visual redesign nowpriority, technical120/nativeInputScopePASS does not override rejection",
-    "gameUiCandidate": "Final8file pure UI candidate54focusedPASS/tsc/boundedindependentSourcePASS; threeRoot/reviewerbugsets fixed. Exactly1pre-finalCargoIntent7PNGstaticlayoutprobe Exit1unknown404 preserved; actualpostfix gamePixels/Ownerpending",
+    "gameUiCandidate": "Final54focused+tsc+independentSourcePASS; newactual37.544s11captures/nativeACKinputPASS.800x720and1920x1080; no800x600claim. GrayCargoS0/GLB/map/goal/save/fullflowpending",
     "candidateVersion": "hvp-factory-startsite-v4",
     "candidateDigestEvidence": "Integrator PLAY-01/20261012T102834Z normal-route-final.json actual runtime; 5190c339 only offline old-V3-header digest",
     "v4EvidenceRoot": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z",
@@ -355,7 +355,13 @@
     "s1": "Runtime readonly preflight Rootread;15 scaffold businessREDs; B09 readonly inspection integrity exact addendum55c75585, no thirdcompiler/physicalschema. Actual runtime/part/work/Owner acceptance pending",
     "gameUiImportCommit": "f29501516afa2afd0802aa00dd2e43ebda7ba7fe",
     "nativePartFoundationCommit": "69a804fd53988334c6cbfc056951ed1c79b454f9",
-    "s1PureController": "Original2HOLDdrafts 3independentP2; Source699foundation+exact2byte seeds in newWT transferredtoCellas2ndwriter, SharedNative/Host/Session/Bootstrap/Entry remainIntegrator. Current actualGameUIbrowsercapturesrunning, helperjobsneedlease"
+    "s1PureController": "ActualNative69a foundation and exacttwoHOLDseeds transferredtoCellin ownWT; initial modelcapacityfailure+oneactualsuccessfulretry, nowgenuine3P2RED-preparation. Sharedpaths remainsoleIntegrator",
+    "gameUiBrowserWitness": "actual-gamefeel-root-witness.json",
+    "freshLineagePreflight": {
+      "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/fresh-lineage-data-preflight.md",
+      "sha256": "9111002a16da9278052af65cfe00ba036f8aa44e6168e2b3e340175df85f6516",
+      "verdict": "Readonlycomplete; adoptedcumulativeMaterial+Machinecommandreceipts suffice, no liveGoaljournal; implementation/actual16kgNOT_RUN"
+    }
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {

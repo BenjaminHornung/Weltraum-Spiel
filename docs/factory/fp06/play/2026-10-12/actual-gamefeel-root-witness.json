@@ -1,0 +1,366 @@
+{
+  "schema": "hestia.fp06.actual-gamefeel-root-witness/v1",
+  "observedAtUtc": "2026-10-12T12:30:43.804438+00:00",
+  "actor": "/root",
+  "integratorHead": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+  "run": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal",
+  "receipt": {
+    "command": [
+      "node",
+      "evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/scripts/normal-gamefeel-ui-input.mjs",
+      "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui"
+    ],
+    "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+    "actor": "/root/play_integrator",
+    "startedAtUtc": "2026-10-12T12:13:08.113166+00:00",
+    "endedAtUtc": "2026-10-12T12:13:45.657575+00:00",
+    "elapsedSeconds": 37.544387824000296,
+    "exitCode": 0,
+    "rawBytes": 800,
+    "rawSha256": "59ac832df5c224268408d710c8f8e4e3fd8fb1f9a54ec13024955910f9cbe5ab",
+    "head": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+    "node": "v22.23.3",
+    "npm": "10.9.8",
+    "nodeExecPath": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+    "sourceBindings": [
+      {
+        "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "bytes": 16812,
+        "sha256": "a2b133eb9a679975fc93b2e8fad342f6afbbe50f443b2db7abf4fc261c092479"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "bytes": 4208,
+        "sha256": "1cd7288ba8e44c1b8c47a8adf6e22279e69172661f0948cc222e0481bfb272e1"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+        "bytes": 7628,
+        "sha256": "6a50d30c7299ba4fca46493ac5b92d6d8a93d7b13b4f603e953e580e87bab936"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "bytes": 66247,
+        "sha256": "2a0a46eb1d4b444258aac05ddc08a4e7d49e3993312a6ed068010e03fb914512"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "bytes": 10851,
+        "sha256": "26785cb037051b29604d2e0d91d5e9d2d5358adabcaeace3f213e37cb02fd5bd"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+        "bytes": 5123,
+        "sha256": "0de49c107d9742f1bbc0dc9217775a733461d6e29a74007edfc8a4e4c9287c7c"
+      },
+      {
+        "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "bytes": 41700,
+        "sha256": "fd5ca0b6edc34275bf40684ac407c7e79335d441a32f8c281935c55bc2ede901"
+      },
+      {
+        "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+        "bytes": 14549,
+        "sha256": "ce9c73073918b5f1bdad790be737b1a9036ebd1e93ca914cdfca6492407d1fa9"
+      },
+      {
+        "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "bytes": 179298,
+        "sha256": "32460675bf60ce336e90197c086450a60329545aa0ad5b0f681aec487ee77e1d"
+      },
+      {
+        "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+        "bytes": 39990,
+        "sha256": "0fb64bd936208872a0e5a21ef5362a930289e5e789f8798eb2ac2c40bca35e06"
+      },
+      {
+        "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+        "bytes": 5283,
+        "sha256": "507fe4e331eaa5fb1d0d864482220683846d5aa079530afe8762cfc889160d2a"
+      },
+      {
+        "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "bytes": 63175,
+        "sha256": "84360cd233cf88ccae95d31f1c93cbcac50b3d02daa4e79895b9dc0c331212a3"
+      },
+      {
+        "path": "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+        "bytes": 3294,
+        "sha256": "e4ebcdc631236d73e6cc2bdff1fd1dddd32eb7dd77f75ac863f0adf56fc8010e"
+      },
+      {
+        "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+        "bytes": 9295,
+        "sha256": "da2b7fb3f93babd7caa87385678c9bab8e9fbd99249338c1b69b69c0c47dd975"
+      },
+      {
+        "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "bytes": 97661,
+        "sha256": "e766c09a40f57f7439208683494531b92efc727c69d889b28bfcbedb0f7427c5"
+      },
+      {
+        "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+        "bytes": 41971,
+        "sha256": "ff508546719ac1b77bada36ed0a0d8034995b1ba9741463cb769b76b4dd820a3"
+      }
+    ]
+  },
+  "execution": {
+    "entry": "http://127.0.0.1:5174/factory.html",
+    "browserVersion": "154.0.8037.57",
+    "viewport": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1
+    },
+    "input": "normal visible controls and trusted CDP keys only; read-only diagnostics; no World/pose/clock/material mutations",
+    "scope": "Normal actual gamefeel Start/Cargo/Walk/responsive selection+scroll/Help/Input ACK; map/history/full W09/S1/Save/Owner acceptance pending",
+    "events": [
+      {
+        "name": "normal production Entry and actual paused start menu",
+        "start": "2026-10-12T12:13:08.802Z",
+        "end": "2026-10-12T12:13:19.198Z",
+        "status": "completed"
+      },
+      {
+        "name": "real New Game and finite cargo open",
+        "start": "2026-10-12T12:13:21.521Z",
+        "end": "2026-10-12T12:13:23.353Z",
+        "status": "completed"
+      },
+      {
+        "name": "actual material selection and responsive small/wide reachable transfer controls",
+        "start": "2026-10-12T12:13:25.183Z",
+        "end": "2026-10-12T12:13:33.309Z",
+        "status": "completed"
+      },
+      {
+        "name": "explicit real Play and ACK neutral level",
+        "start": "2026-10-12T12:13:33.309Z",
+        "end": "2026-10-12T12:13:35.169Z",
+        "status": "completed"
+      },
+      {
+        "name": "trusted released WASD movement",
+        "start": "2026-10-12T12:13:36.681Z",
+        "end": "2026-10-12T12:13:37.201Z",
+        "status": "completed"
+      },
+      {
+        "name": "actual modal pause, no gameplay while modal open and no automatic close resume",
+        "start": "2026-10-12T12:13:38.278Z",
+        "end": "2026-10-12T12:13:39.729Z",
+        "status": "completed"
+      },
+      {
+        "name": "held key across explicit Play remains neutral until release and fresh press",
+        "start": "2026-10-12T12:13:40.571Z",
+        "end": "2026-10-12T12:13:43.026Z",
+        "status": "completed"
+      },
+      {
+        "name": "confirmed final Pause preserves material and closed save admission",
+        "start": "2026-10-12T12:13:43.965Z",
+        "end": "2026-10-12T12:13:44.917Z",
+        "status": "completed"
+      }
+    ],
+    "errors": [
+      {
+        "atUtc": "2026-10-12T12:13:14.349Z",
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      }
+    ],
+    "resources": [
+      {
+        "url": "http://127.0.0.1:5174/factory.html",
+        "status": 200,
+        "type": "document"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/factory-C4Yv534t.css",
+        "status": 200,
+        "type": "stylesheet"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/hvpBootstrap-GeJ96uLU.css",
+        "status": 200,
+        "type": "stylesheet"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/hash-_jyFVLd7.js",
+        "status": 200,
+        "type": "script"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/factoryAssets-DDOGGOif.js",
+        "status": 200,
+        "type": "script"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/installationProfile-DBLIsq2w.js",
+        "status": 200,
+        "type": "script"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/factory-BHPQBVDl.js",
+        "status": 200,
+        "type": "script"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/hvpBootstrap-FnOa82Io.js",
+        "status": 200,
+        "type": "script"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/cargoSite-BhYasoS7.js",
+        "status": 200,
+        "type": "script"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+        "status": 200,
+        "type": "script"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+        "status": 200,
+        "type": "script"
+      },
+      {
+        "url": "http://127.0.0.1:5174/assets/physicsWorker-DtrD_gl0.js",
+        "status": 200,
+        "type": "script"
+      }
+    ]
+  },
+  "captures": [
+    {
+      "path": "normal-ui/01-normal-start-menu.png",
+      "bytes": 812478,
+      "sha256": "1d1d1a84463ec570b4c8dbd1b1233da8d957967ec1ce15bd6782b1e42346cbbd",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/02-opened-finite-cargo.png",
+      "bytes": 521810,
+      "sha256": "61b57fe572e5b29bb928ce54edbc8c728547593a12e0556a4122682f9757d730",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/02b-intentional-material-selection.png",
+      "bytes": 520099,
+      "sha256": "1fe8496030536208de1cd8d53800b34f1bc053221d112e7653a2ba28f58b74ee",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/02c-small800-material-actions.png",
+      "bytes": 283954,
+      "sha256": "6235b638aab44e142dc689b4b94c7de120365e8e06d8fd84fd4cb951b2650c0c",
+      "width": 800,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/02d-wide1920-material-actions.png",
+      "bytes": 1152082,
+      "sha256": "cf41747e0ac38733e097b628b9ae0666a6c830411f71a57d68abb33da267c553",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "path": "normal-ui/03-playing-after-native-ack.png",
+      "bytes": 261566,
+      "sha256": "c94129b2993b5d51f8621984595c2a6c091464e4600190f4eeee4db8a0e2e97f",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/04-released-normal-walk.png",
+      "bytes": 276372,
+      "sha256": "c509302b180a3027d37796bba2806b5dffa5bfbc87c1b0b5ac1affcfd2a3720d",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/05-modal-pause-and-help.png",
+      "bytes": 342249,
+      "sha256": "07131d6ea35b6a2d01994f81d1050c8df3840f8cb77e1813586303885015c021",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/06-held-repeat-after-new-native-ack.png",
+      "bytes": 276389,
+      "sha256": "1a0d9ed7f8120352f163f982dd26b206e7421cf0dfab06e27b65cca409d53a2d",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/07-fresh-press-after-neutral-release.png",
+      "bytes": 260998,
+      "sha256": "2612d913577bfc6a276d7775f2a435fc56302babd348268ae4f09d1dd9a9fad6",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "normal-ui/08-final-confirmed-pause.png",
+      "bytes": 268238,
+      "sha256": "cbe1275b9fc0d4aa1ee8c167a64152694742b997adaa72a888ec1a3a5beef6ae",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "rootActuallyViewed": [
+    "01-normal-start-menu.png",
+    "02-opened-finite-cargo.png",
+    "04-released-normal-walk.png",
+    "02c-small800-material-actions.png"
+  ],
+  "boundedVerdict": "PASS_SCOPE_REAL_START_CARGO_MODAL_NATIVE_INPUT_ONLY",
+  "limitations": [
+    "Generic console404 exists without URL; captured HTTP responses all200 and no PageError; cause unknown.",
+    "Small actual viewport800x720, not800x600.",
+    "S0 gray cargo still visible; new GLB/S1 runtime integration NOT_RUN.",
+    "No full16kg/powerloss/fulloutput/map/save/restart/Owner acceptance claim."
+  ],
+  "final": {
+    "testBridge": false,
+    "sourceDigest": "913c0c46",
+    "nativeHost": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 496,
+      "physicsStatus": "Paused",
+      "confirmed": true,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "pause",
+        "error": null
+      },
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "913c0c46",
+        "baseDigest": "913c0c46",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "materialMassMg": 2984400000
+  }
+}
