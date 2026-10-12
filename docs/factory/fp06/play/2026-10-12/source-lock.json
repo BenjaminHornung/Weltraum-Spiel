@@ -444,16 +444,21 @@
       "finalDeliveryCleanCopy": "NOT_RUN"
     },
     "visualReviewPackage": {
-      "ownerRequested": true,
-      "output": "/workspace/review-packages/Hestia-FP06-Review-2026-10-12",
-      "nativeBlendCount": 24,
-      "hestiaBlendCount": 23,
-      "olderReferenceCount": 1,
-      "renderStatus": "NOT_RUN",
-      "secondWriter": "/root/visual_preview_recovery",
-      "grant": "grants/play-visual-review-assets.json",
-      "actorTransferReason": "Same actor still fails before tools even after actual environmentREADY; fresh no-history actor avoids unavailable inherited attachments; no source reset/rerender/restart of actual work"
-    }
+      "status": "DELIVERED_INTERIM_REVIEW_INTEGRITY_PASS",
+      "path": "/workspace/review-packages/Hestia-FP06-Review-2026-10-12.zip",
+      "sha256": "fa6b85c5f2497a6c1a72fe8fed7afe31f9694406f40a473cb432bfb08d225fc0",
+      "images": 78,
+      "currentHestiaSourcesRendered": 23,
+      "newBlenderViews": 46,
+      "historicalReferenceViews": 8,
+      "actualBrowserImages": 24,
+      "actualSourceBlends": 24,
+      "actualRuntimeGlbs": 23,
+      "legacyNative51Open": "FAIL_INSTALLED43_CANNOT_READ_HEADER_DOCUMENTED",
+      "reviewDocs": "/workspace/review-packages/Hestia-FP06-Review-2026-10-12/REVIEW.md",
+      "ownerStyle": "OWNER_REVIEW_PENDING"
+    },
+    "serialIntegratorTakeover": "grants/serial-integrator-root-recovery.json"
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {

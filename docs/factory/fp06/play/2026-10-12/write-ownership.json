@@ -2,12 +2,11 @@
   "schema": "hestia.fp06.play-write-ownership/v1",
   "openedAtUtc": "2026-10-12T06:25:55.138956+00:00",
   "maxSimultaneousImplementationWriters": 2,
-  "integrator": "/root/play_integrator",
+  "integrator": "/root",
   "controlPlaneRoot": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
   "previousOwnership": "../../write-ownership.json",
   "activeImplementationWriters": [
-    "/root/play_integrator",
-    "/root/visual_preview_recovery"
+    "/root"
   ],
   "activeDocumentationWriter": "/root",
   "browserCpuLease": "/root/play_integrator input/Host/native runtime; other jobs coordinate directly",
@@ -3099,7 +3098,7 @@
     "OWNER_REQUESTED_COMPLETE_MARKDOWN_IMAGE_REVIEW": {
       "schema": "hestia.fp06.visual-review-art-grant/v1",
       "milestone": "OWNER_REQUESTED_COMPLETE_MARKDOWN_IMAGE_REVIEW",
-      "actor": "/root/visual_preview_recovery",
+      "actor": "/root",
       "branch": "codex/hestia-fp06-visual-review-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-visual-review-2026-10-12",
       "baseCommitSha": "f85d1379c3458488d225105156adfb66837799ce",
@@ -3160,6 +3159,18 @@
         ],
         "actualPreviewCompleted": "Pilot01localdenoisefail +Pilot02actual2CyclesPNG; WorkbenchpilotNOT_RUN",
         "maxWriters": 2
+      },
+      "serialRecovery": {
+        "atUtc": "2026-10-12T20:03:02.646565+00:00",
+        "observedLiveAgents": [
+          "/root",
+          "/root/visual_preview_recovery:pending_init"
+        ],
+        "previousPreviewActorStatus": "Rootinterruptconfirmedpending_init",
+        "previousIntegratorLiveStatus": "Not listed in actual current collaboration registry; filesystemdrafts preserved",
+        "reason": "Execute owner-authorized preview package serially while noactual delegatedwriterturn runs. Do not claim retired/pending agents as working. Root coordinates ownCPU, noSource/reset/remote-mainrestart.",
+        "rootRole": "Sole serial implementation writer; sharedIntegrator role after artifactrender, control/preview now; maximum1activewriter",
+        "existingPreviewScriptCommit": "6012300817f615b26786d84bacb3d1c1fe8f6613"
       }
     },
     "PLAY-04-pure-fresh-lineage-admission": {
@@ -3311,5 +3322,17 @@
       "actualPreviewCompleted": "Pilot01localdenoisefail +Pilot02actual2CyclesPNG; WorkbenchpilotNOT_RUN",
       "maxWriters": 2
     }
-  ]
+  ],
+  "serialRecovery": {
+    "atUtc": "2026-10-12T20:03:02.646565+00:00",
+    "observedLiveAgents": [
+      "/root",
+      "/root/visual_preview_recovery:pending_init"
+    ],
+    "previousPreviewActorStatus": "Rootinterruptconfirmedpending_init",
+    "previousIntegratorLiveStatus": "Not listed in actual current collaboration registry; filesystemdrafts preserved",
+    "reason": "Execute owner-authorized preview package serially while noactual delegatedwriterturn runs. Do not claim retired/pending agents as working. Root coordinates ownCPU, noSource/reset/remote-mainrestart.",
+    "rootRole": "Sole serial implementation writer; sharedIntegrator role after artifactrender, control/preview now; maximum1activewriter",
+    "existingPreviewScriptCommit": "6012300817f615b26786d84bacb3d1c1fe8f6613"
+  }
 }
