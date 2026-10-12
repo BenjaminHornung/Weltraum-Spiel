@@ -1,0 +1,32 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-03-powerpanel-amendment",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T08:01:10.647539+00:00",
+  "status": "GRANTED",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "bytes": 1283,
+      "sha256": "2ffe21ca555fdd9f60d06997fd2a42a3c4775319ec7768e45aaeb161529a7f15"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "bytes": 23331,
+      "sha256": "caf724755fb9a2cd11670172bf3a48e7de9dd8580b0b40ee51d9fa8a68722006"
+    }
+  ],
+  "constraints": [
+    "Existing single canonical pending/receipt/epoch panel controller; no parallel Submit channel",
+    "Expose actual Host source-bound enable capability and current state for installed eligible devices",
+    "Disabling electric supply requires actual confirmation; no false disabled allocation/work or UI-only switch",
+    "No shared contract write authority for UI writer; Integrator implements corresponding authoritative state under Runtimegrant",
+    "Focused business RED/GREEN and affected panel regression; source/BOM/power policy unchanged"
+  ]
+}

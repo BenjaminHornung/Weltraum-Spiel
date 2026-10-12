@@ -1,0 +1,73 @@
+{
+  "schema": "hestia.fp06.play-geometry-proposal-preparation/v1",
+  "milestone": "PLAY-01-route-margin-proposal",
+  "actor": "/root/play_integrator",
+  "status": "PROPOSAL_CALCULATION_ONLY",
+  "authorizedAtUtc": "2026-10-12T08:06:10.743338+00:00",
+  "productWriteSet": [],
+  "singleCandidate": {
+    "parentSourceVersion": "hvp-factory-startsite-v2",
+    "parentDigest": "ec8ba9b1",
+    "edits": [
+      {
+        "mask": "S1",
+        "from": [
+          0.75,
+          6,
+          3.25,
+          3.5
+        ],
+        "to": [
+          0.75,
+          6,
+          3.0,
+          3.5
+        ]
+      },
+      {
+        "mask": "S2",
+        "from": [
+          8,
+          15.5,
+          3.25,
+          3.5
+        ],
+        "to": [
+          8,
+          15.5,
+          3.0,
+          3.5
+        ]
+      },
+      {
+        "mask": "S3",
+        "from": [
+          2,
+          13,
+          4.5,
+          4.75
+        ],
+        "to": [
+          2,
+          13,
+          4.5,
+          5.0
+        ]
+      }
+    ]
+  },
+  "budget": {
+    "sourceCensus": 1,
+    "habitatCensus": 1,
+    "newNativeWorlds": 0,
+    "runtimeImplementation": 0
+  },
+  "constraints": [
+    "Reviewable exact sparse delta and actual digest before owner question; no runtime source edit",
+    "All15original masks/125mm source cells/cargo/nativecollider/movement/budget unchanged",
+    "Actual changed-column and added/removed slot counts, sparse fileSHA, source SHA and flora invalid owners reported honestly",
+    "No geology/material credit, no carried-pose or inventory injection",
+    "Separate versioned candidate requires new runtime grant; final terrain OWNER_REVIEW_PENDING",
+    "Preserve run19 normal CarrierOverlap/outofreach and finite custody failure evidence"
+  ]
+}

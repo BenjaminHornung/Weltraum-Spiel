@@ -1,0 +1,124 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-03-04-runtime",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T07:58:40.822403+00:00",
+  "authorization": "Explicit user followup normal UI, asset integration and real power-off verification after documented path/conflict check",
+  "status": "GRANTED",
+  "implementationWriteHold": false,
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+    "apps/weltraum-browser/src/factory/presentation/playAssetLoader.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/presentation.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "exists": true,
+      "beforeBytes": 10114,
+      "beforeSha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a",
+      "function": "Confirmed Shell/Map/Onboarding capability contract, nullable confirmed player heading; extend enabled device readmodel"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "exists": true,
+      "beforeBytes": 66208,
+      "beforeSha256": "ea8d8cdee5ea1826a9b00f0dd7d2d7cbfc4408cdeb7cb2e3f880893ea86a448a",
+      "function": "Handle real existing set-enabled intent with sourcebound command history/receipt and revision gates; expose confirmed material/production/installation facts; no direct UI world truth"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "exists": true,
+      "beforeBytes": 31347,
+      "beforeSha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a",
+      "function": "Carry enabled device state in current confirmed power supply/consumer/belt inputs with WIP/material/work holds preserved; persist in later W10"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "exists": true,
+      "beforeBytes": 175973,
+      "beforeSha256": "049946eb7039aa736761c6002e0e531412861ba28f039aa87637fb0f44a141e9",
+      "function": "Host-owned focus/lifecycle/map pose/known-source coverage/footprint readviews; shared model pose and part retirement receiver"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "exists": true,
+      "beforeBytes": 13673,
+      "beforeSha256": "7e4dad82fffb27cad3f4f5064460e6c57d3b4c46f81eeca84901f9baf2e31754",
+      "function": "Wire exactly one new Shell, existing BuildTool and Connections; normal device/power UI actions and loader integration"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+      "exists": true,
+      "beforeBytes": 14061,
+      "beforeSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "function": "Admit reviewed render derivatives against frozen native source/part profiles; keep original procedural mesh and bounds authority"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+      "exists": true,
+      "beforeBytes": 3309,
+      "beforeSha256": "c426f01ae087004a1eacde662de0c5da7c22f18410d5900d2ca20e840cae111b",
+      "function": "Bind existing phase adapter to confirmed production/power readview and removed-part filter, no frame-time work"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/playAssetLoader.ts",
+      "exists": false,
+      "beforeBytes": 0,
+      "beforeSha256": null,
+      "function": "NEW bounded manifest/GLB derivative loader, version/source/part admission, measured render resource lifetime, explicit missing/corrupt load status"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "exists": true,
+      "beforeBytes": 62333,
+      "beforeSha256": "20f4480c965480cf097e1c4541a31868c02595ea4dbaae4445718b6a315917cc",
+      "function": "Existing real command receiver/focus/revision/enable/hold/replay guards"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "exists": true,
+      "beforeBytes": 36419,
+      "beforeSha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b",
+      "function": "New enabled state guards; original6563B paid-band block must remain exactlyunchanged"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/presentation.test.ts",
+      "exists": true,
+      "beforeBytes": 15933,
+      "beforeSha256": "ab36c2f75a316400f60d5d7cb5cccf260815a7f6af96aa1622a9b4af2ff7bab9",
+      "function": "Source/part/pose/WAIT and removed-part receiver regression"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts",
+      "exists": false,
+      "beforeBytes": 0,
+      "beforeSha256": null,
+      "function": "NEW real manifest/GLB validation/missing/corrupt/retire tests"
+    }
+  ],
+  "constraints": [
+    "Sole Integrator; UI writer seven separate new paths and Art HOLD remain disjoint",
+    "Freeze actual FactoryShellPort with UI writer; UI receives confirmed host/source/facility/production facts and explicit intents only",
+    "Exactly one world/session lifetime; pending modal pause and stale-close guards, clear held keys; no automatic pointer lock or fake UI pause",
+    "Known local map from exact source coverage and confirmed native pose/world footprints; no scan each RAF/unknown-ground clearance claim",
+    "Existing set-enabled command has genuine source-bound history/revision/idempotence semantics; disabled supply/consumers cannot grant power/work or lose WIP/material; D03 unchanged",
+    "Persist added authoritative enabled state later through combined W10; do not fake current Save/Continue",
+    "Load reviewed Art derivatives only with native definition/part admission and resource retire/fallback/status; current S0 remains S0, S1 bridge gap explicit",
+    "Animation uses confirmed process state/work and actual surviving parts, no frame timer progress",
+    "Business RED then focused source-bound guard/regression tests/build and later normal browser evidence",
+    "Original6563-byte paid-band block,5000ms and recipe/BOM/source quantities/budgets unchanged",
+    "No dependency/config upgrades, limit increases, mainmerge/push/publish or old closed grants"
+  ]
+}
