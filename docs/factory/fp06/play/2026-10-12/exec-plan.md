@@ -17,7 +17,7 @@
 - Finite C01–C28, unchanged quantities/recipes/BOM/ports, 1-mg quantities, integer packaging mm³ and component counts. No free material, duplicated cargo, artificial ores or restored ship flight.
 - 0.25-m building grid and 0.125-m HVP cells remain separate. Native budgets, collider geometry, movement admission and all validation guards remain intact.
 - Real UI and ordinary keyboard/mouse movement for browser flow; no TestBridge, teleport, pose injection, collision bypass, production-time jump or prefilled replacement lots.
-- Exact three-mask V2 candidate only: preserve all 15 V1 masks and Coast/V1 behavior; compute the actual sparse byte diff and digest. Any further geometry is a separate exact proposal.
+- Preserve all15V1 masks/Coast/V1/V2 behavior. Owner approved exact additional3-range V3 candidate after2492-slot/+5.9375m² census; named versioned profile only. Other geometry stays separate exact proposal, not implied by V3.
 - Original 5000-ms composition test limit stays. New diagnosis must name the same source/scenario/toolchain and produce bounded measurements; no blanket timeout/queue/receipt/physics/power increases.
 - W09 technical gate precedes W10 implementation; W10 precedes W11 acceptance. Read-only preparations and independent assets/UI may run before those gates.
 - No W12–W29, engine change, dependency upgrade, main merge, push, force-push, PR, publishing or external upload.
@@ -131,3 +131,8 @@ Stop only dependent changes when exact source/owner policy is missing, native cl
 ## Definition of done
 
 A clean-copy normal entry is playable and saveable; full fresh-material flow and browser-restart continuation are recorded; actual assets load; ordinary UI actions and known local map work; original invariants and bounded performance gates hold; source/LFS payloads and tested README are supplied. Human initial-terrain, Art, usability and hardware reviews remain separately `OWNER_REVIEW_PENDING` until actually accepted.
+
+
+- Follow-up progress at Rootcontrol2337ffff: actual Sourcepartial393670f, UIsource3cc40cc imported3e4acef, immutableArt162 imported0dd5cdb, correctedsource C1d76e5fa committed after independent25Conveyor/build/originalpairPASS. Two cacheP1s were fixed before acceptance; oldFAILs remain. SourceV3/normalinput readiness/full16kg remainopen. ArtR2/R6/R3technicalreviewPASS awaits own12-pathcommit. UI+Art HOLD; secondimplementationwriter /root/play_cell_bridge owns only factoryPartCells.ts+itsUnitfile, Integrator retains sharedNative/Host/work/controller and originalS1grant effective9paths. BAL-00–04 artifacts docs/factory/balance committed2337ffff,26rationalChecksPASS, V2balanceinactive/legacyrecipes unchanged.
+
+- Current readiness: V3 source/cargo13PASS, Bootstrap2PASS/44skip and original buildPASS; first normal V3run085310 failed before planned margin reach and remains classified as an input/control failure with no terrain conclusion. Exact two-path input activation grant binds genuine Native ACK/cancel to user activation;11 business assertions RED before minimal implementation. Partcells44focusedPASS+originaltscPASS await independent review; current-package portable delivery preflight is read-only, not a new snapshot or gameplay acceptance.

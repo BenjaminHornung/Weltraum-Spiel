@@ -1,0 +1,35 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-03-real-input-activation-ACK",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T09:14:55.664800+00:00",
+  "status": "GRANTED",
+  "writeSet": [
+    "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "bytes": 11833,
+      "sha256": "322821a12db4b59fd5c448c578f0adafce86222b674d25a850b976b6de3c63b9"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "bytes": 30906,
+      "sha256": "702c3abd2090d9e7fb5a63c9bb5f91c284118b441e8dba43ed2e9e7d2de61707"
+    }
+  ],
+  "constraints": [
+    "SoleIntegrator sharedInput/lifecycle extension for explicitly requested realStart/Play/modalflow; no unrelatedFlightcontrolrewrite",
+    "Requestpointerlock synchronouslywithin actual useractivation; readonly promise/result only after actualNativePlayACK",
+    "Stop/modal/blur/visibility/dispose cancels bound activation and clears held movement/jump/build intents; no heldkey restore/autoRelock/autoResume",
+    "Late/stale ACK cannot activate newepoch/newWorld or undo currentmodal; captured lifecycle/nativeClient ownership, no pose/velocity/clockinjection",
+    "Pointerlock rejection/error/cancel remains actualpaused/Inspection with readable reason; neverfalse Play success",
+    "Existing normalHVP callers preserved, no unhandledrejected promises; sessionfocus no-op/null idempotence checked underexistingHostgrants",
+    "GenuineBusinessREDs for lateACK+stop/cancel/error/focuslosstwoepochs, focusedplayer-input+affectedHostregressions/build thenactualnormalbrowser",
+    "No timeouts/queue/physicsbudget increases, nativeWorldauthorityshift, engine/dependency changes/mainmerge/push/publish"
+  ]
+}

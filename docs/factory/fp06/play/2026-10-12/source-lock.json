@@ -123,22 +123,31 @@
       "rootWitness": "play00-root-witness.json"
     },
     "PLAY-01": {
-      "status": "IN_PROGRESS",
+      "status": "SOURCE_TESTS_PASS_NORMAL_V3_ROUTE_FAIL_BEFORE_MARGIN_TARGET",
       "grant": "grants/play-01-integrator.json",
       "implementationWriteHold": false,
       "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING",
-      "exactDerivedFloraDelta": "grants/play-01-flora-delta.json"
+      "exactDerivedFloraDelta": "grants/play-01-flora-delta.json",
+      "v3Grant": "grants/play-01-v3-candidate.json"
     },
     "PLAY-02": {
-      "status": "ARTIFACTS_SEALED_REVIEW_PENDING",
+      "status": "ORIGINAL_ARTIFACTS_ADMITTED_CORRECTION_REVIEW_PASS_COMMIT_PENDING",
       "grant": "grants/play-02-art.json",
       "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
       "sealedCommitSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
-      "runtimeAdoption": "NOT_RUN"
+      "runtimeAdoption": "SOURCE_PAYLOAD_IMPORT_ONLY_RUNTIME_BINDING_NOT_RUN",
+      "integratorImportCommitSha": "0dd5cdb6400aac5df3f0fe7937a6d612d8a76bd6",
+      "correctionGrant": "grants/play-02-art-corrections.json",
+      "s1BridgeStatus": "PURE_COMPILER_44_FOCUSED_TESTS_PASS_INDEPENDENT_REVIEW_PENDING"
     },
     "PLAY-03/04/06": {
-      "status": "NOT_RUN",
-      "grant": null
+      "status": "PARTIAL_TECHNICAL_PASS_NATIVE_UI_AND_FULL_FLOW_IN_PROGRESS",
+      "uiSourceCommitSha": "3cc40cc604ffbd4e47ced3411274f32fa406affa",
+      "uiImportCommitSha": "3e4acefc18a543e27fbfd97378d6a6929f194b8f",
+      "uiRuntimeStatus": "NOT_RUN",
+      "inputActivationGrant": "grants/play-03-input-activation.json",
+      "compositionCommitSha": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+      "browserPerformanceStatus": "NOT_RUN"
     },
     "W09": {
       "status": "IN_PROGRESS",
@@ -154,10 +163,12 @@
       "blockingGate": "W10_PASS"
     },
     "PLAY-06-attribution": {
-      "status": "NOT_RUN",
+      "status": "PASS_BOUNDED_COMPOSITION_C1_REVIEW_AND_ORIGINAL_CASE_PAIR_ONLY",
       "grant": "grants/play-06-attribution.json",
       "productWriteSet": [],
-      "runtimeCandidateGranted": false
+      "runtimeCandidateGranted": true,
+      "candidateCommitSha": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+      "browserFrameOrHardwareAcceptance": "NOT_RUN"
     }
   },
   "newAuthorizationBoundaries": {
@@ -287,15 +298,15 @@
     }
   ],
   "currentProgress": {
-    "atUtc": "2026-10-12T07:51:10.564126+00:00",
+    "atUtc": "2026-10-12T09:28:38.765498+00:00",
     "candidateDigest": "ec8ba9b1",
     "v2ChangedSlots": 2890,
     "materialCreditMg": 0,
     "normalHeavyRoute": "341kg pickup/depot/playerexit/paidFormer native PASS (partial W09); battery/cable/full16kg NOT_RUN",
     "simulationIdleHold": "Observed FAIL during normal idle; independent attribution OPEN; fast successful route does not waive this",
     "artHead": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
-    "artAcceptance": "Original22 technicalpayloadreviewed; newStorage-open/catalogGuard/freshtsc corrections await independentreview; Art activeexact12pathgrant",
-    "uiWriter": "/root/play_ui, new isolated seven-path grant",
+    "artAcceptance": "Original22 payloads admitted; R2/R6/R3 twelve-path correction independent BOUNDED PASS, unchanged staged bytes awaiting closure commit; writer HOLD",
+    "uiWriter": "/root/play_ui HOLD; source admitted; normal-browser Host wiring ongoing by sole Integrator",
     "composition": "Bounded C1 reviewPASS: bothP1closed,11guards/25conveyor/build/2originalpairPASS5000ms; final source2e8a33..; noFPS/hardwareclaim",
     "w09Endgate": "NOT_RUN",
     "w10": "BLOCKED_ON_W09",
@@ -308,7 +319,11 @@
     "uiAcceptance": "Seven modules technicalreviewPASS/31tests/tsc; Native/browserwiring NOT_RUN; UIwriter HOLD",
     "route19": "NormalCarrierOverlap at7.081mm deviation, separateBatteryCarrierSupport; custody preserved; fullflowFAIL",
     "balance": "Fourreviewedplanningartifacts adopted docs/factory/balance;26rationalChecksPASS, productV2inactive/legacyW09unchanged",
-    "v3": "Exact3mask2492slot candidate ownerapproved and grantissued; SourceRED/GREEN/runtime pending"
+    "v3": "Owner-approved exact 3-mask candidate Source/Cargo13PASS and Bootstrap2PASS/44skip/buildPASS; first normal run 085310 FAIL before margin trial; no full-route conclusion",
+    "integratorHead": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+    "inputActivation": "11 genuine business assertions RED; minimal ACK/cancel lifecycle implementation ongoing in exact two-path grant",
+    "partCells": "28 new compiler plus16 existing presentation =44PASS and original tscPASS; independent review pending; no S1/Native/Owner acceptance",
+    "portableDelivery": "Read-only current-package preflight dispatched; old instance2 remains historical, final clean-copy verification NOT_RUN"
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {
