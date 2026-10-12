@@ -329,7 +329,9 @@
     "partCellsCommit": "214ff98a07ea76dce50e5382f842decd2ce9a6a0",
     "artCorrectionImportCommit": "9a2c9397af8efcb56d2e18bc578b2c30eab6875d",
     "partCellsImportCommit": "9a2c9397af8efcb56d2e18bc578b2c30eab6875d",
-    "modelLoaderWriter": "/root/play_cell_bridge exacttwofile delegatedmodule, clean9a2base/23verified actualGLBs"
+    "modelLoaderWriter": "/root/play_cell_bridge exacttwofile delegatedmodule, clean9a2base/23verified actualGLBs",
+    "v4": "Owner-approved isolated exactcandidate, Source implementation/native route not yet run",
+    "shellInputBrowser": "NormalBrowser28actualNativeACK/move/pause/held-repeat/freshPress PASS with 8 captures; fullMap/History/S1/W09/Save pending"
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {
@@ -351,5 +353,12 @@
     "scope": "exact3maskdiff2492slots; isolatedcandidate only",
     "finalTerrainAcceptance": "OWNER_REVIEW_PENDING",
     "runtimeGrant": "grants/play-01-v3-candidate.json"
+  },
+  "v4CandidateOwnerApproval": {
+    "answer": "Diesen exakten V4-Kandidaten freigeben",
+    "recordedAtUtc": "2026-10-12T10:25:42.973191+00:00",
+    "scope": "exactthreeconnectorMasks/7m\u00b2/1164slots isolatedRuntimecandidate",
+    "finalTerrainAcceptance": "OWNER_REVIEW_PENDING",
+    "runtimeGrant": "grants/play-01-v4-connector-candidate.json"
   }
 }

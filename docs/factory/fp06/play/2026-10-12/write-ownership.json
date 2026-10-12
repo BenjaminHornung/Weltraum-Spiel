@@ -2065,6 +2065,147 @@
         "Focused hint assertion may be added or adapted to existing onboarding test; use current focused UI verification, no invented extra gameplay gate",
         "No other module/style/Host/World files or dependency/budget/mainmerge/push/publish/W12\u201329 authorization"
       ]
+    },
+    "PLAY-01-V4": {
+      "schema": "hestia.fp06.play-grant/v1",
+      "milestone": "PLAY-01-owner-approved-V4-connector-candidate",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "headAtRead": "9a2c9397af8efcb56d2e18bc578b2c30eab6875d",
+      "authorizedAtUtc": "2026-10-12T10:25:42.973191+00:00",
+      "status": "GRANTED_EXACT_ISOLATED_CANDIDATE",
+      "ownerAnswer": "Diesen exakten V4-Kandidaten freigeben",
+      "authorization": "Explicit owner async approval of the complete separate seven-square-metre/1164-slot proposal; not final terrain acceptance",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+        "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+          "bytes": 5861,
+          "sha256": "b11cfc410341636bf044c3cbf21aeeabb938adb00e2665f0c1e336df1e549bf9"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+          "bytes": 39474,
+          "sha256": "c1f2f2742a36f09de3b049cd7b7d87c25443215a41843ccd7e53c54405529d9c"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+          "bytes": 4163,
+          "sha256": "12631cc41ca51ca7255f47668d1e1cc86300fddfdf05fa48e88a67f945295945"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "bytes": 10824,
+          "sha256": "2cbb36d02e7fe34fa4776be0ebfc33b832fd76c53cc8fa975ffca12239435dea"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+          "bytes": 179112,
+          "sha256": "042a234070e8e71dc6f60e18077a3304bef9d493f8060454264b02fcbc986b2a"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+          "bytes": 16812,
+          "sha256": "1991c05c8026ef39c80623d1e182238d00f35810eeeb1c1a71aef5eff8931a75"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+          "bytes": 6854,
+          "sha256": "8f4358216f1e4a582076a457b8c00f7e1bea3ab0c1482065c8e6c7b20e3bfb1a"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+          "bytes": 4433,
+          "sha256": "3bbbaf9abec562a458b5a47ba5cade7a9de70f3f2c04e1f1ac0d87c6b9f7222f"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+          "bytes": 25321,
+          "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+          "bytes": 94596,
+          "sha256": "3e4c140357bf5efcf11dde975c05259ac4a241c53ad98b4b6e9b0fe60b783f90"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+          "bytes": 63175,
+          "sha256": "84360cd233cf88ccae95d31f1c93cbcac50b3d02daa4e79895b9dc0c331212a3"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+          "bytes": 39743,
+          "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+          "bytes": 7458,
+          "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
+        }
+      ],
+      "proposal": "../../proposals/battery-cable-connector-candidate-v4.md",
+      "exactNewMasks": [
+        [
+          9,
+          11,
+          5,
+          5.5
+        ],
+        [
+          9,
+          11,
+          6.5,
+          8.5
+        ],
+        [
+          11,
+          13,
+          7.5,
+          8.5
+        ]
+      ],
+      "baseV3Digest": "16dbaa28",
+      "baseV3SlotsSha256": "267230ca09cf7d8a9fa0d6f6bc2e3fac6cc0cd7adaaf2af57c3c24d60a6187d7",
+      "proposalSlotsSha256": "ea7ccf99cb3ec14f284793664df4535544a76aa7e26a83ff107f98504a1c977d",
+      "proposalDigestUnderOldV3Header": "5190c339",
+      "sparseDiff": {
+        "path": "proposals/connector-v4/v3-to-connector-sparse-slot-diff.json",
+        "bytes": 16298,
+        "sha256": "647a9699a58ce784ccbd77b5aff8b121d12ea04addc7f28998630baff155503d"
+      },
+      "changedSlots": 1164,
+      "newColumns": 448,
+      "extraAreaMm2": 7000000,
+      "materialCreditMg": 0,
+      "constraints": [
+        "Only exact three new initial-floor masks, same y<=75 slot1/else0 rule. Closed separately named versionV4, original Coast/V1/V2/V3 constructor semantics and slotbytes unchanged; reject unknownV5/stale/mismatchedprofiles",
+        "Raw candidate8MslotSHA must equal ea7ccf99cb3ec14f284793664df4535544a76aa7e26a83ff107f98504a1c977d; 5190c339 is old-header offline checksum only, finalV4headerdigest must be computed/bound honestly",
+        "No live/source hotreplacement or migration of prior saves/generations; only new initialcandidate and futurecombinedSavepins exact sourceprofile",
+        "All15 original+3V3 ranges remain; 5688flatcols/88.875m\u00b2. Outside three newmasks every8Mslotbyte identical; 1058Airadd/106solidremaps/0removed; noResources/Inventorycredit or mining/material/wood/Rigbonus",
+        "Current97flora planner records unchanged, same one decorativebed52-220 exclusion\u219296valid; no additional flora/woodSource/NativeCollider modifications under this grant. Native regression verifies existing sameSources, no modelcull to evadeobstacles",
+        "Cargo/recipes/goldens/BOM/ports/supports/carriergeometry/probeOffsets/reach/LOS thresholds/massNativebudgets/atmost16factoryowners inclcarrier/body64/dynamic32/colliders4096/queues/timeouts unchanged",
+        "Preserve all concurrentauthorizedInput/Shell/Hostdrafts on same Integratorbranch; beforeBytes are observation bindings, never reset or overwrite other legitimate work to recreate them",
+        "Meaningful SourceBusinessRED/GREEN, exactcensus/profile/Coast/V1/V2/V3/sourceflora regressions and build, then normal keyboard/mouse 341kg route/depot/playerexit/paidFormer+50kgBattery+finiteCable access with actualNativefacts",
+        "Three static cable standpoints/distances are planningfacts, no NativeFloor/LOS approval or injectedpose; any additionalgeometry requires its own exactOwnerapproval",
+        "Census support positions used 5\u00b5m-approximated inneroffsets, all200 fall on identical125mmgridadresses vs exactNative offsets; correctedlabel/clarification preservesoriginalEvidence. RuntimeNativeoffsets neverchanged",
+        "No W12\u201329/vehicle/fluid/engine/dependency/limit changes/mainmerge/push/forcepush/PR/publishing; finalTerrain/Art/usability/hardware OWNER_REVIEW_PENDING"
+      ]
     }
   },
   "actorTransfers": [

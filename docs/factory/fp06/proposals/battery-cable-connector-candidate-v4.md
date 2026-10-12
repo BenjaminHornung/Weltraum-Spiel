@@ -1,6 +1,6 @@
 # Separater Batterie-/Kabelconnector: isolierter Kandidat V4
 
-Status **PROPOSED_UNGRANTED**. Aktuell erlaubter V3-Kandidat bleibt unverändert. Dieser Vorschlag ist keine endgültige Terrainabnahme und kein tatsächlicher Native-/Browser-/LOS-PASS. Freigabegrundlage wäre der explizite Owner-Folgeauftrag: Weitere Geometrieänderungen müssen separat als exakter Diff vorliegen. Dieser vollständige Vorschlag liegt vor; Runtimewrites beginnen erst nach einer genauen zusätzlichen Freigabe.
+Status **OWNER_APPROVED_ISOLATED_CANDIDATE**. Ownerantwort: „Diesen exakten V4-Kandidaten freigeben“. V3 bleibt als eigene unveränderte Initialversion erhalten. Dieser Vorschlag ist keine endgültige Terrainabnahme und kein tatsächlicher Native-/Browser-/LOS-PASS. Freigabegrundlage wäre der explizite Owner-Folgeauftrag: Weitere Geometrieänderungen müssen separat als exakter Diff vorliegen. Dieser vollständige Vorschlag liegt vor; Die zusätzliche Freigabe liegt nun vor; Runtimewrites gelten ausschließlich im separaten Integratorgrant play-01-v4-connector-candidate.json.
 
 ## Anlass und exakter Umfang
 
@@ -29,7 +29,7 @@ Genau ein lesender Offline-Census lief am2026-10-12T10:12:44.285809Z bis10:12:45
 
 Vegetationsplanner vorher/nachher byte-identisch:97Records, dieselbe eine bereits gebundene ungültige Deko`hvp:flora:bed-52-220`, weiterhin96zulässige Records; keine zusätzliche Ausschlussliste oder neue Pflanze. Unveränderte Plannerrecords und Generatorquellen bleiben Grundlage derselben Woodsource-Initialisierung; eine neue tatsächliche Native-/Wood-/Colliderprüfung wird hier nicht behauptet.
 
-Die100 unveränderten Medium-Carrier-Probenpositionen am geplanten Querwegmittelpunkt hatten inV3 **50**Sourcehöhenabweichungen von1,5m, im Vorschlag **0**. An der alten erstenRun19-Supportstelle hatte schonV3 **0**, beideProfile bleiben dort gleich. Dies sind Sourcecolumnwerte, **keine Native-Rays oder vollständige Wegfreigabe**.
+Die100 approximierten Medium-Carrier-Probenpositionen am geplanten Querwegmittelpunkt hatten inV3 **50**Sourcehöhenabweichungen von1,5m, im Vorschlag **0**. An der alten erstenRun19-Supportstelle hatte schonV3 **0**, beideProfile bleiben dort gleich. Die inneren Testoffsets waren±0,031245m statt der tatsächlichen Native±0,03125m; die Extremoffsets±0,06249m stimmen. Der unabhängige readonlyVergleich aller200Positionen bestätigt identische125-mm-Gridadressen und somit unveränderteSourcehöhenzählungen. Originalcensus/Script/Receipt bleiben unverändert. Dies sind Sourcecolumnwerte, **keine Native-Rays oder vollständige Wegfreigabe**.
 
 ## Kabelstandpunkte und Grenzen
 
