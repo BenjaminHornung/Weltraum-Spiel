@@ -1,0 +1,112 @@
+{
+  "observedAtUtc": "2026-10-12T00:06:47.487231+00:00",
+  "status": "ROOT_ACTUAL_NEW_INTENT_REDS_FOCUSED_AND_FULL_HOST_UI_PASSES_BUILD_VERIFIED_SOURCE_REVIEW_PENDING",
+  "records": [
+    {
+      "phase": 194,
+      "classification": "THREE_NEW_VALID_POST_HOLD_INTENT_BUSINESS_ASSERTION_REDS_ONE_PASS_40_SKIPPED",
+      "receiptPath": "194-cable-recovery-new-intent-red.command.json",
+      "receiptSha256": "fe1dd6a5ddb6e19ce6d3f33cec962ab29e527cba644a332265e582ed4a2e0070",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/hostLifecycle.test.ts",
+          "-t",
+          "exact Cable joint outcome"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-12T00:03:26.288867+00:00",
+        "endedAtUtc": "2026-10-12T00:03:33.519923+00:00",
+        "elapsedSeconds": 7.231497991997458,
+        "exitCode": 1,
+        "rawBytes": 2814,
+        "rawSha256": "4307eb93409e72d1aa70a9e4557900a4974cd60ac5a0aff32d7b83838d18cc79"
+      },
+      "rawGzipSha256": "e208b822caeaef12d86041c51c06bea100f39ddfa8a960dd105b2f1c0e5dde38",
+      "rawVerified": true
+    },
+    {
+      "phase": 195,
+      "classification": "SIX_TARGETED_HOST_RECOVERY_GUARD_PASSES_38_SKIPPED",
+      "receiptPath": "195-cable-recovery-new-intent-green.command.json",
+      "receiptSha256": "a01f0a061e77a28529c2f565bf2f22bce565877f6c72b6f16ac9bd130eb2511a",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/hostLifecycle.test.ts",
+          "-t",
+          "exact Cable joint outcome|Native-bound Cable connection"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-12T00:04:04.906019+00:00",
+        "endedAtUtc": "2026-10-12T00:04:13.948966+00:00",
+        "elapsedSeconds": 9.043317674004356,
+        "exitCode": 0,
+        "rawBytes": 429,
+        "rawSha256": "874e2213c4f291a2423ecd371815e46441754e15409b420af5d25ca385b6c882"
+      },
+      "rawGzipSha256": "a137a4685d7799d22656bc14e57779f6081d673f13dfaf45108c08cc3fbd92ee",
+      "rawVerified": true
+    },
+    {
+      "phase": 196,
+      "classification": "FULL_59_HOST_UI_REGRESSION_PASSES_NO_SKIPS",
+      "receiptPath": "196-cable-recovery-host-ui-affected.command.json",
+      "receiptSha256": "7623f3b0ecd6c7455e7bfb40a0a5617ada88a191dec82fe7f80994fad43a43ce",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/hostLifecycle.test.ts",
+          "tests/unit/factory/panels.test.ts"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-12T00:04:23.452052+00:00",
+        "endedAtUtc": "2026-10-12T00:04:50.180303+00:00",
+        "elapsedSeconds": 26.728585405995545,
+        "exitCode": 0,
+        "rawBytes": 394,
+        "rawSha256": "6aa1e8e0e804899f2c8e6ab1629cd7e12ff8c0ae98faf5526d611ccc417ab3da"
+      },
+      "rawGzipSha256": "1a40b9de0825509160c2f4ebf1f1a5611e6df73263cd8d89ce4ab6bca39757fb",
+      "rawVerified": true
+    },
+    {
+      "phase": 197,
+      "classification": "ORIGINAL_TYPESCRIPT_VITE_BUILD_PASS",
+      "receiptPath": "197-cable-recovery-original-build.command.json",
+      "receiptSha256": "7db338508822233f04c70e17543bf014babe6380f2686f03e9777ea05a2d780d",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-12T00:05:10.964418+00:00",
+        "endedAtUtc": "2026-10-12T00:05:15.267364+00:00",
+        "elapsedSeconds": 4.3037173060001805,
+        "exitCode": 0,
+        "rawBytes": 1904,
+        "rawSha256": "be736ce8d1d970c22e00797dd96e434a9168a53b911b74f8e9fbe6e51139d214"
+      },
+      "rawGzipSha256": "80b211a71c8de50ab111e0f9d54601afb54aeb0590287c98cc4f5df045f91c73",
+      "rawVerified": true
+    }
+  ],
+  "fullSourceSnapshot197Sha256": "968f2e348f34a4986656c33e1639a535e06f610f756c1f1c7e1f0ea86cc78e05",
+  "limits": [
+    "Snapshot193 is historical, not final corrected source",
+    "195\u2013196 use controlled Native transport replies, not real Rapier rollback",
+    "26 current writer paths and31 aggregate W09 product paths have different reporting boundaries",
+    "No W09 endgate, fresh browser loop, Owner Art or performance pass"
+  ]
+}
