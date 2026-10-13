@@ -336,6 +336,15 @@ export const createHvpPhysicsSession = async (
          try{if(!terrainHeld&&staged === undefined&&!branch?.busy&&!moving.holdsWorld&&!extraHeld()) { tick.advance(seconds); }return stepTimings;}
          finally{stepTimings=undefined;}
        },
+      recoverFactorySimulationHold(expectedTick:number):void {
+        const clock=tick.read();
+        if(!factoryEnabled||disposed||!Number.isSafeInteger(expectedTick)||expectedTick!==clock.ticks||clock.status!=="SimulationHold"
+          ||terrainHeld||staged||branch?.busy||moving.busy||extraHeld())throw Error("Factory SimulationHold recovery unavailable");
+        // An explicit clock acknowledgement never advances or replaces this World.
+        // Keep the existing discard accounting and require a separate later Play.
+        neutralizeFactoryInput();character?.setEnabled(false);impulseTarget=noImpulseTarget;
+        tick.resume();tick.pause();
+      },
       pause(): void { impulseTarget=noImpulseTarget;if(staged) { staged.running=false; }if(bodyResidencyWork){bodyResidencyWork.running=false;} branchWasRunning=false;movingWasRunning=false;neighborWasRunning=false;coverageWasRunning=false;character?.setEnabled(false); tick.pause(); },
        resume(): void { if(terrainHeld||moving.holdsWorld||extraHeld()){throw new Error("RecoveryHold, coverage or body transaction");}tick.resume(); },
        play(): void {

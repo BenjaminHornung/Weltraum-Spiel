@@ -9,7 +9,7 @@ import { factoryToolIcon, factoryProfileLabel } from "./itemVisuals";
 import "./factoryShell.css";
 
 export type FactoryShellSurface = "cargo" | "machine" | "power" | "technology" | "build" | "map" | "help" | "pause" | "start" | "settings";
-export type FactoryShellCommandKind = "newSession" | "continue" | "play" | "pause" | "save" | "endSession" | "settings";
+export type FactoryShellCommandKind = "newSession" | "continue" | "play" | "pause" | "save" | "endSession" | "settings" | "recoverSimulation";
 export interface FactoryShellBinding { readonly sessionId: string; readonly epoch: number }
 export interface FactoryShellCommand extends FactoryShellBinding { readonly kind: FactoryShellCommandKind }
 export interface FactoryShellView extends FactoryShellBinding {
@@ -17,7 +17,7 @@ export interface FactoryShellView extends FactoryShellBinding {
   readonly phase: "start" | "playing" | "paused" | "hold";
   readonly statusText: string;
   /** In particular Continue means an admitted combined Factory save, never a legacy HVP save. */
-  readonly capabilities: Readonly<Record<FactoryShellCommandKind, FactoryUiCapability>>;
+  readonly capabilities: Readonly<Record<Exclude<FactoryShellCommandKind,"recoverSimulation">, FactoryUiCapability>&Partial<Record<"recoverSimulation",FactoryUiCapability>>>;
   readonly hud: Readonly<{ interactionText: string; carrierMassMg: number | null; blockReason: string | null; warnings: readonly string[] }>;
   readonly onboarding: FactoryOnboardingFacts | null;
   readonly map: FactoryMapSnapshot | null;
@@ -108,12 +108,12 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     uiText(doc, "p", "F stößt einen vorhandenen gelösten Körper; 1/2/3 bleiben die Werkzeugwahl. Q/E bewegen die Inspektionskamera. E ist keine zusätzliche Interaktionstaste."),
     uiText(doc, "small", "Factory-Prototyp: Das Schiff bleibt flugunfähig. Globale Erkundung und spätere Stadt sind nicht Teil dieser Werkstatt."));
   surfaces.set("help", help);
-  const lifecycleButtons: { kind: FactoryShellCommandKind; button: HTMLButtonElement; reason: HTMLElement; detail: HTMLElement }[] = [];
+  const lifecycleButtons: { kind: FactoryShellCommandKind; row:HTMLElement; button: HTMLButtonElement; reason: HTMLElement; detail: HTMLElement }[] = [];
   const addCommand = (parent: HTMLElement, kind: FactoryShellCommandKind, label: string) => {
     const row = doc.createElement("div"); row.className = "factory-shell-command";
     const button = uiButton(doc, label, () => command(kind)), reason = uiText(doc, "small", ""), detail = uiText(doc, "span", "");
     detail.hidden = true; reason.id = `factory-shell-reason-${kind}-${lifecycleButtons.length}`; button.setAttribute("aria-describedby", reason.id);
-    row.append(button, reason, detail); parent.append(row); lifecycleButtons.push({ kind, button, reason, detail }); return button;
+    row.append(button, reason, detail); parent.append(row); lifecycleButtons.push({ kind, row, button, reason, detail }); return button;
   };
   const start = doc.createElement("section"); start.className = "factory-shell-start";
   start.append(uiText(doc, "small", "EXPEDITION · WRACKSTELLE"), uiText(doc, "p", "Das Schiff liegt still. Aus seiner Fracht wird deine erste Werkstatt."));
@@ -121,11 +121,12 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
   start.append(uiButton(doc, "Feldhandbuch", () => openSurface("help")), uiText(doc, "small", "Factory-Prototyp · Erste tragende Stütze")); surfaces.set("start", start);
   const pause = doc.createElement("section"); pause.className = "factory-shell-pause";
   const state = uiText(doc, "p", ""); state.setAttribute("role", "status"); pause.append(state);
+  addCommand(pause,"recoverSimulation","Sitzung freigeben");
   addCommand(pause, "play", "Spielen"); addCommand(pause, "save", "Speichern"); addCommand(pause, "continue", "Spielstand laden"); addCommand(pause, "settings", "Einstellungen öffnen"); addCommand(pause, "endSession", "Zurück zum Menü");
   pause.append(uiButton(doc, "Werkstatt ansehen", () => openSurface("cargo")), uiButton(doc, "Feldhandbuch öffnen", () => openSurface("help"))); surfaces.set("pause", pause);
   const settings = doc.createElement("section"); addCommand(settings, "settings", "Verfügbare Einstellungen öffnen"); surfaces.set("settings", settings);
   const resume = doc.createElement("section"); resume.className = "factory-shell-resume";
-  const resumeState = uiText(doc, "p", ""); resume.append(resumeState); addCommand(resume, "play", "Spielen");
+  const resumeState = uiText(doc, "p", ""); resume.append(resumeState);addCommand(resume,"recoverSimulation","Sitzung freigeben"); addCommand(resume, "play", "Spielen");
   for (const [name, node] of surfaces) { node.id = `factory-shell-${name}`; node.className += " factory-shell-surface"; node.hidden = true; body.append(node); }
   modal.append(modalHeader, dock, body, commandStatus); element.append(hud, utility, context, handling, warning, keyHints, resume, modal);
 
@@ -171,7 +172,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     contextButton.textContent = carried ? "Transport ansehen" : "Fracht ansehen";
     contextButton.disabled = !ui.host.confirmed || ui.state !== "Ready";
     pauseButton.disabled = pending !== null || !next.capabilities.pause.enabled;
-    for (const row of lifecycleButtons) { const capability = next.capabilities[row.kind]; row.button.disabled = pending !== null || !capability.enabled;
+    for (const row of lifecycleButtons) { row.row.hidden=row.kind==="recoverSimulation"&&(next.phase!=="hold"||!next.capabilities.recoverSimulation);const capability = next.capabilities[row.kind]??{enabled:false,reason:null}; row.button.disabled = pending !== null || !capability.enabled;
       row.button.title = compactReason(capability.reason); row.reason.textContent = capability.enabled ? "" : compactReason(capability.reason); row.reason.hidden = capability.enabled;
       row.detail.textContent = capability.reason && compactReason(capability.reason) !== capability.reason ? capability.reason : ""; }
     const m = next.map;
@@ -185,7 +186,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     presentation();
   }
   function command(kind: FactoryShellCommandKind): void {
-    if (!current() || pending !== null || !port.read().capabilities[kind].enabled) return;
+    if (!current() || pending !== null || !port.read().capabilities[kind]?.enabled) return;
     pending = kind; commandStatus.textContent = "Aktion wird noch bestätigt"; if (kind === "pause") openSurface("pause"); render(view);
     // No await before the admitted Play callback: preserve real user activation.
     try {

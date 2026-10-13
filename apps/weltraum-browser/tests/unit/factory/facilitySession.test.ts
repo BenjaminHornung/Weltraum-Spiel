@@ -581,3 +581,29 @@ it.each([false,true])("PLAY04 cold no-Cargo World preserves existing Running def
  const session=await createHvpPhysicsSession([],{x:3,y:8,z:3},undefined,undefined,undefined,undefined,"cold_default",undefined,"branch",factoryEnabled);
  try{expect(session.read()).toMatchObject({status:"Running",ticks:0});session.advance(1/60);expect(session.read()).toMatchObject({status:"Running",ticks:1});}finally{session.dispose();}
 });
+
+
+it("PLAY04 explicit SimulationHold recovery preserves the real finite World and waits paused for a new Play",async()=>{
+ const site=createFactoryCargoSite(materializeFactoryStartSite());
+ const ground={vertices:new Float32Array([-16,1.25,-16,-16,1.25,16,16,1.25,16,16,1.25,-16]),indices:new Uint32Array([0,1,2,0,2,3])};
+ const session=await createHvpPhysicsSession([ground],{x:3,y:8,z:3},undefined,{spawn:{x:site.spawnMm[0]/1000,y:site.spawnMm[1]/1000,z:site.spawnMm[2]/1000},coverage:[{minX:-16,maxX:16,minZ:-16,maxZ:16}]},undefined,undefined,"recover_factory",undefined,"branch",true,site);
+ try{
+  session.play();session.advance(.1);const before=session.read();expect(before).toMatchObject({status:"SimulationHold",ticks:4});
+  const recover=session as typeof session&{recoverFactorySimulationHold:(expectedTick:number)=>void};
+  expect(()=>recover.recoverFactorySimulationHold(before.ticks)).not.toThrow();
+  const paused=session.read();expect(paused).toMatchObject({status:"Paused",ticks:before.ticks,backlogSeconds:0,discardedSeconds:before.discardedSeconds+before.backlogSeconds});
+  expect(paused.bodies).toEqual(before.bodies);expect(paused.player?.position).toEqual(before.player?.position);expect(paused.player?.jumpCount).toBe(before.player?.jumpCount);
+  expect(paused.bodyCount).toBe(before.bodyCount);expect(paused.colliderCount).toBe(before.colliderCount);expect(paused.factoryFacilities).toEqual(before.factoryFacilities);
+  session.advance(120);expect(session.read().ticks).toBe(before.ticks);expect(session.read().bodies).toEqual(paused.bodies);
+  session.play();session.advance(1/60);expect(session.read()).toMatchObject({status:"Running",ticks:5,player:{status:"Walking"}});
+ }finally{session.dispose();}
+});
+it.each([false,true])("PLAY04 explicit recovery rejects nonFactory or stale ticks without changing a held World, factory=%s",async factoryEnabled=>{
+ const session=await createHvpPhysicsSession([],{x:3,y:8,z:3},undefined,undefined,undefined,undefined,"recover_reject",undefined,"branch",factoryEnabled);
+ try{
+  session.advance(.1);const before=session.read();expect(before.status).toBe("SimulationHold");
+  const recover=session as typeof session&{recoverFactorySimulationHold:(expectedTick:number)=>void};
+  expect(()=>recover.recoverFactorySimulationHold(factoryEnabled?before.ticks-1:before.ticks)).toThrow("Factory SimulationHold recovery unavailable");
+  expect(session.read()).toEqual(before);
+ }finally{session.dispose();}
+});

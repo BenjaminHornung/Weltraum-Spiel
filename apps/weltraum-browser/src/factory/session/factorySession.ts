@@ -162,7 +162,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
   const technologies=readFactoryTechnologies(catalog);
   const initialMaterial=createFactoryMaterialView(catalog,[createResourceContainerSnapshot(createResourceContainerDefinition({containerId:fixture.resourceState.containerId,kind:"ShipCargo",maxMassKg:4000,maxVolumeM3:30,maxStackCount:200}),fixture.resourceState,catalog.resources)]);
   const materialAuthority=createFactoryMaterialAuthority(initialMaterial),domainSession=bindFactoryDomainSession(initial.sessionId),history=createFactoryCommandHistory();
-  let construction:FactoryConstruction|undefined,commandBusy=false,focusedPanel:FactoryUiPanel|null=null,publicationRevision=0,lastReceipt:FactoryUiReceipt|null=null;
+  let construction:FactoryConstruction|undefined,commandBusy=false,recoveryBusy=false,focusedPanel:FactoryUiPanel|null=null,publicationRevision=0,lastReceipt:FactoryUiReceipt|null=null;
   const binding={sessionId:domainSession.domainSessionId,epoch:initial.epoch,netRevision:0,catalogDigest:catalog.catalogDigest,sourceProfileDigest:"fp01-fixed-net-observation-v1"};
   let domain:DryFactoryState={binding,revision:0,tickEndUs:"0",power:{version:"fp06-factory-power-v1",binding,revision:0,tickEndUs:"0",battery:null,consumers:[]},machines:[],belts:[],lastStep:null};
   const links:(FactoryPowerLink&Readonly<{version:"fp06-paid-native-cable-v1";lengthMm:number;containerId:string;routeMm:readonly(readonly number[])[];sourceProfileDigest:string;targetProfileDigest:string}>)[]=[];let lastPower:FactoryPowerSuccess|undefined;
@@ -190,6 +190,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
   const selectedRecipe=(instanceId:string)=>{const selected=selectedRecipes.get(instanceId),first=recipesFor(instanceId)[0];return selected??(first?{sourceId:first.sourceId,version:first.version,digest:first.digest}:null);};
   const machineUiRevision=(instanceId:string)=>{const revision=(domain.machines.find(m=>m.machineInstanceId===instanceId)?.revision??0)+(selectionRevisions.get(instanceId)??0)+(domain.enabledControls?.revision??0);if(!Number.isSafeInteger(revision))throw Error("MachineUiRevisionExhausted");return revision;};
   const reconcile=()=>{
+    if(recoveryBusy)return;
     if(construction?.read().state!=="Ready"||host.handling?.read().state!=="Idle")return;
     const logical=installed(),native=host.handling!.read();
     if(logical.some(i=>!native.owners.some(n=>n.instanceId===i.instanceId&&n.profileDigest===i.profileDigest&&n.definitionRef.sourceId===i.definitionSourceId)))throw Error("FactoryNativeInstallationMismatch");
@@ -239,19 +240,24 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
     catalogDigest: catalog.catalogDigest, nativeTick: initial.nativeTick, remainderTicks: 0,
     steps: 0, elapsedMs: 0, state: "Ready" });
   const listeners = new Set<(view: FactorySessionView) => void>();
+  let observedHostHeader=JSON.stringify(initial);
   const publish = (next: FactorySessionView) => {
     view = Object.freeze(next);
     for (const listener of listeners) listener(view);
     notifyUi();
   };
   const observe = (confirmed: FactoryHostView) => {
-    if (disposed || !host.current() || view.state === "RecoveryHold") return;
+    if (disposed || recoveryBusy || !host.current() || view.state === "RecoveryHold") return;
+    // A same-tick Pause ACK changes input/capability projection, not work.
+    // Retain only this trusted Host header; unchanged frame reads emit no UI.
+    const header=JSON.stringify(confirmed),hostChanged=header!==observedHostHeader;observedHostHeader=header;
     if (["RecoveryHold", "Disposed"].includes(confirmed.physicsStatus) || confirmed.sessionId !== initial.sessionId || confirmed.epoch !== initial.epoch
       || !Number.isSafeInteger(confirmed.nativeTick) || confirmed.nativeTick < view.nativeTick) {
       const pending=pendingDomain;pendingDomain=undefined;pending?.resolve("RecoveryHold","NativeHostBindingLost");publish({ ...view, state: "RecoveryHold" }); return;
     }
     if (!confirmed.confirmed || !["Running", "Paused"].includes(confirmed.physicsStatus)) {
       if (view.state !== "WaitingForHost") publish({ ...view, state: "WaitingForHost" });
+      else if(hostChanged)notifyUi();
       return;
     }
     // A temporary verified service/support obstruction holds the common work
@@ -274,6 +280,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
     if(wasWorkHeld){publish({...view,state:"Ready",nativeTick:confirmed.nativeTick});return;}
     if (confirmed.nativeTick === view.nativeTick) {
       if (view.state === "WaitingForHost") publish({ ...view, state: "Ready" });
+      else if(hostChanged)notifyUi();
       return;
     }
     const ticks = view.remainderTicks + confirmed.nativeTick - view.nativeTick;
@@ -301,7 +308,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
   const readUi=():FactoryUiReadModel=>{
     const native=host.read(),facilities=host.handling?.read(),material=materialAuthority.read(),binding=uiBinding();
     const access=(id:string)=>id===facilities?.cargo?.containerId?facilities.cargo.accessible&&facilities.cargo.opened:id===facilities?.carrier?.containerId?facilities.carrier.phase==="Carrying"||facilities.carrier.accessible===true:facilities?.sources?.some(s=>s.containerId===id&&s.accessible)===true;
-    const available=(view.state==="Ready"||workHoldReason!==null)&&native.confirmed&&!commandBusy&&!pendingDomain&&!construction?.busy&&!handling?.busy;
+    const available=(view.state==="Ready"||workHoldReason!==null)&&native.confirmed&&!commandBusy&&!recoveryBusy&&!pendingDomain&&!construction?.busy&&!handling?.busy;
     const profiles=["C26-PACK","C27-PACK","B06-BOM","B07-BOM","BATTERY-PACK","DISTRIBUTOR-PACK","BENCH-PACK","BIN-PACK","BELT4","CABLE40",...Object.keys(FACTORY_CLOSED_CABLE_JOBS),"RAW8","MONTAGE","BRACE"];
     const inventory:FactoryUiInventory[]=material.containers.map(c=>{
       const id=c.state.containerId,accessible=access(id),role=id===facilities?.cargo?.containerId?"cargo":id===facilities?.carrier?.containerId?(facilities.carrier.phase==="Deposited"?"depot":"carrier"):id.startsWith("installed_")?"installed":id.startsWith("input_")?"input":id.startsWith("output_")?"output":id.startsWith("offcut_")?"offcut":id.startsWith("wip_")?"wip":id.startsWith("belt_")?"belt":"depot";
@@ -362,7 +369,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
     const finish=(status:FactoryUiReceipt["status"],reason:string|null)=>{const receipt:FactoryUiReceipt={commandId:command.commandId,requestCanonicalJson:canonicalJson(command),status,reason,publicationRevision:publicationRevision+1,binding:uiBinding()};history.accept(command,receipt);lastReceipt=receipt;notifyUi();return {status,receipt};};
     if(disposed||!host.current()||!isSaveSafeResourceId(command.commandId)||command.sessionId!==initial.sessionId||command.epoch!==initial.epoch||command.version!=="fp06-ui-command-v1")return finish("Rejected","InvalidCommandBinding");
     if(view.state==="RecoveryHold")return finish("RecoveryHold","FactorySessionRecoveryHold");
-    if(commandBusy||pendingDomain||construction?.busy||handling?.busy||canonicalJson(command.expected)!==canonicalJson(uiBinding())||!host.read().confirmed)return finish("Rejected","StaleOrBusyCommand");
+    if(commandBusy||recoveryBusy||pendingDomain||construction?.busy||handling?.busy||canonicalJson(command.expected)!==canonicalJson(uiBinding())||!host.read().confirmed)return finish("Rejected","StaleOrBusyCommand");
     commandBusy=true;
     try{
       if(command.kind==="open-cargo"){if(!host.construction)throw Error("NativeCargoUnavailable");await host.construction.openCargo();return finish("Committed",null);}
@@ -472,7 +479,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
   }});
   const readPresentation=(nativeView:FactoryHostView=host.read()):FactoryPresentationRead=>{
     const facilities=host.handling?.read(),logical=installed();
-    const confirmed=!disposed&&host.current()&&view.state==="Ready"&&nativeView.confirmed
+    const confirmed=!disposed&&!recoveryBusy&&host.current()&&view.state==="Ready"&&nativeView.confirmed
       &&nativeView.sessionId===initial.sessionId&&nativeView.epoch===initial.epoch&&nativeView.nativeTick===view.nativeTick
       &&["Running","Paused"].includes(nativeView.physicsStatus);
     return Object.freeze({sessionId:initial.sessionId,epoch:initial.epoch,publicationRevision,nativeTick:nativeView.nativeTick,
@@ -494,7 +501,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
             outputContainerId:`output_${installation.instanceId}`,offcutContainerId:`offcut_${installation.instanceId}`,installedContainerId:installation.materialContainerId})});
       }))});
   };
-  const confirmedProjection=(native:FactoryHostView,facilities:FactoryFacilityRead|undefined)=>!disposed&&host.current()&&view.state==="Ready"
+  const confirmedProjection=(native:FactoryHostView,facilities:FactoryFacilityRead|undefined)=>!disposed&&!recoveryBusy&&host.current()&&view.state==="Ready"
     &&native.confirmed&&native.sessionId===initial.sessionId&&native.epoch===initial.epoch&&native.nativeTick===view.nativeTick
     &&["Running","Paused"].includes(native.physicsStatus)&&facilities?.state==="Idle"&&construction?.read().state==="Ready";
   const currentOwners=(facilities:FactoryFacilityRead|undefined)=>installed().filter(logical=>facilities?.owners.some(owner=>
@@ -542,16 +549,49 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
   let unsubscribe: () => void;
   try { unsubscribe = host.subscribeConfirmed(observe); }
   catch (error) { mountedHosts.delete(host); throw error; }
+  const canRecoverSimulationHold=()=>{
+    if(disposed||recoveryBusy||!["Ready","WaitingForHost"].includes(view.state)||!host.current()||commandBusy||construction?.busy||handling?.busy)return false;
+    const native=host.read(),facilities=host.handling?.read();
+    return native.sessionId===initial.sessionId&&native.epoch===initial.epoch&&native.physicsStatus==="SimulationHold"
+      &&Number.isSafeInteger(native.nativeTick)&&native.nativeTick>=view.nativeTick&&(!facilities||facilities.state==="Idle");
+  };
+  // This witness contains only private Host/Native DTOs. It grants no World,
+  // material or clock authority to callback return values or UI commands.
+  const recoveryBinding=()=>{const native=host.read(),facilities=host.handling?.read();return JSON.stringify({
+    sessionId:native.sessionId,epoch:native.epoch,nativeTick:native.nativeTick,terrain:native.terrain,
+    facilities:facilities?{revision:facilities.revision,state:facilities.state,transactionId:facilities.transactionId,
+      owners:facilities.owners,cargo:facilities.cargo??null,carrier:facilities.carrier??null}:null});};
+  const recoverSimulationHold=async(resetNative:()=>Promise<void>):Promise<void>=>{
+    if(!canRecoverSimulationHold()||typeof resetNative!=="function")throw Error("Factory SimulationHold recovery unavailable");
+    const expected=recoveryBinding(),tick=host.read().nativeTick;
+    recoveryBusy=true;let acknowledged=false;
+    try{
+      const pending=pendingDomain;pendingDomain=undefined;pending?.resolve("Rejected","InterruptedBeforeAdoption");
+      await resetNative();acknowledged=true;
+      if(!host.current()||disposed||view.state==="RecoveryHold"||host.read().physicsStatus!=="Paused"||recoveryBinding()!==expected)throw Error("RecoveryHold: clock recovery ACK binding mismatch");
+      // Held, unconfirmed Native intervals do not grant retrospective work.
+      // Keep all confirmed remainder/domain/material state; rebase only the read cursor.
+      publish({...view,state:"Ready",nativeTick:tick});
+    }catch(error){
+      let unchangedHold=false;
+      try{unchangedHold=!acknowledged&&host.current()&&!disposed&&view.state!=="RecoveryHold"&&host.read().physicsStatus==="SimulationHold"&&recoveryBinding()===expected;}
+      catch{/* An unavailable actual Native read cannot prove the old held binding. */}
+      if(!unchangedHold){
+        publish({...view,state:"RecoveryHold"});throw Error("RecoveryHold: clock recovery binding lost");
+      }
+      throw error;
+    }finally{recoveryBusy=false;}
+  };
   return Object.freeze({ ui,domainSession,...(construction?{construction}:{}),read: () => view,readPresentation,readOnboarding,readLocalMap,
     subscribe: (listener: (view: FactorySessionView) => void) => {
       if (disposed) throw new Error("Factory session disposed");
       listeners.add(listener); return () => { listeners.delete(listener); };
-    }, isQuiescent: () => !disposed && view.state !== "RecoveryHold" && !construction?.busy&&!commandBusy&&!handling?.busy,
+    }, canRecoverSimulationHold,recoverSimulationHold, isQuiescent: () => !disposed && !recoveryBusy && view.state !== "RecoveryHold" && !construction?.busy&&!commandBusy&&!handling?.busy,
     // Safe teardown is allowed in terminal recovery; pending publication must finish first.
-    canEndSession: () => !disposed && !commandBusy&&(!handling?.busy||handling.recovery)&&(!construction?.busy || construction.read().state==="RecoveryHold"),
+    canEndSession: () => !disposed && !recoveryBusy && !commandBusy&&(!handling?.busy||handling.recovery)&&(!construction?.busy || construction.read().state==="RecoveryHold"),
     dispose: async () => {
       if (disposed) return;
-      if(commandBusy||(handling?.busy&&!handling.recovery)||(construction?.busy&&construction.read().state!=="RecoveryHold"))throw new Error("Factory installation is still pending");
+      if(recoveryBusy||commandBusy||(handling?.busy&&!handling.recovery)||(construction?.busy&&construction.read().state!=="RecoveryHold"))throw new Error("Factory installation is still pending");
       const pending=pendingDomain;pendingDomain=undefined;pending?.resolve("Rejected","SessionDisposedBeforeAdoption");
       disposed = true;host.construction?.dispose();
       unsubscribe(); listeners.clear();uiListeners.clear();host.setPanelFocus?.(null); mountedHosts.delete(host);

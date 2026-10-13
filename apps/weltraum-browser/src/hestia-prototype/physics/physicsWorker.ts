@@ -22,6 +22,7 @@ export type HvpPhysicsMessage = { readonly id: number } & (
   | { readonly kind: "Initialize"; readonly sectors: readonly HvpCollisionSector[]; readonly spawn: { x: number; y: number; z: number }; readonly gravity: number;
       readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean;readonly factoryEnabled?:boolean;readonly initialFactoryCargo?:FactoryCargoSite }
   | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };readonly cutAim?:{x:number;y:number;z:number} }
+  | { readonly kind: "RecoverFactorySimulationHold"; readonly expectedTick:number }
   | { readonly kind: "FactoryInput"; readonly input: HvpPlayerInput; readonly cancelPendingJump: boolean }
   | { readonly kind: "Pause" | "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
   | { readonly kind: "Impulse"; readonly direction: {x:number;y:number;z:number} }
@@ -146,6 +147,10 @@ port.onmessage = async ({ data }) => {
         if(data.kind!=="Read"&&data.kind!=="Pause"&&data.kind!=="Inspect"){throw new Error("World replacement Pending");}
         reply({id:data.id,snapshot:session.read(),restoreState:restore.recoveryHold?"RecoveryHold":restore.transaction?.state??"Preparing"});return;
       }
+      if(data.kind==="RecoverFactorySimulationHold"){
+        session.recoverFactorySimulationHold(data.expectedTick);
+        previous=performance.now();reply({id:data.id,snapshot:session.read()});return;
+      }
       if(data.kind==="Checkpoint"){reply({id:data.id,snapshot:session.read(),checkpoint:session.checkpoint()});return;}
       if(data.kind.startsWith("Finalize")||data.kind.startsWith("Rollback")){
         const before=session.read();
@@ -208,6 +213,7 @@ port.onmessage = async ({ data }) => {
       ||data.kind==="PrepareNeighbor"||data.kind==="CommitNeighbor"||data.kind==="RollbackNeighbor"||data.kind==="FinalizeNeighbor"
       ||data.kind==="ParkDistantBodies"||data.kind==="RestoreNearBodies"||data.kind==="PrepareBodyResidency"||data.kind==="CommitBodyResidency"
       ||data.kind==="FinalizeBodyResidency"||data.kind==="RollbackBodyResidency"
+      ||data.kind==="RecoverFactorySimulationHold"
       ||data.kind==="OpenFactoryCargo"||data.kind==="PrepareFactoryFacility"||data.kind==="CommitFactoryFacility"||data.kind==="RollbackFactoryFacility"||data.kind==="FinalizeFactoryFacility"
       ||data.kind==="PrepareFactoryCarrier"||data.kind==="CommitFactoryCarrier"||data.kind==="RollbackFactoryCarrier"||data.kind==="FinalizeFactoryCarrier"||restore!==undefined) {
       reply({id:data.id,rejected:error instanceof Error?error.message:"Transaction rejected",snapshot:session?.read(),

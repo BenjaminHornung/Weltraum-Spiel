@@ -100,8 +100,8 @@ const extension: FactoryHostExtension = async host => {
     const interaction=uiView.interaction.handling?"WASD: Transport bewegen · Escape: Pause · Fracht: absetzen oder lokal liefern":uiView.interaction.cargoAccessible?"Wrackfracht erreichbar · Fracht öffnen":playing?"WASD: gehen · B: bauen · M: Karte · Escape: Pause":"Spielen bewusst anklicken, um Mausblick und Bewegung zu aktivieren";
     return Object.freeze({sessionId:native.sessionId,epoch:native.epoch,publicationRevision:shellRevision,
       phase:!started?"start":hold?"hold":playing?"playing":"paused",
-      statusText:input?.error??(hold?`Sitzung angehalten · ${native.physicsStatus}`:input?.pausePending?"Pause wird noch bestätigt":input?.activationPending?"Spielstart wird noch bestätigt":playing?"Spiel aktiv":native.physicsStatus==="Paused"?"Sitzung pausiert":"Eingaben gesperrt · Pause wird bestätigt"),
-      capabilities:{newSession:cap(!started&&available,"Für eine neue Sitzung zum Menü zurückkehren"),continue:cap(false,"Noch kein gemeinsam bestätigter Factory-Spielstand verfügbar"),play:cap(started&&available&&Boolean(host.play),!started?"Zuerst Neues Spiel wählen":"Host muss sichtbar, bestätigt und frei sein"),pause:cap(started&&!hold&&!input?.pausePending,"Pause wird bereits bestätigt oder Host angehalten"),save:cap(false,"Gemeinsamer Factory-Spielstand noch nicht angebunden"),endSession:cap(Boolean(host.endSession)&&session.canEndSession?.()===true,"Laufenden Vorgang vor dem Beenden abwarten"),settings:cap(false,"Keine bestätigte Einstellungsanbindung verfügbar")},
+      statusText:input?.error??(hold?(native.physicsStatus==="SimulationHold"?"Sitzung unterbrochen. Bestätigte Arbeit und Fracht sind erhalten. Freigeben, danach Spielen wählen.":`Sitzung angehalten · ${native.physicsStatus}`):input?.pausePending?"Pause wird noch bestätigt":input?.activationPending?"Spielstart wird noch bestätigt":playing?"Spiel aktiv":native.physicsStatus==="Paused"?"Sitzung pausiert":"Eingaben gesperrt · Pause wird bestätigt"),
+      capabilities:{recoverSimulation:cap(started&&native.simulationRecoveryAvailable===true&&Boolean(host.recoverSimulationHold),"Sitzung muss für die Freigabe bereit sein"),newSession:cap(!started&&available,"Für eine neue Sitzung zum Menü zurückkehren"),continue:cap(false,"Noch kein gemeinsam bestätigter Factory-Spielstand verfügbar"),play:cap(started&&available&&Boolean(host.play),!started?"Zuerst Neues Spiel wählen":"Host muss sichtbar, bestätigt und frei sein"),pause:cap(started&&!hold&&!input?.pausePending,"Pause wird bereits bestätigt oder Host angehalten"),save:cap(false,"Gemeinsamer Factory-Spielstand noch nicht angebunden"),endSession:cap(Boolean(host.endSession)&&session.canEndSession?.()===true,"Laufenden Vorgang vor dem Beenden abwarten"),settings:cap(false,"Keine bestätigte Einstellungsanbindung verfügbar")},
       hud:{interactionText:interaction,carrierMassMg:uiView.interaction.handling?.massMg??null,blockReason:veto?reasons[veto]??veto:null,warnings:[]},
       onboarding:session.readOnboarding(native),map:session.readLocalMap(tool?.read()?.request??null)});
   };
@@ -120,8 +120,9 @@ const extension: FactoryHostExtension = async host => {
       const ownPause=command.kind==="pause"&&started&&uiView.state!=="RecoveryHold"
         &&["Running","Paused"].includes(native.physicsStatus)&&(native.input?.pausePending||native.physicsStatus==="Paused");
       if(disposed||!host.current()||command.sessionId!==native.sessionId||command.epoch!==native.epoch
-        ||(!readShell().capabilities[command.kind].enabled&&!ownPause))throw Error("Factory shell command unavailable or stale");
-      if(command.kind==="play"){const activation=host.play!();refreshShell();await activation;}
+        ||(readShell().capabilities[command.kind]?.enabled!==true&&!ownPause))throw Error("Factory shell command unavailable or stale");
+      if(command.kind==="recoverSimulation")await host.recoverSimulationHold!();
+      else if(command.kind==="play"){const activation=host.play!();refreshShell();await activation;}
       else if(command.kind==="pause")await host.pause();
       else if(command.kind==="newSession"){await host.pause();started=true;}
       else if(command.kind==="endSession")await host.endSession!();
@@ -136,7 +137,7 @@ const extension: FactoryHostExtension = async host => {
   const unsubscribe = session.subscribe(project);
   const unsubscribeHost = host.subscribeConfirmed(() => { project(session.read()); });
   project(session.read());
-  return Object.freeze({ isQuiescent: session.isQuiescent, canEndSession: session.canEndSession, readFactoryPresentation:session.readPresentation, dispose: async () => {
+  return Object.freeze({ isQuiescent: session.isQuiescent, canRecoverSimulationHold:session.canRecoverSimulationHold,recoverSimulationHold:session.recoverSimulationHold, canEndSession: session.canEndSession, readFactoryPresentation:session.readPresentation, dispose: async () => {
     if (disposed) return;
     disposed = true;document.removeEventListener("keydown",onBuildKey); unsubscribe(); unsubscribeHost();shell.dispose();shellListeners.clear();
     actions.dispose();uiUnsubscribe();await session.dispose(); panel.remove();

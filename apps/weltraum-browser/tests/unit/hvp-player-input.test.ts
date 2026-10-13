@@ -208,6 +208,7 @@ class NativeTransport {
         if(this.holdInputAcks)this.inputAcks.push(message.id);else this.onmessage?.(new MessageEvent("message",{data:{id:message.id}}));
         return;
       }
+      else if (message.kind === "RecoverFactorySimulationHold") this.session.recoverFactorySimulationHold(message.expectedTick);
       else if (message.kind === "Pause") this.session.pause();
       else if (message.kind === "Play") this.session.play();
       else if (message.kind === "BeginBodyCut") { this.reply(message.id, this.session.beginBodyCut(message.request)); return; }
@@ -504,4 +505,17 @@ describe("W07 bounded Factory intent and independent Read transport", () => {
     // The native Worker is already terminated; no Disposed ACK can exist.
     await expect(client.dispose()).rejects.toThrow(/backpressure/);
   });
+});
+
+
+it("PLAY04 real client recovers a held Native World with neutral intent and no automatic Play or snapshot tick",async()=>{
+ const {client,worker}=await clientHarness();worker.session.advance(.1);client.update();worker.release();await turn();
+ const before=client.read();expect(before).toMatchObject({status:"SimulationHold",ticks:4});
+ const port=client as typeof client&{recoverFactorySimulationHold:(tick:number)=>Promise<void>};
+ await expect(Promise.resolve().then(()=>port.recoverFactorySimulationHold(before.ticks))).resolves.toBeUndefined();
+ expect(client.read()).toMatchObject({status:"Paused",ticks:before.ticks});expect(client.read().bodies).toEqual(before.bodies);expect(client.read().player?.position).toEqual(before.player?.position);
+ expect(client.lifecycle!().factoryInput).toMatchObject({desiredLevel:zero,commandDepth:0,closing:false,canDispatch:false});
+ const commands=worker.messages.filter(m=>m.kind==="RecoverFactorySimulationHold");expect(commands).toHaveLength(1);expect(commands[0]).toMatchObject({expectedTick:4});
+ const count=worker.messages.length;await expect(port.recoverFactorySimulationHold(3)).rejects.toThrow(/Factory|recovery|hold/i);expect(worker.messages).toHaveLength(count);
+ expect(worker.messages.slice(worker.messages.findIndex(m=>m.kind==="RecoverFactorySimulationHold")).some(m=>m.kind==="Play"||m.kind==="Resume")).toBe(false);
 });

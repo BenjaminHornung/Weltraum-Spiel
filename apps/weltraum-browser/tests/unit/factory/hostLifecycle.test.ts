@@ -676,3 +676,110 @@ it("PLAY04 reviewed map includes current Cargo body in its initial viewport with
   expect(canMarkFactoryMapPoint(map,{east:-.5,north:6.75})).toBe(false);expect(map.knownAreas).toHaveLength(23);
  }finally{await session.dispose();}
 });
+
+
+type SimulationRecoveryHandle=FactorySessionHandle&{canRecoverSimulationHold:()=>boolean;recoverSimulationHold:(resetNative:()=>Promise<void>)=>Promise<void>};
+it("PLAY04 recovery publishes the released Host fence at the same tick without granting work",async()=>{
+ const f=hostFixture(0),session=await mountFactorySession(f.host,catalog),recover=session as SimulationRecoveryHandle;
+ let published:ReturnType<typeof session.ui.read>|undefined;const unsubscribe=session.ui.subscribe(snapshot=>{published=snapshot;});
+ try{
+  f.publish(5);const material=session.readPresentation().material;f.publish(60,{physicsStatus:"SimulationHold",confirmed:false});
+  await recover.recoverSimulationHold(async()=>{f.publish(60,{physicsStatus:"Paused",confirmed:false});});
+  expect(published!.host.confirmed).toBe(false);
+  f.publish(60,{physicsStatus:"Paused",confirmed:true});
+  expect(published!.host).toMatchObject({physicsStatus:"Paused",nativeTick:60,confirmed:true});
+  const revision=published!.publicationRevision;f.publish(60,{physicsStatus:"Paused",confirmed:true});expect(published!.publicationRevision).toBe(revision);
+  expect(session.read()).toMatchObject({nativeTick:60,steps:0,remainderTicks:5,elapsedMs:0});expect(session.readPresentation().material).toBe(material);
+ }finally{unsubscribe();await session.dispose();}
+});
+it("PLAY04 recovery retains a terminal fence when the actual Host read fails after RPC rejection",async()=>{
+ const f=hostFixture(0);let unreadable=false;
+ const host={...f.host,read:()=>{if(unreadable)throw Error("native transport lost");return f.host.read();}};
+ const session=await mountFactorySession(host,catalog),recover=session as SimulationRecoveryHandle;
+ try{
+  f.publish(5);const material=session.readPresentation().material;f.publish(60,{physicsStatus:"SimulationHold",confirmed:false});
+  await expect(recover.recoverSimulationHold(async()=>{unreadable=true;throw Error("RPC failed");})).rejects.toThrow(/RecoveryHold/);
+  expect(session.read()).toMatchObject({state:"RecoveryHold",nativeTick:5,steps:0,remainderTicks:5});
+  unreadable=false;expect(session.readPresentation().material).toBe(material);
+ }finally{unreadable=false;await session.dispose();}
+});
+it("PLAY04 recovery publishes no confirmed projection while its native acknowledgement is pending",async()=>{
+ const f=hostFixture(0);let actual:FactoryHostView|undefined,finish!:()=>void;
+ const host={...f.host,read:()=>actual??f.host.read()},session=await mountFactorySession(host,catalog),recover=session as SimulationRecoveryHandle;
+ const ack=new Promise<void>(resolve=>{finish=resolve;});let pending:Promise<void>|undefined;
+ try{
+  actual={...f.host.read(),physicsStatus:"SimulationHold",confirmed:false};
+  pending=recover.recoverSimulationHold(()=>{actual={...actual!,physicsStatus:"Paused",confirmed:true};return ack;});
+  expect(session.read().state).toBe("Ready");expect(session.readPresentation().confirmed).toBe(false);
+  finish();await pending;expect(session.readPresentation().confirmed).toBe(true);
+ }finally{finish();await pending?.catch(()=>{});await session.dispose();}
+});
+it("PLAY04 recovery ACK grants no held-interval work and preserves the existing confirmed remainder",async()=>{
+ const f=hostFixture(0),session=await mountFactorySession(f.host,catalog),recover=session as SimulationRecoveryHandle;
+ try{
+  f.publish(5);expect(session.read()).toMatchObject({nativeTick:5,steps:0,remainderTicks:5});
+  const material=session.readPresentation().material;f.publish(60,{physicsStatus:"SimulationHold",confirmed:false});
+  await expect(Promise.resolve().then(()=>recover.recoverSimulationHold(async()=>{f.publish(60,{physicsStatus:"Paused",confirmed:false});}))).resolves.toBeUndefined();
+  expect(session.read()).toMatchObject({nativeTick:60,steps:0,remainderTicks:5,elapsedMs:0});expect(session.readPresentation().material).toBe(material);
+  f.publish(60,{physicsStatus:"Paused",confirmed:true});expect(session.read().steps).toBe(0);
+  f.publish(61,{physicsStatus:"Running",confirmed:true});expect(session.read()).toMatchObject({nativeTick:61,steps:1,remainderTicks:0,elapsedMs:100});
+ }finally{await session.dispose();}
+});
+it("PLAY04 recovery owns a distinct deferred fence against callbacks, disposal and reentrant actions",async()=>{
+ const f=hostFixture(0),session=await mountFactorySession(f.host,catalog),recover=session as SimulationRecoveryHandle;
+ let finish!:()=>void;const ack=new Promise<void>(r=>{finish=r;});let pending:Promise<void>|undefined;
+ try{
+  f.publish(5);f.publish(60,{physicsStatus:"SimulationHold",confirmed:false});
+  pending=Promise.resolve().then(()=>recover.recoverSimulationHold(()=>ack));await Promise.resolve();
+  expect(session.isQuiescent()).toBe(false);expect(session.canEndSession?.()).toBe(false);
+  await expect(session.dispose()).rejects.toThrow(/pending/);expect(recover.canRecoverSimulationHold()).toBe(false);
+  await expect(recover.recoverSimulationHold(async()=>{})).rejects.toThrow("Factory SimulationHold recovery unavailable");
+  const v=session.ui.read();const result=await session.ui.submit({version:"fp06-ui-command-v1",commandId:"during_clock_recovery",sessionId:v.sessionId,epoch:v.epoch,expected:v.binding,kind:"open-cargo"});
+  expect(result).toMatchObject({status:"Rejected",receipt:{reason:"StaleOrBusyCommand"}});
+  f.publish(60,{physicsStatus:"Paused",confirmed:true});expect(session.read()).toMatchObject({nativeTick:5,steps:0,remainderTicks:5});
+  finish();await pending;expect(session.read()).toMatchObject({nativeTick:60,steps:0,remainderTicks:5});
+ }finally{finish();await pending?.catch(()=>{});await session.dispose();}
+});
+it.each(["wrong tick","terrain changed","superseded"])("PLAY04 recovery closes a %s ACK without granting work or material",async drift=>{
+ const f=hostFixture(0),session=await mountFactorySession(f.host,catalog),recover=session as SimulationRecoveryHandle;
+ try{
+  f.publish(5);const material=session.readPresentation().material;f.publish(60,{physicsStatus:"SimulationHold",confirmed:false});
+  const reset=async()=>{if(drift==="superseded")f.retire();else f.publish(drift==="wrong tick"?61:60,{physicsStatus:"Paused",confirmed:false,...(drift==="terrain changed"?{terrain:{...f.host.read().terrain,revision:1}}:{})});};
+  await expect(Promise.resolve().then(()=>recover.recoverSimulationHold(reset))).rejects.toThrow(/RecoveryHold|binding/);
+  expect(session.read()).toMatchObject({state:"RecoveryHold",nativeTick:5,steps:0,remainderTicks:5});expect(session.readPresentation().material).toBe(material);
+ }finally{await session.dispose();}
+});
+
+
+it("PLAY04 recovery preserves an adopted eight-kilogram WIP job and exact paid battery energy",async()=>{
+ const {f,session,command,installBattery}=await paidMachineHostFixture("B06"),recover=session as SimulationRecoveryHandle;
+ try{
+  await installBattery();let v=session.ui.read();let cargo=v.inventory.find(i=>i.role==="cargo")!,cable=cargo.contents.find(s=>s.itemId==="fp02.comp.field_cable")!;
+  expect(await session.ui.submit(command("recovery_cable",{kind:"connect-power",sourcePortId:"power_battery",targetPortId:"power_test_machine",cableLot:{containerId:cargo.id,containerRevision:cargo.revision,stackId:cable.stackId,quantityUnits:2750}}))).toMatchObject({status:"Committed"});
+  v=session.ui.read();cargo=v.inventory.find(i=>i.role==="cargo")!;const steel=cargo.contents.find(s=>s.itemId==="fp02.bulk.steel_known")!;
+  expect(await session.ui.submit(command("recovery_intake",{kind:"transfer",source:{containerId:cargo.id,containerRevision:cargo.revision,stackId:steel.stackId,quantityUnits:8000000},target:{id:"input_test_machine",revision:0}}))).toMatchObject({status:"Committed"});
+  v=session.ui.read();const machine=v.machines[0]!,input=v.inventory.find(i=>i.id===machine.inputContainerId)!;
+  const start=session.ui.submit(command("recovery_adopted_job",{kind:"start",machine:{id:machine.id,revision:machine.revision},sourceLots:[{containerId:input.id,containerRevision:input.revision,stackId:input.contents[0]!.stackId,quantityUnits:8000000}]}));f.publish(6);expect(await start).toMatchObject({status:"Committed"});
+  const before=session.ui.read(),material=session.readPresentation().material,receipt=session.ui.readReceipt("recovery_adopted_job"),clock=session.read();expect(before.machines[0]).toMatchObject({confirmedWorkMs:100,status:"RUNNING"});
+  const tick=f.host.read().nativeTick+120;f.publish(tick,{physicsStatus:"SimulationHold",confirmed:false});
+  await recover.recoverSimulationHold(async()=>{f.publish(tick,{physicsStatus:"Paused",confirmed:false});});f.publish(tick,{physicsStatus:"Paused",confirmed:true});
+  const paused=session.ui.read();expect(session.read()).toMatchObject({steps:clock.steps,remainderTicks:clock.remainderTicks,elapsedMs:clock.elapsedMs,nativeTick:tick});expect(session.readPresentation().material).toBe(material);
+  expect(paused.machines[0]).toMatchObject({jobId:before.machines[0]!.jobId,confirmedWorkMs:100,status:"RUNNING"});expect(paused.power.batteryEnergyJ).toBe(before.power.batteryEnergyJ);expect(session.ui.readReceipt("recovery_adopted_job")).toBe(receipt);
+  expect(paused.inventory.find(i=>i.id===machine.wipContainerId)?.massMg).toBe(8000000);expect(paused.inventory.reduce((n,c)=>n+c.massMg,0)).toBe(2984400000);
+  f.publish(tick+6,{physicsStatus:"Running",confirmed:true});const after=session.ui.read();expect(after.machines[0]?.confirmedWorkMs).toBe(200);expect(before.power.batteryEnergyJ!-after.power.batteryEnergyJ!).toBeCloseTo(120/.95,6);
+ }finally{await session.dispose();}
+});
+it("PLAY04 recovery settles only an unadopted queued job once with a replayable known rejection",async()=>{
+ const {f,session,command}=await paidMachineHostFixture("B06"),recover=session as SimulationRecoveryHandle;let queued:Promise<unknown>|undefined;
+ try{
+  let v=session.ui.read();const cargo=v.inventory.find(i=>i.role==="cargo")!,steel=cargo.contents.find(s=>s.itemId==="fp02.bulk.steel_known")!;
+  expect(await session.ui.submit(command("recovery_queue_intake",{kind:"transfer",source:{containerId:cargo.id,containerRevision:cargo.revision,stackId:steel.stackId,quantityUnits:8000000},target:{id:"input_test_machine",revision:0}}))).toMatchObject({status:"Committed"});
+  v=session.ui.read();const machine=v.machines[0]!,input=v.inventory.find(i=>i.id===machine.inputContainerId)!,request=command("recovery_unadopted_job",{kind:"start",machine:{id:machine.id,revision:machine.revision},sourceLots:[{containerId:input.id,containerRevision:input.revision,stackId:input.contents[0]!.stackId,quantityUnits:8000000}]});
+  queued=session.ui.submit(request);await Promise.resolve();await Promise.resolve();expect(session.ui.readReceipt(request.commandId)).toBeUndefined();
+  const material=session.readPresentation().material,clock=session.read(),tick=f.host.read().nativeTick+120;f.publish(tick,{physicsStatus:"SimulationHold",confirmed:false});
+  await recover.recoverSimulationHold(async()=>{f.publish(tick,{physicsStatus:"Paused",confirmed:false});});
+  const receipt=session.ui.readReceipt(request.commandId);expect(receipt).toMatchObject({status:"Rejected",reason:"InterruptedBeforeAdoption"});
+  expect(await queued).toMatchObject({status:"Rejected",receipt});expect(session.readPresentation().material).toBe(material);expect(session.read()).toMatchObject({steps:clock.steps,remainderTicks:clock.remainderTicks});
+  expect(await session.ui.submit(request)).toMatchObject({status:"Rejected",receipt});expect(session.ui.readReceipt(request.commandId)).toBe(receipt);
+ }finally{await session.dispose();await queued;}
+});

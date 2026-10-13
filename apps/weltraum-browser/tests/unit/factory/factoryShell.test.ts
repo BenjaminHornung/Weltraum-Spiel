@@ -166,3 +166,16 @@ describe("Factory player shell", () => {
     expect(h.lifecycleCommands).toHaveLength(0); shell.dispose();
   });
 });
+
+
+it("PLAY04 hold recovery is a separate explicit action and never dispatches Play",async()=>{
+ const module=await load(),h=harness(),doc=docDouble();
+ const held={...initial(),phase:"hold" as const,capabilities:{...initial().capabilities,play:cap(false),recoverSimulation:cap(true)}};
+ h.publish(held);const shell=module!.mountFactoryShell({port:h.port,uiPort:h.uiPort,buildPanel:doc.createElement("section"),doc});
+ try{
+  const button=visibleButton(shell.element,"Sitzung freigeben");expect(button).toBeDefined();expect(button?.disabled).toBe(false);
+  button!.click();await Promise.resolve();await Promise.resolve();expect(h.lifecycleCommands).toEqual([{sessionId:held.sessionId,epoch:held.epoch,kind:"recoverSimulation"}]);
+  h.publish({...held,phase:"paused",publicationRevision:2,capabilities:{...held.capabilities,recoverSimulation:cap(false),play:cap(true)}});
+  expect(visibleButton(shell.element,"Sitzung freigeben")).toBeUndefined();expect(visibleButton(shell.element,"Spielen")?.disabled).toBe(false);expect(h.lifecycleCommands).toHaveLength(1);
+ }finally{shell.dispose();}
+});

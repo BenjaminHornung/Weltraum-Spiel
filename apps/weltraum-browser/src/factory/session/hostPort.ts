@@ -34,6 +34,7 @@ export interface FactoryHostView {
   readonly nativeTick: number;
   readonly physicsStatus: "Running" | "Paused" | "SimulationHold" | "CoverageHold" | "RecoveryHold" | "Disposed";
   readonly confirmed: boolean;
+  readonly simulationRecoveryAvailable?:boolean;
   readonly input?:Readonly<{active:boolean;activationPending:boolean;pointerLocked:boolean;pausePending:boolean;
     focusedPanel:FactoryUiPanel|null;surface:FactoryHostSurface|null;error:string|null}>;
   readonly terrain: Readonly<{
@@ -50,6 +51,8 @@ export interface FactoryHostPort {
   setSurface?(surface:FactoryHostSurface|null,binding:Readonly<{sessionId:string;epoch:number}>):void;
   /** Called directly under the actual gesture; resolves only after native Play ACK and current pointer lock. */
   play?():Promise<FactoryHostView>;
+  /** Separate explicit acknowledgement, returns paused; ordinary Play/Resume remain guarded. */
+  recoverSimulationHold?():Promise<FactoryHostView>;
   endSession?():Promise<void>;
   current(): boolean;
   read(): FactoryHostView;
@@ -63,6 +66,9 @@ export interface FactoryHostPort {
 export interface FactoryHostExtensionHandle {
   dispose(): Promise<void>;
   isQuiescent(): boolean;
+  /** Private Host-only clock recovery. Callback must use the existing Native owner. */
+  canRecoverSimulationHold?():boolean;
+  recoverSimulationHold?(resetNative:()=>Promise<void>):Promise<void>;
   /** Optional safe teardown barrier; default requires isQuiescent, never skips cleanup. */
   canEndSession?(): boolean;
   /** Internal immutable committed-domain projection, independent of panel visibility. */

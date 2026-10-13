@@ -1669,4 +1669,51 @@ describe("HVP T08 bootstrap lifecycle", () => {
       expect(source.counts().renders).toBe(0);
     }finally{await handle.dispose();}
   });
+
+it("PLAY04 Host exposes a separate exact SimulationHold acknowledgement while ordinary Play and Resume stay blocked",async()=>{
+ const source=harness(),original=source.overrides()!;let status:FactoryHostView["physicsStatus"]="Paused",port!:FactoryHostPort,resetCalls=0;
+ const requestPointerLock=vi.fn();Object.defineProperty(source.canvas,"requestPointerLock",{value:requestPointerLock});
+ const handle=await startHvp(source.overrides({
+  createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+   const native=await original.createPhysics!(...args),read=native.read;
+   return {...native,read:()=>({...read(),status,terrainTransaction:"Idle",neighborTransaction:"Idle",bodyResidencyTransaction:"Idle",moving:{state:"Idle"},factoryFacilities:{revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null}}),
+    lifecycle:()=>({factoryInput:{enabled:true,pendingIds:[],desiredLevel:{x:0,z:0,sprint:false,jump:false},commandDepth:0,closing:false}}),
+    recoverFactorySimulationHold:async(expectedTick:number)=>{expect(expectedTick).toBe(read().ticks);resetCalls++;status="Paused";}} as any;
+  },factoryExtension:async(host:FactoryHostPort)=>{port=host;return mountFactorySession(host,createFp02Fixture("cargo").catalog);}
+ }));
+ try{
+  status="SimulationHold";stepFrame(source.windowPort,16);const recovery=port as FactoryHostPort&{recoverSimulationHold:()=>Promise<FactoryHostView>};
+  expect((port.read() as FactoryHostView&{simulationRecoveryAvailable?:boolean}).simulationRecoveryAvailable).toBe(true);expect(port.read().confirmed).toBe(false);
+  await expect(port.resume()).rejects.toThrow(/unconfirmed|hold/);await expect(port.play!()).rejects.toThrow(/unconfirmed|hold/);
+  await expect(Promise.resolve().then(()=>recovery.recoverSimulationHold())).resolves.toMatchObject({physicsStatus:"Paused",confirmed:true});
+  expect(resetCalls).toBe(1);expect(requestPointerLock).not.toHaveBeenCalled();
+  for(const hold of ["CoverageHold","RecoveryHold"] as const){status=hold;await expect(recovery.recoverSimulationHold()).rejects.toThrow(/unavailable|unconfirmed|hold/);expect(resetCalls).toBe(1);}
+  status="SimulationHold";Object.defineProperty(source.documentPort,"hidden",{value:true,configurable:true});await expect(recovery.recoverSimulationHold()).rejects.toThrow(/unavailable|unconfirmed|hold/);expect(resetCalls).toBe(1);
+ }finally{await handle.dispose();}
+});
+it("PLAY04 recovery cannot clear a newer focus Pause awaiting its own native ACK",async()=>{
+ const source=harness(),original=source.overrides()!;let status:FactoryHostView["physicsStatus"]="Paused",port!:FactoryHostPort,recovering=false,releasePause!:()=>void;
+ const focusAck=new Promise<void>(resolve=>{releasePause=resolve;});
+ const handle=await startHvp(source.overrides({
+  createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+   const native=await original.createPhysics!(...args),read=native.read;
+   return {...native,read:()=>({...read(),status,terrainTransaction:"Idle",neighborTransaction:"Idle",bodyResidencyTransaction:"Idle",moving:{state:"Idle"},factoryFacilities:{revision:0,state:"Idle",transactionId:null,owners:[],prepared:null}}),
+    command:async(kind:string)=>{if(kind==="Pause"&&recovering)await focusAck;},
+    lifecycle:()=>({factoryInput:{enabled:true,pendingIds:[],desiredLevel:{x:0,z:0,sprint:false,jump:false},commandDepth:0,closing:false}}),
+    recoverFactorySimulationHold:async()=>{status="Paused";}} as any;
+  },factoryExtension:async(host:FactoryHostPort)=>{
+   port=host;const session=await mountFactorySession(host,createFp02Fixture("cargo").catalog);
+   session.subscribe(view=>{if(recovering&&view.state==="Ready")host.setSurface!("pause",{sessionId:view.sessionId,epoch:view.epoch});});
+   return session;
+  }
+ }));
+ try{
+  status="SimulationHold";stepFrame(source.windowPort,16);recovering=true;
+  await port.recoverSimulationHold!();
+  expect(port.read()).toMatchObject({physicsStatus:"Paused",confirmed:false,input:{pausePending:true}});
+  await expect(port.resume()).rejects.toThrow(/unconfirmed|hold/);await expect(port.play!()).rejects.toThrow(/unconfirmed|hold/);
+  releasePause();await focusAck;await Promise.resolve();
+  expect(port.read()).toMatchObject({physicsStatus:"Paused",confirmed:true,input:{pausePending:false}});
+ }finally{releasePause();await handle.dispose();}
+});
 });

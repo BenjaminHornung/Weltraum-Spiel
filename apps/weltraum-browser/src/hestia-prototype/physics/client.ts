@@ -27,6 +27,8 @@ export interface HvpPhysicsClient {
   read(): HvpPhysicsSnapshot;
   update(): void;
   command(kind: "Pause" | "Resume" | "Drop" | "Play" | "Inspect"): Promise<void>;
+  /** Explicit Factory-only clock acknowledgement; never ordinary Play or automatic input. */
+  recoverFactorySimulationHold?(expectedTick:number):Promise<void>;
   impulse(direction:Readonly<{x:number;y:number;z:number}>):Promise<void>;
   setPlayerInput(value: HvpPlayerInput, cancelPendingJump?: boolean): void;
   setCameraOffset(value?: Readonly<{ x: number; y: number; z: number }>): void;
@@ -501,6 +503,14 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     update() {
       if(factoryEnabled&&!canDispatchFactoryInput())clearFactoryInput();
       readInput();
+    },
+    async recoverFactorySimulationHold(expectedTick) {
+      if(!factoryEnabled||disposed||failure||mutating||bodyPending||factoryInputClosing||factoryCommandDepth!==0
+        ||!Number.isSafeInteger(expectedTick)||snapshot?.ticks!==expectedTick||snapshot.status!=="SimulationHold"
+        ||snapshot.terrainTransaction!=="Idle"||snapshot.neighborTransaction!=="Idle"||snapshot.bodyResidencyTransaction!=="Idle"
+        ||(snapshot.structural&&snapshot.structural.state!=="Idle")||snapshot.moving.state!=="Idle"||snapshot.factoryFacilities?.state!=="Idle")throw Error("Factory SimulationHold recovery unavailable");
+      factoryCommandDepth++;clearFactoryInput();sendFactoryInput({...playerInput},true);
+      try{await send({kind:"RecoverFactorySimulationHold",expectedTick});}finally{factoryCommandDepth--;}
     },
     async command(kind) {
       if((mutating||bodyPending) && kind !== "Pause" && kind !== "Inspect") { throw new Error("Terrain Pending"); }

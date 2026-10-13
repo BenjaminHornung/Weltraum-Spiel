@@ -180,3 +180,34 @@ describe("HVP runtime physics", () => {
     } finally { world.free(); }
   });
 });
+
+
+it("PLAY04 actual worker rejects stale clock recovery nonterminally and recovers paused without advancing its Native World",async()=>{
+ // Real worker module and Rapier World; the timer clock/transport are declared unit scaffolding.
+ const replies:any[]=[];let now=0,timer:(()=>void)|undefined;
+ const prior=Object.getOwnPropertyDescriptor(globalThis,"onmessage");
+ vi.stubGlobal("postMessage",(reply:unknown)=>replies.push(reply));
+ const clock=vi.spyOn(performance,"now").mockImplementation(()=>now);
+ const interval=vi.spyOn(globalThis,"setInterval").mockImplementation(((callback:()=>void)=>{timer=callback;return 777;}) as typeof setInterval);
+ const clear=vi.spyOn(globalThis,"clearInterval").mockImplementation(()=>{});
+ vi.resetModules();
+ try{
+  await import("../../src/hestia-prototype/physics/physicsWorker");
+  const send=(data:unknown)=>(globalThis as any).onmessage({data});
+  await send({id:1,kind:"Initialize",sectors:[],spawn:{x:0,y:2,z:0},gravity:9.81,sessionId:"recovery_worker_unit",factoryEnabled:true});
+  expect(replies.at(-1).snapshot.status).toBe("Running");now=100;timer!();
+  await send({id:2,kind:"Read"});const before=replies.at(-1).snapshot;expect(before).toMatchObject({status:"SimulationHold",ticks:4});
+  await send({id:3,kind:"RecoverFactorySimulationHold",expectedTick:3});
+  expect(replies.at(-1)).toMatchObject({id:3,rejected:"Factory SimulationHold recovery unavailable",snapshot:{status:"SimulationHold",ticks:4}});
+  expect(replies.at(-1).error).toBeUndefined();expect(clear).not.toHaveBeenCalled();
+  await send({id:4,kind:"RecoverFactorySimulationHold",expectedTick:4});
+  const paused=replies.at(-1).snapshot;expect(paused).toMatchObject({status:"Paused",ticks:4,backlogSeconds:0,discardedSeconds:before.discardedSeconds+before.backlogSeconds});
+  expect(paused.bodies).toEqual(before.bodies);expect(paused.bodyCount).toBe(before.bodyCount);expect(paused.colliderCount).toBe(before.colliderCount);
+  now=200;timer!();await send({id:5,kind:"Read"});expect(replies.at(-1).snapshot).toMatchObject({status:"Paused",ticks:4});
+  await send({id:6,kind:"Resume"});now=200+1000/60;timer!();await send({id:7,kind:"Read"});expect(replies.at(-1).snapshot).toMatchObject({status:"Running",ticks:5});
+ }finally{
+  await (globalThis as any).onmessage?.({data:{id:99,kind:"Dispose"}});clock.mockRestore();interval.mockRestore();clear.mockRestore();vi.unstubAllGlobals();
+  if(prior)Object.defineProperty(globalThis,"onmessage",prior);else delete (globalThis as any).onmessage;
+  vi.resetModules();
+ }
+});

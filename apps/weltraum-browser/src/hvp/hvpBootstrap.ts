@@ -787,12 +787,13 @@ export const startHvp = async (
   let factoryHandle: FactoryHostExtensionHandle | undefined;
   const factoryListeners = new Set<(view: FactoryHostView) => void>();
   let factoryFocusedPanel:FactoryUiPanel|null=null,factorySurface:FactoryHostSurface|null=null;
-  let factoryPausePending=false,factoryInputError:string|null=null;
+  let factoryFocusPauseDepth=0,factoryRecoveryPending=false,factoryInputError:string|null=null;
+  const factoryPausePending=()=>factoryFocusPauseDepth>0||factoryRecoveryPending;
   const factoryPanelFocused=()=>factoryFocusedPanel!==null||factorySurface!==null;
   const factoryBlocked = () => factoryHandle !== undefined && !factoryHandle.isQuiescent();
   let publishFactoryView: (() => FactoryHostView) | undefined;
   let readFactoryView: (() => FactoryHostView) | undefined;
-  const factoryCanResume = () => readFactoryView?.().confirmed === true && !documentPort.hidden && !factoryPausePending;
+  const factoryCanResume = () => readFactoryView?.().confirmed === true && !documentPort.hidden && !factoryPausePending();
   const physicsAbort = new AbortController();
   let physicsPausedByFocus = false;
   const pausePhysics = (): void => { physicsPausedByFocus = true; void physics?.command("Pause").catch(() => {}); };
@@ -2197,13 +2198,24 @@ export const startHvp = async (
       const current = () => !disposed && hvpMountEpoch === myEpoch;
       // An admitted internal command owns the Factory barrier; all native/host holds still apply.
       const nativeFactoryConfirmed=()=>{const native=physics!.read();return confirmed(true)&&!saveBusy&&!saveHold&&(!native.factoryFacilities||native.factoryFacilities.state==="Idle")&&["Running","Paused"].includes(native.status);};
+      const factoryRecoveryAvailable=()=>{
+        const native=physics!.read(),input=physics!.lifecycle?.().factoryInput;
+        return current()&&!documentPort.hidden&&!factoryPausePending()&&!saveBusy&&!saveHold&&confirmed(true)&&!factoryBlocked()
+          &&!!physics!.recoverFactorySimulationHold&&!!factoryHandle?.recoverSimulationHold
+          &&native.status==="SimulationHold"&&native.factoryFacilities?.state==="Idle"&&native.terrainTransaction==="Idle"
+          &&native.neighborTransaction==="Idle"&&native.bodyResidencyTransaction==="Idle"&&native.moving.state==="Idle"
+          &&(!native.structural||native.structural.state==="Idle")&&!playerInput!.active&&!playerInput!.activationPending
+          &&!!input&&input.enabled&&!input.closing&&input.commandDepth===0&&input.pendingIds.length===0
+          &&input.desiredLevel.x===0&&input.desiredLevel.z===0&&!input.desiredLevel.sprint&&!input.desiredLevel.jump;
+      };
       const read = (): FactoryHostView => {
         if (!current()) throw new Error("Factory host disposed or superseded");
         const root = terrainRoot.read(), native = physics!.read();
         return Object.freeze({ sessionId: root.sessionId, epoch: myEpoch, nativeTick: native.ticks,
-          physicsStatus: native.status, confirmed: confirmed() && !saveBusy && !saveHold && !factoryPausePending && (!native.factoryFacilities||native.factoryFacilities.state==="Idle") && ["Running", "Paused"].includes(native.status),
+          simulationRecoveryAvailable:factoryRecoveryAvailable(),
+          physicsStatus: native.status, confirmed: confirmed() && !saveBusy && !saveHold && !factoryPausePending() && (!native.factoryFacilities||native.factoryFacilities.state==="Idle") && ["Running", "Paused"].includes(native.status),
           input:Object.freeze({active:playerInput!.active,activationPending:playerInput!.activationPending,pointerLocked:(documentPort as Document).pointerLockElement===canvas,
-            pausePending:factoryPausePending,focusedPanel:factoryFocusedPanel,surface:factorySurface,error:factoryInputError}),
+            pausePending:factoryPausePending(),focusedPanel:factoryFocusedPanel,surface:factorySurface,error:factoryInputError}),
           terrain: Object.freeze({ epoch: root.epoch, revision: root.revision, sourceDigest: root.sourceDigest,
             baseDigest: root.baseDigest, profileVersion:overrides.factorySourceProfile?snapshot.version as NonNullable<FactoryHostView["terrain"]["profileVersion"]>:undefined, cellMeters: root.cellMeters, originMeters: root.originMeters,
             sizeX: root.sizeX, sizeY: root.sizeY, sizeZ: root.sizeZ }) });
@@ -2483,9 +2495,9 @@ export const startHvp = async (
         finalize:async(id:string)=>{if(!physics!.finalizeFactoryCarrier)throw Error("Factory carrier unavailable");await physics!.finalizeFactoryCarrier(id);if(carrierCaptureCostKey)factoryCosts.delete(carrierCaptureCostKey);carrierCaptureCostKey=undefined;carrierOperation=undefined;publishFactoryView!();}
       });
       const pauseForFactoryFocus=()=>{
-        factoryPausePending=true;playerInput!.stop();
-        void physics!.command("Pause").then(()=>{if(!current())return;factoryPausePending=false;publishFactoryView!();})
-          .catch(error=>{if(!current())return;factoryPausePending=false;factoryInputError=String(error);publishFactoryView!();});
+        factoryFocusPauseDepth++;playerInput!.stop();
+        void physics!.command("Pause").then(()=>{if(!current())return;factoryFocusPauseDepth--;publishFactoryView!();},
+          error=>{if(!current())return;factoryFocusPauseDepth--;factoryInputError=String(error);publishFactoryView!();});
       };
       const hostPort: FactoryHostPort = Object.freeze({ current, read,construction,handling,
         setPanelFocus:(panel:FactoryUiPanel|null)=>{
@@ -2508,6 +2520,21 @@ export const startHvp = async (
             if(result.status!=="Playing"){factoryInputError=result.reason??"Play not confirmed";publishFactoryView!();throw new Error(factoryInputError);}
             return publishFactoryView!();
           });
+        },
+        recoverSimulationHold:async()=>{
+          if(!factoryRecoveryAvailable()||factoryHandle?.canRecoverSimulationHold?.()!==true)throw Error("Factory SimulationHold recovery unavailable");
+          const expectedTick=physics!.read().ticks;factoryRecoveryPending=true;factoryInputError=null;playerInput!.stop();let acknowledged=false;
+          try{
+            await factoryHandle!.recoverSimulationHold!(async()=>{
+              if(!current()||documentPort.hidden||saveBusy||saveHold||!confirmed(true)||physics!.read().status!=="SimulationHold"||physics!.read().ticks!==expectedTick)throw Error("Factory SimulationHold recovery unavailable");
+              await physics!.recoverFactorySimulationHold!(expectedTick);acknowledged=true;
+            });
+            factoryRecoveryPending=false;return publishFactoryView!();
+          }catch(error){
+            let unchangedHold=false;try{unchangedHold=physics!.read().status==="SimulationHold";}catch{/* Keep the fence on an unknown Native reply. */}
+            factoryRecoveryPending=acknowledged||!unchangedHold;factoryInputError=String(error);
+            if(current())publishFactoryView!();throw error;
+          }
         },
         endSession,
         readTerrainSlot: (x: number, y: number, z: number) => {
