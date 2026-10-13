@@ -1,0 +1,7 @@
+{
+  "sourceCommit": "d59f978250348e8ec85360a49b2863520949135c",
+  "receiptCount": 16,
+  "allRawDigestsVerified": true,
+  "browser14": "FAIL198.247s; three actual recoveries PASS limited",
+  "filePolicy": "All real files except duplicated uncompressed .log files"
+}
