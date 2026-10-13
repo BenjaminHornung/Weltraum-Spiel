@@ -1,8 +1,9 @@
+import { englishFactoryText } from "./english";
 import type { FactoryUiPort } from "../session/hostPort";
 import { createFactoryPanel, uiButton, uiText, type FactoryPanel } from "./cargoPanel";
 
 export const mountFactoryTechnologyView = (port: FactoryUiPort, doc: Document = document): FactoryPanel => {
-  const panel = createFactoryPanel(port, doc, "technology", "Bau und Technik");
+  const panel = createFactoryPanel(port, doc, "technology", "Construction & technology");
   let selected: string | null = null;
   const choices = doc.createElement("div"), details = doc.createElement("div");
   choices.className = "factory-technology-directory"; details.className = "factory-technology-detail";
@@ -18,13 +19,13 @@ export const mountFactoryTechnologyView = (port: FactoryUiPort, doc: Document = 
         button = uiButton(doc, technology.name, () => { selected = technology.id; render(); });
         choices.append(button); buttons.set(technology.id, button);
       }
-      button.textContent = technology.name;
-      button.title = technology.status === "AVAILABLE" ? "Verfügbar" : technology.status === "PLANNED" ? "Später" : "Voraussetzungen fehlen";
+      button.textContent = englishFactoryText(technology.name);
+      button.title = technology.status === "AVAILABLE" ? "Available" : technology.status === "PLANNED" ? "Later" : "Requirements missing";
       button.setAttribute("aria-pressed", String(selected === technology.id));
       if (selected === technology.id) {
-        details.append(uiText(doc, "h3", technology.name), uiText(doc, "p", technology.status === "AVAILABLE" ? "Verfügbar" : technology.status === "PLANNED" ? "Geplant" : "Voraussetzungen fehlen"));
+        details.append(uiText(doc, "h3", technology.name), uiText(doc, "p", technology.status === "AVAILABLE" ? "Available" : technology.status === "PLANNED" ? "Planned" : "Requirements missing"));
         for (const requirement of technology.requirements) details.append(uiText(doc, "p", requirement));
-        details.append(uiText(doc, "p", technology.status === "PLANNED" ? "Für diesen Prototyp noch nicht verfügbar." : "Gebaut wird mit der Bauvorschau an einem geeigneten Standort."));
+        details.append(uiText(doc, "p", technology.status === "PLANNED" ? "Not available in this prototype yet." : "Build using a placement preview at a suitable location."));
       }
     }
   };

@@ -1,0 +1,30 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts (19 tests | 1 failed) 55ms
+     × does not present unconfirmed consumer allocations as measured watts 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > does not present unconfirmed consumer allocations as measured watts
+AssertionError: expected 'Stromversorgung Bereit Erzeugung 0 W …' to contain 'Aktueller Bedarf 1200 W'
+
+Expected: "Aktueller Bedarf 1200 W"
+Received: "Stromversorgung Bereit Erzeugung 0 W · Zugewiesen 0 W  Keine bestätigte Batterieladung Kapazität noch nicht bestätigt Zuschnitt  Aktueller Bedarf 1.200 W Zugewiesen 0 W Wartet auf Strom   Baue zuerst eine Energiequelle und eine Maschine. Verbinde ihre Anschlüsse mit vorhandenem Feldkabel.  Antwort prüfen"
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:92:39
+     90|     h.publish({ ...h.value, publicationRevision: 2, power: { ...h.valu…
+     91|     expect(panel.element.textContent).toContain("Zugewiesen 0 W");
+     92|     expect(panel.element.textContent).toContain("Aktueller Bedarf 1200…
+       |                                       ^
+     93|     expect(h.commands).toHaveLength(0); panel.dispose();
+     94|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 39 passed (40)
+   Start at  13:45:10
+   Duration  1.07s (transform 332ms, setup 0ms, import 389ms, tests 306ms, environment 0ms)
+

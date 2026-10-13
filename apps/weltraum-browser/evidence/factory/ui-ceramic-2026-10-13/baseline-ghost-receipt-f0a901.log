@@ -1,0 +1,37 @@
+
+ RUN  v4.1.11 /workspace/.cloud-setup/ui-baseline-f0a901/apps/weltraum-browser
+
+------------------------x---------------------------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0
+AssertionError: expected { status: 'Rejected', …(2) } to match object { status: 'Committed', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "INSTALLED",
+-   "status": "Committed",
++   "reason": "Factory private prepared receipt binding mismatch",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:996:55
+    994|       port.construction!.projectGhost(request);
+    995|       expect(session.construction!.read().material).toBe(before);expec…
+    996|       await expect(session.construction!.commit(plan)).resolves.toMatc…
+       |                                                       ^
+    997|       expect(prepare).toHaveBeenCalledTimes(1);expect(session.construc…
+    998|       const artifacts=dispatch.mock.calls.flatMap(([command])=>command…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 51 skipped (52)
+   Start at  15:31:56
+   Duration  33.37s (transform 7.68s, setup 0ms, import 8.70s, tests 24.43s, environment 0ms)
+

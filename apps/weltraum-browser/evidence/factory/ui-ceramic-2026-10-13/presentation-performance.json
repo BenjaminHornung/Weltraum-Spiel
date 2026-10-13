@@ -1,0 +1,51 @@
+{
+  "kind": "ACTUAL_BUILD_PAUSED_PRESENTATION_FRAME_SAMPLE",
+  "frames": 180,
+  "wallMs": 93214.79999999702,
+  "medianFrameMs": 450,
+  "p95FrameMs": 1050,
+  "maxFrameMs": 1566.6000000000058,
+  "meanFrameMs": 517.7872222222222,
+  "testBridge": false,
+  "state": {
+    "sessionId": "hvp-session-1",
+    "epoch": 1,
+    "nativeTick": 0,
+    "simulationRecoveryAvailable": false,
+    "physicsStatus": "Paused",
+    "confirmed": true,
+    "input": {
+      "active": false,
+      "activationPending": false,
+      "pointerLocked": false,
+      "pausePending": false,
+      "focusedPanel": null,
+      "surface": "cargo",
+      "error": null
+    },
+    "terrain": {
+      "epoch": 1,
+      "revision": 0,
+      "sourceDigest": "0e2a0bcb",
+      "baseDigest": "0e2a0bcb",
+      "profileVersion": "hvp-factory-startsite-v5",
+      "cellMeters": 0.125,
+      "originMeters": {
+        "x": -16,
+        "y": -8,
+        "z": -16
+      },
+      "sizeX": 256,
+      "sizeY": 128,
+      "sizeZ": 256
+    }
+  },
+  "assetTelemetry": null,
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "note": "Paused fresh world and loaded existing assets, NOT a full running production/Save benchmark. New wreck remains NOT_ADMITTED.",
+  "measurementContext": "Concurrent second browser normal UI run during this sample; diagnostic only, not isolated acceptance."
+}

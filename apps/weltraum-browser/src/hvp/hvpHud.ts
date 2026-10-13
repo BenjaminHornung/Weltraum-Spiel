@@ -7,28 +7,55 @@ import type {createHvpNeighborController} from "../hestia-prototype/runtime/neig
 import type {createHvpDormancyController} from "../hestia-prototype/runtime/dormancyController";
 import type {HvpImpulseTarget} from "../hestia-prototype/physics/session";
 
+/** Legacy tool/mission messages are presentation only; source identities and checkpoints remain unchanged. */
+const legacyHvpText: Readonly<Record<string, string>> = Object.freeze({
+  "Spielen: 1 Zelle · 2 Box · 3 Kugel · Linksklick": "Play: 1 cell · 2 box · 3 sphere · left click",
+  "Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)": "Detached fragment: left click to cut again, including after falling",
+  "Bergung: markierte Verbindung · 1 Zelle": "Salvage: marked joint · 1 cell",
+  "Holz: Box 0,5 m · verankerten Ast trennen": "Wood: 0.5 m box · detach the anchored branch",
+  "Keine bestätigte Zellabdeckung": "Cell coverage unconfirmed",
+  "Kein Ziel innerhalb 4 m": "No target within 4 m",
+  "Andere Mutation Pending": "Another world change is pending",
+  "Zelle": "Cell", "Box 0,5 m": "Box 0.5 m", "Kugel 0,25 m": "Sphere 0.25 m",
+  "Bergungsplatz erreichen": "Reach the salvage site",
+  "Markierte Verbindung schneiden": "Cut the marked joint",
+  "Mit etwas Abstand per F in die blaue Ablage schieben": "Stand back and use F to push it into the blue depot",
+  "Spielstand sichern": "Save your game",
+  "Bergung gesichert. Neuer Durchlauf über bestätigten Neustart.": "Salvage secured. Use the confirmed restart to begin again."
+});
+const englishHvpText = (value: string): string => {
+  if (Object.hasOwn(legacyHvpText, value)) return legacyHvpText[value]!;
+  const key = /^Holz: Taste ([12])$/.exec(value);
+  if (key) return `Wood: key ${key[1]}`;
+  const cells = /^(\d+) Zellen · sicherer Steinbruch$/.exec(value);
+  if (cells) return `${cells[1]} cells · safe quarry`;
+  const support = /^(\d+) Stützzellen · Zusammenhang wird vor Commit geprüft$/.exec(value);
+  if (support) return `${support[1]} support cells · connectivity checked before commit`;
+  return value;
+};
+
 export const describeHvpImpulseTarget=(target:HvpImpulseTarget|undefined):string=>{
-  const name=target?.target==="hvp:physics:inertia"?"L-Holzkörper":target?.target==="hvp:physics:drop"?"Steinwürfel":"Beweglicher Körper";
+  const name=target?.target==="hvp:physics:inertia"?"L-shaped wood body":target?.target==="hvp:physics:drop"?"Stone cube":"Movable body";
   switch(target?.kind){
-    case "Dynamic":return `${name} · ${target.massKg!.toFixed(1)} kg · ${target.distanceMeters!.toFixed(1)} m · F kurz drücken: Stoß nach vorn`;
-    case "Fixed":return "Festes Objekt – F bewegt nur gelöste Körper, nicht Gelände oder verankerte Bäume.";
-    case "Cooldown":return "Kurz warten – ein Stoß alle 0,25 Sekunden.";
-    case "SpeedLimit":return "Geschwindigkeitsgrenze erreicht – kein weiterer Stoß.";
-    case "Busy":return "Welt wird aktualisiert – bitte kurz warten.";
-    case "NotPlaying":return "Spielen anklicken und die Maus übernehmen, dann einen gelösten Körper anvisieren.";
-    default:return "Kein Treffer innerhalb von 4 m – näher an einen gelösten Körper herangehen.";
+    case "Dynamic":return `${name} · ${target.massKg!.toFixed(1)} kg · ${target.distanceMeters!.toFixed(1)} m · Tap F: push forward`;
+    case "Fixed":return "Fixed object – F pushes only detached bodies, not terrain or anchored trees.";
+    case "Cooldown":return "Wait briefly – one push every 0.25 seconds.";
+    case "SpeedLimit":return "Speed limit reached – no further push.";
+    case "Busy":return "World updating – please wait.";
+    case "NotPlaying":return "Select Play and capture the mouse, then aim at a detached body.";
+    default:return "No hit within 4 m – move closer to a detached body.";
   }
 };
 export const describeHvpImpulseResult=(reason:string|undefined):string=>{
   switch(reason){
-    case "Solver contact impulse":return "Stoß ausgelöst. Schwere Körper bewegen sich bei gleicher Kraft weniger.";
-    case "Contact is not dynamic":return "Kein Stoß: Das getroffene Objekt ist noch fest verankert.";
-    case "No contact within 4 m":return "Kein Stoß: Kein Körper innerhalb von 4 m getroffen.";
-    case "Player is not running":return "Kein Stoß: Erst im Spielmodus fortsetzen.";
-    case "Cooldown 250 ms":return "Kein weiterer Stoß: Taste kurz loslassen und erneut drücken.";
-    case "Speed budget":return "Kein Stoß: Geschwindigkeitsgrenze erreicht.";
-    case "Invalid aim":return "Kein Stoß: Noch keine gültige Zielrichtung.";
-    default:return "F stößt in Blickrichtung; es greift oder zieht kein Objekt.";
+    case "Solver contact impulse":return "Impulse applied. Heavier bodies move less under the same force.";
+    case "Contact is not dynamic":return "No push: the target is still anchored.";
+    case "No contact within 4 m":return "No push: no body hit within 4 m.";
+    case "Player is not running":return "No push: resume play first.";
+    case "Cooldown 250 ms":return "No further push: release the key and press again.";
+    case "Speed budget":return "No push: speed limit reached.";
+    case "Invalid aim":return "No push: aim direction not confirmed yet.";
+    default:return "F pushes in your aim direction; it does not grab or pull an object.";
   }
 };
 
@@ -138,12 +165,12 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
   const saveValue=documentPort.createElement("div");saveValue.id="hvp-save-status";saveValue.setAttribute("role","status");
   const neighborValue=documentPort.createElement("div");neighborValue.id="hvp-neighbor-status";neighborValue.setAttribute("role","status");
   const interaction=documentPort.createElement("section");interaction.id="hvp-interaction";
-  interaction.setAttribute("aria-label","Ziel und Physikstoß");
+  interaction.setAttribute("aria-label","Target and physics push");
   interaction.setAttribute("style","position:fixed;bottom:22px;left:50%;transform:translateX(-50%);max-width:650px;padding:8px 14px;background:#12252be8;color:#f2f4ec;font:14px/1.45 system-ui;text-align:center;pointer-events:none;z-index:19");
   const targetValue=documentPort.createElement("div");targetValue.id="hvp-interaction-target";
   const feedback=documentPort.createElement("div");feedback.id="hvp-interaction-feedback";feedback.setAttribute("role","status");feedback.setAttribute("aria-live","polite");
   const cutFeedback=documentPort.createElement("div");cutFeedback.id="hvp-cut-feedback";cutFeedback.setAttribute("role","status");cutFeedback.setAttribute("aria-live","polite");
-  const defaultKeys="1/2/3 + Linksklick: Schneiden an freigegebenen Stellen · V: Perspektive · Esc: Pause / Übersicht";
+  const defaultKeys="1/2/3 + left click: cut at admitted locations · V: view · Esc: pause / overview";
   const keysValue=documentPort.createElement("div");keysValue.textContent=defaultKeys;
   keysValue.setAttribute("style","font-size:12px;margin-top:4px");
   interaction.append(targetValue,feedback,cutFeedback,keysValue);options.host.append(interaction);interaction.hidden=true;
@@ -219,21 +246,21 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
       physicsValue.textContent = `Physics error: ${error instanceof Error ? error.message : String(error)}`;
     });
   };
-  const pauseButton = makeButton("hvp-physics-pause", "Physik pausieren", () => {
+  const pauseButton = makeButton("hvp-physics-pause", "Pause physics", () => {
     command(options.actions.readPhysics().status === "Running" ? "Pause" : "Resume");
   });
-  const dropButton = makeButton("hvp-physics-drop", "Fallkörper neu starten", () => command("Drop"));
-  const viewButton = makeButton("hvp-player-view", "Perspektive: Ego (V)", () => options.actions.togglePlayerView());
-  const goalPanel=documentPort.createElement("section");goalPanel.id="hvp-salvage-panel";goalPanel.setAttribute("aria-label","Bergungsauftrag");
+  const dropButton = makeButton("hvp-physics-drop", "Restart falling body", () => command("Drop"));
+  const viewButton = makeButton("hvp-player-view", "View: first person (V)", () => options.actions.togglePlayerView());
+  const goalPanel=documentPort.createElement("section");goalPanel.id="hvp-salvage-panel";goalPanel.setAttribute("aria-label","Salvage objective");
   goalPanel.setAttribute("style","position:fixed;right:16px;top:16px;max-width:290px;padding:12px;background:#12252be8;color:#f2f4ec;font:14px/1.5 system-ui;z-index:20");
   const goalTitle=documentPort.createElement("strong"),goalText=documentPort.createElement("p"),goalSteps=documentPort.createElement("div");
-  goalText.id="hvp-salvage-instruction";goalText.setAttribute("role","status");goalTitle.textContent="Bergungsauftrag";
-  const goalPlay=makeButton("hvp-salvage-play","Spielen",()=>options.actions.play());
-  const goalSave=makeButton("hvp-salvage-save","Bergung speichern",()=>options.actions.save());
-  const goalRestart=makeButton("hvp-salvage-restart","Neuer Auftrag",()=>options.actions.restartSalvage());
+  goalText.id="hvp-salvage-instruction";goalText.setAttribute("role","status");goalTitle.textContent="Salvage objective";
+  const goalPlay=makeButton("hvp-salvage-play","Play",()=>options.actions.play());
+  const goalSave=makeButton("hvp-salvage-save","Save salvage",()=>options.actions.save());
+  const goalRestart=makeButton("hvp-salvage-restart","New objective",()=>options.actions.restartSalvage());
   goalPanel.append(goalTitle,goalText,goalSteps,goalPlay,goalSave,goalRestart);options.host.append(goalPanel);goalPanel.hidden=true;
   const updateSave = () => {
-    const save=options.actions.readSave();saveValue.textContent=`Spielstand: ${save.state} · ${save.message}${save.revision===null?"":` · r${save.revision}`}`;
+    const save=options.actions.readSave();saveValue.textContent=`Save: ${save.state} · ${save.message}${save.revision===null?"":` · r${save.revision}`}`;
     documentPort.body.dataset.hestiaPrototypeSave=JSON.stringify(save);
     for(const child of Array.from(controls.children)){if(child!==hideButton){(child as HTMLButtonElement).disabled=["Saving","Loading","RecoveryHold"].includes(save.state);}}
     for(const b of [goalPlay,goalSave,goalRestart]){b.disabled=["Saving","Loading","RecoveryHold"].includes(save.state);}
@@ -242,13 +269,13 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
   const updatePhysics = (): void => {
     updateSave();
     const tool=options.actions.readTool();
-    toolValue.textContent=`Plasmacutter: ${tool.mode} · ${tool.state} · ${tool.last?.reason??tool.message} · 1/2/3, Linksklick · Terrain: SafeQuarry / Holz: Ast`;
-    viewButton.textContent = options.actions.readThirdPerson() ? "Perspektive: 3. Person (V)" : "Perspektive: Ego (V)";
+    toolValue.textContent=`Plasma cutter: ${englishHvpText(tool.mode!)} · ${tool.state} · ${englishHvpText(tool.last?.reason??tool.message)} · 1/2/3, left click · Terrain: safe quarry / wood: branch`;
+    viewButton.textContent = options.actions.readThirdPerson() ? "View: third person (V)" : "View: first person (V)";
     const state = options.actions.readPhysics();
     const neighbor=options.actions.readNeighbor();
-    neighborValue.textContent=neighbor?`Ostregion: ${neighbor.state}${neighbor.busy?" (Pending)":""} · LOD ${neighbor.renderLod??neighbor.lod} m${neighbor.proxyOnly?" (Checkpoint-Projektion)":""} · Kollision ${neighbor.collisionReady?"bereit":"fehlt"}${neighbor.error?` · ${neighbor.error}`:""}`:"";
+    neighborValue.textContent=neighbor?`East region: ${neighbor.state}${neighbor.busy?" (Pending)":""} · LOD ${neighbor.renderLod??neighbor.lod} m${neighbor.proxyOnly?" (Checkpoint projection)":""} · Collision ${neighbor.collisionReady?"ready":"missing"}${neighbor.error?` · ${neighbor.error}`:""}`:"";
     const dormancy=options.actions.readDormancy();
-    if(dormancy){neighborValue.textContent+=` · Ruhende Fragmente: ${options.actions.readPhysics().parked?.length??0}${dormancy.busy?" (Pending)":""}${dormancy.error?` · ${dormancy.error}`:""}`;}
+    if(dormancy){neighborValue.textContent+=` · Dormant fragments: ${options.actions.readPhysics().parked?.length??0}${dormancy.busy?" (Pending)":""}${dormancy.error?` · ${dormancy.error}`:""}`;}
     const goal=options.actions.readSalvage();goalPanel.hidden=goal===null||!uiVisible;
     // Keep the real player objective separate from the inspection/diagnostic panel.
     const playing=state.player?.status==="Walking";
@@ -260,31 +287,31 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
     const context=options.actions.readContextHint?.();
     const targetText=context?.target??describeHvpImpulseTarget(state.impulseTarget);
     if(targetValue.textContent!==targetText){targetValue.textContent=targetText;}
-    const resultText=context?.feedback??((state.lastImpulse?"Letzter Versuch: ":"")+describeHvpImpulseResult(state.lastImpulse?.reason));
+    const resultText=context?.feedback??((state.lastImpulse?"Last attempt: ":"")+describeHvpImpulseResult(state.lastImpulse?.reason));
     if(feedback.textContent!==resultText){feedback.textContent=resultText;}
     const cutStates=[tool.state,tool.structural?.state,tool.moving?.state];
-    const cutText=context?.cut??(cutStates.includes("RecoveryHold")?"Schnitt angehalten: Wiederherstellung nicht bestätigt."
-      :cutStates.includes("Pending")?"Schneiden … Zusammenhang, Geometrie und Kollision werden vorbereitet."
-        :`${tool.mode} · Linksklick: ${tool.message}`);
+    const cutText=context?.cut??(cutStates.includes("RecoveryHold")?"Cut on hold: recovery unconfirmed."
+      :cutStates.includes("Pending")?"Cutting … preparing connectivity, geometry and collision."
+        :`${englishHvpText(tool.mode!)} · left click: ${englishHvpText(tool.message)}`);
     if(cutFeedback.textContent!==cutText){cutFeedback.textContent=cutText;}
     const keys=context?.keys??defaultKeys;if(keysValue.textContent!==keys)keysValue.textContent=keys;
     if(goal){
-      goalText.textContent=goal.targetLost?"Bergungsstück verändert oder verloren. Gesicherten Stand laden oder neuen Auftrag starten.":goal.instruction!;
-      goalSteps.textContent=`${goal.mission.objectiveStates.filter(o=>o.state==="Completed").length}/4 · WASD / Space · 1 + Klick: Verbindung · F: Schieben · Esc: Pause`;
+      goalText.textContent=goal.targetLost?"Salvage piece changed or lost. Load a save or start a new objective.":englishHvpText(goal.instruction!);
+      goalSteps.textContent=`${goal.mission.objectiveStates.filter(o=>o.state==="Completed").length}/4 · WASD / Space · 1 + click: joint · F: push · Esc: pause`;
       goalPlay.hidden=state.player?.status==="Walking"||goal.stage==="Save"||goal.stage==="Completed";
       goalSave.hidden=goal.stage!=="Save";
     }
-    if(state.inertia) { toolValue.textContent+=` · F: Schieben (4 m / 15 N·s) · ${state.lastImpulse?.reason??"L-Körper bereit"}`; }
-    if(state.structural) {toolValue.textContent+=` · Ast: ${tool.structural?.last?.status??state.structural.state} · ${tool.structural?.last?.reason??`Taste ${state.structural.cutEdge===1?1:2} + Linksklick`}`;}
-    if(state.moving){toolValue.textContent+=` · Fragment: ${tool.moving?.last?.status??tool.moving?.state??state.moving.state} · ${tool.moving?.last?.reason??"1 Zelle / 2 Box / 3 Kugel erneut schneiden"}`;}
+    if(state.inertia) { toolValue.textContent+=` · F: push (4 m / 15 N·s) · ${state.lastImpulse?.reason??"L-shaped body ready"}`; }
+    if(state.structural) {toolValue.textContent+=` · Branch: ${tool.structural?.last?.status??state.structural.state} · ${tool.structural?.last?.reason??`Key ${state.structural.cutEdge===1?1:2} + left click`}`;}
+    if(state.moving){toolValue.textContent+=` · Fragment: ${tool.moving?.last?.status??tool.moving?.state??state.moving.state} · ${tool.moving?.last?.reason??"1 cell / 2 box / 3 sphere: cut again"}`;}
     const support=options.actions.readSupport();
-    if(support.state!=="Idle"){toolValue.textContent+=` · Stützvorschau: ${support.state} · ${support.fragments} Teile / ${support.cells} Zellen / ${support.massKg.toFixed(2)} kg · ${support.message}`;}
-    pauseButton.textContent = state.status === "Running" ? "Physik pausieren" : "Physik fortsetzen";
+    if(support.state!=="Idle"){toolValue.textContent+=` · Support preview: ${support.state} · ${support.fragments} parts / ${support.cells} cells / ${support.massKg.toFixed(2)} kg · ${support.message}`;}
+    pauseButton.textContent = state.status === "Running" ? "Pause physics" : "Resume physics";
     const drop = state.bodies[0];
     physicsValue.textContent = `Physics: ${state.status} · ${state.bodyCount} bodies / ${state.colliderCount} colliders · g=${state.gravity.toFixed(2)} m/s²`
-      + (drop === undefined ? "" : ` · Fallhöhe y=${drop.position.y.toFixed(2)} m`);
+      + (drop === undefined ? "" : ` · Drop height y=${drop.position.y.toFixed(2)} m`);
     if (state.player != null) {
-      physicsValue.textContent += ` · Player: ${state.player.status}${state.player.grounded ? " (Boden)" : ""}`;
+      physicsValue.textContent += ` · Player: ${state.player.status}${state.player.grounded ? " (Ground)" : ""}`;
       modeValue.textContent = state.player.status === "Inspection"
         ? `Camera: ${documentPort.body.dataset.hestiaPrototypeCamera} (${options.actions.readInspectEnabled() ? "Fly" : "Orbit"})`
         : `Player: ${state.player.status} · ${options.actions.readThirdPerson() ? "Third Person" : "First Person"} · 1.80 m`;
@@ -293,29 +320,29 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
     if (inputError !== undefined) { physicsValue.textContent += ` · ${inputError}`; }
   };
   controls.append(
-    makeButton("hvp-end-session","Sitzung beenden",()=>options.actions.endSession()),
-    makeButton("hvp-play", "Spielen · WASD / Maus / Space", () => options.actions.play()),
+    makeButton("hvp-end-session","End session",()=>options.actions.endSession()),
+    makeButton("hvp-play", "Play · WASD / mouse / Space", () => options.actions.play()),
     viewButton,
     makeButton("hvp-camera-eye", "C01-EYE", () => options.actions.setPreset("C01-EYE")),
     makeButton("hvp-camera-shore", "C02-SHORE", () => options.actions.setPreset("C02-SHORE")),
     makeButton("hvp-camera-roots", "C03-ROOTS", () => options.actions.setPreset("C03-ROOTS")),
     makeButton("hvp-camera-wide", "C04-WIDE", () => options.actions.setPreset("C04-WIDE")),
-    makeButton("hvp-camera-rockarm", "C05-Felsarm", () => options.actions.setPreset("C05-ROCKARM")),
-    makeButton("hvp-support-preview", "Felsarm-Stütze prüfen (ohne Schnitt)", () => options.actions.previewSupport()),
-    makeButton("hvp-aim-rock", "Stütze anvisieren (2 + Klick)", () => options.actions.aimRock()),
-    makeButton("hvp-restart-rock", "Neustart: Felsarm", () => options.actions.restartRock()),
-    makeButton("hvp-restart-salvage","Neuer Bergungsauftrag",()=>options.actions.restartSalvage()),
-    makeButton("hvp-restart-east","Neustart: Ostpfad",()=>options.actions.restartEast()),
-    makeButton("hvp-neighbor-retry","Ostregion erneut versuchen",()=>options.actions.retryNeighbor()),
-    makeButton("hvp-camera-quarry", "Ansicht: Schnittstelle", () => options.actions.setPreset("C07-QUARRY")),
-    makeButton("hvp-aim-inertia", "L-Körper anvisieren (F)", () => options.actions.aimImpulse()),
-    makeButton("hvp-aim-branch", "Ast anvisieren (2 + Klick)", () => options.actions.aimBranch()),
-    makeButton("hvp-tool-cell","1: Zelle",()=>options.actions.selectTool(1)),
+    makeButton("hvp-camera-rockarm", "C05-ROCKARM", () => options.actions.setPreset("C05-ROCKARM")),
+    makeButton("hvp-support-preview", "Check rock-arm support (no cut)", () => options.actions.previewSupport()),
+    makeButton("hvp-aim-rock", "Aim at support (2 + click)", () => options.actions.aimRock()),
+    makeButton("hvp-restart-rock", "Restart: rock arm", () => options.actions.restartRock()),
+    makeButton("hvp-restart-salvage","New salvage objective",()=>options.actions.restartSalvage()),
+    makeButton("hvp-restart-east","Restart: east path",()=>options.actions.restartEast()),
+    makeButton("hvp-neighbor-retry","Retry east region",()=>options.actions.retryNeighbor()),
+    makeButton("hvp-camera-quarry", "View: cut location", () => options.actions.setPreset("C07-QUARRY")),
+    makeButton("hvp-aim-inertia", "Aim at L-shaped body (F)", () => options.actions.aimImpulse()),
+    makeButton("hvp-aim-branch", "Aim at branch (2 + click)", () => options.actions.aimBranch()),
+    makeButton("hvp-tool-cell","1: Cell",()=>options.actions.selectTool(1)),
     makeButton("hvp-tool-box","2: Box",()=>options.actions.selectTool(2)),
-    makeButton("hvp-tool-sphere","3: Kugel",()=>options.actions.selectTool(3)),
-    makeButton("hvp-save","Spielstand speichern",()=>options.actions.save()),
-    makeButton("hvp-load","Spielstand laden",()=>options.actions.load()),
-    makeButton("hvp-load-new","Gespeicherte Sitzung neu öffnen",()=>options.actions.loadNewSession()),
+    makeButton("hvp-tool-sphere","3: Sphere",()=>options.actions.selectTool(3)),
+    makeButton("hvp-save","Save game",()=>options.actions.save()),
+    makeButton("hvp-load","Load game",()=>options.actions.load()),
+    makeButton("hvp-load-new","Reopen saved session",()=>options.actions.loadNewSession()),
     makeButton("hvp-reset-camera", "Reset view", () => options.actions.resetCamera()),
     waterButton,
     inspectButton,

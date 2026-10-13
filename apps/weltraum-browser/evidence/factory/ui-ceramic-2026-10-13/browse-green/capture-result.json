@@ -1,0 +1,51 @@
+{
+  "kind": "ACTUAL_NORMAL_BROWSER_CAPTURE",
+  "url": "http://127.0.0.1:5190/factory.html",
+  "viewport": [
+    1280,
+    720
+  ],
+  "browser": "154.0.8037.57",
+  "events": [
+    {
+      "name": "01-start",
+      "surface": "start",
+      "uiState": "Ready"
+    },
+    {
+      "name": "02-cargo",
+      "surface": "cargo",
+      "uiState": "Ready"
+    },
+    {
+      "name": "03-build",
+      "surface": "build",
+      "uiState": "Ready"
+    },
+    {
+      "name": "04-energy",
+      "surface": "power",
+      "uiState": "Ready"
+    },
+    {
+      "name": "05-map",
+      "surface": "map",
+      "uiState": "Ready"
+    },
+    {
+      "name": "06-paused-hud",
+      "surface": "none",
+      "uiState": "Ready"
+    },
+    {
+      "name": "07-playing-hud",
+      "surface": "none",
+      "uiState": "Ready"
+    }
+  ],
+  "errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "responses": [],
+  "exitCode": 0
+}

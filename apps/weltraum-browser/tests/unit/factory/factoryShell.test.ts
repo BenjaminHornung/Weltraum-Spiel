@@ -56,12 +56,33 @@ const harness = () => {
 };
 
 describe("Factory player shell", () => {
+  it("presents English player controls without changing published session facts", async () => {
+    const module = await load(), h = harness(), doc = docDouble();
+    const shell = module!.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
+    expect(find(shell.element, "New game")).toBeDefined();
+    expect(find(shell.element, "Continue")).toBeDefined();
+    expect(h.port.read().statusText).toBe("Pausiert");
+    expect(h.lifecycleCommands).toHaveLength(0); shell.dispose();
+  });
+  it("keeps the goal and a source-bound minimap visible while inspecting Cargo", async () => {
+    const module = await load(), h = harness(), doc = docDouble();
+    h.publish({ ...initial(), phase: "paused" });
+    const shell = module!.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
+    shell.openSurface("cargo");
+    const nodes = descendants(shell.element as unknown as ElementDouble);
+    expect(nodes.find(n => n.className === "factory-shell-hud")?.hidden).toBe(false);
+    const mini = nodes.find(n => n.className.includes("factory-shell-minimap"));
+    expect(mini).toBeDefined();
+    expect(mini?.textContent).toContain("No confirmed map source");
+    expect(h.lifecycleCommands).toHaveLength(0);
+    shell.dispose();
+  });
   it("keeps Continue disabled with the real unavailable Save reason", async () => {
     const module = await load(), h = harness(), doc = docDouble();
     const shell = module?.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
-    const button = find(shell?.element, "Fortsetzen");
+    const button = find(shell?.element, "Continue");
     expect(button?.disabled).toBe(true);
-    expect(shell?.element.textContent).toContain("Gemeinsamer Spielstand noch nicht verfügbar");
+    expect(shell?.element.textContent).toContain("Combined save not available yet");
     expect(h.lifecycleCommands).toHaveLength(0);
     shell?.dispose();
   });
@@ -69,11 +90,11 @@ describe("Factory player shell", () => {
   it("keeps a pending Cargo receipt alive across tab hiding", async () => {
     const module = await load(), h = harness(), doc = docDouble();
     const shell = module?.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
-    shell?.openSurface("cargo"); find(shell?.element, "Fracht öffnen")?.click();
+    shell?.openSurface("cargo"); find(shell?.element, "Open cargo")?.click();
     shell?.openSurface("machine"); shell?.openSurface("cargo");
     expect(h.uiCommands).toHaveLength(1);
     expect(h.uiSubscribers).toBe(4);
-    expect(find(shell?.element, "Antwort prüfen")?.hidden).toBe(false);
+    expect(find(shell?.element, "Check response")?.hidden).toBe(false);
     shell?.dispose(); expect(h.uiSubscribers).toBe(0);
   });
 
@@ -82,7 +103,7 @@ describe("Factory player shell", () => {
     const shell = module?.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
     shell?.openSurface("cargo"); shell?.closeSurface();
     expect(h.lifecycleCommands).toHaveLength(0);
-    find(shell?.element, "Spielen")?.click();
+    find(shell?.element, "Play")?.click();
     expect(h.lifecycleCommands).toEqual([{ kind: "play", sessionId: "shell_session", epoch: 1 }]);
     shell?.dispose();
   });
@@ -101,16 +122,16 @@ describe("Factory player shell", () => {
     h.publish({ ...initial(), phase: "playing", statusText: "Aktiv" });
     const shell = module?.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
     find(shell?.element, "Pause")?.click();
-    expect(shell?.element.textContent).toContain("Aktion wird noch bestätigt");
-    expect(shell?.element.textContent).not.toContain("Spiel pausiert");
+    expect(shell?.element.textContent).toContain("Waiting for action confirmation");
+    expect(shell?.element.textContent).not.toContain("Game paused");
     shell?.dispose();
   });
 
   it("shows the start menu without competing World tool actions", async () => {
     const module = await load(), h = harness(), doc = docDouble();
     const shell = module!.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
-    expect(visibleButton(shell.element, "Neues Spiel")).toBeDefined();
-    for (const label of ["Fracht", "Bauen", "Maschinen", "Energie", "Technik", "Karte", "Pause", "Aufgabe öffnen"])
+    expect(visibleButton(shell.element, "New game")).toBeDefined();
+    for (const label of ["Cargo", "Build", "Machines", "Power", "Technology", "Map", "Pause", "Aufgabe öffnen"])
       expect(visibleButton(shell.element, label), `${label} competes with New Game`).toBeUndefined();
     shell.dispose();
   });
@@ -118,19 +139,21 @@ describe("Factory player shell", () => {
   it("leaves walking free of the all-workshop navigation until inspection is opened", async () => {
     const module = await load(), h = harness(), doc = docDouble(); h.publish({ ...initial(), phase: "playing", statusText: "Aktiv" });
     const shell = module!.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
-    for (const label of ["Fracht", "Bauen", "Maschinen", "Energie", "Technik", "Karte"])
+    for (const label of ["Cargo", "Build", "Machines", "Power", "Technology", "Map"])
       expect(visibleButton(shell.element, label)).toBeUndefined();
     shell.openSurface("cargo");
-    expect(visibleButton(shell.element, "Maschinen")).toBeDefined();
+    expect(visibleButton(shell.element, "Machines")).toBeUndefined();
+    visibleButton(shell.element, "Views")?.click();
+    expect(visibleButton(shell.element, "Machines")).toBeDefined();
     shell.closeSurface();
-    expect(visibleButton(shell.element, "Maschinen")).toBeUndefined();
+    expect(visibleButton(shell.element, "Machines")).toBeUndefined();
     expect(h.lifecycleCommands).toHaveLength(0); shell.dispose();
   });
 
   it("offers one local Cargo inspection without inventing an aimed pickup command", async () => {
     const module = await load(), h = harness(), doc = docDouble(); h.publish({ ...initial(), phase: "playing", statusText: "Aktiv" });
     const shell = module!.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
-    const context = visibleButton(shell.element, "Fracht ansehen");
+    const context = visibleButton(shell.element, "View cargo");
     expect(context).toBeDefined(); context!.click();
     expect(h.surfaces.at(-1)).toEqual({ surface: "cargo", binding: { sessionId: "shell_session", epoch: 1 } });
     expect(h.uiCommands).toHaveLength(0); expect(h.lifecycleCommands).toHaveLength(0); shell.dispose();
@@ -140,16 +163,16 @@ describe("Factory player shell", () => {
     const module = await load(), h = harness(), doc = docDouble(); h.publish({ ...initial(), phase: "playing", statusText: "Aktiv" });
     const uiPort = { ...h.uiPort, read: () => { const value = uiView(); return { ...value, interaction: { ...value.interaction, cargoAccessible: false, openCargo: cap(false, "Außer Reichweite") } }; } };
     const shell = module!.mountFactoryShell({ port: h.port, uiPort, buildPanel: doc.createElement("section"), doc });
-    expect(visibleButton(shell.element, "Fracht ansehen")).toBeUndefined();
+    expect(visibleButton(shell.element, "View cargo")).toBeUndefined();
     expect(h.uiCommands).toHaveLength(0); shell.dispose();
   });
 
   it("returns to New Game after closing help from the unstarted session", async () => {
     const module = await load(), h = harness(), doc = docDouble();
     const shell = module!.mountFactoryShell({ port: h.port, uiPort: h.uiPort, buildPanel: doc.createElement("section"), doc });
-    shell.openSurface("help"); expect(visibleButton(shell.element, "Neues Spiel")).toBeUndefined();
+    shell.openSurface("help"); expect(visibleButton(shell.element, "New game")).toBeUndefined();
     shell.closeSurface();
-    expect(visibleButton(shell.element, "Neues Spiel")).toBeDefined();
+    expect(visibleButton(shell.element, "New game")).toBeDefined();
     expect(h.surfaces.at(-1)).toEqual({ surface: "start", binding: { sessionId: "shell_session", epoch: 1 } });
     expect(h.lifecycleCommands).toHaveLength(0); shell.dispose();
   });
@@ -161,7 +184,7 @@ describe("Factory player shell", () => {
     const escape = Object.assign(new Event("keydown", { cancelable: true }), { key: "Escape" });
     doc.dispatchEvent(escape);
     expect(escape.defaultPrevented).toBe(true);
-    expect(visibleButton(shell.element, "Neues Spiel")).toBeDefined();
+    expect(visibleButton(shell.element, "New game")).toBeDefined();
     expect(h.surfaces.at(-1)).toEqual({ surface: "start", binding: { sessionId: "shell_session", epoch: 1 } });
     expect(h.lifecycleCommands).toHaveLength(0); shell.dispose();
   });
@@ -173,9 +196,9 @@ it("PLAY04 hold recovery is a separate explicit action and never dispatches Play
  const held={...initial(),phase:"hold" as const,capabilities:{...initial().capabilities,play:cap(false),recoverSimulation:cap(true)}};
  h.publish(held);const shell=module!.mountFactoryShell({port:h.port,uiPort:h.uiPort,buildPanel:doc.createElement("section"),doc});
  try{
-  const button=visibleButton(shell.element,"Sitzung freigeben");expect(button).toBeDefined();expect(button?.disabled).toBe(false);
+  const button=visibleButton(shell.element,"Recover session");expect(button).toBeDefined();expect(button?.disabled).toBe(false);
   button!.click();await Promise.resolve();await Promise.resolve();expect(h.lifecycleCommands).toEqual([{sessionId:held.sessionId,epoch:held.epoch,kind:"recoverSimulation"}]);
   h.publish({...held,phase:"paused",publicationRevision:2,capabilities:{...held.capabilities,recoverSimulation:cap(false),play:cap(true)}});
-  expect(visibleButton(shell.element,"Sitzung freigeben")).toBeUndefined();expect(visibleButton(shell.element,"Spielen")?.disabled).toBe(false);expect(h.lifecycleCommands).toHaveLength(1);
+  expect(visibleButton(shell.element,"Recover session")).toBeUndefined();expect(visibleButton(shell.element,"Play")?.disabled).toBe(false);expect(h.lifecycleCommands).toHaveLength(1);
  }finally{shell.dispose();}
 });

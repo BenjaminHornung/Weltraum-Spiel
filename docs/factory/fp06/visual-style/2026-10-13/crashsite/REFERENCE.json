@@ -1,0 +1,41 @@
+{
+  "schema": "hestia.crashsite.visual-candidates/v1",
+  "sourceHead": "f0a901db4ea3cfc64061dca3a2a89cc92f38fc6e",
+  "visibleNumbering": "01 first displayed, 02 second displayed; 03 is owner-feedback revision",
+  "ownerFeedback": "Prefer 02, larger and more damaged, loading bay from 01, exactly two rooftop Gatling turrets, future finite ammunition and sheltered start",
+  "hybridState": "OWNER_APPROVED_ASSET_REFERENCE",
+  "images": [
+    {
+      "file": "art/factory/visual-reference/2026-10-13/crashsite/01-grounded-lander.png",
+      "bytes": 2511793,
+      "sha256": "8210fef212c60ff30f1de3658c3503fb02f0e66e1d2f34e5e2e918b8cbdc0b4c",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "kind": "DESIGN_CONCEPT_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "file": "art/factory/visual-reference/2026-10-13/crashsite/02-exposed-cargo-spine.png",
+      "bytes": 2510037,
+      "sha256": "f842f7e6971784698a4c7b072d069b1bc91cdc3e69b7a4ceefc602ec97c436cd",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "kind": "DESIGN_CONCEPT_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "file": "art/factory/visual-reference/2026-10-13/crashsite/03-hybrid-revision.png",
+      "bytes": 2860417,
+      "sha256": "1fac13e62a049b137370c1705549342cb7087195a0c614ae6234e6717e7f208c",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "kind": "DESIGN_CONCEPT_NOT_RUNTIME_EVIDENCE"
+    }
+  ],
+  "runtimeAdmission": "NOT_ADMITTED; unchanged cargoSite, finite cargo, terrain, native colliders and budget",
+  "guns": "Owner design intent; no enemies, defense AI, ammo booking or automatic protection implemented"
+}

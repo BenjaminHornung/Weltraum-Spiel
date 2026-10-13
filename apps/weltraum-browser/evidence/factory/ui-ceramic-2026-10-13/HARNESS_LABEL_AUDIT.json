@@ -1,0 +1,58 @@
+{
+  "kind": "HARNESS_LABEL_AUDIT",
+  "issue": "Final enum overwrites the caught start-gate failure based on SimulationHold alone. It is not evidence of meeting the nativeTick>=30 Running criterion. Raw files are preserved unchanged.",
+  "correctConclusion": "Last production-complete captured SimulationHold at tick27, followed by confirmed Paused recovery. Earlier actual observations separately show bounded Running/Ready; no sustained gameplay acceptance.",
+  "observations": [
+    {
+      "run": "production-matrix-corrected",
+      "observations": {
+        "before": {
+          "state": "Ready",
+          "status": "Running",
+          "tick": 72,
+          "confirmed": true
+        },
+        "after": {
+          "state": "Ready",
+          "status": "Running",
+          "tick": 123,
+          "confirmed": true
+        }
+      }
+    },
+    {
+      "run": "production-final",
+      "observations": {
+        "before": {
+          "state": "Ready",
+          "status": "Running",
+          "tick": 30,
+          "confirmed": true
+        },
+        "after": {
+          "state": "Waiting",
+          "status": "SimulationHold",
+          "tick": 102,
+          "confirmed": false
+        }
+      }
+    },
+    {
+      "run": "production-complete",
+      "observations": {
+        "before": {
+          "state": "Waiting",
+          "status": "SimulationHold",
+          "tick": 27,
+          "confirmed": false
+        },
+        "after": {
+          "state": "Waiting",
+          "status": "SimulationHold",
+          "tick": 27,
+          "confirmed": false
+        }
+      }
+    }
+  ]
+}

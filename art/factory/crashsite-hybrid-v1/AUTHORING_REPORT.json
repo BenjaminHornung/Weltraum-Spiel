@@ -1,0 +1,88 @@
+{
+  "schema": "hestia.crashsite.blender-authoring/v1",
+  "blenderVersion": "4.3.2",
+  "artGridMeters": 0.125,
+  "partCount": 8,
+  "parts": [
+    {
+      "name": "cargo_bay",
+      "quads": 195,
+      "vertices": 780
+    },
+    {
+      "name": "cockpit",
+      "quads": 95,
+      "vertices": 380
+    },
+    {
+      "name": "debris",
+      "quads": 158,
+      "vertices": 632
+    },
+    {
+      "name": "hull",
+      "quads": 846,
+      "vertices": 3384
+    },
+    {
+      "name": "rear",
+      "quads": 192,
+      "vertices": 768
+    },
+    {
+      "name": "spine",
+      "quads": 352,
+      "vertices": 1408
+    },
+    {
+      "name": "turret_aft",
+      "quads": 132,
+      "vertices": 528
+    },
+    {
+      "name": "turret_fore",
+      "quads": 134,
+      "vertices": 536
+    }
+  ],
+  "cells": 25686,
+  "turretParts": [
+    "turret_fore",
+    "turret_aft"
+  ],
+  "flight": "PERMANENTLY_INOPERABLE",
+  "worldAuthority": false,
+  "runtimeAdmission": "NOT_ADMITTED",
+  "views": [
+    "01-bay-and-turrets.png",
+    "02-rear-damage.png",
+    "03-plan-access.png"
+  ],
+  "outputs": [
+    {
+      "file": "01-bay-and-turrets.png",
+      "sha256": "7fc785dce637b194eddab2b7716d47478737a511f71c35e7d6bca69931c33900",
+      "bytes": 2015420
+    },
+    {
+      "file": "02-rear-damage.png",
+      "sha256": "35c00e43540b5f302285b57f1541807961b34b012984e04affb1193ccd81cc2f",
+      "bytes": 1986160
+    },
+    {
+      "file": "03-plan-access.png",
+      "sha256": "2dc50eb25f1d03aedb7a2db9693b3f96fb370d649bc7b623024625e066c1bea7",
+      "bytes": 2108276
+    },
+    {
+      "file": "crashsite-hybrid-v1.blend",
+      "sha256": "2987725a6c1d8802c40f921c11582db90f39d30bdbf2f665f5804d3bfe9a1437",
+      "bytes": 921324
+    },
+    {
+      "file": "crashsite-hybrid-v1.glb",
+      "sha256": "8912f74b4bcdd0effb41960b97a8d491123f52f5930adeb63544992b236cadfa",
+      "bytes": 242936
+    }
+  ]
+}

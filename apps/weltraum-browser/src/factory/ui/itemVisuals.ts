@@ -1,3 +1,4 @@
+import { englishFactoryText } from "./english";
 import { createFp02CatalogInput, loadFactoryCatalog } from "../catalog/fp02Catalog";
 import type { FactoryUiInventory } from "../session/hostPort";
 
@@ -37,17 +38,32 @@ const forms: Readonly<Record<FactoryItemSymbol | "map" | "manual" | "pause", str
 });
 const icon = (doc: Document, shape: keyof typeof forms, label: string): HTMLElement => {
   const element = doc.createElement("span"); element.className = "factory-item-symbol";
-  element.setAttribute("role", "img"); element.setAttribute("aria-label", label);
+  element.setAttribute("role", "img"); element.setAttribute("aria-label", englishFactoryText(label));
   // Only closed constant markup is inserted; external names/IDs use DOM setters.
   element.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true">${forms[shape]}</svg>`;
   return element;
 };
+// Actual transparent Blender renders of the existing native models. Closed
+// mappings preserve identity; imagery cannot add material, ports or authority.
+const thumbnails: Readonly<Record<string, string>> = Object.freeze({
+  "fp02.bulk.steel_known": "steel", "fp02.bulk.steel_semi": "semi", "fp02.bulk.steel_profile": "profile",
+  "fp02.bulk.steel_sheet": "sheet", "fp02.bulk.steel_offcut": "offcut", "fp02.comp.small_brace": "brace",
+  "fp02.device.battery_4kwh": "battery", "fp02.comp.field_cable": "cable", "fp02.device.material_container": "storage",
+  "fp02.device.field_workbench": "bench", "fp02.comp.belt_module": "belt", "fp02.chassis.cutter": "cutter", "fp02.chassis.former": "former",
+});
 export const factoryItemIcon = (doc: Document, itemId: string, label: string): HTMLElement => {
-  const element = icon(doc, factoryItemSymbol(itemId), label); element.dataset.factoryItem = itemId; return element;
+  const element = icon(doc, factoryItemSymbol(itemId), label); element.dataset.factoryItem = itemId;
+  if (Object.hasOwn(thumbnails, itemId)) {
+    const image = doc.createElement("img"); image.src = `/factory/ui-ceramic-v1/${thumbnails[itemId]}.png`; image.alt = ""; image.width = 192; image.height = 192; image.decoding = "async";
+    image.addEventListener("error", () => { element.replaceChildren(...icon(doc, factoryItemSymbol(itemId), label).children); }, { once: true });
+    element.replaceChildren(image);
+  }
+  return element;
 };
 export const factoryToolIcon = (doc: Document, tool: string): HTMLElement => {
   const shapes: Record<string, keyof typeof forms> = { cargo: "container", build: "brace", machine: "chassis", power: "battery", technology: "drive", map: "map", help: "manual", pause: "pause" };
-  const element = icon(doc, Object.hasOwn(shapes, tool) ? shapes[tool]! : "package", ""); element.setAttribute("aria-hidden", "true"); return element;
+  const items: Readonly<Record<string, string>> = { cargo: "fp02.device.material_container", build: "fp02.comp.small_brace", machine: "fp02.chassis.cutter", power: "fp02.device.battery_4kwh" };
+  const element = Object.hasOwn(items, tool) ? factoryItemIcon(doc, items[tool]!, "") : icon(doc, Object.hasOwn(shapes, tool) ? shapes[tool]! : "package", ""); element.setAttribute("aria-hidden", "true"); return element;
 };
 
 const catalog = loadFactoryCatalog(createFp02CatalogInput());
@@ -65,14 +81,14 @@ export const groupFactoryItems = (container: FactoryUiInventory, catalogDigest: 
     let key = JSON.stringify(identity), group = groups.get(key);
     if (group && (!Number.isSafeInteger(group.quantityUnits + stack.quantityUnits) || !Number.isSafeInteger(group.massMg + stack.massMg))) { key = JSON.stringify([...identity, stack.stackId]); group = undefined; }
     if (group) { group.quantityUnits += stack.quantityUnits; group.massMg += stack.massMg; group.stacks.push(stack); }
-    else groups.set(key, { key, itemId: stack.itemId, name: stack.name, quantityBasis: stack.quantityBasis, quantityUnits: stack.quantityUnits, massMg: stack.massMg, freshProduction: stack.freshProduction, stacks: [stack] });
+    else groups.set(key, { key, itemId: stack.itemId, name: englishFactoryText(stack.name), quantityBasis: stack.quantityBasis, quantityUnits: stack.quantityUnits, massMg: stack.massMg, freshProduction: stack.freshProduction, stacks: [stack] });
   }
   return Object.freeze([...groups.values()].map(g => Object.freeze({ ...g, stacks: Object.freeze(g.stacks) })));
 };
 const profileLabels: Readonly<Record<string, string>> = Object.freeze({
-  "C26-PACK": "Zuschnitt-Chassis", "C27-PACK": "Umform-Chassis", "B06-BOM": "Zuschnitt-Bausatz", "B07-BOM": "Umform-Bausatz",
-  "BATTERY-PACK": "Batterie", "DISTRIBUTOR-PACK": "Verteiler", "BENCH-PACK": "Werkbank", "BIN-PACK": "Materialcontainer",
-  BELT4: "Bandlinie · 4 m", CABLE40: "Kabelpaket · 40 m", CABLE4750: "Kabel · 4,75 m", CABLE6500: "Kabel · 6,5 m", CABLE8000: "Kabel · 8 m", CABLE7000: "Kabel · 7 m", CABLE5250: "Kabel · 5,25 m", CABLE7500: "Kabel · 7,5 m",
-  RAW8: "Stahlauftrag · 8 kg", MONTAGE: "Stützenmaterial", BRACE: "Neue Stütze",
+  "C26-PACK": "Cutter chassis", "C27-PACK": "Former chassis", "B06-BOM": "Cutter kit", "B07-BOM": "Former kit",
+  "BATTERY-PACK": "Battery", "DISTRIBUTOR-PACK": "Distributor", "BENCH-PACK": "Workbench", "BIN-PACK": "Material container",
+  BELT4: "Belt line · 4 m", CABLE40: "Cable pack · 40 m", CABLE4750: "Cable · 4.75 m", CABLE6500: "Cable · 6.5 m", CABLE8000: "Cable · 8 m", CABLE7000: "Cable · 7 m", CABLE5250: "Cable · 5.25 m", CABLE7500: "Cable · 7.5 m",
+  RAW8: "Steel batch · 8 kg", MONTAGE: "Brace materials", BRACE: "New brace",
 });
-export const factoryProfileLabel = (profileId: string, fallback: string): string => Object.hasOwn(profileLabels, profileId) ? profileLabels[profileId]! : fallback;
+export const factoryProfileLabel = (profileId: string, fallback: string): string => Object.hasOwn(profileLabels, profileId) ? profileLabels[profileId]! : englishFactoryText(fallback);

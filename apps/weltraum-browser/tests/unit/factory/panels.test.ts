@@ -88,7 +88,7 @@ describe("W09 frozen panel projection and finite player intents", () => {
     const firstLot = elements.find(e => e.tagName === "P" && e.textContent.startsWith("Stahllos 0:"))!;
     expect(firstLot).toBeDefined();
     const inventory = firstLot.parent!.parent!.parent!, content = inventory.parent!;
-    const deposit = button(panel.element, "Hier ablegen")!, back = button(panel.element, "Zurück zur Fracht")!, transfer = button(panel.element, "Übertragen")!;
+    const deposit = button(panel.element, "Set down here")!, back = button(panel.element, "Return to cargo")!, transfer = button(panel.element, "Transfer")!;
     expect(deposit.hidden).toBe(false); expect(deposit.disabled).toBe(false);
     expect(back.hidden).toBe(false); expect(back.disabled).toBe(false);
     expect(content.children.indexOf(deposit.parent!)).toBeLessThan(content.children.indexOf(inventory));
@@ -99,20 +99,20 @@ describe("W09 frozen panel projection and finite player intents", () => {
   it("bounds the independently scrollable full inventory without replacing focused transfer controls", () => {
     const h = harness(); h.publish(longCargoView());
     const panel = mountFactoryCargoPanel(h.port, documentDouble()), elements = descendants(panel.element as unknown as ElementDouble);
-    const inventory = elements.find(e => e.getAttribute("aria-label") === "Materialbestand");
+    const inventory = elements.find(e => e.getAttribute("aria-label") === "Material inventory");
     expect(inventory).toBeDefined();
     expect(inventory!.getAttribute("role")).toBe("region");
     expect(inventory!.style.cssText).toMatch(/max-height:\s*[^;]*(?:vh|rem|px)/);
     expect(inventory!.style.cssText).toMatch(/overflow-y:\s*auto/);
-    const amount = elements.find(e => e.getAttribute("aria-label") === "Transfermenge")!, source = elements.find(e => e.getAttribute("aria-label") === "Transferquelle")!;
+    const amount = elements.find(e => e.getAttribute("aria-label") === "Transfer quantity")!, source = elements.find(e => e.getAttribute("aria-label") === "Transfer source")!;
     expect(source.children).toHaveLength(79); amount.value = "0,5"; amount.focus();
-    const pickup = button(panel.element, "Aufnehmen: 8 kg Stahl")!;
+    const pickup = button(panel.element, "Pick up: 8 kg Stahl")!;
     h.publish({ ...h.view, publicationRevision: 2, power: { ...h.view.power, batteryEnergyJ: 12_959_990 } });
     const updated = descendants(panel.element as unknown as ElementDouble);
-    expect(updated.find(e => e.getAttribute("aria-label") === "Transfermenge")).toBe(amount);
-    expect(updated.find(e => e.getAttribute("aria-label") === "Transferquelle")).toBe(source);
+    expect(updated.find(e => e.getAttribute("aria-label") === "Transfer quantity")).toBe(amount);
+    expect(updated.find(e => e.getAttribute("aria-label") === "Transfer source")).toBe(source);
     expect(amount.value).toBe("0,5"); expect(source.children).toHaveLength(79);
-    expect(button(panel.element, "Aufnehmen: 8 kg Stahl")).toBe(pickup);
+    expect(button(panel.element, "Pick up: 8 kg Stahl")).toBe(pickup);
     for (let i = 0; i < 79; i++) expect(inventory!.textContent).toContain(`Stahllos ${i}:`);
     expect(h.commands).toHaveLength(0); panel.dispose();
   });
@@ -128,7 +128,7 @@ describe("W09 frozen panel projection and finite player intents", () => {
     expect(panel.element.textContent).toContain("96 kg");
     expect(panel.element.textContent).toContain("180 kg");
     expect(panel.element.textContent).toContain("300 kg");
-    expect(panel.element.textContent).toContain("1 Stück");
+    expect(panel.element.textContent).toContain("1 item");
     const source = h.view.inventory[0]!;
     h.publish({ ...h.view, publicationRevision: 2, binding: { ...h.view.binding, materialRevision: 1 }, inventory: [{ ...source, revision: 1, massMg: 568_000_000, contents: source.contents.map(s => s.stackId === "steel" ? { ...s, quantityUnits: 88_000_000, massMg: 88_000_000 } : s) },
       { id: "carrier", revision: 1, ownerId: "wreck_owner", role: "carrier", accessible: true, massMg: 8_000_000, capacityMassMg: 8_000_000, capacityVolumeMm3: 5_000_000, contents: [{ ...source.contents[0]!, stackId: "steel_child", quantityUnits: 8_000_000, massMg: 8_000_000 }], pickupProfiles: [] }] });
@@ -140,38 +140,38 @@ describe("W09 frozen panel projection and finite player intents", () => {
   });
   it("shows planned technology requirements without granting a hidden research unlock", () => {
     const h = harness(), panel = mountFactoryTechnologyView(h.port, documentDouble());
-    const select = button(panel.element, "Hochofen");
+    const select = button(panel.element, "Blast furnace");
     expect(select).toBeDefined(); select!.click();
-    expect(panel.element.textContent).toContain("Geplant");
-    expect(panel.element.textContent).toContain("Erzkonzentrat");
-    expect(panel.element.textContent).toContain("Reduktionsmittel");
+    expect(panel.element.textContent).toContain("Planned");
+    expect(panel.element.textContent).toContain("Ore concentrate");
+    expect(panel.element.textContent).toContain("Reducing agent");
     expect(panel.element.textContent).not.toMatch(/Level|Forschung freischalten/i);
     expect(h.commands).toHaveLength(0);
     panel.dispose();
   });
   it("keeps finite pickup pending and never changes stock or submits a second command", async () => {
     const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
-    const pickup = button(panel.element, "Aufnehmen: 8 kg Stahl");
+    const pickup = button(panel.element, "Pick up: 8 kg Stahl");
     expect(pickup).toBeDefined(); pickup!.click(); pickup!.click();
     expect(h.focuses).toContain("cargo");
     expect(h.commands).toHaveLength(1);
     expect(h.commands[0]).toMatchObject({ kind: "pickup", profileId: "raw8", sourceLots: [{ stackId: "steel", quantityUnits: 8_000_000 }] });
     expect(panel.element.textContent).toContain("96 kg");
-    expect(panel.element.textContent).toContain("Antwort ausstehend");
+    expect(panel.element.textContent).toContain("Response pending");
     h.complete("NoOp"); await flush();
     expect(h.commands).toHaveLength(1);
     expect(panel.element.textContent).toContain("96 kg");
     const machine = mountFactoryMachinePanel(h.port, documentDouble());
-    expect(machine.element.textContent).toContain("Wartet auf Strom");
-    expect(machine.element.textContent).toContain("1,2 s");
+    expect(machine.element.textContent).toContain("Waiting for power");
+    expect(machine.element.textContent).toContain("1.2 s");
     machine.dispose(); panel.dispose();
     expect(h.subscribers).toBe(0);
   });
   it("preserves a focused pickup control across unrelated confirmed publications", () => {
     const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
-    const pickup = button(panel.element, "Aufnehmen: 8 kg Stahl")!;
+    const pickup = button(panel.element, "Pick up: 8 kg Stahl")!;
     h.publish({ ...h.view, publicationRevision: 2, power: { ...h.view.power, batteryEnergyJ: 12_959_990 } });
-    expect(button(panel.element, "Aufnehmen: 8 kg Stahl")).toBe(pickup);
+    expect(button(panel.element, "Pick up: 8 kg Stahl")).toBe(pickup);
     expect(h.commands).toHaveLength(0); panel.dispose();
   });
   it("rejects foreign-session intent submission and ignores older inventory publications", () => {
@@ -181,36 +181,36 @@ describe("W09 frozen panel projection and finite player intents", () => {
     expect(panel.element.dataset.publicationRevision).toBe("4");
     expect(panel.element.textContent).toContain("96 kg");
     h.publish({ ...initialView(), sessionId: "other_session", publicationRevision: 5 });
-    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+    button(panel.element, "Pick up: 8 kg Stahl")!.click();
     expect(h.commands).toHaveLength(0); panel.dispose();
   });
   it("keeps one unknown intent until a matching authoritative receipt is found", async () => {
     const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
-    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+    button(panel.element, "Pick up: 8 kg Stahl")!.click();
     h.failTransport(); await flush();
-    expect(panel.element.textContent).toContain("Antwort unbekannt");
-    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+    expect(panel.element.textContent).toContain("Response unknown");
+    button(panel.element, "Pick up: 8 kg Stahl")!.click();
     expect(h.commands).toHaveLength(1);
     const command = h.commands[0]!;
     h.receipts.set(command.commandId, { commandId: "wrong", requestCanonicalJson: "{}", status: "Committed", reason: null, publicationRevision: 1, binding });
-    button(panel.element, "Antwort prüfen")!.click();
-    expect(panel.element.textContent).toContain("Antwort unbekannt");
+    button(panel.element, "Check response")!.click();
+    expect(panel.element.textContent).toContain("Response unknown");
     h.receipts.set(command.commandId, { commandId: command.commandId, requestCanonicalJson: "{}", status: "Committed", reason: null, publicationRevision: 1, binding });
-    button(panel.element, "Antwort prüfen")!.click();
-    expect(panel.element.textContent).toContain("Antwort unbekannt");
+    button(panel.element, "Check response")!.click();
+    expect(panel.element.textContent).toContain("Response unknown");
     h.receipts.set(command.commandId, { commandId: command.commandId, requestCanonicalJson: JSON.stringify(command), status: "Committed", reason: null, publicationRevision: 1, binding });
-    button(panel.element, "Antwort prüfen")!.click();
-    expect(panel.element.textContent).toContain("Aktion bestätigt");
-    expect(button(panel.element, "Antwort prüfen")!.hidden).toBe(true);
+    button(panel.element, "Check response")!.click();
+    expect(panel.element.textContent).toContain("Action confirmed");
+    expect(button(panel.element, "Check response")!.hidden).toBe(true);
     expect(panel.element.textContent).toContain("96 kg"); panel.dispose();
   });
   it("does not release focus between controls or revive disposed panels after an answer", async () => {
     const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
     panel.element.dispatchEvent(new Event("focusin"));
     const event = new Event("focusout");
-    Object.defineProperty(event, "relatedTarget", { value: button(panel.element, "Aufnehmen: 8 kg Stahl") });
+    Object.defineProperty(event, "relatedTarget", { value: button(panel.element, "Pick up: 8 kg Stahl") });
     panel.element.dispatchEvent(event); expect(h.focuses).toEqual(["cargo"]);
-    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+    button(panel.element, "Pick up: 8 kg Stahl")!.click();
     panel.dispose(); const count = h.focuses.length, text = panel.element.textContent;
     h.complete(); await flush();
     expect(h.focuses).toHaveLength(count); expect(panel.element.textContent).toBe(text);
@@ -221,13 +221,13 @@ describe("W09 frozen panel projection and finite player intents", () => {
     h.publish({ ...h.view, inventory: [...h.view.inventory, { ...h.view.inventory[0]!, id: "cut_in", role: "input", contents: [], pickupProfiles: [], massMg: 0 }] });
     const panel = mountFactoryCargoPanel(h.port, documentDouble());
     const elements = descendants(panel.element as unknown as ElementDouble);
-    const amount = elements.find(e => e.tagName === "INPUT" && e.getAttribute("aria-label") === "Transfermenge");
+    const amount = elements.find(e => e.tagName === "INPUT" && e.getAttribute("aria-label") === "Transfer quantity");
     expect(amount).toBeDefined(); amount!.value = "8,000001";
-    const target = elements.find(e => e.tagName === "SELECT" && e.getAttribute("aria-label") === "Transferziel")!;
+    const target = elements.find(e => e.tagName === "SELECT" && e.getAttribute("aria-label") === "Transfer destination")!;
     target.value = "cut_in"; target.dispatchEvent(new Event("change"));
     h.publish({ ...h.view, publicationRevision: 2 });
     expect(amount!.value).toBe("8,000001");
-    button(panel.element, "Übertragen")!.click();
+    button(panel.element, "Transfer")!.click();
     expect(h.commands).toHaveLength(1);
     expect(h.commands[0]).toMatchObject({ kind: "transfer", source: { containerId: "wreck", containerRevision: 0, stackId: "steel", quantityUnits: 8_000_001 }, target: { id: "cut_in", revision: 0 }, expected: h.view.binding });
     expect(panel.element.textContent).toContain("96 kg"); panel.dispose();
@@ -238,22 +238,22 @@ describe("W09 frozen panel projection and finite player intents", () => {
     const machine = { ...h.view.machines[0]!, jobId: null, selectedRecipe: ref, recipes: [{ ref, name: "Zuschnitt", durationMs: 30000, powerWatts: 1200 }], actions: { ...h.view.machines[0]!.actions, start: cap() } };
     h.publish({ ...h.view, machines: [machine], inventory: [{ ...h.view.inventory[0]!, id: "cut_in", role: "input", revision: 3, pickupProfiles: [] }] });
     const panel = mountFactoryMachinePanel(h.port, documentDouble());
-    button(panel.element, "Starten")!.click();
+    button(panel.element, "Start job")!.click();
     expect(h.commands[0]).toMatchObject({ kind: "start", machine: { id: "cutter", revision: 1 }, sourceLots: [{ containerId: "cut_in", containerRevision: 3, stackId: "steel", quantityUnits: 8_000_000 }] });
     panel.dispose();
     const wrong = harness(); wrong.publish({ ...h.view, binding: { ...binding, catalogDigest: "other_catalog" } });
     const rejected = mountFactoryMachinePanel(wrong.port, documentDouble());
-    expect(button(rejected.element, "Starten")!.disabled).toBe(true);
-    button(rejected.element, "Starten")!.click(); expect(wrong.commands).toHaveLength(0); rejected.dispose();
+    expect(button(rejected.element, "Start job")!.disabled).toBe(true);
+    button(rejected.element, "Start job")!.click(); expect(wrong.commands).toHaveLength(0); rejected.dispose();
   });
   it("rejects zero, over-lot, nonfinite and sub-mg transfer amounts", () => {
     const h = harness(); h.publish({ ...h.view, inventory: [...h.view.inventory, { ...h.view.inventory[0]!, id: "cut_in", role: "input", contents: [], pickupProfiles: [], massMg: 0 }] });
     const panel = mountFactoryCargoPanel(h.port, documentDouble()), elements = descendants(panel.element as unknown as ElementDouble);
-    const amount = elements.find(e => e.tagName === "INPUT")!, target = elements.find(e => e.getAttribute("aria-label") === "Transferziel")!;
+    const amount = elements.find(e => e.tagName === "INPUT")!, target = elements.find(e => e.getAttribute("aria-label") === "Transfer destination")!;
     target.value = "cut_in"; target.dispatchEvent(new Event("change"));
     for (const invalid of ["0", "97", "0,0000001", "-1", "Infinity", "NaN", "1e2"]) {
       amount.value = invalid; amount.dispatchEvent(new Event("input"));
-      expect(button(panel.element, "Übertragen")!.disabled).toBe(true); button(panel.element, "Übertragen")!.click();
+      expect(button(panel.element, "Transfer")!.disabled).toBe(true); button(panel.element, "Transfer")!.click();
     }
     expect(h.commands).toHaveLength(0); panel.dispose();
   });
@@ -261,24 +261,24 @@ describe("W09 frozen panel projection and finite player intents", () => {
     const h = harness(), sessionId = "839b1cc4-dc9d-4c8f-9433-7662c4e15462";
     h.publish({ ...h.view, sessionId });
     const panel = mountFactoryCargoPanel(h.port, documentDouble());
-    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+    button(panel.element, "Pick up: 8 kg Stahl")!.click();
     expect(h.commands[0]!.sessionId).toBe(sessionId);
     expect(isSaveSafeResourceId(h.commands[0]!.commandId)).toBe(true);
     h.complete(); await flush(); panel.dispose();
     const remounted = mountFactoryCargoPanel(h.port, documentDouble());
-    button(remounted.element, "Aufnehmen: 8 kg Stahl")!.click();
+    button(remounted.element, "Pick up: 8 kg Stahl")!.click();
     expect(h.commands[1]!.commandId).not.toBe(h.commands[0]!.commandId);
     expect(isSaveSafeResourceId(h.commands[1]!.commandId)).toBe(true); remounted.dispose();
   });
   it("retains the selected technology keyboard control after selection and confirmed publications", () => {
     const h = harness(), panel = mountFactoryTechnologyView(h.port, documentDouble());
-    const choice = button(panel.element, "Hochofen")!;
+    const choice = button(panel.element, "Blast furnace")!;
     choice.focus(); choice.click();
-    expect(button(panel.element, "Hochofen")).toBe(choice);
+    expect(button(panel.element, "Blast furnace")).toBe(choice);
     expect((panel.element as unknown as ElementDouble).contains(choice)).toBe(true);
     h.publish({ ...h.view, publicationRevision: 2, elapsedMs: 200, factorySteps: 2 });
-    expect(button(panel.element, "Hochofen")).toBe(choice);
-    choice.click(); expect(panel.element.textContent).toContain("Erzkonzentrat");
+    expect(button(panel.element, "Blast furnace")).toBe(choice);
+    choice.click(); expect(panel.element.textContent).toContain("Ore concentrate");
     expect(h.commands).toHaveLength(0); panel.dispose();
   });
 });
@@ -286,9 +286,9 @@ describe("W09 frozen panel projection and finite player intents", () => {
 it("PLAY04 power panel submits one current installed-device control and waits for canonical confirmation",async()=>{
  const h=harness();h.publish({...h.view,power:{...h.view.power,devices:[{id:"battery",revision:4,name:"Expeditionsbatterie",enabled:true,capability:cap()}]} as FactoryUiReadModel["power"]});
  const panel=mountFactoryPowerPanel(h.port,documentDouble());
- try{const toggle=button(panel.element,"Expeditionsbatterie ausschalten");expect(toggle).toBeDefined();toggle!.click();toggle!.click();
+ try{const toggle=button(panel.element,"Expedition battery disable");expect(toggle).toBeDefined();toggle!.click();toggle!.click();
   expect(h.commands).toHaveLength(1);expect(h.commands[0]).toMatchObject({kind:"set-enabled",machine:{id:"battery",revision:4},enabled:false});
-  expect(button(panel.element,"Expeditionsbatterie ausschalten")!.disabled).toBe(true);h.complete("Rejected");await flush();
-  expect(panel.element.textContent).not.toContain("Expeditionsbatterie: ausgeschaltet");
+  expect(button(panel.element,"Expedition battery disable")!.disabled).toBe(true);h.complete("Rejected");await flush();
+  expect(panel.element.textContent).not.toContain("Expedition battery: disabled");
  }finally{panel.dispose();}
 });

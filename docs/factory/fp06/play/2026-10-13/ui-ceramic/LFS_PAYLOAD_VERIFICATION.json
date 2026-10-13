@@ -1,0 +1,534 @@
+{
+  "result": "PASS",
+  "payloads": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/before/01-start.png",
+      "sha256": "d8b86cecd2cc75d40602aff2d43812bf88810f05d0b60470f2e8bf9628ae18de",
+      "bytes": 811609,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/before/02-cargo.png",
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb",
+      "bytes": 521284,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/before/03-build.png",
+      "sha256": "473e68d44fab67a675b72540df85505fa1d8459bdb44f7ad3bd32e1cfa886b51",
+      "bytes": 524596,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/before/04-energy.png",
+      "sha256": "482889216fe37feb7b3cb2a513ccd88d45c85d0874d367f2ccca7834d0f1498f",
+      "bytes": 522707,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/before/05-map.png",
+      "sha256": "bcdf4c7dc65fd8f7a8e0f822b6f5974f612976152b866acee51ceb346b30e9aa",
+      "bytes": 461549,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/before/06-paused-hud.png",
+      "sha256": "73cbf811d17337d50f02dc53d710ce72038a5f4f91182845f96beaf6eaf52a67",
+      "bytes": 689293,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/before/07-playing-hud.png",
+      "sha256": "703b0ade5d39dee865c59e74e9e00e41759f2b1fe093e6aadc8ad8271d2ac066",
+      "bytes": 258201,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-green/01-start.png",
+      "sha256": "647d997612c34bc31aa1938d7c154ac4e9f792ac5e58e8df4a4a109311a4098c",
+      "bytes": 558809,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-green/02-cargo.png",
+      "sha256": "ad4e02b5923dd68a4955623131ee3426c8880f6a8e30aa99763d78484152d599",
+      "bytes": 592332,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-green/03-build.png",
+      "sha256": "2c27323d40ecc8ca3bda29adc8d5fa18eb9eb5c8c50161f187a2fa6bf8944074",
+      "bytes": 590520,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-green/04-energy.png",
+      "sha256": "424952ec0ff443925dc8230ea95d43c49b37b574dae7575b1922d78bcec2e068",
+      "bytes": 672879,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-green/05-map.png",
+      "sha256": "f54809468a46ce0a4fdb62d47d0a1690809322a05c3cb1a94d1e7a9766aba9f1",
+      "bytes": 474044,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-green/06-paused-hud.png",
+      "sha256": "fab72781e7b09a6ae7458178d11344cc8c491bfd2ecb36043bf56c9d2bf1b213",
+      "bytes": 698480,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-green/07-playing-hud.png",
+      "sha256": "917d7288deb91317ca10a526d94e42e90032652f5c014c2858a733900cd0b15c",
+      "bytes": 249713,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-red/01-start.png",
+      "sha256": "647d997612c34bc31aa1938d7c154ac4e9f792ac5e58e8df4a4a109311a4098c",
+      "bytes": 558809,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-red/02-cargo.png",
+      "sha256": "ad4e02b5923dd68a4955623131ee3426c8880f6a8e30aa99763d78484152d599",
+      "bytes": 592332,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/browse-red/03-build.png",
+      "sha256": "1d143d6396543cfe577df66cc2ee5ffb43f505f8d48fa323d6d0aac0a46aca0d",
+      "bytes": 591158,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/cargo-post-qa-1280.png",
+      "sha256": "4f1e1dd6168f056676da839b8f171f7b1b7a9699be1320ac73090731ebf3fa78",
+      "bytes": 584995,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/cargo-post-qa-375.png",
+      "sha256": "a6c4f228e9c0a68e47ae8bf187bdc06db56493f2ce77cca45cbb917cddc7469b",
+      "bytes": 71979,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/clean-copy-start.png",
+      "sha256": "ab30ea0b9711f4ea2c79b671001a202ede257f1623d63698ff1f35b8ea7ac018",
+      "bytes": 551053,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/clean-copy-workshop.png",
+      "sha256": "143d16fe0d6c0609d64ca1440341507167cac2bb91ee6229e93f25f58ec3ff23",
+      "bytes": 585479,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/crashsite-browser-import.png",
+      "sha256": "e233d9ae28134c6670c4be82f4e4faaf1d1b6caba758df437bb8345ac5d24224",
+      "bytes": 53594,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/focus-objective-final.png",
+      "sha256": "8c4255bbef55effbf5ea9a0731cb6aa7a422232276a35bf75547aafb33ddcc59",
+      "bytes": 685612,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/main-01-english.png",
+      "sha256": "5a093980f22d517154521e76e09e089bdce1f6f38dffc618fa2f89c408c87e39",
+      "bytes": 183468,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/main-02-graphics-english.png",
+      "sha256": "6d2dba12f425e69f923d8756e592e1ad04af43a3cb3d275c4f64567e17330aca",
+      "bytes": 87086,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/01-start-1280.png",
+      "sha256": "ab30ea0b9711f4ea2c79b671001a202ede257f1623d63698ff1f35b8ea7ac018",
+      "bytes": 551053,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/02-cargo-1280.png",
+      "sha256": "9df11585672d63edf8838aae9e59c866f9b8cb8c8ce98c73173580d61ffa805d",
+      "bytes": 581538,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/03-build-rejected-1280.png",
+      "sha256": "805bbb860f7ab777371896e7335b8a981ef443961ea8c8b5541355f26cfcf7bb",
+      "bytes": 577742,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/04-machines-empty-1280.png",
+      "sha256": "c1a730b30ab715687f8ad5ed249417fee15b16b1f0e27adc647a1a1f55fabbaa",
+      "bytes": 677988,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/05-power-empty-1280.png",
+      "sha256": "70d882b2636029342b2bff1f8b6f1225f51e55851bb44bb0efc6144ddb3bf7ee",
+      "bytes": 670877,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/06-technology-1280.png",
+      "sha256": "91a0d6211a453d392ee5fc46a1cc7f7f431480688712ff0ec09fa71f924143fd",
+      "bytes": 579971,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/07-map-1280.png",
+      "sha256": "a6b4744b746d157b6d50dc14c8f4f8153a56298298c22c81b510763f4223c044",
+      "bytes": 460227,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/08-paused-hud-1280.png",
+      "sha256": "7d287f53cc9bdb5bdb2ad7f988c5c08298fa3dcfcbabc736bdd595bddf582446",
+      "bytes": 690197,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/09-paused-hud-1920.png",
+      "sha256": "12d55cca48f088697eb2f1b2a0a660b5b73430cb669b2ebf600fbd2cc34eeacc",
+      "bytes": 1264482,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/10-paused-hud-375.png",
+      "sha256": "028d9df84b1b95bf792d05e12dcb14f4b6db7b15d074ff1cff91b5b5b3d75039",
+      "bytes": 268950,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/11-cargo-375.png",
+      "sha256": "38844afdb648238b1ccf1906098881735e13bb017eb23111e837da18259ef899",
+      "bytes": 72649,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/12-explicit-play-1280.png",
+      "sha256": "733105eaedd672d455df8f14c2cdfc29aa2138b1858472a407e50bceed74bcb4",
+      "bytes": 229265,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-complete/13-recovery-1280.png",
+      "sha256": "766a45098ee6051c25078ea8331412448412b68d624a32316fc5d4795aad2bf9",
+      "bytes": 214960,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/01-start-1280.png",
+      "sha256": "ab30ea0b9711f4ea2c79b671001a202ede257f1623d63698ff1f35b8ea7ac018",
+      "bytes": 551053,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/02-cargo-1280.png",
+      "sha256": "9df11585672d63edf8838aae9e59c866f9b8cb8c8ce98c73173580d61ffa805d",
+      "bytes": 581538,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/03-build-rejected-1280.png",
+      "sha256": "805bbb860f7ab777371896e7335b8a981ef443961ea8c8b5541355f26cfcf7bb",
+      "bytes": 577742,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/04-machines-empty-1280.png",
+      "sha256": "c1a730b30ab715687f8ad5ed249417fee15b16b1f0e27adc647a1a1f55fabbaa",
+      "bytes": 677988,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/05-power-empty-1280.png",
+      "sha256": "70d882b2636029342b2bff1f8b6f1225f51e55851bb44bb0efc6144ddb3bf7ee",
+      "bytes": 670877,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/06-technology-1280.png",
+      "sha256": "91a0d6211a453d392ee5fc46a1cc7f7f431480688712ff0ec09fa71f924143fd",
+      "bytes": 579971,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/07-map-1280.png",
+      "sha256": "a6b4744b746d157b6d50dc14c8f4f8153a56298298c22c81b510763f4223c044",
+      "bytes": 460227,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/08-paused-hud-1280.png",
+      "sha256": "7d287f53cc9bdb5bdb2ad7f988c5c08298fa3dcfcbabc736bdd595bddf582446",
+      "bytes": 690197,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/09-paused-hud-1920.png",
+      "sha256": "12d55cca48f088697eb2f1b2a0a660b5b73430cb669b2ebf600fbd2cc34eeacc",
+      "bytes": 1264482,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/10-paused-hud-375.png",
+      "sha256": "028d9df84b1b95bf792d05e12dcb14f4b6db7b15d074ff1cff91b5b5b3d75039",
+      "bytes": 268950,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/11-cargo-375.png",
+      "sha256": "bd780ba2d0830884fce66773451f9da98d86568cfe79419e2e8818eb950a7260",
+      "bytes": 72658,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/12-explicit-play-1280.png",
+      "sha256": "aa448970b1c1fc0976e0abf59527cbfe3ef3c83583d6780dbfcb1ebce4b183c9",
+      "bytes": 244572,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-final/13-recovery-1280.png",
+      "sha256": "6ea7e698a4e742e16b9226bf113af00fb5a62ce930c7dc0093118c02566d5356",
+      "bytes": 213858,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/01-start-1280.png",
+      "sha256": "1872b40186baa1e1c139b24b7bde9a113faebf1169edab3e4425ba4fd9e315ef",
+      "bytes": 556269,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/02-cargo-1280.png",
+      "sha256": "eb8d7693a103cb960683254654c40da11142f1ed63d13e648e78404e86c06e39",
+      "bytes": 584910,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/03-build-rejected-1280.png",
+      "sha256": "a2c4677f2feaf385250171aec3fdef50e0b8b77f7d89092653de8435fdcdfaf5",
+      "bytes": 583330,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/04-machines-empty-1280.png",
+      "sha256": "582d9e13f2479ca05f4007addbd66f9c8a9f2d591ff9c6ae644975f43d8890ef",
+      "bytes": 682808,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/05-power-empty-1280.png",
+      "sha256": "46621105a60d1a5130379bc68da45a74dd5cfe8dff8701e3a38984c436be03f7",
+      "bytes": 675275,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/06-technology-1280.png",
+      "sha256": "2073994265ef8b71caa436c07df47dd0885f3276c247bf4bdb819d53d5c59771",
+      "bytes": 585834,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/07-map-1280.png",
+      "sha256": "ebfb3d890ada3cf1630619a4762b6ffdd5437a8d5e268224b52fd67702fa8893",
+      "bytes": 466379,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/08-paused-hud-1280.png",
+      "sha256": "0c411698e43e427114e8f8ca1db9468fa2a0385f02d4e8733e2d2384b312334d",
+      "bytes": 694732,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/09-paused-hud-1920.png",
+      "sha256": "5a64e3e38dae6a41167b274fc9a8de7137174d94adaa68aae5b1bdf9d387d575",
+      "bytes": 1269494,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/10-paused-hud-375.png",
+      "sha256": "f40817eceffb9f8f1fcd379b2b69088d2e6f2e74d2ed03481365cbe9a3cb9dae",
+      "bytes": 272880,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/11-cargo-375.png",
+      "sha256": "b3d86c1f0c440676eea718c58ff3941ad47f172cbca22824986f57fae7037f44",
+      "bytes": 70674,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/production-matrix-corrected/12-explicit-play-1280.png",
+      "sha256": "fade63041d605810231ef8480117d0b4fca08eb04594b9e6babeac30c350fe4b",
+      "bytes": 248072,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/qa-focused-cargo.png",
+      "sha256": "ddc9b7275cd5c06acc9ea2fdbb48304678ae4ed1aba2fcf99a47aa95290fa121",
+      "bytes": 309928,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/qa-full-cargo.png",
+      "sha256": "0e4a248bdfc344dcf40e89eeda77edf26d4863f7e1c56c46cc64df9a016eeae8",
+      "bytes": 1941696,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/crashsite-hybrid-v1/crashsite-hybrid-v1.glb",
+      "sha256": "8912f74b4bcdd0effb41960b97a8d491123f52f5930adeb63544992b236cadfa",
+      "bytes": 242936,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/battery.png",
+      "sha256": "ec95caeee8006d61e0030809cb267477d9ab7e7735ffc9fc57e5095cec29722f",
+      "bytes": 39984,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/belt.png",
+      "sha256": "1da285cd3e7936c83d1a021af72496cc399d339584cec69b3463d3815563feb0",
+      "bytes": 26725,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/bench.png",
+      "sha256": "f616137581271dc3a7875b1f9f40dfe64b2faa4d5687d40428830a8186d7d094",
+      "bytes": 28988,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/brace.png",
+      "sha256": "52a7d71d27b3e780727829d05a857803ddcb540ec8009bd8d18377ee4c1c16fb",
+      "bytes": 27923,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/cable.png",
+      "sha256": "700eb121ef7641e4a2f64809e0c56cf062958db546e99c98476a87ed52428d54",
+      "bytes": 21477,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/carrier.png",
+      "sha256": "ef913a3034dd16cad45e395e5ba25fc07e2075b96e6641d228475a3017cc8b95",
+      "bytes": 48299,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/cutter.png",
+      "sha256": "2d57bda0680c11e3efe7d24454bb323da314bc20d2b91e69a1fe99433a816cf8",
+      "bytes": 42217,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/former.png",
+      "sha256": "76e52673e3e2b8b17a5a6ca5463a28e59706e98a242b76c54c1ef83c48c050cd",
+      "bytes": 48539,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/offcut.png",
+      "sha256": "ea71130a249fc0e19ddb8e2499f04245b6ae29ca8c4e413c6c03be1901bd5bb7",
+      "bytes": 42969,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/profile.png",
+      "sha256": "147c2c383dd35e1aca9a023150f08b99d091e2cca4f2be1643ae8c505294fe3e",
+      "bytes": 34138,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/semi.png",
+      "sha256": "71d68031e6f210e0052902cb342875fbee9548b096625979dec384e95654c10a",
+      "bytes": 27829,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/sheet.png",
+      "sha256": "a3edaa72d877ccbd907048b07066c34812763a5a487e5b011b8e4cd40c91121e",
+      "bytes": 32207,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/steel.png",
+      "sha256": "516e096728c74406c36c7fc3fc42421a78ea5fa28885f8a68afbd2876ac23879",
+      "bytes": 44999,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/ui-ceramic-v1/storage.png",
+      "sha256": "fa249bc5818d5c6a5c2199c42384bb6b23eeef340ddb3ba5df1905f7d6e623fd",
+      "bytes": 38911,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/01-bay-and-turrets.png",
+      "sha256": "7fc785dce637b194eddab2b7716d47478737a511f71c35e7d6bca69931c33900",
+      "bytes": 2015420,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/02-rear-damage.png",
+      "sha256": "35c00e43540b5f302285b57f1541807961b34b012984e04affb1193ccd81cc2f",
+      "bytes": 1986160,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/03-plan-access.png",
+      "sha256": "2dc50eb25f1d03aedb7a2db9693b3f96fb370d649bc7b623024625e066c1bea7",
+      "bytes": 2108276,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/crashsite-hybrid-v1.blend",
+      "sha256": "2987725a6c1d8802c40f921c11582db90f39d30bdbf2f665f5804d3bfe9a1437",
+      "bytes": 921324,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/crashsite-hybrid-v1.glb",
+      "sha256": "8912f74b4bcdd0effb41960b97a8d491123f52f5930adeb63544992b236cadfa",
+      "bytes": 242936,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/crashsite/01-grounded-lander.png",
+      "sha256": "8210fef212c60ff30f1de3658c3503fb02f0e66e1d2f34e5e2e918b8cbdc0b4c",
+      "bytes": 2511793,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/crashsite/02-exposed-cargo-spine.png",
+      "sha256": "f842f7e6971784698a4c7b072d069b1bc91cdc3e69b7a4ceefc602ec97c436cd",
+      "bytes": 2510037,
+      "actualLfsObjectPresent": true
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/crashsite/03-hybrid-revision.png",
+      "sha256": "1fac13e62a049b137370c1705549342cb7087195a0c614ae6234e6717e7f208c",
+      "bytes": 2860417,
+      "actualLfsObjectPresent": true
+    }
+  ],
+  "note": "Actual local LFS objects and materialized workspace bytes verified; not pushed/published."
+}

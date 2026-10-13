@@ -1,3 +1,4 @@
+import { englishFactoryText } from "./english";
 import type { FactoryUiCapability, FactoryUiPort } from "../session/hostPort";
 import { mountFactoryCargoPanel, uiButton, uiText } from "./cargoPanel";
 import { mountFactoryMachinePanel } from "./machinePanel";
@@ -42,19 +43,20 @@ export interface FactoryShellOptions {
   readonly cancelBuildPreview?: () => boolean;
 }
 
-const titles: Record<FactoryShellSurface, string> = { cargo: "Fracht und Transport", machine: "Maschinen", power: "Energie und Verbindungen",
-  technology: "Technikverzeichnis", build: "Bauen", map: "Lokale Karte", help: "Feldhandbuch", pause: "Pause und Sitzung", start: "HESTIA", settings: "Einstellungen" };
+const titles: Record<FactoryShellSurface, string> = { cargo: "Cargo & transport", machine: "Machines", power: "Power & connections",
+  technology: "Technology", build: "Build", map: "Local map", help: "Field guide", pause: "Pause and session", start: "HESTIA", settings: "Settings" };
 const workshopSurfaces = new Set<FactoryShellSurface>(["cargo", "build", "machine", "power", "technology", "map"]);
 const compactReason = (reason: string | null): string => {
-  if (reason === "Gemeinsamer Spielstand noch nicht verfügbar" || reason === "Noch kein gemeinsam bestätigter Factory-Spielstand verfügbar") return "Noch kein Spielstand";
-  if (reason === "Gemeinsamer Factory-Spielstand noch nicht angebunden" || reason === "Speichern noch nicht verfügbar") return "Speichern noch nicht verfügbar";
-  if (reason === "Keine bestätigte Einstellungsanbindung verfügbar" || reason === "Einstellungen noch nicht angebunden") return "Hier noch nicht verfügbar";
-  return reason ?? "Zurzeit nicht verfügbar";
+  reason = reason === null ? null : englishFactoryText(reason);
+  if (reason === "Combined save not available yet" || reason === "No confirmed combined factory save is available yet") return "No save yet";
+  if (reason === "Combined factory save is not connected yet" || reason === "Saving not available yet") return "Saving not available yet";
+  if (reason === "Settings are not connected yet" || reason === "Settings noch nicht angebunden") return "Not available here yet";
+  return reason ?? "Currently unavailable";
 };
 
 export const mountFactoryShell = (options: FactoryShellOptions) => {
   const doc = options.doc ?? document, port = options.port;
-  let view = port.read(), disposed = false, surface: FactoryShellSurface | null = null, pending: FactoryShellCommandKind | null = null;
+  let view = port.read(), disposed = false, surface: FactoryShellSurface | null = null, pending: FactoryShellCommandKind | null = null, navigationOpen = false;
   const binding: FactoryShellBinding = Object.freeze({ sessionId: view.sessionId, epoch: view.epoch });
   const current = (): boolean => { const next = port.read(), ui = options.uiPort.read(); return !disposed &&
     next.sessionId === binding.sessionId && next.epoch === binding.epoch && next.publicationRevision >= view.publicationRevision && ui.sessionId === binding.sessionId && ui.epoch === binding.epoch; };
@@ -65,33 +67,40 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
   const panels = { cargo: mountFactoryCargoPanel(uiPort, doc), machine: mountFactoryMachinePanel(uiPort, doc),
     power: mountFactoryPowerPanel(uiPort, doc), technology: mountFactoryTechnologyView(uiPort, doc) };
   const map = mountFactoryLocalMap(doc);
+  const mini = mountFactoryLocalMap(doc, { compact: true }); mini.element.className += " factory-shell-minimap";
   const element = doc.createElement("section"); element.id = "factory-shell"; element.className = "factory-shell";
   const hud = doc.createElement("header"); hud.className = "factory-shell-hud";
   const objective = uiButton(doc, "", () => { const next = projectFactoryOnboarding(view.onboarding).actionSurface; if (next) openSurface(next); });
-  objective.className = "factory-shell-objective"; objective.setAttribute("aria-label", "Aufgabe ansehen");
-  const goal = uiText(doc, "strong", ""), chapter = uiText(doc, "small", "ERSTE WERKSTATT"); objective.append(chapter, goal); hud.append(objective);
+  objective.className = "factory-shell-objective"; objective.setAttribute("aria-label", "View objective");
+  const goal = uiText(doc, "strong", ""), chapter = uiText(doc, "small", "Goal"); objective.append(factoryToolIcon(doc, "cargo"), chapter, goal); hud.append(objective);
   const utility = doc.createElement("div"); utility.className = "factory-shell-utility";
-  const pauseButton = uiButton(doc, "", () => command("pause")); pauseButton.append(factoryToolIcon(doc, "pause"), uiText(doc, "span", "Pause")); pauseButton.setAttribute("aria-label", "Pause und Menü"); utility.append(pauseButton);
+  const pauseButton = uiButton(doc, "", () => command("pause")); pauseButton.append(factoryToolIcon(doc, "pause"), uiText(doc, "span", "Pause")); pauseButton.setAttribute("aria-label", "Pause and menu"); utility.append(pauseButton);
   const context = doc.createElement("div"); context.className = "factory-shell-context";
   const contextName = uiText(doc, "small", "");
-  const contextButton = uiButton(doc, "Fracht ansehen", () => openSurface("cargo")); context.append(contextName, contextButton);
+  const contextButton = uiButton(doc, "View cargo", () => openSurface("cargo")); context.append(contextName, contextButton);
   const handling = doc.createElement("div"); handling.className = "factory-shell-handling";
   const handlingMass = uiText(doc, "strong", ""); handling.append(factoryToolIcon(doc, "cargo"), handlingMass);
   const warning = uiText(doc, "p", ""); warning.className = "factory-shell-warning"; warning.setAttribute("role", "status");
-  const keyHints = uiText(doc, "p", "B  Bauen   ·   M  Karte   ·   Esc  Menü"); keyHints.className = "factory-shell-key-hints";
+  const keyHints = uiText(doc, "p", "B  Build   ·   M  Map   ·   Esc  Menu"); keyHints.className = "factory-shell-key-hints";
   const modal = doc.createElement("section"); modal.className = "factory-shell-modal"; modal.tabIndex = -1;
   modal.setAttribute("role", "dialog"); modal.setAttribute("aria-modal", "true"); modal.setAttribute("aria-labelledby", "factory-shell-modal-title");
   const modalHeader = doc.createElement("header"); modalHeader.className = "factory-shell-modal-header";
   const modalTitle = uiText(doc, "h1", ""); modalTitle.id = "factory-shell-modal-title";
-  const close = uiButton(doc, "Schließen", () => closeSurface()); modalHeader.append(modalTitle, close);
-  const dock = doc.createElement("nav"); dock.className = "factory-shell-dock"; dock.setAttribute("aria-label", "Werkstattoberflächen");
+  const close = uiButton(doc, "Close", () => closeSurface());
+  const navigation = uiButton(doc, "Views", () => { navigationOpen = !navigationOpen; presentation(); });
+  navigation.setAttribute("aria-expanded", "false"); navigation.setAttribute("aria-controls", "factory-shell-navigation");
+  const headerActions = doc.createElement("div"); headerActions.className = "factory-shell-header-actions"; headerActions.append(navigation, close);
+  modalHeader.append(modalTitle, headerActions);
+  const dock = doc.createElement("nav"); dock.className = "factory-shell-dock"; dock.setAttribute("aria-label", "Workshop views");
+  dock.id = "factory-shell-navigation";
   const tabs = new Map<FactoryShellSurface, HTMLButtonElement>();
-  for (const [name, label] of [["cargo", "Fracht"], ["build", "Bauen"], ["machine", "Maschinen"], ["power", "Energie"], ["technology", "Technik"], ["map", "Karte"]] as const) {
+  for (const [name, label] of [["cargo", "Cargo"], ["build", "Build"], ["machine", "Machines"], ["power", "Power"], ["technology", "Technology"], ["map", "Map"]] as const) {
     const tab = uiButton(doc, "", () => openSurface(name)); tab.append(factoryToolIcon(doc, name), uiText(doc, "span", label));
     tab.setAttribute("aria-controls", `factory-shell-${name}`); tab.setAttribute("aria-label", label); dock.append(tab); tabs.set(name, tab);
   }
   const body = doc.createElement("div"); body.className = "factory-shell-modal-body";
   const commandStatus = uiText(doc, "p", ""); commandStatus.className = "factory-shell-command-status"; commandStatus.setAttribute("role", "status"); commandStatus.setAttribute("aria-live", "polite");
+  const panelState = uiText(doc, "small", ""); panelState.className = "factory-shell-panel-state";
   const surfaces = new Map<FactoryShellSurface, HTMLElement>();
   for (const [name, panel] of Object.entries(panels)) surfaces.set(name as FactoryShellSurface, panel.element);
   const power = doc.createElement("div"); power.append(panels.power.element);
@@ -99,14 +108,14 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
   surfaces.set("power", power); surfaces.set("build", options.buildPanel); surfaces.set("map", map.element);
   const help = doc.createElement("section"); help.className = "factory-shell-help";
   const missionHint = uiText(doc, "p", "");
-  help.append(uiText(doc, "h2", "Nächster Handgriff"), missionHint,
-    uiText(doc, "h2", "Unterwegs"), uiText(doc, "p", "WASD gehen · Shift sprinten · Leertaste springen · V Ansicht wechseln. Spielen aktiviert den Mausblick."),
-    uiText(doc, "h2", "Werkstatt"), uiText(doc, "p", "B öffnet Bauen, M die lokale Karte. Escape schließt die offene Ansicht, verwirft sonst die Bauvorschau oder pausiert. Tab wechselt zwischen den Bedienelementen."),
-    uiText(doc, "p", "Bauvorschau: Pfeile versetzen um 25 cm · R dreht um 90°. Bestätigen bezahlt einen zulässigen Bau; Abbrechen erhält das Material."),
-    uiText(doc, "p", "Schwere Chassis zuerst transportieren. Sicher absetzen und selbst die künftige Maschinenfläche verlassen, dann bauen."),
-    uiText(doc, "h2", "Pause und Fokus"), uiText(doc, "p", "Geschlossene Ansichten starten das Spiel nicht automatisch. Nach einer Unterbrechung bewusst Spielen wählen; gehaltene Bewegungstasten werden nicht wiederhergestellt."),
-    uiText(doc, "p", "F stößt einen vorhandenen gelösten Körper; 1/2/3 bleiben die Werkzeugwahl. Q/E bewegen die Inspektionskamera. E ist keine zusätzliche Interaktionstaste."),
-    uiText(doc, "small", "Factory-Prototyp: Das Schiff bleibt flugunfähig. Globale Erkundung und spätere Stadt sind nicht Teil dieser Werkstatt."));
+  help.append(uiText(doc, "h2", "Next action"), missionHint,
+    uiText(doc, "h2", "Movement"), uiText(doc, "p", "WASD to walk · Shift to sprint · Space to jump · V to change view. Play enables mouse look."),
+    uiText(doc, "h2", "Workshop"), uiText(doc, "p", "B opens Build; M opens the local map. Escape closes a view, otherwise cancels the build preview or pauses. Tab moves focus between controls."),
+    uiText(doc, "p", "Build preview: arrows move by 25 cm; R rotates by 90°. Confirm charges an admitted build. Cancel retains all material."),
+    uiText(doc, "p", "Transport heavy chassis first. Set them down safely, step outside the machine footprint, then build."),
+    uiText(doc, "h2", "Pause and focus"), uiText(doc, "p", "Closing a view does not resume play. Select Play after an interruption; held movement keys are cleared."),
+    uiText(doc, "p", "F pushes an existing detached body; 1/2/3 select tools. Q/E move the inspection camera. E is not an extra interaction key."),
+    uiText(doc, "small", "Factory prototype: the ship remains permanently grounded. Global exploration and cities are outside this workshop."));
   surfaces.set("help", help);
   const lifecycleButtons: { kind: FactoryShellCommandKind; row:HTMLElement; button: HTMLButtonElement; reason: HTMLElement; detail: HTMLElement }[] = [];
   const addCommand = (parent: HTMLElement, kind: FactoryShellCommandKind, label: string) => {
@@ -116,34 +125,42 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     row.append(button, reason, detail); parent.append(row); lifecycleButtons.push({ kind, row, button, reason, detail }); return button;
   };
   const start = doc.createElement("section"); start.className = "factory-shell-start";
-  start.append(uiText(doc, "small", "EXPEDITION · WRACKSTELLE"), uiText(doc, "p", "Das Schiff liegt still. Aus seiner Fracht wird deine erste Werkstatt."));
-  addCommand(start, "newSession", "Neues Spiel"); addCommand(start, "continue", "Fortsetzen"); addCommand(start, "settings", "Einstellungen");
-  start.append(uiButton(doc, "Feldhandbuch", () => openSurface("help")), uiText(doc, "small", "Factory-Prototyp · Erste tragende Stütze")); surfaces.set("start", start);
+  start.append(uiText(doc, "small", "EXPEDITION · CRASH SITE"), uiText(doc, "p", "The ship is grounded. Its cargo will supply your first workshop."));
+  addCommand(start, "newSession", "New game"); addCommand(start, "continue", "Continue"); addCommand(start, "settings", "Settings");
+  start.append(uiButton(doc, "Field guide", () => openSurface("help")), uiText(doc, "small", "Factory prototype · First structural brace")); surfaces.set("start", start);
   const pause = doc.createElement("section"); pause.className = "factory-shell-pause";
   const state = uiText(doc, "p", ""); state.setAttribute("role", "status"); pause.append(state);
-  addCommand(pause,"recoverSimulation","Sitzung freigeben");
-  addCommand(pause, "play", "Spielen"); addCommand(pause, "save", "Speichern"); addCommand(pause, "continue", "Spielstand laden"); addCommand(pause, "settings", "Einstellungen öffnen"); addCommand(pause, "endSession", "Zurück zum Menü");
-  pause.append(uiButton(doc, "Werkstatt ansehen", () => openSurface("cargo")), uiButton(doc, "Feldhandbuch öffnen", () => openSurface("help"))); surfaces.set("pause", pause);
-  const settings = doc.createElement("section"); addCommand(settings, "settings", "Verfügbare Einstellungen öffnen"); surfaces.set("settings", settings);
+  addCommand(pause,"recoverSimulation","Recover session");
+  addCommand(pause, "play", "Play"); addCommand(pause, "save", "Save"); addCommand(pause, "continue", "Load game"); addCommand(pause, "settings", "Open settings"); addCommand(pause, "endSession", "Back to menu");
+  pause.append(uiButton(doc, "Open workshop", () => openSurface("cargo")), uiButton(doc, "Open field guide", () => openSurface("help"))); surfaces.set("pause", pause);
+  const settings = doc.createElement("section"); addCommand(settings, "settings", "Open available settings"); surfaces.set("settings", settings);
   const resume = doc.createElement("section"); resume.className = "factory-shell-resume";
-  const resumeState = uiText(doc, "p", ""); resume.append(resumeState);addCommand(resume,"recoverSimulation","Sitzung freigeben"); addCommand(resume, "play", "Spielen");
+  const resumeState = uiText(doc, "p", ""); resume.append(resumeState);addCommand(resume,"recoverSimulation","Recover session"); addCommand(resume, "play", "Play");
   for (const [name, node] of surfaces) { node.id = `factory-shell-${name}`; node.className += " factory-shell-surface"; node.hidden = true; body.append(node); }
-  modal.append(modalHeader, dock, body, commandStatus); element.append(hud, utility, context, handling, warning, keyHints, resume, modal);
+  modal.append(modalHeader, dock, body, commandStatus, panelState); element.append(hud, utility, mini.element, context, handling, warning, keyHints, resume, modal);
 
   function presentation(): void {
     const opened = surface !== null, inWorld = !opened && view.phase !== "start";
     element.dataset.mode = surface === "start" ? "start" : opened ? "inspect" : "world";
     modal.dataset.surface = surface ?? "none";
-    hud.hidden = utility.hidden = keyHints.hidden = opened || view.phase === "start";
+    hud.hidden = view.phase === "start";
+    utility.hidden = opened || view.phase === "start";
+    keyHints.hidden = view.phase === "start";
+    keyHints.textContent = surface === "build" ? "Arrows  Move   ·   R  Rotate   ·   Esc  Back" : "B  Build   ·   M  Map   ·   Esc  Menu";
+    mini.element.hidden = view.phase === "start" || surface === "map";
     context.hidden = opened || view.phase !== "playing" || !(options.uiPort.read().interaction.cargoAccessible || options.uiPort.read().interaction.handling);
     handling.hidden = !inWorld || view.hud.carrierMassMg === null;
     warning.hidden = !inWorld || !warning.textContent;
     resume.hidden = opened || view.phase === "start" || view.phase === "playing";
-    dock.hidden = surface === null || !workshopSurfaces.has(surface);
+    dock.hidden = !navigationOpen || surface === null || !workshopSurfaces.has(surface);
+    navigation.hidden = surface === null || !workshopSurfaces.has(surface);
+    navigation.setAttribute("aria-expanded", String(!dock.hidden));
     close.hidden = surface === "start";
   }
   function openSurface(next: FactoryShellSurface): void {
     if (!current()) return;
+    navigationOpen = false;
+    if (pending === null) commandStatus.textContent = "";
     surface = next; for (const [name, node] of surfaces) node.hidden = name !== next;
     modal.hidden = false; modalTitle.textContent = titles[next];
     for (const [name, button] of tabs) button.setAttribute("aria-pressed", String(name === next));
@@ -162,22 +179,25 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
   function render(next: FactoryShellView): void {
     if (disposed || next.sessionId !== binding.sessionId || next.epoch !== binding.epoch || next.publicationRevision < view.publicationRevision) return;
     const oldPhase = view.phase; view = next;
+    if (pending === null && commandStatus.textContent === next.statusText) commandStatus.textContent = "";
+    panelState.textContent = englishFactoryText(next.statusText);
     const task = projectFactoryOnboarding(next.onboarding);
     goal.textContent = task.title; objective.disabled = task.actionSurface === null; missionHint.textContent = task.hint ?? task.title;
-    state.textContent = resumeState.textContent = next.statusText;
-    handlingMass.textContent = next.hud.carrierMassMg === null ? "" : `${new Intl.NumberFormat("de-DE", { maximumFractionDigits: 6 }).format(next.hud.carrierMassMg / 1_000_000)} kg`;
+    state.textContent = resumeState.textContent = englishFactoryText(next.statusText);
+    handlingMass.textContent = next.hud.carrierMassMg === null ? "" : `${new Intl.NumberFormat("en-GB", { maximumFractionDigits: 6 }).format(next.hud.carrierMassMg / 1_000_000)} kg`;
     warning.textContent = [next.hud.blockReason, ...next.hud.warnings.slice(0, 2)].filter(Boolean).join(" · ");
     const ui = options.uiPort.read(), carried = ui.interaction.handling;
-    contextName.textContent = carried ? factoryProfileLabel(carried.profileId, "Transportgut") : "WRACKFRACHT";
-    contextButton.textContent = carried ? "Transport ansehen" : "Fracht ansehen";
+    contextName.textContent = carried ? factoryProfileLabel(carried.profileId, "Cargo load") : "WRECK CARGO";
+    contextButton.textContent = carried ? "View transport" : "View cargo";
     contextButton.disabled = !ui.host.confirmed || ui.state !== "Ready";
     pauseButton.disabled = pending !== null || !next.capabilities.pause.enabled;
     for (const row of lifecycleButtons) { row.row.hidden=row.kind==="recoverSimulation"&&(next.phase!=="hold"||!next.capabilities.recoverSimulation);const capability = next.capabilities[row.kind]??{enabled:false,reason:null}; row.button.disabled = pending !== null || !capability.enabled;
       row.button.title = compactReason(capability.reason); row.reason.textContent = capability.enabled ? "" : compactReason(capability.reason); row.reason.hidden = capability.enabled;
-      row.detail.textContent = capability.reason && compactReason(capability.reason) !== capability.reason ? capability.reason : ""; }
+      row.detail.textContent = capability.reason && compactReason(capability.reason) !== capability.reason ? englishFactoryText(capability.reason) : ""; }
     const m = next.map;
-    map.update(m && m.sessionId === binding.sessionId && m.epoch === binding.epoch && m.frame.sourceDigest === ui.binding.terrainSourceDigest &&
-      m.terrainRevision === ui.binding.terrainRevision && m.facilityRevision === ui.binding.facilityRevision ? m : null);
+    const confirmedMap = m && m.sessionId === binding.sessionId && m.epoch === binding.epoch && m.frame.sourceDigest === ui.binding.terrainSourceDigest &&
+      m.terrainRevision === ui.binding.terrainRevision && m.facilityRevision === ui.binding.facilityRevision && ui.host.confirmed && ui.state === "Ready" ? m : null;
+    map.update(confirmedMap); mini.update(confirmedMap); mini.restoreMarkers(map.readMarkers());
     if (oldPhase !== next.phase) {
       if (next.phase === "playing") closeSurface();
       else if (next.phase === "start") openSurface("start");
@@ -187,13 +207,13 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
   }
   function command(kind: FactoryShellCommandKind): void {
     if (!current() || pending !== null || !port.read().capabilities[kind]?.enabled) return;
-    pending = kind; commandStatus.textContent = "Aktion wird noch bestätigt"; if (kind === "pause") openSurface("pause"); render(view);
+    pending = kind; commandStatus.textContent = "Waiting for action confirmation"; if (kind === "pause") openSurface("pause"); render(view);
     // No await before the admitted Play callback: preserve real user activation.
     try {
       void port.dispatch({ ...binding, kind }).then(() => {
-        if (!current()) return; pending = null; commandStatus.textContent = port.read().statusText; render(port.read());
-      }).catch(() => { if (current()) { pending = null; commandStatus.textContent = "Aktion nicht bestätigt. Status prüfen und erneut wählen."; render(port.read()); } });
-    } catch { if (current()) { pending = null; commandStatus.textContent = "Aktion nicht bestätigt. Status prüfen und erneut wählen."; render(port.read()); } }
+        if (!current()) return; pending = null; commandStatus.textContent = englishFactoryText(port.read().statusText); render(port.read());
+      }).catch(() => { if (current()) { pending = null; commandStatus.textContent = "Action unconfirmed. Check status before retrying."; render(port.read()); } });
+    } catch { if (current()) { pending = null; commandStatus.textContent = "Action unconfirmed. Check status before retrying."; render(port.read()); } }
   }
   const onKey = (event: KeyboardEvent) => {
     if (!current() || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
@@ -223,7 +243,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
       if (disposed) return;
       if (current()) { surface = null; options.uiPort.setPanelFocus(null); port.setSurface(null, binding); }
       disposed = true; unsubscribe(); doc.removeEventListener("keydown", onKey, true);
-      for (const panel of Object.values(panels)) panel.dispose(); map.dispose(); element.remove();
+      for (const panel of Object.values(panels)) panel.dispose(); map.dispose(); mini.dispose(); element.remove();
     }
   };
 };

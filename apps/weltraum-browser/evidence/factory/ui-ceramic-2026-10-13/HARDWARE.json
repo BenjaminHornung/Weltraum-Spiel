@@ -1,0 +1,12 @@
+{
+  "dateUtc": "2026-10-13",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "logicalCpus": 5,
+  "cpuQuota": "400000 100000",
+  "architecture": "x86_64",
+  "kernel": "6.18.44",
+  "blender": "4.3.2",
+  "node": "22.23.3",
+  "chromium": "154.0.8037.57",
+  "gpu": "Mesa llvmpipe LLVM 19.1.7 software renderer"
+}

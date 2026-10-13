@@ -1,0 +1,8 @@
+{
+  "status": 200,
+  "url": "/factory/crashsite-hybrid-v1/crashsite-hybrid-v1.glb",
+  "bytes": 242936,
+  "sha256": "8912f74b4bcdd0effb41960b97a8d491123f52f5930adeb63544992b236cadfa",
+  "buildIncluded": true,
+  "runtimeAdmission": "NOT_ADMITTED"
+}

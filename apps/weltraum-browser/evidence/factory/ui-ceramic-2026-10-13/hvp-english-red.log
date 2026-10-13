@@ -1,0 +1,29 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+x
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-interaction.test.ts > explains fixed, absent and movable targets without promising arbitrary terrain motion
+AssertionError: expected 'Festes Objekt – F bewegt nur gelöste …' to contain 'only detached bodies'
+
+Expected: "only detached bodies"
+Received: "Festes Objekt – F bewegt nur gelöste Körper, nicht Gelände oder verankerte Bäume."
+
+ ❯ tests/unit/hvp-interaction.test.ts:6:61
+      4| it("explains fixed, absent and movable targets without promising arbit…
+      5|   const empty={target:null,distanceMeters:null,massKg:null,point:null};
+      6|   expect(describeHvpImpulseTarget({...empty,kind:"Fixed"})).toContain(…
+       |                                                             ^
+      7|   expect(describeHvpImpulseTarget({...empty,kind:"NoContact"})).toCont…
+      8|   expect(describeHvpImpulseTarget({...empty,kind:"NotPlaying"})).toCon…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  14:49:14
+   Duration  251ms (transform 87ms, setup 0ms, import 102ms, tests 9ms, environment 0ms)
+

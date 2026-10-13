@@ -82,3 +82,7 @@
 *.ttf lfs
 *.pdf lfs
 *.exe lfs
+
+# Owner-approved crashsite candidate; retain exact native/runtime payloads in LFS.
+art/factory/crashsite-hybrid-v1/*.glb lfs
+apps/weltraum-browser/public/factory/crashsite-hybrid-v1/*.glb lfs

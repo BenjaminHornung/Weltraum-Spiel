@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+--------------x-----------------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-coast-source.test.ts > HVP compact page ownership and addressing > addresses X-fastest without exposing the writable authority
+Error: Test timed out in 60000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/hvp-coast-source.test.ts:288:3
+    286|
+    287| describe("HVP compact page ownership and addressing", () => {
+    288|   it("addresses X-fastest without exposing the writable authority", ()…
+       |   ^
+    289|     const copy = snapshot.copySlots();
+    290|     expect(copy).toHaveLength(HVP_SOURCE_SLOT_COUNT);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 31 skipped (32)
+   Start at  15:42:08
+   Duration  91.08s (transform 326ms, setup 0ms, import 415ms, tests 90.42s, environment 0ms)
+

@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts (20 tests | 1 failed) 55ms
+     × previews a finite cable connection and submits the current admitted lot once on confirmation 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > previews a finite cable connection and submits the current admitted lot once on confirmation
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:114:20
+    112|       connections: { power: [{ id: "battery_cutter", sourcePortId: "ba…
+    113|     const panel = mountFactoryPowerPanel(h.port, doc()), choice = byLa…
+    114|     expect(choice).toBeDefined(); choice.value = "battery_cutter"; cho…
+       |                    ^
+    115|     expect(panel.element.textContent).toContain("Kabel benötigt 8 m");
+    116|     expect(panel.element.textContent).toContain("Feldkabel vorhanden 4…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 passed (20)
+   Start at  13:50:22
+   Duration  564ms (transform 284ms, setup 0ms, import 365ms, tests 55ms, environment 0ms)
+

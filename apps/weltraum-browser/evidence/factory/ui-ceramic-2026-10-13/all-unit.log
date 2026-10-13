@@ -1,0 +1,346 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+························x·························································································x··················x·x·······································x·················stdout | tests/unit/hvp-source-r2.test.ts > owns the dry walking shaft as known air above its canonical solid floor
+HVP05 source binding b8fde6b0
+
+····stdout | tests/unit/hvp-source-r2.test.ts > HVP R10 art-contract falsification > admits the complete extended coast without increasing resource caps
+R10 complete coast admission {
+  slotBytes: 8388608,
+  preparedCopyBytes: 8388608,
+  maskBytes: 1089536,
+  meshBytes: 16037856,
+  groupedIndexBytes: 2441136,
+  artifactCopyBytes: 16037856,
+  retainedMeshBytes: 16037856,
+  tempEstimateBytes: 128382792,
+  vegetationSourceBytes: 0,
+  checkpointSourceBytes: 0,
+  totalCpuBytes: 180766392,
+  gpuBytes: 'unsupported',
+  triangles: 219416,
+  drawCalls: 11
+}
+
+·stdout | tests/unit/hvp-source-r2.test.ts > HVP R10 art-contract falsification > keeps actual wet source cells below the existing 0.375 m splash ceiling
+R10 wet source census { count: 25818, aboveSplash: 0, maximum: 0.25 }
+
+·····································································································stdout | tests/unit/hvp-neighbor-products.test.ts > partitions installed land/water and fine/coarse seam spans for LOD 0.125
+HVP13 composite projection { lod: 0.125, triangles: 166018, packetBytes: 11940368 }
+
+·stdout | tests/unit/hvp-neighbor-products.test.ts > partitions installed land/water and fine/coarse seam spans for LOD 0.5
+HVP13 composite projection { lod: 0.5, triangles: 122152, packetBytes: 8212292 }
+
+························································································stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one full support proof for coherent production and power in each facility snapshot
+NATIVE_READ_SCENARIO {"case":"facility-snapshot","elapsedMs":8.854063999999198,"probeCount":256,"singleProofBudget":256,"revision":1,"profileDigest":"288390f5"}
+
+stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one facility snapshot in the actual public native session read
+NATIVE_READ_SCENARIO {"case":"public-session-snapshot","elapsedMs":9.35480699999971,"probeCount":256,"singleProofBudget":256,"ticks":0,"status":"Paused"}
+
+·······································································································································································································································································xx···································stdout | tests/unit/hvp-terrain-support.test.ts > previews the actual authored rock arm without detaching or changing its canonical root
+Authored rock-arm support { sourceDigest: 'b8fde6b0', probes: 2156, massKg: 1722.65625 }
+
+···························································stdout | tests/unit/hvp-residency.test.ts > changes only projection for LOD and restores edited neighbour cells from its checkpoint
+HVP13 east projections { fineTriangles: 51002, coarseTriangles: 2046, fineMeshBytes: 4284168 }
+
+···························································································································································································································································································································stdout | tests/unit/structuralPgTragwerkSlice2.test.ts > PG-TRAGWERK-01 proving-ground slice 2 (G3) > G3: Rapier-Gegenprobe (Greedy-Cuboid-Compound vs Voxelshape) > faellt/rotiert/kollidiert/schlaeft in beiden Varianten mit gleicher Masse
+PG-SLICE2-MEASUREMENT {"variant":"greedy","rapierVersion":"0.12.0","colliderCount":1,"staticColliderCount":25,"ccdEnabled":true,"installMs":6.3,"stepMs":24.84,"steps":170,"fellMeters":0.6264,"rotatedRad":3.1412,"restY":0.0611,"slept":true}
+PG-SLICE2-MEASUREMENT {"variant":"voxel","rapierVersion":"0.12.0","colliderCount":2,"staticColliderCount":25,"ccdEnabled":true,"installMs":0.54,"stepMs":12.65,"steps":172,"fellMeters":0.6255,"rotatedRad":3.1402,"restY":0.062,"slept":true}
+
+··························································································································································································································································································································································································································xx·xxx·xxxxxxx·x··············································································································x·········································································································································································································································································································································································································································································································································································································································································································································································································································································
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 21 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 projects actual carrier mass, movement veto and deposit guidance into the normal HUD
+AssertionError: expected 'No hit within 4 m – move closer to a …' to contain 'Kein Treffer innerhalb von 4 m'
+
+Expected: "Kein Treffer innerhalb von 4 m"
+Received: "No hit within 4 m – move closer to a detached body."
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:490:46
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0
+AssertionError: expected { status: 'Rejected', …(2) } to match object { status: 'Committed', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "INSTALLED",
+-   "status": "Committed",
++   "reason": "Factory private prepared receipt binding mismatch",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:996:55
+    994|       port.construction!.projectGhost(request);
+    995|       expect(session.construction!.read().material).toBe(before);expec…
+    996|       await expect(session.construction!.commit(plan)).resolves.toMatc…
+       |                                                       ^
+    997|       expect(prepare).toHaveBeenCalledTimes(1);expect(session.construc…
+    998|       const artifacts=dispatch.mock.calls.flatMap(([command])=>command…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+TypeError: Cannot read properties of undefined (reading 'dispatchEvent')
+ ❯ tests/unit/hvp-bootstrap.test.ts:1071:81
+    1069|         expect.soft(commands).toHaveLength(baseline); commands.length …
+    1070|         expect.soft(requestPointerLock).not.toHaveBeenCalled(); reques…
+    1071|         descendants(source.body).find(e => e.textContent === "Spiel fo…
+       |                                                                                 ^
+    1072|         expect.soft(requestPointerLock).not.toHaveBeenCalled(); reques…
+    1073|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯
+
+ FAIL  tests/unit/hvp-coast-source.test.ts > HVP compact page ownership and addressing > addresses X-fastest without exposing the writable authority
+Error: Test timed out in 60000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/hvp-coast-source.test.ts:288:3
+    286|
+    287| describe("HVP compact page ownership and addressing", () => {
+    288|   it("addresses X-fastest without exposing the writable authority", ()…
+       |   ^
+    289|     const copy = snapshot.copySlots();
+    290|     expect(copy).toHaveLength(HVP_SOURCE_SLOT_COUNT);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band output blockage retains the same lot at the end until actual receiver room exists
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:213:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > projects legacy technology requirements and stock deficits into English without changing published facts
+AssertionError: expected 'Construction & technology Expeditions…' to contain 'finite C03 battery'
+
+Expected: "finite C03 battery"
+Received: "Construction & technology Expeditionsbatterie Expeditionsbatterie Requirements missing Endliche C03-Batterie, bezahlter lokaler Aufbau, tragfähige Auflage und Kabel; Leistung und tatsächlicher Ladezustand begrenzt Im freien Bestand fehlen 2 Stück Getriebemotor Quelle: FP03 §4.7 / FP01 Build using a placement preview at a suitable location.  Check response"
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:64:39
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > keeps active transport and local transfer controls before a long complete inventory
+TypeError: Cannot read properties of undefined (reading 'hidden')
+ ❯ tests/unit/factory/panels.test.ts:92:20
+     90|     const inventory = firstLot.parent!.parent!.parent!, content = inve…
+     91|     const deposit = button(panel.element, "Hier ablegen")!, back = but…
+     92|     expect(deposit.hidden).toBe(false); expect(deposit.disabled).toBe(…
+       |                    ^
+     93|     expect(back.hidden).toBe(false); expect(back.disabled).toBe(false);
+     94|     expect(content.children.indexOf(deposit.parent!)).toBeLessThan(con…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > bounds the independently scrollable full inventory without replacing focused transfer controls
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/panels.test.ts:103:23
+    101|     const panel = mountFactoryCargoPanel(h.port, documentDouble()), el…
+    102|     const inventory = elements.find(e => e.getAttribute("aria-label") …
+    103|     expect(inventory).toBeDefined();
+       |                       ^
+    104|     expect(inventory!.getAttribute("role")).toBe("region");
+    105|     expect(inventory!.style.cssText).toMatch(/max-height:\s*[^;]*(?:vh…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > renders exact source quantities and only adopts published material changes
+AssertionError: expected 'Cargo & storage Open cargo  Set down …' to contain '1 Stück'
+
+Expected: "1 Stück"
+Received: "Cargo & storage Open cargo  Set down here Return to cargo Wreck cargo 1 · 576 kg available 8 kg Stahl 8 kg  8 kg Stahl 8 kg · Wreck cargo 1 Pick up: 8 kg Stahl More transport packages 8 kg Stahl · Wreck cargo 1 Choose individual lot Ship steel 96 kg · Wreck cargo 1 Selected lot: 96 kg Quantity in kg  Choose destination Transfer Wreck cargo 1 · Schiffsstahl Wreck cargo 1 · Zuschnitt-Grundchassis Wreck cargo 1 · Umform-Grundchassis Inspect all lots View materials Wreck cargo 1 576 kg · accessible  Ship steel 96 kg  Zuschnitt-Grundchassis 1 items · 180 kg  Umform-Grundchassis 1 items · 300 kg Wreck cargo 1 576 kg / 4000 kg · Accessible Schiffsstahl: 96 kg Zuschnitt-Grundchassis: 1 items · 180 kg Umform-Grundchassis: 1 items · 300 kg  Check response"
+
+ ❯ tests/unit/factory/panels.test.ts:131:39
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > shows planned technology requirements without granting a hidden research unlock
+AssertionError: expected 'Construction & technology Hochofen Ho…' to contain 'Geplant'
+
+Expected: "Geplant"
+Received: "Construction & technology Hochofen Hochofen Planned Erzkonzentrat Reduktionsmittel Not available in this prototype yet.  Check response"
+
+ ❯ tests/unit/factory/panels.test.ts:145:39
+    143|     const select = button(panel.element, "Hochofen");
+    144|     expect(select).toBeDefined(); select!.click();
+    145|     expect(panel.element.textContent).toContain("Geplant");
+       |                                       ^
+    146|     expect(panel.element.textContent).toContain("Erzkonzentrat");
+    147|     expect(panel.element.textContent).toContain("Reduktionsmittel");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > keeps finite pickup pending and never changes stock or submits a second command
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/panels.test.ts:155:20
+    153|     const h = harness(), panel = mountFactoryCargoPanel(h.port, docume…
+    154|     const pickup = button(panel.element, "Aufnehmen: 8 kg Stahl");
+    155|     expect(pickup).toBeDefined(); pickup!.click(); pickup!.click();
+       |                    ^
+    156|     expect(h.focuses).toContain("cargo");
+    157|     expect(h.commands).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > rejects foreign-session intent submission and ignores older inventory publications
+TypeError: Cannot read properties of undefined (reading 'click')
+ ❯ tests/unit/factory/panels.test.ts:184:51
+    182|     expect(panel.element.textContent).toContain("96 kg");
+    183|     h.publish({ ...initialView(), sessionId: "other_session", publicat…
+    184|     button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+       |                                                   ^
+    185|     expect(h.commands).toHaveLength(0); panel.dispose();
+    186|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > keeps one unknown intent until a matching authoritative receipt is found
+TypeError: Cannot read properties of undefined (reading 'click')
+ ❯ tests/unit/factory/panels.test.ts:189:51
+    187|   it("keeps one unknown intent until a matching authoritative receipt …
+    188|     const h = harness(), panel = mountFactoryCargoPanel(h.port, docume…
+    189|     button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+       |                                                   ^
+    190|     h.failTransport(); await flush();
+    191|     expect(panel.element.textContent).toContain("Antwort unbekannt");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > does not release focus between controls or revive disposed panels after an answer
+AssertionError: expected [ 'cargo', null ] to deeply equal [ 'cargo' ]
+
+- Expected
++ Received
+
+  [
+    "cargo",
++   null,
+  ]
+
+ ❯ tests/unit/factory/panels.test.ts:212:59
+    210|     const event = new Event("focusout");
+    211|     Object.defineProperty(event, "relatedTarget", { value: button(pane…
+    212|     panel.element.dispatchEvent(event); expect(h.focuses).toEqual(["ca…
+       |                                                           ^
+    213|     button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+    214|     panel.dispose(); const count = h.focuses.length, text = panel.elem…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > transfers an exact local published amount without resetting the player's entry each step
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/panels.test.ts:225:20
+    223|     const elements = descendants(panel.element as unknown as ElementDo…
+    224|     const amount = elements.find(e => e.tagName === "INPUT" && e.getAt…
+    225|     expect(amount).toBeDefined(); amount!.value = "8,000001";
+       |                    ^
+    226|     const target = elements.find(e => e.tagName === "SELECT" && e.getA…
+    227|     target.value = "cut_in"; target.dispatchEvent(new Event("change"));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > starts only the frozen finite recipe from actual input and blocks catalog mismatches
+TypeError: Cannot read properties of undefined (reading 'click')
+ ❯ tests/unit/factory/panels.test.ts:241:37
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > rejects zero, over-lot, nonfinite and sub-mg transfer amounts
+TypeError: Cannot set properties of undefined (setting 'value')
+ ❯ tests/unit/factory/panels.test.ts:253:12
+    251|     const panel = mountFactoryCargoPanel(h.port, documentDouble()), el…
+    252|     const amount = elements.find(e => e.tagName === "INPUT")!, target …
+    253|     target.value = "cut_in"; target.dispatchEvent(new Event("change"));
+       |            ^
+    254|     for (const invalid of ["0", "97", "0,0000001", "-1", "Infinity", "…
+    255|       amount.value = invalid; amount.dispatchEvent(new Event("input"));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > W09 frozen panel projection and finite player intents > uses save-safe unique command IDs with a real UUID-shaped Native session across remounts
+TypeError: Cannot read properties of undefined (reading 'click')
+ ❯ tests/unit/factory/panels.test.ts:264:51
+    262|     h.publish({ ...h.view, sessionId });
+    263|     const panel = mountFactoryCargoPanel(h.port, documentDouble());
+    264|     button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
+       |                                                   ^
+    265|     expect(h.commands[0]!.sessionId).toBe(sessionId);
+    266|     expect(isSaveSafeResourceId(h.commands[0]!.commandId)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/21]⎯
+
+ FAIL  tests/unit/factory/panels.test.ts > PLAY04 power panel submits one current installed-device control and waits for canonical confirmation
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/panels.test.ts:289:90
+    287|  const h=harness();h.publish({...h.view,power:{...h.view.power,devices…
+    288|  const panel=mountFactoryPowerPanel(h.port,documentDouble());
+    289|  try{const toggle=button(panel.element,"Expeditionsbatterie ausschalte…
+       |                                                                                          ^
+    290|   expect(h.commands).toHaveLength(1);expect(h.commands[0]).toMatchObje…
+    291|   expect(button(panel.element,"Expeditionsbatterie ausschalten")!.disa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/21]⎯
+
+ FAIL  tests/unit/factory/playAssetDerivatives.test.ts > R2/R6 correction admission > rejects a catalog-only source change before any snapshot is written
+AssertionError: expected { blocked: true, …(1) } to deeply equal { blocked: true, …(1) }
+
+- Expected
++ Received
+
+  {
+    "blocked": true,
+-   "reason": "Frozen source changed: apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
++   "reason": "Frozen source changed: apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+  }
+
+ ❯ tests/unit/factory/playAssetDerivatives.test.ts:105:41
+    103|       const result = spawnSync("python3", ["-B", "-c", code], {encodin…
+    104|       expect(result.status, result.stderr).toBe(0);
+    105|       expect(JSON.parse(result.stdout)).toEqual({blocked: true, reason…
+       |                                         ^
+    106|     } finally {rmSync(temporary, {recursive: true, force: true});}
+    107|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/21]⎯
+
+ FAIL  tests/unit/factory/playAssetDerivatives.test.ts > R2/R6 correction admission > rejects an incompatible catalog digest immediately after SSR before snapshot writes
+AssertionError: expected { blocked: true, …(2) } to deeply equal { blocked: true, …(2) }
+
+- Expected
++ Received
+
+  {
+    "blocked": true,
+-   "reason": "Frozen catalog digest mismatch",
++   "reason": "Frozen source changed: apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "writtenSnapshots": 0,
+  }
+
+ ❯ tests/unit/factory/playAssetDerivatives.test.ts:119:68
+    117|       const result = spawnSync("python3", ["-B", "-c", code], {encodin…
+    118|       expect(result.status, result.stderr).toBe(0);
+    119|       expect(JSON.parse(result.stdout.trim().split("\n").at(-1)!)).toE…
+       |                                                                    ^
+    120|     } finally {rmSync(temporary, {recursive: true, force: true});}
+    121|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/21]⎯
+
+
+ Test Files  6 failed | 213 passed (219)
+      Tests  21 failed | 2419 passed (2440)
+   Start at  14:52:14
+   Duration  1314.69s (transform 8.19s, setup 0ms, import 26.79s, tests 1257.47s, environment 23ms)
+

@@ -1796,12 +1796,12 @@ export const startHvp = async (
     const previewRockSupport=async():Promise<void>=>{
       if(supportPending||disposed){return;}
       supportPending=true;
-      supportView={state:"Pending",cells:0,massKg:0,fragments:0,message:"Prüfung kanonischer Zellen; keine Mutation"};
+      supportView={state:"Pending",cells:0,massKg:0,fragments:0,message:"Checking canonical cells; no mutation"};
       documentPort.body.dataset.hestiaPrototypeSupport=JSON.stringify(supportView);
       showCutPreview([],false);supportCandidate=undefined;
       try{
         if(["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle"){
-          throw new Error("Andere Mutation ist noch nicht abgeschlossen");
+          throw new Error("Another mutation is still pending");
         }
         playerInput!.stop();await physics!.command("Pause");
         if(disposed||hvpMountEpoch!==myEpoch){return;}
@@ -1821,7 +1821,7 @@ export const startHvp = async (
           showCutPreview(cells,true);supportPreviewVisible=true;
         }
         supportView={state:result.status,cells:result.fragments.reduce((n,f)=>n+f.cells.length,0),massKg:result.fragments.reduce((n,f)=>n+f.massKg,0),
-          fragments:result.fragments.length,message:result.reason||"Nur Vorschau; Terrain und World unverändert"};
+          fragments:result.fragments.length,message:result.reason||"Preview only; terrain and world unchanged"};
         documentPort.body.dataset.hestiaPrototypeSupport=JSON.stringify({...supportView,generation:current.revision,sourceDigest:current.sourceDigest,
           candidateDigest:plan.after.sourceDigest,probes:result.probes,changedCells:plan.changed.length});
       }catch(error){
@@ -1830,7 +1830,7 @@ export const startHvp = async (
       }finally{supportPending=false;}
     };
     let saveRevision:number|null=coldRevision,saveInitialized=coldGame!==undefined,restoreSequence=0;
-    let saveView={state:coldGame?"Loaded":"Idle",message:coldGame?"Aus Spielstand gestartet – pausiert":"Lokaler Hestia-Spielstand",revision:coldRevision};
+    let saveView={state:coldGame?"Loaded":"Idle",message:coldGame?"Started from save – paused":"Local Hestia save",revision:coldRevision};
     let plantCheckpoints:ReturnType<typeof encodeHvpPlant>[]|undefined;
     let salvage=salvageScenario?createHvpSalvageLoop(terrainRoot.read().sessionId,coldGame?.checkpoint.progress??undefined):undefined;
     const observeSalvage=()=>{
@@ -2014,16 +2014,16 @@ export const startHvp = async (
     };
     const rejectLegacyPersistence = () => {
       if (!overrides.factoryExtension) return false;
-      saveView={state:"Rejected",message:"Factory: gemeinsamer Spielstand noch nicht verfügbar; altes Speichern/Laden gesperrt",revision:saveRevision};
+      saveView={state:"Rejected",message:"Factory: combined save not available yet; legacy save/load blocked",revision:saveRevision};
       hud?.updateSave(); return true;
     };
     const saveAction=async(kind:"Save"|"Load")=>{
       if (rejectLegacyPersistence()) return;
       if(saveBusy||saveHold||disposed||dormancy?.read().busy||dormancy?.read().recoveryHold){return;}
-      saveBusy=true;saveView={state:kind==="Save"?"Saving":"Loading",message:"Bestätigte Generation vorbereiten",revision:saveRevision};
+      saveBusy=true;saveView={state:kind==="Save"?"Saving":"Loading",message:"Preparing confirmed generation",revision:saveRevision};
       hud?.updateSave();
       try{
-        if(!confirmed()){throw new Error("Mutation/RecoveryHold: zuerst laufenden Befehl abschließen");}
+        if(!confirmed()){throw new Error("Mutation/RecoveryHold: complete the pending command first");}
         playerInput!.stop();showCutPreview([],false);await physics!.command("Pause");
         // Before decoding B, reserve A + the bounded checkpoint working set.
         admitHvpResources({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+64*1024*1024+16*1024*1024},caps);
@@ -2031,11 +2031,11 @@ export const startHvp = async (
         if(kind==="Save"){
           const captured=await captureGame(),record=await store.save(captured.game,saveRevision);saveRevision=record.metadata.recordRevision;
           if(captured.candidate&&salvage){salvage.commitSave(captured.candidate,(record.envelope.player.data.hestia as unknown as {progress:HvpSalvageCheckpoint}).progress);}
-          saveView={state:"Saved",message:"Vollständiger Hestia-Spielstand lokal gespeichert",revision:saveRevision};
+          saveView={state:"Saved",message:"Complete Hestia save stored locally",revision:saveRevision};
         }else{
           const record=await store.load();if(!confirmed()){throw new Error("Scene disposed during load");}
           await loadGame(record.game);saveRevision=record.metadata.recordRevision;
-          saveView={state:"Loaded",message:"Spielstand geladen – pausiert, Spielen setzt ausdrücklich fort",revision:saveRevision};
+          saveView={state:"Loaded",message:"Game loaded and paused; select Play to resume",revision:saveRevision};
         }
       }catch(error){saveHold=String(error).includes("RecoveryHold");saveView={state:saveHold?"RecoveryHold":"Rejected",message:String(error),revision:saveRevision};}
       finally{saveBusy=false;if(!disposed&&hvpMountEpoch===myEpoch){hud?.updateSave();if(!saveHold){syncPhysicsTransforms();observeSalvage();updateTerrainState();}}}
@@ -2068,16 +2068,16 @@ export const startHvp = async (
       const factoryEndBlocked=factoryHandle!==undefined&&!(factoryHandle.canEndSession?.()??factoryHandle.isQuiescent());
       if(factoryEndBlocked||neighbor?.read().busy||dormancy?.read().busy||supportPending||terrainConsumer!.read().queued>0
         ||structuralConsumer!.read().state==="Pending"||bodyCutConsumer!.read().state==="Pending"){
-        saveView={state:"Rejected",message:"Laufenden Vorgang vor dem Beenden abwarten",revision:saveRevision};hud?.updateSave();return;
+        saveView={state:"Rejected",message:"Wait for the pending operation before ending the session",revision:saveRevision};hud?.updateSave();return;
       }
-      if(!windowPort.confirm?.("Sitzung beenden? Ungespeicherte Änderungen werden verworfen; der gespeicherte Stand bleibt erhalten.")){return;}
+      if(!windowPort.confirm?.("End session? Unsaved changes will be discarded; your existing save is retained.")){return;}
       try{await dispose();}catch(error){disposalReceipt??={state:"Failed",errors:[String(error)]};}
       if(hvpMountEpoch!==myEpoch){return;}
       documentPort.body.dataset.hestiaPrototypeDisposal=JSON.stringify(disposalReceipt);
       launcher=documentPort.createElement("section");launcher.id="hvp-ended";launcher.setAttribute("role","status");
       launcher.setAttribute("style","position:fixed;inset:20% 15%;padding:24px;background:#10202a;color:#fff;font:16px system-ui;z-index:40");
-      const message=documentPort.createElement("p");message.textContent=disposalReceipt?.state==="Disposed"?"Hestia-Sitzung beendet":"Fehler beim Beenden – neu laden";
-      const restart=documentPort.createElement("button");restart.textContent="Neu starten";restart.type="button";
+      const message=documentPort.createElement("p");message.textContent=disposalReceipt?.state==="Disposed"?"Hestia session ended":"Failed to end session – reload";
+      const restart=documentPort.createElement("button");restart.textContent="Restart";restart.type="button";
       launcherListeners.add(restart,"click",restartAfterEnd);launcher.append(message,restart);host.append(launcher);
     };
     hud = createHvpHud({
@@ -2088,13 +2088,13 @@ export const startHvp = async (
         readNeighbor:()=>neighbor?.read()??null,
         readDormancy:()=>dormancy?.read()??null,
         retryNeighbor:()=>{neighbor?.retry();dormancy?.retry();},
-        restartEast:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Neue Sitzung am Ostpfad starten? Ungespeicherte Änderungen werden verworfen.")){
+        restartEast:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Start a new east-path session? Unsaved changes will be discarded.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpScenario=east-edge");}},
         readSalvage:()=>salvage?.read()??null,
-        restartSalvage:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Neuen Bergungsauftrag starten? Ungespeicherte Änderungen werden verworfen; der gespeicherte Stand bleibt erhalten.")){
+        restartSalvage:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Start a new salvage objective? Unsaved changes will be discarded; your existing save is retained.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpScenario=salvage");}},
         readSave:()=>saveView,save:()=>{void saveAction("Save");},load:()=>{void saveAction("Load");},
-        loadNewSession:()=>{if (rejectLegacyPersistence()) return; if(!saveBusy&&!saveHold&&windowPort.confirm?.("Gespeicherte Sitzung neu öffnen? Ungespeicherte Änderungen werden verworfen.")){
+        loadNewSession:()=>{if (rejectLegacyPersistence()) return; if(!saveBusy&&!saveHold&&windowPort.confirm?.("Reopen the saved session? Unsaved changes will be discarded.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpLoad=primary");}},
         setPreset: (preset: HvpCameraPreset) => {
           playerInput!.stop();
@@ -2132,12 +2132,12 @@ export const startHvp = async (
           if(!overrides.factoryExtension)return undefined;
           const facilities=physics!.read().factoryFacilities,carrier=facilities?.carrier;
           if(!facilities||!carrier)return undefined;
-          const mass=(carrier.massMg/1_000_000).toFixed(1),keys="WASD: Gehen und Transportieren · Esc: Pause / Frachtsteuerung · V: Perspektive";
+          const mass=(carrier.massMg/1_000_000).toFixed(1),keys="WASD: walk and carry · Esc: pause / cargo controls · V: view";
           if(facilities.state==="RecoveryHold"||!["Carrying","Deposited"].includes(carrier.phase))return{
-            target:`Transport angehalten: ${mass} kg`,feedback:"Transportübergang noch nicht bestätigt.",cut:"Fracht bleibt gebunden; bestätigten Zustand abwarten.",keys};
-          if(carrier.phase==="Deposited")return{target:`Depot: ${mass} kg`,feedback:carrier.accessible?"Fracht liegt am erreichbaren Depot.":"Zum Depot zurückgehen, um die Fracht zu bedienen.",cut:"Über Frachtsteuerung zur lokalen Anlage liefern oder zur Quelle zurückbringen.",keys};
-          const reasons:Record<string,string>={CarrierOverlap:"Hindernis im Transportweg. Einen freien Weg wählen.",CarrierSweep:"Hindernis im Transportweg. Einen freien Weg wählen.",CarrierSupport:"Transportfläche trägt die Fracht nicht vollständig.",CarrierCoverage:"Transportfläche noch nicht vollständig bestätigt.",CarrierGroundHeight:"Transport benötigt eine ebene Fläche."};
-          return{target:`Transport: ${mass} kg`,feedback:facilities.lastCarrierVeto?(reasons[facilities.lastCarrierVeto.reason]??"Bewegung angehalten: Transportweg nicht bestätigt."):"WASD bewegt Spieler und Fracht gemeinsam; Hindernisse stoppen beide.",cut:"In der Frachtsteuerung: Hier ablegen, lokal liefern oder zurückbringen.",keys};
+            target:`Transport on hold: ${mass} kg`,feedback:"Transport transition not confirmed yet.",cut:"Cargo is retained; wait for confirmed state.",keys};
+          if(carrier.phase==="Deposited")return{target:`Depot: ${mass} kg`,feedback:carrier.accessible?"Cargo is at the accessible depot.":"Return to the depot to handle its cargo.",cut:"Use cargo controls to deliver locally or return to the source.",keys};
+          const reasons:Record<string,string>={CarrierOverlap:"Obstacle in transport path. Choose a clear route.",CarrierSweep:"Obstacle in transport path. Choose a clear route.",CarrierSupport:"The ground does not fully support the cargo.",CarrierCoverage:"Transport ground is not fully confirmed yet.",CarrierGroundHeight:"Transport needs level ground."};
+          return{target:`Transport: ${mass} kg`,feedback:facilities.lastCarrierVeto?(reasons[facilities.lastCarrierVeto.reason]??"Movement stopped: transport route unconfirmed."):"WASD moves you and the cargo together; obstacles stop both.",cut:"In cargo controls: set down here, deliver locally or return.",keys};
         },
         physicsCommand: kind => {
           if (overrides.factoryExtension && (kind === "Resume" || kind === "Drop") && !factoryCanResume()) {
@@ -2168,7 +2168,7 @@ export const startHvp = async (
           hud!.update("Ready",camera!.readPose(),stats);
         },
         restartRock:()=>{
-          if(windowPort.confirm?.("Neue Felsarm-Sitzung starten? Ungespeicherte Schnitte dieser Sitzung werden verworfen.")){
+          if(windowPort.confirm?.("Start a new rock-arm session? Unsaved cuts in this session will be discarded.")){
             windowPort.location?.assign("/?hestiaPrototype=1&hvpScenario=rock-arm");
           }
         },
@@ -2586,7 +2586,7 @@ export const startHvp = async (
         physics!.update();
         plasmaTool!.update();
         if(supportCandidate&&terrainRoot.read()!==supportCandidate.cut.before){
-          supportCandidate=undefined;supportView={state:"Stale",cells:0,massKg:0,fragments:0,message:"Terrainrevision geändert"};
+          supportCandidate=undefined;supportView={state:"Stale",cells:0,massKg:0,fragments:0,message:"Terrain revision changed"};
           documentPort.body.dataset.hestiaPrototypeSupport=JSON.stringify(supportView);
           if(supportPreviewVisible){showCutPreview([],false);}
         }

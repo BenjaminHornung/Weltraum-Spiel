@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  3 passed (3)
+      Tests  40 passed (40)
+   Start at  13:28:59
+   Duration  1.49s (transform 465ms, setup 0ms, import 385ms, tests 697ms, environment 1ms)
+

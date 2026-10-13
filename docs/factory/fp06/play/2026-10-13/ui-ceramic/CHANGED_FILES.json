@@ -1,0 +1,43 @@
+{
+  "baseSha": "f0a901db4ea3cfc64061dca3a2a89cc92f38fc6e",
+  "trackedChanges": [
+    ".gitattributes",
+    "apps/weltraum-browser/factory.html",
+    "apps/weltraum-browser/index.html",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+    "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+    "apps/weltraum-browser/src/factory/ui/itemVisuals.ts",
+    "apps/weltraum-browser/src/factory/ui/localMap.ts",
+    "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+    "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+    "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/hvp/hvpHud.ts",
+    "apps/weltraum-browser/src/ui/graphicsSettingsPanel.ts",
+    "apps/weltraum-browser/src/ui/pgTragwerkPlayerPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-interaction.test.ts"
+  ],
+  "newTaskRoots": [
+    "apps/weltraum-browser/src/factory/ui/english.ts",
+    "apps/weltraum-browser/public/factory/ui-ceramic-v1",
+    "apps/weltraum-browser/public/factory/crashsite-hybrid-v1",
+    "art/factory/ui-ceramic-v1",
+    "art/factory/crashsite-hybrid-v1",
+    "art/factory/visual-reference/2026-10-13/crashsite",
+    "docs/factory/fp06/play/2026-10-13/ui-ceramic",
+    "docs/factory/fp06/play/2026-10-13/crashsite-hybrid-v1",
+    "docs/factory/fp06/visual-style/2026-10-13/crashsite",
+    "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13",
+    "design-qa.md"
+  ]
+}

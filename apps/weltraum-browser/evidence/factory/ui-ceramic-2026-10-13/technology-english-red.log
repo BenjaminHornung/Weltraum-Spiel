@@ -1,0 +1,24 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+x····················
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > projects legacy technology requirements and stock deficits into English without changing published facts
+AssertionError: expected 'Construction & technology Expeditions…' to contain 'finite C03 battery'
+
+Expected: "finite C03 battery"
+Received: "Construction & technology Expeditionsbatterie Expeditionsbatterie Requirements missing Endliche C03-Batterie, bezahlter lokaler Aufbau, tragfähige Auflage und Kabel; Leistung und tatsächlicher Ladezustand begrenzt Im freien Bestand fehlen 2 Stück Getriebemotor Quelle: FP03 §4.7 / FP01 Build using a placement preview at a suitable location.  Check response"
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:64:39
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 20 passed (21)
+   Start at  15:07:59
+   Duration  740ms (transform 403ms, setup 0ms, import 497ms, tests 91ms, environment 0ms)
+

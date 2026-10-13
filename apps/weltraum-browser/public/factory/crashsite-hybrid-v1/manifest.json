@@ -1,0 +1,12 @@
+{
+  "schema": "hestia.crashsite.candidate-payload/v1",
+  "assetId": "hestia_crashsite_hybrid_v1",
+  "url": "/factory/crashsite-hybrid-v1/crashsite-hybrid-v1.glb",
+  "glbSha256": "8912f74b4bcdd0effb41960b97a8d491123f52f5930adeb63544992b236cadfa",
+  "glbBytes": 242936,
+  "nativeSource": "art/factory/crashsite-hybrid-v1/crashsite-hybrid-v1.blend",
+  "nativeSourceSha256": "2987725a6c1d8802c40f921c11582db90f39d30bdbf2f665f5804d3bfe9a1437",
+  "worldAuthority": false,
+  "runtimeAdmission": "NOT_ADMITTED",
+  "usage": "Owner-selected art candidate, static payload for review; closed Play asset manifest and native cargo geometry remain unchanged"
+}

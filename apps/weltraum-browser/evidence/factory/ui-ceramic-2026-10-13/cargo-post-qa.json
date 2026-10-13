@@ -1,0 +1,107 @@
+{
+  "states": [
+    {
+      "width": 1280,
+      "height": 720,
+      "mass": "341 kg · Wreck cargo 1",
+      "massRect": {
+        "x": 925,
+        "y": 573.1875,
+        "width": 316,
+        "height": 25.1875
+      },
+      "buttonRect": {
+        "x": 859,
+        "y": 605.8125,
+        "width": 382,
+        "height": 44
+      },
+      "minimumChoiceHeight": 45,
+      "host": {
+        "sessionId": "hvp-session-1",
+        "epoch": 1,
+        "nativeTick": 0,
+        "simulationRecoveryAvailable": false,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": "cargo",
+          "surface": "cargo",
+          "error": null
+        },
+        "terrain": {
+          "epoch": 1,
+          "revision": 0,
+          "sourceDigest": "0e2a0bcb",
+          "baseDigest": "0e2a0bcb",
+          "profileVersion": "hvp-factory-startsite-v5",
+          "cellMeters": 0.125,
+          "originMeters": {
+            "x": -16,
+            "y": -8,
+            "z": -16
+          },
+          "sizeX": 256,
+          "sizeY": 128,
+          "sizeZ": 256
+        }
+      }
+    },
+    {
+      "width": 375,
+      "height": 812,
+      "mass": "341 kg · Wreck cargo 1",
+      "massRect": {
+        "x": 97,
+        "y": 401.1875,
+        "width": 247,
+        "height": 25.1875
+      },
+      "buttonRect": {
+        "x": 31,
+        "y": 444.375,
+        "width": 313,
+        "height": 44
+      },
+      "minimumChoiceHeight": 45,
+      "host": {
+        "sessionId": "hvp-session-1",
+        "epoch": 1,
+        "nativeTick": 0,
+        "simulationRecoveryAvailable": false,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": "cargo",
+          "surface": "cargo",
+          "error": null
+        },
+        "terrain": {
+          "epoch": 1,
+          "revision": 0,
+          "sourceDigest": "0e2a0bcb",
+          "baseDigest": "0e2a0bcb",
+          "profileVersion": "hvp-factory-startsite-v5",
+          "cellMeters": 0.125,
+          "originMeters": {
+            "x": -16,
+            "y": -8,
+            "z": -16
+          },
+          "sizeX": 256,
+          "sizeY": 128,
+          "sizeZ": 256
+        }
+      }
+    }
+  ],
+  "errors": []
+}

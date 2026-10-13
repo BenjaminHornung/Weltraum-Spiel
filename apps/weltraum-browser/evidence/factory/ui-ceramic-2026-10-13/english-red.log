@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/factoryShell.test.ts (15 tests | 1 failed) 400ms
+     × presents English player controls without changing published session facts 348ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/factoryShell.test.ts > Factory player shell > presents English player controls without changing published session facts
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/factoryShell.test.ts:62:45
+     60|     const module = await load(), h = harness(), doc = docDouble();
+     61|     const shell = module!.mountFactoryShell({ port: h.port, uiPort: h.…
+     62|     expect(find(shell.element, "New game")).toBeDefined();
+       |                                             ^
+     63|     expect(find(shell.element, "Continue")).toBeDefined();
+     64|     expect(h.port.read().statusText).toBe("Pausiert");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 14 passed (15)
+   Start at  14:28:23
+   Duration  655ms (transform 325ms, setup 0ms, import 103ms, tests 400ms, environment 0ms)
+

@@ -1,7 +1,9 @@
+import { englishFactoryText } from "./ui/english";
 import { materializeFactoryStartSiteV5,readFactorySourceColumnWorldV5 } from "./fixtures/startSite";
 import { createFactoryBuildTool } from "./ui/buildTool";
 import { readMaterialMassMg } from "./material/resourcesAdapter";
-import {createFactoryPanel} from "./ui/cargoPanel";
+import {createFactoryPanel, uiText} from "./ui/cargoPanel";
+import {factoryItemIcon} from "./ui/itemVisuals";
 import {mountFactoryShell,type FactoryShellPort,type FactoryShellView} from "./ui/factoryShell";
 import "../style.css";
 import { startHvp, type HvpBootstrapHandle } from "../hvp/hvpBootstrap";
@@ -11,14 +13,21 @@ import type { FactoryHostExtension } from "./session/hostPort";
 
 const extension: FactoryHostExtension = async host => {
   // Initialize exactly one finite source-bound Cargo view; objects remain uninstalled until the player confirms a paid build.
-  const session = await mountFactorySession(host, loadFactoryCatalog(createFp02CatalogInput()));
+  const catalog = loadFactoryCatalog(createFp02CatalogInput());
+  const session = await mountFactorySession(host, catalog);
   const panel = document.createElement("section");
-  panel.id = "factory-panel"; panel.setAttribute("aria-label", "Werkstatt");
-  const title = document.createElement("strong"); title.textContent = "Bauen";
+  panel.id = "factory-panel"; panel.setAttribute("aria-label", "Workshop");
+  const title = document.createElement("strong"); title.textContent = "Build";
   const status = document.createElement("p"); status.id = "factory-status"; status.setAttribute("role", "status");
-  const note = document.createElement("p"); note.textContent = "Wähle eine Bauvorschau. Pfeile versetzen um 25 cm, R dreht. Schwere Chassis zuerst transportieren, sicher absetzen und selbst die künftige Maschinenfläche verlassen. Bestätigen bezahlt den Bau aus erreichbarer endlicher Fracht.";
+  const note = document.createElement("p"); note.textContent = "Choose a build preview. Arrow keys move it by 25 cm; R rotates it. Transport heavy chassis first, set them down safely and step outside the machine footprint. Confirming a build uses accessible finite cargo.";
   let disposed = false;
-  let lastBuildProjection="";
+  let lastBuildProjection="", browseBuild = false;
+  const buildDirectory = document.createElement("div"); buildDirectory.className = "factory-build-directory";
+  const buildPreview = document.createElement("section"); buildPreview.className = "factory-build-preview";
+  const previewTitle = uiText(document, "h2", ""), previewState = uiText(document, "p", ""); previewState.className = "factory-machine-state";
+  const costs = document.createElement("dl"), costLabel = uiText(document, "dt", "Kit"), costValue = uiText(document, "dd", ""), gridLabel = uiText(document, "dt", "Build grid"), gridValue = uiText(document, "dd", "0.25 m");
+  costs.append(costLabel, costValue, gridLabel, gridValue); buildPreview.append(previewTitle, previewState, costs);
+  const browse = document.createElement("button"); browse.type = "button"; browse.textContent = "Choose another facility"; browse.addEventListener("click", () => { browseBuild = true; updateBuild(); });
   let refreshShell=()=>{};
   const construction=session.construction,tool=construction?createFactoryBuildTool(construction):undefined;
   const buildStatus=document.createElement("p");buildStatus.id="factory-build-status";buildStatus.setAttribute("role","status");
@@ -26,23 +35,37 @@ const extension: FactoryHostExtension = async host => {
   const button=(label:string,id:string,action:()=>void)=>{const value=document.createElement("button");value.type="button";value.textContent=label;value.id=id;value.setAttribute("style","margin:4px;padding:6px");value.addEventListener("click",action);buildButtons.push(value);return value;};
   const updateBuild=()=>{if(!construction||!tool)return;const state=construction.read(),ghost=tool.read();
     const cargo=host.construction?.readFacts().cargoAccess;
-    const key=JSON.stringify([cargo?.opened,cargo?.accessible,state.state,state.material.revision,ghost?.request??null,ghost?.placement.status??null,ghost?.placement.status==="Rejected"?ghost.placement.reason:null]);if(key===lastBuildProjection)return;lastBuildProjection=key;
+    const key=JSON.stringify([cargo?.opened,cargo?.accessible,state.state,state.material.revision,ghost?.request??null,ghost?.placement.status??null,ghost?.placement.status==="Rejected"?ghost.placement.reason:null,browseBuild,construction.busy,host.read().confirmed,host.read().physicsStatus]);if(key===lastBuildProjection)return;lastBuildProjection=key;
     document.body.dataset.hestiaFactoryConstruction=JSON.stringify({cargo,state:state.state,installations:state.installations,revision:state.material.revision,massMg:readMaterialMassMg(state.material),containers:state.material.containers.map(value=>({containerId:value.state.containerId,massKg:value.currentMassKg,contents:value.state.contents})),reservations:state.material.reservations.length,ghost:ghost?{request:ghost.request,status:ghost.placement.status,reason:ghost.placement.status==="Rejected"?ghost.placement.reason:null}:null});
-    buildStatus.textContent=state.state==="RecoveryHold"?"Bau angehalten · Wiederherstellung erforderlich":ghost?ghost.placement.status==="Prepared"?`Bau bereit · ${ghost.placement.installation.massMg/1_000_000} kg Bauteile · Material vollständig erhalten`:`Bau nicht möglich · ${ghost.placement.reason}`:`${state.installations.length} installierte Objekte · ${readMaterialMassMg(state.material)/1_000_000} kg Gesamtmaterial`;
+    const sourceId = ghost?.request.definitionSourceId;
+    const device = catalog.devices.find(d => d.sourceId === sourceId), item = catalog.items.find(i => i.sourceId === sourceId);
+    const mass = device?.massMg ?? (item?.quantityBasis === "piece" ? item.massMgPerUnit : null);
+    const labels: Record<string, string> = { B06: "Cutter", B07: "Former", B09: "Storage", B05: "Workbench" };
+    const reasons: Record<string, string> = { OUT_OF_REACH: "Build site out of reach", CARGO_CLOSED: "Open the wreck cargo first", ACTOR_OVERLAP: "Step outside the machine footprint", SUPPORT: "Ground does not support this facility yet" };
+    buildDirectory.hidden = Boolean(ghost) && !browseBuild; buildPreview.hidden = !ghost;
+    browse.hidden = !ghost || browseBuild; rotate.hidden = cancel.hidden = confirm.hidden = !ghost;
+    if (ghost) {
+      previewTitle.textContent = sourceId && Object.hasOwn(labels, sourceId) ? labels[sourceId]! : englishFactoryText(item?.displayName ?? "Facility");
+      previewState.textContent = ghost.placement.status === "Prepared" ? "Placement verified · kit admitted" : ghost.placement.reason && Object.hasOwn(reasons, ghost.placement.reason) ? reasons[ghost.placement.reason]! : "Placement rejected · material is retained";
+      costValue.textContent = mass === null ? "Not confirmed yet" : `${new Intl.NumberFormat("en-GB", { maximumFractionDigits: 6 }).format(mass / 1_000_000)} kg`;
+    }
+    confirm.disabled = !ghost || ghost.placement.status !== "Prepared" || construction.busy || state.state !== "Ready" || !host.read().confirmed || host.read().physicsStatus !== "Paused";
+    rotate.disabled = cancel.disabled = !ghost || construction.busy;
+    buildStatus.textContent=state.state==="RecoveryHold"?"Build on hold · Recovery required":ghost?ghost.placement.status==="Prepared"?`Ready to build · ${ghost.placement.installation.massMg/1_000_000} kg components · All material retained`:previewState.textContent:`${state.installations.length} installed objects · ${readMaterialMassMg(state.material)/1_000_000} kg total material`;
   };
   const projectGhost=()=>{host.construction?.projectGhost(tool?.read()?.request??null);updateBuild();};
-  const choose=async(sourceId:string,centerMm:readonly number[],turns:number)=>{try{await host.pause();if(disposed)return;tool?.select({transactionId:`build_${sourceId.toLowerCase().replaceAll(".","_")}_${construction!.read().material.revision}`,instanceId:`facility_${sourceId.toLowerCase().replaceAll(".","_")}_${construction!.read().material.revision}`,definitionSourceId:sourceId,centerMm,quarterTurns:turns});projectGhost();}catch(error){buildStatus.textContent=`Bau angehalten · ${String(error)}`;}};
-  const cutter=button("Zuschnitt vorschauen","factory-build-cutter",()=>{void choose("B06",[-7250,1500,5000],1);});
-  const battery=button("Batterie vorschauen","factory-build-battery",()=>{void choose("fp02.device.battery_4kwh",[-2250,1500,2500],1);});
-  const distributor=button("Verteiler vorschauen","factory-build-distributor",()=>{void choose("fp02.device.distribution_40kw",[-2250,1500,2000],1);});
-  const former=button("Umformung vorschauen","factory-build-former",()=>{void choose("B07",[-7250,1500,-2500],1);});
-  const rawStorage=button("Rohlager vorschauen","factory-build-raw-storage",()=>{void choose("B09",[-7250,1500,11500],1);});
-  const productStorage=button("Produktlager vorschauen","factory-build-product-storage",()=>{void choose("B09",[-6250,1500,-5500],1);});
-  const bench=button("Werkbank vorschauen","factory-build-bench",()=>{void choose("B05",[-10250,1500,5500],1);});
-  const brace=button("Neue Stütze platzieren","factory-build-brace",()=>{void choose("fp02.comp.small_brace",[-8750,1500,5500],1);});
-  const rotate=button("Bauvorschau drehen","factory-build-rotate",()=>{tool?.rotate();projectGhost();});
-  const cancel=button("Bauvorschau verwerfen","factory-build-cancel",()=>{tool?.cancel();projectGhost();});
-  const confirm=button("Bau bestätigen","factory-build-confirm",()=>{void (async()=>{const result=await tool?.confirm();projectGhost();if(result?.status!=="Committed")buildStatus.textContent=`Bau angehalten · ${result?.reason}`;})();});
+  const choose=async(sourceId:string,centerMm:readonly number[],turns:number)=>{browseBuild=false;try{await host.pause();if(disposed)return;tool?.select({transactionId:`build_${sourceId.toLowerCase().replaceAll(".","_")}_${construction!.read().material.revision}`,instanceId:`facility_${sourceId.toLowerCase().replaceAll(".","_")}_${construction!.read().material.revision}`,definitionSourceId:sourceId,centerMm,quarterTurns:turns});projectGhost();}catch(error){buildStatus.textContent=`Build on hold · ${String(error)}`;}};
+  const cutter=button("Preview cutter","factory-build-cutter",()=>{void choose("B06",[-7250,1500,5000],1);});
+  const battery=button("Preview battery","factory-build-battery",()=>{void choose("fp02.device.battery_4kwh",[-2250,1500,2500],1);});
+  const distributor=button("Preview distributor","factory-build-distributor",()=>{void choose("fp02.device.distribution_40kw",[-2250,1500,2000],1);});
+  const former=button("Preview former","factory-build-former",()=>{void choose("B07",[-7250,1500,-2500],1);});
+  const rawStorage=button("Preview raw storage","factory-build-raw-storage",()=>{void choose("B09",[-7250,1500,11500],1);});
+  const productStorage=button("Preview product storage","factory-build-product-storage",()=>{void choose("B09",[-6250,1500,-5500],1);});
+  const bench=button("Preview workbench","factory-build-bench",()=>{void choose("B05",[-10250,1500,5500],1);});
+  const brace=button("Place new brace","factory-build-brace",()=>{void choose("fp02.comp.small_brace",[-8750,1500,5500],1);});
+  const rotate=button("Rotate preview","factory-build-rotate",()=>{tool?.rotate();projectGhost();});
+  const cancel=button("Cancel preview","factory-build-cancel",()=>{tool?.cancel();projectGhost();});
+  const confirm=button("Confirm build","factory-build-confirm",()=>{void (async()=>{const result=await tool?.confirm();projectGhost();if(result?.status!=="Committed")buildStatus.textContent=`Build on hold · ${result?.reason}`;})();});
   const onBuildKey=(event:KeyboardEvent)=>{const target=event.target as HTMLElement|null,surface=host.read().input?.surface;if((surface&&surface!=="build")||(!surface&&session.ui.read().focusedPanel)||target?.closest?.("input,select,textarea,[contenteditable=true]"))return;if(!tool?.read()||construction?.busy)return;if(event.key==="Escape"){event.preventDefault();tool.cancel();}else if(event.key.toLowerCase()==="r"){event.preventDefault();tool.rotate();}else if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key)){event.preventDefault();tool.move(event.key==="ArrowLeft"?-1:event.key==="ArrowRight"?1:0,event.key==="ArrowUp"?-1:event.key==="ArrowDown"?1:0);}else return;projectGhost();};
   document.addEventListener("keydown",onBuildKey);
   if(!tool)buildButtons.forEach(value=>{value.disabled=true;});
@@ -52,27 +75,30 @@ const extension: FactoryHostExtension = async host => {
     document.body.dataset.hestiaFactoryClock = JSON.stringify(view);
     const native = host.read(), paused = native.physicsStatus === "Paused";
     const available = view.state === "Ready" && native.confirmed;
-    status.textContent = available ? `Werkstatt bereit · ${paused ? "Pausiert" : "Aktiv"}`
-      : view.state === "RecoveryHold" ? "Werkstatt angehalten · Sitzung neu starten" : "Werkstatt wartet · Host angehalten";
+    status.textContent = available ? `Workshop ready · ${paused ? "Paused" : "Active"}`
+      : view.state === "RecoveryHold" ? "Workshop on hold · check session recovery" : "Workshop waiting · simulation on hold";
     updateBuild();
     refreshShell();
   };
-  panel.append(title, status, note,cutter,former,rawStorage,productStorage,bench,brace,battery,distributor,rotate,cancel,confirm,buildStatus);
+  const buildIcons = ["fp02.chassis.cutter", "fp02.chassis.former", "fp02.device.material_container", "fp02.device.material_container", "fp02.device.field_workbench", "fp02.comp.small_brace", "fp02.device.battery_4kwh", "fp02.device.distribution_40kw"];
+  [cutter,former,rawStorage,productStorage,bench,brace,battery,distributor].forEach((value, i) => { const label = value.textContent; value.setAttribute("aria-label", label ?? "Facility"); value.replaceChildren(factoryItemIcon(document, buildIcons[i]!, label ?? "Facility"), uiText(document, "span", label ?? "Facility")); buildDirectory.append(value); });
+  confirm.setAttribute("aria-describedby", "factory-build-status");
+  panel.append(title, status, note,buildDirectory,buildPreview,browse,rotate,cancel,confirm,buildStatus);
   // Reuse the admitted canonical pending/receipt/session/focus lifetime for
   // all Entry actions; unknown replies retain the same request until resolved.
-  const actions=createFactoryPanel(session.ui,document,"power","Anlagen verbinden und beliefern");
+  const actions=createFactoryPanel(session.ui,document,"power","Facility connections and local deliveries");
   const connections=actions.element;connections.id="factory-connections";panel.append(connections);
   const connectionButtons=new Map<string,HTMLButtonElement>();
   actions.start(snapshot=>{
-    const choices=[...(snapshot.connections?.power??[]).map(choice=>({kind:"connect-power" as const,choice})),...(snapshot.connections?.belts??[]).map(choice=>({kind:"connect-belt" as const,choice})),...(snapshot.interaction.localDeposits??[]).map(choice=>({kind:"deposit" as const,choice:{...choice,id:choice.target.id}}))];
+    const choices=[...(snapshot.connections?.power??[]).map(choice=>({kind:"connect-power" as const,choice})),...(snapshot.connections?.belts??[]).map(choice=>({kind:"connect-belt" as const,choice})),...(snapshot.interaction.localDeposits??[]).map(choice=>({kind:"deposit" as const,choice:{...choice,id:choice.target.id}}))].filter(c=>!["connect-power"].includes(c.kind));
     const portLabel=(id:string)=>{
-      const device=snapshot.power.devices?.find(d=>id===`power_${d.id}`);if(device)return device.name;
-      const machine=snapshot.machines.find(m=>m.ports.some(p=>p.id===id));if(machine){const port=machine.ports.find(p=>p.id===id)!;return `${machine.name} · ${port.role==="SolidBatchIn"?"Eingang":port.role==="SolidBatchOut"?"Ausgang":"Strom"}`;}
+      const device=snapshot.power.devices?.find(d=>id===`power_${d.id}`);if(device)return englishFactoryText(device.name);
+      const machine=snapshot.machines.find(m=>m.ports.some(p=>p.id===id));if(machine){const port=machine.ports.find(p=>p.id===id)!;return `${englishFactoryText(machine.name)} · ${port.role==="SolidBatchIn"?"Input":port.role==="SolidBatchOut"?"Output":"Power"}`;}
       const owner=host.handling?.read().solidPorts?.find(p=>p.portId===id),storage=snapshot.inventory.find(c=>c.id===`storage_${owner?.instanceId}`);
-      return storage?`Lager ${snapshot.inventory.filter(c=>c.role===storage.role).findIndex(c=>c.id===storage.id)+1}`:"Anschluss";
+      return storage?`Storage ${snapshot.inventory.filter(c=>c.role===storage.role).findIndex(c=>c.id===storage.id)+1}`:"Port";
     };
     const targetLabel=(id:string)=>{const target=snapshot.inventory.find(c=>c.id===id),machine=snapshot.machines.find(m=>m.inputContainerId===id);
-      return machine?`Eingang · ${machine.name}`:target?`Lager ${snapshot.inventory.filter(c=>c.role===target.role).findIndex(c=>c.id===id)+1}`:"Lager";};
+      return machine?`Input · ${englishFactoryText(machine.name)}`:target?`Storage ${snapshot.inventory.filter(c=>c.role===target.role).findIndex(c=>c.id===id)+1}`:"Storage";};
     for(const value of connectionButtons.values())value.hidden=true;
     for(const {kind,choice} of choices){const id=`${kind}_${choice.id}`;let value=connectionButtons.get(id);
       if(!value){value=document.createElement("button");value.type="button";value.dataset.factoryConnection=id;value.setAttribute("style","display:block;margin:4px;padding:6px");
@@ -84,7 +110,7 @@ const extension: FactoryHostExtension = async host => {
         });actions.content.append(value);connectionButtons.set(id,value);
       }
       value.hidden=false;value.disabled=actions.busy||!choice.capability.enabled;value.title=choice.capability.reason??"";
-      value.textContent=kind==="connect-power"&&"lengthMm" in choice?`Strom: ${portLabel(choice.sourcePortId)} → ${portLabel(choice.targetPortId)} · ${choice.lengthMm/1000} m`:kind==="connect-belt"&&"sourcePortId" in choice?`Band: ${portLabel(choice.sourcePortId)} → ${portLabel(choice.targetPortId)} · 4 m`:`Gesamten Transport einlagern · ${"target" in choice?targetLabel(choice.target.id):"Lager"}`;
+      value.textContent=kind==="connect-power"&&"lengthMm" in choice?`Power: ${portLabel(choice.sourcePortId)} → ${portLabel(choice.targetPortId)} · ${choice.lengthMm/1000} m`:kind==="connect-belt"&&"sourcePortId" in choice?`Belt: ${portLabel(choice.sourcePortId)} → ${portLabel(choice.targetPortId)} · 4 m`:`Deposit entire load · ${"target" in choice?targetLabel(choice.target.id):"Storage"}`;
     }
   });
   let started=false,shellRevision=0,uiView=session.ui.read(),lastShellKey="";
@@ -96,12 +122,12 @@ const extension: FactoryHostExtension = async host => {
     const available=native.confirmed&&session.isQuiescent()&&!input?.activationPending;
     const cap=(enabled:boolean,reason:string)=>Object.freeze({enabled,reason:enabled?null:reason});
     const veto=facilities?.lastCarrierVeto?.reason??null;
-    const reasons:Record<string,string>={CarrierSupport:"Fracht benötigt vollständige ebene Bodenauflage",CarrierOverlap:"Hindernis im Transportweg",CarrierSweep:"Hindernis im Transportweg",CarrierCoverage:"Transportfläche noch nicht bestätigt",CarrierGroundHeight:"Transport benötigt eine ebene Fläche"};
-    const interaction=uiView.interaction.handling?"WASD: Transport bewegen · Escape: Pause · Fracht: absetzen oder lokal liefern":uiView.interaction.cargoAccessible?"Wrackfracht erreichbar · Fracht öffnen":playing?"WASD: gehen · B: bauen · M: Karte · Escape: Pause":"Spielen bewusst anklicken, um Mausblick und Bewegung zu aktivieren";
+    const reasons:Record<string,string>={CarrierSupport:"Cargo needs full support on level ground",CarrierOverlap:"Obstacle in transport path",CarrierSweep:"Obstacle in transport path",CarrierCoverage:"Transport ground not confirmed yet",CarrierGroundHeight:"Transport needs level ground"};
+    const interaction=uiView.interaction.handling?"WASD: move cargo · Escape: pause · Cargo: set down or deliver locally":uiView.interaction.cargoAccessible?"Wreck cargo accessible · Open cargo":playing?"WASD: walk · B: build · M: map · Escape: pause":"Select Play to capture the mouse and enable movement";
     return Object.freeze({sessionId:native.sessionId,epoch:native.epoch,publicationRevision:shellRevision,
       phase:!started?"start":hold?"hold":playing?"playing":"paused",
-      statusText:input?.error??(hold?(native.physicsStatus==="SimulationHold"?"Sitzung unterbrochen. Bestätigte Arbeit und Fracht sind erhalten. Freigeben, danach Spielen wählen.":`Sitzung angehalten · ${native.physicsStatus}`):input?.pausePending?"Pause wird noch bestätigt":input?.activationPending?"Spielstart wird noch bestätigt":playing?"Spiel aktiv":native.physicsStatus==="Paused"?"Sitzung pausiert":"Eingaben gesperrt · Pause wird bestätigt"),
-      capabilities:{recoverSimulation:cap(started&&native.simulationRecoveryAvailable===true&&Boolean(host.recoverSimulationHold),"Sitzung muss für die Freigabe bereit sein"),newSession:cap(!started&&available,"Für eine neue Sitzung zum Menü zurückkehren"),continue:cap(false,"Noch kein gemeinsam bestätigter Factory-Spielstand verfügbar"),play:cap(started&&available&&Boolean(host.play),!started?"Zuerst Neues Spiel wählen":"Host muss sichtbar, bestätigt und frei sein"),pause:cap(started&&!hold&&!input?.pausePending,"Pause wird bereits bestätigt oder Host angehalten"),save:cap(false,"Gemeinsamer Factory-Spielstand noch nicht angebunden"),endSession:cap(Boolean(host.endSession)&&session.canEndSession?.()===true,"Laufenden Vorgang vor dem Beenden abwarten"),settings:cap(false,"Keine bestätigte Einstellungsanbindung verfügbar")},
+      statusText:input?.error??(hold?(native.physicsStatus==="SimulationHold"?"Session interrupted. Confirmed work and cargo are retained. Recover, then select Play.":`Session on hold · ${native.physicsStatus}`):input?.pausePending?"Pause confirmation pending":input?.activationPending?"Play confirmation pending":playing?"Playing":native.physicsStatus==="Paused"?"Session paused":"Input blocked · confirming pause"),
+      capabilities:{recoverSimulation:cap(started&&native.simulationRecoveryAvailable===true&&Boolean(host.recoverSimulationHold),"Session must be ready for recovery"),newSession:cap(!started&&available,"Return to the menu before starting a new session"),continue:cap(false,"No confirmed combined factory save is available yet"),play:cap(started&&available&&Boolean(host.play),!started?"Select New game first":"Simulation must be visible, confirmed and available"),pause:cap(started&&!hold&&!input?.pausePending,"Pause is pending or simulation is on hold"),save:cap(false,"Combined factory save is not connected yet"),endSession:cap(Boolean(host.endSession)&&session.canEndSession?.()===true,"Wait for the current operation before leaving"),settings:cap(false,"Settings are not connected yet")},
       hud:{interactionText:interaction,carrierMassMg:uiView.interaction.handling?.massMg??null,blockReason:veto?reasons[veto]??veto:null,warnings:[]},
       onboarding:session.readOnboarding(native),map:session.readLocalMap(tool?.read()?.request??null)});
   };
@@ -153,5 +179,5 @@ const extension: FactoryHostExtension = async host => {
 export const startFactoryEntry = (): Promise<HvpBootstrapHandle> => startHvp({ factoryExtension: extension,createSourceSnapshot:materializeFactoryStartSiteV5,factorySourceProfile:{version:"hvp-factory-startsite-v5",readColumn:readFactorySourceColumnWorldV5} });
 void startFactoryEntry().catch(error => {
   const status = document.createElement("p"); status.setAttribute("role", "alert");
-  status.textContent = `Werkstatt konnte nicht starten: ${String(error)}`; document.body.append(status);
+  status.textContent = `Workshop could not start: ${String(error)}`; document.body.append(status);
 });

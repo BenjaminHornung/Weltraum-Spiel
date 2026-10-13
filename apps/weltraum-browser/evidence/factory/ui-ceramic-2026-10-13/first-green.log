@@ -1,0 +1,26 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/factoryShell.test.ts (14 tests | 1 failed) 449ms
+     × leaves walking free of the all-workshop navigation until inspection is opened 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/factoryShell.test.ts > Factory player shell > leaves walking free of the all-workshop navigation until inspection is opened
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/factoryShell.test.ts:137:55
+    135|       expect(visibleButton(shell.element, label)).toBeUndefined();
+    136|     shell.openSurface("cargo");
+    137|     expect(visibleButton(shell.element, "Maschinen")).toBeDefined();
+       |                                                       ^
+    138|     shell.closeSurface();
+    139|     expect(visibleButton(shell.element, "Maschinen")).toBeUndefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 39 passed (40)
+   Start at  13:26:06
+   Duration  1.23s (transform 396ms, setup 0ms, import 213ms, tests 586ms, environment 0ms)
+

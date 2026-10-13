@@ -1,0 +1,217 @@
+{
+  "kind": "ACTUAL_BLENDER_UI_THUMBNAILS",
+  "sourcesUnchanged": true,
+  "runtimeGeometryModified": false,
+  "items": [
+    {
+      "name": "cutter",
+      "source": "art/factory/play-2026-10-12/cutter/cutter/cutter.blend",
+      "sourceSha256": "62d503483ecbaa1a26154ebcd452ca081e90951ca50e4bf1f1fe74126e67e31f",
+      "output": "cutter.png",
+      "outputSha256": "2d57bda0680c11e3efe7d24454bb323da314bc20d2b91e69a1fe99433a816cf8",
+      "bytes": 42217,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "former",
+      "source": "art/factory/play-surface-v2-2026-10-12/former/former-v2/former-v2.blend",
+      "sourceSha256": "2ac344e492d73145f0b11f17e22854d5fda2e44ab45283de9ea7be0c5a7fe78c",
+      "output": "former.png",
+      "outputSha256": "76e52673e3e2b8b17a5a6ca5463a28e59706e98a242b76c54c1ef83c48c050cd",
+      "bytes": 48539,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "carrier",
+      "source": "art/factory/play-2026-10-12/carrier/carrier-heavy/carrier-heavy.blend",
+      "sourceSha256": "7f19867a80a1c28bc47ab24c0e2003ac183b69dce49b366df01485cff2bd6b4e",
+      "output": "carrier.png",
+      "outputSha256": "ef913a3034dd16cad45e395e5ba25fc07e2075b96e6641d228475a3017cc8b95",
+      "bytes": 48299,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "battery",
+      "source": "art/factory/play-2026-10-12/power-kit/battery/battery.blend",
+      "sourceSha256": "216f38a66be8c3ea9faecd9db0bd84d945905839eafa1aa380bcfad3c824580e",
+      "output": "battery.png",
+      "outputSha256": "ec95caeee8006d61e0030809cb267477d9ab7e7735ffc9fc57e5095cec29722f",
+      "bytes": 39984,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "cable",
+      "source": "art/factory/play-2026-10-12/power-kit/cable-link/cable-link.blend",
+      "sourceSha256": "8889af2a9bbaa83f5e6998cddcd5f5cc03c6c4050ae552aba03426ed350b2f74",
+      "output": "cable.png",
+      "outputSha256": "700eb121ef7641e4a2f64809e0c56cf062958db546e99c98476a87ed52428d54",
+      "bytes": 21477,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "storage",
+      "source": "art/factory/play-2026-10-12/storage/storage/storage.blend",
+      "sourceSha256": "05ee52ad8c3da3ee77b50de2affd3f1df4991d00b88ee1d32388de5d0d2050ef",
+      "output": "storage.png",
+      "outputSha256": "fa249bc5818d5c6a5c2199c42384bb6b23eeef340ddb3ba5df1905f7d6e623fd",
+      "bytes": 38911,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "bench",
+      "source": "art/factory/play-2026-10-12/workbench/workbench/workbench.blend",
+      "sourceSha256": "3cb961cdbe61b443cdb6a2aaf6ae27e83bd091c2efdf6b6aeb9298d2a12575af",
+      "output": "bench.png",
+      "outputSha256": "f616137581271dc3a7875b1f9f40dfe64b2faa4d5687d40428830a8186d7d094",
+      "bytes": 28988,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "brace",
+      "source": "art/factory/play-2026-10-12/brace/brace/brace.blend",
+      "sourceSha256": "10236ac041cb3f1ae58049ca06016c9c9c21ee7ecf052883b563b6e885afb27a",
+      "output": "brace.png",
+      "outputSha256": "52a7d71d27b3e780727829d05a857803ddcb540ec8009bd8d18377ee4c1c16fb",
+      "bytes": 27923,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "belt",
+      "source": "art/factory/play-2026-10-12/belt/belt/belt.blend",
+      "sourceSha256": "bc70199ab32cc6f328c5fb9016812421e01bd47d0d3663e21603c74a52dac88f",
+      "output": "belt.png",
+      "outputSha256": "1da285cd3e7936c83d1a021af72496cc399d339584cec69b3463d3815563feb0",
+      "bytes": 26725,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "steel",
+      "source": "art/factory/play-2026-10-12/materials/steel/steel.blend",
+      "sourceSha256": "52b961bed4c0dfb1be74bf0b7a34d6031047c7b8c3ea760c4e4fff7b45c8f1ce",
+      "output": "steel.png",
+      "outputSha256": "516e096728c74406c36c7fc3fc42421a78ea5fa28885f8a68afbd2876ac23879",
+      "bytes": 44999,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "semi",
+      "source": "art/factory/play-2026-10-12/materials/semi/semi.blend",
+      "sourceSha256": "55ffb996db8b953abb1bbf6f02ede9cdb530d3bf22686fcaa4708af02d7fa142",
+      "output": "semi.png",
+      "outputSha256": "71d68031e6f210e0052902cb342875fbee9548b096625979dec384e95654c10a",
+      "bytes": 27829,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "sheet",
+      "source": "art/factory/play-2026-10-12/materials/sheet/sheet.blend",
+      "sourceSha256": "88ad5273fd4a98bff7c744cdafb9b05ae1184130129f636a1183ba6f5a96991e",
+      "output": "sheet.png",
+      "outputSha256": "a3edaa72d877ccbd907048b07066c34812763a5a487e5b011b8e4cd40c91121e",
+      "bytes": 32207,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "profile",
+      "source": "art/factory/play-2026-10-12/materials/profile/profile.blend",
+      "sourceSha256": "ef3fd26b1d53c2fe8d7b7bcc83effcb589c20a0143ac93470347e14485bf25e8",
+      "output": "profile.png",
+      "outputSha256": "147c2c383dd35e1aca9a023150f08b99d091e2cca4f2be1643ae8c505294fe3e",
+      "bytes": 34138,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    },
+    {
+      "name": "offcut",
+      "source": "art/factory/play-2026-10-12/materials/offcut/offcut.blend",
+      "sourceSha256": "b25859cced8cae819c121c17ad70280541331f7c7bdf220c9a024a40aaff28c8",
+      "output": "offcut.png",
+      "outputSha256": "ea71130a249fc0e19ddb8e2499f04245b6ae29ca8c4e413c6c03be1901bd5bb7",
+      "bytes": 42969,
+      "dimensions": [
+        192,
+        192
+      ],
+      "transparent": true,
+      "renderer": "Blender Cycles CPU 16 samples; no denoising",
+      "sourceUnchanged": true
+    }
+  ]
+}

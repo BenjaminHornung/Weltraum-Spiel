@@ -487,23 +487,23 @@ describe("HVP T08 bootstrap lifecycle", () => {
     const f=await factoryCarrierHostFixture();const text=(id:string)=>descendants(f.source.body).find(e=>e.id===id)!.textContent;
     try{
       stepFrame(f.source.windowPort,performance.now());
-      expect(text("hvp-interaction-target")).toContain("Kein Treffer innerhalb von 4 m");
+      expect(text("hvp-interaction-target")).toContain("No hit within 4 m");
       await f.port.handling!.prepare(f.request,"pickup");await f.port.handling!.commit(f.request.transactionId);f.port.handling!.publish(f.request.transactionId);await f.port.handling!.finalize(f.request.transactionId);
       const before=JSON.stringify(f.port.read());stepFrame(f.source.windowPort,performance.now());
       expect(text("hvp-interaction-target")).toContain("Transport: 341.0 kg");
       expect(text("hvp-interaction-feedback")).toContain("WASD");
-      expect(text("hvp-cut-feedback")).toContain("Hier ablegen");
-      expect(descendants(f.source.body).find(e=>e.id==="hvp-interaction")!.children[3]!.textContent).not.toContain("Schneiden");
+      expect(text("hvp-cut-feedback")).toContain("set down here");
+      expect(descendants(f.source.body).find(e=>e.id==="hvp-interaction")!.children[3]!.textContent).not.toContain("cut");
       expect(JSON.stringify(f.port.read())).toBe(before);
       f.setCarrierVeto("CarrierOverlap");stepFrame(f.source.windowPort,performance.now()+17);
-      expect(text("hvp-interaction-feedback")).toContain("Hindernis");
+      expect(text("hvp-interaction-feedback")).toContain("Obstacle");
       f.setCarrierPhase("Deposited");stepFrame(f.source.windowPort,performance.now()+34);
       expect(text("hvp-interaction-target")).toContain("Depot: 341.0 kg");
-      expect(text("hvp-cut-feedback")).toContain("lokalen Anlage");
+      expect(text("hvp-cut-feedback")).toContain("deliver locally");
       f.clearCarrier();stepFrame(f.source.windowPort,performance.now()+51);
-      expect(text("hvp-interaction-target")).toContain("Kein Treffer innerhalb von 4 m");
-      expect(text("hvp-interaction-feedback")).toContain("F stößt");
-      expect(descendants(f.source.body).find(e=>e.id==="hvp-interaction")!.children[3]!.textContent).toContain("Schneiden");
+      expect(text("hvp-interaction-target")).toContain("No hit within 4 m");
+      expect(text("hvp-interaction-feedback")).toContain("F pushes");
+      expect(descendants(f.source.body).find(e=>e.id==="hvp-interaction")!.children[3]!.textContent).toContain("cut");
     }finally{await f.handle.dispose();}
   });
 
@@ -1068,7 +1068,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
         await Promise.resolve(); await Promise.resolve();
         expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
         expect.soft(requestPointerLock).not.toHaveBeenCalled(); requestPointerLock.mockClear();
-        descendants(source.body).find(e => e.textContent === "Spiel fortsetzen")!.dispatchEvent(new Event("click"));
+        descendants(source.body).find(e => e.textContent === "Resume game")!.dispatchEvent(new Event("click"));
         expect.soft(requestPointerLock).not.toHaveBeenCalled(); requestPointerLock.mockClear();
       }
       status = "Paused"; await port.resume(); expect(commands.at(-1)).toBe("Resume");
@@ -1083,7 +1083,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
     try {
       descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
       await vi.waitFor(() => { expect(descendants(source.body).find(e => e.id === "hvp-ended")).toBeDefined(); });
-      descendants(source.body).find(e => e.textContent === "Neu starten")!.dispatchEvent(new Event("click"));
+      descendants(source.body).find(e => e.textContent === "Restart")!.dispatchEvent(new Event("click"));
       expect(assign).toHaveBeenCalledWith("/factory.html");
     } finally { await handle.dispose(); }
   });

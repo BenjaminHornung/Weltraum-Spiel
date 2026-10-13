@@ -1,0 +1,72 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+·····x··················x·xx······································································································································
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W09 projects actual carrier mass, movement veto and deposit guidance into the normal HUD
+AssertionError: expected 'No hit within 4 m – move closer to a …' to contain 'Kein Treffer innerhalb von 4 m'
+
+Expected: "Kein Treffer innerhalb von 4 m"
+Received: "No hit within 4 m – move closer to a detached body."
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:490:46
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0
+AssertionError: expected { status: 'Rejected', …(2) } to match object { status: 'Committed', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "INSTALLED",
+-   "status": "Committed",
++   "reason": "Factory private prepared receipt binding mismatch",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:996:55
+    994|       port.construction!.projectGhost(request);
+    995|       expect(session.construction!.read().material).toBe(before);expec…
+    996|       await expect(session.construction!.commit(plan)).resolves.toMatc…
+       |                                                       ^
+    997|       expect(prepare).toHaveBeenCalledTimes(1);expect(session.construc…
+    998|       const artifacts=dispatch.mock.calls.flatMap(([command])=>command…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+TypeError: Cannot read properties of undefined (reading 'dispatchEvent')
+ ❯ tests/unit/hvp-bootstrap.test.ts:1071:81
+    1069|         expect.soft(commands).toHaveLength(baseline); commands.length …
+    1070|         expect.soft(requestPointerLock).not.toHaveBeenCalled(); reques…
+    1071|         descendants(source.body).find(e => e.textContent === "Resume g…
+       |                                                                                 ^
+    1072|         expect.soft(requestPointerLock).not.toHaveBeenCalled(); reques…
+    1073|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 keeps the actual post-disposal restart in the Factory profile
+TypeError: Cannot read properties of undefined (reading 'dispatchEvent')
+ ❯ tests/unit/hvp-bootstrap.test.ts:1086:74
+    1084|       descendants(source.body).find(e => e.id === "hvp-end-session")!.…
+    1085|       await vi.waitFor(() => { expect(descendants(source.body).find(e …
+    1086|       descendants(source.body).find(e => e.textContent === "Restart")!…
+       |                                                                          ^
+    1087|       expect(assign).toHaveBeenCalledWith("/factory.html");
+    1088|     } finally { await handle.dispose(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  4 failed | 158 passed (162)
+   Start at  15:14:27
+   Duration  454.03s (transform 3.30s, setup 0ms, import 4.11s, tests 448.56s, environment 1ms)
+

@@ -1,0 +1,98 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/factoryShell.test.ts (14 tests | 1 failed) 799ms
+     × keeps the goal and a source-bound minimap visible while inspecting Cargo 744ms
+ ❯ tests/unit/factory/localMap.test.ts (7 tests | 1 failed) 79ms
+     × provides a read-only compact map of the same confirmed coverage 58ms
+ ❯ tests/unit/factory/gameUiPresentation.test.ts (19 tests | 3 failed) 145ms
+     × distinguishes nominal demand from assigned power and retains interrupted work 27ms
+     × does not present unconfirmed consumer allocations as measured watts 14ms
+     × offers an explicit package choice without submitting or fabricating material lots 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/factoryShell.test.ts > Factory player shell > keeps the goal and a source-bound minimap visible while inspecting Cargo
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/factory/factoryShell.test.ts:65:74
+     63|     shell.openSurface("cargo");
+     64|     const nodes = descendants(shell.element as unknown as ElementDoubl…
+     65|     expect(nodes.find(n => n.className === "factory-shell-hud")?.hidde…
+       |                                                                          ^
+     66|     const mini = nodes.find(n => n.className.includes("factory-shell-m…
+     67|     expect(mini).toBeDefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > distinguishes nominal demand from assigned power and retains interrupted work
+TypeError: Cannot read properties of undefined (reading 'sourceId')
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:59:36
+     57|   it("distinguishes nominal demand from assigned power and retains int…
+     58|     const h = harness(), base = h.value, recipe = catalog.recipes.find…
+     59|     const ref = { sourceId: recipe.sourceId, version: recipe.version, …
+       |                                    ^
+     60|     h.publish({ ...base, machines: [{ id: "cutter", revision: 1, defin…
+     61|       status: "WAIT_POWER", reason: "WAIT_POWER", selectedRecipe: ref,…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > does not present unconfirmed consumer allocations as measured watts
+AssertionError: expected 'Stromversorgung Bereit Leistung wird …' to contain 'Zuweisung ausstehend'
+
+Expected: "Zuweisung ausstehend"
+Received: "Stromversorgung Bereit Leistung wird im nächsten bestätigten Fabrikschritt ermittelt. Batterie: Keine bestätigte Energiemenge Reserve: Keine bestätigte Energiemenge Zuschnitt: 0 / 1200 W · Wartet auf Strom Stromanschlüsse werden an den Anlagen verbunden.  Antwort prüfen"
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:80:39
+     78|       consumers: [{ id: "cutter", name: "Zuschnitt", requestedWatts: 1…
+     79|     const panel = mountFactoryPowerPanel(h.port, doc());
+     80|     expect(panel.element.textContent).toContain("Zuweisung ausstehend"…
+       |                                       ^
+     81|     expect(panel.element.textContent).not.toContain("Zugewiesen 0 W");
+     82|     h.publish({ ...h.value, publicationRevision: 2, power: { ...h.valu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > offers an explicit package choice without submitting or fabricating material lots
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:93:20
+     91|     const panel = mountFactoryCargoPanel(h.port, doc());
+     92|     const choose = byLabel(panel.element, "Zuschnitt-Bausatz auswählen…
+     93|     expect(choose).toBeDefined(); choose!.click();
+       |                    ^
+     94|     expect(byLabel(panel.element, "Transportpaket")!.value).toBe(JSON.…
+     95|     expect(h.commands).toHaveLength(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/factory/localMap.test.ts > source-bound local map > provides a read-only compact map of the same confirmed coverage
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/factory/localMap.test.ts:30:116
+     28|     map.update(snapshot());
+     29|     const nodes = descendants(map.element as unknown as MapElement);
+     30|     expect(nodes.some(n => n.attributes.get("aria-label") === "Minimap…
+       |                                                                                                                    ^
+     31|     expect(nodes.some(n => n.textContent === "Kartenmitte markieren"))…
+     32|     expect(outline(map.element, "ground")).toBe("0,0 4,0 4,-4 0,-4");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  5 failed | 35 passed (40)
+   Start at  13:12:30
+   Duration  2.34s (transform 895ms, setup 0ms, import 540ms, tests 1.02s, environment 0ms)
+

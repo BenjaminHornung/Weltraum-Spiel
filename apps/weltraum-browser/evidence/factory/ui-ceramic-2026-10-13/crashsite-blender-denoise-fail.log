@@ -1,0 +1,52 @@
+Info: Saved "crashsite-hybrid-v1.blend"
+ERROR Draco mesh compression is not available because library could not be found at /usr/bin/4.3/python/lib/python3.13/site-packages/libextern_draco.so
+15:05:54 | INFO: Starting glTF 2.0 export
+15:05:54 | INFO: Extracting primitive: cargo_bay
+15:05:54 | INFO: Primitives created: 4
+15:05:54 | INFO: Extracting primitive: cockpit
+15:05:54 | INFO: Primitives created: 1
+15:05:54 | INFO: Extracting primitive: debris
+15:05:54 | INFO: Primitives created: 4
+15:05:54 | INFO: Extracting primitive: hull
+15:05:54 | INFO: Primitives created: 4
+15:05:54 | INFO: Extracting primitive: rear
+15:05:54 | INFO: Primitives created: 3
+15:05:54 | INFO: Extracting primitive: spine
+15:05:54 | INFO: Primitives created: 3
+15:05:54 | INFO: Extracting primitive: turret_aft
+15:05:54 | INFO: Primitives created: 5
+15:05:54 | INFO: Extracting primitive: turret_fore
+15:05:54 | INFO: Primitives created: 5
+15:05:54 | INFO: Finished glTF 2.0 export in 0.05270552635192871 s
+Blender 4.3.2
+Fra:1 Mem:12.06M (Peak 12.06M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | PREVIEW_GROUND_NOT_ASSET
+Fra:1 Mem:12.06M (Peak 12.06M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | turret_fore
+Fra:1 Mem:12.10M (Peak 12.10M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | turret_aft
+Fra:1 Mem:12.14M (Peak 12.14M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | spine
+Fra:1 Mem:12.24M (Peak 12.24M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | rear
+Fra:1 Mem:12.30M (Peak 12.30M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | hull
+Fra:1 Mem:12.54M (Peak 12.54M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | debris
+Fra:1 Mem:12.59M (Peak 12.59M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | cockpit
+Fra:1 Mem:12.62M (Peak 12.62M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | cargo_bay
+Fra:1 Mem:12.67M (Peak 12.67M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:11.99M (Peak 12.67M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Waiting for render to start
+Failed to denoise, build has no OpenImageDenoise support
+Fra:1 Mem:12.00M (Peak 12.67M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:12.00M (Peak 12.67M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:12.00M (Peak 12.67M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:12.08M (Peak 12.67M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:12.08M (Peak 12.67M) | Time:00:00.00 | Mem:0.01M, Peak:0.01M | Scene, ViewLayer | Failed to denoise, build has no OpenImageDenoise support
+Traceback (most recent call last):
+  File "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/art/factory/crashsite-hybrid-v1/build_crashsite.py", line 202, in <module>
+    scene.render.filepath=str(OUT/(name+'.png'));bpy.ops.render.render(write_still=True)
+                                                 ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/usr/share/blender/scripts/modules/bpy/ops.py", line 109, in __call__
+    ret = _op_call(self.idname_py(), kw)
+RuntimeError: Error: Failed to denoise, build has no OpenImageDenoise support
+Error: Failed to denoise, build has no OpenImageDenoise support
+
+
+Error: Failed to denoise, build has no OpenImageDenoise support
+Error: Failed to denoise, build has no OpenImageDenoise support
+
+Blender quit

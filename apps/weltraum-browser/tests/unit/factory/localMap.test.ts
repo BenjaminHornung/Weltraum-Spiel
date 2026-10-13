@@ -23,6 +23,16 @@ const descendants = (node: MapElement): MapElement[] => [node, ...node.children.
 const outline = (root: HTMLElement, kind: string) => descendants(root as unknown as MapElement).find(n => n.attributes.get("class") === `factory-map-${kind}`)?.attributes.get("points");
 
 describe("source-bound local map", () => {
+  it("provides a read-only compact map of the same confirmed coverage", async () => {
+    const module = await load(), map = module!.mountFactoryLocalMap(mapDoc(), { compact: true });
+    map.update(snapshot());
+    const nodes = descendants(map.element as unknown as MapElement);
+    expect(nodes.some(n => n.attributes.get("aria-label") === "Minimap of known starting terrain, north up")).toBe(true);
+    expect(nodes.some(n => n.textContent === "Mark map centre")).toBe(false);
+    expect(outline(map.element, "ground")).toBe("0,0 4,0 4,-4 0,-4");
+    expect(map.readMarkers()).toEqual([]);
+    map.dispose();
+  });
   it("uses the Factory frame for player, heading and already-transformed footprints", async () => {
     const map = await load();
     expect(map?.toFactoryMapPoint({ x: -6.25, z: -2.5 })).toEqual({ east: 15, north: 6 });

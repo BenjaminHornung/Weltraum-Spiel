@@ -19,24 +19,24 @@ const renderSnapshot = (snapshot: PgTragwerkPlayerSnapshot): void => {
     return;
   }
   if (!snapshot.ready) {
-    cells.textContent = "Tragwerk nicht verfügbar.";
+    cells.textContent = "Structure unavailable.";
     authority.textContent = `Actor ${snapshot.actor} · Source ${snapshot.source}`;
     receipt.textContent = "";
-    status.textContent = snapshot.readyError ?? snapshot.lastError ?? "Seed fehlgeschlagen.";
+    status.textContent = snapshot.readyError ?? snapshot.lastError ?? "Seed failed.";
     destroyButton.disabled = true;
     return;
   }
   const cellsText = snapshot.applied && snapshot.cellsBefore !== null && snapshot.cellsAfter !== null
-    ? `Zellen ${snapshot.cellsBefore}→${snapshot.cellsAfter} · Masse ${formatMass(snapshot.massBeforeKg)}→${formatMass(snapshot.massAfterKg)}`
-    : `Bereit · ${snapshot.cellsBefore ?? "?"} Zellen · Masse ${formatMass(snapshot.massBeforeKg)}`;
+    ? `Cells ${snapshot.cellsBefore}→${snapshot.cellsAfter} · Mass ${formatMass(snapshot.massBeforeKg)}→${formatMass(snapshot.massAfterKg)}`
+    : `Ready · ${snapshot.cellsBefore ?? "?"} Cells · Mass ${formatMass(snapshot.massBeforeKg)}`;
   cells.textContent = cellsText;
   authority.textContent =
-    `Actor ${snapshot.actor} · Source ${snapshot.source} · Objekt ${snapshot.objectId}` +
+    `Actor ${snapshot.actor} · Source ${snapshot.source} · Object ${snapshot.objectId}` +
     ` · Rev ${snapshot.objectRevision ?? "?"} · Hash ${(snapshot.contentHash ?? "").slice(0, 12)}`;
   receipt.textContent = snapshot.applied
     ? `Cut ${snapshot.cutStatus} · Bodies ${snapshot.bodiesBefore}→${snapshot.bodiesAfter}` +
       ` · Collider ${snapshot.collidersBefore}→${snapshot.collidersAfter}` +
-      ` · Fragmente ${snapshot.fragmentCount ?? 0}` +
+      ` · Fragments ${snapshot.fragmentCount ?? 0}` +
       ` · Save ${(snapshot.regionSaveHash ?? "").slice(0, 12)}`
     : `Cut ${snapshot.cutStatus}`;
   if (snapshot.lastError) {
@@ -44,7 +44,7 @@ const renderSnapshot = (snapshot: PgTragwerkPlayerSnapshot): void => {
   } else if (snapshot.applied) {
     status.textContent = `Applied: ${cellsText}.`;
   } else {
-    status.textContent = "Bereit für den kanonischen Schnitt.";
+    status.textContent = "Ready for the canonical cut.";
   }
   destroyButton.disabled = !snapshot.ready;
 };

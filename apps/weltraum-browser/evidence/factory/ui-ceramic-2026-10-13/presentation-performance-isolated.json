@@ -1,0 +1,50 @@
+{
+  "kind": "ACTUAL_BUILD_PAUSED_PRESENTATION_FRAME_SAMPLE",
+  "frames": 30,
+  "wallMs": 18821.20000000298,
+  "medianFrameMs": 516.5,
+  "p95FrameMs": 1416.6000000000022,
+  "maxFrameMs": 1483.2000000000007,
+  "meanFrameMs": 627.1866666667661,
+  "testBridge": false,
+  "state": {
+    "sessionId": "hvp-session-1",
+    "epoch": 1,
+    "nativeTick": 0,
+    "simulationRecoveryAvailable": false,
+    "physicsStatus": "Paused",
+    "confirmed": true,
+    "input": {
+      "active": false,
+      "activationPending": false,
+      "pointerLocked": false,
+      "pausePending": false,
+      "focusedPanel": null,
+      "surface": "cargo",
+      "error": null
+    },
+    "terrain": {
+      "epoch": 1,
+      "revision": 0,
+      "sourceDigest": "0e2a0bcb",
+      "baseDigest": "0e2a0bcb",
+      "profileVersion": "hvp-factory-startsite-v5",
+      "cellMeters": 0.125,
+      "originMeters": {
+        "x": -16,
+        "y": -8,
+        "z": -16
+      },
+      "sizeX": 256,
+      "sizeY": 128,
+      "sizeZ": 256
+    }
+  },
+  "assetTelemetry": null,
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "note": "Paused fresh world and loaded existing assets, No concurrent Blender/test/browser work; NOT a full running production/Save benchmark. New wreck remains NOT_ADMITTED."
+}

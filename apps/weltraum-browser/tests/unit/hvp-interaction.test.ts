@@ -3,11 +3,11 @@ import {describeHvpImpulseTarget,describeHvpImpulseResult} from "../../src/hvp/h
 
 it("explains fixed, absent and movable targets without promising arbitrary terrain motion",()=>{
   const empty={target:null,distanceMeters:null,massKg:null,point:null};
-  expect(describeHvpImpulseTarget({...empty,kind:"Fixed"})).toContain("nur gelöste Körper");
+  expect(describeHvpImpulseTarget({...empty,kind:"Fixed"})).toContain("only detached bodies");
   expect(describeHvpImpulseTarget({...empty,kind:"NoContact"})).toContain("4 m");
-  expect(describeHvpImpulseTarget({...empty,kind:"NotPlaying"})).toContain("Spielen anklicken");
+  expect(describeHvpImpulseTarget({...empty,kind:"NotPlaying"})).toContain("Select Play");
   expect(describeHvpImpulseTarget({...empty,kind:"Dynamic",massKg:300,distanceMeters:2})).toContain("300.0 kg");
-  expect(describeHvpImpulseResult("Contact is not dynamic")).toContain("fest verankert");
-  expect(describeHvpImpulseResult("Solver contact impulse")).toContain("Stoß ausgelöst");
-  expect(describeHvpImpulseResult(undefined)).toContain("greift oder zieht kein Objekt");
+  expect(describeHvpImpulseResult("Contact is not dynamic")).toContain("still anchored");
+  expect(describeHvpImpulseResult("Solver contact impulse")).toContain("Impulse applied");
+  expect(describeHvpImpulseResult(undefined)).toContain("does not grab or pull");
 });

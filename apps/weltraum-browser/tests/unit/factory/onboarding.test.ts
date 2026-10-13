@@ -22,7 +22,7 @@ describe("confirmed Factory onboarding", () => {
     const projection = await load();
     const next = projection?.projectFactoryOnboarding({ ...facts(), cargoOpened: true, installedSourceIds: ["B06", "B07"] });
     expect(next?.taskId).toBe("power");
-    expect(next?.hint).toBe("Batterie und die vorhandenen Kabel über die sichtbaren Anschlüsse verbinden.");
+    expect(next?.hint).toBe("Connect the battery and existing cable through the visible ports.");
   });
 
   it("does not declare the brace goal completed from starting-stock products", async () => {

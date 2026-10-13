@@ -1,0 +1,1 @@
+src/factory/factoryEntry.ts(4,29): error TS6133: 'factoryReason' is declared but its value is never read.

@@ -37,13 +37,13 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const rotation = new Euler(0, 0, 0, "YXZ");
   const dialog = doc.createElement("dialog");
   dialog.id = "hvp-player-pause";
-  dialog.setAttribute("aria-label", "Spiel pausiert");
+  dialog.setAttribute("aria-label", "Game paused");
   const instruction = doc.createElement("p");
-  instruction.textContent = "WASD: Gehen · Shift: Sprint · Space: Springen · V: Ego/3. Person · F kurz drücken: Stoß auf einen gelösten Körper (max. 4 m) · Escape: Pause";
+  instruction.textContent = "WASD: walk · Shift: sprint · Space: jump · V: first/third person · Tap F: push a detached body (max. 4 m) · Escape: pause";
   const resumeButton = doc.createElement("button");
-  resumeButton.textContent = "Spiel fortsetzen";
+  resumeButton.textContent = "Resume game";
   const inspectButton = doc.createElement("button");
-  inspectButton.textContent = "Zur Inspektionsansicht";
+  inspectButton.textContent = "Inspection view";
   dialog.append(instruction, resumeButton, inspectButton); doc.body.append(dialog);
   const error = (value: unknown): void => { if (!disposed) doc.body.dataset.hestiaPrototypeInputError = value instanceof Error ? value.message : String(value); };
   const finishActivation = (status: HvpPlayerActivationResult["status"], reason: string | null): void => {
@@ -133,7 +133,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   };
   const visibility = (): void => { if (doc.hidden) { stop(); } };
   const pointerError = (): void => {
-    const reason = "Pointer Lock nicht verfügbar – bitte erneut auf Spielen klicken.";
+    const reason = "Pointer lock unavailable – select Play again.";
     error(reason); finishActivation("Rejected", reason); stop();
   };
   const confirm = (event:MouseEvent):void => {

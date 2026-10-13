@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "name": "normal-main",
+      "text": "THRUST\n0%\nSPEED\nSpeed 0.00 m/s\nRCS / SAS\nRCS on, SAS on\nFUEL\n100/100 kg\nLOCAL\n10 contacts\n2.5 km\nTARGET\nNavigation Alpha\nWAYPOINT\nDISTANCE\n138.4 m\nNAVIGATION\nCOURSE\nReach Range 500m\nDISTANCE\n500.0 m\nSTATUS\nAvailable\nNavigation planner\nOBJECTIVE\nAUTOPILOT\nPreview ready\nPROVING GROUND\nGRAPHICS"
+    },
+    {
+      "name": "graphics-dialog",
+      "text": "PRESENTATION\nGraphics settings\n\nAdjust presentation without changing flight state or simulation.\n\nApplied\nQuality preset\nHigh\nLow\nMedium\nHigh\nUltra\n\nPresets change quality settings. Field of view, FPS limit and fullscreen remain unchanged.\n\nDISPLAY\nRender scale\n100%\nApplied live · Canvas backing resolution is controlled by the renderer adapter.\nMaximum pixel density\n2.00x\nApplied live · Device pixel ratio is feature-detected and hardware-capped.\nField of view\n58°\nApplied live · The active perspective camera supports live FOV updates.\nView distance\n5,000 m\nApplied live · The active camera far plane supports live presentation-only updates.\nFPS limit\nBrowser / unlimited\n30 FPS\n60 FPS\n120 FPS\nApplied live · GPU presentation can be scheduled without throttling simulation.\nDisplay mode\nWindowed\nFullscreen\nBrowser managed · Fullscreen requires a browser-approved user gesture.\nQUALITY\nShadows\nOff\nLow\nMedium\nHigh\nPlanned · The current scene has no effective shadow chain.\nTextures\nLow\nMedium\nHigh\nUltra\nApplied live · Managed textures support live anisotropy updates.\nPlanned · Texture-size, mip, and asset variants are not available in the current loader.\nLighting\nLow\nMedium\nHigh\nUltra\nCustom\nApplied live · Lighting quality resolves to live tone-mapping and exposure values.\nTonemapping\nNone\nReinhard\nACES Filmic\nApplied live · The WebGL renderer supports live tone-mapping selection.\nExposure\n1.00\nApplied live · The WebGL renderer supports live exposure updates.\nEnvironment reflections\nLow\nMedium\nHigh\nUltra\nPlanned · No managed environment/reflection pipeline exists.\nEFFECTS\nEffect quality\nLow\nMedium\nHigh\nUltra\nCustom\nApplied live · Effects quality controls render-only decor density in V1.\nDecoration density\n100%\nApplied live · Explicitly tagged render-only decoration supports live density changes.\nBloom\nUnsupported · No post-processing pipeline is installed.\nMotion effects\nUnsupported · No managed motion-effects pipeline is installed.\nAntialiasing\nAfter renderer restart · WebGL anti-aliasing is fixed at renderer creation; current context is on.\nVSync\nBrowser controlled\nBrowser managed · requestAnimationFrame synchronization is controlled by the browser.\nACTIVE RENDERER\nREQUESTED\nHigh · 100% · DPR 2.00 · 58° · 5,000 m · Browser-FPS\nACTUAL\n100% · DPR 1.00 · 58° · 5,000 m · Browser-FPS\nNo renderer restart required\n\nGraphics settings applied.\n\nBack\nLoad High defaults\nApply"
+    },
+    {
+      "name": "keyboard-objective-focus",
+      "style": {
+        "boxShadow": "rgb(33, 103, 128) 0px 0px 0px 3px inset, rgba(21, 32, 39, 0.15) 0px 3px 10px 0px",
+        "outline": "rgb(24, 43, 56) none 0px",
+        "clip": "polygon(8px 0px, calc(100% - 8px) 0px, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0px calc(100% - 8px), 0px 8px)"
+      }
+    }
+  ],
+  "errors": [],
+  "exitCode": 0
+}

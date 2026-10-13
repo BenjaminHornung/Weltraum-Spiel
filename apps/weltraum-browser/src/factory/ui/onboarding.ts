@@ -34,7 +34,7 @@ export interface FactoryOnboardingProjection {
 const task = (taskId: FactoryOnboardingProjection["taskId"], title: string, hint: string | null,
   actionSurface: FactoryOnboardingProjection["actionSurface"]): FactoryOnboardingProjection =>
   Object.freeze({ taskId, title, hint, actionSurface, complete: taskId === "complete" });
-const waiting = () => task("confirmation", "Werkstattzustand wird bestätigt", "Bestätigte Produktionsdaten sind noch nicht verfügbar.", null);
+const waiting = () => task("confirmation", "Confirming workshop state", "Confirmed production data is not available yet.", null);
 const validProduction = (value: FactoryProductionGoalFacts): boolean => [value.inputSteelMg, value.cutBatches, value.cutOutputMg,
   value.cutOffcutMg, value.profileOutputMg, value.sheetOutputMg, value.formerOffcutMg, value.braceOutputMg,
   value.braceOffcutMg, value.installedBraceMg].every(v => Number.isSafeInteger(v) && v >= 0);
@@ -49,17 +49,17 @@ export const projectFactoryOnboarding = (facts: FactoryOnboardingFacts | null): 
   if (!facts?.confirmed || (facts.production && !validProduction(facts.production))) return waiting();
   const p = facts.production;
   if (p && braceComplete(p) && p.paidBraceInstallation && p.installedBraceMg === 5_800_000)
-    return task("complete", "Erste tragende Stütze gebaut", "16 kg Stahl wurden regulär verarbeitet und die 5,8-kg-Stütze bezahlt verbaut.", null);
-  if (!facts.cargoOpened) return task("cargo", "Wrackfracht öffnen", "Das Schiff ist flugunfähig. Seine endliche Fracht versorgt deine erste Werkstatt.", "cargo");
+    return task("complete", "First structural brace installed", "16 kg of steel has been processed and the paid 5.8 kg brace installed.", null);
+  if (!facts.cargoOpened) return task("cargo", "Open wreck cargo", "The ship cannot fly. Its finite cargo supplies your first workshop.", "cargo");
   if (!facts.installedSourceIds.includes("B06") || !facts.installedSourceIds.includes("B07"))
-    return task("machines", "Zuschnittstation und Umformwerk aufbauen", "Schwere Chassis zuerst transportieren; Depot und Spielerstand vor der Installation freihalten.", "build");
+    return task("machines", "Build a cutter and former", "Transport heavy chassis first; keep the depot and player clear of the installation footprint.", "build");
   if (facts.powerConnected === null) return waiting();
-  if (!facts.powerConnected) return task("power", "Maschinen mit Strom versorgen", "Batterie und die vorhandenen Kabel über die sichtbaren Anschlüsse verbinden.", "power");
+  if (!facts.powerConnected) return task("power", "Supply power to the machines", "Connect the battery and existing cable through the visible ports.", "power");
   if (facts.twoBeltLinesConnected === null) return waiting();
-  if (!facts.twoBeltLinesConnected) return task("transport", "Lager und zwei kurze Bandlinien verbinden", "Die Anschlüsse zeigen zulässige Verbindungen; jede Linie benötigt vorhandenes Material.", "power");
-  if (!p || !cutComplete(p)) return task("cut", "16 kg Stahl in zwei Zuschnittaufträgen verarbeiten", "Je Auftrag 8 kg sortenbekannten Stahl zuführen. Zusammen entstehen 15 kg Halbzeug und 1 kg Verschnitt.", "machine");
-  if (!formComplete(p)) return task("form", "Frische Profile und Blech herstellen", "Ein Profil- und ein Blechauftrag erzeugen je 7 kg Produkt. Rezeptwechsel wartet auf freies WIP.", "machine");
-  if (!facts.installedSourceIds.includes("B05")) return task("bench", "Werkbank aufbauen", "Die Werkbank benötigt einen zulässigen erreichbaren Standort und die vorhandenen Bauteile.", "build");
-  if (!braceComplete(p)) return task("brace", "Stütze an der Werkbank montieren", "4 kg frische Profile und 2 kg frisches Blech lokal liefern; daraus entstehen 5,8 kg Stütze.", "machine");
-  return task("install", "Die neue Stütze bezahlt verbauen", "Bauvorschau an einem zulässigen Standort bestätigen. Erst die tatsächliche Installation schließt das Ziel.", "build");
+  if (!facts.twoBeltLinesConnected) return task("transport", "Connect storage and two short belt lines", "Ports show admitted connections; each line requires existing material.", "power");
+  if (!p || !cutComplete(p)) return task("cut", "Cut 16 kg of steel in two batches", "Supply 8 kg of known steel per job. Together they produce 15 kg of stock and 1 kg of offcuts.", "machine");
+  if (!formComplete(p)) return task("form", "Produce fresh profiles and sheet", "One profile job and one sheet job each yield 7 kg. Recipe changes wait until work in progress clears.", "machine");
+  if (!facts.installedSourceIds.includes("B05")) return task("bench", "Build a workbench", "The workbench needs an admitted reachable location and existing components.", "build");
+  if (!braceComplete(p)) return task("brace", "Assemble a brace at the workbench", "Deliver 4 kg of fresh profiles and 2 kg of fresh sheet locally to produce a 5.8 kg brace.", "machine");
+  return task("install", "Install the newly produced brace", "Confirm the preview at an admitted location. Only the actual installation completes the goal.", "build");
 };

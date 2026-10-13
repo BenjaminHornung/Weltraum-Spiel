@@ -1,0 +1,32 @@
+{
+  "kind": "ACTUAL_STATIC_GLB_INSPECTION",
+  "file": "crashsite-hybrid-v1.glb",
+  "sha256": "8912f74b4bcdd0effb41960b97a8d491123f52f5930adeb63544992b236cadfa",
+  "bytes": 242936,
+  "format": "glTF2 GLB",
+  "parts": 8,
+  "triangles": 4208,
+  "vertices": 8416,
+  "materials": 6,
+  "textures": 0,
+  "animation": false,
+  "boundsYupM": {
+    "min": [
+      -7.625,
+      0.0,
+      -2.75
+    ],
+    "max": [
+      7.125,
+      4.75,
+      3.75
+    ]
+  },
+  "artGridMeters": 0.125,
+  "finiteCoordinates": true,
+  "neutralTransforms": true,
+  "exactTurretCount": 2,
+  "worldAuthority": false,
+  "runtimeAdmission": "NOT_ADMITTED",
+  "result": "PASS"
+}

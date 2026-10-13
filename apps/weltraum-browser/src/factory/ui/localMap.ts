@@ -1,3 +1,4 @@
+import { englishFactoryText } from "./english";
 import { uiButton, uiText } from "./cargoPanel";
 
 export interface FactoryMapWorldPoint { readonly x: number; readonly z: number }
@@ -45,14 +46,17 @@ export const isFactoryMapMarkerCurrent = (marker: FactoryMapMarker, snapshot: Fa
   typeof marker.label === "string" && marker.label.length > 0 && marker.label.length <= 80 && canMarkFactoryMapPoint(snapshot, marker);
 
 const svgNS = "http://www.w3.org/2000/svg";
-export const mountFactoryLocalMap = (doc: Document = document) => {
+export const mountFactoryLocalMap = (doc: Document = document, options: Readonly<{ compact?: boolean }> = {}) => {
+  const compact = options.compact === true;
   const element = doc.createElement("section"); element.className = "factory-local-map";
-  const status = uiText(doc, "p", "Keine bestätigte Kartenquelle verfügbar."); status.setAttribute("role", "status");
-  const svg = doc.createElementNS(svgNS, "svg"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", "Lokale Karte des bekannten Startgeländes, Norden oben");
+  const status = uiText(doc, "p", "No confirmed map source available."); status.setAttribute("role", "status");
+  const svg = doc.createElementNS(svgNS, "svg"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", compact ? "Minimap of known starting terrain, north up" : "Local map of known starting terrain, north up");
+  const scale = uiText(doc, "small", ""), north = uiText(doc, "strong", "N");
+  scale.className = "factory-minimap-scale"; north.className = "factory-minimap-north";
   const background = doc.createElementNS(svgNS, "g"), dynamic = doc.createElementNS(svgNS, "g"); svg.append(background, dynamic);
-  const label = doc.createElement("input"); label.type = "text"; label.value = "Arbeitsstelle"; label.maxLength = 80; label.setAttribute("aria-label", "Name des Zielmarkers");
-  const legend = uiText(doc, "p", "N ↑ · Boden bekannt · Wasser · Kante · gestrichelt: Bau geplant · dunkler Bereich: unbekannt");
-  const note = uiText(doc, "p", "Zielmarker dienen der Orientierung. Die Karte bestätigt keine Schwerlastfreigabe und steuert keine Bewegung.");
+  const label = doc.createElement("input"); label.type = "text"; label.value = "Worksite"; label.maxLength = 80; label.setAttribute("aria-label", "Waypoint name");
+  const legend = uiText(doc, "p", "N up · known ground · water · edge · dashed: planned build · unmarked: unknown");
+  const note = uiText(doc, "p", "Waypoints help orientation. The map does not approve heavy transport or control movement.");
   let snapshot: FactoryMapSnapshot | null = null, key = "", disposed = false;
   let markers: FactoryMapMarker[] = [];
   let viewport = { east: 0, north: 0, width: 20, height: 12 };
@@ -60,8 +64,8 @@ export const mountFactoryLocalMap = (doc: Document = document) => {
   const make = (tag: "polygon" | "circle" | "line" | "text", className: string) => { const node = doc.createElementNS(svgNS, tag); node.setAttribute("class", className); return node; };
   const drawObject = (object: FactoryMapSnapshot["objects"][number], layer: SVGGElement) => {
     const node = make("polygon", `factory-map-${object.kind}`); node.setAttribute("points", object.outline.map(toFactoryMapPoint).map(p => `${p.east},${-p.north}`).join(" "));
-    const title = doc.createElementNS(svgNS, "title"); title.textContent = object.label; node.append(title); layer.append(node);
-    if (object.outline[0]) { const p = toFactoryMapPoint(object.outline[0]), text = make("text", "factory-map-label"); text.setAttribute("x", String(p.east)); text.setAttribute("y", String(-p.north)); text.textContent = object.label; layer.append(text); }
+    const title = doc.createElementNS(svgNS, "title"); title.textContent = englishFactoryText(object.label); node.append(title); layer.append(node);
+    if (!compact && object.outline[0]) { const p = toFactoryMapPoint(object.outline[0]), text = make("text", "factory-map-label"); text.setAttribute("x", String(p.east)); text.setAttribute("y", String(-p.north)); text.textContent = englishFactoryText(object.label); layer.append(text); }
   };
   const drawDynamic = () => {
     dynamic.replaceChildren();
@@ -81,41 +85,46 @@ export const mountFactoryLocalMap = (doc: Document = document) => {
       if (snapshot.player.heading) {
         const d = toFactoryMapDirection(snapshot.player.heading), size = Math.hypot(d.east, d.north);
         if (Number.isFinite(size) && size > 0) {
-          const heading = make("line", "factory-map-heading"); heading.setAttribute("x1", String(p.east)); heading.setAttribute("y1", String(-p.north));
-          heading.setAttribute("x2", String(p.east + d.east / size)); heading.setAttribute("y2", String(-p.north - d.north / size)); dynamic.append(heading);
+          const east = d.east / size, north = d.north / size;
+          const heading = make("polygon", "factory-map-player");
+          const points = [[p.east + east * 1.1, p.north + north * 1.1],
+            [p.east - east * .45 - north * .45, p.north - north * .45 + east * .45],
+            [p.east - east * .45 + north * .45, p.north - north * .45 - east * .45]];
+          heading.setAttribute("points", points.map(([e, n]) => `${e},${-n!}`).join(" ")); dynamic.append(heading);
         }
       }
     }
   };
   const setMarker = (point: FactoryMapPoint, name: string): boolean => {
-    if (disposed || !snapshot || !canMarkFactoryMapPoint(snapshot, point) || !name.trim() || name.trim().length > 80) { status.textContent = "Marker nur auf bestätigtem bekanntem Boden setzen."; return false; }
-    markers = [Object.freeze({ ...snapshot.frame, ...point, label: name.trim() })]; drawDynamic(); status.textContent = `Ziel markiert: ${name.trim()}`; return true;
+    if (compact || disposed || !snapshot || !canMarkFactoryMapPoint(snapshot, point) || !name.trim() || name.trim().length > 80) { status.textContent = "Place waypoints only on confirmed known ground."; return false; }
+    markers = [Object.freeze({ ...snapshot.frame, ...point, label: name.trim() })]; drawDynamic(); status.textContent = `Waypoint marked: ${name.trim()}`; return true;
   };
   const controls = doc.createElement("div"); controls.className = "factory-map-controls";
   const zoom = (factor: number) => { const width = Math.min(80, Math.max(2, viewport.width * factor)), height = width * viewport.height / viewport.width;
     viewport = { east: viewport.east + (viewport.width - width) / 2, north: viewport.north + (viewport.height - height) / 2, width, height }; viewbox(); };
-  controls.append(uiButton(doc, "Vergrößern", () => zoom(.75)), uiButton(doc, "Verkleinern", () => zoom(1.25)));
-  for (const [text, dx, dy] of [["Karte nach Westen", -1, 0], ["Karte nach Osten", 1, 0], ["Karte nach Norden", 0, 1], ["Karte nach Süden", 0, -1]] as const)
+  controls.append(uiButton(doc, "Zoom in", () => zoom(.75)), uiButton(doc, "Zoom out", () => zoom(1.25)));
+  for (const [text, dx, dy] of [["Pan west", -1, 0], ["Pan east", 1, 0], ["Pan north", 0, 1], ["Pan south", 0, -1]] as const)
     controls.append(uiButton(doc, text, () => { viewport = { ...viewport, east: viewport.east + dx * viewport.width / 4, north: viewport.north + dy * viewport.height / 4 }; viewbox(); }));
-  const mark = uiButton(doc, "Kartenmitte markieren", () => { setMarker({ east: viewport.east + viewport.width / 2, north: viewport.north + viewport.height / 2 }, label.value); });
-  const clear = uiButton(doc, "Zielmarker entfernen", () => { markers = []; drawDynamic(); status.textContent = "Zielmarker entfernt."; }); controls.append(label, mark, clear);
+  const mark = uiButton(doc, "Mark map centre", () => { setMarker({ east: viewport.east + viewport.width / 2, north: viewport.north + viewport.height / 2 }, label.value); });
+  const clear = uiButton(doc, "Remove waypoint", () => { markers = []; drawDynamic(); status.textContent = "Waypoint removed."; }); controls.append(label, mark, clear);
   const onClick = (event: MouseEvent) => {
     const rect = svg.getBoundingClientRect(); if (!rect.width || !rect.height) return;
     // SVG aspect-ratio preservation is disabled so pointer mapping stays exact.
     setMarker({ east: viewport.east + (event.clientX - rect.left) / rect.width * viewport.width,
       north: viewport.north + viewport.height - (event.clientY - rect.top) / rect.height * viewport.height }, label.value);
   };
-  svg.setAttribute("preserveAspectRatio", "none"); svg.addEventListener("click", onClick);
-  element.append(uiText(doc, "h2", "Lokale Karte"), status, svg, legend, controls, note);
+  svg.setAttribute("preserveAspectRatio", compact ? "xMidYMid meet" : "none");
+  if (compact) element.append(svg, north, scale, status);
+  else { svg.addEventListener("click", onClick); element.append(uiText(doc, "h2", "Local map"), status, svg, legend, controls, note); }
   return {
     element, setMarker,
     update(next: FactoryMapSnapshot | null): void {
       if (disposed) return;
       snapshot = next; mark.disabled = !next; clear.disabled = !next;
-      if (!next) { key = ""; background.replaceChildren(); dynamic.replaceChildren(); status.textContent = "Keine bestätigte Kartenquelle verfügbar."; return; }
+      if (!next) { key = ""; background.replaceChildren(); dynamic.replaceChildren(); scale.textContent = ""; status.hidden = false; status.textContent = "No confirmed map source available."; return; }
       const b = next.bounds;
       if (![b.minEast, b.maxEast, b.minNorth, b.maxNorth].every(Number.isFinite) || b.maxEast <= b.minEast || b.maxNorth <= b.minNorth) {
-        snapshot = null; key = ""; background.replaceChildren(); dynamic.replaceChildren(); mark.disabled = true; status.textContent = "Kartenquelle enthält keine gültige begrenzte Fläche."; return;
+        snapshot = null; key = ""; background.replaceChildren(); dynamic.replaceChildren(); scale.textContent = ""; status.hidden = false; mark.disabled = true; status.textContent = "Map source has no valid bounded area."; return;
       }
       const nextKey = JSON.stringify([next.sessionId, next.epoch, next.frame, next.terrainRevision, next.facilityRevision, b]);
       if (nextKey !== key) {
@@ -126,10 +135,12 @@ export const mountFactoryLocalMap = (doc: Document = document) => {
         for (const object of next.objects) if (object.kind === "wreck" || object.kind === "installed") drawObject(object, background);
         markers = markers.filter(m => isFactoryMapMarkerCurrent(m, next));
       }
-      status.textContent = next.player ? "Bestätigtes Startgelände · Standort bestätigt" : "Bestätigtes Startgelände · Standort noch nicht bestätigt"; drawDynamic();
+      status.hidden = compact && next.player !== null;
+      scale.textContent = `${new Intl.NumberFormat("en-GB", { maximumFractionDigits: 1 }).format(b.maxEast - b.minEast)} m area`;
+      status.textContent = next.player ? "Confirmed starting terrain · location confirmed" : "Confirmed starting terrain · location pending"; drawDynamic();
     },
     readMarkers: (): readonly FactoryMapMarker[] => Object.freeze(markers.map(m => Object.freeze({ ...m }))),
-    restoreMarkers(values: readonly FactoryMapMarker[]): void { markers = snapshot ? values.slice(0, 1).filter(m => isFactoryMapMarkerCurrent(m, snapshot!)).map(m => Object.freeze({ ...m })) : []; drawDynamic(); },
+    restoreMarkers(values: readonly FactoryMapMarker[]): void { const next = snapshot ? values.slice(0, 1).filter(m => isFactoryMapMarkerCurrent(m, snapshot!)).map(m => Object.freeze({ ...m })) : []; if (JSON.stringify(next) === JSON.stringify(markers)) return; markers = next; drawDynamic(); },
     dispose(): void { if (disposed) return; disposed = true; svg.removeEventListener("click", onClick); element.remove(); }
   };
 };

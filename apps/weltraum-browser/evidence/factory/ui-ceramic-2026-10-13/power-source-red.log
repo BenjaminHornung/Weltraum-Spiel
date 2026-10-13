@@ -1,0 +1,47 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts (19 tests | 2 failed) 73ms
+     × distinguishes nominal demand from assigned power and retains interrupted work 33ms
+     × does not present unconfirmed consumer allocations as measured watts 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > distinguishes nominal demand from assigned power and retains interrupted work
+AssertionError: expected 'Stromversorgung Bereit Erzeugung 0 W …' to contain 'Fortschritt gehalten'
+
+Expected: "Fortschritt gehalten"
+Received: "Stromversorgung Bereit Erzeugung 0 W · Zugewiesen 0 W  Keine bestätigte Batterieladung Kapazität noch nicht bestätigt cutter Nennbedarf 1,2 kW Zugewiesen 0 W Wartet auf Strom   Baue zuerst eine Energiequelle und eine Maschine. Verbinde ihre Anschlüsse mit vorhandenem Feldkabel.  Antwort prüfen"
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:73:39
+     71|     expect(h.value.machines[0]!.confirmedWorkMs).toBe(12_000);
+     72|     const power = mountFactoryPowerPanel(h.port, doc());
+     73|     expect(power.element.textContent).toContain("Fortschritt gehalten"…
+       |                                       ^
+     74|     expect(power.element.textContent).toContain("Nennbedarf 1,2 kW");
+     75|     h.publish({ ...h.value, publicationRevision: 2, machines: [{ ...h.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/gameUiPresentation.test.ts > game item and selected inspector presentation > does not present unconfirmed consumer allocations as measured watts
+AssertionError: expected 'Stromversorgung Bereit Erzeugung 0 W …' to contain 'Aktueller Bedarf 1200 W'
+
+Expected: "Aktueller Bedarf 1200 W"
+Received: "Stromversorgung Bereit Erzeugung 0 W · Zugewiesen 0 W  Keine bestätigte Batterieladung Kapazität noch nicht bestätigt Zuschnitt Nennbedarf 1,2 kW Zugewiesen 0 W Wartet auf Strom   Baue zuerst eine Energiequelle und eine Maschine. Verbinde ihre Anschlüsse mit vorhandenem Feldkabel.  Antwort prüfen"
+
+ ❯ tests/unit/factory/gameUiPresentation.test.ts:92:39
+     90|     h.publish({ ...h.value, publicationRevision: 2, power: { ...h.valu…
+     91|     expect(panel.element.textContent).toContain("Zugewiesen 0 W");
+     92|     expect(panel.element.textContent).toContain("Aktueller Bedarf 1200…
+       |                                       ^
+     93|     expect(h.commands).toHaveLength(0); panel.dispose();
+     94|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 17 passed (19)
+   Start at  13:43:22
+   Duration  662ms (transform 336ms, setup 0ms, import 425ms, tests 73ms, environment 0ms)
+

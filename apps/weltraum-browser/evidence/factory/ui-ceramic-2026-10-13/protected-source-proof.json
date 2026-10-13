@@ -1,0 +1,32 @@
+[
+  {
+    "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "baseSha256": "8b027d2a9eb30cdc65a30fd7fd7792dfd6ddb6c2a06233f89f75e1b78b42be8f",
+    "currentSha256": "8b027d2a9eb30cdc65a30fd7fd7792dfd6ddb6c2a06233f89f75e1b78b42be8f",
+    "unchanged": true
+  },
+  {
+    "path": "art/factory/play-2026-10-12/build_assets.py",
+    "baseSha256": "9017f6aa208d1b84e2d3e381d6c44a8c9f36d790be2f43489a7a8b5b20ceece9",
+    "currentSha256": "9017f6aa208d1b84e2d3e381d6c44a8c9f36d790be2f43489a7a8b5b20ceece9",
+    "unchanged": true
+  },
+  {
+    "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "baseSha256": "5c46b4b1318c671e199ee98e5f261df6f92541252c49723814424b6336fb2591",
+    "currentSha256": "5c46b4b1318c671e199ee98e5f261df6f92541252c49723814424b6336fb2591",
+    "unchanged": true
+  },
+  {
+    "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+    "baseSha256": "793db55ad9d2df803f637c83ce77ada6d39a613850e166bc233bbde1a9609dbd",
+    "currentSha256": "793db55ad9d2df803f637c83ce77ada6d39a613850e166bc233bbde1a9609dbd",
+    "unchanged": true
+  },
+  {
+    "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+    "baseSha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909",
+    "currentSha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909",
+    "unchanged": true
+  }
+]

@@ -14,11 +14,11 @@ export interface GraphicsSettingsPanel {
 }
 
 const capabilityLabels: Readonly<Record<GraphicsCapability["status"], string>> = {
-  SupportedLive: "Live anwendbar",
-  SupportedAfterRendererRestart: "Nach Renderer-Neustart",
-  BrowserManaged: "Browsergesteuert",
-  Unsupported: "Nicht unterstützt",
-  Planned: "Geplant"
+  SupportedLive: "Applied live",
+  SupportedAfterRendererRestart: "After renderer restart",
+  BrowserManaged: "Browser managed",
+  Unsupported: "Unsupported",
+  Planned: "Planned"
 };
 
 function requiredElement<T extends HTMLElement>(id: string): T {
@@ -56,7 +56,7 @@ function formatPercent(value: number): string {
 }
 
 function formatDistance(value: number): string {
-  return `${new Intl.NumberFormat("de-DE").format(value)} m`;
+  return `${new Intl.NumberFormat("en-GB").format(value)} m`;
 }
 
 function focusableElements(dialog: HTMLDialogElement): readonly HTMLElement[] {
@@ -106,7 +106,7 @@ export function createGraphicsSettingsPanel(controller: GraphicsSettingsControll
       .querySelector<HTMLElement>("[data-testid='graphics-pending-state']");
     if (pending) {
       pending.dataset.state = snapshot.hasPendingChanges ? "Pending" : "Applied";
-      pending.textContent = snapshot.hasPendingChanges ? "Änderungen ausstehend" : "Angewandt";
+      pending.textContent = snapshot.hasPendingChanges ? "Changes pending" : "Applied";
     }
 
     requiredElement<HTMLOutputElement>("graphics-preset-current").value = snapshot.draft.qualityPreset;
@@ -168,8 +168,8 @@ export function createGraphicsSettingsPanel(controller: GraphicsSettingsControll
     const restart = requiredElement<HTMLElement>("graphics-restart-state");
     restart.dataset.required = String(snapshot.restartRequired.length > 0);
     restart.textContent = snapshot.restartRequired.length > 0
-      ? `Renderer-Neustart erforderlich: ${snapshot.restartRequired.join(", ")}`
-      : "Kein Renderer-Neustart erforderlich";
+      ? `Renderer restart required: ${snapshot.restartRequired.join(", ")}`
+      : "No renderer restart required";
     requiredElement<HTMLElement>("graphics-settings-message").textContent = snapshot.message;
     applyButton.disabled = !snapshot.hasPendingChanges;
     applyButton.setAttribute("aria-disabled", String(applyButton.disabled));
