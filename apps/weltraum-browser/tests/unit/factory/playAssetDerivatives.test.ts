@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -93,12 +93,23 @@ const ownerPaths = ["art/factory/fp02/cutter/source.scene.json", "art/factory/fp
   "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts", "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
   "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts", "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts"];
 const correctionBase = "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e";
+const frozenSourceHead = "96cced23cd285b57f8a557d01ac9ed8a158c927f";
+const copyFrozenOwnerSources = (temporary: string): void => {
+  // Exercise this historical generator's own frozen source gate. Current
+  // approved Host profiles are newer and must not be rolled back to its basis.
+  for (const path of ownerPaths) {
+    const original = spawnSync("git", ["show", `${frozenSourceHead}:${path}`], {cwd: repo});
+    expect(original.status, `${path}: ${original.stderr}`).toBe(0);
+    mkdirSync(dirname(join(temporary, path)), {recursive: true});
+    writeFileSync(join(temporary, path), original.stdout);
+  }
+};
 
 describe("R2/R6 correction admission", () => {
   it("rejects a catalog-only source change before any snapshot is written", () => {
     const temporary = mkdtempSync(join(tmpdir(), "play-catalog-guard-"));
     try {
-      for (const path of ownerPaths) {mkdirSync(dirname(join(temporary, path)), {recursive: true}); copyFileSync(`${repo}${path}`, join(temporary, path));}
+      copyFrozenOwnerSources(temporary);
       const code = `import importlib.util,json\nfrom pathlib import Path\nspec=importlib.util.spec_from_file_location('play',${JSON.stringify(script)})\nm=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)\nm.ROOT=Path(${JSON.stringify(temporary)})\np=m.ROOT/'apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts'\np.write_bytes(p.read_bytes()+b'\\n// changed catalog source\\n')\ntry:\n m.check_sources();result={'blocked':False,'reason':None}\nexcept ValueError as error:\n result={'blocked':True,'reason':str(error)}\nprint(json.dumps(result))`;
       const result = spawnSync("python3", ["-B", "-c", code], {encoding: "utf8"});
       expect(result.status, result.stderr).toBe(0);
@@ -109,7 +120,7 @@ describe("R2/R6 correction admission", () => {
   it("rejects an incompatible catalog digest immediately after SSR before snapshot writes", () => {
     const temporary = mkdtempSync(join(tmpdir(), "play-catalog-digest-"));
     try {
-      for (const path of ownerPaths) {mkdirSync(dirname(join(temporary, path)), {recursive: true}); copyFileSync(`${repo}${path}`, join(temporary, path));}
+      copyFrozenOwnerSources(temporary);
       const catalog = JSON.parse(readFileSync(`${repo}art/factory/play-2026-10-12/materials/catalog-read.json`, "utf8")) as {items: unknown[]};
       // SSR is a read dependency. Simulate a stale/mismatched returned catalog,
       // while its source bytes stay exact; observe actual writes in a temporary root.

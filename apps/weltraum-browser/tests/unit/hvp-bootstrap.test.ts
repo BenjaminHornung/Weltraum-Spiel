@@ -977,11 +977,49 @@ describe("HVP T08 bootstrap lifecycle", () => {
       factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},
       createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
         const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
-        const facilities=()=>({revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null,
-          cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}});
+        type Facilities=import("../../src/hestia-prototype/physics/factoryFacilitySession").FactoryFacilityRead;
+        let published:Facilities={revision:0,state:"Idle",transactionId:null,owners:[],prepared:null,
+          cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}};
+        let prepared:Facilities|undefined;
+        let beforePrepare=published;
+        const facilities=()=>({...published,cargo:{...published.cargo!,opened}});
         // This transport fixture tests Host/Resources/actual receiver admission, not a second Native install proof.
         return {...native,command:async()=>{},openFactoryCargo:async()=>{opened=true;return facilities();},
-          prepareFactoryFacility:async(request:FactoryFacilityRequest)=>{prepare(request);return facilities();},commitFactoryFacility:async()=>{},publishFactoryFacility:()=>{},rollbackFactoryFacility:async()=>{},finalizeFactoryFacility:async()=>{},
+          prepareFactoryFacility:async(request:FactoryFacilityRequest)=>{
+            prepare(request);
+            beforePrepare=published;
+            const {createFactoryInstallationProfile}=await import("../../src/factory/construction/installationProfile");
+            const profile=createFactoryInstallationProfile(request.definitionRef.sourceId);
+            const owner={...request,sourceDigest:profile.sourceDigest,profileDigest:profile.profileDigest,
+              centerMm:[request.centerMm[0]!,request.centerMm[1]!,request.centerMm[2]!] as const,
+              massMg:profile.massMg,bodyHandle:20,colliderHandles:profile.colliders.map((_,index)=>100+index),installationRevision:request.expectedRevision+1};
+            const proof={instanceId:owner.instanceId,definitionRef:owner.definitionRef,sourceDigest:owner.sourceDigest,profileDigest:owner.profileDigest,
+              installationRevision:owner.installationRevision,terrainRevision:request.expectedTerrainRevision,facilityRevision:request.expectedRevision,
+              published:false,confirmed:true,complete:true,parts:profile.source.parts.map(part=>({partId:part.partId,status:"Present" as const,
+                colliderHandles:profile.colliders.flatMap((box,index)=>box.partId===part.partId?[owner.colliderHandles[index]!]:[])}))};
+            prepared={...facilities(),revision:request.expectedRevision,state:"PreparedHeld",transactionId:request.transactionId,
+              prepared:owner,preparedPartObservation:{...proof,observationDigest:canonicalSignature(proof)}};
+            return prepared;
+          },
+          commitFactoryFacility:async(id:string)=>{
+            if(prepared?.transactionId!==id||prepared.state!=="PreparedHeld")throw Error("Invalid fixture commit");
+            const {observationDigest:_,...proof}=prepared!.preparedPartObservation!;
+            const publishedProof={...proof,published:true,facilityRevision:prepared!.revision+1};
+            prepared={...facilities(),revision:prepared!.revision+1,state:"PublishedHeld",transactionId:prepared!.transactionId,
+              owners:[prepared!.prepared!],prepared:null,partObservations:[{...publishedProof,observationDigest:canonicalSignature(publishedProof)}]};
+          },
+          publishFactoryFacility:(id:string)=>{
+            if(prepared?.transactionId!==id||prepared.state!=="PublishedHeld"||published===prepared)throw Error("Invalid fixture publish");
+            published=prepared;
+          },
+          rollbackFactoryFacility:async(id:string)=>{
+            if(prepared?.transactionId!==id)throw Error("Invalid fixture rollback");
+            published=beforePrepare;prepared=undefined;
+          },
+          finalizeFactoryFacility:async(id:string)=>{
+            if(published.transactionId!==id||published.state!=="PublishedHeld")throw Error("Invalid fixture finalize");
+            published={...published,state:"Idle",transactionId:null};prepared=undefined;
+          },
           read:()=>({...read(),player:{...read().player!,position:{x:-6.35,y:2.4,z:9.075}},factoryFacilities:facilities()})};
       },factoryExtension:async(host:FactoryHostPort)=>{port=host;session=await mountFactorySession(host,createFp02Fixture("cargo").catalog);return session;}
     }));
@@ -996,12 +1034,12 @@ describe("HVP T08 bootstrap lifecycle", () => {
       await expect(session.construction!.commit(plan)).resolves.toMatchObject({status:"Committed",reason:"INSTALLED"});
       expect(prepare).toHaveBeenCalledTimes(1);expect(session.construction!.read().installations[0]!.instanceId).toBe(request.instanceId);
       const artifacts=dispatch.mock.calls.flatMap(([command])=>command.kind==="UpsertMeshArtifact"?[command.artifact]:[]);
-      const paid=artifacts.filter(value=>value.representationKey.startsWith("factory:ghost_slot_0:"));
+      const paid=artifacts.filter(value=>value.representationKey.startsWith("factory-play:ghost_slot_0:"));
       const ghosts=artifacts.filter(value=>value.representationKey.startsWith("factory:ghost:slot_"));
       expect(paid.length).toBeGreaterThan(0);expect(ghosts.length).toBe(paid.length);
       expect(paid.every(value=>!ghosts.some(ghost=>ghost.representationKey===value.representationKey))).toBe(true);
       port.construction!.projectGhost(null);
-      expect(backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.startsWith("factory:ghost_slot_0:"))).toHaveLength(paid.length);
+      expect(backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.startsWith("factory-play:ghost_slot_0:"))).toHaveLength(paid.length);
       expect(backend.readDiagnostics()).toMatchObject({rejectedArtifacts:0,staleRejectCount:0});
     }finally{await handle.dispose();}
   });
