@@ -1,0 +1,101 @@
+{
+  "kind": "DOCUMENT_AND_DESIGN_REFERENCE_VERIFICATION",
+  "status": "PASS",
+  "actor": "/root",
+  "baseCommit": "b0871cfe851a6d519f40e56dc885a980a113e095",
+  "imageChecks": [
+    {
+      "path": "art/factory/visual-reference/2026-10-13/approved-hud-ceramic-petrol-microvoxel.png",
+      "hashAndPng": "PASS"
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/01-fracht-transport.png",
+      "hashAndPng": "PASS"
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/02-bauen.png",
+      "hashAndPng": "PASS"
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/03-energie-verbindung.png",
+      "hashAndPng": "PASS"
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/input-references/current-cargo-panel.png",
+      "hashAndPng": "PASS"
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/input-references/current-build-panel.png",
+      "hashAndPng": "PASS"
+    },
+    {
+      "path": "art/factory/visual-reference/2026-10-13/input-references/existing-heavy-carrier.png",
+      "hashAndPng": "PASS"
+    }
+  ],
+  "markdownLinkCount": 15,
+  "markdownLinks": "PASS",
+  "jsonSyntax": "PASS",
+  "unrelatedTrackedEdits": [],
+  "gameCodeChanged": false,
+  "runtimeBuild": "NOT_RUN: docs/concept-only change",
+  "realUIInputTests": "NOT_RUN: no new UI implemented",
+  "newScreenOwnerReview": "OWNER_REVIEW_PENDING",
+  "visualObservations": "See REVIEW.md; missing actual0W and too-bright cable on screen3 retained honestly",
+  "lfsVerification": {
+    "status": "PASS",
+    "count": 7,
+    "payloads": [
+      {
+        "path": "art/factory/visual-reference/2026-10-13/01-fracht-transport.png",
+        "oid": "f1fc76cd08d7f3ce8d4ffa6dc9f05c4f3afdcfba72f418aee6d385daea91566a",
+        "bytes": 2086327,
+        "localPayloadVerified": true
+      },
+      {
+        "path": "art/factory/visual-reference/2026-10-13/02-bauen.png",
+        "oid": "214890f1d18abb2d149858ef19a95cc1fd9fa17f60cea42545613899ae36e19d",
+        "bytes": 2044465,
+        "localPayloadVerified": true
+      },
+      {
+        "path": "art/factory/visual-reference/2026-10-13/03-energie-verbindung.png",
+        "oid": "e9ebf40bafe9e0ce16c836651619f8726265a896033275b46adf9aa956911eda",
+        "bytes": 2100855,
+        "localPayloadVerified": true
+      },
+      {
+        "path": "art/factory/visual-reference/2026-10-13/approved-hud-ceramic-petrol-microvoxel.png",
+        "oid": "8d6e502d67f3c48788c12402525c73ac74dede3f8394368b7763879aea2922a5",
+        "bytes": 2041933,
+        "localPayloadVerified": true
+      },
+      {
+        "path": "art/factory/visual-reference/2026-10-13/input-references/current-build-panel.png",
+        "oid": "09cac69f14fa47ee9b43f96ca403674b69cf79ebd96d371ec5b382858565c9ed",
+        "bytes": 315480,
+        "localPayloadVerified": true
+      },
+      {
+        "path": "art/factory/visual-reference/2026-10-13/input-references/current-cargo-panel.png",
+        "oid": "61b57fe572e5b29bb928ce54edbc8c728547593a12e0556a4122682f9757d730",
+        "bytes": 521810,
+        "localPayloadVerified": true
+      },
+      {
+        "path": "art/factory/visual-reference/2026-10-13/input-references/existing-heavy-carrier.png",
+        "oid": "c18b3c7440e90349cd8970340f2089f15b521741370ebf308130a1f44fe910c6",
+        "bytes": 611095,
+        "localPayloadVerified": true
+      }
+    ]
+  },
+  "stagedScope": {
+    "status": "PASS",
+    "newFiles": 16,
+    "onlyAuthorizedPrefixes": [
+      "docs/factory/fp06/visual-style/2026-10-13/",
+      "art/factory/visual-reference/2026-10-13/"
+    ]
+  }
+}

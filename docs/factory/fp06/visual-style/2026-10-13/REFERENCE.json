@@ -1,0 +1,30 @@
+{
+  "schema": "hestia.fp06.visual-direction/v1",
+  "kind": "IMAGEGEN_DESIGN_REFERENCE",
+  "ownerDecision": "APPROVED_VISUAL_REFERENCE",
+  "ownerRequestQuote": "genauso schaut es gut aus ... das bild gefällt mir ... auch die voxelstyles ... festschreiben oder speichern",
+  "approvedComposition": {
+    "layoutOriginal": 1,
+    "paletteOriginal": 2,
+    "minimap": "upper-right",
+    "contextInspector": "lower-right"
+  },
+  "file": "art/factory/visual-reference/2026-10-13/approved-hud-ceramic-petrol-microvoxel.png",
+  "bytes": 2041933,
+  "dimensions": [
+    1672,
+    941
+  ],
+  "sha256": "8d6e502d67f3c48788c12402525c73ac74dede3f8394368b7763879aea2922a5",
+  "originalGenerationSource": "/workspace/generated_images/exec-abd37037-d1be-4f77-82fb-c05310c24bab.png",
+  "generationPrompt": "docs/factory/fp06/visual-style/2026-10-13/APPROVED_REFERENCE_PROMPT.txt",
+  "baseProductCommit": "b0871cfe851a6d519f40e56dc885a980a113e095",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "savedAtUtc": "2026-10-13T12:31:54.067740+00:00",
+  "timezoneForOwner": "Europe/Vienna",
+  "gameCodeChanged": false,
+  "uiThemesImplemented": false,
+  "assetThemesImplemented": false,
+  "newScreensAcceptance": "OWNER_REVIEW_PENDING",
+  "note": "Owner-approved visual direction; no claim of playable, saved, rendered or performance-tested runtime"
+}

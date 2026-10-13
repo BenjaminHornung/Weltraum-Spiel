@@ -1,0 +1,76 @@
+{
+  "schema": "hestia.fp06.screen-concepts/v1",
+  "baseline": "REFERENCE.json",
+  "displayOrderMeaning": "Three different screens in generation/display order; not alternative presets",
+  "kind": "IMAGEGEN_CONCEPTS_NOT_RUNTIME_EVIDENCE",
+  "gameCodeChanged": false,
+  "prompts": "SCREEN_PROMPTS.json",
+  "screens": [
+    {
+      "displayOrder": 1,
+      "screen": "01-fracht-transport",
+      "file": "art/factory/visual-reference/2026-10-13/01-fracht-transport.png",
+      "originalOutput": "/workspace/generated_images/exec-2db8f8db-d155-4539-a31e-32bb299ef7a5.png",
+      "bytes": 2086327,
+      "dimensions": [
+        1672,
+        941
+      ],
+      "sha256": "f1fc76cd08d7f3ce8d4ffa6dc9f05c4f3afdcfba72f418aee6d385daea91566a",
+      "status": "OWNER_REVIEW_PENDING",
+      "kind": "IMAGEGEN_DESIGN_CONCEPT"
+    },
+    {
+      "displayOrder": 2,
+      "screen": "02-bauen",
+      "file": "art/factory/visual-reference/2026-10-13/02-bauen.png",
+      "originalOutput": "/workspace/generated_images/exec-b53443bc-86d6-4fbb-981c-d792539946aa.png",
+      "bytes": 2044465,
+      "dimensions": [
+        1672,
+        941
+      ],
+      "sha256": "214890f1d18abb2d149858ef19a95cc1fd9fa17f60cea42545613899ae36e19d",
+      "status": "OWNER_REVIEW_PENDING",
+      "kind": "IMAGEGEN_DESIGN_CONCEPT"
+    },
+    {
+      "displayOrder": 3,
+      "screen": "03-energie-verbindung",
+      "file": "art/factory/visual-reference/2026-10-13/03-energie-verbindung.png",
+      "originalOutput": "/workspace/generated_images/exec-68fd992b-af3d-47bc-9697-83febb51a8db.png",
+      "bytes": 2100855,
+      "dimensions": [
+        1672,
+        941
+      ],
+      "sha256": "e9ebf40bafe9e0ce16c836651619f8726265a896033275b46adf9aa956911eda",
+      "status": "OWNER_REVIEW_PENDING",
+      "kind": "IMAGEGEN_DESIGN_CONCEPT"
+    }
+  ],
+  "secondaryReferences": [
+    {
+      "originalPath": "/workspace/review-packages/Hestia-FP06-Visual-Review-2026-10-13/base/images/game/new-ui/02-cargo.png",
+      "savedRepositoryPath": "art/factory/visual-reference/2026-10-13/input-references/current-cargo-panel.png",
+      "bytes": 521810,
+      "sha256": "61b57fe572e5b29bb928ce54edbc8c728547593a12e0556a4122682f9757d730",
+      "purpose": "Existing flow/silhouette reference only; not approved new screen styling"
+    },
+    {
+      "originalPath": "/workspace/review-packages/Hestia-FP06-Visual-Review-2026-10-13/current-browser/05-paid-native-former.png",
+      "savedRepositoryPath": "art/factory/visual-reference/2026-10-13/input-references/current-build-panel.png",
+      "bytes": 315480,
+      "sha256": "09cac69f14fa47ee9b43f96ca403674b69cf79ebd96d371ec5b382858565c9ed",
+      "purpose": "Existing flow/silhouette reference only; not approved new screen styling"
+    },
+    {
+      "originalPath": "/workspace/review-packages/Hestia-FP06-Visual-Review-2026-10-13/base/images/assets/carrier-heavy--neutral-primary.png",
+      "savedRepositoryPath": "art/factory/visual-reference/2026-10-13/input-references/existing-heavy-carrier.png",
+      "bytes": 611095,
+      "sha256": "c18b3c7440e90349cd8970340f2089f15b521741370ebf308130a1f44fe910c6",
+      "purpose": "Existing flow/silhouette reference only; not approved new screen styling"
+    }
+  ],
+  "ownerAcceptance": "OWNER_REVIEW_PENDING"
+}
