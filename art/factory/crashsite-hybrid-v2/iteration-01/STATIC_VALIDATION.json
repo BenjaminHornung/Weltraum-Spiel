@@ -1,0 +1,65 @@
+{
+  "kind": "ACTUAL_STATIC_GLB_INSPECTION",
+  "result": "PASS",
+  "sha256": "359a9b83821618ed2822d8d5331d87fc99d96bfd08609e4bd58918932b5e58e8",
+  "bytes": 1051916,
+  "triangles": 19148,
+  "vertices": 38296,
+  "drawCalls": 34,
+  "parts": [
+    {
+      "part": "cargo_bay",
+      "triangles": 1242
+    },
+    {
+      "part": "cockpit",
+      "triangles": 2738
+    },
+    {
+      "part": "debris",
+      "triangles": 1086
+    },
+    {
+      "part": "hull",
+      "triangles": 8066
+    },
+    {
+      "part": "rear",
+      "triangles": 2020
+    },
+    {
+      "part": "spine",
+      "triangles": 2668
+    },
+    {
+      "part": "turret_aft",
+      "triangles": 674
+    },
+    {
+      "part": "turret_fore",
+      "triangles": 654
+    }
+  ],
+  "materials": 6,
+  "textures": 0,
+  "boundsYupM": {
+    "min": [
+      -7.875,
+      0.0,
+      -2.75
+    ],
+    "max": [
+      7.375,
+      5.625,
+      5.375
+    ]
+  },
+  "artGridMeters": 0.125,
+  "nativeBytes": 1894108,
+  "nativeSha256": "0f45ba888c0cecdcfacf069f135183314dfb711b45689c932435126775b59721",
+  "flight": "PERMANENTLY_INOPERABLE",
+  "exactTurretCount": 2,
+  "worldAuthority": false,
+  "runtimeAdmission": "NOT_ADMITTED",
+  "visualAcceptance": "OWNER_REVIEW_PENDING"
+}

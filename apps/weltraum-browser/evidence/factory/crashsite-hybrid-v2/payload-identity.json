@@ -1,0 +1,22 @@
+{
+  "result": "PASS",
+  "kind": "ACTUAL_SOURCE_PUBLIC_DIST_PAYLOAD_IDENTITY",
+  "files": [
+    {
+      "path": "art/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.glb",
+      "bytes": 1073900,
+      "sha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.glb",
+      "bytes": 1073900,
+      "sha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610"
+    },
+    {
+      "path": "apps/weltraum-browser/dist/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.glb",
+      "bytes": 1073900,
+      "sha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610"
+    }
+  ],
+  "runtimeAdmission": "NOT_ADMITTED"
+}

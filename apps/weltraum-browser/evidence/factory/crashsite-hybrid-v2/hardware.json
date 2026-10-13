@@ -1,0 +1,10 @@
+{
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "cpuQuota": "400000 100000",
+  "architecture": "x86_64",
+  "blender": "4.3.2",
+  "blenderRenderer": "Cycles CPU, two threads, 48 samples, 1440x900",
+  "browserRenderer": "ANGLE (Mesa, llvmpipe (LLVM 19.1.7 256 bits), OpenGL ES 3.2)",
+  "browserImport": "Detached Three.js GLTFLoader; no World or TestBridge",
+  "fullGameplayV2Performance": "NOT_RUN; asset not admitted"
+}

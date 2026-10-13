@@ -1,0 +1,61 @@
+{
+  "result": "PASS",
+  "files": [
+    {
+      "path": "art/factory/crashsite-hybrid-v1/01-bay-and-turrets.png",
+      "sha256": "7fc785dce637b194eddab2b7716d47478737a511f71c35e7d6bca69931c33900",
+      "bytes": 2015420
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/02-rear-damage.png",
+      "sha256": "35c00e43540b5f302285b57f1541807961b34b012984e04affb1193ccd81cc2f",
+      "bytes": 1986160
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/03-plan-access.png",
+      "sha256": "2dc50eb25f1d03aedb7a2db9693b3f96fb370d649bc7b623024625e066c1bea7",
+      "bytes": 2108276
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/AUTHORING_REPORT.json",
+      "sha256": "546a04a04b73a2ed8f11e4a8a7b18751716299ba7efd701ae8827e73a9ce9e56",
+      "bytes": 1880
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/MODEL_SPEC.json",
+      "sha256": "d986c1f8d4b6c0b21eec3fa39259984ee75db3426f77c927d2b01dd4352ed404",
+      "bytes": 1267
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/PROVENANCE.json",
+      "sha256": "808ff792aee70a75308b36a2cc8b373a108abf3cb457b0d559cd4ad542e02df9",
+      "bytes": 642
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/README.md",
+      "sha256": "a7ac3f97bcb86fd0bd332800a72d842ee6bdfc5134dde43227f317b3701c4811",
+      "bytes": 2391
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/STATIC_VALIDATION.json",
+      "sha256": "79d39753cdc935cc898e6abe4d653d0531b906f449a1b8acc6eb305b893c6ebd",
+      "bytes": 647
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/build_crashsite.py",
+      "sha256": "7050bcdbb137f43802404b6de71f10cd7b29f5f6c8d4f6b8462fd29fae772e8f",
+      "bytes": 11945
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/crashsite-hybrid-v1.blend",
+      "sha256": "2987725a6c1d8802c40f921c11582db90f39d30bdbf2f665f5804d3bfe9a1437",
+      "bytes": 921324
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v1/crashsite-hybrid-v1.glb",
+      "sha256": "8912f74b4bcdd0effb41960b97a8d491123f52f5930adeb63544992b236cadfa",
+      "bytes": 242936
+    }
+  ],
+  "kind": "V1_ORIGINAL_MANIFEST_REVERIFIED"
+}

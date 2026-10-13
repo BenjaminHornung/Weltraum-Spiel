@@ -1,0 +1,108 @@
+{
+  "schema": "hestia.crashsite.blender-authoring/v2",
+  "blenderVersion": "4.3.2",
+  "artGridMeters": 0.125,
+  "partCount": 8,
+  "cells": 32530,
+  "parts": [
+    {
+      "name": "cargo_bay",
+      "quads": 621,
+      "vertices": 2484
+    },
+    {
+      "name": "cockpit",
+      "quads": 1369,
+      "vertices": 5476
+    },
+    {
+      "name": "debris",
+      "quads": 543,
+      "vertices": 2172
+    },
+    {
+      "name": "hull",
+      "quads": 4033,
+      "vertices": 16132
+    },
+    {
+      "name": "rear",
+      "quads": 1010,
+      "vertices": 4040
+    },
+    {
+      "name": "spine",
+      "quads": 1334,
+      "vertices": 5336
+    },
+    {
+      "name": "turret_aft",
+      "quads": 337,
+      "vertices": 1348
+    },
+    {
+      "name": "turret_fore",
+      "quads": 327,
+      "vertices": 1308
+    }
+  ],
+  "turretParts": [
+    "turret_fore",
+    "turret_aft"
+  ],
+  "flight": "PERMANENTLY_INOPERABLE",
+  "worldAuthority": false,
+  "runtimeAdmission": "NOT_ADMITTED",
+  "visualAcceptance": "OWNER_REVIEW_PENDING",
+  "previewRigExported": false,
+  "views": [
+    "01-bay-and-turrets.png",
+    "02-rear-damage.png",
+    "03-plan-access.png",
+    "04-cargo-detail.png",
+    "05-cockpit-and-turret.png",
+    "06-broken-propulsion.png"
+  ],
+  "outputs": [
+    {
+      "file": "01-bay-and-turrets.png",
+      "sha256": "e03dd6c863991d5db126db9c27a82c5d8ae295e510a1ddcb004f22bf34e6367a",
+      "bytes": 1970893
+    },
+    {
+      "file": "02-rear-damage.png",
+      "sha256": "6c0ebbaa366f6f036e3e0ffa05fca9490e944a0ee0c3e6127b805d8d9df367e7",
+      "bytes": 1993430
+    },
+    {
+      "file": "03-plan-access.png",
+      "sha256": "042d1cef5a2ad52e9b74d1c6cb9919d11a025726108f4611d18fdd0636742e63",
+      "bytes": 2022742
+    },
+    {
+      "file": "04-cargo-detail.png",
+      "sha256": "2fce0b234fdcf20c82815709fa292b0b7eac1f67496b23a667bbefc70d4bd2cc",
+      "bytes": 2358626
+    },
+    {
+      "file": "05-cockpit-and-turret.png",
+      "sha256": "525743f21545c8a32d4dade733974e416c88f8fa9ad9910f0abcb71c6f06a529",
+      "bytes": 2223266
+    },
+    {
+      "file": "06-broken-propulsion.png",
+      "sha256": "8c075be983da8179ce70600bd238ad7869b14d38ec499f0b76215523366291c3",
+      "bytes": 2305458
+    },
+    {
+      "file": "crashsite-hybrid-v2.blend",
+      "sha256": "0f45ba888c0cecdcfacf069f135183314dfb711b45689c932435126775b59721",
+      "bytes": 1894108
+    },
+    {
+      "file": "crashsite-hybrid-v2.glb",
+      "sha256": "359a9b83821618ed2822d8d5331d87fc99d96bfd08609e4bd58918932b5e58e8",
+      "bytes": 1051916
+    }
+  ]
+}

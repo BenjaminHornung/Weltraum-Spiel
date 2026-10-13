@@ -1,0 +1,5 @@
+{"result": "PASS", "kind": "ACTUAL_NATIVE_SOURCE_REOPEN", "blenderVersion": "4.3.2", "parts": [{"name": "cargo_bay", "quads": 621, "vertices": 2484}, {"name": "cockpit", "quads": 726, "vertices": 2904}, {"name": "debris", "quads": 543, "vertices": 2172}, {"name": "hull", "quads": 4603, "vertices": 18412}, {"name": "rear", "quads": 969, "vertices": 3876}, {"name": "spine", "quads": 1342, "vertices": 5368}, {"name": "turret_aft", "quads": 491, "vertices": 1964}, {"name": "turret_fore", "quads": 481, "vertices": 1924}], "sourceModified": false, "previewRigPresent": true, "runtimeAdmission": "NOT_ADMITTED", "visualAcceptance": "OWNER_REVIEW_PENDING"}
+Blender 4.3.2
+Read blend: "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/art/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.blend"
+
+Blender quit

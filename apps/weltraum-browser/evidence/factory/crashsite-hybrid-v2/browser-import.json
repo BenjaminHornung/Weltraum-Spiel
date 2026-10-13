@@ -1,0 +1,366 @@
+{
+  "result": [
+    {
+      "version": 1,
+      "kind": "DETACHED_ASSET_REVIEW_NOT_GAMEPLAY",
+      "actualImportedGLB": true,
+      "testBridge": false,
+      "parts": [
+        {
+          "name": "cargo_bay_1",
+          "vertices": 196,
+          "triangles": 98
+        },
+        {
+          "name": "cargo_bay_2",
+          "vertices": 304,
+          "triangles": 152
+        },
+        {
+          "name": "cargo_bay_3",
+          "vertices": 196,
+          "triangles": 98
+        },
+        {
+          "name": "cargo_bay_4",
+          "vertices": 84,
+          "triangles": 42
+        },
+        {
+          "name": "cockpit",
+          "vertices": 380,
+          "triangles": 190
+        },
+        {
+          "name": "debris_1",
+          "vertices": 224,
+          "triangles": 112
+        },
+        {
+          "name": "debris_2",
+          "vertices": 248,
+          "triangles": 124
+        },
+        {
+          "name": "debris_3",
+          "vertices": 80,
+          "triangles": 40
+        },
+        {
+          "name": "debris_4",
+          "vertices": 80,
+          "triangles": 40
+        },
+        {
+          "name": "hull_1",
+          "vertices": 2536,
+          "triangles": 1268
+        },
+        {
+          "name": "hull_2",
+          "vertices": 712,
+          "triangles": 356
+        },
+        {
+          "name": "hull_3",
+          "vertices": 112,
+          "triangles": 56
+        },
+        {
+          "name": "hull_4",
+          "vertices": 24,
+          "triangles": 12
+        },
+        {
+          "name": "rear_1",
+          "vertices": 384,
+          "triangles": 192
+        },
+        {
+          "name": "rear_2",
+          "vertices": 200,
+          "triangles": 100
+        },
+        {
+          "name": "rear_3",
+          "vertices": 184,
+          "triangles": 92
+        },
+        {
+          "name": "spine_1",
+          "vertices": 1348,
+          "triangles": 674
+        },
+        {
+          "name": "spine_2",
+          "vertices": 24,
+          "triangles": 12
+        },
+        {
+          "name": "spine_3",
+          "vertices": 36,
+          "triangles": 18
+        },
+        {
+          "name": "turret_aft_1",
+          "vertices": 36,
+          "triangles": 18
+        },
+        {
+          "name": "turret_aft_2",
+          "vertices": 16,
+          "triangles": 8
+        },
+        {
+          "name": "turret_aft_3",
+          "vertices": 424,
+          "triangles": 212
+        },
+        {
+          "name": "turret_aft_4",
+          "vertices": 32,
+          "triangles": 16
+        },
+        {
+          "name": "turret_aft_5",
+          "vertices": 20,
+          "triangles": 10
+        },
+        {
+          "name": "turret_fore_1",
+          "vertices": 36,
+          "triangles": 18
+        },
+        {
+          "name": "turret_fore_2",
+          "vertices": 16,
+          "triangles": 8
+        },
+        {
+          "name": "turret_fore_3",
+          "vertices": 432,
+          "triangles": 216
+        },
+        {
+          "name": "turret_fore_4",
+          "vertices": 32,
+          "triangles": 16
+        },
+        {
+          "name": "turret_fore_5",
+          "vertices": 20,
+          "triangles": 10
+        }
+      ],
+      "triangles": 4208,
+      "bounds": {
+        "min": [
+          -7.625,
+          0,
+          -2.75
+        ],
+        "max": [
+          7.125,
+          4.75,
+          3.75
+        ]
+      },
+      "renderer": "ANGLE (Mesa, llvmpipe (LLVM 19.1.7 256 bits), OpenGL ES 3.2)",
+      "drawCalls": 29
+    },
+    {
+      "version": 2,
+      "kind": "DETACHED_ASSET_REVIEW_NOT_GAMEPLAY",
+      "actualImportedGLB": true,
+      "testBridge": false,
+      "parts": [
+        {
+          "name": "cargo_bay_1",
+          "vertices": 560,
+          "triangles": 280
+        },
+        {
+          "name": "cargo_bay_2",
+          "vertices": 1108,
+          "triangles": 554
+        },
+        {
+          "name": "cargo_bay_3",
+          "vertices": 252,
+          "triangles": 126
+        },
+        {
+          "name": "cargo_bay_4",
+          "vertices": 564,
+          "triangles": 282
+        },
+        {
+          "name": "cockpit_1",
+          "vertices": 1544,
+          "triangles": 772
+        },
+        {
+          "name": "cockpit_2",
+          "vertices": 1360,
+          "triangles": 680
+        },
+        {
+          "name": "debris_1",
+          "vertices": 304,
+          "triangles": 152
+        },
+        {
+          "name": "debris_2",
+          "vertices": 724,
+          "triangles": 362
+        },
+        {
+          "name": "debris_3",
+          "vertices": 1096,
+          "triangles": 548
+        },
+        {
+          "name": "debris_4",
+          "vertices": 48,
+          "triangles": 24
+        },
+        {
+          "name": "hull_1",
+          "vertices": 11044,
+          "triangles": 5522
+        },
+        {
+          "name": "hull_2",
+          "vertices": 3956,
+          "triangles": 1978
+        },
+        {
+          "name": "hull_3",
+          "vertices": 3356,
+          "triangles": 1678
+        },
+        {
+          "name": "hull_4",
+          "vertices": 36,
+          "triangles": 18
+        },
+        {
+          "name": "hull_5",
+          "vertices": 20,
+          "triangles": 10
+        },
+        {
+          "name": "rear_1",
+          "vertices": 916,
+          "triangles": 458
+        },
+        {
+          "name": "rear_2",
+          "vertices": 976,
+          "triangles": 488
+        },
+        {
+          "name": "rear_3",
+          "vertices": 1924,
+          "triangles": 962
+        },
+        {
+          "name": "rear_4",
+          "vertices": 20,
+          "triangles": 10
+        },
+        {
+          "name": "rear_5",
+          "vertices": 40,
+          "triangles": 20
+        },
+        {
+          "name": "spine_1",
+          "vertices": 120,
+          "triangles": 60
+        },
+        {
+          "name": "spine_2",
+          "vertices": 5080,
+          "triangles": 2540
+        },
+        {
+          "name": "spine_3",
+          "vertices": 48,
+          "triangles": 24
+        },
+        {
+          "name": "spine_4",
+          "vertices": 120,
+          "triangles": 60
+        },
+        {
+          "name": "turret_aft_1",
+          "vertices": 104,
+          "triangles": 52
+        },
+        {
+          "name": "turret_aft_2",
+          "vertices": 392,
+          "triangles": 196
+        },
+        {
+          "name": "turret_aft_3",
+          "vertices": 1356,
+          "triangles": 678
+        },
+        {
+          "name": "turret_aft_4",
+          "vertices": 52,
+          "triangles": 26
+        },
+        {
+          "name": "turret_aft_5",
+          "vertices": 60,
+          "triangles": 30
+        },
+        {
+          "name": "turret_fore_1",
+          "vertices": 104,
+          "triangles": 52
+        },
+        {
+          "name": "turret_fore_2",
+          "vertices": 392,
+          "triangles": 196
+        },
+        {
+          "name": "turret_fore_3",
+          "vertices": 1316,
+          "triangles": 658
+        },
+        {
+          "name": "turret_fore_4",
+          "vertices": 52,
+          "triangles": 26
+        },
+        {
+          "name": "turret_fore_5",
+          "vertices": 60,
+          "triangles": 30
+        }
+      ],
+      "triangles": 19552,
+      "bounds": {
+        "min": [
+          -7.875,
+          0,
+          -2.75
+        ],
+        "max": [
+          7.25,
+          5.5,
+          5.375
+        ]
+      },
+      "renderer": "ANGLE (Mesa, llvmpipe (LLVM 19.1.7 256 bits), OpenGL ES 3.2)",
+      "drawCalls": 34
+    }
+  ],
+  "errors": []
+}

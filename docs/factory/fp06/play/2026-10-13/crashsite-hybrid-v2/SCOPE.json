@@ -1,0 +1,24 @@
+{
+  "schema": "hestia.fp06.art-scope/v1",
+  "actor": "/root",
+  "role": "sole Integrator, serial art writer",
+  "status": "CLOSED_TECHNICAL_ART_CANDIDATE",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "baseCommit": "e70e7dad76903d2a23ebf4319eb4a0ce72290221",
+  "authorization": "Owner approved 03-hybrid-revision as asset template, then explicitly requested improvement of the actual model.",
+  "referenceSha256": "1fac13e62a049b137370c1705549342cb7087195a0c614ae6234e6717e7f208c",
+  "writeSet": [
+    "art/factory/crashsite-hybrid-v2/**",
+    "apps/weltraum-browser/public/factory/crashsite-hybrid-v2/**",
+    "apps/weltraum-browser/evidence/factory/crashsite-hybrid-v2/**",
+    "docs/factory/fp06/play/2026-10-13/crashsite-hybrid-v2/**",
+    ".gitattributes (only two exact V2 GLB LFS patterns)"
+  ],
+  "preserved": ["V1 source and previews", "World", "Physics", "Save", "cargo", "recipes", "terrain", "closed gameplay asset loader"],
+  "maxConcurrentImplementationWriters": 2,
+  "actualImplementationWriters": ["/root"],
+  "actualReadOnlyReviewers": ["/root/wreck_v2_readonly_review"],
+  "technicalStatus": "PASS",
+  "runtimeAdmission": "NOT_ADMITTED",
+  "visualAcceptance": "OWNER_REVIEW_PENDING"
+}

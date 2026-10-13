@@ -1,0 +1,17 @@
+{
+  "schema": "hestia.asset.provenance/v1",
+  "assetId": "hestia_crashsite_hybrid_v2",
+  "author": "/root, serial Integrator/art writer",
+  "source": "Original deterministic voxel field authored in Blender from the owner-selected hybrid reference, refined following critique of V1",
+  "nativeTool": "Blender 4.3.2",
+  "referenceSha256": "1fac13e62a049b137370c1705549342cb7087195a0c614ae6234e6717e7f208c",
+  "license": "LicenseRef-PolyForm-Noncommercial-1.0.0",
+  "licenseFile": "LICENSE",
+  "externalModelOrTexture": false,
+  "paidProvider": false,
+  "gameDevCLI": "NOT_AVAILABLE",
+  "worldAuthority": false,
+  "runtimeAdmission": "NOT_ADMITTED",
+  "visualAcceptance": "OWNER_REVIEW_PENDING",
+  "comparisonSource": "V1 retained byte-for-byte"
+}
