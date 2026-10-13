@@ -1,0 +1,48 @@
+{
+  "schema": "hestia.fp06.canonical-single-traversal-proposal/v1",
+  "status": "GRANTED_REVIEWED_ONE_CANDIDATE",
+  "actor": "/root",
+  "atUtc": "2026-10-13T17:54:10.346542+00:00",
+  "base": "c774b3019e23e00b152dc40136c700f48d3e9d57",
+  "authorization": "Owner expressly requests targeted composition performance fix and lead shared-contract Integrator. Separate narrow byte-equivalent implementation choice after independent source review. Closed C1/earlier candidates not reopened. No owner/product decision changed.",
+  "writeSet": [
+    "apps/weltraum-browser/src/resources/serialization.ts",
+    "apps/weltraum-browser/tests/unit/resourceCanonicalBytes.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/resources/serialization.ts",
+      "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/resourceCanonicalBytes.test.ts",
+      "sha256": "ABSENT"
+    }
+  ],
+  "proposal": "Direct validating canonicalJson serializer removes temporary canonical tree and repeated key sort, without any cache. Preserve canonicalizeJsonValue frozen-clone public API exactly, complete output bytes/signatures/error wording/getter order/for-of proxy iterator/IteratorClose/dense own-index/cycle/plainrecord/primitive behavior. No JSON.stringify(object), no caller array.map, no safeinteger rounding, no input mutation.",
+  "performanceRed": "Original same blocked-band baseline FAIL6.83s /5000ms already captured. Original entire paid-band block remains hash a16258decde43993c5b6bc6c41248ef6e34294a86572bca2f108eb64c6ae8223.",
+  "reviewer": "/root/ui_ceramic_readonly_review; separate shared byte-contract requires exact grant, no automatic implication from priorC1",
+  "budget": {
+    "productionCandidates": 1,
+    "profiles": 0,
+    "originalAfterRun": 1
+  },
+  "gates": [
+    "Add fixed byte/signature/getter/alias/cycle/proxyiter/IteratorClose tests and execute unchanged-source baseline",
+    "Minimal sourcecandidate",
+    "Unchanged original blockedband5000ms then complete canonical/resource/material/power/production/conveyor/Dry relevant regressions",
+    "Independent contract/diff review plus originaltypecheck/build and actualnormalBrowser",
+    "If no performancePASS, rejectcandidate and preserve evidence; no finalW09/W10 acceptance inferred"
+  ],
+  "completion": {
+    "atUtc": "2026-10-13T18:01:33.484790+00:00",
+    "status": "FAIL_PERFORMANCE_REJECTED_AND_REVERTED",
+    "selectedTestMs": 6170,
+    "originalLimitMs": 5000,
+    "boundaryTests": 13,
+    "boundaryResult": "PASS_BEFORE_AND_CANDIDATE",
+    "fullReferenceBytes": "PASS catalog, native container definition/state projection, complete16kgtransfer materialreceipt; SHA/signatures equal before",
+    "productionBeforeAfterSha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f",
+    "retained": "New13contract tests, failure logs, rejectedpatch; no productioncandidate retained"
+  }
+}

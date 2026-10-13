@@ -1,0 +1,54 @@
+{
+  "schema": "hestia.fp06.root-test-contract-continuation/v1",
+  "atUtc": "2026-10-13T17:39:10.479970+00:00",
+  "actor": "/root",
+  "status": "GRANTED_TEST_ONLY",
+  "base": "c774b3019e23e00b152dc40136c700f48d3e9d57",
+  "authorization": "Existing owner implementation/verification task and serial Integrator takeover. Routine test-contract reconciliation; no new product decision.",
+  "writeSet": [
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "sha256": "4b063de46373e2faa4326d7e22b05ed0e577a5346f9a069a043314e41c4ea457",
+      "bytes": 111317
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909",
+      "bytes": 25321
+    }
+  ],
+  "plan": [
+    "Repair W07 test-local private prepare/publish transport fixture against current unchanged native contract; original RED captured",
+    "Verify actual typed-array matcher attribution before any coast-test edit; retain full byte comparison/isolation and existing timeout",
+    "Run focused private-proof negative and identity/rollback regressions; review exact diff; document correction without claiming W09 gameplay PASS"
+  ],
+  "constraints": [
+    "Exactly one implementation writer Root; reviewer read-only",
+    "No production-source, recipe, Golden, Save, material booking, terrain, collider, authority, dependency, timeout, queue or budget changes",
+    "Fixture receipts explicitly synthetic transport facts; no native gameplay acceptance inferred",
+    "Original archives remain verified; prior failure evidence retained"
+  ],
+  "evidence": "/workspace/.cloud-setup/fp06-native-continuation-2026-10-13",
+  "amendments": [
+    {
+      "atUtc": "2026-10-13T17:44:47.388018+00:00",
+      "exactAdditionalWriteSet": [
+        "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts"
+      ],
+      "beforeSha256": "cfc7bc73598f084d251a9bcdf8d9aa1d84ac9fefd3e2aa5284b68a190b4b65a4",
+      "reason": "Two frozen historical asset-generator boundary tests incorrectly copy current V5/S2 Native/Host sources rather than their own explicitly frozen96cc source basis. All7FROZEN hashes match96cc/e752; current3changed intentionally. Test-local temporary fixture only, never generator hash lock or asset payload change.",
+      "gate": "Original boundary expectations remain unchanged; copy frozen historical files via git show into temporary roots, then apply exactly same explicit corruption; preserve originals and independent review."
+    }
+  ],
+  "completion": {
+    "status": "CLOSED_SCOPED_PASS",
+    "codeCommit": "1e1c60ee17098cf04844d96c78ec0742a0be1e98",
+    "evidenceCommit": "e70e7dad76903d2a23ebf4319eb4a0ce72290221",
+    "review": "actualread-only/noCriticalImportant",
+    "productChanges": 0
+  }
+}

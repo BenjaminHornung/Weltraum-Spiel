@@ -1,0 +1,23 @@
+{
+  "schema": "hestia.fp06.native-continuation-checkpoint/v1",
+  "atUtc": "2026-10-13T18:33:17.407525+00:00",
+  "actor": "/root",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "codeCommit": "1e1c60ee17098cf04844d96c78ec0742a0be1e98",
+  "evidenceCommit": "e70e7dad76903d2a23ebf4319eb4a0ce72290221",
+  "sourceBase": "c774b3019e23e00b152dc40136c700f48d3e9d57",
+  "runtimeProductDiff": 0,
+  "retainedCodePaths": 4,
+  "boundedTestScope": "PASS_WITH_INDEPENDENT_READONLY_REVIEW",
+  "freshMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "originalManifest": "33/33PASS",
+  "currentCleanCopy": "INSTALL_BUILD_NORMAL_MAIN_FACTORY_START_PASS",
+  "fullW09": "BLOCKED_ORIGINAL5000msBAND_AND_NATIVE_ROUTE_HOLD",
+  "w10": "BLOCKED_NOT_RUN",
+  "w11": "BLOCKED_PARTIAL_EVIDENCE",
+  "performanceCandidates": "BOTH_FAILED_AND_REVERTED",
+  "scopes": "Newtestscopeclosedaftercheckpoint; historical grants not reopened",
+  "humanAcceptance": "OWNER_REVIEW_PENDING",
+  "sourceReport": "native-continuation/REPORT.md",
+  "mergePushPublish": false
+}
