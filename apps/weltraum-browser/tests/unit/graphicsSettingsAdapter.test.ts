@@ -84,6 +84,44 @@ describe("ThreeGraphicsSettingsAdapter", () => {
     vi.unstubAllGlobals();
   });
 
+  it("detects a nested light only with an effective caster and receiver chain", () => {
+    const scene = new THREE.Scene();
+    const group = new THREE.Group();
+    const light = new THREE.DirectionalLight();
+    light.castShadow = true;
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial());
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    group.add(light, mesh);
+    scene.add(group);
+    const adapter = new ThreeGraphicsSettingsAdapter({ renderer: createFakeRenderer() as THREE.WebGLRenderer,
+      scene, camera: new THREE.PerspectiveCamera(), canvas: createCanvas() });
+    expect(adapter.getCapabilities().shadows.status).toBe("SupportedLive");
+    mesh.receiveShadow = false;
+    expect(adapter.getCapabilities().shadows.status).toBe("Planned");
+    mesh.geometry.dispose();
+    (mesh.material as THREE.Material).dispose();
+    light.dispose();
+  });
+
+  it("does not report live decoration without the actual managed object", () => {
+    const adapter = new ThreeGraphicsSettingsAdapter({ renderer: createFakeRenderer() as THREE.WebGLRenderer,
+      scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(), canvas: createCanvas() });
+    expect(adapter.getCapabilities().decorDensity.status).toBe("Unsupported");
+    expect(adapter.getCapabilities().effectsQuality.status).toBe("Unsupported");
+  });
+
+  it("reports a browser that resolves fullscreen without applying the preference", async () => {
+    const adapter = new ThreeGraphicsSettingsAdapter({ renderer: createFakeRenderer() as THREE.WebGLRenderer,
+      scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(), canvas: createCanvas() });
+    const settings = createDefaultGraphicsSettings();
+    const result = await adapter.apply({ ...settings, display: { ...settings.display, fullscreenPreference: "Fullscreen" } }, ["fullscreen"]);
+    expect(result.applied).not.toContain("fullscreen");
+    expect(result.skipped).toContain("fullscreen");
+    expect(result.runtime.fullscreenActual).toBe("Windowed");
+    expect(result.warnings).toContain("The browser did not apply the requested fullscreen mode.");
+  });
+
   it("applies only presentation settings and preserves truth-backed scene objects", async () => {
     const renderer = createFakeRenderer();
     const scene = new THREE.Scene();

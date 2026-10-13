@@ -1,0 +1,1671 @@
+diff --git a/review-r02/before/package.json b/review-r02/after/package.json
+index 296744e2..5e91909a 100644
+--- a/review-r02/before/package.json
++++ b/review-r02/after/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name":"hestia-atm-01-04-volumes","version":"1.0.0","private":true,"type":"module",
+-  "scripts":{"build":"node scripts/build.mjs","test":"node --test --test-concurrency=1 tests/*.test.mjs","preview":"node scripts/serve.mjs"},
++  "scripts":{"build":"node scripts/compile-r14.mjs","test":"node r14-controls/CPU_ENTRY.mjs && node tests/r14-viewer-fixture.test.mjs","preview":"node scripts/serve-r14.mjs"},
+   "dependencies":{"three":"0.186.1","postprocessing":"6.39.5","@takram/three-clouds":"0.7.6","@takram/three-atmosphere":"0.19.1"},
+   "devDependencies":{"@types/three":"0.186.0","@webgpu/types":"0.1.64","typescript":"5.9.3","esbuild":"0.27.3"},
+   "overrides":{"@dimforge/rapier3d-compat":"0.21.0"}
+diff --git a/review-r02/after/runner/README.md b/review-r02/after/runner/README.md
+new file mode 100644
+index 00000000..71eca552
+--- /dev/null
++++ b/review-r02/after/runner/README.md
+@@ -0,0 +1,13 @@
++# Finite sole-Runner request
++
++Consume repro-profile.json and owner-gaps.bound.json after checking the final exact manifest and transfer member list. They provide actual existing ATM API calls and Source writers; they do not authorize a run.
++
++Runner alone may use its already configured headless browser/Playwright runtime in a fresh bound A0 diagnostic slot. Start the exact scripts/serve-r14.mjs [48741] command, open /?diagnostic=1 without visibility/focus/input takeover, await window.ATM or preserve the real startup error, and apply the listed calls serially. Keep actual readiness/console/network/shader failures; never create mock DOM/device/world globals. Request screenshot bytes through the tool-native or configured runtime capture only.
++
++The11 groups have at most20 screenshots total,10 mounts and180s total deadline. Takram shader/LUT failure, missing float extension, port conflict, context restore timeout or missing actual fields ends only its dependent proof. Preserve raw partial results; no automatic fallback-retry, foreign cleanup or fabricated timer0. Whole13 bundles and LaneB admission remain BLOCKED.
++
++Case negatives use defect1/2/3 from the actual volume shader and the unchanged0.002 image threshold. Record negative ineffectiveness as FAIL; CPU48x32 synthetic arithmetic images are separate inherited artifacts and are not rendered screenshots or pixel goldens for this scene.
++
++The server's traversal/method/regular-file/content-type/loopback checks are retained exactly. Only the literal dist root changes; no server/self-check/browser was executed for R14. Stale-atlas and unsupported actual atmosphere cases are explicitly Source-CPU or missing-actual-input in the request, rather than invented resource mutations.
++
++Reference acceptance is deferred to the user's other PC. No product integration/adoption follows from diagnostic images or Source/CPU results.
+diff --git a/review-r02/after/runner/owner-gaps.bound.json b/review-r02/after/runner/owner-gaps.bound.json
+new file mode 100644
+index 00000000..bddf3f7e
+--- /dev/null
++++ b/review-r02/after/runner/owner-gaps.bound.json
+@@ -0,0 +1,265 @@
++{
++  "schema": "atm.r14.13-owner-source-gap.v1",
++  "sourceOnly": true,
++  "selectedOption": null,
++  "completeActualBundles": 0,
++  "temporalReady": false,
++  "producersNotEvaluated": true,
++  "ports": [
++    {
++      "port": "WEATHER",
++      "required": "WeatherSnapshotId/binding/bodyId/simulationTick/stormIds/windMps/extinctionPerM",
++      "sourcePath": "src/weather-port.ts",
++      "writer": "createOpticalReadPort/read/assertCurrentAnalytic",
++      "units": "m/s,1/m,body-fixed meters,finite simulation tick",
++      "available": "Frozen actual CEL/WXG chosen result and read closure; authored rain/cloud mask separate",
++      "missing": "Missing authentic selected Hestia atmosphere approval and Weather lightning event epochs",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/weather-port.ts",
++        "bytes": 2755,
++        "sha256": "626c7b6b3cb6fde52e70705880bb4aaf4ee277a95c841f15120731fb3d2ad1cd"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/weather-port.ts"
++    },
++    {
++      "port": "FRAME",
++      "required": "frameId/frameRevision/cameraPositionRelative/cameraOrientation/near/far/FOV/aspect",
++      "sourcePath": "upstream/a0/source/private-app/src/presentation/visibilityPlan.ts",
++      "writer": "createFrameProjectionSnapshot and applyCameraProjection via private ThreeRenderBackend",
++      "units": "Float32-compatible relative coordinates, degrees,near/far meters,dimensionless aspect",
++      "available": "Actual factory-owned projection Source and fround camera writer exist; frameId is branded/string",
++      "missing": "Missing coherent presented-frame capture/publication with origin/camera/projection/resource epochs and imagePixels; no numeric frameId cast",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "upstream/a0/source/private-app/src/presentation/visibilityPlan.ts",
++        "bytes": 12958,
++        "sha256": "8840bb7f9aaf2223492bfaed164cc9e294f09e684caf03c8a7758ef51620d04d"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.a0-runtime/current-margin-native24-safe-emission-owner-r09\\source/private-app/src/presentation/visibilityPlan.ts"
++    },
++    {
++      "port": "OPTICS",
++      "required": "opticsDigest/bodyRadiusMeters/bodyNormal/origin/weather extinction/optical segment",
++      "sourcePath": "src/optics.ts",
++      "writer": "validateFrame/skyProfile/buildLut/density/rebaseFrame",
++      "units": "meters,unit normal,1/m,dimensionless radiance/transmittance",
++      "available": "Existing analytical source, empty T=1 and density monotonic oracles; current compiled Weather adapter",
++      "missing": "Missing required current optical segment/source-layer evidence for full actual OPTICS bundle",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/optics.ts",
++        "bytes": 7952,
++        "sha256": "aeffabae342f75f764687e47d9c1824ebae6fa548a4345535d7281c51a6fbda6"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/optics.ts"
++    },
++    {
++      "port": "DEPTH",
++      "required": "depthTexture/projection/view/caller epoch/clip convention/source binding",
++      "sourcePath": "upstream/gfx/build-input/src/port.ts",
++      "writer": "createDepthCameraPort",
++      "units": "native WebGL[-1,1]/WebGPU[0,1],opaque-only",
++      "available": "Borrowed readonly DepthTexture, frozen matrix arrays and caller-provided epoch only; no disposal transfer",
++      "missing": "Missing authentic native single-sample target format/dimensions/producer lifetime/resource generation/color-camera coherence; own echoed epoch is not proof",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "upstream/gfx/build-input/src/port.ts",
++        "bytes": 5297,
++        "sha256": "d2806cc474bbfa874483e2168eea1cdcae38b074cb471a0f67a38cfa11bda244"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-GFX-03-2026-10-09/spikes/gfx-03-backend-bakeoff/revisions/leaf-mask-frozen-upscaler-compatibility-r13\\build-input/src/port.ts"
++    },
++    {
++      "port": "GL_VOLUME",
++      "required": "GLSL3 material/own opaque-water-HDR-targets/atlas/LUT",
++      "sourcePath": "src/composer.ts",
++      "writer": "createVolumePort/render/setFrame/resize",
++      "units": "linear HDR meters,actual image pixel target sizes",
++      "available": "One existing WebGL renderer plus own finite passes, transparent front/back water; static GLSL bound",
++      "missing": "FROZEN_PORT_WEBGL_ONLY; missing Node/TSL LaneB owner/real shader/attachment proof",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/composer.ts",
++        "bytes": 10098,
++        "sha256": "62aa0497b48bbcc33a2529042fdb22d4f04d4b13e398ffda904073de98fe505a"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/composer.ts"
++    },
++    {
++      "port": "TAKRAM",
++      "required": "CloudsEffect/AerialPerspectiveEffect/LUT generator/renderTarget",
++      "sourcePath": "src/takram.ts",
++      "writer": "createTakram/render/setOrigin/resize",
++      "units": "body/world meters,logical Composer size,actual drawing-buffer targets",
++      "available": "Pinned core Three modules and postprocessing6.39.5,optional React peers; same existing renderer callback",
++      "missing": "FROZEN_PORT_WEBGL_ONLY; missing authentic resource lease/depth/temporal publication and real shader/generator execution",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/takram.ts",
++        "bytes": 5377,
++        "sha256": "451884560acaebceeea2c15d7e9ee48cce5f0d2363e06fb2fd3b44290a32ee40"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/takram.ts"
++    },
++    {
++      "port": "MATERIAL",
++      "required": "surfaceMaterial/water/foliage/AO/wetness/wind shared port",
++      "sourcePath": "src/reuse.ts",
++      "writer": "surfaceMaterial/setWind/applyWindInputs/bindRestoredOrigin",
++      "units": "linear RGB,roughness/wetness01,owner-local meters,wind m/s",
++      "available": "Actual bound original GFX/RD port reused; current GFX B2 compatibility additionally frozen as Source data",
++      "missing": "Historical visual parity FAIL_NO_ADOPTION remains; no genuine material/reactivity/current previous vertex target",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/reuse.ts",
++        "bytes": 1694,
++        "sha256": "b5cd88bc422105ba6f240851c02a5a7864b42a4f07091fc94b4b24d92f5409f7"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/reuse.ts"
++    },
++    {
++      "port": "RAIN",
++      "required": "sourceRevision/tick/seconds/owner pose/weather direction/viewport/opaque-water depths",
++      "sourcePath": "src/viewer.ts",
++      "writer": "mountRain/setFrame/replaceFixture/rain optics injection",
++      "units": "60Hz presentation tick,seconds,m/s,actual drawing-buffer pixels",
++      "available": "Existing RD implementation and authored closed/open source,independent rainCoverage,one loop/manual pump",
++      "missing": "Missing actual producer velocity/reactive/history resource exports; wind is not NDC velocity",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/viewer.ts",
++        "bytes": 17667,
++        "sha256": "257b1ff34fc23d694dd93e136b29d953b1a2e7d2f45ef76d58a4167bfb4aa8fc"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/viewer.ts"
++    },
++    {
++      "port": "WETNESS_WATER",
++      "required": "receiver source exposure/wetness/source epoch/transparent water color-depth",
++      "sourcePath": "src/wetness.ts",
++      "writer": "createViewerWetness/createWetnessSourceCache; composer water-color/water-depth",
++      "units": "receiver world meters,wetness01,current sourceRevision",
++      "available": "Actual RD source cache,Unknown retained; source epoch roof switch; original transparent material is borrowed by volume",
++      "missing": "Missing actual water reactive/depth/velocity/current frame leases; opaque water never equivalent",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/wetness.ts",
++        "bytes": 3448,
++        "sha256": "e646addc5a56e889091625dde5b4b425899eebe7de211a6213b39dbfc01f07e4"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/wetness.ts"
++    },
++    {
++      "port": "VELOCITY",
++      "required": "current-minus-previous unjittered NDC matrices/deformation/attachment",
++      "sourcePath": "upstream/gfx/OWNERSHIP_GAPS.md",
++      "writer": "genuine frozen Upscaler/VelocityNode Source references only",
++      "units": "NDC current-minus-previous,actual matching image pixels",
++      "available": "Library declarations define requirements; no matching attachment is supplied",
++      "missing": "Missing authentic velocity writer/texture,previous camera/model/deformation/wind oracle/jitter owner; never substitute physics m/s or zero",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "upstream/gfx/OWNERSHIP_GAPS.md",
++        "bytes": 6214,
++        "sha256": "3e56bf06f4a7e6ca0ece9c48ac250968524e7745b87b62430c60362a09fc51d8"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-GFX-03-2026-10-09/spikes/gfx-03-backend-bakeoff/revisions/leaf-mask-frozen-upscaler-compatibility-r13\\OWNERSHIP_GAPS.md"
++    },
++    {
++      "port": "LIGHT_REACTIVITY",
++      "required": "lighting/weather/water/volume/rain/new surface/Lightning coherence",
++      "sourcePath": "src/viewer.ts",
++      "writer": "explicit setLightning(id) and logical createHistory reset",
++      "units": "authored diagnostic string IDs only; no temporal texture",
++      "available": "Automatic fake weather IDs removed; each diagnostic ID changes logical reset",
++      "missing": "Missing Weather lightning event identity/epoch and actual coverage reactive image/lighting proof; logical reset is not reactive texture",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/viewer.ts",
++        "bytes": 17667,
++        "sha256": "257b1ff34fc23d694dd93e136b29d953b1a2e7d2f45ef76d58a4167bfb4aa8fc"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/viewer.ts"
++    },
++    {
++      "port": "HISTORY",
++      "required": "frame/camera/projection/resource/history epoch/resolution/reset reason",
++      "sourcePath": "src/optics.ts",
++      "writer": "createHistory/contextLost/set/dispose",
++      "units": "logical metadata only,not history image storage",
++      "available": "Existing reset/invalidation assertions preserved; GFX global resetHistory contract frozen as data",
++      "missing": "Missing authentic history owner/actual buffers/previous frames/resize-rebase-cut-jitter protocol; no shadow-cache substitution",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/optics.ts",
++        "bytes": 7952,
++        "sha256": "aeffabae342f75f764687e47d9c1824ebae6fa548a4345535d7281c51a6fbda6"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/optics.ts"
++    },
++    {
++      "port": "OUTPUT_VIEW",
++      "required": "oneCanvas/oneRenderer/one tone-map/presentation tick/actual output dimensions",
++      "sourcePath": "src/viewer.ts",
++      "writer": "start/resize/renderTick/headless manual step/dispose",
++      "units": "logical CSS sizes vs actual drawingBuffer pixels distinct",
++      "available": "Same renderer+finite main loop,NoToneMapping renderer and one final ACES+SRGB output shader; targetPC artifact prepared",
++      "missing": "Missing coherent A0 output-view publication and actual output resource epochs; mountReady not ATM admission",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN",
++      "sourceBinding": {
++        "path": "src/viewer.ts",
++        "bytes": 17667,
++        "sha256": "257b1ff34fc23d694dd93e136b29d953b1a2e7d2f45ef76d58a4167bfb4aa8fc"
++      },
++      "frozenOrigin": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14/src/viewer.ts"
++    }
++  ],
++  "prerequisites": {
++    "G03": "A0 chooses one frame/pipeline/private publication owner; authentic projection+origin/targets/units/epochs/resolution together",
++    "G04": "actual unjittered velocity including foliage previous deformation and matching depth/color; resource epoch/lifetime",
++    "G05": "actual reactive/history/lightning weather identity and reset/cut/rebase/resize/camera/projection protocol",
++    "G06": "real adapter/device/context restore/borrowed target lifecycle/shader/output proof on sole Runner; reference later otherPC"
++  },
++  "formalG03G06": "NOT_STARTED",
++  "pipelineOptions": "BOTH_OPEN"
++}
+diff --git a/review-r02/after/runner/owner-gaps.proposal.json b/review-r02/after/runner/owner-gaps.proposal.json
+new file mode 100644
+index 00000000..013dff7f
+--- /dev/null
++++ b/review-r02/after/runner/owner-gaps.proposal.json
+@@ -0,0 +1,187 @@
++{
++  "schema": "atm.r14.13-owner-source-gap.v1",
++  "sourceOnly": true,
++  "selectedOption": null,
++  "completeActualBundles": 0,
++  "temporalReady": false,
++  "producersNotEvaluated": true,
++  "ports": [
++    {
++      "port": "WEATHER",
++      "required": "WeatherSnapshotId/binding/bodyId/simulationTick/stormIds/windMps/extinctionPerM",
++      "sourcePath": "src/weather-port.ts",
++      "writer": "createOpticalReadPort/read/assertCurrentAnalytic",
++      "units": "m/s,1/m,body-fixed meters,finite simulation tick",
++      "available": "Frozen actual CEL/WXG chosen result and read closure; authored rain/cloud mask separate",
++      "missing": "Missing authentic selected Hestia atmosphere approval and Weather lightning event epochs",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "FRAME",
++      "required": "frameId/frameRevision/cameraPositionRelative/cameraOrientation/near/far/FOV/aspect",
++      "sourcePath": "upstream/a0/source/private-app/src/presentation/visibilityPlan.ts",
++      "writer": "createFrameProjectionSnapshot and applyCameraProjection via private ThreeRenderBackend",
++      "units": "Float32-compatible relative coordinates, degrees,near/far meters,dimensionless aspect",
++      "available": "Actual factory-owned projection Source and fround camera writer exist; frameId is branded/string",
++      "missing": "Missing coherent presented-frame capture/publication with origin/camera/projection/resource epochs and imagePixels; no numeric frameId cast",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "OPTICS",
++      "required": "opticsDigest/bodyRadiusMeters/bodyNormal/origin/weather extinction/optical segment",
++      "sourcePath": "src/optics.ts",
++      "writer": "validateFrame/skyProfile/buildLut/density/rebaseFrame",
++      "units": "meters,unit normal,1/m,dimensionless radiance/transmittance",
++      "available": "Existing analytical source, empty T=1 and density monotonic oracles; current compiled Weather adapter",
++      "missing": "Missing required current optical segment/source-layer evidence for full actual OPTICS bundle",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "DEPTH",
++      "required": "depthTexture/projection/view/caller epoch/clip convention/source binding",
++      "sourcePath": "upstream/gfx/build-input/src/port.ts",
++      "writer": "createDepthCameraPort",
++      "units": "native WebGL[-1,1]/WebGPU[0,1],opaque-only",
++      "available": "Borrowed readonly DepthTexture, frozen matrix arrays and caller-provided epoch only; no disposal transfer",
++      "missing": "Missing authentic native single-sample target format/dimensions/producer lifetime/resource generation/color-camera coherence; own echoed epoch is not proof",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "GL_VOLUME",
++      "required": "GLSL3 material/own opaque-water-HDR-targets/atlas/LUT",
++      "sourcePath": "src/composer.ts",
++      "writer": "createVolumePort/render/setFrame/resize",
++      "units": "linear HDR meters,actual image pixel target sizes",
++      "available": "One existing WebGL renderer plus own finite passes, transparent front/back water; static GLSL bound",
++      "missing": "FROZEN_PORT_WEBGL_ONLY; missing Node/TSL LaneB owner/real shader/attachment proof",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "TAKRAM",
++      "required": "CloudsEffect/AerialPerspectiveEffect/LUT generator/renderTarget",
++      "sourcePath": "src/takram.ts",
++      "writer": "createTakram/render/setOrigin/resize",
++      "units": "body/world meters,logical Composer size,actual drawing-buffer targets",
++      "available": "Pinned core Three modules and postprocessing6.39.5,optional React peers; same existing renderer callback",
++      "missing": "FROZEN_PORT_WEBGL_ONLY; missing authentic resource lease/depth/temporal publication and real shader/generator execution",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "MATERIAL",
++      "required": "surfaceMaterial/water/foliage/AO/wetness/wind shared port",
++      "sourcePath": "src/reuse.ts",
++      "writer": "surfaceMaterial/setWind/applyWindInputs/bindRestoredOrigin",
++      "units": "linear RGB,roughness/wetness01,owner-local meters,wind m/s",
++      "available": "Actual bound original GFX/RD port reused; current GFX B2 compatibility additionally frozen as Source data",
++      "missing": "Historical visual parity FAIL_NO_ADOPTION remains; no genuine material/reactivity/current previous vertex target",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "RAIN",
++      "required": "sourceRevision/tick/seconds/owner pose/weather direction/viewport/opaque-water depths",
++      "sourcePath": "src/viewer.ts",
++      "writer": "mountRain/setFrame/replaceFixture/rain optics injection",
++      "units": "60Hz presentation tick,seconds,m/s,actual drawing-buffer pixels",
++      "available": "Existing RD implementation and authored closed/open source,independent rainCoverage,one loop/manual pump",
++      "missing": "Missing actual producer velocity/reactive/history resource exports; wind is not NDC velocity",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "WETNESS_WATER",
++      "required": "receiver source exposure/wetness/source epoch/transparent water color-depth",
++      "sourcePath": "src/wetness.ts",
++      "writer": "createViewerWetness/createWetnessSourceCache; composer water-color/water-depth",
++      "units": "receiver world meters,wetness01,current sourceRevision",
++      "available": "Actual RD source cache,Unknown retained; source epoch roof switch; original transparent material is borrowed by volume",
++      "missing": "Missing actual water reactive/depth/velocity/current frame leases; opaque water never equivalent",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "VELOCITY",
++      "required": "current-minus-previous unjittered NDC matrices/deformation/attachment",
++      "sourcePath": "upstream/gfx/OWNERSHIP_GAPS.md",
++      "writer": "genuine frozen Upscaler/VelocityNode Source references only",
++      "units": "NDC current-minus-previous,actual matching image pixels",
++      "available": "Library declarations define requirements; no matching attachment is supplied",
++      "missing": "Missing authentic velocity writer/texture,previous camera/model/deformation/wind oracle/jitter owner; never substitute physics m/s or zero",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "LIGHT_REACTIVITY",
++      "required": "lighting/weather/water/volume/rain/new surface/Lightning coherence",
++      "sourcePath": "src/viewer.ts",
++      "writer": "explicit setLightning(id) and logical createHistory reset",
++      "units": "authored diagnostic string IDs only; no temporal texture",
++      "available": "Automatic fake weather IDs removed; each diagnostic ID changes logical reset",
++      "missing": "Missing Weather lightning event identity/epoch and actual coverage reactive image/lighting proof; logical reset is not reactive texture",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "HISTORY",
++      "required": "frame/camera/projection/resource/history epoch/resolution/reset reason",
++      "sourcePath": "src/optics.ts",
++      "writer": "createHistory/contextLost/set/dispose",
++      "units": "logical metadata only,not history image storage",
++      "available": "Existing reset/invalidation assertions preserved; GFX global resetHistory contract frozen as data",
++      "missing": "Missing authentic history owner/actual buffers/previous frames/resize-rebase-cut-jitter protocol; no shadow-cache substitution",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    },
++    {
++      "port": "OUTPUT_VIEW",
++      "required": "oneCanvas/oneRenderer/one tone-map/presentation tick/actual output dimensions",
++      "sourcePath": "src/viewer.ts",
++      "writer": "start/resize/renderTick/headless manual step/dispose",
++      "units": "logical CSS sizes vs actual drawingBuffer pixels distinct",
++      "available": "Same renderer+finite main loop,NoToneMapping renderer and one final ACES+SRGB output shader; targetPC artifact prepared",
++      "missing": "Missing coherent A0 output-view publication and actual output resource epochs; mountReady not ATM admission",
++      "status": "BLOCKED_COMPLETE_ACTUAL_BUNDLE",
++      "temporalReady": false,
++      "ownerDisposition": "SOLE_A0_OPEN",
++      "runtimeProof": "NOT_RUN"
++    }
++  ],
++  "prerequisites": {
++    "G03": "A0 chooses one frame/pipeline/private publication owner; authentic projection+origin/targets/units/epochs/resolution together",
++    "G04": "actual unjittered velocity including foliage previous deformation and matching depth/color; resource epoch/lifetime",
++    "G05": "actual reactive/history/lightning weather identity and reset/cut/rebase/resize/camera/projection protocol",
++    "G06": "real adapter/device/context restore/borrowed target lifecycle/shader/output proof on sole Runner; reference later otherPC"
++  },
++  "formalG03G06": "NOT_STARTED",
++  "pipelineOptions": "BOTH_OPEN"
++}
+diff --git a/review-r02/after/runner/repro-profile.json b/review-r02/after/runner/repro-profile.json
+new file mode 100644
+index 00000000..6663b567
+--- /dev/null
++++ b/review-r02/after/runner/repro-profile.json
+@@ -0,0 +1,200 @@
++{
++  "schema": "atm.r14.sole-runner-headless-request.v1",
++  "status": "PREPARED_NOT_RUN",
++  "environment": "LOCAL_WINDOWS_ISOLATED_DIAGNOSTIC_NOT_REFERENCE",
++  "producer": {
++    "nativeId": "01a1220c-d492-7e82-965e-e6d074980e13",
++    "branch": "feature/atm-01-04-2026-10-09",
++    "base": "17b1db4201a28e7b607c30707bdc2b75e3484a10"
++  },
++  "runtimeAuthority": "NEW_BOUND_A0_DIAGNOSTIC_SLOT_AND_EXISTING_SOLE_RUNNER_REQUIRED",
++  "runnerNativeId": "01a11ff3-0056-7521-a67a-4fcfc4eae477",
++  "launch": {
++    "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
++    "nodeSha256": "0d0f5e39f9f3d9587bc19f73eab3c2c9c4903fd02d6dbf9c853dd81b3d95fad4",
++    "argv": [
++      "scripts/serve-r14.mjs",
++      "48741"
++    ],
++    "cwd": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/coherent-viewer-headless-transfer-r14",
++    "url": "http://127.0.0.1:48741/?diagnostic=1",
++    "distribution": "dist-r14-r02",
++    "headless": true,
++    "visible": false,
++    "mouseKeyboardFocus": false,
++    "bindAddress": "127.0.0.1",
++    "portOnBusy": "FAIL_NO_SCAN_NO_FALLBACK_NO_FOREIGN_KILL",
++    "execution": "NOT_RUN"
++  },
++  "budget": {
++    "deadlineSeconds": 180,
++    "mountCycles": 10,
++    "oneCanvasPerMount": true,
++    "oneRendererPerMount": true,
++    "mainLoops": 0,
++    "manualPump": true,
++    "maxCaptures": 20,
++    "maxTick": 600,
++    "qualification": "DIAGNOSTIC_ONLY"
++  },
++  "requiredRaw": [
++    "exact package/source/tool bindings",
++    "actual browser build and ActualAdapter from genuine context; unavailable=null",
++    "console/page/network errors including shader compile/link errors",
++    "real canvas/image pixels/dimensions before-after each DPR/resize",
++    "actual screenshots only; CPU48x32 images separate",
++    "real disjoint GPU timer results or null with reason; missing never0",
++    "owned mount/dispose and real contextlost/restored states; no physical foreign retirement claim"
++  ],
++  "pipelines": {
++    "existingWebgl": [
++      "analytic",
++      "lut",
++      "takram",
++      "low"
++    ],
++    "laneB": {
++      "status": "Unsupported",
++      "reason": "FROZEN_PORT_WEBGL_ONLY_AND_AUTHENTIC_FRAME_TARGET_VELOCITY_REACTIVE_HISTORY_OWNER_ABSENT",
++      "entry": "src/temporal-boundary.ts:prepareTemporalRequests",
++      "formalSelection": null,
++      "secondRenderer": false
++    },
++    "formalOptions": "BOTH_OPEN"
++  },
++  "cases": [
++    {
++      "id": "sky-cloud-fog-views",
++      "calls": [
++        "await ATM.setMode('analytic')",
++        "ATM.setView('below'); ATM.step(300)",
++        "ATM.setView('inside'); ATM.step(300)",
++        "ATM.setView('above'); ATM.step(300)",
++        "ATM.setView('orbit'); ATM.step(300)"
++      ],
++      "captures": 4,
++      "expected": "one canvas, no rAF in diagnostic mode, finite real images; storm IDs and WeatherSnapshotId unchanged. Orbit pose is optical authored camera movement with same finite weather query, not a genuine orbit Weather export."
++    },
++    {
++      "id": "analytic-lut-low",
++      "calls": [
++        "ATM.setView('below')",
++        "await ATM.setMode('analytic'); ATM.step(300)",
++        "await ATM.setMode('lut'); ATM.step(300)",
++        "await ATM.setMode('low'); ATM.step(300)"
++      ],
++      "captures": 3,
++      "expected": "one final tone-map; low is named fallback. Analytic/LUT comparison uses retained independent CPU optics cases as arithmetic, not pixel goldens."
++    },
++    {
++      "id": "pinned-takram",
++      "calls": [
++        "await ATM.setMode('takram')",
++        "ATM.setView('below'); ATM.step(300)",
++        "ATM.setView('inside'); ATM.step(300)",
++        "ATM.setView('above'); ATM.step(300)"
++      ],
++      "captures": 3,
++      "expected": "same existing renderer, DPR contract preserved; Cloud/Aerial candidate shader compile must be recorded. Unsupported extensions or generator error are retained, not fallback PASS."
++    },
++    {
++      "id": "rain-water-occlusion-roof",
++      "calls": [
++        "await ATM.setMode('analytic'); ATM.setView('below'); ATM.step(300)",
++        "await ATM.openRoof(); ATM.step(360)"
++      ],
++      "captures": 2,
++      "expected": "actual source revision1->2, actual roof/cave geometry visibility updates, Unknown remains explicit; transparent water behind/front/depth relation preserved. No opaque-water equivalence."
++    },
++    {
++      "id": "origin-rebase",
++      "calls": [
++        "ATM.step(360)",
++        "ATM.rebase([1024,0,0]); ATM.step(360)"
++      ],
++      "captures": 2,
++      "expected": "same Weather/storm/source input and world receiver coordinates; diagnostic before/after real images retained; logical history resets."
++    },
++    {
++      "id": "authored-lightning-identity",
++      "calls": [
++        "ATM.setLightning('authored.diagnostic.1'); ATM.step(360)",
++        "ATM.setLightning('authored.diagnostic.2'); ATM.step(360)",
++        "ATM.setLightning(null); ATM.step(360)"
++      ],
++      "captures": 0,
++      "expected": "each changed authored ID/reset reported; repeated ID CURRENT. No Weather lightning owner or reactive texture invented."
++    },
++    {
++      "id": "dpr-resize",
++      "calls": [
++        "ATM.resize(960,540,2); ATM.step(360)",
++        "await ATM.setMode('takram'); ATM.step(360)",
++        "ATM.resize(640,360,1); ATM.step(360)"
++      ],
++      "captures": 0,
++      "expected": "actual canvas/drawingBuffer1920x1080 then640x360; logical Takram size960x540 then640x360; no double-DPR3840x2160."
++    },
++    {
++      "id": "wrong-variant-images",
++      "calls": [
++        "await ATM.setMode('analytic'); ATM.setDefect(0); ATM.step(360)",
++        "ATM.setDefect(1); ATM.step(360)",
++        "ATM.setDefect(2); ATM.step(360)",
++        "ATM.setDefect(3); ATM.step(360)",
++        "ATM.setDefect(0)"
++      ],
++      "captures": 4,
++      "expected": "preserve unchanged0.002 negative image threshold and all raw results. Defects1=no-volume attenuation,2=wrong water split,3=double integration. Real scenes may expose ineffective negative variant; retain FAIL, never replace original denominators."
++    },
++    {
++      "id": "real-contextloss-restore",
++      "calls": [
++        "ATM.loseContext()",
++        "after genuine lost event: ATM.step(360)",
++        "ATM.restoreContext()",
++        "after genuine restored event: ATM.step(360)"
++      ],
++      "captures": 0,
++      "expected": "if extension missing Unsupported; REQUESTED is not PASS; lost renders nothing, after restore own atlas/LUT upload reset and finite actual shader/context errors retained.",
++      "maxWaitSeconds": 5
++    },
++    {
++      "id": "existing-13-owner-boundary",
++      "calls": [
++        "ATM.prepareTemporal()"
++      ],
++      "captures": 0,
++      "expected": "13 Source requests, completeActualBundles0, temporalReady=false. Explicit Pending/Unsupported fields preserved."
++    },
++    {
++      "id": "ten-mount-dispose",
++      "calls": [
++        "fresh own headless page per cycle; await readiness",
++        "ATM.step(300); await ATM.dispose()"
++      ],
++      "captures": 0,
++      "cycles": 10,
++      "expected": "actual oneCanvas/mainLoops0 eachmount and owned resource counts0 after release. Browser/device resource proof distinct from CPU simulated callbacks; no foreign process retirement or taskkill."
++    }
++  ],
++  "notDirectlyExposed": [
++    {
++      "proof": "stale atlas",
++      "status": "NOT_RUN_GPU",
++      "sourceCpu": "unchanged original lifecycle callback rejects STALE_ATLAS; no public frame mutation API was added"
++    },
++    {
++      "proof": "NoAtmosphere/Pending/Unsupported actual atmosphere",
++      "status": "NOT_RUN_ACTUAL_INPUT",
++      "source": "existing frozen six profile/read contracts retained; current chosen fixture only, no silent Earth defaults or actual profile adoption"
++    },
++    {
++      "proof": "13 authentic temporal bundles and G03-G06",
++      "status": "BLOCKED",
++      "reason": "missing coherent authentic frame/targets/velocity/reactive/history/resource/jitter/lightning ownership; no upstream proof fabricated"
++    }
++  ],
++  "referenceAcceptance": false,
++  "productIntegration": "NO"
++}
+diff --git a/review-r02/after/scripts/compile-r14.mjs b/review-r02/after/scripts/compile-r14.mjs
+new file mode 100644
+index 00000000..f4705dad
+--- /dev/null
++++ b/review-r02/after/scripts/compile-r14.mjs
+@@ -0,0 +1,30 @@
++import {readFileSync,writeFileSync,mkdirSync,copyFileSync,cpSync,existsSync} from 'node:fs';
++import {resolve} from 'node:path';
++import {createHash} from 'node:crypto';
++import {root,verifyInputs,verifyMembers,json,save,walk,bytes} from './bindings.mjs';
++for(const key of ['NODE_OPTIONS','NODE_PATH','NODE_COMPILE_CACHE','NODE_INSPECTOR_IPC','VSCODE_INSPECTOR_OPTIONS','ESBUILD_BINARY_PATH','ESBUILD_WORKER_THREADS','ESBUILD_MAX_BUFFER'])
++ if(process.env[key])throw Error('BUILD_AMBIENT_EFFECT_REQUIRES_DISPOSITION:'+key);
++for(const [path,sha] of [
++ ['node_modules/esbuild/package.json','24655ca1d9c91fe7517a99ec27bf1125b46efae71b54a55125d2a930b6ad61f9'],
++ ['node_modules/esbuild/lib/main.js','b090fe57c79c677256a242703ea07bb2191eced357bece2f9a25539443da070c'],
++ ['node_modules/@esbuild/win32-x64/package.json','fba0a44e5f43b9175c4e538d7c6a9791430aaa61756aa082c9ddbe0cf36fa69e'],
++ ['node_modules/@esbuild/win32-x64/esbuild.exe','f0dd2091eaf58d11b96c64e0c4516f8ecf94486a28d2a8e7a968bd6770db3ffe']])
++ if(createHash('sha256').update(readFileSync(root+'/'+path)).digest('hex')!==sha)throw Error('BUILD_TOOL_DRIFT:'+path);
++verifyInputs();verifyMembers(json('r14-controls/BUILD_INPUTS_R05.json').files);
++if(existsSync(root+'/.r14-runtime-r02')||existsSync(root+'/dist-r14-r02'))throw Error('FRESH_OUTPUT_REQUIRED_NO_OVERWRITE');
++const {buildSync}=await import('esbuild'),pending=[],metadata=[];
++const names=['optics','occlusion','timer','init','reuse','composer','weather-port','wetness','borrowed-port','temporal-boundary'];
++// Shared chunks preserve the RD fixture import registry across exported CPU ports.
++const cpu=buildSync({entryPoints:names.map(name=>root+'/src/'+name+'.ts'),outdir:root+'/.r14-runtime-r02',outExtension:{'.js':'.mjs'},splitting:true,bundle:true,format:'esm',platform:'node',packages:'external',loader:{'.glsl':'text'},metafile:true,write:false});
++pending.push(...cpu.outputFiles);metadata.push(['.r14-runtime-r02/cpu-metafile.json',cpu.metafile]);
++const dataBindings=Object.fromEntries([...walk(root,'fixtures'),...walk(root,'inputs/rd/fixtures/F00-CONTROL')].map(path=>{const f=bytes(path);return [path.replace('inputs/rd/fixtures/F00-CONTROL','rd-fixture'),{bytes:f.bytes,sha256:f.sha256}];}));
++const result=buildSync({entryPoints:[root+'/src/viewer.ts'],outfile:root+'/dist-r14-r02/viewer.js',bundle:true,format:'esm',platform:'browser',sourcemap:true,loader:{'.glsl':'text'},define:{__DATA_BINDINGS__:JSON.stringify(dataBindings),__ROOT_PATH__:JSON.stringify(root)},metafile:true,write:false});
++pending.push(...result.outputFiles);metadata.push(['.r14-runtime-r02/browser-metafile.json',result.metafile]);
++// All Source bundling must succeed before any generated JS is written.
++for(const dir of ['.r14-runtime-r02','dist-r14-r02'])mkdirSync(root+'/'+dir,{recursive:true});
++for(const file of pending){const path=resolve(file.path),base=root.replaceAll('\\','/');if(![base+'/.r14-runtime-r02/',base+'/dist-r14-r02/'].some(prefix=>path.replaceAll('\\','/').startsWith(prefix)))throw Error('OUTPUT_ESCAPE');writeFileSync(path,file.contents,{flag:'wx'});}
++for(const [name,value]of metadata)save(name,value);
++copyFileSync(root+'/index.html',root+'/dist-r14-r02/index.html');cpSync(root+'/fixtures',root+'/dist-r14-r02/fixtures',{recursive:true});cpSync(root+'/inputs/rd/fixtures/F00-CONTROL',root+'/dist-r14-r02/rd-fixture',{recursive:true});
++save('.r14-runtime-r02/build-bindings.json',{sourceBundling:'PASS',glsl:'TEXT_ONLY_GPU_COMPILATION_NOT_RUN',files:[...walk(root,'dist-r14-r02'),...walk(root,'.r14-runtime-r02').filter(p=>p.endsWith('.mjs'))].map(bytes)});
++console.log(JSON.stringify({sourceBundling:'PASS',compiledEntries:names.length,browserGpu:'NOT_RUN',headlessCapturedScreens:0}));
++
+diff --git a/review-r02/after/scripts/serve-r14.mjs b/review-r02/after/scripts/serve-r14.mjs
+new file mode 100644
+index 00000000..2b076e16
+--- /dev/null
++++ b/review-r02/after/scripts/serve-r14.mjs
+@@ -0,0 +1,150 @@
++import assert from 'node:assert/strict';
++import { createReadStream } from 'node:fs';
++import { realpath, stat } from 'node:fs/promises';
++import { createServer } from 'node:http';
++import path from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const DEFAULT_PORT = 48741;
++const DIST_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist-r14-r02');
++const CONTENT_TYPES = new Map([
++  ['.bin', 'application/octet-stream'],
++  ['.css', 'text/css; charset=utf-8'],
++  ['.html', 'text/html; charset=utf-8'],
++  ['.js', 'text/javascript; charset=utf-8'],
++  ['.json', 'application/json; charset=utf-8'],
++  ['.png', 'image/png'],
++  ['.text', 'text/plain; charset=utf-8'],
++  ['.txt', 'text/plain; charset=utf-8'],
++  ['.wasm', 'application/wasm'],
++]);
++
++function safeRelativePath(requestTarget) {
++  if (typeof requestTarget !== 'string') throw new Error('invalid request target');
++  const rawPath = requestTarget.split(/[?#]/, 1)[0];
++  if (!rawPath.startsWith('/') || rawPath.startsWith('//') || rawPath.includes('\\')) {
++    throw new Error('invalid request path');
++  }
++
++  let decoded = rawPath;
++  for (let i = 0; i < 8; i += 1) {
++    const next = decodeURIComponent(decoded);
++    if (next === decoded) break;
++    decoded = next;
++  }
++  if (decodeURIComponent(decoded) !== decoded || !decoded.startsWith('/') || decoded.startsWith('//') || decoded.includes('\\')) {
++    throw new Error('invalid encoded request path');
++  }
++
++  const relativePath = decoded.slice(1);
++  if (relativePath === '') return 'index.html';
++  const parts = relativePath.split('/');
++  if (parts.some((part) => !part || part === '.' || part === '..' || /[:?#\0-\x1f]/.test(part))) {
++    throw new Error('invalid path segment');
++  }
++  if (path.posix.isAbsolute(relativePath) || path.win32.isAbsolute(relativePath)) {
++    throw new Error('absolute paths are not allowed');
++  }
++  return parts.join(path.sep);
++}
++
++function parsePort(value) {
++  if (value === undefined) return DEFAULT_PORT;
++  if (!/^\d+$/.test(value)) throw new Error('port must be an integer from 1 to 65535');
++  const port = Number(value);
++  if (!Number.isInteger(port) || port < 1 || port > 65535) {
++    throw new Error('port must be an integer from 1 to 65535');
++  }
++  return port;
++}
++
++function isWithin(root, target) {
++  const relative = path.relative(root, target);
++  return relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative);
++}
++
++if (process.argv[2] === '--self-check') {
++  assert.equal(safeRelativePath('/'), 'index.html');
++  assert.equal(safeRelativePath('/assets/cloud.bin?version=1'), path.join('assets', 'cloud.bin'));
++  assert.equal(safeRelativePath('/index.html'), 'index.html');
++  assert.equal(parsePort(undefined), DEFAULT_PORT);
++  assert.equal(parsePort('65535'), 65535);
++  for (const target of [
++    'C:/secret',
++    '//server/secret',
++    '/C:/secret',
++    '/C%3A/secret',
++    '/../secret',
++    '/%2e%2e/secret',
++    '/%252e%252e/secret',
++    '/%2f..%2fsecret',
++    '/a\\b',
++    '/%5c..%5csecret',
++    '/a//b',
++    '/%00',
++  ]) assert.throws(() => safeRelativePath(target));
++  for (const value of ['0', '65536', '1.5', 'abc']) assert.throws(() => parsePort(value));
++  process.exit(0);
++}
++
++if (process.argv.length > 3 || process.argv[2] === '--self-check') {
++  console.error('Usage: node scripts/serve.mjs [port]');
++  process.exit(2);
++}
++
++let port;
++try {
++  port = parsePort(process.argv[2]);
++} catch (error) {
++  console.error(error.message);
++  process.exit(2);
++}
++
++const server = createServer(async (request, response) => {
++  if (request.method !== 'GET' && request.method !== 'HEAD') {
++    response.writeHead(405, { Allow: 'GET, HEAD' }).end();
++    return;
++  }
++
++  let relativePath;
++  try {
++    relativePath = safeRelativePath(request.url);
++  } catch {
++    response.writeHead(400).end();
++    return;
++  }
++
++  const contentType = CONTENT_TYPES.get(path.extname(relativePath).toLowerCase());
++  if (!contentType) {
++    response.writeHead(415).end();
++    return;
++  }
++
++  try {
++    const root = await realpath(DIST_ROOT);
++    const filePath = await realpath(path.join(root, relativePath));
++    if (!isWithin(root, filePath)) {
++      response.writeHead(404).end();
++      return;
++    }
++    const fileStat = await stat(filePath);
++    if (!fileStat.isFile()) {
++      response.writeHead(404).end();
++      return;
++    }
++
++    response.writeHead(200, {
++      'Content-Length': fileStat.size,
++      'Content-Type': contentType,
++      'X-Content-Type-Options': 'nosniff',
++    });
++    if (request.method === 'HEAD') response.end();
++    else createReadStream(filePath).on('error', () => response.destroy()).pipe(response);
++  } catch (error) {
++    response.writeHead(error.code === 'ENOENT' || error.code === 'ENOTDIR' ? 404 : 500).end();
++  }
++});
++
++server.listen(port, '127.0.0.1', () => {
++  console.log(`Serving ${DIST_ROOT} at http://127.0.0.1:${port}/`);
++});
+diff --git a/review-r02/after/src/borrowed-port.ts b/review-r02/after/src/borrowed-port.ts
+new file mode 100644
+index 00000000..9d03b9e9
+--- /dev/null
++++ b/review-r02/after/src/borrowed-port.ts
+@@ -0,0 +1,204 @@
++import {validateFrame} from './optics';
++import type {AtmosphereFrame, HistoryFrame, OpticalSegment} from './optics';
++import type {
++  BorrowedImageRef, CommonHistoryState, FrozenSourceRef, OpaqueDepthInput,
++  PreToneVolumeContribution, PresentationFrameBinding, PresentedLightChange, WeatherAdmission
++} from '../upstream/atm-r04/contracts.proposed.d.ts';
++
++export const PORT_IDS = ['WEATHER', 'FRAME', 'OPTICS', 'DEPTH', 'GL_VOLUME', 'TAKRAM',
++  'MATERIAL', 'RAIN', 'WETNESS_WATER', 'VELOCITY', 'LIGHT_REACTIVITY', 'HISTORY', 'OUTPUT_VIEW'] as const;
++export type PortId = typeof PORT_IDS[number];
++type ImageRole = 'hdrColor' | 'depth' | 'waterDepth' | 'velocity' | 'reactive';
++export type ActualSegment = Readonly<OpticalSegment>;
++export type LogicalHistoryReference = Readonly<HistoryFrame>; // Not CommonHistoryState or GPU history.
++export interface BorrowedPortRequest {
++  readonly port: PortId;
++  readonly sourceFrame?: AtmosphereFrame;
++  readonly weather?: WeatherAdmission;
++  readonly segment?: ActualSegment;
++  readonly current?: PresentationFrameBinding;
++  readonly currentEvidence?: FrozenSourceRef;
++  readonly producerOwners?: Readonly<Partial<Record<ImageRole, string>>>;
++  readonly contribution?: PreToneVolumeContribution;
++  readonly history?: CommonHistoryState;
++  readonly historyEvidence?: FrozenSourceRef;
++  readonly lighting?: PresentedLightChange;
++}
++export type BorrowedPortDisposition =
++  | {readonly status: 'Pending'; readonly port: PortId | null; readonly reasonCode: string}
++  | {readonly status: 'Unsupported'; readonly port: PortId | null; readonly reasonCode: string}
++  | {readonly status: 'ValidatedSourceOnly'; readonly port: PortId; readonly temporalReady: false;
++     readonly execution: 'NOT_RUN'; readonly selectedOption: null};
++type Issue =
++  | {readonly status: 'Pending'; readonly reasonCode: string}
++  | {readonly status: 'Unsupported'; readonly reasonCode: string};
++const pending = (reasonCode: string): Issue => ({status: 'Pending', reasonCode});
++const unsupported = (reasonCode: string): Issue => ({status: 'Unsupported', reasonCode});
++const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
++const text = (v: unknown): v is string => typeof v === 'string' && v.length > 0;
++const natural = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0;
++const finite = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
++const vector = (v: unknown, n: number): v is number[] => Array.isArray(v) && v.length === n && Array.from(v).every(finite);
++const digest = (v: unknown): boolean => typeof v === 'string' && /^sha256:[a-f0-9]{64}$/.test(v);
++function reference(v: unknown): boolean {
++  return record(v) && text(v.sourceId) && text(v.absolutePath) && /^C:[\\/]IFI_SourceCode[\\/]/i.test(v.absolutePath)
++    && natural(v.bytes) && v.bytes > 0 && typeof v.sha256 === 'string' && /^[a-f0-9]{64}$/.test(v.sha256);
++}
++function currentFrame(v: unknown): Issue | null {
++  if (!record(v)) return pending('CURRENT_FRAME_MISSING');
++  for (const k of ['viewSessionId', 'frameId', 'sourcePresentationRevision'] as const) {
++    if (v[k] === undefined) return pending('CURRENT_FRAME_MISSING:' + k);
++    if (!text(v[k])) return unsupported('CURRENT_FRAME_INVALID:' + k);
++  }
++  for (const k of ['resourceGeneration', 'cameraEpoch', 'projectionEpoch', 'atlasEpoch'] as const) {
++    if (v[k] === undefined) return pending('EPOCH_MISSING:' + k);
++    if (!natural(v[k])) return unsupported('EPOCH_INVALID:' + k);
++  }
++  if (!digest(v.weatherSnapshotId) || !digest(v.opticsDigest) || !digest(v.atlasDigest) || !vector(v.originMeters, 3))
++    return unsupported('CURRENT_FRAME_BINDING_INVALID');
++  return null;
++}
++function coherentFrame(a: unknown, b: PresentationFrameBinding): boolean {
++  if (!record(a)) return false;
++  const keys = ['viewSessionId', 'frameId', 'sourcePresentationRevision', 'resourceGeneration', 'cameraEpoch',
++    'projectionEpoch', 'atlasEpoch', 'weatherSnapshotId', 'opticsDigest', 'atlasDigest'] as const;
++  return keys.every(k => a[k] === b[k]) && vector(a.originMeters, 3) && a.originMeters.every((v, i) => v === b.originMeters[i]);
++}
++function image(v: unknown, current: PresentationFrameBinding, owner: unknown, role: ImageRole): Issue | null {
++  if (!record(v)) return pending('IMAGE_MISSING:' + role);
++  if (!text(owner)) return pending('PRODUCER_OWNER_MISSING:' + role);
++  if (v.ownerId !== owner || v.disposalOwner !== 'PRODUCER_ONLY') return unsupported('BORROWED_OWNERSHIP_INVALID:' + role);
++  if (!text(v.resourceKey) || !text(v.format) || !natural(v.width) || !natural(v.height) || v.width < 1 || v.height < 1
++    || v.sampleCount !== 1 || !['WebGL', 'WebGPU'].includes(String(v.backend))) return unsupported('IMAGE_METADATA_INVALID:' + role);
++  const epoch = currentFrame(v.frame);
++  if (epoch) return epoch;
++  if (!coherentFrame(v.frame, current) || v.validUntil !== 'FRAME_END_OR_OWNER_GENERATION_CHANGE')
++    return unsupported('BORROWED_LEASE_STALE:' + role);
++  return null;
++}
++function depth(v: unknown, current: PresentationFrameBinding, owner: unknown): Issue | null {
++  if (!record(v)) return pending('DEPTH_MISSING');
++  const header = image(v.image, current, owner, 'depth');
++  if (header) return header;
++  for (const key of ['projectionKind', 'clipDepthRange', 'nearMeters', 'farMeters', 'reversedZ', 'logarithmicDepth',
++    'encoding', 'writers', 'backgroundValidity', 'currentProjectionUnjittered', 'currentView'] as const)
++    if (v[key] === undefined) return pending('DEPTH_METADATA_MISSING:' + key);
++  const im = v.image as BorrowedImageRef;
++  if (!['Perspective', 'Orthographic'].includes(String(v.projectionKind)) || !finite(v.nearMeters) || !finite(v.farMeters)
++    || v.nearMeters <= 0 || v.farMeters <= v.nearMeters || typeof v.reversedZ !== 'boolean' || v.logarithmicDepth !== false
++    || v.encoding !== 'NATIVE_SINGLE_SAMPLE_DEPTH_ATTACHMENT' || v.writers !== 'OPAQUE_ONLY'
++    || v.backgroundValidity !== 'EXPLICIT_SKY_DISPOSITION' || !vector(v.currentProjectionUnjittered, 16) || !vector(v.currentView, 16)
++    || v.clipDepthRange !== (im.backend === 'WebGL' ? 'MinusOneToOne' : 'ZeroToOne')) return unsupported('DEPTH_CONVENTION_INVALID');
++  return null;
++}
++function lighting(v: unknown): Issue | null {
++  if (!record(v)) return pending('LIGHTNING_LIGHT_PROJECTION_MISSING');
++  for (const key of ['bindingRef', 'revision', 'eventId', 'phase', 'sourceStrength', 'sunDirectionBody', 'shadowAtlasLightingDigest'])
++    if (v[key] === undefined) return pending('LIGHT_PROJECTION_MISSING:' + key);
++  if (!reference(v.bindingRef) || !text(v.revision) || !['STEADY', 'BEGIN', 'CHANGE', 'END'].includes(String(v.phase))
++    || !finite(v.sourceStrength) || v.sourceStrength < 0 || !vector(v.sunDirectionBody, 3)
++    || Math.abs(Math.hypot(...v.sunDirectionBody) - 1) > 1e-8 || !digest(v.shadowAtlasLightingDigest)
++    || (v.eventId !== null && !text(v.eventId)) || (v.phase !== 'STEADY' && v.eventId === null)
++    || v.eventId === 'fixture.lightning') return unsupported('LIGHT_PROJECTION_INVALID_OR_COLLAPSED');
++  return null;
++}
++
++/** Structural source candidate only. No texture reads, file IO, disposal, reset or render calls. */
++export function validateBorrowedPort(input: unknown): BorrowedPortDisposition {
++  const port = record(input) && PORT_IDS.includes(input.port as PortId) ? input.port as PortId : null;
++  const fail = (issue: Issue): BorrowedPortDisposition => ({...issue, port});
++  if (!record(input) || port === null) return fail(unsupported('PORT_UNKNOWN'));
++  if (!record(input.weather)) return fail(pending('WEATHER_READ_MISSING'));
++  const weather = input.weather;
++  if (weather.status === 'Pending') return fail(text(weather.dependency) ? pending('WEATHER_PENDING:' + weather.dependency) : unsupported('WEATHER_DEPENDENCY_MISSING'));
++  if (weather.status === 'Unsupported' || weather.status === 'UnknownCoverage')
++    return fail(unsupported(text(weather.reasonCode) ? 'WEATHER_' + weather.status + ':' + weather.reasonCode : 'WEATHER_REASON_MISSING'));
++  if (!['Known', 'NoAtmosphere'].includes(String(weather.status))) return fail(unsupported('WEATHER_STATUS_INVALID'));
++  if (weather.frozenResult === undefined) return fail(pending('FROZEN_WEATHER_BINDING_MISSING'));
++  if (!reference(weather.frozenResult)) return fail(unsupported('FROZEN_WEATHER_BINDING_INVALID'));
++  if (!record(input.sourceFrame)) return fail(pending('ATMOSPHERE_FRAME_MISSING'));
++  let frame: AtmosphereFrame;
++  try { frame = validateFrame(input.sourceFrame as unknown as AtmosphereFrame); }
++  catch (error) { return fail(unsupported('ACTUAL_FRAME_REJECTED:' + (error instanceof Error ? error.message : 'INVALID'))); }
++  if (frame.status !== weather.status) return fail(unsupported('WEATHER_FRAME_STATUS_MISMATCH'));
++  if (port === 'OPTICS') {
++    if (!record(input.segment)) return fail(pending('OPTICAL_SEGMENT_MISSING'));
++    const s = input.segment;
++    if (!finite(s.T) || s.T < 0 || s.T > 1 || !vector(s.L, 3) || s.L.some(v => v < 0)) return fail(unsupported('OPTICAL_SEGMENT_INVALID'));
++    if (frame.status === 'NoAtmosphere' && (s.T !== 1 || s.L.some(v => v !== 0))) return fail(unsupported('NO_ATMOSPHERE_OPTICAL_SEGMENT_NONEMPTY'));
++  }
++  if (port === 'WEATHER' || port === 'FRAME' || port === 'OPTICS')
++    return {status: 'ValidatedSourceOnly', port, temporalReady: false, execution: 'NOT_RUN', selectedOption: null};
++  const epoch = currentFrame(input.current);
++  if (epoch) return fail(epoch);
++  const current = input.current as unknown as PresentationFrameBinding;
++  if (input.currentEvidence === undefined) return fail(pending('CURRENT_FRAME_EVIDENCE_MISSING'));
++  if (!reference(input.currentEvidence)) return fail(unsupported('CURRENT_FRAME_EVIDENCE_INVALID'));
++  if (current.weatherSnapshotId !== frame.weatherSnapshotId || current.opticsDigest !== frame.opticsDigest || current.atlasEpoch !== frame.atlasEpoch
++    || current.originMeters.some((v, i) => v !== frame.originMeters[i])) return fail(unsupported('FRAME_ATLAS_ORIGIN_BINDING_MISMATCH'));
++  if (!record(input.contribution)) return fail(pending('BORROWED_CONTRIBUTION_MISSING'));
++  const c = input.contribution;
++  const owners = record(input.producerOwners) ? input.producerOwners : {};
++  const d = depth(c.depth, current, owners.depth);
++  if (d) return fail(d);
++  if (port === 'DEPTH') return {status: 'ValidatedSourceOnly', port, temporalReady: false, execution: 'NOT_RUN', selectedOption: null};
++  const hdr = image(c.hdrColor, current, owners.hdrColor, 'hdrColor');
++  if (hdr) return fail(hdr);
++  if (c.colorSpace !== 'LINEAR_HDR' || c.toneMapped !== false) return fail(unsupported('PRE_TONE_HDR_REQUIRED'));
++  const hdrImage = c.hdrColor as BorrowedImageRef;
++  const depthImage = (c.depth as OpaqueDepthInput).image;
++  if (hdrImage.backend !== depthImage.backend || hdrImage.width !== depthImage.width || hdrImage.height !== depthImage.height)
++    return fail(unsupported('COLOR_DEPTH_MISMATCH'));
++  if ((port === 'GL_VOLUME' || port === 'TAKRAM') && hdrImage.backend !== 'WebGL') return fail(unsupported('FROZEN_PORT_WEBGL_ONLY'));
++  if (c.waterDepth === undefined) return fail(pending('WATER_DEPTH_DISPOSITION_MISSING'));
++  if (c.waterStrategy !== 'NEAREST_PLANAR_FRONT_BACK_ALPHA_PRESERVED') return fail(unsupported('TRANSPARENT_WATER_STRATEGY_UNSUPPORTED'));
++  if (c.waterDepth !== null) {
++    const w = image(c.waterDepth, current, owners.waterDepth, 'waterDepth'); if (w) return fail(w);
++    const water = c.waterDepth as BorrowedImageRef;
++    if (water.resourceKey === depthImage.resourceKey && water.ownerId === depthImage.ownerId) return fail(unsupported('WATER_IS_NOT_OPAQUE_DEPTH'));
++    if (water.backend !== hdrImage.backend || water.width !== hdrImage.width || water.height !== hdrImage.height) return fail(unsupported('WATER_DEPTH_MISMATCH'));
++  }
++  if (!record(c.velocity) || c.velocity.availability === 'MISSING') return fail(pending('GENUINE_VELOCITY_MISSING'));
++  const v = c.velocity;
++  if (v.availability !== 'AVAILABLE') return fail(unsupported('VELOCITY_AVAILABILITY_INVALID'));
++  const motion = image(v.image, current, owners.velocity, 'velocity'); if (motion) return fail(motion);
++  const motionImage = v.image as BorrowedImageRef;
++  if (motionImage.backend !== hdrImage.backend || motionImage.width !== hdrImage.width || motionImage.height !== hdrImage.height)
++    return fail(unsupported('VELOCITY_IMAGE_MISMATCH'));
++  if (v.convention !== 'UNJITTERED_NDC_CURRENT_MINUS_PREVIOUS' || !text(v.previousFrameId) || v.previousFrameId === current.frameId
++    || !vector(v.previousProjectionUnjittered, 16) || !vector(v.previousView, 16) || !reference(v.geometryDeformationOracle)
++    || v.disocclusionPolicy !== 'NO_PREVIOUS_COLOR_FOR_NEW_SURFACE') return fail(unsupported('VELOCITY_OR_PREVIOUS_FRAME_UNPROVEN'));
++  if (!record(c.reactive) || c.reactive.availability === 'MISSING') return fail(pending('REACTIVE_COVERAGE_MISSING'));
++  const reactive = c.reactive;
++  if (reactive.availability !== 'AVAILABLE') return fail(unsupported('REACTIVE_AVAILABILITY_INVALID'));
++  const r = image(reactive.image, current, owners.reactive, 'reactive'); if (r) return fail(r);
++  const reactiveImage = reactive.image as BorrowedImageRef;
++  if (reactiveImage.backend !== hdrImage.backend || reactiveImage.width !== hdrImage.width || reactiveImage.height !== hdrImage.height)
++    return fail(unsupported('REACTIVE_IMAGE_MISMATCH'));
++  if (reactive.channel !== 'RED_0_TO_1' || !Array.isArray(reactive.includes) || reactive.includes.length === 0
++    || !reactive.includes.every(v => ['Water', 'Volume', 'Rain', 'Lightning', 'NewSurface'].includes(v)) || !reference(reactive.coverageOracle))
++    return fail(unsupported('REACTIVE_ORACLE_UNPROVEN'));
++  const light = lighting(input.lighting); if (light) return fail(light);
++  const reactiveLight = lighting(reactive.lighting); if (reactiveLight) return fail(reactiveLight);
++  const l = input.lighting as unknown as PresentedLightChange;
++  const rl = reactive.lighting as unknown as PresentedLightChange;
++  if ((c.waterDepth !== null && !reactive.includes.includes('Water')) || (frame.rain01 > 0 && !reactive.includes.includes('Rain'))
++    || (frame.authoredCloudCoverage > 0 && !reactive.includes.includes('Volume')) || (l.phase !== 'STEADY' && !reactive.includes.includes('Lightning')))
++    return fail(unsupported('REACTIVE_EFFECT_COVERAGE_UNBOUND'));
++  if (l.revision !== rl.revision || l.eventId !== rl.eventId || l.phase !== rl.phase || l.sourceStrength !== rl.sourceStrength
++    || l.shadowAtlasLightingDigest !== rl.shadowAtlasLightingDigest || l.bindingRef.sha256 !== rl.bindingRef.sha256
++    || l.sunDirectionBody.some((v, i) => v !== rl.sunDirectionBody[i])) return fail(unsupported('REACTIVE_LIGHT_BINDING_MISMATCH'));
++  if (!record(input.history)) return fail(pending('PACKAGE_HISTORY_MISSING'));
++  if (input.historyEvidence === undefined) return fail(pending('PACKAGE_HISTORY_CONTRACT_MISSING'));
++  if (!reference(input.historyEvidence)) return fail(unsupported('PACKAGE_HISTORY_CONTRACT_INVALID'));
++  const h = input.history;
++  for (const key of ['generation', 'valid', 'inputResolution', 'displayResolution', 'cameraEpoch', 'projectionEpoch', 'sourceFrameId', 'bufferOwner'])
++    if (h[key] === undefined) return fail(pending('HISTORY_METADATA_MISSING:' + key));
++  if (h.valid === false) return fail(pending('PACKAGE_HISTORY_INVALID'));
++  if (h.valid !== true || !natural(h.generation) || h.bufferOwner !== 'SELECTED_TEMPORAL_PACKAGE_ONLY'
++    || h.cameraEpoch !== current.cameraEpoch || h.projectionEpoch !== current.projectionEpoch || !text(h.sourceFrameId)
++    || !vector(h.inputResolution, 2) || !vector(h.displayResolution, 2)
++    || !h.inputResolution.every(n => natural(n) && n > 0) || !h.displayResolution.every(n => natural(n) && n > 0)
++    || h.inputResolution[0] !== hdrImage.width || h.inputResolution[1] !== hdrImage.height) return fail(unsupported('HISTORY_BINDING_INVALID'));
++  return {status: 'ValidatedSourceOnly', port, temporalReady: false, execution: 'NOT_RUN', selectedOption: null};
++}
+diff --git a/review-r02/before/src/composer.ts b/review-r02/after/src/composer.ts
+index ca0072f9..20607b86 100644
+--- a/review-r02/before/src/composer.ts
++++ b/review-r02/after/src/composer.ts
+@@ -5,21 +5,25 @@ import volumeSource from '../shaders/volume.frag.glsl';
+ import vertexSource from '../shaders/fullscreen.vert.glsl';
+ import outputSource from '../shaders/output.frag.glsl';
+ import {createDiagnosticTimer} from './timer';
++import {disposeOwned} from './init';
+ export function createVolumePort(renderer:T.WebGLRenderer,scene:T.Scene,camera:T.PerspectiveCamera,water:T.Object3D,initial:AtmosphereFrame){
+  let frame=validateFrame(initial),disposed=false,lost=false,epoch=1,lightningId:string|null=null,mode=0,defect=0;
+- const savedFog=scene.fog;scene.fog=null;
++ const savedFog=scene.fog,owned:(()=>void)[]=[()=>{scene.fog=savedFog;}];scene.fog=null;
++ const own=<R extends {dispose():void}>(value:R)=>{owned.push(()=>value.dispose());return value;};
++ try {
+  const context=renderer.getContext?.()??null;
+  let timer=createDiagnosticTimer(context&&'beginQuery' in context?context as WebGL2RenderingContext:null),uploaded=false;
+- const history=createHistory(),targets:T.WebGLRenderTarget[]=[];
+- const make=(depth=true)=>{const target=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,format:T.RGBAFormat,depthBuffer:depth});
++ owned.push(()=>timer.dispose());
++ const history=own(createHistory()),targets:T.WebGLRenderTarget[]=[];
++ const make=(depth=true)=>{const target=own(new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,format:T.RGBAFormat,depthBuffer:depth}));
+   if(depth)target.depthTexture=new T.DepthTexture(1,1,T.UnsignedIntType);targets.push(target);return target;};
+  const opaque=make(),waterColor=make(),waterDepth=make(),hdr=make(false);
+- const waterScene=new T.Scene(),waterCopy=water.clone(true);waterScene.add(waterCopy);
++ const waterScene=new T.Scene(),waterCopy=water.clone(true);owned.push(()=>waterScene.clear());waterScene.add(waterCopy);
+  scene.traverse(o=>{if((o as T.Light).isLight)waterScene.add(o.clone());});
+- const depthMaterial=new T.MeshDepthMaterial({side:T.DoubleSide});depthMaterial.colorWrite=false;
+- const fullScene=new T.Scene(),fullCamera=new T.Camera(),geometry=new T.PlaneGeometry(2,2);
++ const depthMaterial=own(new T.MeshDepthMaterial({side:T.DoubleSide}));depthMaterial.colorWrite=false;
++ const fullScene=new T.Scene(),fullCamera=new T.Camera(),geometry=own(new T.PlaneGeometry(2,2));owned.push(()=>fullScene.clear());
+  const lut=buildLut(skyProfile(frame),32,64);
+- const skyMap=new T.DataTexture(lut.values,lut.width,lut.rows,T.RedFormat,T.FloatType);skyMap.minFilter=skyMap.magFilter=T.LinearFilter;skyMap.needsUpdate=true;
++ const skyMap=own(new T.DataTexture(lut.values,lut.width,lut.rows,T.RedFormat,T.FloatType));skyMap.minFilter=skyMap.magFilter=T.LinearFilter;skyMap.needsUpdate=true;
+  const n=32,atlasData=new Float32Array(n*n*n*2);
+  for(let z=0;z<n;z++)for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+   const p:[number,number,number]=[-80+160*(x+0.5)/n,8+24*(y+0.5)/n,-80+160*(z+0.5)/n],i=((z*n+y)*n+x)*2;
+@@ -27,19 +31,21 @@ export function createVolumePort(renderer:T.WebGLRenderer,scene:T.Scene,camera:T
+   for(let s=0;s<16;s++)depth+=density([p[0]-0.4*s*3,p[1]+0.8*s*3,p[2]-0.4472135955*s*3],1)*3;
+   atlasData[i+1]=Math.exp(-depth);
+  }
+- const atlas=new T.Data3DTexture(atlasData,n,n,n);atlas.format=T.RGFormat;atlas.type=T.FloatType;atlas.minFilter=atlas.magFilter=T.LinearFilter;atlas.needsUpdate=true;
++ const atlas=own(new T.Data3DTexture(atlasData,n,n,n));atlas.format=T.RGFormat;atlas.type=T.FloatType;atlas.minFilter=atlas.magFilter=T.LinearFilter;atlas.needsUpdate=true;
+  const uniforms={opaqueColor:{value:opaque.texture},opaqueDepth:{value:opaque.depthTexture},waterColor:{value:waterColor.texture},waterDepth:{value:waterDepth.depthTexture},
+   cloudAtlas:{value:atlas},skyLut:{value:skyMap},inverseProjection:{value:camera.projectionMatrixInverse},cameraWorld:{value:camera.matrixWorld},
+   originOffset:{value:new T.Vector3(...frame.originMeters)},sunDirection:{value:new T.Vector3(-0.4,0.8,-0.4472135955)},
+   radiusMeters:{value:frame.bodyRadiusMeters},skyHeight:{value:60000},skyScaleHeight:{value:8000},rayleighPerM:{value:0.00001},miePerM:{value:frame.weatherExtinctionPerM},
+   cloudCoverage:{value:frame.authoredCloudCoverage},fogPerM:{value:frame.status==='Known'?0.025:0},lightning:{value:0},farLimit:{value:500000},
+   waterOpacity:{value:0.56},steps:{value:64},skyMode:{value:0},defect:{value:0}};
+- const material=new T.ShaderMaterial({glslVersion:T.GLSL3,vertexShader:vertexSource,fragmentShader:volumeSource,uniforms,depthTest:false,depthWrite:false,toneMapped:false});
+- const output=new T.ShaderMaterial({glslVersion:T.GLSL3,vertexShader:vertexSource,fragmentShader:outputSource,uniforms:{colorBuffer:{value:hdr.texture}},depthTest:false,depthWrite:false,toneMapped:false});
++ const rainCoverage={value:frame.authoredCloudCoverage};
++ const material=own(new T.ShaderMaterial({glslVersion:T.GLSL3,vertexShader:vertexSource,fragmentShader:volumeSource,uniforms,depthTest:false,depthWrite:false,toneMapped:false}));
++ const output=own(new T.ShaderMaterial({glslVersion:T.GLSL3,vertexShader:vertexSource,fragmentShader:outputSource,uniforms:{colorBuffer:{value:hdr.texture}},depthTest:false,depthWrite:false,toneMapped:false}));
+  const quad=new T.Mesh(geometry,material);quad.frustumCulled=false;fullScene.add(quad);
+- const onLost=(e:Event)=>{e.preventDefault();lost=true;uploaded=false;timer.dispose();history.contextLost();};
+- const onRestored=()=>{lost=false;epoch++;uploaded=false;atlas.needsUpdate=true;skyMap.needsUpdate=true;timer=createDiagnosticTimer(context&&'beginQuery' in context?context as WebGL2RenderingContext:null);history.contextLost();};
+- renderer.domElement.addEventListener('webglcontextlost',onLost);renderer.domElement.addEventListener('webglcontextrestored',onRestored);
++ const onLost=(e:Event)=>{e.preventDefault();lost=true;uploaded=false;try{timer.dispose();}finally{history.contextLost();}};
++ const onRestored=()=>{const nextTimer=createDiagnosticTimer(context&&'beginQuery' in context?context as WebGL2RenderingContext:null);timer=nextTimer;epoch++;uploaded=false;atlas.needsUpdate=true;skyMap.needsUpdate=true;history.contextLost();lost=false;};
++ renderer.domElement.addEventListener('webglcontextlost',onLost);owned.push(()=>renderer.domElement.removeEventListener('webglcontextlost',onLost));
++ renderer.domElement.addEventListener('webglcontextrestored',onRestored);owned.push(()=>renderer.domElement.removeEventListener('webglcontextrestored',onRestored));
+  function active(){if(disposed)throw Error('VOLUME_DISPOSED');}
+  return {
+   setFrame(input:AtmosphereFrame){active();const next=validateFrame(input);if(next.atlasEpoch!==frame.atlasEpoch)throw Error('STALE_ATLAS');
+@@ -67,6 +73,7 @@ export function createVolumePort(renderer:T.WebGLRenderer,scene:T.Scene,camera:T
+     timer.measure('water-depth',()=>{waterScene.overrideMaterial=depthMaterial;renderer.setRenderTarget(waterDepth);renderer.clear();renderer.render(waterScene,camera);waterScene.overrideMaterial=null;});
+     uniforms.originOffset.value.set(...frame.originMeters);uniforms.lightning.value=frame.status==='Known'&&lightningId!==null?2:0;uniforms.skyMode.value=takram?2:mode;
+     uniforms.cloudCoverage.value=takram||mode===3||frame.status==='NoAtmosphere'?0:frame.authoredCloudCoverage;
++    rainCoverage.value=frame.status==='NoAtmosphere'?0:frame.authoredCloudCoverage;
+     uniforms.fogPerM.value=mode===3||frame.status==='NoAtmosphere'?0:0.025;uniforms.miePerM.value=frame.weatherExtinctionPerM;
+     uniforms.rayleighPerM.value=frame.status==='NoAtmosphere'?0:0.00001;uniforms.steps.value=mode===3?16:64;uniforms.defect.value=defect;
+     timer.measure('volumes-water-composite',()=>{quad.material=material;renderer.setRenderTarget(hdr);renderer.clear();renderer.render(fullScene,fullCamera);});
+@@ -75,9 +82,9 @@ export function createVolumePort(renderer:T.WebGLRenderer,scene:T.Scene,camera:T
+     return {status:'RENDERED',history:state,epoch,weatherSnapshotId:frame.weatherSnapshotId,stormIds:frame.stormIds};
+    }finally{water.visible=waterVisible;scene.background=oldBackground;renderer.autoClear=autoClear;renderer.setClearColor(clear,alpha);renderer.setRenderTarget(target);waterScene.overrideMaterial=null;}
+   },
+-  rainUniforms:{uOpaqueDepth:{value:opaque.depthTexture},uWaterDepth:{value:waterDepth.depthTexture},uAtlas:{value:atlas},uInvProjection:{value:camera.projectionMatrixInverse},uCameraWorld:{value:camera.matrixWorld},uViewport:{value:new T.Vector2()},uCloudCoverage:uniforms.cloudCoverage,uFog:uniforms.fogPerM,uOrigin:uniforms.originOffset},
+-  diagnostics(){return {ownedTargets:disposed?0:targets.length,disposed,lost,epoch,lightningId,atlasUploadPending:!uploaded,actualAdapter:null,gpuTimer:timer.read(),borrowedDepth:'NOT_DISPOSED',historyResources:history.resources,temporalAccumulation:'DISABLED_REACTIVE_VALIDATION_ONLY'};},
+-  dispose(){if(disposed)return;disposed=true;scene.fog=savedFog;renderer.domElement.removeEventListener('webglcontextlost',onLost);renderer.domElement.removeEventListener('webglcontextrestored',onRestored);
+-   history.dispose();timer.dispose();for(const target of targets)target.dispose();atlas.dispose();skyMap.dispose();material.dispose();output.dispose();depthMaterial.dispose();geometry.dispose();fullScene.clear();waterScene.clear();}
++  rainUniforms:{uOpaqueDepth:{value:opaque.depthTexture},uWaterDepth:{value:waterDepth.depthTexture},uAtlas:{value:atlas},uInvProjection:{value:camera.projectionMatrixInverse},uCameraWorld:{value:camera.matrixWorld},uViewport:{value:new T.Vector2()},uCloudCoverage:rainCoverage,uFog:uniforms.fogPerM,uOrigin:uniforms.originOffset},
++  diagnostics(){return {ownedTargets:disposed?0:targets.length,disposed,lost,epoch,lightningId,atlasUploadPending:!uploaded,actualAdapter:null,gpuTimer:timer.read(),borrowedDepth:'NOT_DISPOSED',historyResources:history.resources,historyResourcesKind:'LOGICAL_METADATA_ONLY_NO_TEMPORAL_BUFFERS',temporalAccumulation:'DISABLED_REACTIVE_VALIDATION_ONLY'};},
++  dispose(){if(disposed)return;disposed=true;disposeOwned(owned);}
+  };
++ }catch(error){disposed=true;try{disposeOwned(owned);}catch(cleanup){throw new AggregateError([error,cleanup],'VOLUME_INIT_AND_CLEANUP_FAILED',{cause:error});}throw error;}
+ }
+diff --git a/review-r02/before/src/init.ts b/review-r02/after/src/init.ts
+index 7da58025..de3e0a11 100644
+--- a/review-r02/before/src/init.ts
++++ b/review-r02/after/src/init.ts
+@@ -1,5 +1,14 @@
++/** Attempt every owned release; preserve each failure instead of abandoning later resources. */
++export function disposeOwned(actions:readonly (()=>void)[]){
++ const errors:unknown[]=[];for(const action of [...actions].reverse())try{action();}catch(error){errors.push(error);}
++ if(errors.length)throw new AggregateError(errors,'ATM_CLEANUP_FAILED');
++}
++export async function disposeOwnedAsync(actions:readonly (()=>void|Promise<void>)[]){
++ const errors:unknown[]=[];for(const action of [...actions].reverse())try{await action();}catch(error){errors.push(error);}
++ if(errors.length)throw new AggregateError(errors,'ATM_CLEANUP_FAILED');
++}
+ export function createSingleFlight<T extends {dispose():void}>(factory:(signal:AbortSignal)=>Promise<T>){
+- let pending:Promise<T>|null=null,ready:T|null=null,controller:AbortController|null=null,disposed=false;
++ let pending:Promise<T>|null=null,ready:T|null=null,controller:AbortController|null=null,disposed=false,cancelReleaseError:{error:unknown}|null=null;
+  return {
+   get busy(){return pending!==null;},
+   load():Promise<T>{
+@@ -8,10 +17,10 @@ export function createSingleFlight<T extends {dispose():void}>(factory:(signal:A
+    if(pending)return pending;
+    controller=new AbortController();const signal=controller.signal;
+    pending=Promise.resolve().then(()=>factory(signal)).then(value=>{
+-    if(disposed||signal.aborted){value.dispose();throw Error('INIT_CANCELLED');}ready=value;return value;
++    if(disposed||signal.aborted){try{value.dispose();}catch(error){cancelReleaseError={error};throw error;}throw Error('INIT_CANCELLED');}ready=value;return value;
+    }).finally(()=>{pending=null;controller=null;});
+    return pending;
+   },
+-  async dispose(){if(disposed)return;disposed=true;controller?.abort();await pending?.catch(()=>{});ready?.dispose();ready=null;}
++  async dispose(){if(disposed)return;disposed=true;controller?.abort();await pending?.catch(()=>{});const value=ready;ready=null;if(cancelReleaseError)throw cancelReleaseError.error;value?.dispose();}
+  };
+ }
+diff --git a/review-r02/before/src/reuse.ts b/review-r02/after/src/reuse.ts
+index 11f12ba9..a7b05a84 100644
+--- a/review-r02/before/src/reuse.ts
++++ b/review-r02/after/src/reuse.ts
+@@ -2,7 +2,8 @@ export {rainVelocityMps,rainDirection,buildRainColumns,createRainDepthProjection
+ export {ownerPose} from '../inputs/rd/src/runner/threeHost';
+ export {sampleRainTrajectory,createVoxelSourceIndex,sampleRainExposure} from '../inputs/rd/src/experiments/rain-shield';
+ export {applyWindInputs} from '../inputs/rd/src/experiments/foliage-wind';
+-export {sampleAnalyticWetness,DEFAULT_WETNESS_PRESET} from '../inputs/rd/src/experiments/wet-surface';
++export {sampleAnalyticWetness,DEFAULT_WETNESS_PRESET,createWetnessPreset,createWetnessSourceCache,WET_LIMITS} from '../inputs/rd/src/experiments/wet-surface';
++export {fixtureRevision,getFixtureDigest} from '../inputs/rd/src/contracts/fixture';
+ export {importFixture,copyFixturePayload} from '../inputs/rd/src/contracts/fixture';
+ export {surfaceMaterial,setWind,glUniforms} from '../inputs/gfx/src/materials';
+ export {createDepthCameraPort,assertOwner,windInputs} from '../inputs/gfx/src/port';
+diff --git a/review-r02/before/src/takram.ts b/review-r02/after/src/takram.ts
+index 321bd1d0..3a62d8ee 100644
+--- a/review-r02/before/src/takram.ts
++++ b/review-r02/after/src/takram.ts
+@@ -3,9 +3,12 @@ import {EffectComposer,RenderPass,EffectPass} from 'postprocessing';
+ import {CloudsEffect} from '@takram/three-clouds';
+ import {AtmosphereParameters,DensityProfileLayer,PrecomputedTexturesGenerator,AerialPerspectiveEffect} from '@takram/three-atmosphere';
+ import {Ellipsoid} from '@takram/three-geospatial';
+-import type {AtmosphereFrame} from './optics';
++import {validateFrame,type AtmosphereFrame} from './optics';
++import {disposeOwned} from './init';
+ export async function createTakram(renderer:T.WebGLRenderer,scene:T.Scene,camera:T.PerspectiveCamera,frame:AtmosphereFrame,worldToBody:T.Matrix4,sun:T.Vector3,signal:AbortSignal){
++ frame=validateFrame(frame);
+  if(frame.status!=='Known')throw Error('TAKRAM_UNSUPPORTED:'+frame.status);
++ if(!worldToBody.elements.every(Number.isFinite)||!sun.toArray().every(Number.isFinite)||Math.abs(sun.length()-1)>1e-8)throw Error('TAKRAM_FRAME_TRANSFORM');
+  signal.throwIfAborted();const previousTarget=renderer.getRenderTarget();
+  // Every Earth default affecting this finite model is explicitly replaced with authored optics.
+  const exponential=()=>[new DensityProfileLayer(0,0,0,0,0),new DensityProfileLayer(0,1,-1/8,0,0)] as [DensityProfileLayer,DensityProfileLayer];
+@@ -15,11 +18,12 @@ export async function createTakram(renderer:T.WebGLRenderer,scene:T.Scene,camera
+   absorptionDensity:[new DensityProfileLayer(0,0,0,0,0),new DensityProfileLayer(0,0,0,0,0)],absorptionExtinction:new T.Vector3(),
+   groundAlbedo:new T.Color(0.1,0.15,0.12),muSMin:-0.5,skyRadianceToLuminance:new T.Vector3(1,1,1),sunRadianceToLuminance:new T.Vector3(1,1,1)});
+  const generator=new PrecomputedTexturesGenerator(renderer,{type:T.HalfFloatType,combinedScattering:true,higherOrderScattering:false});
+- let composer:EffectComposer|undefined,clouds:CloudsEffect|undefined,aerial:AerialPerspectiveEffect|undefined;
++ let composer:EffectComposer|undefined,clouds:CloudsEffect|undefined,aerial:AerialPerspectiveEffect|undefined,effectsAttached=false,disposed=false;
+  const weather=new T.DataTexture(new Uint8Array([Math.round(frame.authoredCloudCoverage*255),0,0,255]),1,1,T.RGBAFormat);
+  weather.needsUpdate=true;weather.wrapS=weather.wrapT=T.RepeatWrapping;
+  const shape=new T.Data3DTexture(new Uint8Array(8*8*8).map((_,i)=>Math.round(180+60*Math.sin(i*0.3))),8,8,8);
+  shape.format=T.RedFormat;shape.wrapS=shape.wrapT=shape.wrapR=T.RepeatWrapping;shape.minFilter=shape.magFilter=T.LinearFilter;shape.needsUpdate=true;
++ const dispose=()=>{if(disposed)return;disposed=true;disposeOwned([()=>shape.dispose(),()=>weather.dispose(),()=>generator.dispose({textures:true}),()=>{if(!effectsAttached)clouds?.dispose();},()=>{if(!effectsAttached)aerial?.dispose();},()=>composer?.dispose()]);};
+  try {
+   const textures=await generator.update(atmosphere);
+   signal.throwIfAborted();
+@@ -33,13 +37,13 @@ export async function createTakram(renderer:T.WebGLRenderer,scene:T.Scene,camera
+   aerial.worldToECEFMatrix.copy(worldToBody);aerial.sunDirection.copy(sun);aerial.overlay=clouds.atmosphereOverlay;
+   clouds.events.addEventListener('change',()=>{if(aerial&&clouds)aerial.overlay=clouds.atmosphereOverlay;});
+   composer=new EffectComposer(renderer,{frameBufferType:T.HalfFloatType});composer.autoRenderToScreen=false;
+-  composer.addPass(new RenderPass(scene,camera));composer.addPass(new EffectPass(camera,clouds,aerial));
++  composer.addPass(new RenderPass(scene,camera));composer.addPass(new EffectPass(camera,clouds,aerial));effectsAttached=true;
+   const initialMatrix=worldToBody.clone();
+   return {render(){composer!.render(0);return composer!.outputBuffer.texture;},resize(w:number,h:number){composer!.setSize(w,h);},reset(){clouds!.temporalUpscale=false;},
+    setOrigin(origin:[number,number,number]){const matrix=initialMatrix.clone();matrix.setPosition(new T.Vector3(...origin).applyMatrix3(new T.Matrix3().setFromMatrix4(initialMatrix)).add(new T.Vector3().setFromMatrixPosition(initialMatrix)));
+     clouds!.worldToECEFMatrix.copy(matrix);aerial!.worldToECEFMatrix.copy(matrix);},
+    diagnostics:{pin:'@takram/three-clouds@0.7.6 + atmosphere@0.19.1',react:false,weatherTexture:'AUTHORED_SYNTHETIC_SINGLE_FINITE_MASK',orbit:'PACKAGE_LIMITATION_NOT_ACCEPTED',lutGpu:'NOT_RUN_UNTIL_RUNNER'},
+-   dispose(){composer?.dispose();generator.dispose({textures:true});weather.dispose();shape.dispose();}};
+- }catch(e){composer?.dispose();clouds?.dispose();aerial?.dispose();generator.dispose({textures:true});weather.dispose();shape.dispose();throw e;}
++   dispose};
++ }catch(error){try{dispose();}catch(cleanup){throw new AggregateError([error,cleanup],'TAKRAM_INIT_AND_CLEANUP_FAILED',{cause:error});}throw error;}
+  finally{renderer.setRenderTarget(previousTarget);}
+ }
+diff --git a/review-r02/after/src/temporal-boundary.ts b/review-r02/after/src/temporal-boundary.ts
+new file mode 100644
+index 00000000..f3df31b1
+--- /dev/null
++++ b/review-r02/after/src/temporal-boundary.ts
+@@ -0,0 +1,12 @@
++import {PORT_IDS,validateBorrowedPort,type BorrowedPortRequest,type PortId} from './borrowed-port';
++import {validateFrame,type AtmosphereFrame} from './optics';
++import type {FrozenSourceRef,WeatherAdmission} from '../upstream/atm-r04/contracts.proposed.d.ts';
++export type OwnerPortInputs=Readonly<Partial<Record<PortId,Omit<BorrowedPortRequest,'port'|'sourceFrame'|'weather'>>>>;
++/** Prepare existing metadata contracts, never manufacture a presented frame or adopt image handles. */
++export function prepareTemporalRequests(frame:AtmosphereFrame,frozenWeather:FrozenSourceRef,owners:OwnerPortInputs={}){
++ const sourceFrame=validateFrame(frame);
++ const weather:WeatherAdmission=sourceFrame.status==='Known'?{status:'Known',frozenResult:frozenWeather,authoredMask:null}:{status:'NoAtmosphere',frozenResult:frozenWeather};
++ const results=PORT_IDS.map(port=>validateBorrowedPort({...owners[port],port,sourceFrame,weather}));
++ return {results,completeActualBundles:0,temporalReady:false as const,pipelineOptions:'BOTH_OPEN' as const,resourceDisposal:'PRODUCER_ONLY' as const};
++}
++
+diff --git a/review-r02/before/src/viewer.ts b/review-r02/after/src/viewer.ts
+index f0fefc4f..f32b51c3 100644
+--- a/review-r02/before/src/viewer.ts
++++ b/review-r02/after/src/viewer.ts
+@@ -1,18 +1,26 @@
+ import * as T from 'three';
+-import {surfaceMaterial,setWind,importFixture,copyFixturePayload,mountRain,ownerPose,applyWindInputs,DEFAULT_WETNESS_PRESET,sampleAnalyticWetness,bindRestoredOrigin} from './reuse';
++import {surfaceMaterial,setWind,importFixture,copyFixturePayload,mountRain,ownerPose,applyWindInputs,fixtureRevision,WET_LIMITS,bindRestoredOrigin} from './reuse';
+ import {createVolumePort} from './composer';
+ import {createTakram} from './takram';
+ import {validateFrame,rebaseFrame,type AtmosphereFrame,type V3} from './optics';
+ import rainOptics from '../shaders/rain-optics.glsl';
+-import {createSingleFlight} from './init';
++import {createSingleFlight,disposeOwnedAsync} from './init';
++import {createViewerWetness} from './wetness';
++import {prepareTemporalRequests,type OwnerPortInputs} from './temporal-boundary';
+ import {createOpticalReadPort,assertCurrentAnalytic,tangentBasis,type AnalyticInput,type PlanetWeatherQuery} from './weather-port';
+ const status=document.querySelector('#status') as HTMLElement,canvas=document.querySelector('canvas')!,mode=document.querySelector('#mode') as HTMLSelectElement;
+ declare const __DATA_BINDINGS__:Record<string,{bytes:number;sha256:string}>;
++declare const __ROOT_PATH__:string;
+ const checked=async(path:string)=>{const binding=__DATA_BINDINGS__[path];if(!binding)throw Error('UNBOUND_ASSET:'+path);
+  const r=await fetch(path);if(!r.ok)throw Error('MISSING:'+path);const bytes=new Uint8Array(await r.arrayBuffer());
+  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+  if(bytes.length!==binding.bytes||digest!==binding.sha256)throw Error('ASSET_DRIFT:'+path);return bytes;};
+ async function start(){
++ let disposed=false,raf=0,loopScheduled=false,disposal:Promise<void>|undefined;
++ const owned:(()=>void|Promise<void>)[]=[];
++ const own=<R extends {dispose():void|Promise<void>}>(value:R)=>{owned.push(()=>value.dispose());return value;};
++ const dispose=()=>disposal??=Promise.resolve().then(async()=>{disposed=true;cancelAnimationFrame(raf);loopScheduled=false;await disposeOwnedAsync(owned);});
++ try {
+  const input:AnalyticInput=JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-input.json')));
+  const query:PlanetWeatherQuery=JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-query.json')));
+  const optics=JSON.parse(new TextDecoder().decode(await checked('fixtures/optics-config.json')));
+@@ -22,10 +30,10 @@ async function start(){
+  await assertCurrentAnalytic(JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-result.json'))),query,weatherPort.view);
+  const frame:AtmosphereFrame=projected.frame,weather=projected.result,basis=tangentBasis(weather.query.bodyFixedPositionMeters);
+  const up=new T.Vector3(...basis.up),east=new T.Vector3(...basis.east),north=new T.Vector3(...basis.north);
+- const renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:true,powerPreference:'high-performance'});
++ const renderer=own(new T.WebGLRenderer({canvas,antialias:false,alpha:true,powerPreference:'high-performance'}));
+  renderer.toneMapping=T.NoToneMapping;renderer.outputColorSpace=T.LinearSRGBColorSpace;
+  const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info'),adapter=debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):null;
+- if(!gl.getExtension('EXT_color_buffer_float')||!gl.getExtension('OES_texture_float_linear')){status.textContent='UNSUPPORTED: required float HDR/atlas filtering. No GPU or visual PASS.';renderer.dispose();return;}
++ if(!gl.getExtension('EXT_color_buffer_float')||!gl.getExtension('OES_texture_float_linear')){status.textContent='UNSUPPORTED: required float HDR/atlas filtering. No GPU or visual PASS.';await dispose();return;}
+  const scene=new T.Scene(),camera=new T.PerspectiveCamera(60,1,0.1,500000);
+  scene.add(new T.HemisphereLight(0x9bb4c5,0x12352c,0.65));
+  const sun=new T.DirectionalLight(0xffe3ae,2.1);sun.position.set(-28,42,-18);scene.add(sun,sun.target);
+@@ -35,22 +43,23 @@ async function start(){
+  for(const object of fixture.objects)for(const source of object.meshes){
+   const data=fixture.materials.find(m=>m.id===source.materialId)!;
+   if(!source.normals)throw Error('BOUND_NORMALS_REQUIRED');
+-  const geometry=new T.BufferGeometry(),positions=copyFixturePayload(fixture,source.positions),normals=copyFixturePayload(fixture,source.normals),indices=copyFixturePayload(fixture,source.indices);
++  const geometry=own(new T.BufferGeometry()),positions=copyFixturePayload(fixture,source.positions),normals=copyFixturePayload(fixture,source.normals),indices=copyFixturePayload(fixture,source.indices);
+   geometry.setAttribute('position',new T.BufferAttribute(new Float32Array(positions),3));geometry.setAttribute('normal',new T.BufferAttribute(new Float32Array(normals),3));
+   geometry.setIndex(new T.BufferAttribute(new Uint32Array(indices),1));
+   const count=positions.length/3;
+   geometry.setAttribute('color',new T.BufferAttribute(new Float32Array(count*3).fill(1),3));geometry.setAttribute('uv',new T.BufferAttribute(new Float32Array(count*2),2));
+   geometry.setAttribute('labAo',new T.BufferAttribute(new Float32Array(count).fill(0.85),1));geometry.setAttribute('labWetness',new T.BufferAttribute(new Float32Array(count).fill(0.4),1));
+-  const mesh=new T.Mesh(geometry,surfaceMaterial(T,false,{...data,colorLinearRgb:[...data.colorLinearRgb]},false,data.role==='foliage'));scene.add(mesh);objects.push(mesh);
++  const mesh=new T.Mesh(geometry,own(surfaceMaterial(T,false,{...data,colorLinearRgb:[...data.colorLinearRgb]},false,data.role==='foliage')));
++  const pose=ownerPose(fixture,object.ownerId);if(!pose)throw Error('FIXTURE_OWNER_MISSING');mesh.position.set(...pose.originMeters);mesh.quaternion.set(...pose.rotationXyzw);scene.add(mesh);objects.push(mesh);
+  }
+- const waterGeometry=new T.PlaneGeometry(12,12),count=waterGeometry.getAttribute('position').count;
++ const waterGeometry=own(new T.PlaneGeometry(12,12)),count=waterGeometry.getAttribute('position').count;
+  for(const [name,size,value] of [['color',3,1],['labAo',1,1],['labWetness',1,0.5]] as const)waterGeometry.setAttribute(name,new T.BufferAttribute(new Float32Array(count*size).fill(value),size));
+- const water=new T.Mesh(waterGeometry,surfaceMaterial(T,false,{id:'water',role:'water-presentation',colorLinearRgb:[0.05,0.28,0.35]},true));water.rotation.x=-Math.PI/2;water.position.set(2,0.6,2);scene.add(water);
+- const volume=createVolumePort(renderer,scene,camera,water,frame);
++ const water=new T.Mesh(waterGeometry,own(surfaceMaterial(T,false,{id:'water',role:'water-presentation',colorLinearRgb:[0.05,0.28,0.35]},true)));water.rotation.x=-Math.PI/2;water.position.set(2,0.6,2);scene.add(water);
++ const volume=own(createVolumePort(renderer,scene,camera,water,frame));
+  const solids=JSON.parse(new TextDecoder().decode(await checked('fixtures/occluders.json'))).solids as {id:string;min:V3;max:V3}[];
+- for(const box of solids){const size=box.max.map((v,i)=>v-box.min[i]),geometry=new T.BoxGeometry(size[0],size[1],size[2]),count=geometry.getAttribute('position').count;
++ for(const box of solids){const size=box.max.map((v,i)=>v-box.min[i]),geometry=own(new T.BoxGeometry(size[0],size[1],size[2])),count=geometry.getAttribute('position').count;
+   for(const [name,s,v] of [['color',3,1],['labAo',1,0.85],['labWetness',1,0.2]] as const)geometry.setAttribute(name,new T.BufferAttribute(new Float32Array(count*s).fill(v),s));
+-  const mesh=new T.Mesh(geometry,surfaceMaterial(T,false,{id:box.id,role:'wood',colorLinearRgb:[0.18,0.27,0.21]}));
++  const mesh=new T.Mesh(geometry,own(surfaceMaterial(T,false,{id:box.id,role:'wood',colorLinearRgb:[0.18,0.27,0.21]})));
+   mesh.name=box.id;mesh.position.set(...box.min.map((v,i)=>(v+box.max[i])/2) as V3);scene.add(mesh);objects.push(mesh);
+  }
+  const restoredOrigin={value:new T.Vector3()};
+@@ -58,11 +67,13 @@ async function start(){
+  const rainScene=new T.Scene(),rainRoot=new T.Group();rainScene.add(rainRoot);
+  const rdWeather={windMps:frame.windMps,rain01:frame.rain01,cloud01:frame.authoredCloudCoverage,snow01:0};
+  const controller=new AbortController();
++ owned.push(()=>controller.abort());
+  async function rainFixture(name:string){const path='fixtures/authored-rain/',b=await checked(path+name+'.json'),m=JSON.parse(new TextDecoder().decode(b));
+   return importFixture(b,new Map(await Promise.all(m.payloads.map(async(p:{id:string;path:string})=>[p.id,await checked(path+p.path)] as const))));}
+- const closedRain=await rainFixture('closed'),openedRain=await rainFixture('open');let rainSourceRevision=1;
+- const rain=await mountRain({scene:rainScene,camera,root:rainRoot,fixture:closedRain,frame:{tick:0,seconds:0,paused:true,cameraId:'near',sourceRevision:1,weather:rdWeather},
+-  resetTick:0,signal:controller.signal,capabilities:{},ownerPose:id=>ownerPose(closedRain,id)},{id:'source-query',parameters:{particles:128,splashes:16,columns:4,seed:23}});
++ const closedRain=await rainFixture('closed'),openedRain=await rainFixture('open');let rainSourceRevision=fixtureRevision(closedRain),currentRain=closedRain,replacing=false;
++ const rain=own(await mountRain({scene:rainScene,camera,root:rainRoot,fixture:closedRain,frame:{tick:0,seconds:0,paused:true,cameraId:'near',sourceRevision:rainSourceRevision,weather:rdWeather},
++  resetTick:0,signal:controller.signal,capabilities:{},ownerPose:id=>ownerPose(currentRain,id)},{id:'source-query',parameters:{particles:128,splashes:16,columns:4,seed:23}}));
++ const wetness=own(createViewerWetness(closedRain,objects,frame.rain01));
+  rainRoot.traverse(o=>{const mesh=o as T.Mesh;if(!mesh.isMesh)return;const material=mesh.material as T.MeshBasicMaterial;
+   if(!['rain-drops','rain-splashes'].includes(mesh.name)){mesh.visible=false;return;}
+   material.onBeforeCompile=shader=>{Object.assign(shader.uniforms,volume.rainUniforms);
+@@ -76,44 +87,64 @@ async function start(){
+     if(wd<1.0&&rainDist>rainDistance(screenUv,wd))diffuseColor.a*=0.44;
+     #include <opaque_fragment>`);
+   };material.customProgramCacheKey=()=> 'atm.rd-rain-optics.v1';});
+- let takram:Awaited<ReturnType<typeof createTakram>>|undefined,raf=0,disposed=false,presentationTick=0,currentFrame=frame;
++ let takram:Awaited<ReturnType<typeof createTakram>>|undefined,presentationTick=0,rdTick=0,currentFrame=validateFrame({...frame,sourceRevision:rainSourceRevision}),wetnessResult:ReturnType<typeof wetness.update>|undefined;
++ volume.setFrame(currentFrame);
+  const matrix=new T.Matrix4().makeBasis(east,up,north);matrix.setPosition(up.clone().multiplyScalar(frame.bodyRadiusMeters));
+- const initialize=createSingleFlight(signal=>createTakram(renderer,scene,camera,frame,matrix,new T.Vector3(-0.4,0.8,-0.4472135955).transformDirection(matrix),signal));
++ const initialize=own(createSingleFlight(signal=>createTakram(renderer,scene,camera,frame,matrix,new T.Vector3(-0.4,0.8,-0.4472135955).transformDirection(matrix),signal)));
+  const poses={below:[5,3,-8],inside:[0,20,0],above:[8,45,-12],orbit:[0,100000,0]} as const;
+  const targets={below:[2,14,2],inside:[15,20,5],above:[0,16,0],orbit:[0,0,0]} as const;
+  const position=document.querySelector('#position') as HTMLSelectElement;
+  function pose(){const key=position.value as keyof typeof poses,p=poses[key],t=targets[key];camera.position.set(...p.map((v,i)=>v-currentFrame.originMeters[i]) as V3);camera.lookAt(new T.Vector3(...t.map((v,i)=>v-currentFrame.originMeters[i]) as V3));camera.updateMatrixWorld();}
+  pose();position.onchange=pose;
+- function resize(){renderer.setSize(960,540,false);camera.aspect=960/540;camera.updateProjectionMatrix();volume.resize(960,540);volume.rainUniforms.uViewport.value.set(960,540);takram?.resize(960,540);}
++ function resize(width=960,height=540,dpr=1){if(!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||width<1||height<1||!Number.isFinite(dpr)||dpr<1||dpr>4)throw Error('VIEW_SIZE');
++  renderer.setPixelRatio(dpr);renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();const pixels=renderer.getDrawingBufferSize(new T.Vector2());volume.resize(pixels.x,pixels.y);volume.rainUniforms.uViewport.value.copy(pixels);takram?.resize(width,height);}
+  resize();
+  async function select(){const selected=mode.value;volume.setMode(selected==='lut'?1:selected==='low'?3:0);
+   if(selected==='takram'&&frame.status!=='Known'){mode.value='analytic';status.textContent='TAKRAM_UNSUPPORTED: '+frame.status;return;}
+   if(selected==='takram'&&!takram){
+    status.textContent='Preparing pinned Takram LUT; GPU proof remains diagnostic until Runner records it.';
+-   takram=await initialize.load();if(disposed)return;takram.setOrigin(currentFrame.originMeters);takram.resize(960,540);
++   takram=await initialize.load();if(disposed)return;takram.setOrigin(currentFrame.originMeters);const logical=renderer.getSize(new T.Vector2());takram.resize(logical.x,logical.y);
+   }
+  }
+  mode.onchange=()=>{select().catch(e=>{status.textContent='TAKRAM FAIL: '+e.message;mode.value='analytic';});};
+- function loop(){if(disposed)return;if(initialize.busy){raf=requestAnimationFrame(loop);return;}presentationTick++;
+-  const rdTick=Math.floor(presentationTick/2);rain.setFrame({tick:rdTick,seconds:rdTick/60,paused:false,cameraId:'near',sourceRevision:rainSourceRevision,weather:rdWeather});
+-  const wet=sampleAnalyticWetness(DEFAULT_WETNESS_PRESET,rdTick,0,'exposed').wetness01;
+-  for(const mesh of objects)(mesh.geometry.getAttribute('labWetness').array as Float32Array).fill(wet);
+-  for(const mesh of objects)mesh.geometry.getAttribute('labWetness').needsUpdate=true;
++ function renderTick(tick:number){if(disposed)throw Error('VIEWER_DISPOSED');if(initialize.busy||replacing)throw Error('VIEWER_PREPARING');
++  if(!Number.isSafeInteger(tick)||tick<0||tick>WET_LIMITS.maxTick)throw Error('VIEW_TICK');rdTick=tick;
++  rain.setFrame({tick:rdTick,seconds:rdTick/60,paused:false,cameraId:'near',sourceRevision:rainSourceRevision,weather:rdWeather});
++  wetnessResult=wetness.update(rdTick,rdWeather,currentFrame.originMeters);
+   const wind=applyWindInputs('control.decor',rdTick,0.4,rdWeather,[0,0,0,1]);setWind(wind.angles.x,wind.angles.z);
+-  const flash=presentationTick%240<8?'authored.lightning.'+Math.floor(presentationTick/240):null;volume.lightning(flash);
+   const result=volume.render(mode.value==='takram'&&takram?()=>takram!.render():undefined,rainScene);
+   status.textContent=`${mode.value} / ${position.value} / LOCAL_WINDOWS_ISOLATED diagnostic\nStorm ${frame.stormIds[0]}\nAdapter ${adapter??'UNAVAILABLE'}\nGPU timer NOT_RUN, reference NOT_RUN, integration NO\n${result.status}`;
+-  raf=requestAnimationFrame(loop);
++  return result;
+  }
+- document.querySelector('#rebase')!.addEventListener('click',()=>{const shift=new T.Vector3(1024,0,0);scene.position.sub(shift);rainScene.position.sub(shift);camera.position.sub(shift);
+-  currentFrame=rebaseFrame(currentFrame,[1024,0,0]);restoredOrigin.value.set(...currentFrame.originMeters);volume.setFrame(currentFrame);
+-  takram?.setOrigin(currentFrame.originMeters);});
+- document.querySelector('#defect')!.addEventListener('change',e=>volume.setMode(mode.value==='lut'?1:0,Number((e.target as HTMLSelectElement).value)));
+- document.querySelector('#loss')!.addEventListener('click',()=>{const ext=gl.getExtension('WEBGL_lose_context');ext?.loseContext();setTimeout(()=>ext?.restoreContext(),250);});
+- document.querySelector('#open')!.addEventListener('click',()=>{void rain.replaceFixture(openedRain).then(()=>{rainSourceRevision=2;scene.getObjectByName('roof')!.visible=false;scene.getObjectByName('cave.roof')!.visible=false;
+-  rainRoot.traverse(o=>{if((o as T.Mesh).isMesh&&!['rain-drops','rain-splashes'].includes(o.name))o.visible=false;});currentFrame=validateFrame({...currentFrame,sourceRevision:2});volume.setFrame(currentFrame);});});
+- const api={diagnostics:()=>({volume:volume.diagnostics(),renderer:renderer.info.memory,actualAdapter:adapter,weatherSnapshotId:frame.weatherSnapshotId,stormIds:frame.stormIds,canvases:document.querySelectorAll('canvas').length,mainLoops:disposed?0:1,referenceAcceptance:false}),
+-  dispose:async()=>{if(disposed)return;disposed=true;cancelAnimationFrame(raf);controller.abort();await rain.dispose();await initialize.dispose();volume.dispose();objects.forEach(m=>{m.geometry.dispose();(m.material as T.Material).dispose();});water.geometry.dispose();(water.material as T.Material).dispose();renderer.dispose();}};
+- Object.assign(window,{ATM:api});window.addEventListener('pagehide',()=>{void api.dispose();},{once:true});loop();
++ const headless=new URLSearchParams(location.search).get('diagnostic')==='1';
++ function schedule(){if(disposed)return;raf=requestAnimationFrame(loop);loopScheduled=true;}
++ function loop(){loopScheduled=false;if(disposed)return;if(initialize.busy||replacing){schedule();return;}presentationTick++;const tick=Math.floor(presentationTick/2);
++  if(tick>WET_LIMITS.maxTick){status.textContent='FINITE_TICK_BUDGET_REACHED';return;}
++  try{renderTick(tick);}catch(error){status.textContent='FAIL: '+String(error);void dispose().catch(console.error);return;}schedule();}
++ function rebase(offset:V3=[1024,0,0]){const next=rebaseFrame(currentFrame,offset),shift=new T.Vector3(...offset);scene.position.sub(shift);rainScene.position.sub(shift);camera.position.sub(shift);
++  currentFrame=next;restoredOrigin.value.set(...currentFrame.originMeters);volume.setFrame(currentFrame);takram?.setOrigin(currentFrame.originMeters);}
++ const onRebase=()=>rebase();document.querySelector('#rebase')!.addEventListener('click',onRebase);owned.push(()=>document.querySelector('#rebase')!.removeEventListener('click',onRebase));
++ const onDefect=(e:Event)=>volume.setMode(mode.value==='lut'?1:mode.value==='low'?3:0,Number((e.target as HTMLSelectElement).value));document.querySelector('#defect')!.addEventListener('change',onDefect);owned.push(()=>document.querySelector('#defect')!.removeEventListener('change',onDefect));
++ const lossExtension=gl.getExtension('WEBGL_lose_context');let restorationTimer:ReturnType<typeof setTimeout>|undefined;
++ const onLoss=()=>{if(!lossExtension)return;lossExtension.loseContext();restorationTimer=setTimeout(()=>lossExtension.restoreContext(),250);};document.querySelector('#loss')!.addEventListener('click',onLoss);
++ owned.push(()=>{if(restorationTimer!==undefined)clearTimeout(restorationTimer);document.querySelector('#loss')!.removeEventListener('click',onLoss);});
++ async function openRoof(){if(disposed)throw Error('VIEWER_DISPOSED');if(replacing)throw Error('VIEWER_PREPARING');replacing=true;try{await rain.replaceFixture(openedRain);wetness.replace(openedRain,rdTick);currentRain=openedRain;rainSourceRevision=fixtureRevision(openedRain);
++  scene.getObjectByName('roof')!.visible=false;scene.getObjectByName('cave.roof')!.visible=false;
++  rainRoot.traverse(o=>{if((o as T.Mesh).isMesh&&!['rain-drops','rain-splashes'].includes(o.name))o.visible=false;});currentFrame=validateFrame({...currentFrame,sourceRevision:rainSourceRevision});volume.setFrame(currentFrame);}finally{replacing=false;}}
++ const onOpen=()=>{void openRoof().catch(error=>{status.textContent='OPEN_ROOF_FAIL: '+String(error);});};document.querySelector('#open')!.addEventListener('click',onOpen);owned.push(()=>document.querySelector('#open')!.removeEventListener('click',onOpen));
++ const api={diagnostics:()=>({volume:volume.diagnostics(),renderer:renderer.info.memory,actualAdapter:adapter,weatherSnapshotId:frame.weatherSnapshotId,weatherSimulationTick:frame.simulationTick,stormIds:frame.stormIds,rdTick,
++  wetness:wetnessResult?{unknownSamples:wetnessResult.unknownSamples,fixtureDigest:wetnessResult.fixtureDigest,sourceRevision:wetnessResult.sourceRevision}:null,lightningOwner:'AUTHORED_DIAGNOSTIC_CONTROL_NOT_WEATHER_EVENT',canvases:document.querySelectorAll('canvas').length,mainLoops:loopScheduled?1:0,headlessManualPump:headless&&!disposed,temporalReady:false,referenceAcceptance:false}),
++  step:(tick:number)=>{if(!headless)throw Error('HEADLESS_MANUAL_PUMP_REQUIRED');return renderTick(tick);},
++  setView:(value:string)=>{if(!(value in poses))throw Error('VIEW');position.value=value;pose();},
++  setMode:async(value:string)=>{if(!['analytic','lut','takram','low'].includes(value))throw Error('MODE');mode.value=value;await select();},
++  setDefect:(value:number)=>volume.setMode(mode.value==='lut'?1:mode.value==='low'?3:0,value),
++  setLightning:(id:string|null)=>volume.lightning(id),openRoof,rebase,resize,dispose,
++  prepareTemporal:(owners:OwnerPortInputs={})=>{const path='fixtures/chosen-weather-result.json',binding=__DATA_BINDINGS__[path];return prepareTemporalRequests(currentFrame,{sourceId:'frozen-wxg-chosen-result',absolutePath:__ROOT_PATH__+'/'+path,...binding},owners);},
++  loseContext:()=>{if(!lossExtension)return {status:'Unsupported',reason:'WEBGL_LOSE_CONTEXT_UNAVAILABLE'};lossExtension.loseContext();return {status:'REQUESTED'};},
++  restoreContext:()=>{if(!lossExtension)return {status:'Unsupported',reason:'WEBGL_LOSE_CONTEXT_UNAVAILABLE'};lossExtension.restoreContext();return {status:'REQUESTED'};}};
++ owned.push(()=>{mode.onchange=null;position.onchange=null;controller.abort();});
++ Object.assign(window,{ATM:api});const onHide=()=>{void dispose().catch(console.error);};window.addEventListener('pagehide',onHide,{once:true});owned.push(()=>window.removeEventListener('pagehide',onHide));
++ if(!headless)loop();return api;
++ }catch(error){try{await dispose();}catch(cleanup){throw new AggregateError([error,cleanup],'VIEWER_INIT_AND_CLEANUP_FAILED',{cause:error});}throw error;}
+ }
+ start().catch(e=>{status.textContent='FAIL: '+e.message;console.error(e);});
+diff --git a/review-r02/after/src/wetness.ts b/review-r02/after/src/wetness.ts
+new file mode 100644
+index 00000000..e9dfa740
+--- /dev/null
++++ b/review-r02/after/src/wetness.ts
+@@ -0,0 +1,38 @@
++import * as T from 'three';
++import {createWetnessSourceCache,createWetnessPreset,DEFAULT_WETNESS_PRESET,WET_LIMITS,ownerPose,fixtureRevision} from './reuse';
++import type {LabFixtureV1,Vec3} from '../inputs/rd/src/contracts/fixture';
++import type {LabFrameInput} from '../inputs/rd/src/contracts/experiment';
++
++/** Receivers query the actual authored RD source; its coordinate owner is not a GPU resource lease. */
++export function createViewerWetness(fixture:LabFixtureV1,meshes:readonly T.Mesh[],rain01:number){
++ const preset=createWetnessPreset({...DEFAULT_WETNESS_PRESET,id:'atm-bound-current-rain',rainHistory:[{tick:0,rain01}]});
++ let current=fixture,cache=createWetnessSourceCache(fixture),sourceStartTick=0,disposed=false;
++ const update=(tick:number,weather:LabFrameInput['weather'],origin:Vec3)=>{
++  if(disposed)throw Error('WETNESS_DISPOSED');
++  if(current.objects.length!==1)throw Error('WETNESS_SOURCE_OWNER_UNSUPPORTED');
++  const owner=ownerPose(current,current.objects[0].ownerId);if(!owner)throw Error('WETNESS_SOURCE_OWNER_MISSING');
++  const inverse=new T.Quaternion(...owner.rotationXyzw).invert(),base=new T.Vector3(...owner.originMeters),shift=new T.Vector3(...origin);
++  const points:{id:string;ownerId:string;positionLocalMeters:Vec3;normalLocal:Vec3}[]=[],surfaces:{mesh:T.Mesh;start:number;faces:number}[]=[];
++  meshes.forEach((mesh,index)=>{
++   if(!mesh.visible)return;
++   mesh.updateWorldMatrix(true,false);
++   const p=mesh.geometry.getAttribute('position'),n=mesh.geometry.getAttribute('normal'),wet=mesh.geometry.getAttribute('labWetness'),indices=mesh.geometry.index;
++   if(!p||!n||!wet||p.count%4!==0||n.count!==p.count||wet.count!==p.count||!indices||indices.count!==p.count/4*6)throw Error('WETNESS_QUAD_SOURCE_UNSUPPORTED');
++   const start=points.length;
++   for(let first=0;first<p.count;first+=4){
++    const face=first/4;for(let i=0;i<6;i++){const v=indices.getX(face*6+i);if(v<first||v>=first+4)throw Error('WETNESS_QUAD_SOURCE_UNSUPPORTED');}
++    const center=new T.Vector3();for(let i=0;i<4;i++)center.add(new T.Vector3().fromBufferAttribute(p,first+i));center.multiplyScalar(0.25).applyMatrix4(mesh.matrixWorld).add(shift).sub(base).applyQuaternion(inverse);
++    const normal=new T.Vector3().fromBufferAttribute(n,first).transformDirection(mesh.matrixWorld).applyQuaternion(inverse);
++    points.push({id:`atm.receiver.${index}.face.${face}`,ownerId:owner.ownerId,positionLocalMeters:center.toArray() as Vec3,normalLocal:normal.toArray() as Vec3});
++   }
++   surfaces.push({mesh,start,faces:p.count/4});
++  });
++  if(points.length>WET_LIMITS.surfaceSamples)throw Error('WETNESS_SAMPLE_BUDGET');
++  const result=cache.evaluate({tick,seconds:tick/60,paused:false,cameraId:'near',sourceRevision:fixtureRevision(current),weather},preset,sourceStartTick,points);
++  for(const surface of surfaces){const wet=surface.mesh.geometry.getAttribute('labWetness');for(let face=0;face<surface.faces;face++)for(let vertex=0;vertex<4;vertex++)wet.setX(face*4+vertex,result.samples[surface.start+face].wetness01);wet.needsUpdate=true;}
++  return result;
++ };
++ return {update,replace(next:LabFixtureV1,tick:number){if(disposed)throw Error('WETNESS_DISPOSED');if(!Number.isSafeInteger(tick)||tick<0||tick>WET_LIMITS.maxTick)throw Error('WETNESS_SOURCE_TICK');const nextCache=createWetnessSourceCache(next);cache.dispose();cache=nextCache;current=next;sourceStartTick=tick;},
++  dispose(){if(disposed)return;disposed=true;cache.dispose();}};
++}
++
+diff --git a/review-r02/after/tests/r14-regressions.test.mjs b/review-r02/after/tests/r14-regressions.test.mjs
+new file mode 100644
+index 00000000..7ae97d94
+--- /dev/null
++++ b/review-r02/after/tests/r14-regressions.test.mjs
+@@ -0,0 +1,29 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import {createHash} from 'node:crypto';
++import {fileURLToPath} from 'node:url';
++import * as T from 'three';
++import {disposeOwned,disposeOwnedAsync,createSingleFlight} from '../.r14-runtime-r02/init.mjs';
++import {createVolumePort} from '../.r14-runtime-r02/composer.mjs';
++import {createViewerWetness} from '../.r14-runtime-r02/wetness.mjs';
++import {importFixture} from '../.r14-runtime-r02/reuse.mjs';
++import {prepareTemporalRequests} from '../.r14-runtime-r02/temporal-boundary.mjs';
++const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url),'utf8'));
++const input=json('fixtures/chosen-weather-input.json'),weather=json('fixtures/chosen-weather-result.json'),pos=weather.query.bodyFixedPositionMeters,norm=Math.hypot(pos.x,pos.y,pos.z);
++const frame={status:'Known',simulationTick:weather.query.simulationTick,weatherSnapshotId:weather.WeatherSnapshotId,binding:weather.binding,bodyId:weather.query.bodyId,bodyRadiusMeters:input.bundle.physics.radiusMeters,bodyNormal:[pos.x/norm,pos.y/norm,pos.z/norm],originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1,weatherExtinctionPerM:weather.sample.extinctionPerM,windMps:[8,0,-4],stormIds:weather.sample.stormIds,authoredCloudCoverage:0.7,rain01:0.8,opticsDigest:input.bundle.optics.digest};
++function renderer(){let target=null,clear=new T.Color(),alpha=1;return{domElement:new EventTarget(),autoClear:true,getRenderTarget:()=>target,setRenderTarget:v=>{target=v;},getClearColor:c=>c.copy(clear),getClearAlpha:()=>alpha,setClearColor:(c,a)=>{clear.set(c);alpha=a;},clear(){},render(){},initTexture(){}};}
++async function fixture(name){const dir='fixtures/authored-rain/',m=json(dir+name+'.json');return importFixture(readFileSync(new URL('../'+dir+name+'.json',import.meta.url)),new Map(m.payloads.map(p=>[p.id,new Uint8Array(readFileSync(new URL('../'+dir+p.path,import.meta.url)))])));}
++function receiver(x){const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.Float32BufferAttribute([x-.1,1,-.1,x+.1,1,-.1,x+.1,1,.1,x-.1,1,.1],3));geometry.setAttribute('normal',new T.Float32BufferAttribute([0,1,0,0,1,0,0,1,0,0,1,0],3));geometry.setAttribute('labWetness',new T.Float32BufferAttribute([0,0,0,0],1));geometry.setIndex([0,1,2,0,2,3]);return new T.Mesh(geometry,new T.MeshBasicMaterial());}
++test('owned sync cleanup preserves all failures and releases later resources',()=>{const visited=[];assert.throws(()=>disposeOwned([()=>visited.push('first'),()=>{visited.push('middle');throw Error('primary');},()=>visited.push('last')]),e=>e instanceof AggregateError&&e.errors[0].message==='primary');assert.deepEqual(visited,['last','middle','first']);});
++test('owned async cleanup awaits every release despite rejection',async()=>{const visited=[];await assert.rejects(disposeOwnedAsync([async()=>visited.push('first'),async()=>{visited.push('middle');throw Error('async-release');},()=>visited.push('last')]),e=>e instanceof AggregateError&&e.errors[0].message==='async-release');assert.deepEqual(visited,['last','middle','first']);});
++test('single-flight dispose clears ownership even when owned release throws',async()=>{let releases=0;const port=createSingleFlight(async()=>({dispose(){releases++;throw Error('release');}}));await port.load();await assert.rejects(port.dispose(),/release/);await port.dispose();await assert.rejects(port.load(),/INIT_DISPOSED/);assert.equal(releases,1);});
++test('single-flight cancellation preserves late owned release failure for outer cleanup',async()=>{let complete,releases=0;const port=createSingleFlight(()=>new Promise(resolve=>{complete=resolve;})),pending=port.load(),rejected=assert.rejects(pending,/late-release/);await Promise.resolve();const disposing=port.dispose(),cleanupRejected=assert.rejects(disposing,/late-release/);complete({dispose(){releases++;throw Error('late-release');}});await rejected;await cleanupRejected;await port.dispose();assert.equal(releases,1);await assert.rejects(port.load(),/INIT_DISPOSED/);});
++test('Source contract: Takram callers use logical size; volume and rain use actual drawing-buffer pixels',()=>{const viewer=readFileSync(new URL('../src/viewer.ts',import.meta.url),'utf8'),peer=readFileSync(new URL('../node_modules/postprocessing/build/index.js',import.meta.url),'utf8');assert.match(viewer,/takram\?\.resize\(width,height\)/);assert.match(viewer,/const logical=renderer\.getSize\(new T\.Vector2\(\)\);takram\.resize\(logical\.x,logical\.y\)/);assert.doesNotMatch(viewer,/takram\??\.resize\(pixels\.x,pixels\.y\)/);assert.match(viewer,/volume\.resize\(pixels\.x,pixels\.y\);volume\.rainUniforms\.uViewport\.value\.copy\(pixels\)/);const size=peer.slice(peer.indexOf('setSize(width, height, updateStyle) {'));assert.match(size,/renderer\.getSize\(new Vector2\(\)\)/);assert.match(size,/renderer\.setSize\(width, height, updateStyle\)/);assert.match(size,/inputBuffer\.setSize\(drawingBufferSize\.width, drawingBufferSize\.height\)/);});
++test('composer failed constructor restores borrowed fog after early caller failure',()=>{const scene=new T.Scene(),fog=new T.Fog();scene.fog=fog;const camera=new T.PerspectiveCamera(),water=new T.Mesh();assert.throws(()=>createVolumePort({getContext(){throw Error('context-call');}},scene,camera,water,frame),/context-call/);assert.equal(scene.fog,fog);});
++test('composer failed listener installation releases owned objects and leaves water material borrowed',()=>{const scene=new T.Scene(),fog=new T.Fog();scene.fog=fog;const camera=new T.PerspectiveCamera(),material=new T.MeshBasicMaterial(),water=new T.Mesh(new T.PlaneGeometry(),material);let borrowed=0,removed=0;material.addEventListener('dispose',()=>borrowed++);const r=renderer();r.domElement={addEventListener(){throw Error('listener-call');},removeEventListener(){removed++;}};try{assert.throws(()=>createVolumePort(r,scene,camera,water,frame),/listener-call/);assert.equal(scene.fog,fog);assert.equal(borrowed,0);assert.equal(removed,0);}finally{water.geometry.dispose();material.dispose();}});
++test('Takram selection preserves bound rain coverage rather than zeroing its optical mask',()=>{const scene=new T.Scene(),camera=new T.PerspectiveCamera(),water=new T.Mesh(),r=renderer(),port=createVolumePort(r,scene,camera,water,frame),texture=new T.Texture();try{port.render(()=>texture);assert.equal(port.rainUniforms.uCloudCoverage.value,0.7);port.setMode(1);port.render();assert.equal(port.rainUniforms.uCloudCoverage.value,0.7);port.setFrame({...frame,authoredCloudCoverage:0.3});port.render(()=>texture);assert.equal(port.rainUniforms.uCloudCoverage.value,0.3);}finally{port.dispose();texture.dispose();}});
++test('RD wetness follows closed/open roof and current source epoch, never unconditional exposed',async()=>{const closed=await fixture('closed'),open=await fixture('open'),a=receiver(0),b=receiver(15),c=receiver(21),wet=createViewerWetness(closed,[a,b,c],0.8),weather={windMps:[0,0,0],rain01:0.8,cloud01:0.7,snow01:0};try{const old=wet.update(300,weather,[0,0,0]);assert.deepEqual(old.samples.map(s=>s.exposure),['shielded','shielded','unknown']);assert.equal(old.unknownSamples,1);assert.equal(a.geometry.getAttribute('labWetness').getX(0),0);wet.replace(open,300);const next=wet.update(360,weather,[0,0,0]);assert.deepEqual(next.samples.map(s=>s.exposure),['exposed','exposed','unknown']);assert.ok(a.geometry.getAttribute('labWetness').getX(0)>0);assert.equal(c.geometry.getAttribute('labWetness').getX(0),0);assert.equal(next.unknownSamples,1);assert.equal(next.sourceRevision,2);}finally{wet.dispose();for(const m of [a,b,c]){m.geometry.dispose();m.material.dispose();}}});
++test('wetness origin rebase preserves receiver source coordinates and stale/mismatched inputs reject',async()=>{const source=await fixture('closed'),mesh=receiver(0),wet=createViewerWetness(source,[mesh],0.8),weather={windMps:[0,0,0],rain01:0.8,cloud01:0.7,snow01:0};try{const before=wet.update(300,weather,[0,0,0]);mesh.position.x=-1024;const after=wet.update(300,weather,[1024,0,0]);assert.deepEqual(after.samples[0].receiverWorldMeters,before.samples[0].receiverWorldMeters);assert.equal(after.samples[0].exposure,before.samples[0].exposure);assert.throws(()=>wet.update(300,{...weather,rain01:0.4},[1024,0,0]),/declared wetness history/);assert.throws(()=>wet.replace(source,-1),/WETNESS_SOURCE_TICK/);wet.dispose();assert.throws(()=>wet.update(300,weather,[0,0,0]),/WETNESS_DISPOSED/);}finally{wet.dispose();mesh.geometry.dispose();mesh.material.dispose();}});
++test('13 existing borrowed ports preserve honest missing-owner requests and source-only admission',()=>{const url=new URL('../fixtures/chosen-weather-result.json',import.meta.url),bytes=readFileSync(url),ref={sourceId:weather.WeatherSnapshotId,absolutePath:fileURLToPath(url),bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')},report=prepareTemporalRequests(frame,ref);assert.equal(report.results.length,13);assert.equal(report.completeActualBundles,0);assert.equal(report.temporalReady,false);assert.equal(report.pipelineOptions,'BOTH_OPEN');assert.deepEqual(report.results.find(p=>p.port==='DEPTH'),{status:'Pending',port:'DEPTH',reasonCode:'CURRENT_FRAME_MISSING'});assert.deepEqual(report.results.find(p=>p.port==='OPTICS'),{status:'Pending',port:'OPTICS',reasonCode:'OPTICAL_SEGMENT_MISSING'});for(const port of report.results.filter(p=>p.status==='ValidatedSourceOnly')){assert.equal(port.temporalReady,false);assert.equal(port.execution,'NOT_RUN');assert.equal(port.selectedOption,null);}});
++
+diff --git a/review-r02/after/tests/r14-three-contract.test.mjs b/review-r02/after/tests/r14-three-contract.test.mjs
+new file mode 100644
+index 00000000..ab17ec32
+--- /dev/null
++++ b/review-r02/after/tests/r14-three-contract.test.mjs
+@@ -0,0 +1,27 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import * as T from 'three';
++import {root,verifyInputs,json} from '../scripts/bindings.mjs';
++import {firstSolid} from '../.r14-runtime-r02/occlusion.mjs';
++import {createVolumePort} from '../.r14-runtime-r02/composer.mjs';
++import {createDepthCameraPort,sampleRainExposure,rainDirection,windInputs,applyWindInputs,surfaceMaterial,bindRestoredOrigin} from '../.r14-runtime-r02/reuse.mjs';
++import {validateFrame,rebaseFrame} from '../.r14-runtime-r02/optics.mjs';
++const input=json('fixtures/chosen-weather-input.json'),weather=json('fixtures/chosen-weather-result.json');
++const pos=weather.query.bodyFixedPositionMeters,norm=Math.hypot(pos.x,pos.y,pos.z);
++const frame={status:'Known',simulationTick:weather.query.simulationTick,weatherSnapshotId:weather.WeatherSnapshotId,binding:weather.binding,bodyId:weather.query.bodyId,
++ bodyRadiusMeters:input.bundle.physics.radiusMeters,bodyNormal:[pos.x/norm,pos.y/norm,pos.z/norm],originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1,weatherExtinctionPerM:weather.sample.extinctionPerM,
++ windMps:[8,0,-4],stormIds:weather.sample.stormIds,authoredCloudCoverage:0.7,rain01:0.8,opticsDigest:input.bundle.optics.digest};
++test('real Three targets, fake renderer EventTarget: ten mount/dispose restores fog and releases owned targets',()=>{
++ for(let i=0;i<10;i++){
++  const scene=new T.Scene(),fog=new T.Fog(0x445566,1,200);scene.fog=fog;
++  const renderer={domElement:new EventTarget()},camera=new T.PerspectiveCamera(),water=new T.Mesh(new T.PlaneGeometry(),new T.MeshBasicMaterial({transparent:true,opacity:0.56,depthWrite:false}));
++  const port=createVolumePort(renderer,scene,camera,water,frame);assert.equal(scene.fog,null);
++  port.setFrame(frame);assert.throws(()=>port.setFrame({...frame,bodyRadiusMeters:1}),/REBUILD/);
++  assert.throws(()=>port.setFrame({...frame,atlasEpoch:0}),/STALE_ATLAS/);
++  renderer.domElement.dispatchEvent(new Event('webglcontextlost',{cancelable:true}));assert.equal(port.diagnostics().lost,true);
++  renderer.domElement.dispatchEvent(new Event('webglcontextrestored'));assert.equal(port.diagnostics().lost,false);
++  port.dispose();port.dispose();assert.equal(scene.fog,fog);assert.equal(port.diagnostics().historyResources,0);
++  assert.throws(()=>port.setFrame(frame),/DISPOSED/);water.geometry.dispose();water.material.dispose();
++ }
++});
+diff --git a/review-r02/after/tests/r14-three-lifecycle.test.mjs b/review-r02/after/tests/r14-three-lifecycle.test.mjs
+new file mode 100644
+index 00000000..40154ec1
+--- /dev/null
++++ b/review-r02/after/tests/r14-three-lifecycle.test.mjs
+@@ -0,0 +1,37 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import * as T from 'three';
++import {createOpticalReadPort,tangentBasis,assertCurrentAnalytic} from '../.r14-runtime-r02/weather-port.mjs';
++import {createVolumePort} from '../.r14-runtime-r02/composer.mjs';
++const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url),'utf8'));
++const chosen=json('fixtures/chosen-weather-input.json'),query=json('fixtures/chosen-weather-query.json'),gold=json('fixtures/chosen-weather-result.json');
++const mask={cloudCoverage:0.7,rain01:0.8},presentation={originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1};
++async function frame(){return (await (await createOpticalReadPort(chosen)).read(query,mask,presentation)).frame;}
++function mockRenderer(){
++ // CPU metadata/material objects only. No WebGLRenderer/context/device or actual pixels.
++ let target=null,clear=new T.Color(),alpha=1;
++ return {domElement:new EventTarget(),autoClear:true,uploads:0,drawCalls:0,
++ getRenderTarget:()=>target,setRenderTarget:v=>{target=v;},getClearColor:c=>c.copy(clear),getClearAlpha:()=>alpha,
++ setClearColor:(c,a)=>{clear.set(c);alpha=a;},clear(){},render(){this.drawCalls++;},initTexture(){this.uploads++;}};
++}
++test('actual composer Source keeps lightning identity and reuploads own atlas/LUT after simulated context restore',async()=>{
++ const renderer=mockRenderer(),scene=new T.Scene(),camera=new T.PerspectiveCamera(),water=new T.Mesh(new T.PlaneGeometry(),new T.MeshBasicMaterial({transparent:true,opacity:0.56,depthWrite:false}));
++ const f=await frame(),port=createVolumePort(renderer,scene,camera,water,f);let callerWaterDisposed=0;
++ water.material.addEventListener('dispose',()=>callerWaterDisposed++);
++ try{
++  assert.equal(port.render().history,'FIRST');assert.equal(renderer.uploads,2);assert.equal(port.diagnostics().atlasUploadPending,false);
++  port.lightning('authored.event.1');assert.equal(port.render().history,'RESET');
++  port.lightning('authored.event.2');assert.equal(port.render().history,'RESET');assert.equal(port.diagnostics().lightningId,'authored.event.2');
++  assert.equal(port.render().history,'CURRENT');port.lightning(null);assert.equal(port.render().history,'RESET');
++  assert.throws(()=>port.lightning(''),/LIGHTNING/);
++  renderer.domElement.dispatchEvent(new Event('webglcontextlost',{cancelable:true}));const calls=renderer.drawCalls;
++  assert.equal(port.render().status,'CONTEXT_LOST');assert.equal(renderer.drawCalls,calls);assert.equal(port.diagnostics().atlasUploadPending,true);
++  renderer.domElement.dispatchEvent(new Event('webglcontextrestored'));
++  assert.equal(port.render().history,'FIRST');assert.equal(renderer.uploads,4);
++  camera.position.y-=1024;port.setFrame({...f,originMeters:[0,1024,0]});assert.equal(port.render().history,'RESET');assert.equal(port.render().history,'CURRENT');
++  assert.throws(()=>port.setFrame({...f,atlasEpoch:0}),/STALE_ATLAS/);
++  for(const size of [[0,1],[1,NaN],[1.5,2]])assert.throws(()=>port.resize(...size),/VOLUME_SIZE/);
++  port.dispose();port.dispose();assert.equal(callerWaterDisposed,0);assert.equal(port.diagnostics().ownedTargets,0);
++ }finally{port.dispose();water.geometry.dispose();water.material.dispose();}
++});
+diff --git a/review-r02/after/tests/r14-viewer-fixture.test.mjs b/review-r02/after/tests/r14-viewer-fixture.test.mjs
+new file mode 100644
+index 00000000..8fde2685
+--- /dev/null
++++ b/review-r02/after/tests/r14-viewer-fixture.test.mjs
+@@ -0,0 +1,26 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import * as T from 'three';
++import {importFixture,copyFixturePayload,ownerPose} from '../.r14-runtime-r02/reuse.mjs';
++import {createViewerWetness} from '../.r14-runtime-r02/wetness.mjs';
++const json=path=>JSON.parse(readFileSync(new URL('../'+path,import.meta.url),'utf8'));
++async function imported(path){const manifest=json(path+'/manifest.json');return importFixture(readFileSync(new URL('../'+path+'/manifest.json',import.meta.url)),new Map(manifest.payloads.map(p=>[p.id,new Uint8Array(readFileSync(new URL('../'+path+'/'+p.path,import.meta.url)))])));}
++async function rain(name){const dir='fixtures/authored-rain/',manifest=json(dir+name+'.json');return importFixture(readFileSync(new URL('../'+dir+name+'.json',import.meta.url)),new Map(manifest.payloads.map(p=>[p.id,new Uint8Array(readFileSync(new URL('../'+dir+p.path,import.meta.url)))])));}
++test('actual full viewer fixture receiver caller: source import, 2076 faces, open roof and rebase',async()=>{
++ const fixture=await imported('inputs/rd/fixtures/F00-CONTROL'),closed=await rain('closed'),open=await rain('open'),scene=new T.Scene(),meshes=[];
++ for(const object of fixture.objects)for(const source of object.meshes){
++  const geometry=new T.BufferGeometry(),positions=copyFixturePayload(fixture,source.positions),normals=copyFixturePayload(fixture,source.normals),indices=copyFixturePayload(fixture,source.indices);
++  geometry.setAttribute('position',new T.BufferAttribute(new Float32Array(positions),3));geometry.setAttribute('normal',new T.BufferAttribute(new Float32Array(normals),3));geometry.setIndex(new T.BufferAttribute(new Uint32Array(indices),1));
++  geometry.setAttribute('labWetness',new T.BufferAttribute(new Float32Array(positions.length/3),1));
++  const mesh=new T.Mesh(geometry,new T.MeshBasicMaterial()),pose=ownerPose(fixture,object.ownerId);mesh.position.set(...pose.originMeters);mesh.quaternion.set(...pose.rotationXyzw);scene.add(mesh);meshes.push(mesh);
++ }
++ for(const box of json('fixtures/occluders.json').solids){const size=box.max.map((v,i)=>v-box.min[i]),geometry=new T.BoxGeometry(...size);geometry.setAttribute('labWetness',new T.BufferAttribute(new Float32Array(geometry.getAttribute('position').count),1));const mesh=new T.Mesh(geometry,new T.MeshBasicMaterial());mesh.name=box.id;mesh.position.set(...box.min.map((v,i)=>(v+box.max[i])/2));scene.add(mesh);meshes.push(mesh);}
++ const wet=createViewerWetness(closed,meshes,0.8),weather={windMps:[8,0,-4],rain01:0.8,cloud01:0.7,snow01:0};
++ try{
++  const before=wet.update(300,weather,[0,0,0]);assert.equal(before.samples.length,2076);assert.equal(before.sourceRevision,1);assert.ok(before.samples.some(s=>s.exposure==='shielded'));for(const s of before.samples.filter(s=>s.exposure==='unknown'))assert.equal(s.wetness01,0);
++  wet.replace(open,300);scene.getObjectByName('roof').visible=false;scene.getObjectByName('cave.roof').visible=false;
++  const after=wet.update(360,weather,[0,0,0]);assert.equal(after.samples.length,2064);assert.equal(after.sourceRevision,2);assert.ok(after.samples.some(s=>s.exposure==='exposed'&&s.wetness01>0));for(const s of after.samples.filter(s=>s.exposure==='unknown'))assert.equal(s.wetness01,0);
++  scene.position.x=-1024;const rebased=wet.update(360,weather,[1024,0,0]);assert.deepEqual(rebased.samples,after.samples);
++ }finally{wet.dispose();for(const mesh of meshes){mesh.geometry.dispose();mesh.material.dispose();}scene.clear();}
++});

@@ -1,0 +1,103 @@
+diff --git a/spikes/rt-02b-dda/src/gpu.mts b/spikes/rt-02b-dda/src/gpu.mts
+--- a/spikes/rt-02b-dda/src/gpu.mts
++++ b/spikes/rt-02b-dda/src/gpu.mts
+@@ -4,21 +4,24 @@
+ import {validateUpload} from './sparse.mts';
+ import {admitAdapter} from '../imported/gfx03/src/capability.mjs';
+ import {primitiveHit} from './port.mts';
+-export const GPU_DISTANCE_TOLERANCE=1e-5; // f32 grid-relative functional tolerance; original f64 goldens remain unchanged.
+-export function requiredLimits(s:SparseVolume,rayCount:number,mode:Mode){
+- if(!Number.isSafeInteger(rayCount)||rayCount<1||rayCount>4096)throw new Error('Finite GPU profile requires 1..4096 rays');
+- const u=s.upload(mode);validateUpload(u);
+- const max=Math.max(u.pages.byteLength,u.roots.byteLength,u.materials.byteLength,u.metadata.byteLength,rayCount*64);
+- return {maxStorageBufferBindingSize:max,maxBufferSize:max,maxStorageBuffersPerShaderStage:6,maxComputeInvocationsPerWorkgroup:64,maxComputeWorkgroupSizeX:64,maxComputeWorkgroupsPerDimension:Math.ceil(rayCount/64)};
+-}
+-export function admission(adapter:GPUAdapter|null,s:SparseVolume,rayCount:number,mode:Mode){return admitAdapter(adapter,[],requiredLimits(s,rayCount,mode));}
+-export function packRays(s:SparseVolume,rays:readonly Ray[],strict:boolean){
+- if(new Set(rays.map(r=>r.id)).size!==rays.length)throw new Error('Duplicate ray identity');
+- const data=new ArrayBuffer(rays.length*48),view=new DataView(data),frame=s.spatial;
+- rays.forEach((ray,i)=>{if(ray.maxSteps>0xffffffff)throw new RangeError('GPU maxSteps must fit u32');
+-  const local=s.localRay(ray),o=local.origin.map((n,a)=>(n-frame.origin[a]!)/frame.cellMeters),d=local.direction.map(n=>n/frame.cellMeters);
+-  // shortcut: finite local volume rays only; preclip farther rays in an owner-bound f64 port before extending this GPU contract.
+-  if([...o,...d,ray.maxDistance].some(n=>!Number.isFinite(n)||Math.abs(n)>65536))throw new RangeError('GPU relative-frame precision envelope exceeded');
++import {assessGpuTrialDomain,GpuQueryUnsupported} from './eligibility.mts';
++export const GPU_DISTANCE_TOLERANCE=1e-5; // f32 grid-relative functional tolerance; original f64 goldens remain unchanged.
++export function requiredLimits(s:SparseVolume,rayCount:number,mode:Mode){
++ if(!Number.isSafeInteger(rayCount)||rayCount<1||rayCount>4096)throw new Error('Finite GPU profile requires 1..4096 rays');
++ const u=s.upload(mode);validateUpload(u);
++ const max=Math.max(u.pages.byteLength,u.roots.byteLength,u.materials.byteLength,u.metadata.byteLength,rayCount*64);
++ return {maxStorageBufferBindingSize:max,maxBufferSize:max,maxStorageBuffersPerShaderStage:6,maxComputeInvocationsPerWorkgroup:64,maxComputeWorkgroupSizeX:64,maxComputeWorkgroupsPerDimension:Math.ceil(rayCount/64)};
++}
++export function admission(adapter:GPUAdapter|null,s:SparseVolume,rayCount:number,mode:Mode){return admitAdapter(adapter,[],requiredLimits(s,rayCount,mode));}
++export function packRays(s:SparseVolume,rays:readonly Ray[],strict:boolean){
++ if(new Set(rays.map(r=>r.id)).size!==rays.length)throw new Error('Duplicate ray identity');
++ const data=new ArrayBuffer(rays.length*48),view=new DataView(data),frame=s.spatial;
++ rays.forEach((ray,i)=>{if(ray.maxSteps>0xffffffff)throw new RangeError('GPU maxSteps must fit u32');
++  const local=s.localRay(ray),o=local.origin.map((n,a)=>(n-frame.origin[a]!)/frame.cellMeters),d=local.direction.map(n=>n/frame.cellMeters);
++  // shortcut: finite local volume rays only; preclip farther rays in an owner-bound f64 port before extending this GPU contract.
++  if([...o,...d,ray.maxDistance].some(n=>!Number.isFinite(n)||Math.abs(n)>65536))throw new RangeError('GPU relative-frame precision envelope exceeded');
++  const domain=assessGpuTrialDomain(s.size,frame.cellMeters,o,d,ray.maxDistance);
++  if(domain.status==='UNSUPPORTED')throw new GpuQueryUnsupported(ray.id,domain.reason);
+   o.forEach((n,a)=>view.setFloat32(i*48+a*4,n,true));view.setFloat32(i*48+12,ray.maxDistance,true);
+   d.forEach((n,a)=>view.setFloat32(i*48+16+a*4,n,true));view.setUint32(i*48+32,ray.maxSteps,true);view.setUint32(i*48+36,Number(strict),true);});
+  return data;
+diff --git a/spikes/rt-02b-dda/browser-profile.mjs b/spikes/rt-02b-dda/browser-profile.mjs
+--- a/spikes/rt-02b-dda/browser-profile.mjs
++++ b/spikes/rt-02b-dda/browser-profile.mjs
+@@ -73,7 +73,7 @@
+    shader:{sha256:await digest(new TextEncoder().encode(source)),compilation:'PASS'},
+    hardware:{...hardware(),actualAdapter:{vendor:info.vendor||null,architecture:info.architecture||null,device:info.device||null,description:info.description||null},requestedLimits:limits,deviceLimits:Object.fromEntries(Object.keys(limits).map(k=>[k,device.limits[k]])),gpuMilliseconds:null}};
+   return result;
+- }catch(e){return {status:'FAIL',reason:String(e),checks:[...checks],groups,hardware:{...hardware(),actualAdapter:{vendor:info.vendor||null,architecture:info.architecture||null,device:info.device||null,description:info.description||null}},productIntegration:'NO'};}
++ }catch(e){return {status:e?.status==='UNSUPPORTED'?'UNSUPPORTED':'FAIL',reason:String(e),checks:[...checks],groups,hardware:{...hardware(),actualAdapter:{vendor:info.vendor||null,architecture:info.architecture||null,device:info.device||null,description:info.description||null}},productIntegration:'NO'};}
+  finally{backend?.dispose();input.volumes.forEach(s=>s.dispose());device?.destroy();}
+ }
+ window.RT02B={runCpu,runGpu};
+diff --git a/spikes/rt-02b-dda/src/eligibility.mts b/spikes/rt-02b-dda/src/eligibility.mts
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02b-dda/src/eligibility.mts
+@@ -0,0 +1,43 @@
++// Source candidate only: deliberately bounded functional-trial domain, not GPU qualification.
++export type TrialDomain =
++  | { status: 'UNSUPPORTED'; reason: string }
++  | { status: 'ELIGIBLE_FOR_FUNCTIONAL_TRIAL'; shaderIterations: 256; cellIntervalBound: number; conservativeIterationBound: number };
++
++export function assessGpuTrialDomain(
++  size: readonly number[], cellMeters: number, gridOrigin: readonly number[],
++  gridDirection: readonly number[], maxDistance: number,
++): TrialDomain {
++  const unsupported = (reason: string): TrialDomain => ({ status: 'UNSUPPORTED', reason });
++  if (size.length !== 3 || !size.every(n => Number.isSafeInteger(n) && n > 0 && n <= 64))
++    return unsupported('GRID_OUTSIDE_BOUND_1_TO_64_PER_AXIS');
++  if (cellMeters !== 0.125 && cellMeters !== 0.25) return unsupported('UNBOUND_CELL_SIZE');
++  const sum = size.reduce((a, b) => a + b, 0);
++  if (sum + 3 > 256) return unsupported('UNPROVEN_SHADER_ITERATION_DOMAIN');
++  if (gridOrigin.length !== 3 || gridDirection.length !== 3
++    || ![...gridOrigin, ...gridDirection, maxDistance].every(Number.isFinite))
++    return unsupported('NONFINITE_OR_UNKNOWN_RELATIVE_FRAME');
++  if (gridOrigin.some(n => Math.abs(n) > 65536)) return unsupported('RELATIVE_FRAME_OUT_OF_BOUNDS');
++  // No quantization: reject values rather than move a ray or change a Golden.
++  if (gridOrigin.some(n => !Number.isSafeInteger(n * 16) || Math.fround(n) !== n))
++    return unsupported('NON_DYADIC_GRID_ORIGIN');
++  const active = gridDirection.filter(n => n !== 0);
++  if (active.length !== 1 || Math.abs(active[0]!) !== 1 / cellMeters)
++    return unsupported('NON_AXIAL_OR_UNPROVEN_TIE_DOMAIN');
++  if (maxDistance <= 0 || maxDistance > 65536
++    || !Number.isSafeInteger(maxDistance * 128) || Math.fround(maxDistance) !== maxDistance)
++    return unsupported('NON_DYADIC_DISTANCE_HORIZON');
++  return {
++    status: 'ELIGIBLE_FOR_FUNCTIONAL_TRIAL', shaderIterations: 256,
++    cellIntervalBound: sum - 2, conservativeIterationBound: sum + 3,
++  };
++}
++
++export class GpuQueryUnsupported extends Error {
++  readonly status = 'UNSUPPORTED';
++  readonly rayId: string;
++  readonly reason: string;
++  constructor(rayId: string, reason: string) {
++    super('Unsupported GPU query ' + rayId + ': ' + reason);
++    this.rayId = rayId; this.reason = reason;
++  }
++}

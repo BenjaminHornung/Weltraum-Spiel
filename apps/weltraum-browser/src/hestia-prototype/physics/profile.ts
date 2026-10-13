@@ -1,6 +1,18 @@
 import { STARTER_CELESTIAL_CATALOG, STARTER_BODY_IDS, surfaceGravityMetersPerSecondSquared } from "../../celestial";
 import {fnv1aHash} from "../../core/hash";
 
+/** A0-selected sourcefork candidate; public Save cutover remains gated. */
+export const HVP_SOLVER_SOURCE_PROFILE = "rapier-0.21.0-phy01.migration2" as const;
+export const HVP_SOLVER_VERSION = "rapier-0.21.0-phy01.migration2:legacy-impulse-v1" as const;
+export const HVP_SOLVER_PROFILE = Object.freeze({ id: HVP_SOLVER_VERSION,
+  sourceProfile: HVP_SOLVER_SOURCE_PROFILE, dynamicGyroscopicForces: false,
+  queryPublication: "EXPLICIT_TRANSIENT_BVH_NO_STEP", predicatePolicy: "PRECOMPUTED_HANDLE_MEMBERSHIP",
+  normalNudgeFactor: 0.0001, sleepPolicy: "NATIVE_DEFAULTS_CANONICAL_PARK_WAKE" });
+
+export const assertHvpPublicSaveCutover = (): void => {
+  throw new Error("Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben.");
+};
+
 /** Scoped prototype tuning; shared without loading the solver into the UI. */
 export const HVP_PLAYER_PROFILE = Object.freeze({ height: 1.8, radius: 0.3, eyeHeight: 1.65,
   walkSpeed: 3, sprintSpeed: 5, stepHeight: 0.26, stepWidth: 0.125, offset: 0.01, slopeRadians: Math.PI / 4,

@@ -1,0 +1,38 @@
+--- a/spikes/rt-02b-dda/src/gpu.mts
++++ b/spikes/rt-02b-dda/src/gpu.mts
+@@ -1,3 +1,5 @@
++import {packRays} from './pack-rays.mts';
++export {packRays};
+ import type {Binding,Ray,Vec3} from '../imported/rt01/src/types.mts';
+ import {assertCurrent} from '../imported/rt01/src/validate.mts';
+ import type {SparseVolume,Mode} from './sparse.mts';
+@@ -14,13 +16,2 @@
+ export function admission(adapter:GPUAdapter|null,s:SparseVolume,rayCount:number,mode:Mode){return admitAdapter(adapter,[],requiredLimits(s,rayCount,mode));}
+-export function packRays(s:SparseVolume,rays:readonly Ray[],strict:boolean){
+- if(new Set(rays.map(r=>r.id)).size!==rays.length)throw new Error('Duplicate ray identity');
+- const data=new ArrayBuffer(rays.length*48),view=new DataView(data),frame=s.spatial;
+- rays.forEach((ray,i)=>{if(ray.maxSteps>0xffffffff)throw new RangeError('GPU maxSteps must fit u32');
+-  const local=s.localRay(ray),o=local.origin.map((n,a)=>(n-frame.origin[a]!)/frame.cellMeters),d=local.direction.map(n=>n/frame.cellMeters);
+-  // shortcut: finite local volume rays only; preclip farther rays in an owner-bound f64 port before extending this GPU contract.
+-  if([...o,...d,ray.maxDistance].some(n=>!Number.isFinite(n)||Math.abs(n)>65536))throw new RangeError('GPU relative-frame precision envelope exceeded');
+-  o.forEach((n,a)=>view.setFloat32(i*48+a*4,n,true));view.setFloat32(i*48+12,ray.maxDistance,true);
+-  d.forEach((n,a)=>view.setFloat32(i*48+16+a*4,n,true));view.setUint32(i*48+32,ray.maxSteps,true);view.setUint32(i*48+36,Number(strict),true);});
+- return data;
+-}
+ export class GpuDdaBackend {
+--- /dev/null
++++ b/spikes/rt-02b-dda/src/pack-rays.mts
+@@ -0,0 +1,13 @@
++import type {Ray} from '../imported/rt01/src/types.mts';
++import type {SparseVolume} from './sparse.mts';
++export function packRays(s:SparseVolume,rays:readonly Ray[],strict:boolean){
++ if(new Set(rays.map(r=>r.id)).size!==rays.length)throw new Error('Duplicate ray identity');
++ const data=new ArrayBuffer(rays.length*48),view=new DataView(data),frame=s.spatial;
++ rays.forEach((ray,i)=>{if(ray.maxSteps>0xffffffff)throw new RangeError('GPU maxSteps must fit u32');
++  const local=s.localRay(ray),o=local.origin.map((n,a)=>(n-frame.origin[a]!)/frame.cellMeters),d=local.direction.map(n=>n/frame.cellMeters);
++  // shortcut: finite local volume rays only; preclip farther rays in an owner-bound f64 port before extending this GPU contract.
++  if([...o,...d,ray.maxDistance].some(n=>!Number.isFinite(n)||Math.abs(n)>65536))throw new RangeError('GPU relative-frame precision envelope exceeded');
++  o.forEach((n,a)=>view.setFloat32(i*48+a*4,n,true));view.setFloat32(i*48+12,ray.maxDistance,true);
++  d.forEach((n,a)=>view.setFloat32(i*48+16+a*4,n,true));view.setUint32(i*48+32,ray.maxSteps,true);view.setUint32(i*48+36,Number(strict),true);});
++ return data;
++}

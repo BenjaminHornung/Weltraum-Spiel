@@ -14,7 +14,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
   readAim: () => {origin:Vector3;direction:Vector3}|undefined,
   preview: (cells:readonly HvpCell[], allowed:boolean)=>void,
    supports: readonly Readonly<{x:number;z:number}>[],
-   structure?:{physics:HvpPhysicsClient;consumer:ReturnType<typeof createHvpStructuralConsumer>;admit:()=>void},
+   structure?:{physics:Pick<HvpPhysicsClient,"read"|"setCutAim">;consumer:ReturnType<typeof createHvpStructuralConsumer>;admit:()=>void},
    moving?:ReturnType<typeof createHvpBodyCutConsumer>) => {
   let mode=1, sequence=0, key="", target:HvpCutShape|undefined, message="Spielen: 1 Zelle · 2 Box · 3 Kugel · Linksklick";
   let edges=0;

@@ -1,0 +1,317 @@
+# UNAPPLIED private ATM R10 candidate; a = immutable R09, b = R10. No product integration.
+diff --git a/src/viewer.ts b/src/viewer.ts
+--- a/src/viewer.ts
++++ b/src/viewer.ts
+@@ -5,6 +5,7 @@
+ import {validateFrame,rebaseFrame,type AtmosphereFrame,type V3} from './optics';
+ import rainOptics from '../shaders/rain-optics.glsl';
+ import {createSingleFlight} from './init';
++import {createOpticalReadPort,assertCurrentAnalytic,tangentBasis,type AnalyticInput,type PlanetWeatherQuery} from './weather-port';
+ const status=document.querySelector('#status') as HTMLElement,canvas=document.querySelector('canvas')!,mode=document.querySelector('#mode') as HTMLSelectElement;
+ declare const __DATA_BINDINGS__:Record<string,{bytes:number;sha256:string}>;
+ const checked=async(path:string)=>{const binding=__DATA_BINDINGS__[path];if(!binding)throw Error('UNBOUND_ASSET:'+path);
+@@ -12,15 +13,15 @@
+  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+  if(bytes.length!==binding.bytes||digest!==binding.sha256)throw Error('ASSET_DRIFT:'+path);return bytes;};
+ async function start(){
++ const input:AnalyticInput=JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-input.json')));
++ const query:PlanetWeatherQuery=JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-query.json')));
++ const optics=JSON.parse(new TextDecoder().decode(await checked('fixtures/optics-config.json')));
++ const weatherPort=await createOpticalReadPort(input);
++ const projected=await weatherPort.read(query,{cloudCoverage:optics.cloudCoverage,rain01:optics.rain01},{originMeters:[0,0,0],sourceRevision:0,atlasEpoch:1});
++ if(projected.frame===null){status.textContent='WEATHER_'+projected.status+': no optical frame; no renderer started.';return;}
++ await assertCurrentAnalytic(JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-result.json'))),query,weatherPort.view);
++ const frame:AtmosphereFrame=projected.frame,weather=projected.result,basis=tangentBasis(weather.query.bodyFixedPositionMeters);
++ const up=new T.Vector3(...basis.up),east=new T.Vector3(...basis.east),north=new T.Vector3(...basis.north);
+- const input=JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-input.json'))),weather=JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-result.json')));
+- if(weather.status!=='Known')throw Error('WEATHER_UNSUPPORTED:'+weather.status);
+- const normal=weather.query.bodyFixedPositionMeters,bodyNormal:V3=[normal.x,normal.y,normal.z].map(v=>v/Math.hypot(normal.x,normal.y,normal.z)) as V3;
+- const up=new T.Vector3(...bodyNormal),east=new T.Vector3(0,1,0).cross(up).normalize(),north=east.clone().cross(up).normalize();
+- const windBody=new T.Vector3(weather.sample.windBodyFixedMps.x,weather.sample.windBodyFixedMps.y,weather.sample.windBodyFixedMps.z);
+- const frame:AtmosphereFrame=validateFrame({status:'Known',simulationTick:weather.query.simulationTick,weatherSnapshotId:weather.WeatherSnapshotId,binding:weather.binding,
+-  bodyId:weather.query.bodyId,bodyRadiusMeters:input.bundle.physics.radiusMeters,bodyNormal,originMeters:[0,0,0],sourceRevision:0,atlasEpoch:1,
+-  weatherExtinctionPerM:weather.sample.extinctionPerM,windMps:[windBody.dot(east),windBody.dot(up),windBody.dot(north)],stormIds:weather.sample.stormIds,
+-  authoredCloudCoverage:0.7,rain01:0.8,opticsDigest:input.bundle.optics.digest});
+  const renderer=new T.WebGLRenderer({canvas,antialias:false,alpha:true,powerPreference:'high-performance'});
+  renderer.toneMapping=T.NoToneMapping;renderer.outputColorSpace=T.LinearSRGBColorSpace;
+  const gl=renderer.getContext(),debug=gl.getExtension('WEBGL_debug_renderer_info'),adapter=debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):null;
+@@ -55,7 +56,7 @@
+  const restoredOrigin={value:new T.Vector3()};
+  for(const mesh of [...objects,water])bindRestoredOrigin(mesh.material as T.Material,restoredOrigin);
+  const rainScene=new T.Scene(),rainRoot=new T.Group();rainScene.add(rainRoot);
++ const rdWeather={windMps:frame.windMps,rain01:frame.rain01,cloud01:frame.authoredCloudCoverage,snow01:0};
+- const rdWeather={windMps:frame.windMps,rain01:0.8,cloud01:0.7,snow01:0};
+  const controller=new AbortController();
+  async function rainFixture(name:string){const path='fixtures/authored-rain/',b=await checked(path+name+'.json'),m=JSON.parse(new TextDecoder().decode(b));
+   return importFixture(b,new Map(await Promise.all(m.payloads.map(async(p:{id:string;path:string})=>[p.id,await checked(path+p.path)] as const))));}
+@@ -81,11 +82,12 @@
+  const poses={below:[5,3,-8],inside:[0,20,0],above:[8,45,-12],orbit:[0,100000,0]} as const;
+  const targets={below:[2,14,2],inside:[15,20,5],above:[0,16,0],orbit:[0,0,0]} as const;
+  const position=document.querySelector('#position') as HTMLSelectElement;
++ function pose(){const key=position.value as keyof typeof poses,p=poses[key],t=targets[key];camera.position.set(...p.map((v,i)=>v-currentFrame.originMeters[i]) as V3);camera.lookAt(new T.Vector3(...t.map((v,i)=>v-currentFrame.originMeters[i]) as V3));camera.updateMatrixWorld();}
+- function pose(){const key=position.value as keyof typeof poses,p=poses[key],t=targets[key];camera.position.set(p[0]-currentFrame.originMeters[0],p[1],p[2]);camera.lookAt(new T.Vector3(t[0]-currentFrame.originMeters[0],t[1],t[2]));camera.updateMatrixWorld();}
+  pose();position.onchange=pose;
+  function resize(){renderer.setSize(960,540,false);camera.aspect=960/540;camera.updateProjectionMatrix();volume.resize(960,540);volume.rainUniforms.uViewport.value.set(960,540);takram?.resize(960,540);}
+  resize();
+  async function select(){const selected=mode.value;volume.setMode(selected==='lut'?1:selected==='low'?3:0);
++  if(selected==='takram'&&frame.status!=='Known'){mode.value='analytic';status.textContent='TAKRAM_UNSUPPORTED: '+frame.status;return;}
+   if(selected==='takram'&&!takram){
+    status.textContent='Preparing pinned Takram LUT; GPU proof remains diagnostic until Runner records it.';
+    takram=await initialize.load();if(disposed)return;takram.setOrigin(currentFrame.originMeters);takram.resize(960,540);
+@@ -98,7 +100,7 @@
+   for(const mesh of objects)(mesh.geometry.getAttribute('labWetness').array as Float32Array).fill(wet);
+   for(const mesh of objects)mesh.geometry.getAttribute('labWetness').needsUpdate=true;
+   const wind=applyWindInputs('control.decor',rdTick,0.4,rdWeather,[0,0,0,1]);setWind(wind.angles.x,wind.angles.z);
++  const flash=presentationTick%240<8?'authored.lightning.'+Math.floor(presentationTick/240):null;volume.lightning(flash);
+-  const flash=presentationTick%240<8?'authored.lightning.1':null;volume.lightning(flash);
+   const result=volume.render(mode.value==='takram'&&takram?()=>takram!.render():undefined,rainScene);
+   status.textContent=`${mode.value} / ${position.value} / LOCAL_WINDOWS_ISOLATED diagnostic\nStorm ${frame.stormIds[0]}\nAdapter ${adapter??'UNAVAILABLE'}\nGPU timer NOT_RUN, reference NOT_RUN, integration NO\n${result.status}`;
+   raf=requestAnimationFrame(loop);
+diff --git a/src/composer.ts b/src/composer.ts
+--- a/src/composer.ts
++++ b/src/composer.ts
+@@ -6,10 +6,10 @@
+ import outputSource from '../shaders/output.frag.glsl';
+ import {createDiagnosticTimer} from './timer';
+ export function createVolumePort(renderer:T.WebGLRenderer,scene:T.Scene,camera:T.PerspectiveCamera,water:T.Object3D,initial:AtmosphereFrame){
++ let frame=validateFrame(initial),disposed=false,lost=false,epoch=1,lightningId:string|null=null,mode=0,defect=0;
+- let frame=validateFrame(initial),disposed=false,lost=false,epoch=1,lightning=0,mode=0,defect=0;
+  const savedFog=scene.fog;scene.fog=null;
+  const context=renderer.getContext?.()??null;
++ let timer=createDiagnosticTimer(context&&'beginQuery' in context?context as WebGL2RenderingContext:null),uploaded=false;
+- const timer=createDiagnosticTimer(context&&'beginQuery' in context?context as WebGL2RenderingContext:null);let uploaded=false;
+  const history=createHistory(),targets:T.WebGLRenderTarget[]=[];
+  const make=(depth=true)=>{const target=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,format:T.RGBAFormat,depthBuffer:depth});
+   if(depth)target.depthTexture=new T.DepthTexture(1,1,T.UnsignedIntType);targets.push(target);return target;};
+@@ -37,8 +37,8 @@
+  const material=new T.ShaderMaterial({glslVersion:T.GLSL3,vertexShader:vertexSource,fragmentShader:volumeSource,uniforms,depthTest:false,depthWrite:false,toneMapped:false});
+  const output=new T.ShaderMaterial({glslVersion:T.GLSL3,vertexShader:vertexSource,fragmentShader:outputSource,uniforms:{colorBuffer:{value:hdr.texture}},depthTest:false,depthWrite:false,toneMapped:false});
+  const quad=new T.Mesh(geometry,material);quad.frustumCulled=false;fullScene.add(quad);
++ const onLost=(e:Event)=>{e.preventDefault();lost=true;uploaded=false;timer.dispose();history.contextLost();};
++ const onRestored=()=>{lost=false;epoch++;uploaded=false;atlas.needsUpdate=true;skyMap.needsUpdate=true;timer=createDiagnosticTimer(context&&'beginQuery' in context?context as WebGL2RenderingContext:null);history.contextLost();};
+- const onLost=(e:Event)=>{e.preventDefault();lost=true;history.contextLost();};
+- const onRestored=()=>{lost=false;epoch++;history.contextLost();};
+  renderer.domElement.addEventListener('webglcontextlost',onLost);renderer.domElement.addEventListener('webglcontextrestored',onRestored);
+  function active(){if(disposed)throw Error('VOLUME_DISPOSED');}
+  return {
+@@ -46,13 +46,13 @@
+    if(next.bodyId!==frame.bodyId||next.bodyRadiusMeters!==frame.bodyRadiusMeters||next.opticsDigest!==frame.opticsDigest||JSON.stringify(next.bodyNormal)!==JSON.stringify(frame.bodyNormal))throw Error('REBUILD_OPTICS_REQUIRED');
+    if(skyProfile(next).sigma!==skyProfile(frame).sigma){skyMap.image.data=buildLut(skyProfile(next),32,64).values;skyMap.needsUpdate=true;uploaded=false;}frame=next;},
+   setMode(sky:number,wrong=0){active();if(![0,1,2,3].includes(sky)||![0,1,2,3].includes(wrong))throw Error('MODE');mode=sky;defect=wrong;},
++  lightning(id:string|null){active();if(id!==null&&(typeof id!=='string'||!id))throw Error('LIGHTNING');lightningId=id;},
++  resize(w:number,h:number){active();if(!Number.isSafeInteger(w)||!Number.isSafeInteger(h)||w<=0||h<=0)throw Error('VOLUME_SIZE');for(const target of targets)target.setSize(w,h);epoch++;},
+-  lightning(id:string|null){active();lightning=id?2:0;},
+-  resize(w:number,h:number){active();for(const target of targets)target.setSize(w,h);epoch++;},
+   render(takram?:()=>T.Texture,overlay?:T.Scene){
+    active();if(lost)return {status:'CONTEXT_LOST'};
+    camera.updateMatrixWorld();const binding=frame.binding as Record<string,{digest?:string}>;
+    const state=history.set({weather:frame.weatherSnapshotId,profile:binding.profile?.digest??'bound',macro:binding.macroGeography?.digest??'NONE',
++    model:binding.model?.digest??'bound',optics:frame.opticsDigest,source:frame.sourceRevision,atlas:frame.atlasEpoch,epoch,origin:frame.originMeters,height:camera.position.y+frame.originMeters[1],lightning:lightningId});
+-    model:binding.model?.digest??'bound',optics:frame.opticsDigest,source:frame.sourceRevision,atlas:frame.atlasEpoch,epoch,origin:frame.originMeters,height:camera.position.y,lightning:lightning?'fixture.lightning':null});
+    history.acceptAtlas(frame.atlasEpoch);
+    const borrowed=createDepthCameraPort(camera,opaque.depthTexture!,epoch,{weatherSnapshotId:frame.weatherSnapshotId,...frame.binding});
+    if(borrowed.epoch!==epoch)throw Error('BORROWED_EPOCH');
+@@ -65,7 +65,7 @@
+     water.getWorldPosition(waterCopy.position);water.getWorldQuaternion(waterCopy.quaternion);water.getWorldScale(waterCopy.scale);waterCopy.updateMatrixWorld();
+     timer.measure('water-color',()=>{renderer.setRenderTarget(waterColor);renderer.clear();renderer.render(waterScene,camera);});
+     timer.measure('water-depth',()=>{waterScene.overrideMaterial=depthMaterial;renderer.setRenderTarget(waterDepth);renderer.clear();renderer.render(waterScene,camera);waterScene.overrideMaterial=null;});
++    uniforms.originOffset.value.set(...frame.originMeters);uniforms.lightning.value=frame.status==='Known'&&lightningId!==null?2:0;uniforms.skyMode.value=takram?2:mode;
+-    uniforms.originOffset.value.set(...frame.originMeters);uniforms.lightning.value=lightning;uniforms.skyMode.value=takram?2:mode;
+     uniforms.cloudCoverage.value=takram||mode===3||frame.status==='NoAtmosphere'?0:frame.authoredCloudCoverage;
+     uniforms.fogPerM.value=mode===3||frame.status==='NoAtmosphere'?0:0.025;uniforms.miePerM.value=frame.weatherExtinctionPerM;
+     uniforms.rayleighPerM.value=frame.status==='NoAtmosphere'?0:0.00001;uniforms.steps.value=mode===3?16:64;uniforms.defect.value=defect;
+@@ -76,7 +76,7 @@
+    }finally{water.visible=waterVisible;scene.background=oldBackground;renderer.autoClear=autoClear;renderer.setClearColor(clear,alpha);renderer.setRenderTarget(target);waterScene.overrideMaterial=null;}
+   },
+   rainUniforms:{uOpaqueDepth:{value:opaque.depthTexture},uWaterDepth:{value:waterDepth.depthTexture},uAtlas:{value:atlas},uInvProjection:{value:camera.projectionMatrixInverse},uCameraWorld:{value:camera.matrixWorld},uViewport:{value:new T.Vector2()},uCloudCoverage:uniforms.cloudCoverage,uFog:uniforms.fogPerM,uOrigin:uniforms.originOffset},
++  diagnostics(){return {ownedTargets:disposed?0:targets.length,disposed,lost,epoch,lightningId,atlasUploadPending:!uploaded,actualAdapter:null,gpuTimer:timer.read(),borrowedDepth:'NOT_DISPOSED',historyResources:history.resources,temporalAccumulation:'DISABLED_REACTIVE_VALIDATION_ONLY'};},
+-  diagnostics(){return {ownedTargets:disposed?0:targets.length,disposed,lost,epoch,actualAdapter:null,gpuTimer:timer.read(),borrowedDepth:'NOT_DISPOSED',historyResources:history.resources,temporalAccumulation:'DISABLED_REACTIVE_VALIDATION_ONLY'};},
+   dispose(){if(disposed)return;disposed=true;scene.fog=savedFog;renderer.domElement.removeEventListener('webglcontextlost',onLost);renderer.domElement.removeEventListener('webglcontextrestored',onRestored);
+    history.dispose();timer.dispose();for(const target of targets)target.dispose();atlas.dispose();skyMap.dispose();material.dispose();output.dispose();depthMaterial.dispose();geometry.dispose();fullScene.clear();waterScene.clear();}
+  };
+diff --git a/src/optics.ts b/src/optics.ts
+--- a/src/optics.ts
++++ b/src/optics.ts
+@@ -1,6 +1,6 @@
+ export type V3=[number,number,number];
+ const finite=(v:number,min=0,max=Infinity)=>{if(!Number.isFinite(v)||v<min||v>max)throw Error('OPTICAL_RANGE');return v;};
++const vector=(v:V3)=>{if(!Array.isArray(v)||v.length!==3||![...v].every(Number.isFinite))throw Error('VECTOR');return v;};
+-const vector=(v:V3)=>{if(!Array.isArray(v)||v.length!==3||!v.every(Number.isFinite))throw Error('VECTOR');return v;};
+ export interface OpticalSegment {T:number;L:V3}
+ export function integrate(sigma:(distance:number)=>number,length:number,steps:number,source:V3):OpticalSegment {
+  finite(length);finite(steps,1,1024);if(!Number.isInteger(steps))throw Error('STEPS');vector(source);source.forEach(v=>finite(v));
+@@ -12,10 +12,11 @@
+ }
+ export function composeWater(front:OpticalSegment,back:OpticalSegment,background:V3,water:V3,alpha:number):V3 {
+  finite(alpha,0,1);vector(background);vector(water);
++ for(const segment of [front,back]){finite(segment.T,0,1);vector(segment.L).forEach(v=>finite(v));}
+  return background.map((c,i)=>front.L[i]+front.T*(alpha*water[i]+(1-alpha)*(back.L[i]+back.T*c))) as V3;
+ }
+ export function shellInterval(origin:V3,direction:V3,radius:number,outer:number):[number,number]|null {
++ vector(origin);vector(direction);finite(radius,Number.MIN_VALUE);finite(outer,radius);if(outer<=radius)throw Error('OPTICAL_RANGE');
+- vector(origin);vector(direction);finite(radius,Number.MIN_VALUE);finite(outer,radius+Number.EPSILON);
+  if(Math.abs(Math.hypot(...direction)-1)>1e-8)throw Error('DIRECTION_UNIT');
+  const dot=origin.reduce((s,v,i)=>s+v*direction[i],0),r2=origin.reduce((s,v)=>s+v*v,0);
+  const hit=(r:number)=>{const disc=dot*dot-r2+r*r;return disc<0?null:[-dot-Math.sqrt(disc),-dot+Math.sqrt(disc)];};
+diff --git a/src/occlusion.ts b/src/occlusion.ts
+--- a/src/occlusion.ts
++++ b/src/occlusion.ts
+@@ -1,10 +1,10 @@
+ import type {V3} from './optics';
+ export interface SolidBox {id:string;min:V3;max:V3}
+ export function firstSolid(origin:V3,direction:V3,boxes:readonly SolidBox[],limit:number):number|null {
++ if(!Array.isArray(origin)||origin.length!==3||![...origin].every(Number.isFinite)||!Array.isArray(direction)||direction.length!==3||![...direction].every(Number.isFinite)||Math.abs(Math.hypot(...direction)-1)>1e-8||!Number.isFinite(limit)||limit<=0)throw Error('OCCLUSION_INPUT');
+- if(!origin.every(Number.isFinite)||!direction.every(Number.isFinite)||Math.abs(Math.hypot(...direction)-1)>1e-8||!Number.isFinite(limit)||limit<=0)throw Error('OCCLUSION_INPUT');
+  let closest=Infinity;
+  for(const box of boxes){
++  if(typeof box.id!=='string'||!box.id||!Array.isArray(box.min)||box.min.length!==3||![...box.min].every(Number.isFinite)||!Array.isArray(box.max)||box.max.length!==3||![...box.max].every(Number.isFinite)||box.min.some((v,i)=>v>=box.max[i]))throw Error('SOLID_BOX');
+-  if(!box.id||!box.min.every(Number.isFinite)||!box.max.every(Number.isFinite)||box.min.some((v,i)=>v>=box.max[i]))throw Error('SOLID_BOX');
+   let a=0,b=limit;
+   for(let i=0;i<3;i++){
+    if(Math.abs(direction[i])<1e-12){if(origin[i]<box.min[i]||origin[i]>box.max[i]){b=-1;break;}continue;}
+diff --git a/src/takram.ts b/src/takram.ts
+--- a/src/takram.ts
++++ b/src/takram.ts
+@@ -5,6 +5,7 @@
+ import {Ellipsoid} from '@takram/three-geospatial';
+ import type {AtmosphereFrame} from './optics';
+ export async function createTakram(renderer:T.WebGLRenderer,scene:T.Scene,camera:T.PerspectiveCamera,frame:AtmosphereFrame,worldToBody:T.Matrix4,sun:T.Vector3,signal:AbortSignal){
++ if(frame.status!=='Known')throw Error('TAKRAM_UNSUPPORTED:'+frame.status);
+  signal.throwIfAborted();const previousTarget=renderer.getRenderTarget();
+  // Every Earth default affecting this finite model is explicitly replaced with authored optics.
+  const exponential=()=>[new DensityProfileLayer(0,0,0,0,0),new DensityProfileLayer(0,1,-1/8,0,0)] as [DensityProfileLayer,DensityProfileLayer];
+diff --git a/scripts/compile-r09.mjs b/scripts/compile-r09.mjs
+--- a/scripts/compile-r09.mjs
++++ b/scripts/compile-r09.mjs
+@@ -1,7 +1,17 @@
+-import {buildSync} from 'esbuild';
+ import {readFileSync,copyFileSync,cpSync,mkdirSync} from 'node:fs';
++import {createHash} from 'node:crypto';
+ import {root,verifyInputs,save,walk,bytes} from './bindings.mjs';
++// A pre-launch guard is mandatory too: NODE_OPTIONS can run before this script.
++for(const key of ['NODE_OPTIONS','NODE_PATH','NODE_COMPILE_CACHE','NODE_INSPECTOR_IPC','VSCODE_INSPECTOR_OPTIONS','ESBUILD_BINARY_PATH','ESBUILD_WORKER_THREADS','ESBUILD_MAX_BUFFER'])
++ if(process.env[key])throw Error('BUILD_AMBIENT_EFFECT_REQUIRES_DISPOSITION:'+key);
++for(const [path,sha] of [
++ ['node_modules/esbuild/package.json','24655ca1d9c91fe7517a99ec27bf1125b46efae71b54a55125d2a930b6ad61f9'],
++ ['node_modules/esbuild/lib/main.js','b090fe57c79c677256a242703ea07bb2191eced357bece2f9a25539443da070c'],
++ ['node_modules/@esbuild/win32-x64/package.json','fba0a44e5f43b9175c4e538d7c6a9791430aaa61756aa082c9ddbe0cf36fa69e'],
++ ['node_modules/@esbuild/win32-x64/esbuild.exe','f0dd2091eaf58d11b96c64e0c4516f8ecf94486a28d2a8e7a968bd6770db3ffe']])
++ if(createHash('sha256').update(readFileSync(root+'/'+path)).digest('hex')!==sha)throw Error('BUILD_TOOL_DRIFT:'+path);
+ verifyInputs();
++const {buildSync}=await import('esbuild');
+ mkdirSync(root+'/.runtime',{recursive:true});
+ for(const name of ['optics','occlusion','timer','init','reuse','composer','weather-port'])
+  {const result=buildSync({entryPoints:[root+'/src/'+name+'.ts'],outfile:root+'/.runtime/'+name+'.mjs',bundle:true,format:'esm',platform:'node',packages:'external',loader:{'.glsl':'text'},metafile:true});save('.runtime/'+name+'-metafile.json',result.metafile);}
+diff --git a/shaders/volume.frag.glsl b/shaders/volume.frag.glsl
+--- a/shaders/volume.frag.glsl
++++ b/shaders/volume.frag.glsl
+@@ -15,11 +15,14 @@
+  float fog=p.y>=0.0&&p.y<=8.0?fogPerM*exp(-p.y/5.0):0.0;
+  return defect==1?0.0:cloud+fog;
+ }
++bool clipSlab(float o,float d,float lo,float hi,inout float a,inout float b){
++ if(d==0.0)return o>=lo&&o<=hi;
++ float x=(lo-o)/d,y=(hi-o)/d;
++ a=max(a,min(x,y));b=min(b,max(x,y));
++ return b>a;
++}
+ vec4 march(vec3 o,vec3 d,float a,float b){
++ if(!clipSlab(o.x,d.x,-80.0,80.0,a,b)||!clipSlab(o.y,d.y,0.0,32.0,a,b)||!clipSlab(o.z,d.z,-80.0,80.0,a,b))return vec4(0.0,0.0,0.0,1.0);
+- vec3 safeD=vec3(abs(d.x)<1e-8?1e-8:d.x,abs(d.y)<1e-8?1e-8:d.y,abs(d.z)<1e-8?1e-8:d.z);
+- vec3 entry=(vec3(-80.0,0.0,-80.0)-o)/safeD,exit=(vec3(80.0,32.0,80.0)-o)/safeD;
+- vec3 lo=min(entry,exit),hi=max(entry,exit);
+- a=max(a,max(lo.x,max(lo.y,lo.z)));b=min(b,min(hi.x,min(hi.y,hi.z)));
+  if(b<=a)return vec4(0.0,0.0,0.0,1.0);
+  vec3 L=vec3(0.0);float T=1.0,ds=max(0.0,b-a)/float(steps);
+  for(int i=0;i<96;i++){if(i>=steps)break;vec3 p=o+d*(a+(float(i)+0.5)*ds);float sigma=opticalDensity(p);
+diff --git a/tsconfig.strict.json b/tsconfig.strict.json
+--- a/tsconfig.strict.json
++++ b/tsconfig.strict.json
+@@ -5,6 +5,7 @@
+     "moduleResolution": "Bundler",
+     "strict": true,
+     "noEmit": true,
++    "incremental": false,
+     "skipLibCheck": false,
+     "lib": [
+       "ES2022",
+diff --git a/tests/r10-caller-lifecycle.test.mjs b/tests/r10-caller-lifecycle.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/tests/r10-caller-lifecycle.test.mjs
+@@ -0,0 +1,74 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import * as T from 'three';
++import {createOpticalReadPort,tangentBasis,assertCurrentAnalytic} from '../.runtime/weather-port.mjs';
++import {createVolumePort} from '../.runtime/composer.mjs';
++const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url),'utf8'));
++const chosen=json('fixtures/chosen-weather-input.json'),query=json('fixtures/chosen-weather-query.json'),gold=json('fixtures/chosen-weather-result.json');
++const mask={cloudCoverage:0.7,rain01:0.8},presentation={originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1};
++async function frame(){return (await (await createOpticalReadPort(chosen)).read(query,mask,presentation)).frame;}
++test('actual frozen Weather read drives optics and RD mask without a second meteorology or moving import',async()=>{
++ const port=await createOpticalReadPort(chosen),a=await port.read(query,mask,presentation),b=await port.read(structuredClone(query),mask,presentation);
++ assert.equal(a.status,'Known');assert.ok(a.frame);assert.equal(JSON.stringify(a.result),JSON.stringify(gold));
++ await assertCurrentAnalytic(gold,query,port.view);
++ assert.deepEqual(a.frame,b.frame);assert.deepEqual(a.frame.stormIds,gold.sample.stormIds);
++ assert.equal(a.frame.weatherSnapshotId,gold.WeatherSnapshotId);assert.equal(a.frame.weatherExtinctionPerM,gold.sample.extinctionPerM);
++ assert.equal(a.frame.authoredCloudCoverage,mask.cloudCoverage);assert.equal(a.frame.rain01,mask.rain01);
++ const basis=tangentBasis(query.bodyFixedPositionMeters),w=gold.sample.windBodyFixedMps;
++ const expected=[basis.east,basis.up,basis.north].map(axis=>w.x*axis[0]+w.y*axis[1]+w.z*axis[2]);
++ assert.deepEqual(a.frame.windMps,expected);
++ assert.equal(Object.isFrozen(a.frame),true);assert.equal(Object.isFrozen(a.frame.binding),true);
++ await assert.rejects(port.read(query,{cloudCoverage:NaN,rain01:0.8},presentation),/OPTICAL_RANGE/);
++ await assert.rejects(assertCurrentAnalytic({...gold,WeatherSnapshotId:'sha256:'+'0'.repeat(64)},query,port.view),/STALE_ANALYTIC_RESULT/);
++});
++test('six actual synthetic upstream profiles retain NoAtmosphere and Unsupported, not Earth defaults',async()=>{
++ const profiles=json('inputs/wxg/repo/spikes/wxg-01-04-analytic/fixtures/authoring-inputs.json');let vacuum=0,unsupported=0;
++ for(const input of profiles){const result=await (await createOpticalReadPort(input)).read(input.bundle.query,mask,presentation);
++  if(result.status==='NoAtmosphere'){vacuum++;assert.ok(result.frame);assert.equal(result.frame.weatherExtinctionPerM,0);assert.equal(result.frame.rain01,0);assert.equal(result.frame.authoredCloudCoverage,0);}
++  if(result.status==='Unsupported'||result.status==='UnknownCoverage'||result.status==='Pending'){unsupported++;assert.equal(result.frame,null);assert.equal(result.status,result.result.status);}
++ }
++ assert.ok(vacuum>0);assert.ok(unsupported>0);
++});
++test('tangent basis remains orthonormal at either pole, zero position is invalid',()=>{
++ for(const p of [{x:0,y:1,z:0},{x:0,y:-1,z:0},{x:4,y:2,z:1}]){
++  const b=tangentBasis(p),dot=(a,c)=>a.reduce((v,x,i)=>v+x*c[i],0);
++  for(const a of [b.up,b.east,b.north])assert.ok(Math.abs(Math.hypot(...a)-1)<1e-12);
++  assert.ok(Math.abs(dot(b.up,b.east))<1e-12);assert.ok(Math.abs(dot(b.east,b.north))<1e-12);
++ }
++ assert.throws(()=>tangentBasis({x:0,y:0,z:0}),/TANGENT_POSITION/);
++});
++function mockRenderer(){
++ // CPU metadata/material objects only. No WebGLRenderer/context/device or actual pixels.
++ let target=null,clear=new T.Color(),alpha=1;
++ return {domElement:new EventTarget(),autoClear:true,uploads:0,drawCalls:0,
++ getRenderTarget:()=>target,setRenderTarget:v=>{target=v;},getClearColor:c=>c.copy(clear),getClearAlpha:()=>alpha,
++ setClearColor:(c,a)=>{clear.set(c);alpha=a;},clear(){},render(){this.drawCalls++;},initTexture(){this.uploads++;}};
++}
++test('actual composer Source keeps lightning identity and reuploads own atlas/LUT after simulated context restore',async()=>{
++ const renderer=mockRenderer(),scene=new T.Scene(),camera=new T.PerspectiveCamera(),water=new T.Mesh(new T.PlaneGeometry(),new T.MeshBasicMaterial({transparent:true,opacity:0.56,depthWrite:false}));
++ const f=await frame(),port=createVolumePort(renderer,scene,camera,water,f);let callerWaterDisposed=0;
++ water.material.addEventListener('dispose',()=>callerWaterDisposed++);
++ try{
++  assert.equal(port.render().history,'FIRST');assert.equal(renderer.uploads,2);assert.equal(port.diagnostics().atlasUploadPending,false);
++  port.lightning('authored.event.1');assert.equal(port.render().history,'RESET');
++  port.lightning('authored.event.2');assert.equal(port.render().history,'RESET');assert.equal(port.diagnostics().lightningId,'authored.event.2');
++  assert.equal(port.render().history,'CURRENT');port.lightning(null);assert.equal(port.render().history,'RESET');
++  assert.throws(()=>port.lightning(''),/LIGHTNING/);
++  renderer.domElement.dispatchEvent(new Event('webglcontextlost',{cancelable:true}));const calls=renderer.drawCalls;
++  assert.equal(port.render().status,'CONTEXT_LOST');assert.equal(renderer.drawCalls,calls);assert.equal(port.diagnostics().atlasUploadPending,true);
++  renderer.domElement.dispatchEvent(new Event('webglcontextrestored'));
++  assert.equal(port.render().history,'FIRST');assert.equal(renderer.uploads,4);
++  camera.position.y-=1024;port.setFrame({...f,originMeters:[0,1024,0]});assert.equal(port.render().history,'RESET');assert.equal(port.render().history,'CURRENT');
++  assert.throws(()=>port.setFrame({...f,atlasEpoch:0}),/STALE_ATLAS/);
++  for(const size of [[0,1],[1,NaN],[1.5,2]])assert.throws(()=>port.resize(...size),/VOLUME_SIZE/);
++  port.dispose();port.dispose();assert.equal(callerWaterDisposed,0);assert.equal(port.diagnostics().ownedTargets,0);
++ }finally{port.dispose();water.geometry.dispose();water.material.dispose();}
++});
++test('GLSL Source has explicit zero-direction slab rejection, no epsilon substitution or fake pixel proof',()=>{
++ const shader=readFileSync(new URL('../shaders/volume.frag.glsl',import.meta.url),'utf8');
++ assert.ok(shader.includes('if(d==0.0)return o>=lo&&o<=hi;'));assert.ok(!shader.includes('safeD'));
++ for(const axis of ['x','y','z'])assert.ok(shader.includes('clipSlab(o.'+axis+',d.'+axis));
++ // Lexical wiring guard only; real GLSL compilation/pixels require the Runner.
++});
++
+

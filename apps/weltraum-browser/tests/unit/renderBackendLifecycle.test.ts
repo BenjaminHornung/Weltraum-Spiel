@@ -66,7 +66,14 @@ class FakeRenderer implements ThreeRendererPort {
   sizes:readonly number[][]=[];
   setPixelRatio(): void {}
   setSize(width:number,height:number): void {this.sizes=[...this.sizes,[width,height]];}
-  render(): void { this.renders += 1; }
+  outcome: boolean | void = undefined;
+  drawingBuffer = new THREE.Vector2(1280, 720);
+  getDrawingBufferSize(target: THREE.Vector2): THREE.Vector2 { return target.copy(this.drawingBuffer); }
+  render(_scene: THREE.Scene, camera: THREE.Camera): boolean | void {
+    this.renders += 1;
+    camera.updateMatrixWorld();
+    return this.outcome;
+  }
   dispose(): void { this.disposals += 1; }
 }
 
@@ -84,6 +91,81 @@ const setup = (): { readonly backend: ThreeRenderBackend; readonly renderers: Fa
   expect(backend.dispatch({ kind: "InitializeBackend", backendRevision: backendRevision(0) }).status).toBe("Accepted");
   return { backend, renderers };
 };
+
+describe("A75 submitted camera metadata boundary", () => {
+  it("does not promote a legacy void return or an explicitly skipped submit", () => {
+    const { backend, renderers } = setup();
+    expect(backend.renderFrame().status).toBe("Accepted");
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+    renderers[0]!.outcome = false;
+    expect(backend.renderFrame().reasonCode).toBe("PresentationSkipped");
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+  });
+
+  it("captures the live camera, semantic frame ID and real port dimensions after submit", () => {
+    const { backend, renderers } = setup();
+    projectAndShowFallback(backend);
+    renderers[0]!.outcome = true;
+    backend.camera.position.x = 12;
+    backend.renderFrame();
+    const first = backend.readSubmittedFrameMetadata()!;
+    expect(first.coordinateFrameId).toBe(frameId("local:camera"));
+    expect(first.current.position[0]).toBe(12);
+    expect(first.current.drawingBuffer).toEqual({ widthPx: 1280, heightPx: 720 });
+    expect(first.previous).toBeNull();
+    expect(first.originEpoch).toBe("UNAVAILABLE");
+    expect(first.attachmentPublication).toBe("UNAVAILABLE");
+    backend.camera.position.x = 13;
+    backend.renderFrame();
+    const second = backend.readSubmittedFrameMetadata()!;
+    expect(second.renderFrameId).toBe(first.renderFrameId + 1);
+    expect(second.previous).toEqual(first.current);
+    expect(first.current.position[0]).toBe(12);
+    expect(second.current.position[0]).toBe(13);
+    expect(Object.isFrozen(second.current.viewMatrix)).toBe(true);
+  });
+
+  it("clears publication before failed resize and resets continuity after output change", () => {
+    const { backend, renderers } = setup();
+    const renderer = renderers[0]!;
+    renderer.outcome = true;
+    backend.renderFrame();
+    const before = backend.readSubmittedFrameMetadata()!;
+    const setSize = renderer.setSize.bind(renderer);
+    renderer.setSize = () => { throw new Error("resize failed"); };
+    expect(() => backend.resizeViewport(800, 600)).toThrow("resize failed");
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+    renderer.setSize = setSize;
+    renderer.drawingBuffer.set(1600, 1200);
+    backend.resizeViewport(800, 600);
+    backend.renderFrame();
+    const after = backend.readSubmittedFrameMetadata()!;
+    expect(after.metadataGeneration).toBeGreaterThan(before.metadataGeneration);
+    expect(after.previous).toBeNull();
+    expect(after.current.drawingBuffer).toEqual({ widthPx: 1600, heightPx: 1200 });
+  });
+
+  it("does not retain metadata from a throwing draw", () => {
+    const { backend, renderers } = setup();
+    renderers[0]!.outcome = true;
+    backend.renderFrame();
+    renderers[0]!.render = () => { throw new Error("draw failed"); };
+    expect(() => backend.renderFrame()).toThrow("draw failed");
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+  });
+
+  it("invalidates a submitted frame before scene installation and terminal disposal", () => {
+    const { backend, renderers } = setup();
+    renderers[0]!.outcome = true;
+    backend.renderFrame();
+    expect(upsert(backend, artifact(1)).status).toBe("Accepted");
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+    backend.renderFrame();
+    expect(backend.readSubmittedFrameMetadata()!.previous).toBeNull();
+    expect(backend.dispatch({ kind: "DisposeBackend", backendRevision: backendRevision(0) }).status).toBe("Accepted");
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+  });
+});
 
 const upsert = (backend: ThreeRenderBackend, mesh: MeshArtifact, material = profile()) => backend.dispatch({
   kind: "UpsertMeshArtifact" as const,

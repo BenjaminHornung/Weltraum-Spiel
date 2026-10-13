@@ -1,0 +1,1214 @@
+# Human review candidate: authored code/docs. Full imported/fixture/dependency/build/evidence membership is in binding-manifest.json. No approval claimed.
+diff --git a/.devtoolbox/specs/changes/rt-02a-2026-10-09/EXECPLAN.md b/.devtoolbox/specs/changes/rt-02a-2026-10-09/EXECPLAN.md
+new file mode 100644
+--- /dev/null
++++ b/.devtoolbox/specs/changes/rt-02a-2026-10-09/EXECPLAN.md
+@@ -0,0 +1,28 @@
++# ExecPlan: RT-02A
++
++## Ziel
++Finite BVH closest/any-hit backend preserving RT01 tuple, boundary, Unknown and budget semantics; separate actual compute implementation from execution proof.
++## Kontext
++Base 17b1db4201a28e7b607c30707bdc2b75e3484a10; immutable RT01 and GFX03 producer inputs. GFX mesh has no triangle-cell membership, so exact occupied/unknown/empty cell geometry and identity are derived from frozen voxel volumes. Reuse pinned three-mesh-bvh traversal and GFX ports/materials.
++## Nicht-Ziele
++No product/global writes, renderer engine, authority changes, commits or publication. No GPU/native/HVP test without runner slot.
++## Architekturentscheidung
++Separate immutable local geometry generation from owner transform and source/current/device epochs. Rebuild on changed occupancy/index/membership; transform-only keeps geometry. Ray budget counts positive cell intervals including air. Triangle surfaces alone cannot represent inside-solid distance zero or Unknown/budget transitions; exact cell membership is retained alongside the mesh BVH. GPU path must expose real kernel, not CPU fallback.
++## Implementierungsphasen
++1. Import/digest validation and independent control.
++2. Minimum BVH and compute candidate plus GFX borrow checks.
++3. Serial focused checks, complete review and binding.
++## Tests und Evidence
++All 1000 rays against frozen expected, bruteForce and DDA; negative current bindings, missing coverage, double dispose, abort, mutation, topology cut, owner movement, GL/WebGPU camera conventions. CPU times diagnostic only; absent GPU timers null/UNAVAILABLE. Local finite function tests only.
++## Risiken
++FP32 compute precision differs from CPU; real shader/device validation pending. No genuine PRODUCT_EXPORT. Inherited Git-LFS hydrated bytes can appear dirty with filters disabled; preserve and bind, do not clean.
++## Rollback / Safe Stop
++Dispose candidate resources and retain prior valid generation on abort; throw stale/invalid input; never mutate producers or product.
++## Fortschrittslog
++- [x] Own worktree created from fixed base, six sessions live-verified.
++- [x] Read-only explorer supplied bounded reuse inventory.
++- [x] Independent control, CPU/backend implementation, serial tests, browser function, reviewer fixes and byte seal.
++- [ ] Real shader/GPU/hardware/reference and genuine product-export gates remain Runner/A0-only and NOT_RUN.
++## Definition of Done
++Executable finite candidate, real exit records, reviewed exact diff and all input/output/tool bindings. Hardware/product/reference remain separate open gates.
++
+diff --git a/.devtoolbox/specs/changes/rt-02a-2026-10-09/proposal.md b/.devtoolbox/specs/changes/rt-02a-2026-10-09/proposal.md
+new file mode 100644
+--- /dev/null
++++ b/.devtoolbox/specs/changes/rt-02a-2026-10-09/proposal.md
+@@ -0,0 +1,4 @@
++# RT-02A bounded BVH backend
++
++Implement a renderer-independent prepare/update/query/dispose candidate on immutable RT-01 fixtures and unchanged GFX-03 ports. All writes stay in this change and spikes/rt-02a-bvh. Product integration NO. Execution LOCAL_WINDOWS_ISOLATED. No hardware/native/HVP pilot or reference window is granted.
++
+diff --git a/.devtoolbox/specs/changes/rt-02a-2026-10-09/specs/bvh-backend/spec.md b/.devtoolbox/specs/changes/rt-02a-2026-10-09/specs/bvh-backend/spec.md
+new file mode 100644
+--- /dev/null
++++ b/.devtoolbox/specs/changes/rt-02a-2026-10-09/specs/bvh-backend/spec.md
+@@ -0,0 +1,26 @@
++## ADDED Requirements
++
++### Requirement: Bound finite ray backend
++The candidate MUST preserve the RT01 closest/any tuple, normalized half-open ray interval, positive cell budget, Unknown coverage, owner and material identity on the exact immutable fixtures.
++
++#### Scenario: Golden population
++- GIVEN the 49 payload fixture manifest with digest bc6e9be728c932b0fe6f88ea2d6024f61b2b53bc59d47aae0e941c499a34dbea
++- WHEN each of the 1000 unique rays is queried against the BVH
++- THEN its complete tuple matches expected, independent brute force and DDA; provenance populations remain separate.
++
++### Requirement: Lifecycle and source generation
++The candidate MUST reject stale current bindings and device epochs, digest tampering and invalid rays; a topology or membership change MUST never reuse an old occupancy projection. Transform-only changes MAY retain the immutable local BVH.
++
++#### Scenario: Cut and aborted rebuild
++- GIVEN a current prepared generation
++- WHEN a versioned cut changes cells or an abort cancels a replacement
++- THEN a cut installs a fresh bound generation and an abort retains the previous valid generation.
++
++### Requirement: Presentation and proof boundaries
++The candidate MUST consume GFX03 ports/materials without creating a second renderer or retaining borrowed depth across host lifetimes. Code, CPU oracle, shader emission, real shader compile, GPU execution, hardware/reference and product adoption MUST be separate statuses.
++
++#### Scenario: No hardware slot
++- GIVEN no authorized A0/Runner hardware slot
++- WHEN local verification completes
++- THEN only CPU/contract/build and offline WGSL emission are claimed; GPU/native/reference/HVP gates remain NOT_RUN and product integration NO.
++
+diff --git a/.devtoolbox/specs/changes/rt-02a-2026-10-09/tasks.md b/.devtoolbox/specs/changes/rt-02a-2026-10-09/tasks.md
+new file mode 100644
+--- /dev/null
++++ b/.devtoolbox/specs/changes/rt-02a-2026-10-09/tasks.md
+@@ -0,0 +1,8 @@
++# RT-02A tasks
++
++- [x] 1. Freeze verified producer bytes and run the original CPU control.
++- [x] 2. Implement BVH CPU/compute ports with source identity and lifecycle contracts.
++- [x] 3. Verify 1000 oracle rays, numerical/coverage/topology/epoch/borrow negatives and build.
++- [x] 4. Review and seal complete source/dirty/index/lock/shader/tool/build handoff; deliver finite runner profile.
++- [ ] 5. Runner-only GPU/reference and genuine product-export gates (not granted).
++
+diff --git a/.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/CODE_REVIEW.md b/.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/CODE_REVIEW.md
+new file mode 100644
+--- /dev/null
++++ b/.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/CODE_REVIEW.md
+@@ -0,0 +1,11 @@
++# Read-only reviewer findings and repairs
++
++Reviewer `/root/rt02a_review`, installed reviewer lane gpt-6.1-sol/xhigh, read-only. Reviewed initial compute source f65c7392d12200c4d5ed1d545cc280367321a2496ed5113a76034168bdf50c85. No build/browser/device execution by reviewer.
++
++1. P1: nonexistent minBounds/maxBounds WGSL fields. Repaired to actual min/max array members and vec3f construction; all9 emitted variants validate every `box` member against actual declared struct fields. Original invalid emission retained separately.
++2. P1: preparation could resume after async hashing and dispose in-flight buffers. Repaired with post-validation/pre-install busy checks on prepare/update. Deferred-host race reproduces ordering, replacement rejects, drain required.
++3. P2: 1e-6 ownership/sliver epsilon could erase an inside-wood hit. Removed ownership epsilon; separate producer machine-roundoff canonicalization and1e-10 interval policy preserved. Exact short-cell input packs above face5 and CPU oracle returns cell[5,1,1],distance0. FP32 face collapse explicitly rejects. Real shader numeric conformance NOT_RUN.
++4. P2: zero/air-hit readbacks accepted contradictory tuple. Decoder now validates kind/cell/source slot/material/distance/normal/visited relationships; malformed all-zero and air-hit mocks reject. Supplemental mocks are not GPU evidence.
++
++No attribute-stride defect: installed StructTypeNode pads vec4f+float to32bytes matching packer. No concrete immutable-import overwrite or renderer-owner defect was found. Final narrow recheck confirmed source repairs1-4 and requested binding the resolved branch target, since symbolic HEAD bytes alone are insufficient. collect-git now freshly resolves HEAD/branch and binds the assigned loose ref bytes; seal verifies actual symbolic branch and resolved commit/ref digest. Missing/packed ref fails closed for explicit rebinding. Final byte verification follows; no GPU or human acceptance is inferred.
++
+diff --git a/.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/FINAL_VERIFICATION.md b/.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/FINAL_VERIFICATION.md
+new file mode 100644
+--- /dev/null
++++ b/.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/FINAL_VERIFICATION.md
+@@ -0,0 +1,10 @@
++# Independent finite handoff verification
++
++Installed verification_reviewer `/root/rt02a_final_evidence`, read-only, confirmed no material blocker. Decision: COMPLETE/PASS for the finite lab candidate only; actual shader/device/hardware/reference/visual proof remains NOT_RUN and product integration NO.
++
++Fresh command: explicit `C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe seal.mjs verify` from own spike, exit0,2774 payloadfiles, seal SHA763195f11f39d0945972c8243eb7674414fad3fe24092437273a10acfc1eb172. Fresh Git status exit0,130 dirty paths, all assigned scopes, including the4controlfiles/review.patch. Index/resolvedHEAD and dependency/lock/WASM/shader/build bytes are bound. External4 browser artifacts still match captured hashes.
++
++Reviewed evidence: latest5commands exit0,7tests pass,1000CPUoracle rays,9compute packing/emission variants,4000browser comparisons. Historical invalid WGSL, native original4/6/corrected10/12 and GFX3/3 failures are preserved. Unused transitive Rapier0.21 has no solver claim. No build/test/browser/device/native wave was repeated by the verification reviewer.
++
++This note and task4 closure change metadata only; final seal is regenerated afterward. The final seal SHA must be read from the final tool output, not the earlier reviewed control hash. No Plannotator/human/product approval was inferred. The remaining Runner task stays unchecked.
++
+diff --git a/spikes/rt-02a-bvh/HANDOFF.md b/spikes/rt-02a-bvh/HANDOFF.md
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/HANDOFF.md
+@@ -0,0 +1,14 @@
++# RT-02A handoff
++
++Read README, run `spikes/rt-02a-bvh/repro.ps1 -Mode seal`, then inspect REPORT, receipt.json, binding-manifest.json, dirty-tree.json and review.patch. Branch `feature/rt-02a-2026-10-09`, base `17b1db4201a28e7b607c30707bdc2b75e3484a10`. Native session `01a1219c-7022-7070-82a1-30f53e5e28f9`; Paseo `4323b637-bbf3-477a-8ba9-2dbadd0aa424`. Execution LOCAL_WINDOWS_ISOLATED. Uncommitted; no human approval is claimed.
++
++RT03 consumes `src/backend.ts` and `src/compute.ts` prepare/update/query/dispose. Immutable fixture copies are `fixtures/`; producer receipts/source/port bytes and exact original paths are in input-provenance.json. Geometry proxy membership is explicit, not an invented triangle-to-Greedy surface relation. Source changes rebuild, owner movement changes only copied transforms, stale current/source/origin/device bindings reject, and no partial generation is adopted after abort. GPU ray data has no Mining/Save/Physics authority. Borrowed GFX depth/camera handling stays within the existing host.
++
++The technical candidate is complete, with CPU tuple and browser functional proofs. **GPU is LOCAL_PENDING**: bind this source/lock/WASM/shader/build/fixture receipt to the sole real Runner's explicitly granted A0 slot. `repro-profile.json` gives the finite profile; `browser-profile.mjs::runGpuProfile(host)` needs the actual existing WebGPURenderer methods and verified ActualAdapter record. Invoke neither hardware nor native/HVP workloads from this producer. No free-window/reference/device/quality/Art/Owner adoption is implied.
++
++The Runner must first perform real shader compilation and all1000 rays in both modes, then actual device-loss/drain/dispose and topology/transform/Unknown/epoch checks. The current GPU boundary precision policy is experimental; Unsupported or discrete mismatch stays explicit. Only after correctness and matching RT02B input may it compare full prepare/update/upload/query/readback and retained resource costs at identical source volume and quality. Missing timers remain UNAVAILABLE/null. No42/1400 series or competing renderer starts.
++
++The complete payload inventory includes ignored installed dependencies/cache, emitted builds, imported sources/fixtures, commands/real exitcodes, current WGSL variants and preserved raw failures. Four named control files are excluded only to prevent self-hash cycles and are bound by seal.json; report its SHA separately. Git index identity and all dirty payload bytes are included. Authored text diffs are in review.patch; imported/binary/generated artifacts must also be checked through their exact binding inventory. This is a reviewable candidate, **not** an empty or approved Plannotator review. Verify the seal before reproduction: `-Mode code` creates fresh evidence and requires a new receipt/seal rather than silently reusing the old binding. TS5.9.3 checks this candidate only; no A0 TS7 compatibility proof is claimed.
++
++A0 alone owns product integration (`01a120eb-c6c5-7b40-bb95-cdf703ecb5c3` / `37dddeb2-1688-47cc-af00-b03edd394215`), subject to current STATE. Product integration remains NO. Real human Plannotator approval for its exact final integrated diff precedes any commit/first push; merge/publication/hardware/visual adoption remain separate gates. The orchestrator handles delivery; this producer does not message other chats.
++
+diff --git a/spikes/rt-02a-bvh/README.md b/spikes/rt-02a-bvh/README.md
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/README.md
+@@ -0,0 +1,18 @@
++# RT-02A BVH candidate
++
++From the isolated worktree run `spikes/rt-02a-bvh/repro.ps1 -Mode code`. Run `-Mode serve` for the bounded CPU browser profile at http://127.0.0.1:43220. Run `-Mode seal` to verify delivered bytes. Approved explicit Node is v22.23.2; npm10.9.8, Git2.56.0.windows.1, TypeScript5.9.3. Three0.186.1/types0.186.0 and three-mesh-bvh0.9.16 are exact pins. Package licenses are MIT except TypeScript Apache2.0; project source retains its original license. `bvh-registry.json` binds the public artifact integrity/gitHead, `WEBGPU_API.pinned.md` binds its upstream documentation.
++
++Hypothesis: the existing mature BVH traversal can preserve the entire frozen RT01 result tuple, including inside-solid hits, half-open/tied faces, unknown coverage, material/owner/cell identity and the positive-cell traversal budget. A rendered surface alone cannot supply inside/air/budget membership. Each cell therefore supplies one **non-rendered AABB proxy triangle** to MeshBVH, including air; ray queries perform exact cell-interval tests in intersected leaf ranges. This is not a Greedy-renderer bakeoff or a new presentation engine. Visible voxel occupancy is unchanged; proxy geometry never enters a render loop.
++
++`src/backend.ts::BvhRayBackend` exposes prepare/update/query/dispose and immutable snapshots. Source/material digests and all current binding fields are checked. A cut/membership change rebuilds; pure owner movement keeps the local geometry. Abort/supersession never installs partial geometry. `AnyHit` returns the nearest conclusive tuple with the same conservative Unknown/budget policy as ClosestHit. It is not an independently optimized early-out algorithm.
++
++`src/compute.ts::ComputeBvhBackend` borrows an existing host's `computeAsync/getArrayBufferAsync` plus deviceEpoch and ActualAdapter. It uses the installed `BVHComputeData` packing and Custom-Shapecast API, iterating positive cell intervals on the GPU. The package API is explicitly unstable, requires Three r185+, and has no shipped declarations for its WebGPU export; the narrow JS declarations are not a compatibility proof. Output buffers are released after query/readback, replacement is refused during an active query, and disposal requires drain. No device, renderer, canvas or render loop is created. GPU data is presentation only.
++
++CPU policy remains the RT01 1e-9 comparison and its separate machine-roundoff/1e-10 interval rules. GPU FP32 uses exact directional ownership after RT01 boundary canonicalization; a nonboundary input that collapses to an integer face in FP32 is explicitly Unsupported. The runner checks discrete identities exactly and distance/normal within an experimental 1e-5 tolerance; this is no owner-approved GPU threshold. Actual compile/conformance is **NOT_RUN**.
++
++The immutable GFX03 `src/port.ts` and both material shader implementations in `src/materials.ts` are preserved/compiled without a second renderer. Browser CPU loads their concrete verified F00 mesh/material/camera data. `src/presentation.ts` consumes borrowed depth only in a synchronous call and retains deeply frozen copied camera/source/material metadata; host epoch/depth identity and GL[-1,1]/WebGPU[0,1] conventions are checked. GFX03's original visual parity failures remain unchanged.
++
++@types/three0.186.0 pulls historical Rapier0.12 by default. The own lock uses an explicit **0.21.0 override** as mandated; the pre-override lock is preserved under `historical/`. This unused transitive WASM is byte-bound and never initialized. No physics/solver migration or product compatibility claim follows.
++
++Use `import-inputs.mjs` to verify producer receipts/manifests and the immutable local copies. Its first STATE digest is a historical administration observation, while all scientific input pins and USER_OVERRIDES remain strict. Execution is LOCAL_WINDOWS_ISOLATED; concurrent host load is unmeasured. CPU buffer counts cover geometry/index/indirect/BVH typed buffers; JS heap is unmeasured. Absent upload/readback/GPU times are null, not zero.
++
+diff --git a/spikes/rt-02a-bvh/REPORT.md b/spikes/rt-02a-bvh/REPORT.md
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/REPORT.md
+@@ -0,0 +1,16 @@
++# RT-02A result
++
++Implementation COMPLETE for the finite candidate; CPU/code verification PASS. Product integration NO. Real shader compilation, GPU tuples, ActualAdapter, hardware/reference, fixed-quality costs and visual acceptance NOT_RUN. No HVP/native/GPU pilot or free measurement window was granted.
++
++All1000 unique rays match unchanged expected, independent RT01 bruteForce, and DDA in both ClosestHit and AnyHit. Outcomes:52Hit/810Miss/112Unknown/26BudgetExceeded. Node tests pass7/7; the browser passes4000 comparisons over the same1000 rays,49 bound payloads,18 mesh buffers,6 actual material records and near camera. Provenance stays8ANALYTICAL+1RD_SYNTHETIC+0PRODUCT_EXPORT. Chrome155.0.8059.40, DPR1.25 and viewport1036x766 were recorded; binary path is unavailable from the MCP. Browser evidence is CPU functionality only, with no device request.
++
++Compute CPU packing/source emission passes all9 volume variants and all1000 input rays; real compile and compute are NOT_RUN. Supplemental deferred-host/malformed-buffer mocks check only lifecycle/decoder rejection. The short inside-solid boundary regression retains cell[5,1,1] at distance0; FP32 face collapse rejects explicitly. No timing/FPS acceptance, hardware winner, real GPU resource/leak proof or native ACK is claimed.
++
++The read-only review found and the candidate repaired: undeclared WGSL bounding-box fields; a prepare/update validation race with in-flight buffers; an ownership epsilon that could erase short intervals; contradictory readback identities. New checks emit actual declared-field uses for all9 variants, defer mock dispatch to reproduce the replacement ordering, reject zero/air-hit buffers, and preserve near-face semantics. Raw initial emission remains `tests/compute-emitted.wgsl` as **historical invalid source**, not current proof. Current sources are `tests/shaders/*.wgsl` plus compute-results.json.
++
++Historical failures are retained: native original4/6 versus corrected helper10/12, RAY02/RAY03 FAIL. GFX03 visual parity and backend classifications remain FAIL3/3 at threshold0.2%, fractions4.2145/3.8676/2.8381%. They are not requalified by CPU tuple parity. Real product exports, current HVP/AO closure, structural-fragment integration, renderer/material adoption and equal-image cost remain unavailable/open.
++
++Failures during this task remain recorded: Node --test worker spawning EPERM; missing new backend module as initial RED; moving STATE digest in importer receipt corrected while retaining its first observation; browser JSON property-order comparison corrected after verifying the actual tuple. The inherited DevToolbox product typecheck exits1 MODULE_NOT_FOUND because this worktree has no product node_modules. Own exact-pin tsc build and scoped tests pass. No product dependencies or verification policy were changed.
++
++Scope incident: Playwright MCP automatically created four small YAML/console logs in the main checkout's `.playwright-mcp` directory. Their exact paths/sizes/digests are in the final binding/receipt. These non-product files were preserved; no deletion authority was inferred. Authored source/spec writes remained in the assigned isolated scopes. No global config, producer, A0, product source, commit, push, merge or publication write occurred.
++
+diff --git a/spikes/rt-02a-bvh/WEBGPU_API.pinned.md b/spikes/rt-02a-bvh/WEBGPU_API.pinned.md
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/WEBGPU_API.pinned.md
+@@ -0,0 +1,184 @@
++<!-- This file is generated automatically. Do not edit it directly. -->
++# three-mesh-bvh/webgpu
++
++## TSL Functions
++
++### closestPointToTriangle
++
++```js
++closestPointToTriangle: FunctionNode
++```
++
++WGSL function node that finds the closest point on a triangle to `p` and returns the barycoord.
++
++### intersectRayTriangle
++
++```js
++intersectRayTriangle: FunctionNode
++```
++
++WGSL function node that tests a ray against a single triangle and returns an
++[rayIntersectionResultStruct](rayIntersectionResultStruct) result. Useful when writing a custom `intersectRangeFn`
++for [BVHComputeData#getShapecastFn](BVHComputeData#getShapecastFn).
++
++### ndcToCameraRay
++
++```js
++ndcToCameraRay: FunctionNode
++```
++
++WGSL function node that builds a camera ray (origin + far-plane direction) from an NDC
++coordinate and an inverse model-view-projection matrix. Works for both perspective and
++orthographic projections. The returned direction is not normalized and extends to the
++camera far plane.
++
++## TSL Structs
++
++### rayStruct
++
++```js
++rayStruct: StructTypeNode
++```
++
++WGSL struct node representing a ray with an origin and direction.
++Used as the input to BVH traversal and intersection functions.
++
++### rayIntersectionResultStruct
++
++```js
++rayIntersectionResultStruct: StructTypeNode
++```
++
++WGSL struct node describing a ray–triangle intersection result, including barycentric
++coordinates, world-space normal, hit distance, face side, triangle indices, and the
++object index within the TLAS.
++
++### pointQueryResultStruct
++
++```js
++pointQueryResultStruct: StructTypeNode
++```
++
++WGSL struct node describing a closest-point query result, including the world-space
++closest point, squared distance, barycentric coordinates, face normal, side, triangle
++indices, and the object index within the TLAS.
++
++Barycoord convention matches [rayIntersectionResultStruct](rayIntersectionResultStruct): `(bary_a, bary_b, bary_c)`
++where each component is the weight for the corresponding vertex in `faceIndices.xyz`.
++
++## BVHComputeData
++
++Packs one or more scene objects into GPU-accessible BVH buffers (TLAS + BLAS) for use
++in WebGPU compute shaders via the Three.js TSL node system. After construction, call
++[BVHComputeData#update](BVHComputeData#update) to populate the storage buffers, then reference
++`this.storage` and `this.fns` in your compute shader nodes.
++
++> [!NOTE]
++> This API is unstable and subject to change in future releases.
++
++> [!NOTE]
++> This class requires three.js r185 or higher.
++
++### .constructor
++
++```js
++constructor(
++	objects: Object3D | BufferGeometry | GeometryBVH | Array,
++	{
++		// WGSL type map for the interleaved per-vertex attribute
++		// buffer. Keys are geometry attribute names; values are WGSL
++		// type strings (e.g. `'vec3f'`, `'vec4f'`).
++		attributes = { position: 'vec4f' }: Record<string, string>,
++
++		// When true, a [MeshBVH](MeshBVH) is automatically built for any
++		// object that does not already have `geometry.boundsTree` set.
++		autogenerateBvh = true: boolean,
++	}
++)
++```
++
++### .getRootObject
++
++```js
++getRootObject(): Object3D
++```
++
++Returns the representative root object for the scene to be constructed.
++
++
++### .getShapecastFn
++
++```js
++getShapecastFn(
++	{
++		// Function name. Defaults to a random identifier.
++		name?: string,
++
++		// TSL struct or definition describing the query shape.
++		shapeStruct: StructTypeNode,
++
++		// TSL struct for the accumulated result, or null.
++		resultStruct?: StructTypeNode | null,
++
++		// function node controlling left/right child traversal order.
++		boundsOrderFn?: function | null,
++
++		// function node testing the shape against a BVH node's bounds.
++		intersectsBoundsFn: function,
++
++		// function node testing the shape against a leaf triangle
++		// range.
++		intersectRangeFn: function,
++
++		// function node that transforms the shape into object local
++		// space.
++		transformShapeFn?: function | null,
++
++		// function node that transforms a hit result back to world
++		// space.
++		transformResultFn?: function | null,
++
++		// function node called after each BLAS traversal to reset any
++		// per-object state set by `transformShapeFn`.
++		resetShapeFn?: function | null,
++	}
++): function
++```
++
++Builds a WGSL shapecast function that traverses the TLAS and per-cluster BLAS in a single
++merged stack/loop for a custom shape type. The returned function signature is:
++`fn name( shape: ShapeStruct[, result: ptr<function, ResultStruct>] ) -> bool`
++
++
++### .update
++
++```js
++update(): void
++```
++
++Rebuilds all GPU storage buffers from the current scene state. Must be called at least
++once before using `this.storage` or `this.fns` in a shader, and again whenever the
++scene topology changes (objects added/removed, geometry modified).
++
++
++### .updateTransforms
++
++```js
++updateTransforms(): void
++```
++
++Refits the clustered BVH and rewrites every entry in the transform buffer from the objects'
++current world matrices. Call this when object transforms or visibility change but the scene
++topology does not. The transform slots are derived from the clustered BVH's primitive buffer,
++so they match those written by [BVHComputeData#update](BVHComputeData#update).
++
++
++### .dispose
++
++```js
++dispose(): void
++```
++
++Releases GPU resources held by this instance.
++
++
+diff --git a/spikes/rt-02a-bvh/browser-profile.mjs b/spikes/rt-02a-bvh/browser-profile.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/browser-profile.mjs
+@@ -0,0 +1,28 @@
++import {BvhRayBackend} from './dist/src/backend.js';
++import {ComputeBvhBackend} from './dist/src/compute.js';
++import {loadPort,digest,FIXTURE_PIN} from './dist/imports/gfx/src/port.js';
++import {traceDda} from './dist/imports/rt/src/dda.mjs';
++import {traceBruteForce} from './dist/imports/rt/src/bruteForce.mjs';
++const check=(ok,message)=>{if(!ok)throw new Error(message);};
++const discrete=value=>Object.keys(value).filter(key=>key!=='distance'&&key!=='normal').sort().map(key=>[key,value[key]]);
++const equal=(a,b,tolerance=1e-9)=>Math.abs(a.distance-b.distance)<=tolerance&&a.normal.every((n,i)=>Math.abs(n-b.normal[i])<=tolerance)&&JSON.stringify(discrete(a))===JSON.stringify(discrete(b));
++async function inputs(){
++  const bytes=new Uint8Array(await(await fetch('./fixtures/manifest.json')).arrayBuffer());check(await digest(bytes)===FIXTURE_PIN,'Manifest drift');const manifest=JSON.parse(new TextDecoder().decode(bytes));const files=new Map();
++  for(const ref of manifest.files){const response=await fetch(`./fixtures/${ref.path}`);check(response.ok,'Missing fixture');const data=new Uint8Array(await response.arrayBuffer());check(data.length===ref.byteLength&&await digest(data)===ref.sha256,'Payload drift');files.set(ref.path,data);}
++  const json=name=>JSON.parse(new TextDecoder().decode(files.get(name)));const golden=json('rays/golden-1000.json');return {manifest,json,rows:golden.rays??golden};
++}
++export async function runCpuProfile(){
++  const {manifest,json,rows}=await inputs();check(rows.length===1000&&new Set(rows.map(r=>r.ray.id)).size===1000,'Population drift');const port=await loadPort();let comparisons=0;
++  for(const id of new Set(rows.map(r=>r.volumeId))){const v=json(`voxels/${id}.json`),b=new BvhRayBackend();await b.prepare(v,v.binding);
++    for(const row of rows.filter(r=>r.volumeId===id)){const r=b.query(row.ray,v.binding);check(equal(r,row.expected),`Expected ${row.ray.id}`);check(equal(r,traceBruteForce(v,row.ray)),`Oracle ${row.ray.id}`);check(equal(r,traceDda(v,row.ray)),`DDA ${row.ray.id}`);check(equal(b.query(row.ray,v.binding,'AnyHit'),r),`Any ${row.ray.id}`);comparisons+=4;}b.dispose();check(b.resources().retainedCpuBytes===0,'CPU retained');}
++  return {status:'PASS',profile:'BROWSER_CPU_FUNCTIONAL_NO_DEVICE',executionLocation:'LOCAL_WINDOWS_ISOLATED',rows:1000,comparisons,fixtureMembers:manifest.files.length,meshPayloads:port.buffers.size,materialView:port.fixture.materials,camera:port.camera,
++    browser:navigator.userAgent,devicePixelRatio,viewport:[innerWidth,innerHeight],environmentLoad:'CONCURRENT_OTHER_MAIN_SESSIONS; NOT_MEASURED',actualAdapter:null,gpu:'NOT_RUN',gpuTimer:null,reference:'NOT_RUN',productIntegration:'NO'};
++}
++/** Runner supplies an existing authorized WebGPURenderer host and verified adapter record. */
++export async function runGpuProfile(host){
++  check(host.actualAdapter,'ActualAdapter is required; powerPreference alone is not identity');const {json,rows}=await inputs();let pass=0;const failures=[],resources=[];
++  for(const id of new Set(rows.map(r=>r.volumeId))){const v=json(`voxels/${id}.json`),group=rows.filter(r=>r.volumeId===id),b=new ComputeBvhBackend(host);await b.prepare(v,v.binding);
++    try{for(const mode of ['ClosestHit','AnyHit']){const actual=await b.query(group.map(r=>r.ray),v.binding,mode);actual.forEach((result,i)=>{if(equal(result,group[i].expected,1e-5))pass++;else failures.push({mode,rayId:group[i].ray.id,actual:result,expected:group[i].expected});});}resources.push({id,costs:b.costs});}finally{b.dispose();}}
++  return {status:failures.length?'FAIL':'PASS',scope:'GPU_FUNCTIONAL_NOT_HARDWARE_REFERENCE',rows:1000,modes:2,pass,failures,resources,actualAdapter:host.actualAdapter,precisionPolicy:'FP32 distance/normal tolerance 1e-5; discrete tuple equality exact',reference:'NOT_RUN',productIntegration:'NO'};
++}
++
+diff --git a/spikes/rt-02a-bvh/collect-git.ps1 b/spikes/rt-02a-bvh/collect-git.ps1
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/collect-git.ps1
+@@ -0,0 +1,21 @@
++$ErrorActionPreference='Stop'
++$rtRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
++$rtGit='C:\IFI_SourceCode\Utils\opencode-migration\runtime\git\cmd\git.exe'
++function Invoke-RtGit([string[]]$Arguments){$rtOutput=& $rtGit --no-optional-locks -C $rtRoot @Arguments; if($LASTEXITCODE -ne 0){throw "Git failed: $Arguments exit $LASTEXITCODE"};return ($rtOutput -join "`n")}
++$rtIdentity=@{head=Invoke-RtGit -Arguments @('rev-parse','HEAD');branch=Invoke-RtGit -Arguments @('branch','--show-current');indexRows=Invoke-RtGit -Arguments @('ls-files','--stage');statusRaw=Invoke-RtGit -Arguments @('status','--porcelain=v1','-z','--untracked-files=all');stagedDiff=Invoke-RtGit -Arguments @('diff','--cached','--name-only');gitVersion=Invoke-RtGit -Arguments @('--version')}
++if($rtIdentity.head -ne '17b1db4201a28e7b607c30707bdc2b75e3484a10' -or $rtIdentity.branch -ne 'feature/rt-02a-2026-10-09'){throw 'Worktree identity drift'}
++$rtIdentity.gitDirectory=Invoke-RtGit -Arguments @('rev-parse','--absolute-git-dir')
++$rtIdentity.indexFile=Join-Path $rtIdentity.gitDirectory 'index'
++$rtIdentity.indexSha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $rtIdentity.indexFile).Hash.ToLowerInvariant()
++$rtIdentity.headFile=Join-Path $rtIdentity.gitDirectory 'HEAD'
++$rtIdentity.headFileSha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $rtIdentity.headFile).Hash.ToLowerInvariant()
++$rtCommon=Invoke-RtGit -Arguments @('rev-parse','--git-common-dir')
++if(-not [IO.Path]::IsPathRooted($rtCommon)){$rtCommon=[IO.Path]::GetFullPath((Join-Path $rtRoot $rtCommon))}
++$rtIdentity.refFile=Join-Path $rtCommon 'refs/heads/feature/rt-02a-2026-10-09'
++if(-not (Test-Path -LiteralPath $rtIdentity.refFile)){throw 'Loose assigned branch ref unavailable; rebind resolved identity before sealing'}
++if((Get-Content -Raw -LiteralPath $rtIdentity.refFile).Trim() -ne $rtIdentity.head){throw 'Resolved branch target drift'}
++$rtIdentity.refFileSha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $rtIdentity.refFile).Hash.ToLowerInvariant()
++$rtIdentity.timeUtc=[DateTime]::UtcNow.ToString('o')
++$rtIdentity | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $PSScriptRoot '../../.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/git-final.json')
++Write-Output 'Git identity/index/dirty inventory recorded; no index, commit or product content changed.'
++
+diff --git a/spikes/rt-02a-bvh/import-inputs.mjs b/spikes/rt-02a-bvh/import-inputs.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/import-inputs.mjs
+@@ -0,0 +1,249 @@
++import { createHash } from 'node:crypto';
++import { lstat, mkdir, readFile, writeFile } from 'node:fs/promises';
++import path from 'node:path';
++import { fileURLToPath, pathToFileURL } from 'node:url';
++
++const spikeRoot = path.dirname(fileURLToPath(import.meta.url));
++const worktreeRoot = path.resolve(spikeRoot, '..', '..');
++const mainRoot = path.resolve(worktreeRoot, '..', '..');
++const packageRoot = path.join(mainRoot, 'artifacts', 'hestia-cloud-orchestration-2026-10-09',
++  'Hestia_Cloud_Spikes_und_ProgrammAmendment_2026-10-09');
++const rtWorktree = path.join(mainRoot, '.worktrees', 'Hestia-Spike-RT-01-2026-10-09');
++const gfxWorktree = path.join(mainRoot, '.worktrees', 'Hestia-Spike-GFX-03-2026-10-09');
++
++const pins = {
++  rtReceipt: { byteLength: 7225, sha256: '7ec2c677895d7a4d356814c94787824d61fad827dde99cff1d0f2e8c87d297c4' },
++  rtBinding: { byteLength: 39776, sha256: 'c1d7e4684eda0002b5ebe7d8187583ce4fc6fc33d8de637108abd73a1e21026c' },
++  rtFixtures: { byteLength: 7440, sha256: 'bc6e9be728c932b0fe6f88ea2d6024f61b2b53bc59d47aae0e941c499a34dbea' },
++  gfxReceipt: { byteLength: 16521, sha256: '19cb90aa136ff917f35318fce26d76ca359ed802782ceae5f5508780cfb9f01e' },
++  gfxBinding: { byteLength: 950615, sha256: 'b00e1d955341aad056dc4ea6cbbe147949c96af600f5bbd304313d82b0ff9386' },
++};
++
++const rtFiles = [
++  ['spikes/rt-01-oracle/src/types.mts', 'imports/rt/src/types.mts'],
++  ['spikes/rt-01-oracle/src/validate.mts', 'imports/rt/src/validate.mts'],
++  ['spikes/rt-01-oracle/src/dda.mts', 'imports/rt/src/dda.mts'],
++  ['spikes/rt-01-oracle/src/bruteForce.mts', 'imports/rt/src/bruteForce.mts'],
++  ['spikes/rt-01-oracle/load.mjs', 'imports/rt/load.mjs'],
++  ['spikes/rt-01-oracle/fixtures.mjs', 'imports/rt/fixtures.mjs'],
++  ['spikes/rt-01-oracle/export.mjs', 'imports/rt/export.mjs'],
++  ['spikes/rt-01-oracle/import-rd.mjs', 'imports/rt/import-rd.mjs'],
++  ['spikes/rt-01-oracle/README.md', 'imports/rt/README.md'],
++  ['spikes/rt-01-oracle/imported/F00-CONTROL/historical/tests/RD-13/native.spec.ts',
++    'imports/rt/history/F00-CONTROL/tests/RD-13/native.spec.ts'],
++  ['spikes/rt-01-oracle/imported/F00-CONTROL/historical/reports/planner-followup-ebb913d/RAY_FOLLOWUP.md',
++    'imports/rt/history/F00-CONTROL/reports/planner-followup-ebb913d/RAY_FOLLOWUP.md'],
++  ['spikes/rt-01-oracle/imported/F00-CONTROL/historical/docs/coordination/input-package/03_LAB_VERTRAEGE_UND_FIXTURES.md',
++    'imports/rt/history/F00-CONTROL/docs/coordination/input-package/03_LAB_VERTRAEGE_UND_FIXTURES.md'],
++];
++const gfxFiles = [
++  ['spikes/gfx-03-backend-bakeoff/src/port.ts', 'imports/gfx/src/port.ts'],
++  ['spikes/gfx-03-backend-bakeoff/src/materials.ts', 'imports/gfx/src/materials.ts'],
++];
++
++function sha256(bytes) {
++  return createHash('sha256').update(bytes).digest('hex');
++}
++
++function safePath(root, relative) {
++  if (typeof relative !== 'string' || !relative || relative.includes('\\') || relative.startsWith('/')
++    || relative.split('/').some(part => !part || part === '.' || part === '..')) {
++    throw new Error(`Unsafe relative path: ${relative}`);
++  }
++  const result = path.resolve(root, ...relative.split('/'));
++  if (!result.startsWith(`${path.resolve(root)}${path.sep}`)) throw new Error(`Path escaped root: ${relative}`);
++  return result;
++}
++
++function verifyBytes(bytes, expected, label) {
++  const actualHash = sha256(bytes);
++  if (bytes.length !== expected.byteLength || actualHash !== expected.sha256) {
++    throw new Error(`${label} pin mismatch: ${bytes.length}/${actualHash}`);
++  }
++  return { byteLength: bytes.length, sha256: actualHash };
++}
++
++async function readPinnedJson(sourcePath, pin, label) {
++  const bytes = await readFile(sourcePath);
++  const digest = verifyBytes(bytes, pin, label);
++  return { bytes, digest, value: JSON.parse(bytes.toString('utf8')) };
++}
++
++function bindingRow(manifest, relative) {
++  const matches = manifest.files.filter(entry => entry.path === relative);
++  if (matches.length !== 1) throw new Error(`Expected one producer binding for ${relative}, found ${matches.length}`);
++  return matches[0];
++}
++
++async function readBound(sourceRoot, manifest, sourceRelative, destinationRelative, producer) {
++  const sourcePath = safePath(sourceRoot, sourceRelative);
++  const row = bindingRow(manifest, sourceRelative);
++  const bytes = await readFile(sourcePath);
++  const digest = verifyBytes(bytes, row, `${producer}:${sourceRelative}`);
++  return { producer, originalPath: sourceRelative, sourcePath, destinationPath: destinationRelative, bytes,
++    sourceBytes: digest, destinationBytes: digest };
++}
++
++async function readFixture(sourceRoot, entry) {
++  const sourcePath = safePath(sourceRoot, entry.path);
++  const bytes = await readFile(sourcePath);
++  const digest = verifyBytes(bytes, entry, `RT-01 fixture:${entry.path}`);
++  return { producer: 'RT-01', originalPath: `spikes/_shared/rt-2026-10-09/v1/${entry.path}`,
++    sourcePath, destinationPath: `fixtures/${entry.path}`, bytes, sourceBytes: digest, destinationBytes: digest };
++}
++
++async function readDocument(root, relative, sections) {
++  const sourcePath = safePath(root, relative);
++  const bytes = await readFile(sourcePath);
++  return { originalPath: path.relative(mainRoot, sourcePath).split(path.sep).join('/'), sourcePath,
++    sections, sourceBytes: { byteLength: bytes.length, sha256: sha256(bytes) }, destinationPath: null,
++    destinationBytes: null };
++}
++
++async function assertNoSymlink(relative, allowMissing) {
++  const parts = relative.split('/');
++  let current = spikeRoot;
++  for (let index = 0; index < parts.length; index++) {
++    current = path.join(current, parts[index]);
++    try {
++      const info = await lstat(current);
++      if (info.isSymbolicLink()) throw new Error(`Refusing symlink destination: ${relative}`);
++      if (index < parts.length - 1 && !info.isDirectory()) throw new Error(`Not a directory: ${current}`);
++      if (index === parts.length - 1 && !info.isFile()) throw new Error(`Not a file: ${current}`);
++    } catch (error) {
++      if (error.code !== 'ENOENT' || !allowMissing) throw error;
++      return;
++    }
++  }
++}
++
++async function preflightDestination(item) {
++  await assertNoSymlink(item.destinationPath, true);
++  try {
++    const current = await readFile(safePath(spikeRoot, item.destinationPath));
++    if (!current.equals(item.bytes)) throw new Error(`Existing destination drift: ${item.destinationPath}`);
++  } catch (error) {
++    if (error.code !== 'ENOENT') throw error;
++  }
++}
++
++async function writeImmutable(item) {
++  const destination = safePath(spikeRoot, item.destinationPath);
++  await assertNoSymlink(item.destinationPath, true);
++  await mkdir(path.dirname(destination), { recursive: true });
++  try {
++    await writeFile(destination, item.bytes, { flag: 'wx' });
++  } catch (error) {
++    if (error.code !== 'EEXIST') throw error;
++    await assertNoSymlink(item.destinationPath, false);
++    const current = await readFile(destination);
++    if (!current.equals(item.bytes)) throw new Error(`Existing destination drift: ${item.destinationPath}`);
++  }
++}
++
++export async function importInputs() {
++  const rtReceiptPath = path.join(rtWorktree, 'spikes', 'rt-01-oracle', 'receipt.json');
++  const rtBindingPath = path.join(rtWorktree, 'spikes', 'rt-01-oracle', 'binding-manifest.json');
++  const gfxReceiptPath = path.join(gfxWorktree, 'spikes', 'gfx-03-backend-bakeoff', 'receipt.json');
++  const gfxBindingPath = path.join(gfxWorktree, 'spikes', 'gfx-03-backend-bakeoff', 'binding-manifest.json');
++  const [rtReceipt, rtBinding, gfxReceipt, gfxBinding] = await Promise.all([
++    readPinnedJson(rtReceiptPath, pins.rtReceipt, 'RT-01 receipt'),
++    readPinnedJson(rtBindingPath, pins.rtBinding, 'RT-01 binding manifest'),
++    readPinnedJson(gfxReceiptPath, pins.gfxReceipt, 'GFX-03 receipt'),
++    readPinnedJson(gfxBindingPath, pins.gfxBinding, 'GFX-03 binding manifest'),
++  ]);
++  const fixtureRoot = path.join(rtWorktree, 'spikes', '_shared', 'rt-2026-10-09', 'v1');
++  const fixtureManifestPath = path.join(fixtureRoot, 'manifest.json');
++  const fixtureManifest = await readPinnedJson(fixtureManifestPath, pins.rtFixtures, 'RT-01 fixture manifest');
++  const fixtureValue = fixtureManifest.value;
++  if (fixtureValue.schema !== 'hestia.rt-fixtures.v1' || fixtureValue.frozen !== true
++    || fixtureValue.rayCount !== 1000 || fixtureValue.uniqueNumericRayCount !== 1000
++    || fixtureValue.files.length !== 49 || new Set(fixtureValue.files.map(entry => entry.path)).size !== 49) {
++    throw new Error('RT-01 fixture manifest contract mismatch');
++  }
++
++  const imports = [
++    ...await Promise.all(rtFiles.map(([source, destination]) =>
++      readBound(rtWorktree, rtBinding.value, source, destination, 'RT-01'))),
++    ...await Promise.all(gfxFiles.map(([source, destination]) =>
++      readBound(gfxWorktree, gfxBinding.value, source, destination, 'GFX-03'))),
++    ...await Promise.all(fixtureValue.files.map(entry => readFixture(fixtureRoot, entry))),
++    { producer: 'RT-01', originalPath: 'spikes/rt-01-oracle/receipt.json', sourcePath: rtReceiptPath,
++      destinationPath: 'imports/rt/producer-receipt.json', bytes: rtReceipt.bytes,
++      sourceBytes: rtReceipt.digest, destinationBytes: rtReceipt.digest },
++    { producer: 'RT-01', originalPath: 'spikes/rt-01-oracle/binding-manifest.json', sourcePath: rtBindingPath,
++      destinationPath: 'imports/rt/producer-binding-manifest.json', bytes: rtBinding.bytes,
++      sourceBytes: rtBinding.digest, destinationBytes: rtBinding.digest },
++    { producer: 'GFX-03', originalPath: 'spikes/gfx-03-backend-bakeoff/receipt.json', sourcePath: gfxReceiptPath,
++      destinationPath: 'imports/gfx/producer-receipt.json', bytes: gfxReceipt.bytes,
++      sourceBytes: gfxReceipt.digest, destinationBytes: gfxReceipt.digest },
++    { producer: 'GFX-03', originalPath: 'spikes/gfx-03-backend-bakeoff/binding-manifest.json', sourcePath: gfxBindingPath,
++      destinationPath: 'imports/gfx/producer-binding-manifest.json', bytes: gfxBinding.bytes,
++      sourceBytes: gfxBinding.digest, destinationBytes: gfxBinding.digest },
++    { producer: 'RT-01', originalPath: 'spikes/_shared/rt-2026-10-09/v1/manifest.json', sourcePath: fixtureManifestPath,
++      destinationPath: 'fixtures/manifest.json', bytes: fixtureManifest.bytes,
++      sourceBytes: fixtureManifest.digest, destinationBytes: fixtureManifest.digest },
++  ];
++  if (new Set(imports.map(item => item.destinationPath)).size !== imports.length) throw new Error('Duplicate import destination');
++
++  const docSpecs = [
++    [mainRoot, 'AGENTS.md', null],
++    [worktreeRoot, 'AGENTS.md', null],
++    [packageRoot, '00_START_HIER.md', null],
++    [packageRoot, '01_PRUEFUNG_UND_ENTSCHEIDUNG.md', null],
++    [packageRoot, '03_SCHNITTSTELLEN_UND_UEBERNAHME.md', null],
++    [packageRoot, 'Cloud/00_GEMEINSAMER_VERTRAG.md', null],
++    [packageRoot, 'Auftraege/RT-02A.md', null],
++    [packageRoot, 'Goals/RT-02A.txt', null],
++    [packageRoot, 'SOURCE_DOCS.json', null],
++    [path.dirname(packageRoot), 'USER_OVERRIDES_2026-10-09.md', null],
++    [path.dirname(packageRoot), 'STATE.json', null],
++    [path.join(packageRoot, 'Quellen'), 'threejs-raytracing-intel-amd-nvidia-2026-10-09.md', ['8', '14', '16']],
++    [path.join(packageRoot, 'Quellen'), 'hestia-konzeptpaket-review-und-arbeitspaket-registry-2026-10-09.md', ['RT-02A']],
++  ];
++  const documents = await Promise.all(docSpecs.map(([root, relative, sections]) => readDocument(root, relative, sections)));
++  // STATE is a moving administration observation; preserve its first receipt, not a scientific input pin.
++  try {
++    const prior = JSON.parse(await readFile(safePath(spikeRoot, 'input-provenance.json'), 'utf8'));
++    const index = documents.findIndex(doc => doc.sourcePath.endsWith(`${path.sep}STATE.json`));
++    const observed = prior.documents.find(doc => doc.sourcePath === documents[index]?.sourcePath);
++    if (!observed) throw new Error('Initial STATE observation missing');
++    documents[index] = observed;
++  } catch (error) { if (error.code !== 'ENOENT') throw error; }
++  const producerRecords = [
++    { task: 'RT-01', receipt: { sourcePath: rtReceiptPath, ...rtReceipt.digest },
++      bindingManifest: { sourcePath: rtBindingPath, ...rtBinding.digest } },
++    { task: 'GFX-03', receipt: { sourcePath: gfxReceiptPath, ...gfxReceipt.digest },
++      bindingManifest: { sourcePath: gfxBindingPath, ...gfxBinding.digest } },
++  ];
++  const provenance = {
++    schema: 'hestia.rt02a-input-provenance.v1',
++    executionLocation: 'LOCAL_WINDOWS_ISOLATED',
++    producers: producerRecords,
++    imports: imports.map(({ bytes, ...record }) => record),
++    fixtures: { producer: 'RT-01', manifestPath: fixtureManifestPath,
++      manifest: fixtureManifest.digest, rayCount: fixtureValue.rayCount,
++      uniqueNumericRayCount: fixtureValue.uniqueNumericRayCount, provenance: fixtureValue.provenance,
++      members: imports.filter(item => item.destinationPath.startsWith('fixtures/')
++        && item.destinationPath !== 'fixtures/manifest.json')
++        .map(({ producer, originalPath, sourcePath, destinationPath, sourceBytes, destinationBytes }) =>
++          ({ producer, originalPath, sourcePath, destinationPath, sourceBytes, destinationBytes })) },
++    documents,
++  };
++  const provenanceBytes = Buffer.from(`${JSON.stringify(provenance, null, 2)}\n`, 'utf8');
++  imports.push({ producer: 'RT-02A importer', originalPath: null, sourcePath: null,
++    destinationPath: 'input-provenance.json', bytes: provenanceBytes,
++    sourceBytes: { byteLength: provenanceBytes.length, sha256: sha256(provenanceBytes) },
++    destinationBytes: { byteLength: provenanceBytes.length, sha256: sha256(provenanceBytes) } });
++
++  for (const item of imports) await preflightDestination(item);
++  for (const item of imports) await writeImmutable(item);
++  return { importedFiles: imports.length - 1, fixtureMembers: fixtureValue.files.length,
++    provenanceSha256: sha256(provenanceBytes) };
++}
++
++if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
++  importInputs().then(result => console.log(JSON.stringify({ status: 'IMPORTED', ...result })))
++    .catch(error => { console.error(error.message); process.exitCode = 1; });
++}
++
+diff --git a/spikes/rt-02a-bvh/index.html b/spikes/rt-02a-bvh/index.html
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/index.html
+@@ -0,0 +1,6 @@
++<!doctype html><html lang="en"><meta charset="utf-8"><title>RT-02A finite diagnostic</title>
++<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/webgpu":"/node_modules/three/build/three.webgpu.js","three/tsl":"/node_modules/three/build/three.tsl.js","three-mesh-bvh":"/node_modules/three-mesh-bvh/src/index.js","three-mesh-bvh/webgpu":"/node_modules/three-mesh-bvh/src/webgpu/index.js"}}</script>
++<body><pre id="result">Running bounded CPU contract profile. No GPU device is requested.</pre>
++<script type="module">import {runCpuProfile} from './browser-profile.mjs';try{window.rt02Result=await runCpuProfile();document.querySelector('#result').textContent=JSON.stringify(window.rt02Result,null,2);}catch(error){window.rt02Result={status:'FAIL',error:String(error),stack:error.stack};document.querySelector('#result').textContent=JSON.stringify(window.rt02Result,null,2);}</script>
++</body></html>
++
+diff --git a/spikes/rt-02a-bvh/repro.ps1 b/spikes/rt-02a-bvh/repro.ps1
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/repro.ps1
+@@ -0,0 +1,23 @@
++param([ValidateSet('code','serve','seal')][string]$Mode='code')
++$ErrorActionPreference='Stop'
++$rtNode='C:\IFI_SourceCode\Utils\npm-tmp\opencode\node-v22.23.2-win-x64\node.exe'
++Push-Location $PSScriptRoot
++try {
++  if(-not (Get-Location).Path.StartsWith('C:\IFI_SourceCode\',[StringComparison]::OrdinalIgnoreCase)){throw 'Executable work must stay under C:\IFI_SourceCode'}
++  if($Mode -eq 'serve'){& $rtNode server.mjs;exit $LASTEXITCODE}
++  if($Mode -eq 'seal'){& $rtNode seal.mjs verify;exit $LASTEXITCODE}
++  $rtEvidence=Join-Path $PSScriptRoot '../../.devtoolbox/specs/changes/rt-02a-2026-10-09/tests'
++  $rtRunId=[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfffZ')
++  $rtRuns=@()
++  foreach($rtStep in @(@{name='input-consume';args=@('import-inputs.mjs')},@{name='build-typecheck';args=@('node_modules/typescript/bin/tsc','-p','tsconfig.json')},@{name='unchanged-control';args=@('tests/control.mjs')},@{name='cpu-bvh-negatives';args=@('tests/bvh.test.mjs')},@{name='compute-pack-emission';args=@('tests/compute.mjs')})) {
++    $rtLog=Join-Path $rtEvidence "$rtRunId-$($rtStep.name).log"
++    $rtOutput=& $rtNode @($rtStep.args) 2>&1
++    $rtExit=$LASTEXITCODE
++    $rtOutput | Set-Content -LiteralPath $rtLog
++    $rtRuns+=@{name=$rtStep.name;executable=$rtNode;arguments=$rtStep.args;cwd=$PSScriptRoot;exitCode=$rtExit;log=$rtLog;timeUtc=[DateTime]::UtcNow.ToString('o')}
++    $rtRuns | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $rtEvidence "$rtRunId-commands.json")
++    Write-Output "$($rtStep.name): exit $rtExit"
++    if($rtExit -ne 0){exit $rtExit}
++  }
++} finally {Pop-Location}
++
+diff --git a/spikes/rt-02a-bvh/seal.mjs b/spikes/rt-02a-bvh/seal.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/seal.mjs
+@@ -0,0 +1,47 @@
++import assert from 'node:assert/strict';
++import {readFile,writeFile,readdir,lstat} from 'node:fs/promises';
++import {createHash} from 'node:crypto';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++const spike=fileURLToPath(new URL('./',import.meta.url)),root=path.resolve(spike,'../..');
++const scopes=['spikes/rt-02a-bvh','.devtoolbox/specs/changes/rt-02a-2026-10-09'];
++const controls=['binding-manifest.json','dirty-tree.json','receipt.json','seal.json'].map(name=>`spikes/rt-02a-bvh/${name}`);
++const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
++const json=async rel=>JSON.parse(await readFile(path.join(root,rel),'utf8'));
++const write=async(name,value)=>writeFile(path.join(spike,name),JSON.stringify(value,null,2)+'\n');
++async function files(directory){const found=[];for(const item of await readdir(path.join(root,directory),{withFileTypes:true})){const rel=`${directory}/${item.name}`;const info=await lstat(path.join(root,rel));if(info.isSymbolicLink())throw new Error(`Unbound symlink ${rel}`);if(item.isDirectory())found.push(...await files(rel));else found.push(rel);}return found.sort();}
++async function row(rel){const bytes=await readFile(path.join(root,rel));return {path:rel,bytes:bytes.length,sha256:sha(bytes)};}
++async function payload(){const names=(await Promise.all(scopes.map(files))).flat().filter(name=>!controls.includes(name)).sort();const result=[];for(const name of names)result.push(await row(name));return result;}
++async function tool(file,version){const bytes=await readFile(file);return {path:file,bytes:bytes.length,sha256:sha(bytes),version};}
++async function verify(){const seal=await json(controls[3]);for(const control of seal.controls){const actual=await row(control.path);assert.deepEqual(actual,control,`Control drift ${control.path}`);}
++  const manifest=await json(controls[0]),actual=await payload();assert.deepEqual(actual,manifest.files,'Full payload membership/byte drift');
++  for(const binary of manifest.tools){assert.deepEqual(await tool(binary.path,binary.version),binary,'Tool drift');}
++  const git=await json(`${scopes[1]}/tests/git-final.json`);assert.equal(sha(await readFile(git.indexFile)),git.indexSha256,'Current index changed');assert.equal(sha(await readFile(git.headFile)),git.headFileSha256,'Current HEAD reference changed');
++  assert.equal((await readFile(git.headFile,'utf8')).trim(),`ref: refs/heads/${git.branch}`,'Current branch changed');assert.equal(sha(await readFile(git.refFile)),git.refFileSha256,'Branch target bytes changed');assert.equal((await readFile(git.refFile,'utf8')).trim(),git.head,'Resolved current commit changed');
++  const receipt=await json(controls[2]);console.log(JSON.stringify({status:'PASS',scope:'FULL_BYTE_BINDING_ONLY',sealSha256:sha(await readFile(path.join(root,controls[3]))),files:actual.length,dirtyTreeSha256:receipt.dirtyTreeSha256,hardware:'NOT_RUN',productIntegration:'NO'}));}
++async function create(){
++  const git=await json(`${scopes[1]}/tests/git-final.json`);assert.equal(git.head,'17b1db4201a28e7b607c30707bdc2b75e3484a10');assert.equal(git.branch,'feature/rt-02a-2026-10-09');assert.equal(git.stagedDiff,'');
++  const dirtyPaths=git.statusRaw.split('\0').filter(Boolean).map(line=>line.slice(3));for(const name of dirtyPaths)assert.ok(scopes.some(scope=>name.startsWith(`${scope}/`)),`Outside scope ${name}`);
++  const reviewNames=(await Promise.all(scopes.map(files))).flat().filter(name=>/\.(ts|mts|mjs|md|ps1|html)$/.test(name)&&!name.includes('/node_modules/')&&!name.includes('/dist/')&&!name.includes('/imports/')&&!name.includes('/tests/shaders/'));
++  let patch='# Human review candidate: authored code/docs. Full imported/fixture/dependency/build/evidence membership is in binding-manifest.json. No approval claimed.\n';
++  for(const name of reviewNames.sort()){const text=await readFile(path.join(root,name),'utf8');const lines=text.replace(/\r\n/g,'\n').split('\n');patch+=`diff --git a/${name} b/${name}\nnew file mode 100644\n--- /dev/null\n+++ b/${name}\n@@ -0,0 +1,${lines.length} @@\n${lines.map(line=>'+'+line).join('\n')}\n`;}
++  await writeFile(path.join(spike,'review.patch'),patch);
++  const evidence=await json(`${scopes[1]}/tests/compute-results.json`),browser=await json(`${scopes[1]}/tests/browser-cpu-corrected.json`),provenance=await json(`${scopes[0]}/input-provenance.json`);
++  assert.equal(evidence.variants.length,9);assert.equal(evidence.packedRays,1000);assert.equal(browser.result.status,'PASS');
++  const externalArtifacts=[];for(const name of ['page-2026-10-09T17-31-48-226Z.yml','console-2026-10-09T17-31-48-095Z.log','page-2026-10-09T17-34-44-727Z.yml','console-2026-10-09T17-34-44-624Z.log']){const file=path.resolve(root,'../../.playwright-mcp',name);const bytes=await readFile(file);externalArtifacts.push({path:file,bytes:bytes.length,sha256:sha(bytes),origin:'AUTOMATIC_BROWSER_TOOL_SIDE_EFFECT_MAIN_CHECKOUT',deleted:false});}
++  const tools=[await tool(process.execPath,process.version),await tool('C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe',git.gitVersion),await tool('C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js','10.9.8')];
++  const records=await payload();const manifest={schema:'hestia.rt02a.binding.v1',head:git.head,branch:git.branch,scopes,controlExclusions:controls,exclusionReason:'Four named control files avoid self-hash cycles; seal binds their exact bytes.',tools,files:records,externalArtifacts,sourceFixtureLockWasmShaderBuildBound:true,wasmExecution:'NOT_RUN_UNUSED_TRANSITIVE_RAPIER_021_ONLY',browserBinary:{path:null,status:'UNAVAILABLE_FROM_MCP',version:'Chrome 155.0.8059.40'}};
++  await write('binding-manifest.json',manifest);
++  const dirty={schema:'hestia.rt02a.dirty.v1',head:git.head,indexSha256:git.indexSha256,indexLogicalSha256:sha(git.indexRows),statusSha256:sha(git.statusRaw),dirtyPaths,payloadRows:records,controlsExcluded:controls,includesIgnoredDependenciesBuildCacheEvidence:true};await write('dirty-tree.json',dirty);
++  const receipt={schema:'hestia.rt02a.receipt.v1',task:'RT-02A',nativeSession:'01a1219c-7022-7070-82a1-30f53e5e28f9',paseoAgent:'4323b637-bbf3-477a-8ba9-2dbadd0aa424',executionLocation:'LOCAL_WINDOWS_ISOLATED',head:git.head,branch:git.branch,
++    implementation:'COMPLETE',implementationScope:'FINITE_LAB_CANDIDATE',codeOracle:'PASS',cpuRays:1000,queryModes:2,browserComparisons:4000,bufferPacking:'PASS',shaderSourceEmission:'PASS',shaderVariants:9,realShaderCompile:'NOT_RUN',gpuOracle:'NOT_RUN',hardware:'NOT_RUN',reference:'NOT_RUN',visual:'NOT_RUN',recommendation:'CANDIDATE',runnerStatus:'LOCAL_PENDING',productIntegration:'NO',humanPlannotator:'NOT_REQUESTED_NOT_CLAIMED',commitPushMergePublication:'NOT_RUN',
++    provenance:{ANALYTICAL:8,RD_SYNTHETIC:1,PRODUCT_EXPORT:0},producers:provenance.producers,fixtureManifest:provenance.fixtures.manifest,inputProvenanceSha256:sha(await readFile(path.join(spike,'input-provenance.json'))),
++    bindingManifest:await row(controls[0]),dirtyTree:await row(controls[1]),dirtyTreeSha256:sha(JSON.stringify(dirty)),indexSha256:git.indexSha256,
++    scopes:{authored:'OWN_SPIKE_AND_OWN_SPEC_ONLY',sideEffects:'FOUR_AUTOMATIC_BROWSER_ARTIFACTS_IN_MAIN; PRESERVED_AND_BOUND',externalArtifacts},
++    historical:{nativeOriginal:'4/6',correctedHelper:'10/12',RAY02:'FAIL_UNCHANGED',RAY03:'FAIL_UNCHANGED',GFX03visualParity:'FAIL_3/3_UNCHANGED',GFX03backend:'FAIL_3/3_UNCHANGED',goldenThreshold:0.002,fractions:[0.042145,0.038676,0.028381]},
++    dependencies:{three:'0.186.1',typesThree:'0.186.0',bvh:'0.9.16',typescript:'5.9.3',rapier:'0.21.0_UNUSED_TRANSITIVE_EXACT_OVERRIDE',upscaler:'NOT_USED_0.5.0_POLICY_UNCHANGED'},
++    limitations:['GPU FP32 conformance and real shader compile pending runner slot; no CPU fallback masquerades as GPU','Typed CPU buffer counts exclude JS heap; combined upload/query wall time is not GPU timer','No same-quality DDA hardware cost comparison or genuine HVP/AO/structural-fragment exports','Inherited DevToolbox product typecheck exit1 MODULE_NOT_FOUND; own scoped build passes','Scope incident: automatic browser tool files outside isolated write slice; no destructive cleanup authorization'],runnerProfile:'repro-profile.json'};
++  await write('receipt.json',receipt);const bound=[];for(const control of controls.slice(0,3))bound.push(await row(control));await write('seal.json',{schema:'hestia.rt02a.seal.v1',timeUtc:new Date().toISOString(),controls:bound,controlPolicy:'This seal is the only outer self-unhashed control; report its SHA externally.'});await verify();
++}
++if(process.argv[2]==='verify')await verify();else if(process.argv[2]==='create')await create();else throw new Error('Use create or verify');
++
+diff --git a/spikes/rt-02a-bvh/server.mjs b/spikes/rt-02a-bvh/server.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/server.mjs
+@@ -0,0 +1,13 @@
++import http from 'node:http';
++import {readFile} from 'node:fs/promises';
++import path from 'node:path';
++import {fileURLToPath} from 'node:url';
++const root=fileURLToPath(new URL('./',import.meta.url)),port=Number(process.env.RT02A_PORT??43220);
++const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.json':'application/json','.bin':'application/octet-stream'};
++const server=http.createServer(async(req,res)=>{try{const relative=decodeURIComponent(new URL(req.url,'http://localhost').pathname).slice(1)||'index.html';
++  if(relative.split(/[\\/]/).some(p=>p==='..'||p.startsWith('.'))||!types[path.extname(relative)])throw new Error('Denied');const target=path.resolve(root,relative);if(!target.startsWith(root))throw new Error('Denied');
++  const data=await readFile(target);res.writeHead(200,{'Content-Type':types[path.extname(relative)],'Cache-Control':'no-store'});res.end(data);
++}catch{res.writeHead(404);res.end('Unavailable');}});
++server.listen(port,'127.0.0.1',()=>console.log(JSON.stringify({ownedProfile:'RT02A',url:`http://127.0.0.1:${port}`,gpu:'NOT_REQUESTED'})));
++process.on('SIGINT',()=>server.close(()=>process.exit(0)));
++
+diff --git a/spikes/rt-02a-bvh/src/backend.ts b/spikes/rt-02a-bvh/src/backend.ts
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/src/backend.ts
+@@ -0,0 +1,118 @@
++import { BufferGeometry, Float32BufferAttribute, Box3 } from 'three';
++import { MeshBVH, CENTER } from 'three-mesh-bvh';
++import type { Binding, Ray, RayResult, Vec3, Volume } from '../imports/rt/src/types.mts';
++import { assertCurrent, validateVolume, validateRay } from '../imports/rt/src/validate.mts';
++
++export const tolerance=(a:number,b:number)=>1e-10*Math.max(1,Number.isFinite(a)?Math.abs(a):0,Number.isFinite(b)?Math.abs(b):0);
++const near=(n:number,edge:number,width:number)=>Math.abs(n-edge)<=Math.min(Number.EPSILON*8*Math.max(1,Math.abs(n),Math.abs(edge)),width*1e-6);
++export function owns(o:number,d:number,lo:number,hi:number){
++  if(d===0)return o<hi&&!near(o,hi,hi-lo)&&(o>lo||near(o,lo,hi-lo));
++  if(near(o,lo,hi-lo))return d>0;if(near(o,hi,hi-lo))return d<0;return o>lo&&o<hi;
++}
++export function localRay(v:Volume,ray:Ray):{origin:Vec3;direction:Vec3}{
++  const inverse=(p:Vec3)=>[0,1,2].map(a=>v.rotation[a]*p[0]+v.rotation[3+a]*p[1]+v.rotation[6+a]*p[2]) as Vec3;
++  const origin=inverse(ray.origin.map((n,a)=>n-v.translation[a]) as Vec3),direction=inverse(ray.direction);
++  if(![...origin,...direction].every(Number.isFinite))throw new RangeError('Nonfinite ray transform');
++  return {origin,direction};
++}
++export function interval(o:Vec3,d:Vec3,lo:Vec3,hi:Vec3,limit:number){
++  const enter:Vec3=[-Infinity,-Infinity,-Infinity],exit:Vec3=[Infinity,Infinity,Infinity];
++  const inside=lo.every((n,a)=>owns(o[a],d[a],n,hi[a]));
++  for(let a=0;a<3;a++){
++    if(d[a]===0){if(!owns(o[a],d[a],lo[a],hi[a]))return null;continue;}
++    const p=(lo[a]-o[a])/d[a],q=(hi[a]-o[a])/d[a];enter[a]=Math.min(p,q);exit[a]=Math.max(p,q);
++  }
++  const raw=Math.max(...enter),entry=inside?0:Math.max(0,raw),end=Math.min(limit,...exit);
++  if(entry>=limit||end-entry<=tolerance(entry,end))return null;
++  const normal:Vec3=[0,0,0];if(!inside){const a=enter.findIndex(n=>Math.abs(n-raw)<=tolerance(n,raw));normal[a]=d[a]>0?-1:1;}
++  return {entry,end,normal};
++}
++const cellAt=(v:Volume,i:number):Vec3=>[i%v.size[0],Math.floor(i/v.size[0])%v.size[1],Math.floor(i/(v.size[0]*v.size[1]))];
++const freeze=(v:any):any=>{if(v&&typeof v==='object'){Object.values(v).forEach(freeze);Object.freeze(v);}return v;};
++const hex=async(value:unknown)=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)))),n=>n.toString(16).padStart(2,'0')).join('');
++export async function checkedVolume(input:Volume,current:Binding):Promise<Volume>{
++  const v=structuredClone(input);validateVolume(v);assertCurrent(v.binding,current);
++  const payload={size:v.size,cellMeters:v.cellMeters,origin:v.origin,cells:v.cells,cellIds:v.cellIds,
++    authorityLeafEdge:v.authorityLeafEdge,rayPageEdge:v.rayPageEdge,coverage:v.coverage,exteriorCoverage:v.exteriorCoverage};
++  if(await hex(payload)!==v.binding.sourceDigest||await hex(v.materials)!==v.binding.materialDigest)throw new Error('Source/material payload digest mismatch');
++  if(new Set(v.cellIds).size!==v.cellIds.length||v.cellIds.some(id=>!id))throw new Error('Invalid cell membership');
++  return freeze(v);
++}
++export function geometryFor(v:Volume){
++  // A non-rendered triangle per cell supplies exact integer AABB bounds and stable membership.
++  const data=new Float32Array(v.cells.length*9);
++  for(let i=0;i<v.cells.length;i++){const [x,y,z]=cellAt(v,i);data.set([x,y,z,x+1,y+1,z+1,x,y+1,z],i*9);}
++  const geometry=new BufferGeometry();geometry.setAttribute('position',new Float32BufferAttribute(data,3));
++  geometry.setAttribute('cellIndex',new Float32BufferAttribute(Float32Array.from({length:v.cells.length*3},(_,i)=>Math.floor(i/3)),1));
++  return geometry;
++}
++type Generation={volume:Volume;geometry:BufferGeometry;bvh:MeshBVH;id:number};
++export class BvhRayBackend {
++  #generation:Generation|null=null;#disposed=false;#transaction=0;#deviceEpoch:number;
++  readonly authority='PRESENTATION_ONLY';
++  readonly costs:{buildMs:number[];transformMs:number[];queryMs:number[];disposeMs:number[];refitMs:null;uploadMs:null;readbackMs:null;gpuMs:null}={buildMs:[],transformMs:[],queryMs:[],disposeMs:[],refitMs:null,uploadMs:null,readbackMs:null,gpuMs:null};
++  constructor(deviceEpoch=0){if(!Number.isSafeInteger(deviceEpoch)||deviceEpoch<0)throw new Error('Invalid device epoch');this.#deviceEpoch=deviceEpoch;}
++  #check(deviceEpoch:number){if(this.#disposed)throw new Error('Backend disposed');if(deviceEpoch!==this.#deviceEpoch)throw new Error('Stale device epoch');}
++  async prepare(v:Volume,current:Binding,deviceEpoch=this.#deviceEpoch,signal?:AbortSignal){
++    this.#check(deviceEpoch);if(this.#generation)throw new Error('Already prepared');return this.#replace(v,current,deviceEpoch,signal);
++  }
++  async #replace(input:Volume,current:Binding,deviceEpoch:number,signal?:AbortSignal){
++    const transaction=++this.#transaction;signal?.throwIfAborted();const v=await checkedVolume(input,current);signal?.throwIfAborted();
++    this.#check(deviceEpoch);if(transaction!==this.#transaction)throw new Error('Superseded build');
++    const start=performance.now(),geometry=geometryFor(v);let next:Generation;
++    try{const bvh=new MeshBVH(geometry,{indirect:true,strategy:CENTER,targetLeafSize:8});
++      next={volume:v,geometry,bvh,id:(this.#generation?.id??0)+1};signal?.throwIfAborted();this.#check(deviceEpoch);
++      if(transaction!==this.#transaction)throw new Error('Superseded build');
++    }catch(error){geometry.dispose();throw error;}
++    const old=this.#generation;this.#generation=next;old?.geometry.dispose();this.costs.buildMs.push(performance.now()-start);
++    return this.resources();
++  }
++  async update(input:Volume,current:Binding,deviceEpoch=this.#deviceEpoch,signal?:AbortSignal){
++    this.#check(deviceEpoch);if(!this.#generation)throw new Error('Not prepared');
++    const previous=this.#generation,transaction=this.#transaction,start=performance.now(),v=await checkedVolume(input,current);signal?.throwIfAborted();
++    this.#check(deviceEpoch);if(previous!==this.#generation||transaction!==this.#transaction)throw new Error('Superseded update');
++    if(v.binding.sourceDigest!==previous.volume.binding.sourceDigest||v.binding.materialDigest!==previous.volume.binding.materialDigest){
++      if(v.binding.sourceGeneration<=previous.volume.binding.sourceGeneration)throw new Error('Topology generation must advance');
++      return this.#replace(v,current,deviceEpoch,signal);
++    }
++    const changed=JSON.stringify([v.rotation,v.translation,v.binding.frame,v.binding.originEpoch])!==JSON.stringify([previous.volume.rotation,previous.volume.translation,previous.volume.binding.frame,previous.volume.binding.originEpoch]);
++    if(changed&&v.binding.transformGeneration<=previous.volume.binding.transformGeneration&&v.binding.originEpoch<=previous.volume.binding.originEpoch)throw new Error('Transform generation must advance');
++    if(v.binding.sourceGeneration!==previous.volume.binding.sourceGeneration||v.binding.sourceRevision!==previous.volume.binding.sourceRevision||v.binding.owner!==previous.volume.binding.owner) return this.#replace(v,current,deviceEpoch,signal);
++    this.#generation={...previous,volume:v};++this.#transaction;this.costs.transformMs.push(performance.now()-start);return this.resources();
++  }
++  query(ray:Ray,current:Binding,mode:'ClosestHit'|'AnyHit'='ClosestHit',deviceEpoch=this.#deviceEpoch):RayResult{
++    this.#check(deviceEpoch);if(!this.#generation)throw new Error('Not prepared');if(!['ClosestHit','AnyHit'].includes(mode))throw new Error('Invalid query mode');
++    validateRay(ray);const {volume:v,bvh}=this.#generation;assertCurrent(v.binding,current);const start=performance.now();
++    const {origin:o,direction:d}=localRay(v,ray),max=v.origin.map((n,a)=>n+v.size[a]*v.cellMeters) as Vec3;
++    const revisions={owner:v.binding.owner,sourceRevision:v.binding.sourceRevision,sourceGeneration:v.binding.sourceGeneration,transformGeneration:v.binding.transformGeneration,originEpoch:v.binding.originEpoch};
++    const miss:RayResult={kind:'Miss',distance:ray.maxDistance,normal:[0,0,0],cell:null,materialId:null,materialSource:null,cellId:null,owner:null,sourceRevision:null,sourceGeneration:null,transformGeneration:null,originEpoch:null};
++    const finish=(r:RayResult)=>{this.costs.queryMs.push(performance.now()-start);return r;};
++    const outside=!v.origin.every((n,a)=>owns(o[a],d[a],n,max[a]));
++    if(outside&&v.exteriorCoverage==='Unknown')return finish({...miss,...revisions,kind:'Unknown',distance:0});
++    const q=o.map((n,a)=>(n-v.origin[a])/v.cellMeters) as Vec3;
++    const candidates=new Set<number>();
++    bvh.shapecast({intersectsBounds:(box:Box3)=>{
++      let entry=0,exit=ray.maxDistance/v.cellMeters;
++      for(let a=0;a<3;a++){const lo=box.min.getComponent(a)-1e-6,hi=box.max.getComponent(a)+1e-6;
++        if(d[a]===0){if(q[a]<lo||q[a]>hi)return false;}
++        else{const p=(lo-q[a])/d[a],r=(hi-q[a])/d[a];entry=Math.max(entry,Math.min(p,r));exit=Math.min(exit,Math.max(p,r));}}
++      return exit>=entry;
++    },intersectsRange:(offset,count)=>{for(let i=offset;i<offset+count;i++)candidates.add(bvh.resolveTriangleIndex(i));return false;}});
++    const intervals=[...candidates].flatMap(i=>{const cell=cellAt(v,i),lo=cell.map((n,a)=>v.origin[a]+n*v.cellMeters) as Vec3;
++      const hit=interval(o,d,lo,lo.map(n=>n+v.cellMeters) as Vec3,ray.maxDistance);return hit?[{...hit,cell,i}]:[];});
++    intervals.sort((a,b)=>a.entry-b.entry||a.cell[0]-b.cell[0]||a.cell[1]-b.cell[1]||a.cell[2]-b.cell[2]);
++    for(let visited=0;visited<intervals.length;visited++){
++      const h=intervals[visited],slot=v.cells[h.i],kind=visited>=ray.maxSteps?'BudgetExceeded':slot===-1?'Unknown':slot>0?'Hit':null;
++      if(!kind)continue;
++      const normal=[0,1,2].map(a=>v.rotation[a*3]*h.normal[0]+v.rotation[a*3+1]*h.normal[1]+v.rotation[a*3+2]*h.normal[2]) as Vec3;
++      return finish({kind,distance:h.entry,normal,cell:h.cell,materialId:kind==='Hit'?slot:null,materialSource:kind==='Hit'?v.materials.find(m=>m.id===slot)!.source:null,cellId:v.cellIds[h.i],...revisions});
++    }
++    if(v.exteriorCoverage==='Unknown'&&!outside){let exit=Infinity;for(let a=0;a<3;a++)if(d[a]!==0)exit=Math.min(exit,((d[a]>0?max[a]:v.origin[a])-o[a])/d[a]);
++      if(exit<ray.maxDistance-tolerance(exit,ray.maxDistance))return finish({...miss,...revisions,kind:'Unknown',distance:exit});}
++    return finish(miss);
++  }
++  resources(){const g=this.#generation,serialized=g?MeshBVH.serialize(g.bvh,{cloneBuffers:false}):null;return {geometryGeneration:g?.id??null,retainedGeometries:g?1:0,retainedCpuBytes:g?g.geometry.getAttribute('position').array.byteLength+g.geometry.getAttribute('cellIndex').array.byteLength+(g.geometry.index?.array.byteLength??0)+(serialized?.indirectBuffer?.byteLength??0)+serialized!.roots.reduce((n,r)=>n+r.byteLength,0):0,retainedCpuByteScope:'TYPED_GEOMETRY_INDEX_BVH_BUFFERS_ONLY; JS_HEAP_NOT_MEASURED',retainedSnapshotCells:g?.volume.cells.length??0,retainedGpuBytes:null,deviceEpoch:this.#deviceEpoch};}
++  snapshot():Volume{this.#check(this.#deviceEpoch);if(!this.#generation)throw new Error('Not prepared');return this.#generation.volume;}
++  dispose(){if(this.#disposed)return false;const start=performance.now();++this.#transaction;this.#generation?.geometry.dispose();this.#generation=null;this.#disposed=true;this.costs.disposeMs.push(performance.now()-start);return true;}
++}
++
+diff --git a/spikes/rt-02a-bvh/src/bvh-webgpu.d.ts b/spikes/rt-02a-bvh/src/bvh-webgpu.d.ts
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/src/bvh-webgpu.d.ts
+@@ -0,0 +1,7 @@
++// The pinned package publishes JS WebGPU exports without declarations.
++declare module 'three-mesh-bvh/webgpu' {
++  export const BVHComputeData:any;
++  export const wgslTagFn:any;
++  export const bvhNodeBoundsStruct:any;
++}
++
+diff --git a/spikes/rt-02a-bvh/src/compute.ts b/spikes/rt-02a-bvh/src/compute.ts
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/src/compute.ts
+@@ -0,0 +1,127 @@
++import { MeshBVH, CENTER } from 'three-mesh-bvh';
++import { Mesh } from 'three';
++import { BVHComputeData,wgslTagFn,bvhNodeBoundsStruct } from 'three-mesh-bvh/webgpu';
++import { StorageBufferAttribute,StructTypeNode } from 'three/webgpu';
++import { storage,instanceIndex } from 'three/tsl';
++import type { Binding,Ray,RayResult,Vec3,Volume } from '../imports/rt/src/types.mts';
++import { assertCurrent,validateRay } from '../imports/rt/src/validate.mts';
++import { checkedVolume,geometryFor,localRay } from './backend.js';
++
++export interface ComputeHost {
++  deviceEpoch:number;
++  actualAdapter:Record<string,unknown>|null;
++  computeAsync(node:any):Promise<void>;
++  getArrayBufferAsync(attribute:StorageBufferAttribute):Promise<ArrayBuffer>;
++}
++/** One borrowed existing host; no renderer, device, render loop or authority is created here. */
++export class ComputeBvhBackend {
++  #v:Volume|null=null;#geometry:ReturnType<typeof geometryFor>|null=null;#data:any=null;#disposed=false;#busy=false;#epoch:number;#serial=0;
++  readonly costs:{packMs:number[];uploadAndQueryMs:number[];readbackMs:number[];gpuMs:null;uploadMs:null;retainedBytes:number}={packMs:[],uploadAndQueryMs:[],readbackMs:[],gpuMs:null,uploadMs:null,retainedBytes:0};
++  constructor(readonly host:ComputeHost){if(!Number.isSafeInteger(host.deviceEpoch)||host.deviceEpoch<0)throw new Error('Invalid device epoch');this.#epoch=host.deviceEpoch;}
++  #check(){if(this.#disposed)throw new Error('Compute disposed');if(this.host.deviceEpoch!==this.#epoch)throw new Error('Stale device epoch');}
++  async prepare(input:Volume,current:Binding,signal?:AbortSignal){
++    this.#check();if(this.#busy)throw new Error('Compute busy');const serial=++this.#serial;signal?.throwIfAborted();const v=await checkedVolume(input,current);signal?.throwIfAborted();this.#check();
++    if(this.#busy)throw new Error('Compute busy');if(serial!==this.#serial)throw new Error('Superseded compute build');const start=performance.now(),geometry=geometryFor(v);
++    let data:any;try{const bvh=new MeshBVH(geometry,{indirect:true,strategy:CENTER,targetLeafSize:8});
++      (geometry as typeof geometry & {boundsTree:MeshBVH}).boundsTree=bvh;
++      data=new BVHComputeData(new Mesh(geometry,[]),{attributes:{position:'vec4f',cellIndex:'float'},autogenerateBvh:false});data.update();signal?.throwIfAborted();this.#check();if(this.#busy)throw new Error('Compute busy');if(serial!==this.#serial)throw new Error('Superseded compute build');
++    }catch(e){data?.dispose();geometry.dispose();throw e;}
++    this.#data?.dispose();this.#geometry?.dispose();this.#v=v;this.#data=data;this.#geometry=geometry;
++    this.costs.packMs.push(performance.now()-start);this.costs.retainedBytes=Object.values(data.storage).reduce((n:number,s:any)=>n+(s.value?.array?.byteLength??0),0);return this.costs.retainedBytes;
++  }
++  async update(input:Volume,current:Binding,signal?:AbortSignal){
++    this.#check();if(!this.#v)throw new Error('Not prepared');if(this.#busy)throw new Error('Compute busy');const old=this.#v,serial=this.#serial,v=await checkedVolume(input,current);signal?.throwIfAborted();this.#check();if(this.#busy)throw new Error('Compute busy');if(serial!==this.#serial||old!==this.#v)throw new Error('Superseded compute update');
++    if(v.binding.sourceDigest!==old.binding.sourceDigest||v.binding.materialDigest!==old.binding.materialDigest){if(v.binding.sourceGeneration<=old.binding.sourceGeneration)throw new Error('Topology generation must advance');return this.prepare(v,current,signal);}
++    const changed=JSON.stringify([v.rotation,v.translation,v.binding.frame,v.binding.originEpoch])!==JSON.stringify([old.rotation,old.translation,old.binding.frame,old.binding.originEpoch]);
++    if(changed&&v.binding.transformGeneration<=old.binding.transformGeneration&&v.binding.originEpoch<=old.binding.originEpoch)throw new Error('Transform generation must advance');
++    this.#v=v;++this.#serial;return this.costs.retainedBytes;
++  }
++  createBatch(rays:readonly Ray[],current:Binding,mode:'ClosestHit'|'AnyHit'='ClosestHit'){
++    this.#check();if(this.#busy)throw new Error('Compute busy');if(!this.#v)throw new Error('Not prepared');if(!['ClosestHit','AnyHit'].includes(mode))throw new Error('Invalid query mode');
++    if(!rays.length||rays.length>1000)throw new Error('Finite batch must have 1..1000 rays');const v=this.#v;assertCurrent(v.binding,current);
++    const inputs=new Float32Array(rays.length*12);rays.forEach((r,i)=>{validateRay(r);if(r.maxSteps>65535)throw new Error('Unsupported compute cell budget');const local=localRay(v,r);const o=local.origin.map((n,a)=>(n-v.origin[a])/v.cellMeters);
++      for(let a=0;a<3;a++){
++        const rounded=Math.round(o[a]),edge=v.origin[a]+rounded*v.cellMeters;
++        const roundoff=Math.min(Number.EPSILON*8*Math.max(1,Math.abs(local.origin[a]),Math.abs(edge)),v.cellMeters*1e-6);
++        if(Math.abs(local.origin[a]-edge)<=roundoff)o[a]=rounded;
++        else if(Number.isInteger(Math.fround(o[a])))throw new Error('Unsupported FP32 ownership precision');
++        if(local.direction[a]!==0&&Math.fround(local.direction[a])===0)throw new Error('Unsupported FP32 direction precision');
++      }
++      const values=[...o,r.maxDistance/v.cellMeters,...local.direction,r.maxSteps,0,0,0,0];if(values.some(n=>!Number.isFinite(Math.fround(n))))throw new Error('Unsupported FP32 ray');inputs.set(values,i*12);});
++    const inputAttribute=new StorageBufferAttribute(inputs,4),outputAttribute=new StorageBufferAttribute(new Float32Array(rays.length*12),4);
++    const cellAttribute=new StorageBufferAttribute(Float32Array.from(v.cells),1);
++    const input=storage(inputAttribute,'vec4',rays.length*3).toReadOnly(),output=storage(outputAttribute,'vec4',rays.length*3),cells=storage(cellAttribute,'float',v.cells.length).toReadOnly();
++    const shape=new StructTypeNode({origin:'vec3f',direction:'vec3f',maxDist:'float',cursor:'float'},'RT02Ray');
++    const hit=new StructTypeNode({entry:'float',end:'float',normal:'vec3f',cell:'uint',found:'bool'},'RT02CellHit');
++    const cellInterval=wgslTagFn`
++      fn rt02_interval(ray:${shape},lo:vec3f,hi:vec3f) -> ${hit} {
++        var result:${hit};result.found=false;var nearT=vec3f(-1e30);var farT=vec3f(1e30);var inside=true;
++        for(var a=0u;a<3u;a++){
++          let o=ray.origin[a];let d=ray.direction[a];
++          var owned=o>lo[a] && o<hi[a];
++          if(o==lo[a]){owned=d>=0.0;}if(o==hi[a]){owned=d<0.0;}
++          inside=inside && owned;
++          if(d==0.0){if(!owned){return result;}}
++          else{let p=(lo[a]-o)/d;let q=(hi[a]-o)/d;nearT[a]=min(p,q);farT[a]=max(p,q);}
++        }
++        let raw=max(nearT.x,max(nearT.y,nearT.z));let entry=select(max(0.0,raw),0.0,inside);let end=min(ray.maxDist,min(farT.x,min(farT.y,farT.z)));
++        if(entry>=ray.maxDist || end-entry<=1e-10*max(${1/v.cellMeters}.0,abs(end)) || end<=ray.cursor || entry<ray.cursor){return result;}
++        result.entry=entry;result.end=end;result.normal=vec3f(0.0);result.found=true;
++        if(!inside){for(var a=0u;a<3u;a++){if(abs(nearT[a]-raw)<=1e-10*max(${1/v.cellMeters}.0,abs(raw))){result.normal[a]=select(1.0,-1.0,ray.direction[a]>0.0);break;}}}
++        return result;
++      }`;
++    const bounds=wgslTagFn`fn rt02_bounds(ray:${shape},box:${bvhNodeBoundsStruct},result:ptr<function,${hit}>) -> u32 {
++      let lo=vec3f(box.min[0],box.min[1],box.min[2])-vec3f(1e-5);let hi=vec3f(box.max[0],box.max[1],box.max[2])+vec3f(1e-5);
++      var near=0.0;var far=ray.maxDist;for(var a=0u;a<3u;a++){let d=ray.direction[a];if(d==0.0){if(ray.origin[a]<lo[a]||ray.origin[a]>hi[a]){return 0u;}}else{let p=(lo[a]-ray.origin[a])/d;let q=(hi[a]-ray.origin[a])/d;near=max(near,min(p,q));far=min(far,max(p,q));}}
++      return select(0u,1u,far>=near && far>ray.cursor);
++    }`;
++    const data=this.#data,index=data.storage.index,attributes=data.storage.attributes;
++    const range=wgslTagFn`fn rt02_range(ray:${shape},offset:u32,count:u32,result:ptr<function,${hit}>) -> bool {
++      for(var ti=offset;ti<offset+count;ti++){
++        let vertex=${index}[ti*3u];let cell=u32(${attributes}[vertex].cellIndex);
++        let lo=vec3f(f32(cell % ${v.size[0]}u),f32((cell / ${v.size[0]}u) % ${v.size[1]}u),f32(cell / ${v.size[0]*v.size[1]}u));
++        var h=${cellInterval}(ray,lo,lo+vec3f(1.0));h.cell=cell;
++        if(h.found && (!result.found || h.entry<result.entry || (h.entry==result.entry && cell<result.cell))){*result=h;}
++      }return result.found;
++    }`;
++    const cast=data.getShapecastFn({name:'rt02_cast',shapeStruct:shape,resultStruct:hit,intersectsBoundsFn:bounds,intersectRangeFn:range});
++    const kernel=wgslTagFn`fn rt02_query(i:u32) -> void {
++      let o=${input}[i*3u];let d=${input}[i*3u+1u];var ray:${shape};ray.origin=o.xyz;ray.direction=d.xyz;ray.maxDist=o.w;ray.cursor=0.0;
++      let size=vec3f(${v.size[0]}.0,${v.size[1]}.0,${v.size[2]}.0);var outside=false;var volumeExit=1e30;
++      for(var a=0u;a<3u;a++){if(ray.origin[a]<0.0||ray.origin[a]>size[a]||(ray.origin[a]==0.0&&ray.direction[a]<0.0)||(ray.origin[a]==size[a]&&ray.direction[a]>=0.0)){outside=true;}if(ray.direction[a]!=0.0){volumeExit=min(volumeExit,(select(0.0,size[a],ray.direction[a]>0.0)-ray.origin[a])/ray.direction[a]);}}
++      var kind=0.0;var distance=ray.maxDist;var normal=vec3f(0.0);var cell=-1.0;var material=0.0;var visited=0u;
++      if(${v.exteriorCoverage==='Unknown'?'true':'false'} && outside){kind=2.0;distance=0.0;}
++      else{loop{var h:${hit};h.found=false;let found=${cast}(ray,&h);
++        if(!found){if(${v.exteriorCoverage==='Unknown'?'true':'false'} && !outside && volumeExit<ray.maxDist-1e-10*max(${1/v.cellMeters}.0,abs(ray.maxDist))){kind=2.0;distance=volumeExit;}break;}
++        let slot=${cells}[h.cell];if(visited>=u32(d.w)){kind=3.0;}else if(slot<0.0){kind=2.0;}else if(slot>0.0){kind=1.0;material=slot;}
++        if(kind!=0.0){distance=h.entry;normal=h.normal;cell=f32(h.cell);break;}visited++;ray.cursor=h.end;
++      }}
++      ${output}[i*3u]=vec4f(distance,normal);${output}[i*3u+1u]=vec4f(kind,cell,material,f32(visited));${output}[i*3u+2u]=vec4f(0.0);
++    }`;
++    const node=kernel(instanceIndex).compute(rays.length,[32]);let released=false;
++    const release=()=>{if(!released){released=true;node.dispose();inputAttribute.dispose();outputAttribute.dispose();cellAttribute.dispose();}};
++    return {node,inputAttribute,outputAttribute,cellAttribute,release,volume:v,serial:this.#serial,rays,mode};
++  }
++  async query(rays:readonly Ray[],current:Binding,mode:'ClosestHit'|'AnyHit'='ClosestHit',signal?:AbortSignal):Promise<RayResult[]>{
++    const batch=this.createBatch(rays,current,mode);this.#busy=true;let start=performance.now();
++    try{signal?.throwIfAborted();await this.host.computeAsync(batch.node);this.#check();signal?.throwIfAborted();if(batch.serial!==this.#serial)throw new Error('Stale compute result');
++      this.costs.uploadAndQueryMs.push(performance.now()-start);start=performance.now();const bytes=await this.host.getArrayBufferAsync(batch.outputAttribute);this.#check();signal?.throwIfAborted();assertCurrent(batch.volume.binding,current);if(batch.serial!==this.#serial)throw new Error('Stale readback');this.costs.readbackMs.push(performance.now()-start);
++      if(bytes.byteLength!==rays.length*48)throw new Error('Invalid readback length');const values=new Float32Array(bytes),v=batch.volume;
++      return rays.map((r,i)=>{const p=i*12,kind=['Miss','Hit','Unknown','BudgetExceeded'][values[p+4]] as RayResult['kind'];if(!kind||![...values.slice(p,p+8)].every(Number.isFinite))throw new Error('Invalid compute tuple');const ci=values[p+5];
++        if(!Number.isInteger(ci)||ci< -1||ci>=v.cells.length)throw new Error('Invalid compute membership');const cell:Vec3|null=ci<0?null:[ci%v.size[0],Math.floor(ci/v.size[0])%v.size[1],Math.floor(ci/(v.size[0]*v.size[1]))];
++        const local:Vec3=[values[p+1],values[p+2],values[p+3]],normal=[0,1,2].map(a=>v.rotation[a*3]*local[0]+v.rotation[a*3+1]*local[1]+v.rotation[a*3+2]*local[2]) as Vec3;
++        const distance=values[p]*v.cellMeters,norm=Math.hypot(...local),slot=ci<0?null:v.cells[ci],rawMaterial=values[p+6];
++        const material=kind==='Hit'?v.materials.find(m=>m.id===rawMaterial):null;
++        const epsilon=1e-5*Math.max(1,r.maxDistance);
++        if(distance<0||distance>r.maxDistance+epsilon||(kind==='Miss'&&(ci!==-1||rawMaterial!==0||norm!==0||Math.abs(distance-r.maxDistance)>epsilon))
++          ||(kind==='Hit'&&(!material||ci<0||slot!==rawMaterial||slot<=0))
++          ||(kind==='Unknown'&&(rawMaterial!==0||(ci<0?v.exteriorCoverage!=='Unknown'||norm!==0:slot!==-1)))
++          ||(kind==='BudgetExceeded'&&(ci<0||rawMaterial!==0||values[p+7]!==r.maxSteps))
++          ||(kind!=='Miss'&&distance>=r.maxDistance)||!Number.isInteger(values[p+7])||values[p+7]<0
++          ||(norm!==0&&Math.abs(norm-1)>1e-5))throw new Error('Contradictory compute tuple');
++        return {kind,distance:kind==='Miss'?r.maxDistance:values[p]*v.cellMeters,normal,cell,materialId:material?.id??null,materialSource:material?.source??null,owner:kind==='Miss'?null:v.binding.owner,cellId:ci<0?null:v.cellIds[ci],sourceRevision:kind==='Miss'?null:v.binding.sourceRevision,sourceGeneration:kind==='Miss'?null:v.binding.sourceGeneration,transformGeneration:kind==='Miss'?null:v.binding.transformGeneration,originEpoch:kind==='Miss'?null:v.binding.originEpoch};});
++    }finally{this.#busy=false;batch.release();}
++  }
++  dispose(){if(this.#disposed)return false;if(this.#busy)throw new Error('Cannot dispose in-flight compute; await drain');++this.#serial;this.#data?.dispose();this.#geometry?.dispose();this.#data=null;this.#geometry=null;this.#v=null;this.#disposed=true;this.costs.retainedBytes=0;return true;}
++}
++
+diff --git a/spikes/rt-02a-bvh/src/presentation.ts b/spikes/rt-02a-bvh/src/presentation.ts
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/src/presentation.ts
+@@ -0,0 +1,11 @@
++import type { createDepthCameraPort, MaterialData } from '../imports/gfx/src/port.js';
++type DepthPort=ReturnType<typeof createDepthCameraPort>;
++/** Borrow valid host depth only during this synchronous callback; retain copied metadata only. */
++export function consumePresentation(port:DepthPort,current:DepthPort,backend:'WebGL2'|'WebGPU',materials:readonly MaterialData[],consume:(depth:DepthPort['depth'])=>unknown){
++  if(port.epoch!==current.epoch||port.depth!==current.depth||JSON.stringify(port.sourceBinding)!==JSON.stringify(current.sourceBinding))throw new Error('Stale borrowed presentation');
++  if(materials.some(m=>!m.id||!m.role||m.colorLinearRgb.length!==3||!m.colorLinearRgb.every(Number.isFinite)))throw new Error('Invalid material view');
++  const metadata=structuredClone({epoch:port.epoch,sourceBinding:port.sourceBinding,projection:port.projection,view:port.view,materials,clipRange:backend==='WebGPU'?[0,1]:[-1,1]});
++  const result=consume(port.depth);if(result&&typeof (result as any).then==='function')throw new Error('Borrow callback must be synchronous');
++  const freeze=(value:any):any=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};return freeze(metadata);
++}
++
+diff --git a/spikes/rt-02a-bvh/tests/bvh.test.mjs b/spikes/rt-02a-bvh/tests/bvh.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/tests/bvh.test.mjs
+@@ -0,0 +1,59 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { BvhRayBackend } from '../dist/src/backend.js';
++import { traceBruteForce } from '../dist/imports/rt/src/bruteForce.mjs';
++import { traceDda } from '../dist/imports/rt/src/dda.mjs';
++import { readFile,writeFile } from 'node:fs/promises';
++import { createHash } from 'node:crypto';
++import * as T from 'three';
++import { createDepthCameraPort } from '../dist/imports/gfx/src/port.js';
++import { consumePresentation } from '../dist/src/presentation.js';
++const sha=v=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
++const bind=v=>{v.binding.sourceDigest=sha({size:v.size,cellMeters:v.cellMeters,origin:v.origin,cells:v.cells,cellIds:v.cellIds,authorityLeafEdge:v.authorityLeafEdge,rayPageEdge:v.rayPageEdge,coverage:v.coverage,exteriorCoverage:v.exteriorCoverage});v.binding.materialDigest=sha(v.materials);return v;};
++const golden=JSON.parse(await readFile(new URL('../fixtures/rays/golden-1000.json',import.meta.url))),rows=golden.rays??golden;
++const volumes=new Map();for(const row of rows)if(!volumes.has(row.volumeId))volumes.set(row.volumeId,JSON.parse(await readFile(new URL(`../fixtures/voxels/${row.volumeId}.json`,import.meta.url))));
++const compare=(a,b)=>{assert.ok(Math.abs(a.distance-b.distance)<=1e-9,`${a.distance} != ${b.distance}`);a.normal.forEach((n,i)=>assert.ok(Math.abs(n-b.normal[i])<=1e-9));assert.deepEqual({...a,distance:0,normal:[]},{...b,distance:0,normal:[]});};
++let rayChecks=0;const telemetry=[];
++test('1000 unique rays: BVH closest/any tuples against expected, independent brute force and DDA',async()=>{
++  assert.equal(rows.length,1000);assert.equal(new Set(rows.map(r=>r.ray.id)).size,1000);
++  for(const [id,v] of volumes){const backend=new BvhRayBackend();await backend.prepare(v,v.binding);
++    for(const row of rows.filter(r=>r.volumeId===id)){const result=backend.query(row.ray,row.sourceBinding??v.binding);compare(result,row.expected);compare(result,traceBruteForce(v,row.ray));compare(result,traceDda(v,row.ray));compare(backend.query(row.ray,v.binding,'AnyHit'),result);rayChecks++;}
++    telemetry.push({id,resources:backend.resources(),costs:backend.costs});assert.equal(backend.dispose(),true);assert.equal(backend.dispose(),false);assert.equal(backend.resources().retainedCpuBytes,0);}
++  await writeFile(new URL('../../../.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/oracle-results.json',import.meta.url),JSON.stringify({status:'PASS',rays:rayChecks,queryModes:2,provenance:{ANALYTICAL:8,RD_SYNTHETIC:1,PRODUCT_EXPORT:0},telemetry,timingClass:'FUNCTIONAL_DIAGNOSTIC_CONCURRENT_LOAD_NOT_REFERENCE',hardware:'NOT_RUN'},null,2)+'\n');
++});
++test('all binding fields, device epoch, invalid rays and use-after-dispose reject',async()=>{
++  const v=volumes.values().next().value,row=rows.find(r=>r.volumeId===v.id)??rows[0],b=new BvhRayBackend(2);await b.prepare(v,v.binding,2);
++  for(const key of Object.keys(v.binding)){const wrong={...v.binding,[key]:typeof v.binding[key]==='number'?v.binding[key]+1:`wrong-${v.binding[key]}`};assert.throws(()=>b.query(row.ray,wrong,'ClosestHit',2),/Stale/);}
++  assert.throws(()=>b.query(row.ray,v.binding,'ClosestHit',3),/device/);assert.throws(()=>b.query({...row.ray,direction:[0,0,0]},v.binding,'ClosestHit',2),/normalized/);
++  b.dispose();assert.throws(()=>b.query(row.ray,v.binding,'ClosestHit',2),/disposed/);
++});
++test('payload tampering, duplicate membership and unversioned topology reject',async()=>{
++  const v=structuredClone(volumes.values().next().value),b=new BvhRayBackend();await b.prepare(v,v.binding);
++  const dirty=structuredClone(v);dirty.cells[0]=1;await assert.rejects(b.update(dirty,dirty.binding),/digest/);
++  bind(dirty);await assert.rejects(b.update(dirty,dirty.binding),/generation/);
++  dirty.binding.sourceGeneration++;dirty.cellIds[0]=dirty.cellIds[1];bind(dirty);await assert.rejects(b.update(dirty,dirty.binding),/membership/);b.dispose();
++});
++test('cut rebuild and movement preserve membership, transform-only retains geometry',async()=>{
++  const ids=[...volumes.keys()];const before=volumes.get('before-cut')??volumes.get(ids[0]);const b=new BvhRayBackend();await b.prepare(before,before.binding);let generation=b.resources().geometryGeneration;
++  const cut=structuredClone(before);const cell=cut.cells.findIndex(n=>n>0);assert.ok(cell>=0);cut.cells[cell]=0;cut.binding.sourceRevision++;cut.binding.sourceGeneration++;bind(cut);await b.update(cut,cut.binding);assert.ok(b.resources().geometryGeneration>generation);generation=b.resources().geometryGeneration;
++  const moved=structuredClone(cut);moved.translation[0]+=3;moved.binding.transformGeneration++;await b.update(moved,moved.binding);assert.equal(b.resources().geometryGeneration,generation);
++  const ray=rows.find(r=>r.volumeId===before.id).ray;const translated={...ray,origin:ray.origin.map((n,a)=>n+(a===0?3:0))};compare(b.query(translated,moved.binding),traceBruteForce(moved,translated));
++  assert.throws(()=>b.query(ray,cut.binding),/Stale/);const silent=structuredClone(moved);silent.translation[1]++;await assert.rejects(b.update(silent,silent.binding),/Transform/);b.dispose();
++});
++test('abort before/while preparing retains previous generation, superseded preparation cleans candidate',async()=>{
++  const v=volumes.values().next().value,b=new BvhRayBackend(),abort=new AbortController();abort.abort();await assert.rejects(b.prepare(v,v.binding,0,abort.signal));assert.equal(b.resources().retainedGeometries,0);await b.prepare(v,v.binding);
++  const cut=structuredClone(v);cut.cells[0]=cut.cells[0]===0?1:0;cut.binding.sourceGeneration++;cut.binding.sourceRevision++;bind(cut);const active=new AbortController();const pending=b.update(cut,cut.binding,0,active.signal);active.abort();await assert.rejects(pending);assert.equal(b.snapshot().binding.sourceDigest,v.binding.sourceDigest);b.dispose();
++  const race=new BvhRayBackend();const one=race.prepare(v,v.binding),two=race.prepare(v,v.binding);const settled=await Promise.allSettled([one,two]);assert.equal(settled.filter(r=>r.status==='fulfilled').length,1);race.dispose();
++});
++test('missing neighbor remains Unknown; budget includes air and zero steps',async()=>{
++  const candidates=rows.filter(r=>['Unknown','BudgetExceeded'].includes(r.expected.kind));assert.equal(candidates.length,138);
++  for(const id of new Set(candidates.map(r=>r.volumeId))){const v=volumes.get(id),b=new BvhRayBackend();await b.prepare(v,v.binding);for(const row of candidates.filter(r=>r.volumeId===id))compare(b.query(row.ray,v.binding),row.expected);b.dispose();}
++});
++test('GFX borrow: epoch/identity/metadata and clip convention, copied camera arrays',()=>{
++  const camera=new T.PerspectiveCamera(),depth=new T.DepthTexture(2,2),binding={owner:'fixture',source:{revision:1}};
++  const port=createDepthCameraPort(camera,depth,1,binding);let calls=0;
++  const gl=consumePresentation(port,port,'WebGL2',[],d=>{assert.equal(d,depth);calls++;});const gpu=consumePresentation(port,port,'WebGPU',[],()=>{});
++  assert.deepEqual(gl.clipRange,[-1,1]);assert.deepEqual(gpu.clipRange,[0,1]);camera.projectionMatrix.elements[0]=50;assert.notEqual(gl.projection[0],50);binding.source.revision=8;assert.equal(gl.sourceBinding.source.revision,1);assert.equal('depth' in gl,false);
++  assert.throws(()=>consumePresentation(port,{...port,epoch:2},'WebGPU',[],()=>{}),/Stale/);assert.throws(()=>consumePresentation(port,{...port,depth:new T.DepthTexture(2,2)},'WebGPU',[],()=>{}),/Stale/);assert.equal(calls,1);depth.dispose();
++});
++
+diff --git a/spikes/rt-02a-bvh/tests/compute.mjs b/spikes/rt-02a-bvh/tests/compute.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/tests/compute.mjs
+@@ -0,0 +1,42 @@
++import assert from 'node:assert/strict';
++import {readFile,writeFile,mkdir} from 'node:fs/promises';
++import {ComputeBvhBackend} from '../dist/src/compute.js';
++import {traceBruteForce} from '../dist/imports/rt/src/bruteForce.mjs';
++import WGSLNodeBuilder from '../node_modules/three/src/renderers/webgpu/nodes/WGSLNodeBuilder.js';
++import {WebGPUCoordinateSystem} from 'three';
++import {context} from 'three/tsl';
++const golden=JSON.parse(await readFile(new URL('../fixtures/rays/golden-1000.json',import.meta.url)));
++const rows=golden.rays??golden;
++const host={deviceEpoch:1,actualAdapter:null,computeAsync:async()=>{throw new Error('No hardware slot');},getArrayBufferAsync:async()=>{throw new Error('No hardware slot');}};
++const out=new URL('../../../.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/',import.meta.url);await mkdir(new URL('shaders/',out),{recursive:true});
++const variants=[],unsupported=[];let packedRays=0;
++for(const id of new Set(rows.map(r=>r.volumeId))){
++  const v=JSON.parse(await readFile(new URL(`../fixtures/voxels/${id}.json`,import.meta.url))),group=rows.filter(r=>r.volumeId===id),backend=new ComputeBvhBackend(host);
++  await backend.prepare(v,v.binding);assert.ok(backend.costs.retainedBytes>0);const supported=[];
++  for(const row of group){try{const batch=backend.createBatch([row.ray],v.binding);batch.release();supported.push(row.ray);packedRays++;}catch(error){if(!String(error).includes('Unsupported FP32'))throw error;unsupported.push({id:row.ray.id,error:String(error)});}}
++  assert.ok(supported.length);const batch=backend.createBatch(supported,v.binding);
++  // CPU-only code emitter; this host cannot create a device or execute shaders.
++  const emitter={contextNode:context(),debug:{diagnostics:{keywords:[]}},coordinateSystem:WebGPUCoordinateSystem,getRenderTarget:()=>null,backend:{isWebGPUBackend:true,capabilities:{getUniformBufferLimit:()=>65536}},nodes:{modelViewMatrix:null,modelNormalViewMatrix:null},getContext:()=>null,getPixelRatio:()=>1,hasFeature:()=>false};
++  const builder=new WGSLNodeBuilder(null,emitter);builder.compute=batch.node;builder.build();const shader=builder.computeShader;
++  assert.match(shader,/@compute/);assert.match(shader,/rt02_cast/);assert.match(shader,/rt02_query/);
++  const fields=[...shader.match(/struct BVHBoundingBox\s*\{([\s\S]*?)\}/)[1].matchAll(/(\w+)\s*:/g)].map(m=>m[1]);
++  for(const access of shader.matchAll(/box\.(\w+)/g))assert.ok(fields.includes(access[1]),`Undeclared bounds field ${access[1]}`);
++  assert.match(shader,/vec3f\(box\.min\[0\]/);assert.doesNotMatch(shader,/abs\(o-lo\[a\]\)<=1e-6|end-entry<=1e-6/);
++  await writeFile(new URL(`shaders/${id}.wgsl`,out),shader);variants.push({id,sourceBinding:v.binding,shaderBytes:shader.length,packedRays:supported.length,retainedPackedBytes:backend.costs.retainedBytes});
++  batch.release();await assert.rejects(backend.query([supported[0]],v.binding),/No hardware/);host.deviceEpoch=2;assert.throws(()=>backend.createBatch([supported[0]],v.binding),/device/);host.deviceEpoch=1;
++  assert.equal(backend.dispose(),true);assert.equal(backend.dispose(),false);assert.equal(backend.costs.retainedBytes,0);
++}
++// Supplemental mocks exercise lifecycle/decoder rejection only; never GPU evidence.
++const v=JSON.parse(await readFile(new URL('../fixtures/voxels/grid-0.125.json',import.meta.url)));
++const edge={id:'review-inside-short-cell',origin:[-1.375+0.125*5e-7,-0.3125,-0.3125],direction:[-1,0,0],maxDistance:1,maxSteps:256};
++const expected=traceBruteForce(v,edge);assert.equal(expected.kind,'Hit');assert.equal(expected.distance,0);assert.deepEqual(expected.cell,[5,1,1]);
++let dispatchRelease;const deferred={deviceEpoch:1,actualAdapter:null,computeAsync:()=>new Promise(resolve=>{dispatchRelease=resolve;}),getArrayBufferAsync:async()=>{throw new Error('MOCK_READBACK');}};
++const race=new ComputeBvhBackend(deferred);await race.prepare(v,v.binding);
++const edgeBatch=race.createBatch([edge],v.binding);assert.ok(edgeBatch.inputAttribute.array[0]>5);edgeBatch.release();
++const subUlp={...edge,origin:[-1.375+0.125*1e-9,-0.3125,-0.3125]};assert.throws(()=>race.createBatch([subUlp],v.binding),/ownership precision/);
++const replacement=race.prepare(v,v.binding),query=race.query([edge],v.binding);await assert.rejects(replacement,/busy/);assert.throws(()=>race.dispose(),/in-flight/);dispatchRelease();await assert.rejects(query,/MOCK_READBACK/);race.dispose();
++let malformed=new Float32Array(12);const mock={deviceEpoch:1,actualAdapter:null,computeAsync:async()=>{},getArrayBufferAsync:async()=>malformed.buffer};const decoder=new ComputeBvhBackend(mock);await decoder.prepare(v,v.binding);
++await assert.rejects(decoder.query([edge],v.binding),/Contradictory/);malformed=new Float32Array([0,0,0,0,1,0,1,0,0,0,0,0]);assert.equal(v.cells[0],0);await assert.rejects(decoder.query([edge],v.binding),/Contradictory/);decoder.dispose();
++const result={sourceEmission:'PASS',bufferPacking:'PASS',variants,packedRays,unsupportedRays:unsupported,supplementalMockNegatives:'PASS',realShaderCompile:'NOT_RUN',computeExecution:'NOT_RUN',actualAdapter:null,hardwareSlot:'NOT_GRANTED'};
++await writeFile(new URL('compute-results.json',out),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({...result,variants:variants.length}));
++
+diff --git a/spikes/rt-02a-bvh/tests/control.mjs b/spikes/rt-02a-bvh/tests/control.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02a-bvh/tests/control.mjs
+@@ -0,0 +1,23 @@
++import assert from 'node:assert/strict';
++import { readFile, writeFile, mkdir } from 'node:fs/promises';
++import { createHash } from 'node:crypto';
++import { traceBruteForce } from '../dist/imports/rt/src/bruteForce.mjs';
++import { traceDda } from '../dist/imports/rt/src/dda.mjs';
++const rays=JSON.parse(await readFile(new URL('../fixtures/rays/golden-1000.json',import.meta.url)));
++const volumes=new Map();
++export function parity(actual,expected){
++  assert.ok(Math.abs(actual.distance-expected.distance)<=1e-9,`distance ${actual.distance}/${expected.distance}`);
++  actual.normal.forEach((n,i)=>assert.ok(Math.abs(n-expected.normal[i])<=1e-9));
++  assert.deepEqual({...actual,distance:0,normal:[]},{...expected,distance:0,normal:[]});
++}
++const outcomes={};
++for(const row of rays.rays??rays){
++  if(!volumes.has(row.volumeId))volumes.set(row.volumeId,JSON.parse(await readFile(new URL(`../fixtures/voxels/${row.volumeId}.json`,import.meta.url))));
++  const volume=volumes.get(row.volumeId);
++  parity(traceBruteForce(volume,row.ray),row.expected);parity(traceDda(volume,row.ray),row.expected);
++  outcomes[row.expected.kind]=(outcomes[row.expected.kind]??0)+1;
++}
++const result={status:'PASS',oracle:'UNCHANGED_RT01_BRUTEFORCE_AND_DDA',count:(rays.rays??rays).length,outcomes,executionLocation:'LOCAL_WINDOWS_ISOLATED',hardware:'NOT_RUN'};
++const out=new URL('../../../.devtoolbox/specs/changes/rt-02a-2026-10-09/tests/',import.meta.url);
++await mkdir(out,{recursive:true});await writeFile(new URL('control.json',out),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
++

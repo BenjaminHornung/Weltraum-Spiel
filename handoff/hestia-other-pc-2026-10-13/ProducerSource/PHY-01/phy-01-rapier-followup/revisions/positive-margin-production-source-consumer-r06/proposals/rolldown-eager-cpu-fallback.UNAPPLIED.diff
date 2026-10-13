@@ -1,0 +1,11 @@
+--- a/crates/rolldown_binding/src/lib.rs
++++ b/crates/rolldown_binding/src/lib.rs
+@@ -103,7 +103,7 @@ fn init() {
+       // unlike the web server scenario
+       // rolldown puts a lot of blocking tasks in the worker threads rather than blocking_threads
+       // so we need to increase the worker threads rather than the blocking_threads
+-      .unwrap_or(num_cpus::get_physical() * 3 / 2);
++      .unwrap_or_else(|| num_cpus::get_physical() * 3 / 2);
+     let mut builder = tokio::runtime::Builder::new_multi_thread();
+ 
+     let rt = builder

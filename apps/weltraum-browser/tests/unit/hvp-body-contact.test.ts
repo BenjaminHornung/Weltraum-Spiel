@@ -38,10 +38,10 @@ it("keeps a genuine native Body384 contact pickable across recorded micrometer m
       const position=body.translation(),rotation=body.rotation(),inverse={x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w};
       const local=rotateStructuralWorldVector(inverse,{x:eye.x-position.x,y:eye.y-position.y,z:eye.z-position.z});
       const ray=rotateStructuralWorldVector(inverse,direction),center=recipe.mass.centerOfMassMeters!;
-      const enter=native!.toi+1e-6;
+      const enter=native!.timeOfImpact+1e-6;
       const start={x:local.x+center.x+ray.x*enter,y:local.y+center.y+ray.y*enter,z:local.z+center.z+ray.z*enter};
       const hit=captureHvpBodyHit(world,targets,eye,direction,index);
-      if(hit===null){failures.push({index,pose,toi:native!.toi,start,bounds:recipe.colliders[0]});}
+      if(hit===null){failures.push({index,pose,toi:native!.timeOfImpact,start,bounds:recipe.colliders[0]});}
       else{expect(hit.ownerId).toBe(target.ownerId);expect(hit.cell).toEqual([189,84,76]);}
     }
     console.log("R90 genuine contact interpolation",{samples:samples.length,failures:failures.slice(0,6),failedCount:failures.length});

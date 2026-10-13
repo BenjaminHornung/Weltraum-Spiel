@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import R from "@dimforge/rapier3d-compat";
+import * as R from "../../src/hestia-prototype/physics/rapier021Candidate";
 import {
   STRUCTURAL_COMMAND_SCHEMA_VERSION,
   StructuralPhysicsTransitionError,

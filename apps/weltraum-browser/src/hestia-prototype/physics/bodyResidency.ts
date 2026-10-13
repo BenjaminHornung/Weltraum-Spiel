@@ -77,11 +77,15 @@ const bodyResidencyFor=(workerOwned:boolean,residentBytes:()=>number=()=>0)=>(wo
       if(workerOwned&&!p.decoded){throw new Error("Missing prepared dormant owner");}
       const decoded=p.decoded??decodeHvpBody(p.checkpoint);let dynamic=0;world.bodies.forEach(b=>{if(b.isDynamic()){dynamic+=1;}});
       if(dynamic>=32||world.colliders.len()+decoded.recipe.colliders.length>4096){throw new Error("Body residency BudgetExceeded");}
+      let installed=false;
       try{
         const body=restoreHvpBody(world,decoded);
+        installed=true;
         targets.set(ownerId,{ownerId,body,recipe:decoded.recipe,family:"terrain"});bodies.set(ownerId,body);parked.delete(ownerId);return true;
       }catch(error){
-        if((error as {worldRestored?:boolean}).worldRestored===false){hold=true;}
+        if(installed){hold=true;} // Failed registry publication cannot return an installed body to parked custody.
+        else try{if((error as {worldRestored?:boolean}|null|undefined)?.worldRestored===false){hold=true;}}
+        catch{hold=true;} // Unreadable restoration metadata cannot prove recovery or replace the primary error.
         throw error;
       }
     },

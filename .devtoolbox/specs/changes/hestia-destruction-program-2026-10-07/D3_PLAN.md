@@ -1,5 +1,13 @@
 # D3 bounded chunk products
 
+2026-10-09 amendment A0/00_AENDERUNGSAUFTRAG.md supersedes the former pending decision only for the proven unused neighborRaw East renders. A0-R0 is separately proven: explicit chunk coexistence/cancellation PASS and real pre-HUD startup-attempt abort followed by actual mount/NativeDisposed/tenzero/cachezero/healthzero,1PASS13.8s, Source462/build93/all93HTTPbeforeafter unchanged. r36/r37 remain INVALID.
+
+Next closed implementation: distinct private East collision-only purpose/job/algorithm and inputdigest, complete original32cubed/34cubed manifest/raw/material/physicalhalo validation; extract and reuse original collisionkernel; two-channel output with strict generation/purpose custody validation; preserve primary combinedpacket and all256Eastkeys/nativecoverage. Reach workerPool prepaidadmission/integration/fallback, streamingWorker dispatch/cancellation and workerHandle custody; only neighborRaw producer selects it. No empty render placeholder. Existing product/cache/Save/physics schemas unchanged. Startup counters explicitly report collision-only emptiness. Required golden primarypacket +completeEastcollision, negativepurpose/generation/Unknown/material/OOB/cancel/caps, actualSaveColdWakeRecut/contact/disposal, freshboundlocalmeasurement before gain/qualification.
+
+Early PHY-01/02 localminimum decision and PHY-03 boundary now precede D5 finalseries and S1/S2/M4; continue solverneutral Source/mass/partition/Render/admission/cleanup. No new longtermcollisionrepresentation optimization. Consume actual GFX/PLT/RT artifacts instead of duplicate implementations; missing artifacts retain explicit unknown digests.
+
+The authored-column microdiagnostic RED and baseline are preserved separately; its scratch-credit integration is not implemented and does not take priority over A0-R1.
+
 Dependency: technically qualified D1. D2 remains open; D3 does not waive its exit. Root writes, direct read-only reviews; no descendants. Retain the generic legacy sector route for exact v1 Save compatibility. The implementation must not alter source/body hashes, body collider order, Save schema, or budgets.
 
 1. Add coverage RED/goldens in `tests/unit/hvpChunkCompileCoverage.test.ts`: 32^3 core, one-cell halo (34^3 input), all six faces/edges/corners, AO diagonals, negative origins, cavity removal, Unknown rejection, Save restore and pure segmentation. Reuse `meshHvpOccupancySteps`, with AO render and binary collision reads from the same immutable manifest. Halo emits no geometry. Bind `hvp-terrain-chunk-v1` and `hvp-collision-chunk-v1` separately.

@@ -1,0 +1,25 @@
+{
+  "name": "@hestia/rapier3d-phy01-margin-candidate",
+  "version": "0.21.0-phy01.migration2-margin-r05",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./profile": "./profile.json",
+    "./wasm": "./dist/src/rapier_wasm3d_bg.wasm"
+  },
+  "files": [
+    "dist",
+    "profile.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "license": "Apache-2.0",
+  "description": "Private byte-bound .21 migration2 positive-margin Source/compiler candidate; bundler resolution required; runtime/adoption not accepted"
+}

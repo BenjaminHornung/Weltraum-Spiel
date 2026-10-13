@@ -11,6 +11,9 @@ export const presentHvpFailure = (
   }
   documentPort.body.dataset.hestiaPrototype = "1";
   documentPort.body.dataset.hestiaPrototypeState = "Error";
+  const flightHud = documentPort.querySelector<HTMLElement>("#flight-hud");
+  if (flightHud) flightHud.hidden = true;
+  documentPort.querySelector<HTMLElement>(".hud-center-safe-area")?.setAttribute("style", "display:none");
   const root = documentPort.createElement("section");
   root.id = "hvp-failure";
   root.setAttribute("role", "alert");

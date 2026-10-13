@@ -38,8 +38,8 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
       if (length === 0) { return; }
       const p = body.translation();
       const hit = world.castShape({ x: p.x, y: p.y + 0.6, z: p.z }, { x: 0, y: 0, z: 0, w: 1 }, offset,
-        new R.Ball(0.15), 1, true, undefined, undefined, collider, body, isHvpSolidCollider);
-      if (hit !== null) { cameraFraction = Math.max(0, hit.toi - 0.1 / length); }
+        new R.Ball(0.15), 0, 1, true, undefined, undefined, collider, body, isHvpSolidCollider);
+      if (hit !== null) { cameraFraction = Math.max(0, hit.time_of_impact - 0.1 / length); }
     },
     setEnabled(value: boolean): void { enabled = value; neutralize(); },
     checkpoint():HvpPlayerCheckpoint {
@@ -73,7 +73,7 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
       // never lift through ceilings, cross tall ledges, or synthesize a floor.
       if (grounded && velocityY <= 0 && Math.hypot(dx, dz) > 0
         && movement.x * dx + movement.z * dz < (dx * dx + dz * dz) * 0.5) {
-        const cast = (at: R.Vector, delta: R.Vector) => world.castShape(at, body.rotation(), delta, collider.shape, 1, true,
+        const cast = (at: R.Vector, delta: R.Vector) => world.castShape(at, body.rotation(), delta, collider.shape, 0, 1, true,
           undefined, undefined, collider, body, isHvpStaticCollider);
         const up = { x: position.x, y: position.y + profile.stepHeight, z: position.z };
         const forward = { x: up.x + dx, y: up.y, z: up.z + dz };
@@ -90,8 +90,8 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
           }, { x: 0, y: -1, z: 0 }), profile.height + profile.stepHeight * 2, true,
            undefined, undefined, collider, body, isHvpStaticCollider);
           if (down !== null && tread !== null && tread.normal.y >= Math.cos(profile.slopeRadians) - 0.0001
-            && up.y + profile.height / 2 - tread.toi - (position.y - profile.height / 2) <= profile.stepHeight) {
-            const rise = profile.stepHeight * (1 - down.toi);
+            && up.y + profile.height / 2 - tread.timeOfImpact - (position.y - profile.height / 2) <= profile.stepHeight) {
+            const rise = profile.stepHeight * (1 - down.time_of_impact);
             if (rise > 0 && rise + profile.offset <= profile.stepHeight) {
               movement.x = dx; movement.z = dz; movement.y = rise + profile.offset;
             }

@@ -16,7 +16,7 @@ it("exposes native collision only after commit, pins touching bodies, and restor
     safe=false;expect(()=>region.prepare("load",state(1,true),meshes())).toThrow(/held World/);safe=true;
     expect(()=>region.prepare("missing",state(1,true),meshes().slice(1))).toThrow(/coverage/);
     region.prepare("load",state(1,true),meshes());expect(region.read().collisionReady).toBe(false);expect(hit(world)).toBeNull();
-    region.commit("load");expect(hit(world)?.toi).toBeCloseTo(1,6);expect(region.busy).toBe(true);region.finalize("load");
+    region.commit("load");expect(hit(world)?.timeOfImpact).toBeCloseTo(1,6);expect(region.busy).toBe(true);region.finalize("load");
     expect(world.colliders.len()).toBe(64);expect(region.read().collisionReady).toBe(true);
     expect(()=>region.prepare("stale",state(1,false),[])).toThrow(/Stale/);
     expect(()=>region.prepare("player",state(2,false),[],{x:16.1,y:1,z:0})).toThrow(/pinned/);
@@ -25,7 +25,7 @@ it("exposes native collision only after commit, pins touching bodies, and restor
     expect(region.pinned()).toBe(true);expect(()=>region.prepare("body",state(2,false),[])).toThrow(/pinned/);
     world.removeRigidBody(body);
     region.prepare("unload",state(2,false),[]);region.commit("unload");expect(hit(world)).toBeNull();region.rollback("unload");
-    expect(region.checkpoint()).toEqual(state(1,true));expect(hit(world)?.toi).toBeCloseTo(1,6);
+    expect(region.checkpoint()).toEqual(state(1,true));expect(hit(world)?.timeOfImpact).toBeCloseTo(1,6);
     region.prepare("unload-final",state(2,false),[]);region.commit("unload-final");region.finalize("unload-final");
     expect(world.colliders.len()).toBe(0);expect(region.read().collisionReady).toBe(false);
   }finally{world.free();}
@@ -58,10 +58,10 @@ it("keeps256 XYZ neighbour slots and32 vertical seam entries through native comm
   const contact=()=>{world.updateSceneQueries();return world.castRay(new R.Ray({x:18,y:2,z:-14},{x:0,y:-1,z:0}),3,true);};
   try{
     expect(edge).toHaveLength(32);expect(()=>region.prepare("missing",binding,values.slice(1),undefined,edge)).toThrow(/coverage/);
-    region.prepare("rollback",binding,values,undefined,edge);expect(contact()).toBeNull();region.commit("rollback");expect(contact()?.toi).toBeCloseTo(1,6);
+    region.prepare("rollback",binding,values,undefined,edge);expect(contact()).toBeNull();region.commit("rollback");expect(contact()?.timeOfImpact).toBeCloseTo(1,6);
     region.rollback("rollback");expect(contact()).toBeNull();expect(world.colliders.len()).toBe(1);
     region.prepare("commit",binding,values,undefined,edge);region.commit("commit");region.finalize("commit");
-    expect(contact()?.toi).toBeCloseTo(1,6);expect(region.meshes()).toHaveLength(256);expect(world.colliders.len()).toBe(2);
+    expect(contact()?.timeOfImpact).toBeCloseTo(1,6);expect(region.meshes()).toHaveLength(256);expect(world.colliders.len()).toBe(2);
     region.prepare("unload",{...binding,epoch:2,resident:false},[],undefined,edge);region.commit("unload");region.finalize("unload");
     expect(contact()).toBeNull();expect(world.colliders.len()).toBe(1);
   }finally{world.free();}

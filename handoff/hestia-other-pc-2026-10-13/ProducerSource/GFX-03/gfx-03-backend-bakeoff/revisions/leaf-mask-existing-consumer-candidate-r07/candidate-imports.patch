@@ -1,0 +1,15 @@
+--- original/src/main.ts
++++ detached/candidate/src/main.ts
+@@ -4,2 +4,2 @@
+-import {loadPort,digest,windInputs,assertOwner,createDepthCameraPort,lightDepthPolicy,type Variant,type SceneId,type Defect} from './port.js';
+-import {surfaceMaterial,sky,setWind,glUniforms} from './materials.js';
++import {loadPort,digest,windInputs,assertOwner,createDepthCameraPort,lightDepthPolicy,type Variant,type SceneId,type Defect} from './port.ts';
++import {surfaceMaterial,sky,setWind,glUniforms} from './b2-materials.ts';
+@@ -131,1 +131,1 @@
+-      lib=next==='historical-webgl'?await import(new URL('../vendor/historical/three.module.js',import.meta.url).href) as typeof T:T;
++      lib=next==='historical-webgl'?await import(new URL('../../../../dist/vendor/historical/three.module.js',import.meta.url).href) as typeof T:T;
+--- frozen-r04/candidate/src/materials.ts
++++ detached/candidate/src/b2-materials.ts
+@@ -4,1 +4,1 @@
+-import type {MaterialData} from './port.js';
++import type {MaterialData} from './port.ts';

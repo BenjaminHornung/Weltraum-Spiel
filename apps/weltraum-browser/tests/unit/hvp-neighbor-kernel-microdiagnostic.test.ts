@@ -3,6 +3,14 @@ import {readFileSync,writeFileSync} from "node:fs";
 import {expect,it,vi} from "vitest";
 import type {TransferableBufferBundle,WorkerJobRequest} from "../../src/workers/protocol";
 
+const authoredReads=vi.hoisted(()=>({count:0}));
+vi.mock("../../src/hvp/hvpCoastSource",async importOriginal=>{
+  const original=await importOriginal<typeof import("../../src/hvp/hvpCoastSource")>();
+  return {...original,readHvpSourceColumnWorld:(x:number,z:number)=>{
+    authoredReads.count+=1;return original.readHvpSourceColumnWorld(x,z);
+  }};
+});
+
 // ponytail: local saved-input diagnostic; promote only after a portable qualification fixture exists.
 it.skipIf(!process.env.HVP_NEIGHBOR_KERNEL_INPUT)("measures the real saved-East kernel with unchanged Source and packet bytes",async()=>{
   const {decodeHvpGame}=await import("../../src/hestia-prototype/persistence/gameCheckpoint");
@@ -39,7 +47,7 @@ it.skipIf(!process.env.HVP_NEIGHBOR_KERNEL_INPUT)("measures the real saved-East 
       const end=performance.now();phases.push({phase:"projection",lod:activeLod,start,end,ms:end-start});}
   });
     const job=await import("../../src/workers/hvpNeighborJob");
-    const samples:Array<{lod:number;start:number;end:number;ms:number;packetSha256:string;packetBytes:number}>=[];
+    const samples:Array<{lod:number;start:number;end:number;ms:number;authoredColumnReads:number;packetSha256:string;packetBytes:number}>=[];
     for(const [index,lod,epoch] of [[0,.5,1],[1,.125,3]] as const){
       activeLod=lod;expect(protocol.fnv1aBytes(buffers)).toBe(rawInputHash);
       const key=canonicalizeContentKey(hvpRegionContentKey({region:"east",seed:coast.HVP_COAST_SEED_NAME,
@@ -52,6 +60,7 @@ it.skipIf(!process.env.HVP_NEIGHBOR_KERNEL_INPUT)("measures the real saved-East 
         jobKind:ids.workerJobKind(job.HVP_NEIGHBOR_JOB),workerEpoch:ids.workerEpoch(0),planningEpoch:ids.planningEpoch(0),
         inputRevision:ids.contentRevision(east.revision),sourceInputDigest:job.hvpNeighborInputDigest(payload,buffers),algorithmVersion:ids.algorithmVersion(1),
         priority:"Normal",deadline:ids.jobDeadline(index+1),estimatedInputBytes:bundle.byteLength,estimatedOutputBytes:ids.byteCount(job.HVP_NEIGHBOR_MAX_OUTPUT),payload};
+      authoredReads.count=0;
       const start=performance.now(),output=job.executeHvpNeighborJob(request,bundle).bundle,end=performance.now(),ms=end-start;
       const spans=phases.filter(phase=>phase.lod===lod);
       expect(spans.filter(phase=>phase.phase==="projection")).toHaveLength(1);
@@ -59,7 +68,8 @@ it.skipIf(!process.env.HVP_NEIGHBOR_KERNEL_INPUT)("measures the real saved-East 
       for(const span of spans){expect(Number.isFinite(span.start)&&Number.isFinite(span.end)&&Number.isFinite(span.ms)).toBe(true);
         expect(span.start).toBeGreaterThanOrEqual(start);expect(span.end).toBeLessThanOrEqual(end);expect(span.ms).toBeGreaterThanOrEqual(0);}
       expect(protocol.fnv1aBytes(buffers)).toBe(rawInputHash);expect(output.contentHash).toBe(protocol.fnv1aBytes(output.buffers));
-      samples.push({lod,start,end,ms,packetSha256:createHash("sha256").update(new Uint8Array(output.buffers[0]!)).digest("hex"),packetBytes:output.byteLength});
+      samples.push({lod,start,end,ms,authoredColumnReads:authoredReads.count,packetSha256:createHash("sha256").update(new Uint8Array(output.buffers[0]!)).digest("hex"),packetBytes:output.byteLength});
+      if(process.env.HVP_NEIGHBOR_AUTHORED_READ_LIMIT){expect(authoredReads.count).toBeLessThanOrEqual(20_000);}
     }
     expect(game.checkpoint.signature).toBe(saveSignature);
     if(process.env.HVP_NEIGHBOR_KERNEL_BASELINE){const baseline=JSON.parse(readFileSync(process.env.HVP_NEIGHBOR_KERNEL_BASELINE,"utf8"));

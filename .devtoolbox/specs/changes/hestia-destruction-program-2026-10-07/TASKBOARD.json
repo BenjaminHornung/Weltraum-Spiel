@@ -1,6 +1,129 @@
 {
+  "a62FinalPostInstallCustody": {
+    "sourceRevision": ".a0-runtime/original-d2-d4-residency-exception-source-closure-r07/custody",
+    "wholeGoal": "ACTIVE_INCOMPLETE",
+    "implementation": "HOLD_IF_REGISTRY_PUBLICATION_FAILS_AFTER_SUCCESSFUL_RESTORE_ORIGINAL_THROW_AND_PARKED_CHECKPOINT_RETAINED",
+    "codecheck": "CURRENT_FULL_STRICT_TS7_SKIPLIBFALSE_0_GENUINE_VITE287_BOTH_WORKERS_0",
+    "pure": "PRIOR_UNCHANGED_ERROR_CLASS_12PASS_NOT_REPLAYED_NOT_FACTORY_PROOF",
+    "nativeCases": "23_PREPARED_TYPECHECKED_NOT_RUN_19PRIOR_PLUS4POSTINSTALL",
+    "priorSnapshot": "A62_R07_FIRST_SOURCE_SNAPSHOT_PRESERVED_CURRENT_BOUNDARY_SUPERSEDES_19CASE_ONLY_LABEL",
+    "gateChanges": "NONE_ALL18_AND_R0_R5_OPEN_NO_PUBLIC_SOLVER_DEFAULT_ADOPTION",
+    "safety": "B08_FAIL_CLEANUP_HOLD_ALL_PILOTS_STOP_HOSTQUESTION_UNANSWERED"
+  },
+  "a62CurrentResidencyExceptionSource": {
+    "sourceRevision": ".a0-runtime/original-d2-d4-residency-exception-source-closure-r07",
+    "wholeGoal": "ACTIVE_INCOMPLETE",
+    "finiteImplementation": "COMPLETE_NEUTRAL_EXCEPTION_SOURCE_FIXES_AND_PREPARED_REAL_CASES",
+    "codecheck": "STRICT_TS7_SKIPLIBFALSE_0_VITE287_BOTH_WORKERS_0_PURE_ERROR_CLASS_12PASS",
+    "normalSourceApplication": "FIVE_SHARED_SOURCE_FILES_TWO_EXISTING_TEST_FILES_EXACT_AFTERIMAGES",
+    "nativeCases": "19_PREPARED_TYPECHECKED_NOT_RUN",
+    "qualification": "PARTIAL_SOURCE_TYPE_BUILD_ONLY_NATIVE_WORKER_COLD_COUNTERS_REFERENCE_UNQUALIFIED",
+    "reference": "NOT_RUN",
+    "productAdoption": "NO_PUBLIC_SAVE_SOLVER_DEFAULT_SCHEMA_DB_OR_COLLIDER_ADOPTION",
+    "gateChanges": "NONE_ALL18_ORIGINAL_GATES_AND_R0_R5_REMAIN_OPEN",
+    "safety": "B08_FAIL_CLEANUP_HOLD_ALL_PILOTS_STOP_HOSTQUESTION_UNANSWERED"
+  },
+  "a60CurrentD2D4Lifecycle": {
+    "sourceRevision": ".a0-runtime/original-d2-d4-current-source-lifecycle-closure-r06",
+    "wholeGoal": "ACTIVE_INCOMPLETE",
+    "implementation": "ONE_NEUTRAL_CONSUMER_TERMINAL_RELEASE_GUARD_APPLIED_AND_THREE_PREPARED_UNIT_CASES",
+    "codeChecks": "27_NEW_SYNTHETIC_SOURCE_CPU_PASS_STRICT_TS7_EXIT0_GENUINE_VITE287_BOTHWORKERS_EXIT0",
+    "reference": "NOT_RUN_NO_NATIVE_RENDERER_COLD_HEAP_OR_PERFORMANCE_TRANSFER",
+    "productAdoption": "NO_CURRENT_MARGIN_DEFAULT_PUBLIC_SAVE_SCHEMA_DB_COLLIDER_ADOPTION",
+    "gateAxes": ".a0-runtime/original-d2-d4-current-source-lifecycle-closure-r06/GATE_AXES_R06.json",
+    "obligations": ".a0-runtime/original-d2-d4-current-source-lifecycle-closure-r06/SOURCE_OBLIGATION_MATRIX_R06.json",
+    "nativeSourceBoundary": "RESIDENCY_NULL_ERROR_PATH_STATIC_HAZARD_UNAPPLIED_PROPOSAL_REAL_FACTORY_CONTRACT_OPEN",
+    "b08": "FAIL_CLEANUP_HOLD_ALL_PILOTS_STOP_HOSTQUESTION_UNANSWERED"
+  },
   "schema": "hestia.three-phase-taskboard.v1",
-  "date": "2026-10-07",
+  "a57CurrentPrivateMarginRevision": {
+    "classification": "PRIVATE_AUTHENTIC_PRODUCT_SOURCE_AFTERIMAGE_TYPE_BUILD_8PURE_PASS_NORMAL_DEFAULT_UNCHANGED",
+    "evidence": ".a0-runtime/current-margin021-product-source-closure-r05/GATE_AXES_R05.json",
+    "evidencePathBase": "WORKTREE_ROOT",
+    "currentArtifact": "rapier-0.21.0-phy01.migration2:positive-margin-r05:f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+    "package": "NEW_COHERENT196_JS_DTS_WASM_SOURCEBUILT_OLD_VENDOR99_AND_A51_HISTORY_INTACT",
+    "codeChecks": "STRICT_PRODUCT0_NATIVE24_SOURCE_TYPES0_PRIVATE_REGISTRY_EMIT0_GENUINE_VITE0_287MODULES_94FILES_8NEWPURE_PASS",
+    "axes": ["implemented","codeCheck","reference","productAdoption"],
+    "all18HistoricalGates": "PRESERVED_NO_STATUS_DENOMINATOR_REWRITE",
+    "firstFailures": "TS2550_DISPOSABLE_AMBIENT_LIB_AND_WINDOWS_LOADER_URI_RETAINED_SEPARATE_NO_CASE_OR_ASSERTION_CHANGE",
+    "normalRootProductSourceDefaultLock": "UNCHANGED_NO_PUBLIC_SCHEMA_SAVE_DB_ADOPTION",
+    "currentRuntimeReference": "NOT_RUN_NOT_SLOT_READY_NO_GRANTS_B08_CLEANUP_HOLD_ALL_PILOTS_STOP",
+    "fullGoal": "ACTIVE_INCOMPLETE"
+  },
+  "a51CurrentRevision": {
+    "classification": "CURRENT_SOURCE_BUILD_PASS_FULL_GOAL_ACTIVE_INCOMPLETE",
+    "evidence": ".a0-runtime/full-three-phase-product-continuation-r04/GATE_AXES_R04.json",
+    "evidencePathBase": "WORKTREE_ROOT",
+    "gateIds": ["G0","D1","D2","D3","D4","D5","S1","S2","S3","S4","M4","M1","M3","M2","M7","M8","M5","M6"],
+    "axes": ["implemented","codeCheck","reference","productAdoption"],
+    "codeChecks": "TS7_STRICT_SKIPLIBCHECK_FALSE_EXIT0;VITE8_1_5_BUILD_EXIT0_287MODULES;17_LOCAL_BUILD_CONTRACT_PASS",
+    "historicalGateObjects": "PRESERVED_NO_STATUS_OR_DENOMINATOR_REWRITE",
+    "currentRuntimeReference": "NOT_RUN",
+    "blocker": "EARLY_M5_R4_ACTUAL_COHERENT_021_NATIVE_AND_PUBLIC_SAVE_QUALIFICATION;B08_CLEANUP_HOLD_ALL_PILOTS_STOP",
+    "literalTargets": "PHASE1_P95_LE_250MS;PHASE2_LE_120MS;FRAME20_33_4MS;WORK4_MAX8MS;14_BEFORE42_BEFORE1400;SAVE_COLD_RECUT_RESAVE;REGIONS0_125_0_25",
+    "fullGoal": "ACTIVE_INCOMPLETE"
+  },
+  "date": "2026-10-10",
+  "amendment": {
+    "path": "A0/00_AENDERUNGSAUFTRAG.md",
+    "sha256": "b4790fc0f4f658e85ce946a5d184c4f6851b00326d0f47c488a43897bc9aaea4",
+    "checkpoint": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+    "status": "A0_R03_STATIC_CONTROLLER_CONTEXT_SOURCE_ONLY_FULL_GOAL_ACTIVE_INCOMPLETE",
+    "effectiveSequence": "mandatoryRapier021Migration2GyroFALSE -> privateWorkerBootstrapRuntime -> finiteDecisionPHY03 -> D5/S1/S2/M4 underoriginalgates -> remainingphases/playtest/14to42to1400",
+    "freezeZone": ["newlongtermColliderRepresentations", "formalS1RuntimeQualificationAndPublicCutover", "S2sourceMigration", "M4envelopeFinalization", "D5phaseEnd1400BeforeEarlyPhysicsDecision"],
+    "externalDeliveryIds": ["PHY-01", "PHY-02", "PHY-03", "GFX-01", "GFX-02", "PLT-01", "PLT-02", "RT"],
+    "externalDigestBindings": "PRIVATE_BROWSER_RECEIPTS_BOUND_BELOW_OTHER_DELIVERIES_KEEP_THEIR_SEPARATE_STATUS",
+    "freezeZoneAlignment": {"classification":"EXPLICIT_PLAN_BOUNDARY_DELTA_NOT_DOCUMENTATION_ONLY","oldFreezeToken":"S1physicsPort","newFreezeToken":"formalS1RuntimeQualificationAndPublicCutover","authority":{"path":"A0/board-plan-delta-2026-10-10-r02/source-controls/USER_OVERRIDES_2026-10-09.md","bytes":9286,"sha256":"10b9a77e09bf3c31f6f6f0a9635c23db7cae2e94d08d68052c8ffe1f08c56de5","line":9,"quote":"Rapier-Migration ist verbindlich: exakter Zielpin @dimforge/rapier3d-compat@0.21.0, frisch über öffentliche npm-Metadaten bestätigt. Nicht länger als ergebnisoffene Entscheidung „0.12 behalten“ verwalten. PHY-01 löst die 0.21-Adapter-/Query-/Borrow-/KCC-/Mass-/Lifecycleblocker vollständig und liefert einen gebundenen Kandidaten. PHY-02 setzt seine restliche Matrix mit diesem tatsächlichen Eingang fort; native Voxel sind keine Pflicht, eine defekte Collideroption ist kein Grund, 0.21 als Migrationsziel aufzugeben. PHY-03 bindet die wirklichen Ergebnisse in die Save-/Source-/Solverkapsel. A0 integriert und qualifiziert die 0.21-Produktmigration. Historische 0.12-Kontrollen/Rollbackevidence bleiben erhalten; sie sind keine finale Lösung. Keine Assertions löschen, keine falschen PASS, keine unreviewte Save-/Semantikänderung. Falls ein gebundener Upstreamfix nötig ist, genaue Herkunft/Version/Patch nachweisen und eine solche Abweichung offen an A0 übergeben."},"permitted":"BOUNDED_PRIVATE_021_SOURCEFORK_ADAPTER_PROFILE_WORKER_BOOTSTRAP_PREPARATION_AND_ONLY_SEPARATELY_GRANTED_PRIVATE_DIAGNOSTICS","formalS1":"ORIGINAL_PHASE2_GENERIC_VOXEL_OWNER_FULL_COMMIT_RECOVERY_DEPENDS_ON_D5_STILL_PLANNED","R4":"ACTUAL_PHY03_SOLVER_SOURCE_COLLISION_ENVELOPE_LAYOUT_ACCEPT_OR_REASONED_REJECT_AND_REAL_LEGACY_SAVE_MOTION_COM_INERTIA_SURFACE_RECUT_RESAVE_REMAIN_OPEN","publicCutover":"NO_PUBLIC_SCHEMA_DISCRIMINATOR_DEFAULT_SHAREDDB_OR_OLD_SAVE_OVERWRITE_AUTHORITY","gatesUnchanged":true,"notTemporalS1GateClosure":true},
+    "historicalProductControl": {"name":"hestia-d3-d4-product-r33","source":"f292a7f57f5bc8c6e848b08a566c9f5f8225c13a30b396434423a561cc839982","build":"958428bf2cfd237dfcdbf2190cd2924d2b12a347ab8d4dd1f62b75b9a4e985a1","httpFiles":93},
+    "historicalFrozenPrivateBrowserR02": {
+      "classification": "STATIC_PRIVATE_DRIVER_AND_PREPARED_CONTEXT_ONLY",
+      "driverReceipt": {"path":"A0/PHY01_LAB_BROWSER_DRIVER_RECEIPT_R02.json","sha256":"75f2864cb25c7dfa2c2808a893b3dd0519eb3060ab96a26abc40985770e0abc7"},
+      "driverInput": {"bytes":1079867,"sha256":"a17f64aae6e3ef87a621dbead4e54b0f41d87df572f9988aea0f11d7830b1ed1","payloads":4843,"boundSourceInput":"32bdc925b443ebac85a7a182b3c41359d41d250eb9fc39159905c9b36aca3844"},
+      "contextReceipt": {"path":"A0/PHY01_LAB_BROWSER_CONTEXT_RECEIPT_R02.json","sha256":"2935bc0829041bc4afd4ecdf0cc2b3af7ba69dd5ee78de729abfc78f1c78d99b"},
+      "contextInput": {"bytes":5106,"sha256":"d766e54c8e3a94b62ddb01f99fa0de5242a55075d60d72da46405a703a85c97c","files":11},
+      "sourceProfile": "rapier-0.21.0-phy01.migration2",
+      "productProfile": "legacy-impulse-v1",
+      "dynamicGyroscopicForces": false,
+      "sourceAcceptance": "FROZEN_BYTES_ONLY_NOT_MOVING_WIP",
+      "actualWrapperForkServerBrowserNativeGpu": "NOT_RUN",
+      "metadataB01": "POINT_IN_TIME_ONLY_NEW_OWNED_METADATA_REQUIRED_MAX60S_AT_ENTRY",
+      "browserCompatibility": "151_VS_EXPECTED149_UNPROVEN_DIAGNOSTIC_ONLY",
+      "runnerReadyReceipt": {"path":"A0/phy01-lab-browser-driver-r01/consumer-controls/ready-r01/receipt.json","sha256":"829a7a02d115ee5b2efa7f5772b2738c49a0fc14e5cd8323555d313e8ee203e0"},
+      "slotReady": false,
+      "newWorkloadGrant": "NOT_GRANTED",
+      "qualifiedReferenceWindow": "NOT_CONFIRMED",
+      "formalG01AndOverallAcceptance": false
+    },
+    "currentFrozenPrivateBrowser": {
+      "classification": "R03_STATIC_DRIVER_PLUS_UNEXECUTED_SOURCE_ONLY_CONTROLLER_CONTEXT_CANDIDATE",
+      "driverReceipt": {"path":"A0/PHY01_LAB_BROWSER_DRIVER_RECEIPT_R03.json","sha256":"d4e9600a81fbc3eaddd09f243fc3d99fd08ab3f2ba34719c34ab57013f80a60e"},
+      "driverInput": {"bytes":1065605,"sha256":"60065bce2742979e2bbd761ce2f98a195d1014158c6bd2f5eefa3069b6f6dfae","payloads":4761,"boundSourceInput":"6128d337ec12c0aedb0eb83dbb0e4391b46f0fa323d2f3bca6e384c5218249fd"},
+      "newSourceStage":".a0-runtime/phy021-browser-r03-static-r01",
+      "controllerBinding":{"bytes":3730697,"sha256":"13738fae4e842962abe84d2527a78e312500914a446b7ce665393198f5dd9ab1"},
+      "contextSourceBinding":{"bytes":1594,"sha256":"602f0327cff0e890a50d4c6714ff98c4b31facaf70ae134c97a3e7068b910621"},
+      "candidateRuntime":"NOT_RUN_SOURCE_ONLY_UNCONDITIONAL_EFFECT_VETO",
+      "newTestsBuilds":"NOT_RUN_OLD_R03_RESULTS_INHERITED_ONLY",
+      "slotReady":false,"newGrant":"NONE","sdkPidTreeFallback":"DENIED",
+      "b08Retirement":"UNKNOWN_UNCONFIRMED_CLEANUP_HOLD_ALL_PILOTS_STOP",
+      "pendingUserQuestion":"permission-call_b5b8496b980b4f18bf7405577a4d03db_UNCHANGED",
+      "freshCapacityCpuAdapterAcWindow":"NOT_QUERIED_NOT_CURRENT_NOT_CONFIRMED",
+      "profile":"rapier-0.21.0-phy01.migration2:legacy-impulse-v1_gyroFALSE",
+      "goalMapping":".a0-runtime/phy021-browser-r03-static-r01/FULL_GOAL_MAPPING.md",
+      "newProducerFollowupsAtInitialSourceCutoff":"PHY03_PHY02_RT02B_ATM_GFX03_NOT_RECEIVED_NOT_CONSUMED",
+      "lateProducerAdminInputs":{"receipt":".a0-runtime/phy021-browser-r03-static-r01/LATE_ADMIN_CONSUMER_RECEIPT_R01.json","bytes":3378,"sha256":"5f0a7fcd298c158575ef621adeeeb28caf7c4990d51109b2288c8e67ac2acf99","registers":3,"scope":"ADMIN_ONLY_FULL_PRODUCER_SOURCE_CLOSURES_NOT_CONSUMED_COMPILER_RESULTS_PENDING"},
+      "formalR4S1TemporalG01BP421400PlannerOwnerHuman":"ACTIVE_INCOMPLETE",
+      "gateObjectsUnchanged":true
+    },
+    "existingGateEvidenceScope": "HISTORICAL_BOUND_ROWS_NO_NEW_RUNTIME_OR_TASK_CLOSURE",
+    "neighborMemo": {"implemented":true,"codeReview":"twoSourceFilesApproved","scratch":"128KiBWithinExistingHostPreparationQuote_110826BackingBytes_NoFullKernel96Proof","oracle":"4PASS_bothLODsCompletePacketSHAEqual","regression":"69PASS0skip","referenceMeasurement":"NOT_RUN","productAdoption":"r39BoundCandidateFunctionalSupport_DefaultNotQualified"},
+    "r1Evidence": ["A0/east-collision-codec-green-r02.json","A0/east-collision-combined-oracle-r01.json","A0/east-collision-purpose-oracle-r01.json","A0/east-collision-regression-r01.json_84PASS1STALE_TEST_ADAPTER_FAILURE","A0/east-collision-compiler-regression-r02.json","A0/tsc-r01.json","A0/build-r01.json"],
+    "futureCommitPushApproval": "REQUIRED_FOR_LATER_EXACT_DIFF",
+    "r36": "INVALID_PRESERVED",
+    "r37": "INVALID_PRESERVED",
+    "r38": "INVALID_PRESERVED_NATIVE0_CACHE0_FINAL_CLEANUPS_PROVEN",
+    "r39": "ACTUAL_EXIT0_1FUNCTIONALPASS_11DISPOSALS_REF_BUDGETS_OPEN",
+    "physicsPartialDelivery": {"id":"PHY-02_C_SEAM_V1","receiptSHA":"34e5050d46cd80f1923356a845a11d8dae12eebc3844ed343e277f49c3979e4c","sourceBindingSHA":"d08e223aedc35cf78e9dac1d0f3655cf490add7924f3b0827472c3157b9bdd46","rawSHA":"40a20a25133513d6cf99f22735ed393ec90da77c128327ab11bab57e6e575a59","status":"PARTIAL_7EXIT1_7ORACLEFAIL_NOT_SOLVER_DECISION_NO_INTEGRATION"}
+  },
   "goal": "ALLE_18_GATES",
   "referenceCheckpoint": "aa2eabd918e03c475a489b412cd18e05f781a0f9",
   "actualBaseline": "P aa2eabd918e03c475a489b412cd18e05f781a0f9; E source cdce5dc042b8366a5835d81f3d106d22127a436f468d805c9abc0fe111c0df4b byte-verified",
@@ -23,6 +146,7 @@
     {
       "id": "G0",
       "phase": 1,
+      "verificationAxes": {"implemented":"historicalMechanism","codeReview":"boundedEvidence","referenceMeasurement":"currentPhaseBudgetNotQualified","productAdoption":"mechanismOnly"},
       "title": "Checkpoint, Identitäten, Tools und reproduzierbare Kontrollmessung",
       "dependsOn": [],
       "status": "QUALIFIED",
@@ -41,6 +165,7 @@
     {
       "id": "D1",
       "phase": 1,
+      "verificationAxes": {"implemented":"historicalMechanism","codeReview":"boundedEvidence","referenceMeasurement":"currentPhaseBudgetNotQualified","productAdoption":"mechanismOnly"},
       "title": "Init und Ready-Lifecycle",
       "dependsOn": [
         "G0"
@@ -71,6 +196,7 @@
     {
       "id": "D2",
       "phase": 1,
+      "verificationAxes": {"implemented":"partial","codeReview":"scopedReviewed","referenceMeasurement":"r37INVALID","productAdoption":"candidateNotQualified"},
       "title": "gebundene Ableitungen und privates Recipe",
       "dependsOn": [
         "G0"
@@ -124,6 +250,7 @@
     {
       "id": "D3",
       "phase": 1,
+      "verificationAxes": {"implemented":"A0R1_andExactColumnMemo","codeReview":"codecIntegrationMemoReviewed","referenceMeasurement":"r39n1SupplementalNotReference_BudgetsOpen","productAdoption":"scopedBoundCandidateFunctionalSupport_only"},
       "title": "Chunkcompile und gebündelte Darstellung",
       "dependsOn": [
         "D1"
@@ -156,12 +283,13 @@
         "tests/D3/normal-pilot-r33/FUNCTIONAL_RECEIPT.json",
         "tests/D1/p03-current-r01/FUNCTIONAL_RECEIPT.json"
       ],
-      "nextAction": "r36 actual1 wholeINVALID: control15sNeighborReady and candidateauthoredReady30s timeout; Source361994fe/Build e1fa2829 all93HTTPboth unchanged. Candidatefailedstartup full256jobs/CoastMesh26173ms beforePhysics; no Sourceorforeignloadcauseproved. Existingsealed512adapter has137allAirhalos; measure same originalinput before safe combinedallAir shortcut, preserving all validation/8buffers/fullpacketSHA. D3unusedEastcollision-onlyexceptionstillawaitsexplicitanswer. Ready5s/reference/formal42/1400/Planner/later remainopen.",
+      "nextAction": "A0 East-only and exact authored-column memo implemented/reviewed; native39 full functional support on Sourcef292a7/Build958428, not reference/default adoption. Preserve all original identities/caps/quality/guards. Close remaining D3 Compile/Ready/resource/negative/ten-pair budgets after D4 work; phase-end series waits early PHY decision. Old invalid runs remain invalid.",
       "canCloseWithNoAdoption": false
     },
     {
       "id": "D4",
       "phase": 1,
+      "verificationAxes": {"implemented":"privateAdmissionPartial","codeReview":"scopedReviewed","referenceMeasurement":"r39n1Upload2.5to2.6ms_OverBudget","productAdoption":"boundCandidateFunctionalSupport_notQualified"},
       "title": "private Render-Admission",
       "dependsOn": [
         "G0"
@@ -171,12 +299,13 @@
       "requiredExternalPrerequisites": [],
       "sourceBinding": null,
       "evidence": ["tests/D4/private-canonical-golden-r01.json", "tests/D4/private-admission-red-r01.json", "tests/D4/private-admission-green-r01.json", "tests/D4/private-lifecycle-red-r01.json", "tests/D4/private-lifecycle-green-r01.json", "tests/D4/private-dormant-east-load-r03.json", "tests/D4/private-load-rollback-prefix-r02.json", "tests/D4/private-projection-copy-cancel-r01.json", "tests/D4/paired-driver-contracts-r03.json", "tests/D4/private-submitted-draw-cleanup-green-r02.json", "tests/D4/private-wake-binding-r01.json", "tests/D4/private-wake-cancel-r02.json"],
-      "nextAction": "r36 wholeINVALID on boundproduct-r30: candidate mainRender707.1/705.8/462.6ms individuallycomplete,2truezeroEnds/coldRecipe0; controlfinalcleanupPROVEN/native0/cache0/health0, candidatepreHUDfinalcleanupUNPROVEN. Nullsafepreparingtestcleanuprepairnewunfrozendriverdoesnotchangeproduct/measurement30sReady15sNeighbor/caps. Historicalproduct-r29 P03realReset/preparingResize5PASS. AllD4budgets/fullfunctionalWake/qualification/later/formal42/1400/Planner/newcommitapprovalopen.",
+      "nextAction": "Native39 full Save/Cold/Wake/Recut/11disposal proof; all3 private upload CPU frame samplesComplete but2.5/2.5/2.6ms exceed2ms. Inspect exact frame bucket operations and mature slicing/reuse before a bounded patch. Preserve actual draw submission, quality, GLfailure/cancel/release/caps; context loss and clean failure presentation remain open. No reference/phase/default adoption or new commit approval.",
       "canCloseWithNoAdoption": false
     },
     {
       "id": "D5",
       "phase": 1,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "kombinierter normaler Produktpfad und Phase-1-Qualifikation",
       "dependsOn": [
         "D1",
@@ -195,6 +324,7 @@
     {
       "id": "S1",
       "phase": 2,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "generischer Voxel-Owner und vollständiges Commit/Recovery",
       "dependsOn": [
         "D5"
@@ -210,6 +340,7 @@
     {
       "id": "S2",
       "phase": 2,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "kompakter Kern, Source-v2-Migration und TS/WASM-Vergleich",
       "dependsOn": [
         "S1"
@@ -225,6 +356,7 @@
     {
       "id": "S3",
       "phase": 2,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "Geräteprofile und Ressourcenadmission",
       "dependsOn": [
         "S2"
@@ -240,6 +372,7 @@
     {
       "id": "S4",
       "phase": 2,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "LOD und Phase-2-Endqualifikation",
       "dependsOn": [
         "S3"
@@ -255,6 +388,7 @@
     {
       "id": "M4",
       "phase": 3,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "Landschafts-/Command-/Ledgerpersistenz",
       "dependsOn": [
         "S4"
@@ -272,6 +406,7 @@
     {
       "id": "M1",
       "phase": 3,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "blast, mine, brush und add",
       "dependsOn": [
         "M4"
@@ -289,6 +424,7 @@
     {
       "id": "M3",
       "phase": 3,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "Trümmeraufnahme und materielle Lebensdauer",
       "dependsOn": [
         "M1"
@@ -306,6 +442,7 @@
     {
       "id": "M2",
       "phase": 3,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "versionierte Batches und L10/L50/LBRUSH",
       "dependsOn": [
         "M1",
@@ -324,6 +461,7 @@
     {
       "id": "M7",
       "phase": 3,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "Multi-Region und Streaminggrenzen",
       "dependsOn": [
         "M2",
@@ -342,6 +480,7 @@
     {
       "id": "M8",
       "phase": 3,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "zwei feste Weltauflösungen",
       "dependsOn": [
         "M4",
@@ -360,6 +499,7 @@
     {
       "id": "M5",
       "phase": 3,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "isolierter Collider-/Rapiervergleich",
       "dependsOn": [
         "M2"
@@ -377,6 +517,7 @@
     {
       "id": "M6",
       "phase": 3,
+      "verificationAxes": {"implemented":"notStarted","codeReview":"notRun","referenceMeasurement":"notRun","productAdoption":"notAdopted"},
       "title": "gleichwertiger Voxelrenderer-/Meshvergleich unter Last",
       "dependsOn": [
         "M2"

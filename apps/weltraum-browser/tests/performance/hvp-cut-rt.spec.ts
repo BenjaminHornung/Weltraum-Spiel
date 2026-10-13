@@ -4,6 +4,7 @@ import {execFileSync} from "node:child_process";
 import {readFile, realpath, stat} from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import {readPhy01SolverBinding} from "./phy01SolverBinding";
 import {fileURLToPath} from "node:url";
 import {Quaternion, Vector3} from "three";
 import {readHvpPrivateUploadCpu,assessHvpPrivateUploadCpu} from "./hvpPrivateUploadCpu";
@@ -737,6 +738,41 @@ const pairedGate=process.env.WELTRAUM_HVP_PAIRED_GATE??(process.env.WELTRAUM_HVP
 if(!["D1","D2","D3+D4"].includes(pairedGate)){throw new Error("Unknown paired preparation gate");}
 const forcePerformanceGpu=process.env.WELTRAUM_HVP_FORCE_HIGH_PERFORMANCE_GPU;
 if(forcePerformanceGpu!==undefined&&(forcePerformanceGpu!=="1"||pairedGate!=="D3+D4")){throw new Error("Performance GPU override requires the combined diagnostic gate");}
+test("D3+D4 preparing startup abort cleanup waits for a real mount then proves native disposal",async({playwright})=>{
+  test.setTimeout(90_000);
+  const root=process.env.WELTRAUM_HVP_MEASURE_DIR,executable=process.env.WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH;
+  if(!root||!executable||![root,executable,process.execPath].every(underSourceCode)){throw new Error("Preparing cleanup requires pinned local tools and evidence");}
+  const directory=await createHvpCutRtEvidenceDirectory(root,app,"preparing-cleanup"),cleanup:CleanupEvidence={
+    state:"IN_PROGRESS",samples:[],raw:{entries:[],dropped:0},truncatedSamples:0};
+  const record:{classification:string;cleanup:CleanupEvidence;disposal:unknown;bindingBefore:unknown;bindingAfter:unknown;startupAbort:ReturnType<typeof describeHvpCutRtFailure>|null;failure:ReturnType<typeof describeHvpCutRtFailure>|null}={
+    classification:"REAL_PRE_HUD_STARTUP_DRIVER_ABORT_CLEANUP_NOT_READY_OR_CUT_QUALIFICATION",cleanup,disposal:null,bindingBefore:null,bindingAfter:null,startupAbort:null,failure:null};
+  const browser=await playwright.chromium.launch({executablePath:executable,headless:false,
+    args:["--force-device-scale-factor=1",...(forcePerformanceGpu?["--force-high-performance-gpu"]:[])]});
+  try{
+    const buildRoot=process.env.WELTRAUM_HVP_BUILD_DIR,servedReceiptPath=process.env.WELTRAUM_HVP_PAIRED_CANDIDATE_SERVED_BINDING;
+    if(!buildRoot||!servedReceiptPath){throw new Error("Preparing cleanup requires bound production bytes");}
+    const verifyProduct=()=>verifyHvpCutProductBinding({app,buildRoot,servedReceiptPath,baseUrl,currentSource:true});
+    record.bindingBefore=await verifyProduct();
+    const context=await browser.newContext({viewport:{width:1280,height:720},deviceScaleFactor:1}),page=await context.newPage();
+    await installCollector(page);page.setDefaultTimeout(10_000);page.setDefaultNavigationTimeout(30_000);
+    await page.goto(`${baseUrl}/?hestiaPrototype=1&hvpMeasure=1&hvpScenario=rock-arm&hvpCutSource=candidate`);
+    await page.bringToFront();
+    // Abort this startup attempt in the driver; leave real product preparation running for its cleanup path.
+    try{
+      await page.waitForFunction(()=>document.querySelector("#hvp-state")?.textContent?.includes("State: Ready"),undefined,{timeout:1});
+    }catch(error){
+      if(!(error instanceof Error)||error.name!=="TimeoutError"){throw error;}
+      record.startupAbort=describeHvpCutRtFailure("cut",error);
+    }
+    expect(record.startupAbort).not.toBeNull();
+    record.disposal=await endSession(page,cleanup);
+    expect(cleanup.samples[0]).toMatchObject({stage:"initial",mounted:false,physics:null});
+    expect(cleanup.samples.some(sample=>(sample as {stage:string;mounted:boolean}).stage==="waiting-mount"&&(sample as {mounted:boolean}).mounted)).toBe(true);
+    expect(cleanup.state).toBe("PROVEN");
+    record.bindingAfter=await verifyProduct();
+  }catch(error){cleanup.state="UNPROVEN";record.failure=describeHvpCutRtFailure("cut",error);throw error;}
+  finally{await browser.close();await writeHvpCutRtArtifact(directory,app,"result.json",record);}
+});
 test(`${pairedGate} paired384 normal Source Ready Save ColdLoad and recut`,async({playwright},testInfo)=>{
   test.setTimeout(10*60_000);
   const root=process.env.WELTRAUM_HVP_MEASURE_DIR,executable=process.env.WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH;
@@ -977,17 +1013,18 @@ for (const {variant, temperature, session, attempts} of series.sessions) {
           }
           const configFile = testInfo.config.configFile;
           if (!configFile) { throw new Error("Actual measurement configuration path is required"); }
+          const solverBinding=await readPhy01SolverBinding(app);
           const source = await inventoryHvpCutRtFiles(path.join(app, "src"), app), build = await inventoryHvpCutRtFiles(path.join(app, "dist"), app);
-          const fixture = await Promise.all(["tests/performance/hvp-cut-rt.spec.ts", "tests/performance/hvpCutRtReport.ts", "tests/e2e/hvp-performance-evidence.ts", "playwright.performance.config.ts", configFile]
+          const fixture = await Promise.all(["tests/performance/phy01SolverBinding.ts", "tests/performance/hvp-cut-rt.spec.ts", "tests/performance/hvpCutRtReport.ts", "tests/e2e/hvp-performance-evidence.ts", "playwright.performance.config.ts", configFile]
             .map(async file => ({path: path.relative(app, path.resolve(app, file)).replaceAll("\\", "/"), sha256: sha(await readFile(path.resolve(app, file)))})));
           const tools = await Promise.all([process.execPath, pwsh, git, powercfg].map(async file => ({path: file, sha256: sha(await readFile(file))})));
           const scheme = power(), supply = powerSource();
           plan.bindings = {
             head: execFileSync(git, ["rev-parse", "HEAD"], {cwd: app, encoding: "utf8", timeout: 20_000}).trim(),
             dirty: execFileSync(git, ["status", "--porcelain"], {cwd: app, encoding: "utf8", timeout: 20_000}).trim(),
-            source, build, fixture, tools, sourceSha256: sha(JSON.stringify(source)), buildSha256: sha(JSON.stringify(build)),
+            source, build, fixture, tools, solverBinding, sourceSha256: sha(JSON.stringify(source)), buildSha256: sha(JSON.stringify(build)),
             lockSha256: sha(await readFile(path.join(app, "package-lock.json"))),
-            wasmSha256: sha(await readFile(path.join(app, "node_modules/@dimforge/rapier3d-compat/rapier_wasm3d_bg.wasm"))),
+            wasmSha256:solverBinding.wasmSha256,
             browserSha256: sha(await readFile(executable)), os: `${os.type()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0]?.model,
             ramBytes: os.totalmem(), power: scheme, supply,
             adapters: JSON.parse(shell("Get-CimInstance Win32_VideoController | Select-Object Name,DriverVersion,CurrentRefreshRate,CurrentHorizontalResolution | ConvertTo-Json -Compress"))};

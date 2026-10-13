@@ -1,0 +1,10 @@
+import {resolve} from 'node:path';
+import {root,repo,verifyInputs,verifyIsolation,inputs,bytes,walk,save,json,hash,python} from './bindings.mjs';
+import {run} from './command.mjs';
+verifyIsolation();verifyInputs();const id=process.argv[process.argv.indexOf('--run-id')+1],testedInputs=inputs();
+const commands=[{label:'build-typecheck',args:['scripts/build.mjs']},{label:'focused-tests',args:['--experimental-test-isolation=none','--test','--test-concurrency=1','tests/control.test.mjs','tests/red.test.mjs','tests/wake.test.mjs','tests/bindings.test.mjs']},{label:'actual-cpu-fields',args:['scripts/harness.mjs','--run-id',id]},{label:'independent-python-oracle',executable:python,args:['scripts/oracle.py','--run-id',id]}];
+const {dir,summary}=run(id,commands);verifyInputs();if(JSON.stringify(testedInputs)!==JSON.stringify(inputs()))throw Error('TEST_INPUT_DRIFT');
+const stdout=commands[1],testText=await import('node:fs').then(fs=>fs.readFileSync(resolve(dir,'focused-tests.stdout.log'),'utf8'));
+const count=key=>Number(testText.match(new RegExp('^# '+key+' (\\d+)$','m'))?.[1]??NaN);const passed=count('pass'),failed=count('fail'),skipped=count('skipped');
+const record={...summary,testedInputs,sourceDigest:json(resolve(root,'.runtime/BuildBindings.json')).sourceDigest,compiled:walk(root,'dist').map(p=>bytes(root,p)),tests:{passed,failed,skipped},profile:bytes(root,'fixtures/profile.json'),inputBindings:bytes(root,'InputBindings.json'),lock:bytes(root,'package-lock.json'),rawEvidence:walk(dir).filter(p=>p!=='summary.json'&&p!=='receipt-summary.json').map(p=>bytes(dir,p))};
+if(!Number.isSafeInteger(passed)||failed!==0||skipped!==0||summary.status!=='PASS')record.status='FAIL';save(resolve(dir,'receipt-summary.json'),record);console.log(JSON.stringify({runId:id,status:record.status,tests:record.tests,exitCodes:summary.commands.map(c=>c.exitCode),evidenceFiles:record.rawEvidence.length}));process.exitCode=record.status==='PASS'?0:1;

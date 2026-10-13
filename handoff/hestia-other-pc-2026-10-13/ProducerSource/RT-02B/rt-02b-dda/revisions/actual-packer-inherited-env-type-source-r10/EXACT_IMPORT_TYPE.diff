@@ -1,0 +1,9 @@
+--- /dev/null
++++ b/spikes/rt-02b-dda/imported/gfx03/src/capability.d.mts
+@@ -0,0 +1,6 @@
++// Declaration of the bound 591-byte capability.mjs; no runtime replacement.
++export declare function admitAdapter(
++ adapter:GPUAdapter|null,
++ requiredFeatures?:readonly GPUFeatureName[],
++ requiredLimits?:Readonly<Record<string,number>>
++):{status:'PASS';reason:null}|{status:'UNSUPPORTED';reason:string};

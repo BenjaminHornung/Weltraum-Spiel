@@ -1,0 +1,473 @@
+--- origins/r04-observer.ts.source
++++ candidates/observer.ts.source
+@@ -7,9 +7,13 @@
+   poisoned: boolean;
+ }
+ 
++export type StopCause = "BODY_NATIVE_TRAP" | "CLEANUP_FAILURE";
++
+ export interface CaseObservation {
+   caseId: string;
+   primary: Result;
++  primaryPresent: boolean;
++  stopCauses: StopCause[];
+   cleanup: Result;
+   releaseAttempts: number;
+   disposition: "PREPARED" | "RELEASED" | "POISONED";
+@@ -20,7 +24,7 @@
+   if (batch.poisoned) throw new Error("Source disposable batch is poisoned");
+   let consumed = false;
+   const observation: CaseObservation = {
++    caseId, primary: { status: "NOT_RUN" }, primaryPresent: false, stopCauses: [], cleanup: { status: "NOT_RUN" },
+-    caseId, primary: { status: "NOT_RUN" }, cleanup: { status: "NOT_RUN" },
+     releaseAttempts: 0, disposition: "PREPARED",
+   };
+   return {
+@@ -33,20 +37,26 @@
+         observation.primary = { status: "PASS", result };
+         return result;
+       } catch (error) {
++        observation.primaryPresent = true;
+         observation.primary = { status: "FAIL", error };
++        if (error instanceof WebAssembly.RuntimeError) {
++          observation.stopCauses.push("BODY_NATIVE_TRAP");
++          batch.poisoned = true;
++        }
+         throw error;
+       } finally {
+         observation.releaseAttempts++;
+         try {
+           const result = dispose();
+           observation.cleanup = { status: "PASS", result };
++          observation.disposition = batch.poisoned ? "POISONED" : "RELEASED";
+-          observation.disposition = "RELEASED";
+         } catch (error) {
+           observation.cleanup = { status: "FAIL", error };
++          observation.stopCauses.push("CLEANUP_FAILURE");
+           observation.disposition = "POISONED";
+           batch.poisoned = true;
++          // Presence is independent of the thrown value, including undefined.
++          if (!observation.primaryPresent) throw error;
+-          // Explicit status also preserves a primary throw of undefined.
+-          if (observation.primary.status !== "FAIL") throw error;
+         }
+       }
+     },
+--- origins/r01-harness.ts.source
++++ candidates/harness.ts.source
+@@ -1,8 +1,8 @@
+ import {afterAll,it,type TestContext} from "vitest";
+ import fs from "node:fs";
+ import path from "node:path";
++import {context,worldFor,type Profile,type Context} from "../../phy01-migration2-r01/src/fork";
++import type {Kind} from "../../phy01-migration2-r01/previous/src/geometry";
+-import {context,worldFor,type Profile,type Context} from "../src/fork";
+-import type {Kind} from "../previous/src/geometry";
+ const profile=process.env.PHY02_PROFILE as Profile,kind=process.env.PHY02_KIND as Kind;
+ export const active=context(profile,kind);
+ export const records:Record<string,unknown>[]=[];
+@@ -20,11 +20,11 @@
+   });
+ }
+ export function withWorld<T>(run:(world:ReturnType<typeof worldFor>)=>T,gravity:Parameters<typeof worldFor>[1]=0):T{
++  const world=worldFor(active,gravity);let primaryPresent=false;
++  try{return run(world);}catch(e){primaryPresent=true;throw e;}
+-  const world=worldFor(active,gravity);let primary:unknown;
+-  try{return run(world);}catch(e){primary=e;throw e;}
+   finally{
+     try{world.free();if(current)current.cleanup="PASS";}
++    catch(cleanup){poisoned=true;if(current)current.cleanup={status:"FAIL",error:errorData(cleanup)};if(!primaryPresent)throw cleanup;}
+-    catch(cleanup){poisoned=true;if(current)current.cleanup={status:"FAIL",error:errorData(cleanup)};if(primary===undefined)throw cleanup;}
+   }
+ }
+ export function observe(values:Record<string,unknown>){if(current)Object.assign(current,values);}
+--- origins/r04-prepared18.ts.source
++++ candidates/prepared18.proposal.test.ts.source
+@@ -1,6 +1,6 @@
+ // SOURCE PREPARATION ONLY: NOT_RUN. Requires a separate execution disposition.
+ import {beforeAll,expect,it} from "vitest";
++import {prepareCase,type CaseObservation} from "./observer";
+-import {prepareCase,type CaseObservation} from "../source/observer.ts";
+ const disposableBatch={poisoned:false};
+ export const cleanupObservations:CaseObservation[]=[];
+ import {Candidate,context,worldFor,installFixture,publish} from "../../phy01-migration2-r01/src/fork";
+--- origins/r03-original-six.ts.source
++++ candidates/original-six.proposal.test.ts.source
+@@ -4,7 +4,7 @@
+ import {stageEdit} from "../../activation-source-contract-r02/candidates/stageEdit";
+ import {fixture} from "../../phy01-migration2-r01/previous/src/fixtures";
+ import {worldRay} from "../../phy01-migration2-r01/previous/src/native";
++import {active,functional,observe,withWorld} from "./harness";
+-import {active,functional,observe,withWorld} from "../../phy01-migration2-r01/tests/harness";
+ beforeAll(()=>Candidate.init());
+ 
+ functional("dynamic staged recut preserves active state and detached disposal leaves no ghosts",()=>withWorld(w=>{
+--- origins/r05-native24-input.json
++++ candidates/NATIVE24_RECEIVER.proposal.json
+@@ -1,88 +1,71 @@
+ {
++  "schema": "phy02.native24.detached-receiver-source-candidate.r06",
++  "delivery": "A41/R06",
+-  "schema": "phy02.native24.immutable-source-input.r05",
+-  "delivery": "A40/R05",
+   "controller": "4c77ea1d",
++  "run": "c81bbb6a-e714-4932-8cb2-ec7be4f0e376",
+-  "run": "f5b094ee-5537-468c-bc47-83198ed46379",
+   "dispatch": {
++    "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/artifacts/hestia-cloud-orchestration-2026-10-09/dispatch/SIX_STATIC_CANDIDATE_FOLLOWUPS_A41_R06_INPUT.json",
++    "bytes": 38300,
++    "sha256": "19ae16607e836a723071c634e39fa563271d9ec6892b8b7d161eebcea8b38c27"
+-    "bytes": 51264,
+-    "sha256": "4098194e2a03d57ab9e154954080e13083d4d110de9d6107e365f02885cca731",
+-    "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/artifacts/hestia-cloud-orchestration-2026-10-09/dispatch/SIX_SEPARATED_SOURCE_FOLLOWUPS_A40_R05_INPUT.json"
+   },
+   "ownTask": {
+-    "scope": "spikes/phy-02-collider-bakeoff/revisions/activation-native24-source-freeze-r05",
+-    "objective": "Finish one immutable Native24 SOURCE_ONLY input from the existing R03 actual descriptor/fixture/vendor/profile/import data and R04 cleanup observer/observed prepared18 overlay. Bind the actual original6 and prepared18 selected cases, both profiles, Fixture/WASM/vendor99, compiler evidence, observer and raw histories as one explicit input and receiver contract. Trace mature withWorld acquisition/body/observation/release boundary; keep independently missing actual trap/heap/acquisition proof explicit.",
+-    "execution": "FS/JSON/SHA and read-only Git metadata only, with source read as data. NO Node task/helper/compiler/test/sealer programme, imports, Native/Rapier/WASM setup, mock repeat or source emit. Reuse exact R04 observer and overlay; no new runner or independent cleanup engine. New immutable manifest/input/docs only, no original source/assertion/config/descriptor rewrite. Bind existing strictTSC0/mock5 as old distinct evidence, never re-label as Native24.",
+-    "stop": "Do not enable receiver/grants or run18/6native cases. Preserve192/146PASS46FAIL/6SleepFAIL/40open. If authentic resources/ownership contract missing, declare PARTIAL/BLOCKED rather than fake recovery. SOURCE_ONLY_NOT_SLOT_READY_NO_GRANTS; STOP after handoff.",
+-    "wt": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09",
+     "taskId": "PHY-02",
+     "agentId": "74e93d81-2bb6-464d-a1f6-62e53295f811",
+     "nativeId": "01a12002-e670-70b0-bfe4-8ffe1a688bd5",
+     "createdThreadHint": "codex://threads/01a12002-e670-70b0-bfe4-8ffe1a688bd5",
++    "wt": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09",
++    "branch": "feature/phy-02-2026-10-09",
++    "base": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+     "model": "gpt-6.1-sol",
+     "thinking": "ultra",
++    "scope": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-trap-primary-source-candidate-r06",
++    "objective": "Bereite einen minimalen detached Source-Kandidaten im vorhandenen Cleanup-Observer/24-Fall-Receiver für die zwei konkret belegten Kontrolllücken vor: Primary wurde als undefined geworfen und prepared18 NativeTrap bei erfolgreichem free muss trotzdem stop/poison anzeigen. Acquisition/Heap/Output bleiben getrennt offen; keine Native24-Ausführung.",
++    "steps": [
++      "Prüfe den R05-NATIVE24_INPUT und tatsächlichen R04/R03-Observer-/Aufrufgraph als bytegebundene Source. Alte Quellen, sechs SleepFAIL, Profile, Fixture/vendor99/WASM/nativeParry und Raw bleiben unverändert.",
++      "In separaten Kopien des bestehenden Observers/Receivers kleinste Änderung vorgeschlagen: Primary presence als boolean unabhängig vom Wert (auch undefined), genau eine Freigabe, body-nativeTrap und cleanupFailure als getrennte Stop-/Poisonursachen. NativeTrap-Erkennung an tatsächlichem vorhandenem Vertragswert binden; wenn kein definierter Wert/Classifier existiert, diesen Teil als UNAPPLIED Proposal/BLOCKED dokumentieren statt erfundenem TestPASS.",
++      "Bereite gezielte neue Regression-Sources für success, body-undefined, body-failure/free-success, NativeTrap/free-success, cleanup-failure, primary+cleanup-failure und unzulässige Wiederverwendung vor. Kein Mock/Test/Node/TS/Build/Loader oder Native starten.",
++      "Exakter Diff, alter Kontext, Kandidat/Case-IDs/Receiverfelder/Importgraph/OriginCopies und fehlende Acquisition/Heap/Outputverträge bindbar liefern. Native24NOT_SLOT_READY/NO_GRANTS, 192/146PASS46FAIL und 40 Mechanismen unverändert.",
++      "Datei-/JSON-/SHA-/Gitkontrolle, endlicher Handoff, STOP."
++    ],
++    "execution": "NOT_AUTHORIZED_IN_A41_FS_JSON_SHA_AND_READ_ONLY_GIT_ONLY",
++    "stop": "FINITE_HANDOFF_REGISTER_ONLY_THEN_STOP_NO_SELF_FOLLOWUP",
+-    "branch": "feature/phy-02-2026-10-09",
+-    "base": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+     "inputRows": [
+       {
++        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-native24-source-freeze-r05/HANDOFF.md",
++        "bytes": 1922,
++        "sha256": "4c45c26e8825e873d921a68892deadf9da3918e8d570b700eb6974d5cd9aca47"
+-        "task": "PHY-02",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-cleanup-observer-source-r04/HANDOFF.md",
+-        "bytes": 2043,
+-        "sha256": "950ffae16e969a1abaf6367a8377e5e56ce70e7d0bbf1717e75d24da990a7a4e"
+       },
+       {
++        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-native24-source-freeze-r05/receipt.json",
++        "bytes": 41317,
++        "sha256": "faa22d9ac94a8245e180da1dab4ce070b51de0a3d1f73f734f19ebef0b8e89df"
+-        "task": "PHY-02",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-cleanup-observer-source-r04/receipt.json",
+-        "bytes": 34166,
+-        "sha256": "e0d576a997e4b619d8f9d400d53f8b877a25497f5768ebff855e164964aa7e78"
+       },
+       {
++        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-native24-source-freeze-r05/manifest.json",
++        "bytes": 3377,
++        "sha256": "635f8a4fb0c30fd195c1f109fd39dfd0f77272af15018d8596d2dab230b881b1"
+-        "task": "PHY-02",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-cleanup-observer-source-r04/manifest.json",
+-        "bytes": 8003,
+-        "sha256": "fdf2d8b857ef0e94979e7ab299565126a3bf28e70b6d08ca2513a842fee5a8a5"
+       },
+       {
++        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-native24-source-freeze-r05/seal.json",
++        "bytes": 6527,
++        "sha256": "58a3ea276f051d6f8493f71016e3699ac009b066092c12b7f347da43970ec20a"
+-        "task": "PHY-02",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-cleanup-observer-source-r04/seal.json",
+-        "bytes": 11688,
+-        "sha256": "62349f0a03dd2b953c81c171eb30dcffc048ef1c94085f223634e13f68f8e98c"
+       },
+       {
++        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-native24-source-freeze-r05/NATIVE24_INPUT.json",
++        "bytes": 180888,
++        "sha256": "18e5570a7e6078d0916a87132e84fb78557261b15798c2416adb7819f6b39486"
+-        "task": "PHY-02",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-cleanup-observer-source-r04/source/observer.ts",
+-        "bytes": 1784,
+-        "sha256": "8e168b390663f3b952f448e8673ee78ba17e3a3de79db1e35c51a0f1900d2609"
+-      },
+-      {
+-        "task": "PHY-02",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-cleanup-observer-source-r04/descriptor.json",
+-        "bytes": 19576,
+-        "sha256": "c2623cf32e6483cccd2109a2dfdbcbb75091d19d5fca69d4d40320f3c2c02f6e"
+-      },
+-      {
+-        "task": "ROOT",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/artifacts/hestia-cloud-orchestration-2026-10-09/handoffs/FIVE_SOURCE_COMPLETIONS_A39_R04_ROOT_REGISTER.json",
+-        "bytes": 42164,
+-        "sha256": "66ed26565cd639f47c0c683a98a27238aaa6685cdb2863c255a77e54de72f258"
+-      },
+-      {
+-        "task": "ROOT",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/artifacts/hestia-cloud-orchestration-2026-10-09/handoffs/GFX03_R05_CPU_SOURCE_ROOT_REGISTER.json",
+-        "bytes": 4989,
+-        "sha256": "d97f0129e83229b6041320c0b634840809e057d485c8205d3cc74544661d30b6"
+-      },
+-      {
+-        "task": "ROOT",
+-        "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/artifacts/hestia-cloud-orchestration-2026-10-09/handoffs/SIX_SOURCE_COMPLETIONS_A39_R04_REGISTRY_VERIFICATION.json",
+-        "bytes": 2413,
+-        "sha256": "4d668018fd83207353d146ca73c2fa49271c4fc46f472668d1567909dcf51e79"
+       }
++    ],
++    "rootRegister": {
++      "path": "C:/IFI_SourceCode/Temp/WeltraumSpiel/artifacts/hestia-cloud-orchestration-2026-10-09/handoffs/FOUR_SOURCE_COMPLETIONS_A40_R05_ROOT_REGISTER.json",
++      "bytes": 34927,
++      "sha256": "d755c9c019cd99496535588956c668b52d8ad1a238302e7a7a9d6b271edbc6b7"
++    }
+-    ]
+   },
+   "worktree": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09",
+   "branch": "feature/phy-02-2026-10-09",
+   "head": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
++  "boundedStatus": "UNAPPLIED_PROPOSAL",
+-  "boundedStatus": "COMPLETE",
+   "evidenceClass": "SOURCE_ONLY",
+   "receiverStatus": "SOURCE_ONLY_NOT_SLOT_READY_NO_GRANTS",
+   "wholeCard": "PARTIAL_UNPROVEN",
+@@ -97,8 +80,8 @@
+     "grants": "NO_GRANTS",
+     "selection": "24 exact source descriptors below; actual discovery unqualified",
+     "observationOutputOwner": "MISSING_NOT_SELECTED",
++    "ownership": "Detached copies of existing observer/harness; UNAPPLIED. Original source ownership remains unchanged.",
++    "missingAuthenticContracts": "Acquisition/partial constructor, heap/output, native classification/use-time proof remain missing; two control gaps have detached source proposals only",
+-    "ownership": "Original6 existing functional/withWorld; Prepared18 exact unchanged R04 observer and overlay",
+-    "missingAuthenticContracts": "See missingProofs; no trap/acquisition/heap recovery invented",
+     "consumeRule": "Reject byte/member drift; no moving source or vanilla21 substitute; any native use requires new explicit disposition"
+   },
+   "candidate": {
+@@ -377,9 +360,9 @@
+   },
+   "sourceRefs": {
+     "original6": {
++      "path": "spikes/phy-02-collider-bakeoff/revisions/activation-trap-primary-source-candidate-r06/candidates/original-six.proposal.test.ts.source",
++      "bytes": 2335,
++      "sha256": "bd3237cfe6fc05e758181e07d24e86903f217d32548d4782a37870258a257854"
+-      "path": "spikes/phy-02-collider-bakeoff/revisions/activation-runner-input-source-r03/overlays/original-six.proposal.test.ts.source",
+-      "bytes": 2366,
+-      "sha256": "119ddcfccf532f3a6d14ccf29b3e14726928430fdb0b3622c700eda26a98637b"
+     },
+     "originalCallback": {
+       "path": "spikes/phy-02-collider-bakeoff/revisions/activation-runner-input-source-r03/overlays/original-six.callback.ts.source",
+@@ -387,19 +370,19 @@
+       "sha256": "cf3c6e3adddca9fec5932eb058688ac5cab8a3fb0dfbabada6961c0f4ac10d60"
+     },
+     "prepared18": {
++      "path": "spikes/phy-02-collider-bakeoff/revisions/activation-trap-primary-source-candidate-r06/candidates/prepared18.proposal.test.ts.source",
++      "bytes": 2931,
++      "sha256": "449825ef24d3da62236b0858669b0e531d7290c2821be06eb7653ce03a960938"
+-      "path": "spikes/phy-02-collider-bakeoff/revisions/activation-cleanup-observer-source-r04/overlays/prepared18.observed.proposal.test.ts.source",
+-      "bytes": 2942,
+-      "sha256": "328a4abb4f371f983700058dbc37b7f677c4f9060940bc089eb85fd63128ae01"
+     },
+     "observer": {
++      "path": "spikes/phy-02-collider-bakeoff/revisions/activation-trap-primary-source-candidate-r06/candidates/observer.ts.source",
++      "bytes": 2227,
++      "sha256": "cc82e9a171989942326395a22c9a56fa464cbd6a2259e0e57e7801025bd75df8"
+-      "path": "spikes/phy-02-collider-bakeoff/revisions/activation-cleanup-observer-source-r04/source/observer.ts",
+-      "bytes": 1784,
+-      "sha256": "8e168b390663f3b952f448e8673ee78ba17e3a3de79db1e35c51a0f1900d2609"
+     },
+     "harness": {
++      "path": "spikes/phy-02-collider-bakeoff/revisions/activation-trap-primary-source-candidate-r06/candidates/harness.ts.source",
++      "bytes": 2808,
++      "sha256": "af7ff541144252a4ae1ddf477ad3b907ce08e2a08eb86db01f6427acd4c264c5"
+-      "path": "spikes/phy-02-collider-bakeoff/revisions/phy01-migration2-r01/tests/harness.ts",
+-      "bytes": 2749,
+-      "sha256": "670a586672b7dbe6d024b679178fb7458e3e873fae910dd6caaf9139a08aa2cd"
+     },
+     "stageEdit": {
+       "path": "spikes/phy-02-collider-bakeoff/revisions/activation-source-contract-r02/candidates/stageEdit.ts",
+@@ -4001,7 +3984,8 @@
+     ],
+     "noFullForeignOrProductFreeze": true,
+     "shaderScope": "No shader/renderer bytes consumed/written; only Git XY preserved outside declared files",
++    "buildScope": "Selected frozen dist/raw/import files only; no all-build/currentA0build claim",
++    "scope": "UNCHANGED_R05_FROZEN_BASE_ONLY; candidate/origin/receiver/regression bytes separately bound by R06 manifest"
+-    "buildScope": "Selected frozen dist/raw/import files only; no all-build/currentA0build claim"
+   },
+   "oldDistinctEvidence": {
+     "strictTscR04": {
+@@ -4085,9 +4069,11 @@
+     },
+     {
+       "id": "PREPARED18_TRAP_STOP",
++      "status": "DETACHED_UNAPPLIED_SOURCE_CANDIDATE_ONLY_ORIGINALS_UNCHANGED",
+-      "status": "MISSING_SOURCE_WIRING",
+       "source": "Observer poisons only on cleanupFAIL; prepared18 it has no original functional RuntimeError gate",
++      "gap": "Native body trap plus freePASS leaves batch unpoisoned; authentic trap-stop/caller integration absent",
++      "actualRuntimeProof": "NOT_RUN",
++      "oldGapRetained": true
+-      "gap": "Native body trap plus freePASS leaves batch unpoisoned; authentic trap-stop/caller integration absent"
+     },
+     {
+       "id": "NATIVE_RELEASE_HEAP",
+@@ -4096,9 +4082,11 @@
+     },
+     {
+       "id": "ORIGINAL6_UNDEFINED_PRIMARY",
++      "status": "DETACHED_UNAPPLIED_SOURCE_CANDIDATE_ONLY_ORIGINALS_UNCHANGED",
+-      "status": "RETAINED_SOURCE_LIMIT",
+       "source": "harness27 primary===undefined sentinel",
++      "gap": "Old helper can mask thrown-undefined primary if free also throws; R04 explicit FAIL tag fixes only its own unchanged observer proposal",
++      "actualRuntimeProof": "NOT_RUN",
++      "oldGapRetained": true
+-      "gap": "Old helper can mask thrown-undefined primary if free also throws; R04 explicit FAIL tag fixes only its own unchanged observer proposal"
+     },
+     {
+       "id": "RECEIVER_RUNTIME",
+@@ -4290,5 +4278,59 @@
+     "notifyOnFinish": true,
+     "registerOnly": true,
+     "STOP_AFTER_HANDOFF": true
++  },
++  "reviewCandidate": {
++    "status": "DETACHED_UNAPPLIED_NOT_COMPILED_NOT_TESTED",
++    "writeRoot": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-PHY-02-2026-10-09/spikes/phy-02-collider-bakeoff/revisions/activation-trap-primary-source-candidate-r06",
++    "logicalModuleMapping": "Physical .ts.source candidate files have logical .ts review names only; no materialization/loader/resolver created",
++    "classifier": {
++      "expression": "error instanceof WebAssembly.RuntimeError",
++      "meaning": "ACTUAL_FROZEN_SOURCE_VALUE_PREDICATE_NOT_EXECUTED; runtime/cross-realm classification still unproven",
++      "line": 18,
++      "origin": {
++        "path": "spikes/phy-02-collider-bakeoff/revisions/phy01-migration2-r01/tests/harness.ts",
++        "bytes": 2749,
++        "sha256": "670a586672b7dbe6d024b679178fb7458e3e873fae910dd6caaf9139a08aa2cd"
++      }
++    },
++    "primaryPresence": {
++      "prepared18": "proposed observation.primaryPresent boolean; old R04 already preserved undefined via status tag",
++      "original6": "withWorld local primaryPresent boolean replaces undefined sentinel in detached harness only"
++    },
++    "stopCauses": {
++      "prepared18": [
++        "BODY_NATIVE_TRAP",
++        "CLEANUP_FAILURE"
++      ],
++      "original6": "Existing functional RuntimeError poison plus withWorld cleanup poison/independent raw primary+cleanup retained"
++    },
++    "proposedObservationFields": [
++      "caseId",
++      "primary",
++      "primaryPresent",
++      "cleanup",
++      "stopCauses",
++      "releaseAttempts",
++      "disposition"
++    ],
++    "originalAssertionsProfilesFixturesRawChanged": 0,
++    "selectedSourceCaseIDsChanged": 0,
++    "regressionSource": "regressions/trap-primary.proposal.test.ts.source",
++    "regressionIds": [
++      "R06-SRC-01",
++      "R06-SRC-02",
++      "R06-SRC-03",
++      "R06-SRC-04",
++      "R06-SRC-05",
++      "R06-SRC-06",
++      "R06-SRC-07",
++      "R06-SRC-08",
++      "R06-SRC-09"
++    ],
++    "regressionStatus": "NOT_RUN_SYNTHETIC_SOURCE_ONLY_NOT_NATIVE",
++    "ambientTypeAndActualNativeClassifier": "NOT_CHECKED_NOT_RUN; existing harness predicate reused without invented tags/messages; native/cross-realm matches require later proof",
++    "noNewCleanupEngine": true,
++    "acquisitionHeapOutput": "OPEN_UNPROVEN",
++    "native24": "NOT_SLOT_READY_NO_GRANTS_NOT_RUN"
+   }
+ }
+--- /dev/null
++++ regressions/trap-primary.proposal.test.ts.source
+@@ -0,0 +1,82 @@
++// UNAPPLIED SOURCE PROPOSAL / NOT_RUN. Synthetic callbacks; no Candidate.init/World/Rapier imports.
++import {expect,it} from "vitest";
++import {prepareCase} from "../candidates/observer";
++
++function exercise(id:string,mode:"PASS"|"FAIL"|"UNDEFINED"|"NATIVE_TRAP",freeFails=false){
++  const batch={poisoned:false};
++  const primary=mode==="UNDEFINED"?undefined:mode==="NATIVE_TRAP"?new WebAssembly.RuntimeError("source-only sentinel"):{sentinel:"primary"};
++  const cleanup={sentinel:"cleanup"},result={sentinel:"result"};
++  const owned=prepareCase(batch,id),next=prepareCase(batch,id+"/next");
++  let bodyCalls=0,freeCalls=0,caught=false,thrown:unknown,returned:unknown;
++  try{returned=owned.run(()=>{bodyCalls++;if(mode!=="PASS")throw primary;return result;},()=>{freeCalls++;if(freeFails)throw cleanup;});}
++  catch(error){caught=true;thrown=error;}
++  return {batch,primary,cleanup,result,owned,next,bodyCalls,freeCalls,caught,thrown,returned};
++}
++
++it("R06-SRC-01 success: one release and unchanged return",()=>{
++  const r=exercise("R06-SRC-01","PASS");
++  expect(r.returned).toBe(r.result);expect(r.caught).toBe(false);
++  expect(r.owned.observation.primaryPresent).toBe(false);
++  expect(r.owned.observation.cleanup.status).toBe("PASS");
++  expect(r.owned.observation.releaseAttempts).toBe(1);expect(r.freeCalls).toBe(1);
++  expect(r.owned.observation.stopCauses).toEqual([]);expect(r.batch.poisoned).toBe(false);
++});
++it("R06-SRC-02 body undefined/free success: explicit presence",()=>{
++  const r=exercise("R06-SRC-02","UNDEFINED");
++  expect(r.caught).toBe(true);expect(r.thrown).toBeUndefined();
++  expect(r.owned.observation.primaryPresent).toBe(true);
++  expect(r.owned.observation.primary).toEqual({status:"FAIL",error:undefined});
++  expect(r.owned.observation.cleanup.status).toBe("PASS");expect(r.freeCalls).toBe(1);
++});
++it("R06-SRC-03 body undefined/free failure: undefined remains original primary",()=>{
++  const r=exercise("R06-SRC-03","UNDEFINED",true);
++  expect(r.caught).toBe(true);expect(r.thrown).toBeUndefined();
++  expect(r.owned.observation.primaryPresent).toBe(true);
++  expect(r.owned.observation.cleanup).toEqual({status:"FAIL",error:r.cleanup});
++  expect(r.owned.observation.stopCauses).toEqual(["CLEANUP_FAILURE"]);
++  expect(r.freeCalls).toBe(1);expect(r.batch.poisoned).toBe(true);
++});
++it("R06-SRC-04 ordinary body failure/free success: original identity",()=>{
++  const r=exercise("R06-SRC-04","FAIL");
++  expect(r.caught).toBe(true);expect(r.thrown).toBe(r.primary);
++  expect(r.owned.observation.primaryPresent).toBe(true);
++  expect(r.owned.observation.cleanup.status).toBe("PASS");
++  expect(r.owned.observation.stopCauses).toEqual([]);expect(r.batch.poisoned).toBe(false);
++  expect(r.bodyCalls).toBe(1);expect(r.freeCalls).toBe(1);
++});
++it("R06-SRC-05 existing RuntimeError contract/free success: poison and no next body",()=>{
++  const r=exercise("R06-SRC-05","NATIVE_TRAP");
++  expect(r.thrown).toBe(r.primary);expect(r.owned.observation.cleanup.status).toBe("PASS");
++  expect(r.owned.observation.stopCauses).toEqual(["BODY_NATIVE_TRAP"]);
++  expect(r.owned.observation.disposition).toBe("POISONED");expect(r.batch.poisoned).toBe(true);
++  let laterCalls=0;expect(()=>r.next.run(()=>{laterCalls++;},()=>{laterCalls++;})).toThrow();
++  expect(laterCalls).toBe(0);expect(r.next.observation.releaseAttempts).toBe(0);
++  expect(()=>prepareCase(r.batch,"fresh")).toThrow();expect(r.freeCalls).toBe(1);
++});
++it("R06-SRC-06 body success/free failure: cleanup identity and independent cause",()=>{
++  const r=exercise("R06-SRC-06","PASS",true);
++  expect(r.caught).toBe(true);expect(r.thrown).toBe(r.cleanup);
++  expect(r.owned.observation.primaryPresent).toBe(false);
++  expect(r.owned.observation.primary).toEqual({status:"PASS",result:r.result});
++  expect(r.owned.observation.stopCauses).toEqual(["CLEANUP_FAILURE"]);expect(r.freeCalls).toBe(1);
++});
++it("R06-SRC-07 primary plus cleanup failure: primary wins, cleanup retained",()=>{
++  const r=exercise("R06-SRC-07","FAIL",true);
++  expect(r.thrown).toBe(r.primary);
++  expect(r.owned.observation.primary).toEqual({status:"FAIL",error:r.primary});
++  expect(r.owned.observation.cleanup).toEqual({status:"FAIL",error:r.cleanup});
++  expect(r.owned.observation.stopCauses).toEqual(["CLEANUP_FAILURE"]);expect(r.freeCalls).toBe(1);
++});
++it("R06-SRC-08 body trap plus cleanup failure: two separate causes",()=>{
++  const r=exercise("R06-SRC-08","NATIVE_TRAP",true);
++  expect(r.thrown).toBe(r.primary);
++  expect(r.owned.observation.cleanup).toEqual({status:"FAIL",error:r.cleanup});
++  expect(r.owned.observation.stopCauses).toEqual(["BODY_NATIVE_TRAP","CLEANUP_FAILURE"]);
++  expect(r.owned.observation.disposition).toBe("POISONED");expect(r.freeCalls).toBe(1);
++});
++it("R06-SRC-09 consumed case cannot rerun body or disposer",()=>{
++  const r=exercise("R06-SRC-09","PASS");
++  let calls=0;expect(()=>r.owned.run(()=>{calls++;},()=>{calls++;})).toThrow();
++  expect(calls).toBe(0);expect(r.owned.observation.releaseAttempts).toBe(1);
++  expect(r.owned.observation.primaryPresent).toBe(false);expect(r.freeCalls).toBe(1);
++});

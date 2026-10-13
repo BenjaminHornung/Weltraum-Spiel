@@ -264,6 +264,7 @@ it.each([
         const collider=part.body.collider(i),half=collider.halfExtents(),center=collider.translation();
         expect(collider.parent()).toBe(part.body);
         expect(collider.shapeType()).toBe(R.ShapeType.Cuboid);
+        if (half === null) { throw new Error("Cuboid must expose actual half extents"); }
         const q=collider.rotation(),parent=stage.parentPose.rotation;
         expect(Math.abs(q.x*parent.x+q.y*parent.y+q.z*parent.z+q.w*parent.w)).toBeCloseTo(1,6);
         const localCenter=rotate(inverse,{x:center.x-sourceOrigin.x,y:center.y-sourceOrigin.y,z:center.z-sourceOrigin.z});

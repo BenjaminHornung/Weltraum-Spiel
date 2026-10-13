@@ -1,0 +1,25 @@
+[package]
+name = "phy04-nexus-browser"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[workspace]
+
+[dependencies]
+nexus_rbd3d = { version = "=0.6.0", path = "../upstream/source/nexus-7c94a9664ddd6468de892c2bad6f56db8f992ed7/crates/nexus_rbd3d" }
+khal = { version = "=0.4.0", path = "../upstream/source/khal-57ad7b6badd5bbdaa59462de282847abe8080912/crates/khal", features = ["derive","webgpu"] }
+wasm-bindgen = "=0.2.129"
+wasm-bindgen-futures = "=0.4.79"
+web-time = "=1.1.0"
+
+[patch.crates-io]
+khal = { path = "../upstream/source/khal-57ad7b6badd5bbdaa59462de282847abe8080912/crates/khal" }
+khal-derive = { path = "../upstream/source/khal-57ad7b6badd5bbdaa59462de282847abe8080912/crates/khal-derive" }
+khal-std = { path = "../upstream/source/khal-57ad7b6badd5bbdaa59462de282847abe8080912/crates/khal-std" }
+khal-builder = { path = "../upstream/source/khal-57ad7b6badd5bbdaa59462de282847abe8080912/crates/khal-builder" }
+vortx = { path = "../upstream/source/vortx-e7b9add21702a2656d7c39dbd848d33157e51b17" }
+vortx-shaders = { path = "../upstream/source/vortx-e7b9add21702a2656d7c39dbd848d33157e51b17/vortx-shaders" }

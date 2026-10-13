@@ -1,0 +1,163 @@
+diff --git a/spikes/rt-02b-dda/src/gpu.mts b/spikes/rt-02b-dda/src/gpu.mts
+--- a/spikes/rt-02b-dda/src/gpu.mts
++++ b/spikes/rt-02b-dda/src/gpu.mts
+@@ -4,21 +4,24 @@
+ import {validateUpload} from './sparse.mts';
+ import {admitAdapter} from '../imported/gfx03/src/capability.mjs';
+ import {primitiveHit} from './port.mts';
+-export const GPU_DISTANCE_TOLERANCE=1e-5; // f32 grid-relative functional tolerance; original f64 goldens remain unchanged.
+-export function requiredLimits(s:SparseVolume,rayCount:number,mode:Mode){
+- if(!Number.isSafeInteger(rayCount)||rayCount<1||rayCount>4096)throw new Error('Finite GPU profile requires 1..4096 rays');
+- const u=s.upload(mode);validateUpload(u);
+- const max=Math.max(u.pages.byteLength,u.roots.byteLength,u.materials.byteLength,u.metadata.byteLength,rayCount*64);
+- return {maxStorageBufferBindingSize:max,maxBufferSize:max,maxStorageBuffersPerShaderStage:6,maxComputeInvocationsPerWorkgroup:64,maxComputeWorkgroupSizeX:64,maxComputeWorkgroupsPerDimension:Math.ceil(rayCount/64)};
+-}
+-export function admission(adapter:GPUAdapter|null,s:SparseVolume,rayCount:number,mode:Mode){return admitAdapter(adapter,[],requiredLimits(s,rayCount,mode));}
+-export function packRays(s:SparseVolume,rays:readonly Ray[],strict:boolean){
+- if(new Set(rays.map(r=>r.id)).size!==rays.length)throw new Error('Duplicate ray identity');
+- const data=new ArrayBuffer(rays.length*48),view=new DataView(data),frame=s.spatial;
+- rays.forEach((ray,i)=>{if(ray.maxSteps>0xffffffff)throw new RangeError('GPU maxSteps must fit u32');
+-  const local=s.localRay(ray),o=local.origin.map((n,a)=>(n-frame.origin[a]!)/frame.cellMeters),d=local.direction.map(n=>n/frame.cellMeters);
+-  // shortcut: finite local volume rays only; preclip farther rays in an owner-bound f64 port before extending this GPU contract.
+-  if([...o,...d,ray.maxDistance].some(n=>!Number.isFinite(n)||Math.abs(n)>65536))throw new RangeError('GPU relative-frame precision envelope exceeded');
++import {assessGpuTrialDomain,GpuQueryUnsupported} from './eligibility.mts';
++export const GPU_DISTANCE_TOLERANCE=1e-5; // f32 grid-relative functional tolerance; original f64 goldens remain unchanged.
++export function requiredLimits(s:SparseVolume,rayCount:number,mode:Mode){
++ if(!Number.isSafeInteger(rayCount)||rayCount<1||rayCount>4096)throw new Error('Finite GPU profile requires 1..4096 rays');
++ const u=s.upload(mode);validateUpload(u);
++ const max=Math.max(u.pages.byteLength,u.roots.byteLength,u.materials.byteLength,u.metadata.byteLength,rayCount*64);
++ return {maxStorageBufferBindingSize:max,maxBufferSize:max,maxStorageBuffersPerShaderStage:6,maxComputeInvocationsPerWorkgroup:64,maxComputeWorkgroupSizeX:64,maxComputeWorkgroupsPerDimension:Math.ceil(rayCount/64)};
++}
++export function admission(adapter:GPUAdapter|null,s:SparseVolume,rayCount:number,mode:Mode){return admitAdapter(adapter,[],requiredLimits(s,rayCount,mode));}
++export function packRays(s:SparseVolume,rays:readonly Ray[],strict:boolean){
++ if(new Set(rays.map(r=>r.id)).size!==rays.length)throw new Error('Duplicate ray identity');
++ const data=new ArrayBuffer(rays.length*48),view=new DataView(data),frame=s.spatial;
++ rays.forEach((ray,i)=>{if(ray.maxSteps>0xffffffff)throw new RangeError('GPU maxSteps must fit u32');
++  const local=s.localRay(ray),o=local.origin.map((n,a)=>(n-frame.origin[a]!)/frame.cellMeters),d=local.direction.map(n=>n/frame.cellMeters);
++  // shortcut: finite local volume rays only; preclip farther rays in an owner-bound f64 port before extending this GPU contract.
++  if([...o,...d,ray.maxDistance].some(n=>!Number.isFinite(n)||Math.abs(n)>65536))throw new RangeError('GPU relative-frame precision envelope exceeded');
++  const domain=assessGpuTrialDomain(s.size,frame.cellMeters,o,d,ray.maxDistance);
++  if(domain.status==='UNSUPPORTED')throw new GpuQueryUnsupported(ray.id,domain.reason);
+   o.forEach((n,a)=>view.setFloat32(i*48+a*4,n,true));view.setFloat32(i*48+12,ray.maxDistance,true);
+   d.forEach((n,a)=>view.setFloat32(i*48+16+a*4,n,true));view.setUint32(i*48+32,ray.maxSteps,true);view.setUint32(i*48+36,Number(strict),true);});
+  return data;
+diff --git a/spikes/rt-02b-dda/src/dda.wgsl b/spikes/rt-02b-dda/src/dda.wgsl
+--- a/spikes/rt-02b-dda/src/dda.wgsl
++++ b/spikes/rt-02b-dda/src/dda.wgsl
+@@ -42,30 +42,32 @@
+  var c=cell_at(o,d,t);var n=vec3<f32>(0);if(outside&&entry>0.0){n[entry_axis]=-sign(d[entry_axis]);}
+  var next=next_at(c,o,d);var visited=0u;let can_skip=ray.limits.x>=size.x+size.y+size.z+3u;
+  var last_root=0xffffffffu;var root_empty=false;var last_page=0xffffffffu;var page_code=0u;
+- for(var iteration=0u;iteration<256u;iteration++){
+-  if(any(c<vec3<i32>(0))||any(c>=vec3<i32>(size))){break;}
+-  var edge=1i;
+-  if(hierarchy&&can_skip){let root=linear(c/32,rs);if(root!=last_root){counts.y++;last_root=root;root_empty=roots[root]==0u;}if(root_empty){edge=32;}}
+-  if(edge==1){let pi=linear(c/8,ps);if(pi!=last_page){counts.x++;last_page=pi;page_code=pages[pi];}if(can_skip&&page_code==0u){edge=8;}}
+-  if(edge>1){
+-   var crossing=1e30;for(var a=0u;a<3u;a++){if(d[a]!=0.0){let lo=(c[a]/edge)*edge;let boundary=select(lo,min(i32(size[a]),lo+edge),d[a]>0.0);crossing=min(crossing,(f32(boundary)-o[a])/d[a]);}}
+-   counts.w++;if(crossing>=end-epsilon(crossing,end)){break;}t=crossing;c=cell_at(o,d,t);n=vec3<f32>(0);
+-   for(var a=0u;a<3u;a++){if(d[a]!=0.0){let incoming=f32(c[a])+select(0.0,1.0,d[a]<0.0);let nt=(incoming-o[a])/d[a];if(abs(nt-t)<=epsilon(nt,t)){n[a]=-sign(d[a]);break;}}}
+-   next=next_at(c,o,d);continue;
+-  }
+-  var slot=0u;if(page_code==1u){slot=255u;}else if(page_code>=2u){
+-   let local=c%8;let byte=(page_code-2u)*512u+linear(local,vec3<u32>(8u));slot=(materials[byte/4u]>>((byte%4u)*8u))&255u;}
+-  let crossing=min(next.x,min(next.y,next.z));
+-  if(min(crossing,end)-t>epsilon(min(crossing,end),t)){
+-   if(visited>=ray.limits.x){results[ri]=answer(3,c,n,t,0u,counts);return;}visited++;counts.z++;
+-   if(slot==255u){results[ri]=answer(2,c,n,t,0u,counts);return;}if(slot>0u){results[ri]=answer(1,c,n,t,slot,counts);return;}
+-  }
+-  if(crossing>=end-epsilon(crossing,end)){break;}n=vec3<f32>(0);var picked=false;
+-  for(var a=0u;a<3u;a++){if(d[a]!=0.0&&abs(next[a]-crossing)<=epsilon(next[a],crossing)){
+-   if(!picked){n[a]=-sign(d[a]);picked=true;}c[a]+=i32(sign(d[a]));next[a]+=1.0/abs(d[a]);}}
+-  t=crossing;
+-  if(iteration==255u){results[ri]=answer(3,c,n,t,0u,counts);return;}
+- }
++ var traversal_complete=false;
++ for(var iteration=0u;iteration<256u;iteration++){
++  if(any(c<vec3<i32>(0))||any(c>=vec3<i32>(size))){traversal_complete=true;break;}
++  var edge=1i;
++  if(hierarchy&&can_skip){let root=linear(c/32,rs);if(root!=last_root){counts.y++;last_root=root;root_empty=roots[root]==0u;}if(root_empty){edge=32;}}
++  if(edge==1){let pi=linear(c/8,ps);if(pi!=last_page){counts.x++;last_page=pi;page_code=pages[pi];}if(can_skip&&page_code==0u){edge=8;}}
++  if(edge>1){
++   var crossing=1e30;for(var a=0u;a<3u;a++){if(d[a]!=0.0){let lo=(c[a]/edge)*edge;let boundary=select(lo,min(i32(size[a]),lo+edge),d[a]>0.0);crossing=min(crossing,(f32(boundary)-o[a])/d[a]);}}
++   counts.w++;if(crossing>=end-epsilon(crossing,end)){traversal_complete=true;break;}t=crossing;c=cell_at(o,d,t);n=vec3<f32>(0);
++   for(var a=0u;a<3u;a++){if(d[a]!=0.0){let incoming=f32(c[a])+select(0.0,1.0,d[a]<0.0);let nt=(incoming-o[a])/d[a];if(abs(nt-t)<=epsilon(nt,t)){n[a]=-sign(d[a]);break;}}}
++   next=next_at(c,o,d);continue;
++  }
++  var slot=0u;if(page_code==1u){slot=255u;}else if(page_code>=2u){
++   let local=c%8;let byte=(page_code-2u)*512u+linear(local,vec3<u32>(8u));slot=(materials[byte/4u]>>((byte%4u)*8u))&255u;}
++  let crossing=min(next.x,min(next.y,next.z));
++  if(min(crossing,end)-t>epsilon(min(crossing,end),t)){
++   if(visited>=ray.limits.x){results[ri]=answer(3,c,n,t,0u,counts);return;}visited++;counts.z++;
++   if(slot==255u){results[ri]=answer(2,c,n,t,0u,counts);return;}if(slot>0u){results[ri]=answer(1,c,n,t,slot,counts);return;}
++  }
++  if(crossing>=end-epsilon(crossing,end)){traversal_complete=true;break;}n=vec3<f32>(0);var picked=false;
++  for(var a=0u;a<3u;a++){if(d[a]!=0.0&&abs(next[a]-crossing)<=epsilon(next[a],crossing)){
++   if(!picked){n[a]=-sign(d[a]);picked=true;}c[a]+=i32(sign(d[a]));next[a]+=1.0/abs(d[a]);}}
++  t=crossing;
++
++ }
++ if(!traversal_complete){results[ri]=answer(3,vec3<i32>(-1),vec3<f32>(0),clamp(t,0.0,radius),0u,counts);return;}
+  if(unknown&&exit<radius-epsilon(exit,radius)){results[ri]=answer(2,vec3<i32>(-1),vec3<f32>(0),max(0.0,exit),0u,counts);}
+  else if(strict&&exit>radius+epsilon(exit,radius)){results[ri]=answer(3,vec3<i32>(-1),vec3<f32>(0),radius,0u,counts);}
+  else{results[ri]=answer(0,vec3<i32>(-1),vec3<f32>(0),radius,0u,counts);}
+diff --git a/spikes/rt-02b-dda/browser-profile.mjs b/spikes/rt-02b-dda/browser-profile.mjs
+--- a/spikes/rt-02b-dda/browser-profile.mjs
++++ b/spikes/rt-02b-dda/browser-profile.mjs
+@@ -73,7 +73,7 @@
+    shader:{sha256:await digest(new TextEncoder().encode(source)),compilation:'PASS'},
+    hardware:{...hardware(),actualAdapter:{vendor:info.vendor||null,architecture:info.architecture||null,device:info.device||null,description:info.description||null},requestedLimits:limits,deviceLimits:Object.fromEntries(Object.keys(limits).map(k=>[k,device.limits[k]])),gpuMilliseconds:null}};
+   return result;
+- }catch(e){return {status:'FAIL',reason:String(e),checks:[...checks],groups,hardware:{...hardware(),actualAdapter:{vendor:info.vendor||null,architecture:info.architecture||null,device:info.device||null,description:info.description||null}},productIntegration:'NO'};}
++ }catch(e){return {status:e?.status==='UNSUPPORTED'?'UNSUPPORTED':'FAIL',reason:String(e),checks:[...checks],groups,hardware:{...hardware(),actualAdapter:{vendor:info.vendor||null,architecture:info.architecture||null,device:info.device||null,description:info.description||null}},productIntegration:'NO'};}
+  finally{backend?.dispose();input.volumes.forEach(s=>s.dispose());device?.destroy();}
+ }
+ window.RT02B={runCpu,runGpu};
+diff --git a/spikes/rt-02b-dda/src/eligibility.mts b/spikes/rt-02b-dda/src/eligibility.mts
+new file mode 100644
+--- /dev/null
++++ b/spikes/rt-02b-dda/src/eligibility.mts
+@@ -0,0 +1,43 @@
++// Source candidate only: deliberately bounded functional-trial domain, not GPU qualification.
++export type TrialDomain =
++  | { status: 'UNSUPPORTED'; reason: string }
++  | { status: 'ELIGIBLE_FOR_FUNCTIONAL_TRIAL'; shaderIterations: 256; cellIntervalBound: number; conservativeIterationBound: number };
++
++export function assessGpuTrialDomain(
++  size: readonly number[], cellMeters: number, gridOrigin: readonly number[],
++  gridDirection: readonly number[], maxDistance: number,
++): TrialDomain {
++  const unsupported = (reason: string): TrialDomain => ({ status: 'UNSUPPORTED', reason });
++  if (size.length !== 3 || !size.every(n => Number.isSafeInteger(n) && n > 0 && n <= 64))
++    return unsupported('GRID_OUTSIDE_BOUND_1_TO_64_PER_AXIS');
++  if (cellMeters !== 0.125 && cellMeters !== 0.25) return unsupported('UNBOUND_CELL_SIZE');
++  const sum = size.reduce((a, b) => a + b, 0);
++  if (sum + 3 > 256) return unsupported('UNPROVEN_SHADER_ITERATION_DOMAIN');
++  if (gridOrigin.length !== 3 || gridDirection.length !== 3
++    || ![...gridOrigin, ...gridDirection, maxDistance].every(Number.isFinite))
++    return unsupported('NONFINITE_OR_UNKNOWN_RELATIVE_FRAME');
++  if (gridOrigin.some(n => Math.abs(n) > 65536)) return unsupported('RELATIVE_FRAME_OUT_OF_BOUNDS');
++  // No quantization: reject values rather than move a ray or change a Golden.
++  if (gridOrigin.some(n => !Number.isSafeInteger(n * 16) || Math.fround(n) !== n))
++    return unsupported('NON_DYADIC_GRID_ORIGIN');
++  const active = gridDirection.filter(n => n !== 0);
++  if (active.length !== 1 || Math.abs(active[0]!) !== 1 / cellMeters)
++    return unsupported('NON_AXIAL_OR_UNPROVEN_TIE_DOMAIN');
++  if (maxDistance <= 0 || maxDistance > 65536
++    || !Number.isSafeInteger(maxDistance * 128) || Math.fround(maxDistance) !== maxDistance)
++    return unsupported('NON_DYADIC_DISTANCE_HORIZON');
++  return {
++    status: 'ELIGIBLE_FOR_FUNCTIONAL_TRIAL', shaderIterations: 256,
++    cellIntervalBound: sum - 2, conservativeIterationBound: sum + 3,
++  };
++}
++
++export class GpuQueryUnsupported extends Error {
++  readonly status = 'UNSUPPORTED';
++  readonly rayId: string;
++  readonly reason: string;
++  constructor(rayId: string, reason: string) {
++    super('Unsupported GPU query ' + rayId + ': ' + reason);
++    this.rayId = rayId; this.reason = reason;
++  }
++}

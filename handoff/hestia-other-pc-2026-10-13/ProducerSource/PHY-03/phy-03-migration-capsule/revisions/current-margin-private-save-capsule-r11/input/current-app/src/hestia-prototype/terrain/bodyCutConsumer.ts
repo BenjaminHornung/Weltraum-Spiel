@@ -1,0 +1,117 @@
+import type {HvpPhysicsClient} from "../physics/client";
+import type {HvpMovingCutRequest,HvpMovingCutPreparation} from "../physics/bodyCutSession";
+import type {HvpBodyCutProducts} from "../../workers/hvpBodyCutJob";
+import type {HvpStagedTerrain} from "./terrainConsumer";
+import {HvpRenderStageRecoveryError} from "../presentation/renderStageRecovery";
+import {decodeHvpReceipts,type HvpSimpleOutcome} from "../persistence/receiptCheckpoint";
+import type {HvpCutTrace} from "../runtime/cutTrace";
+
+/** The local worker does not pause or own a moving parent. Only the commit does. */
+export const createHvpBodyCutConsumer=(physics:Pick<HvpPhysicsClient,"read"|"command"|"beginBodyCut"|"stageBodyCut"|"commitBodyCut"|"publishBodyCut"
+  |"rollbackBodyCut"|"finalizeBodyCut">,compile:(source:HvpMovingCutPreparation)=>Promise<HvpBodyCutProducts>,
+  stage:(parentId:string,products:HvpBodyCutProducts)=>HvpStagedTerrain|Promise<HvpStagedTerrain>,traceInput?:HvpCutTrace,finishCompile?:(id:string)=>Promise<void>)=>{
+  let disposed=false,busy=false,held=false;
+  let trace=traceInput;
+  const emit=(id:string,phase:string,start?:number):number|undefined=>{
+    let now:number|undefined;
+    if(trace){try{now=performance.now();trace({commandId:id,thread:"main",phase,origin:performance.timeOrigin,
+      start:start??now,duration:start===undefined?0:now-start});}catch{/* Observation cannot change the command. */}}
+    return now;
+  };
+  let last:Readonly<{id:string;status:string;reason:string}>|null=null;
+  const receipts=new Map<string,{signature:string;promise:Promise<void>;outcome?:HvpSimpleOutcome}>();
+  let active:Promise<void>|undefined,cleanupId:string|undefined;
+  let cleanupRelease:Promise<void>|undefined;
+  return {
+    read:()=>Object.freeze({state:held?"RecoveryHold":busy?"Pending":"Idle",last,issued:receipts.size}),
+    checkpoint(){
+      if(busy||held||disposed){throw new Error("Moving commands are not at a save boundary");}
+      return decodeHvpReceipts({version:"hvp-command-receipts-v1",kind:"moving",
+        entries:[...receipts].map(([id,r])=>({id,signature:r.signature,outcome:r.outcome})),last},"moving");
+    },
+    restoreReceipts(value:unknown):void{
+      if(busy||held||disposed){throw new Error("Moving commands are not at a restore boundary");}
+      const saved=decodeHvpReceipts(value,"moving");receipts.clear();
+      for(const r of saved.entries){receipts.set(r.id,{signature:r.signature,promise:Promise.resolve(),outcome:r.outcome});}last=saved.last;
+    },
+    submit(input:HvpMovingCutRequest):Promise<void>{
+      if(!input||![input.id,input.ownerId,input.sourceDigest].every(v=>typeof v==="string"&&v.length>0&&v.length<=128)
+        ||(input.brush!==undefined&&input.brush!=="Box"&&input.brush!=="Sphere")
+        ||!input.direction||![input.direction.x,input.direction.y,input.direction.z].every(Number.isFinite)
+        ||Math.abs(Math.hypot(input.direction.x,input.direction.y,input.direction.z)-1)>1e-6||!Number.isSafeInteger(input.edge)||input.edge<1||input.edge>8){
+        return Promise.reject(new Error("Invalid moving intent"));
+      }
+      const request={id:input.id,ownerId:input.ownerId,sourceDigest:input.sourceDigest,edge:input.edge,direction:{x:input.direction.x,y:input.direction.y,z:input.direction.z},
+        ...(input.brush==="Sphere"?{brush:"Sphere" as const}:{})};
+      const signature=JSON.stringify(request),old=receipts.get(request.id);
+      if(old){return old.signature===signature?old.promise:Promise.reject(new Error("Moving command id conflict"));}
+      if(disposed||busy||held||receipts.size>=256){
+        const error=new Error(held?"RecoveryHold":"Moving cut Pending or disposed");
+        const submitted=emit(request.id,"cutBodySubmittedMs");
+        if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}
+        return Promise.reject(error);
+      }
+      busy=true;
+      const submitted=emit(request.id,"cutBodySubmittedMs");
+      const promise=(async()=>{
+        let begun=false,finished=false,render:HvpStagedTerrain|undefined,terminal:NonNullable<typeof last>|undefined;
+        try{
+          const source=await physics.beginBodyCut(request);begun=true;
+          if(finishCompile!==undefined){cleanupId=request.id;cleanupRelease=undefined;}
+          const products=await compile(source);
+          if(disposed){throw new Error("Moving preparation cancelled");}
+          render=await stage(request.ownerId,products); // New local geometry stays hidden.
+          if(disposed){throw new Error("Moving render staging cancelled");}
+          await physics.stageBodyCut(request.id,products); // Now hold CURRENT pose/motion.
+          if(disposed){throw new Error("Moving commit cancelled");}
+          await physics.commitBodyCut(request.id);
+          if(disposed){throw new Error("Moving publication cancelled");}
+          physics.publishBodyCut();render.publish();
+          await physics.finalizeBodyCut(request.id);finished=true;
+          render.finish();render=undefined;terminal=Object.freeze({id:request.id,status:"Applied",reason:"Current-pose fragment replacement"});
+          if(finishCompile===undefined){last=terminal;if(submitted!==undefined){emit(request.id,"cutBodyTotalAppliedMs",submitted);}}
+        }catch(error){
+          const renderRecovery=error instanceof HvpRenderStageRecoveryError;
+          let restored=!finished&&!renderRecovery;
+          if(renderRecovery){held=true;try{await physics.command("Pause");}catch{/* Cleanup cannot assert a running World is safe. */}}
+          if(!finished){
+            try{render?.rollback();}catch{restored=false;}
+            if(begun){try{await physics.rollbackBodyCut(request.id);}catch{restored=false;}}
+          }
+          try{if(physics.read().moving.state==="RecoveryHold"){restored=false;}}catch{restored=false;}
+          if(!restored){held=true;if(!renderRecovery){try{await physics.command("Pause");}catch{/* Never assert restoration without the World. */}}}
+          terminal=Object.freeze({id:request.id,status:held?"RecoveryHold":"Rejected",reason:String(error)});
+          if(finishCompile===undefined){last=terminal;if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}}
+        }finally{
+          if(finishCompile!==undefined&&!held&&cleanupId===request.id){
+            render=undefined;
+            const finish=finishCompile;
+            try{cleanupRelease??=Promise.resolve().then(()=>finish(request.id));await cleanupRelease;cleanupId=undefined;}
+            catch(error){const primary=terminal?.status==="Rejected"?`${terminal.reason}; `:"";
+              held=true;terminal=Object.freeze({id:request.id,status:"RecoveryHold",reason:`${primary}Mesh ownership release unproven: ${String(error)}`});
+              try{await physics.command("Pause");}catch{/* Failed release never proves restoration. */}}
+          }
+          if(finishCompile!==undefined&&terminal!==undefined){
+            last=terminal;if(submitted!==undefined){emit(request.id,`cutBodyTotal${terminal.status}Ms`,submitted);}
+          }
+          const receipt=receipts.get(request.id);if(receipt&&last){receipt.outcome=last;}busy=false;
+        }
+      })();
+      active=promise;void promise.then(()=>{if(active===promise){active=undefined;}},()=>{if(active===promise){active=undefined;}});
+      receipts.set(request.id,{signature,promise,...(!busy&&last?.id===request.id?{outcome:last}:{})});return promise;
+    },
+    disableTrace():void {trace=undefined;},
+    dispose():void {disposed=true;trace=undefined;},
+    whenIdle():Promise<void> {return active??Promise.resolve();},
+    /** Calling coordinator must first prove complete backend/render resource disposal. */
+    async releaseDisposedResources():Promise<void> {
+      if(!disposed||busy){throw new Error("Body mesh resource cleanup is not quiescent");}
+      if(cleanupId!==undefined&&finishCompile!==undefined){
+        const id=cleanupId,finish=finishCompile;
+        // Regular completion and Dispose share one terminal attempt, including its rejection.
+        cleanupRelease??=Promise.resolve().then(()=>finish(id));
+        await cleanupRelease;cleanupId=undefined;
+      }
+    }
+  };
+};

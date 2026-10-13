@@ -8,6 +8,8 @@ import body384 from "../fixtures/hvp-contact-r90-body384.json";
 import {decodeHvpColdBody,encodeHvpBody} from "../../src/hestia-prototype/persistence/bodyCheckpoint";
 import * as checkpoints from "../../src/hestia-prototype/persistence/bodyCheckpoint";
 import {restoreHvpBody} from "../../src/hestia-prototype/physics/restoreBody";
+import * as restore from "../../src/hestia-prototype/physics/restoreBody";
+import {StructuralPhysicsCommitError} from "../../src/voxel/structural/physicsCommit";
 import {createStructuralOwnerLedger,isOwnedStructuralGraph} from "../../src/voxel/structural/model";
 import * as model from "../../src/voxel/structural/model";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../src/voxel/adaptive";
@@ -176,3 +178,89 @@ it("retains a checkpoint and holds after an uncertain native removal instead of 
     expect(resident.held).toBe(true);expect(()=>resident.restore("rock")).toThrow(/RecoveryHold/);
   }finally{h.world.free();}
 });
+
+// A62: real .21 factories/world; prepared and typechecked, NOT_RUN until a separate Native disposition.
+for(const kind of ["null","undefined","ordinary","not-restored","getter","proxy"] as const){
+  it(`preserves parked custody and the original restore failure (${kind})`,()=>{
+    const h=setup(),resident=createHvpBodyResidency(h.world,h.targets,h.bodies,()=>true);
+    const reason=kind==="null"?null:kind==="undefined"?undefined:kind==="ordinary"?new Error("before install"):
+      kind==="not-restored"?new StructuralPhysicsCommitError("CommitFailed","test/restore","uncertain","create",false):
+      kind==="getter"?Object.defineProperty({},"worldRestored",{get(){throw new Error("metadata getter");}}):
+      new Proxy({},{get(){throw new Error("metadata proxy");}});
+    let failed=false,caught:unknown;
+    try{
+      h.body.sleep();expect(resident.park("rock",{x:30,y:0,z:0})).toBe(true);
+      const checkpoint=resident.checkpoint()[0],bodies=h.world.bodies.len(),colliders=h.world.colliders.len();
+      const spy=vi.spyOn(restore,"restoreHvpBody").mockImplementationOnce(()=>{throw reason;});
+      try{try{resident.restore("rock");}catch(error){failed=true;caught=error;}}finally{spy.mockRestore();}
+      expect(failed).toBe(true);expect(caught).toBe(reason);expect(resident.checkpoint()[0]).toBe(checkpoint);
+      expect(h.targets.has("rock")).toBe(false);expect(h.bodies.has("rock")).toBe(false);
+      expect(h.world.bodies.len()).toBe(bodies);expect(h.world.colliders.len()).toBe(colliders);
+      expect(resident.held).toBe(["not-restored","getter","proxy"].includes(kind));
+    }finally{resident.dispose();h.world.free();}
+  });
+}
+for(const kind of ["create-null","collider-undefined","cleanup-undefined","readback","coercion"] as const){
+  it(`uses the actual installer rollback and retains failure causes (${kind})`,()=>{
+    const h=setup(),before={bodies:h.world.bodies.len(),colliders:h.world.colliders.len()};
+    const primary=kind==="create-null"?null:kind==="collider-undefined"?undefined:kind==="coercion"?
+      {toString(){throw new Error("formatting");}}:new Error("create collider");
+    const secondary=kind==="cleanup-undefined"?undefined:new Error("readback");
+    const acquire=kind==="create-null"?vi.spyOn(h.world,"createRigidBody").mockImplementationOnce(()=>{throw primary;}):
+      vi.spyOn(h.world,"createCollider").mockImplementationOnce(()=>{throw primary;});
+    const remove=kind==="cleanup-undefined"?vi.spyOn(h.world,"removeRigidBody").mockImplementationOnce(()=>{throw secondary;}):undefined;
+    const len=h.world.bodies.len.bind(h.world.bodies);let reads=0;
+    const readback=kind==="readback"?vi.spyOn(h.world.bodies,"len").mockImplementation(()=>{
+      reads+=1;if(reads===2){throw secondary;}return len();
+    }):undefined;
+    try{
+      let caught:unknown;try{installHvpRigidBody(h.world,h.recipe);}catch(error){caught=error;}
+      expect(caught).toBeInstanceOf(StructuralPhysicsCommitError);
+      const error=caught as StructuralPhysicsCommitError,dual=kind==="cleanup-undefined"||kind==="readback";
+      expect(error.path).toBe("hvp/rigid-install");expect(error.phase).toBe("create");expect(error.worldRestored).toBe(!dual);
+      if(dual){expect(error.cause).toBeInstanceOf(AggregateError);expect((error.cause as AggregateError).errors).toEqual([primary,secondary]);}
+      else{expect(error.cause).toBe(primary);expect(h.world.bodies.len()).toBe(before.bodies);expect(h.world.colliders.len()).toBe(before.colliders);}
+    }finally{acquire.mockRestore();remove?.mockRestore();readback?.mockRestore();h.world.free();}
+  });
+}
+for(const publication of ["target","body"] as const){
+  for(const reason of [null,undefined]){
+    it(`holds after actual restored-body publication fails (${publication}/${String(reason)})`,()=>{
+      const h=setup(),resident=createHvpBodyResidency(h.world,h.targets,h.bodies,()=>true);
+      let failed=false,caught:unknown;
+      try{
+        h.body.sleep();expect(resident.park("rock",{x:30,y:0,z:0})).toBe(true);
+        const checkpoint=resident.checkpoint()[0],before=h.world.bodies.len();
+        const spy=publication==="target"?vi.spyOn(h.targets,"set").mockImplementationOnce(()=>{throw reason;}):
+          vi.spyOn(h.bodies,"set").mockImplementationOnce(()=>{throw reason;});
+        try{try{resident.restore("rock");}catch(error){failed=true;caught=error;}}finally{spy.mockRestore();}
+        expect(failed).toBe(true);expect(caught).toBe(reason);expect(resident.held).toBe(true);
+        expect(resident.checkpoint()[0]).toBe(checkpoint);expect(h.world.bodies.len()).toBe(before+1);
+        expect(h.targets.has("rock")).toBe(publication==="body");expect(h.bodies.has("rock")).toBe(false);
+        expect(()=>resident.restore("rock")).toThrow(/RecoveryHold/);
+      }finally{resident.dispose();h.world.free();}
+    });
+  }
+}
+for(const kind of ["surface-null","cleanup-undefined","readback","coercion"] as const){
+  it(`uses the actual saved-body rollback after install (${kind})`,()=>{
+    const h=setup(),saved=checkpoints.decodeHvpBody(encodeHvpBody("rock","terrain",h.recipe,h.body));
+    const before={bodies:h.world.bodies.len(),colliders:h.world.colliders.len()};
+    const primary=kind==="surface-null"?null:kind==="coercion"?{toString(){throw new Error("formatting");}}:new Error("surface");
+    const secondary=kind==="cleanup-undefined"?undefined:new Error("readback");
+    const surface=vi.spyOn(R.Collider.prototype,"setFriction").mockImplementationOnce(()=>{throw primary;});
+    const remove=kind==="cleanup-undefined"?vi.spyOn(h.world,"removeRigidBody").mockImplementationOnce(()=>{throw secondary;}):undefined;
+    const len=h.world.bodies.len.bind(h.world.bodies);let reads=0;
+    const readback=kind==="readback"?vi.spyOn(h.world.bodies,"len").mockImplementation(()=>{
+      reads+=1;if(reads===3){throw secondary;}return len();
+    }):undefined;
+    try{
+      let caught:unknown;try{restoreHvpBody(h.world,saved);}catch(error){caught=error;}
+      expect(caught).toBeInstanceOf(StructuralPhysicsCommitError);
+      const error=caught as StructuralPhysicsCommitError,dual=kind==="cleanup-undefined"||kind==="readback";
+      expect(error.path).toBe("savedBody/restore");expect(error.phase).toBe("create");expect(error.worldRestored).toBe(!dual);
+      if(dual){expect(error.cause).toBeInstanceOf(AggregateError);expect((error.cause as AggregateError).errors).toEqual([primary,secondary]);}
+      else{expect(error.cause).toBe(primary);expect(h.world.bodies.len()).toBe(before.bodies);expect(h.world.colliders.len()).toBe(before.colliders);}
+    }finally{surface.mockRestore();remove?.mockRestore();readback?.mockRestore();h.world.free();}
+  });
+}

@@ -53,9 +53,51 @@ import { ThreeResourceRegistry, type ThreeResourceRecord } from "./threeResource
 export interface ThreeRendererPort {
   setPixelRatio(value: number): void;
   setSize(width: number, height: number, updateStyle?: boolean): void;
-  render(scene: THREE.Scene, camera: THREE.Camera): void;
+  render(scene: THREE.Scene, camera: THREE.Camera): boolean | void;
+  getDrawingBufferSize?(target: THREE.Vector2): THREE.Vector2;
   dispose(): void;
 }
+
+export interface ThreeSubmittedCameraSample {
+  readonly viewMatrix: readonly number[];
+  readonly projectionMatrix: readonly number[];
+  readonly cameraWorldMatrix: readonly number[];
+  readonly position: readonly number[];
+  readonly orientation: readonly number[];
+  readonly near: number;
+  readonly far: number;
+  readonly verticalFovDegrees: number;
+  readonly aspect: number;
+  readonly drawingBuffer: Readonly<{ widthPx: number; heightPx: number }> | null;
+}
+
+/** CPU-submit metadata only: no image/texture lease, origin epoch or GPU completion. */
+export interface ThreeSubmittedFrameMetadata {
+  readonly kind: "SubmittedCameraMetadataOnly";
+  readonly metadataGeneration: number;
+  readonly renderFrameId: number;
+  readonly backendRevision: BackendRevision;
+  readonly coordinateFrameId: FrameProjectionSnapshot["frameId"] | null;
+  readonly projectionRevision: FrameProjectionSnapshot["frameRevision"] | null;
+  readonly current: ThreeSubmittedCameraSample;
+  readonly previous: ThreeSubmittedCameraSample | null;
+  readonly resetReason: string | null;
+  readonly attachmentPublication: "UNAVAILABLE";
+  readonly originEpoch: "UNAVAILABLE";
+}
+
+/** A suppressed/lost-context render leaves Three's CPU frame serial unchanged. */
+export const createThreeRendererPort = (renderer: THREE.WebGLRenderer): ThreeRendererPort => ({
+  setPixelRatio: (value) => renderer.setPixelRatio(value),
+  setSize: (width, height, updateStyle) => renderer.setSize(width, height, updateStyle),
+  getDrawingBufferSize: (target) => renderer.getDrawingBufferSize(target),
+  render(scene, camera) {
+    const before = renderer.info.render.frame;
+    renderer.render(scene, camera);
+    return renderer.info.render.frame > before;
+  },
+  dispose: () => renderer.dispose()
+});
 
 export interface ThreeRenderBackendOptions {
   readonly canvas: HTMLCanvasElement;
@@ -78,7 +120,7 @@ const capabilities: RenderBackendCapabilities = Object.freeze({
 });
 
 const defaultRendererFactory = (canvas: HTMLCanvasElement, parameters: THREE.WebGLRendererParameters): ThreeRendererPort =>
-  new THREE.WebGLRenderer({ ...parameters, canvas });
+  createThreeRendererPort(new THREE.WebGLRenderer({ ...parameters, canvas }));
 
 export interface ThreePrivateMeshBinding {readonly worldId:string;readonly sessionId:string;readonly sourceEpoch:number;readonly sourceRevision:number;readonly sourceDigest:string;readonly renderEpoch:number;readonly backendRevision:BackendRevision}
 declare const privateMeshBrand:unique symbol;
@@ -107,6 +149,14 @@ export class ThreeRenderBackend implements RenderBackend {
   private readonly diagnostics: ThreeDiagnosticState;
   private readonly rendererFactory: NonNullable<ThreeRenderBackendOptions["rendererFactory"]>;
   private renderer: ThreeRendererPort | undefined;
+  private submittedFrame: ThreeSubmittedFrameMetadata | undefined;
+  private lastSubmittedFrame: ThreeSubmittedFrameMetadata | undefined;
+  private submittedFrameSerial = 0;
+  private metadataGeneration = 0;
+  private metadataResetReason: string | null = "FirstSubmit";
+  private readonly drawingBufferSize = new THREE.Vector2();
+  private readonly contextLost = (): void => { this.invalidateSubmittedFrame("ContextLost"); };
+  private readonly contextRestored = (): void => { this.invalidateSubmittedFrame("ContextRestored"); };
   private viewportWidth:number;
   private viewportHeight:number;
   private rendererTeardownUncertain=false;
@@ -122,6 +172,8 @@ export class ThreeRenderBackend implements RenderBackend {
     this.viewportWidth=options.width??640;
     this.viewportHeight=options.height??360;
     this.diagnostics = createDiagnosticState(backendRevision(0));
+    options.canvas.addEventListener?.("webglcontextlost", this.contextLost);
+    options.canvas.addEventListener?.("webglcontextrestored", this.contextRestored);
     this.scene.background = new THREE.Color(options.backgroundColor ?? 0x101820);
     this.scene.add(this.representationRoot);
     if (options.lightingMode !== "None") {
@@ -299,8 +351,74 @@ export class ThreeRenderBackend implements RenderBackend {
     if (this.diagnostics.backendState !== "Available" || this.renderer === undefined) {
       return this.finish(renderCommandResult("BackendUnavailable", "NotApplicable", "BackendNotAvailable"));
     }
-    this.renderer.render(this.scene, this.camera);
+    let submitted: boolean | void;
+    this.submittedFrame = undefined;
+    try {
+      this.camera.updateMatrixWorld();
+      const before = this.captureCameraSample();
+      submitted = this.renderer.render(this.scene, this.camera);
+      if (submitted === true) {
+        const after = this.captureCameraSample();
+        if (JSON.stringify(before) === JSON.stringify(after)) this.captureSubmittedFrame(after);
+        else this.invalidateSubmittedFrame("CameraChangedDuringSubmit");
+      }
+    }
+    catch (error) { this.invalidateSubmittedFrame("RenderFailed"); throw error; }
+    if (submitted === false) {
+      this.invalidateSubmittedFrame("SubmitSkipped");
+      return this.finish(renderCommandResult("AlreadyApplied", "NotApplicable", "PresentationSkipped"));
+    }
+    if (submitted !== true) this.invalidateSubmittedFrame("LegacyPortSubmissionUnconfirmed");
     return this.finish(renderCommandResult("Accepted"));
+  }
+
+  readSubmittedFrameMetadata(): ThreeSubmittedFrameMetadata | undefined {
+    return this.submittedFrame;
+  }
+
+  private invalidateSubmittedFrame(reason: string): void {
+    this.submittedFrame = undefined;
+    this.lastSubmittedFrame = undefined;
+    this.metadataResetReason = reason;
+    this.metadataGeneration += 1;
+  }
+
+  private captureCameraSample(): ThreeSubmittedCameraSample {
+    const size = this.renderer?.getDrawingBufferSize?.(this.drawingBufferSize);
+    const drawingBuffer = size !== undefined && Number.isSafeInteger(size.x) && size.x > 0
+      && Number.isSafeInteger(size.y) && size.y > 0
+      ? Object.freeze({ widthPx: size.x, heightPx: size.y }) : null;
+    return Object.freeze({
+      viewMatrix: Object.freeze(this.camera.matrixWorldInverse.elements.slice()),
+      projectionMatrix: Object.freeze(this.camera.projectionMatrix.elements.slice()),
+      cameraWorldMatrix: Object.freeze(this.camera.matrixWorld.elements.slice()),
+      position: Object.freeze(this.camera.position.toArray()),
+      orientation: Object.freeze(this.camera.quaternion.toArray()),
+      near: this.camera.near, far: this.camera.far, verticalFovDegrees: this.camera.fov, aspect: this.camera.aspect,
+      drawingBuffer
+    });
+  }
+
+  private captureSubmittedFrame(current: ThreeSubmittedCameraSample): void {
+    const drawingBuffer = current.drawingBuffer;
+    const before = this.lastSubmittedFrame;
+    const coordinateFrameId = this.projection?.frameId ?? null;
+    if (before !== undefined && (before.coordinateFrameId !== coordinateFrameId
+      || before.current.drawingBuffer?.widthPx !== drawingBuffer?.widthPx
+      || before.current.drawingBuffer?.heightPx !== drawingBuffer?.heightPx
+      || before.current.projectionMatrix.some((n, i) => n !== current.projectionMatrix[i]))) {
+      this.invalidateSubmittedFrame("ProjectionOrOutputChanged");
+    }
+    if (this.submittedFrameSerial >= Number.MAX_SAFE_INTEGER) throw new Error("Render frame serial exhausted");
+    this.submittedFrame = Object.freeze({
+      kind: "SubmittedCameraMetadataOnly", metadataGeneration: this.metadataGeneration,
+      renderFrameId: ++this.submittedFrameSerial, backendRevision: this.diagnostics.backendRevision,
+      coordinateFrameId, projectionRevision: this.projection?.frameRevision ?? null,
+      current, previous: this.lastSubmittedFrame?.current ?? null, resetReason: this.metadataResetReason,
+      attachmentPublication: "UNAVAILABLE", originEpoch: "UNAVAILABLE"
+    });
+    this.lastSubmittedFrame = this.submittedFrame;
+    this.metadataResetReason = null;
   }
 
   resizeViewport(width:number,height:number):RenderCommandResult {
@@ -311,6 +429,7 @@ export class ThreeRenderBackend implements RenderBackend {
       return this.finish(renderCommandResult("BackendUnavailable","NotApplicable","BackendNotAvailable"));
     }
     if(width===this.viewportWidth&&height===this.viewportHeight){return this.finish(renderCommandResult("Accepted"));}
+    this.invalidateSubmittedFrame("ViewportResize");
     this.renderer.setSize(width,height,false);
     this.viewportWidth=width;this.viewportHeight=height;
     return this.finish(renderCommandResult("Accepted"));
@@ -328,6 +447,14 @@ export class ThreeRenderBackend implements RenderBackend {
       if(entry!==undefined){privateBytes+=handle.receipt.estimatedBytes;
         if(entry.sceneRecord!==undefined&&!ownedRecords.includes(entry.sceneRecord)){ownedRecords.push(entry.sceneRecord);}
         else if(entry.sceneRecord===undefined&&entry.sceneArtifact!==undefined){privateBytes+=handle.receipt.estimatedBytes;}}}
+    const cameraSamples = new Set([this.submittedFrame?.current, this.submittedFrame?.previous,
+      this.lastSubmittedFrame?.current, this.lastSubmittedFrame?.previous]);
+    for (const sample of cameraSamples) {
+      if (sample == null) continue;
+      // Logical numeric payload only; this is not a physical JS heap measurement.
+      privateBytes += (sample.viewMatrix.length + sample.projectionMatrix.length + sample.cameraWorldMatrix.length
+        + sample.position.length + sample.orientation.length + 4 + (sample.drawingBuffer === null ? 0 : 2)) * 8;
+    }
     return diagnosticSnapshot(this.diagnostics, {
       residentKeys: records.map((record) => record.representationKey),
       visibleKeys: records.filter((record) => record.sceneNode.visible).map((record) => record.representationKey),
@@ -436,6 +563,7 @@ export class ThreeRenderBackend implements RenderBackend {
       prepared,
       pinnedAsFallback: this.visibilityPlan?.fallbackRepresentationKeys.includes(command.artifact.representationKey) ?? false
     };
+    this.invalidateSubmittedFrame("SceneResourceInstall");
     this.measureCpu("representationAddCpuMs",record.representationKey,()=>this.representationRoot.add(record.sceneNode));
     const previous = this.measureCpu("registryCommitCpuMs",record.representationKey,()=>this.registry.commit(record));
     if(privateEntry!==undefined){privateEntry.sceneRecord=record;}
@@ -541,6 +669,7 @@ export class ThreeRenderBackend implements RenderBackend {
           : renderCommandResult("RejectedContentConflict", "NotApplicable", "VisibilityPlanRevisionConflict"));
       }
     }
+    this.invalidateSubmittedFrame("VisibilityChanged");
     this.visibilityPlan = command.plan;
     this.visibilitySignature = signature;
     this.recomputeVisibility();
@@ -564,15 +693,19 @@ export class ThreeRenderBackend implements RenderBackend {
       }
     }
     const cameraMapStart=timingKey===undefined?0:performance.now();
-    const transforms = applyCameraProjection(this.camera, command.snapshot);
-    this.projectedTransforms.clear();
-    transforms.forEach((transform, key) => this.projectedTransforms.set(key, transform));
-    this.projection = command.snapshot;
-    this.projectionSignature = signature;
-    const cameraMapEnd=timingKey===undefined?0:performance.now();
-    const sceneStart=timingKey===undefined?0:performance.now();
-    this.recomputeVisibility();
-    const sceneEnd=timingKey===undefined?0:performance.now();
+    this.submittedFrame = undefined;
+    let cameraMapEnd=0,sceneStart=0,sceneEnd=0;
+    try {
+      const transforms = applyCameraProjection(this.camera, command.snapshot);
+      this.projectedTransforms.clear();
+      transforms.forEach((transform, key) => this.projectedTransforms.set(key, transform));
+      this.projection = command.snapshot;
+      this.projectionSignature = signature;
+      cameraMapEnd=timingKey===undefined?0:performance.now();
+      sceneStart=timingKey===undefined?0:performance.now();
+      this.recomputeVisibility();
+      sceneEnd=timingKey===undefined?0:performance.now();
+    } catch (error) { this.invalidateSubmittedFrame("ProjectionFailed"); throw error; }
     if(timingKey!==undefined){
       try{this.options.onTiming?.("projectionSignatureCpuMs",signatureStart,signatureEnd-signatureStart,timingKey);}catch{/* Timing cannot alter projection. */}
       try{this.options.onTiming?.("projectionCameraMapCpuMs",cameraMapStart,cameraMapEnd-cameraMapStart,timingKey);}catch{/* Timing cannot alter projection. */}
@@ -582,6 +715,7 @@ export class ThreeRenderBackend implements RenderBackend {
   }
 
   private reset(command: ResetBackendCommand): RenderCommandResult {
+    this.invalidateSubmittedFrame("BackendReset");
     if(this.privateReleaseUncertain()){return this.finish(renderCommandResult("BackendUnavailable","AlreadyOwnedByBackend","PrivateMeshReleaseUncertain"));}
     const releasedEphemeral = this.releaseEphemeralResidentsBeforeClear();
     if (typeof releasedEphemeral !== "number") {
@@ -616,6 +750,9 @@ export class ThreeRenderBackend implements RenderBackend {
   }
 
   private dispose(_command: DisposeBackendCommand): RenderCommandResult {
+    this.invalidateSubmittedFrame("BackendDispose");
+    this.options.canvas.removeEventListener?.("webglcontextlost", this.contextLost);
+    this.options.canvas.removeEventListener?.("webglcontextrestored", this.contextRestored);
     this.releasePreparedPrivateMeshes();
     const privateUncertain=this.privateReleaseUncertain();
     const releasedEphemeral = this.registry.hasEphemeralReleaseUncertainty()||privateUncertain ? 0 : this.releaseEphemeralResidentsBeforeClear();
@@ -792,6 +929,7 @@ export class ThreeRenderBackend implements RenderBackend {
   }
 
   private releaseRecord(record: ThreeResourceRecord,retainPrivateCustody=false): void {
+    this.invalidateSubmittedFrame("SceneResourceRelease");
     this.representationRoot.remove(record.sceneNode);
     try{record.prepared.dispose();}catch(error){this.markPrivateRecordRelease(record,false);
       if(this.isPrivateRecordUncertain(record)&&parseEphemeralRepresentationKey(record.representationKey)===undefined){this.registry.markRemoved(record.representationKey);}throw error;}

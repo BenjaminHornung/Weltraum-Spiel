@@ -100,13 +100,22 @@ export class ThreeGraphicsSettingsAdapter implements GraphicsRuntimePort {
   }
 
   getCapabilities(): GraphicsCapabilityMap {
-    const hasShadowLight = this.options.scene.children.some((object) => object instanceof THREE.Light && object.castShadow);
+    let hasShadowLight = false;
     let hasCaster = false;
     let hasReceiver = false;
-    this.options.scene.traverse((object) => {
+    let hasRenderOnlyDecor = false;
+    this.options.scene.traverseVisible((object) => {
+      if (!this.options.camera.layers.test(object.layers)) return;
+      hasShadowLight ||= (object instanceof THREE.DirectionalLight || object instanceof THREE.PointLight
+        || object instanceof THREE.SpotLight) && object.castShadow;
       if (object instanceof THREE.Mesh) {
         hasCaster ||= object.castShadow;
         hasReceiver ||= object.receiveShadow;
+      }
+      const baseCount = Number(object.userData.graphicsDensityBaseCount);
+      if (object.userData.renderOnly === true && Number.isInteger(baseCount) && baseCount >= 0) {
+        hasRenderOnlyDecor ||= object instanceof THREE.Points && object.userData.graphicsDensityMode === "drawRange"
+          || object instanceof THREE.InstancedMesh && object.userData.graphicsDensityMode === "instanceCount";
       }
     });
     return detectGraphicsCapabilities({
@@ -116,6 +125,7 @@ export class ThreeGraphicsSettingsAdapter implements GraphicsRuntimePort {
       fullscreenAvailable: document.fullscreenEnabled && typeof document.documentElement.requestFullscreen === "function",
       antiAliasingApplied: this.runtime.antiAliasingApplied,
       effectiveShadows: hasShadowLight && hasCaster && hasReceiver,
+      renderOnlyDecor: hasRenderOnlyDecor,
       postProcessing: false,
       motionEffects: false,
       environmentReflections: false,
@@ -264,7 +274,9 @@ export class ThreeGraphicsSettingsAdapter implements GraphicsRuntimePort {
       } else if (preference === "Windowed" && document.fullscreenElement !== null) {
         await document.exitFullscreen();
       }
-      return (document.fullscreenElement === null ? "Windowed" : "Fullscreen") === preference;
+      const applied = (document.fullscreenElement === null ? "Windowed" : "Fullscreen") === preference;
+      if (!applied) warnings.push("The browser did not apply the requested fullscreen mode.");
+      return applied;
     } catch (error) {
       warnings.push(`Fullscreen request was declined: ${error instanceof Error ? error.message : String(error)}`);
       return false;

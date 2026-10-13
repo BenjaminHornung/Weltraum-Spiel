@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';import {execFileSync,spawnSync} from 'node:child_process';
+import {readFile,writeFile,readdir,lstat} from 'node:fs/promises';import path from 'node:path';import {fileURLToPath} from 'node:url';
+import {sha,verifyInputs} from './verify-inputs.mjs';
+// Same explicit normalization/index/build/dependency binding pattern as frozen GFX03.
+const spike=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(spike,'../..');
+const base='17b1db4201a28e7b607c30707bdc2b75e3484a10',branch='feature/rt-08-2026-10-09';
+const prefix='spikes/rt-08-photo/',spec='.devtoolbox/specs/changes/rt-08-2026-10-09/';
+const receiptName=prefix+'receipt.json',sealName=prefix+'binding-manifest.json',diffName=prefix+'review.diff';
+const gitExe='C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe';
+const git=args=>execFileSync(gitExe,['-C',root,'-c','filter.lfs.process=','-c','filter.lfs.clean=','-c','filter.lfs.required=false',...args],{encoding:'utf8',maxBuffer:32*1024*1024});
+const encode=v=>Buffer.from(JSON.stringify(v,null,2)+'\n');
+async function record(file,label){const st=await lstat(file);assert.ok(st.isFile()&&!st.isSymbolicLink(),label);const b=await readFile(file);return {path:label,byteLength:b.length,sha256:sha(b)};}
+async function tree(dir,label){const out=[];for(const e of (await readdir(dir,{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name,'en'))){assert.ok(!e.isSymbolicLink());const n=label+'/'+e.name;if(e.isDirectory())out.push(...await tree(path.join(dir,e.name),n));else out.push(await record(path.join(dir,e.name),n));}return out;}
+assert.equal(git(['rev-parse','HEAD']).trim(),base);assert.equal(git(['branch','--show-current']).trim(),branch);
+const receipt=JSON.parse(await readFile(path.join(root,receiptName)));assert.equal(receipt.status.executionLocation,'LOCAL_WINDOWS_ISOLATED');assert.equal(receipt.status.productIntegration,'NO');
+await verifyInputs(spike);
+const task=JSON.parse(await readFile(path.join(spike,'task-bindings.json')));for(const ref of task.files)assert.deepEqual(await record(path.join(spike,ref.path),ref.path),{path:ref.path,byteLength:ref.byteLength,sha256:ref.sha256});
+const status=git(['status','--porcelain=v1','-z','--untracked-files=all']).split('\0').filter(Boolean);
+const dirty=[];for(const e of status){const state=e.slice(0,2),name=e.slice(3);assert.ok(!/[DRCU!]/.test(state),'Unsupported dirty operation');assert.ok(name.startsWith(prefix)||name.startsWith(spec),'Out-of-scope '+name);dirty.push({state,name});}
+assert.ok(dirty.some(f=>f.name===receiptName));
+const proof=JSON.parse(await readFile(path.join(spike,'dist/build-proof.json')));for(const f of proof.inputs)assert.deepEqual(await record(path.join(spike,f.path),f.path),f,'Stale build '+f.path);
+const dependencies=await tree(path.join(spike,'node_modules'),prefix+'node_modules'),compiled=await tree(path.join(spike,'dist'),prefix+'dist'),evidence=await tree(path.join(root,spec,'tests'),spec+'tests');
+const metadata=[],lock=JSON.parse(await readFile(path.join(spike,'package-lock.json')));
+for(const [name,p] of Object.entries(lock.packages).filter(([n])=>n.startsWith('node_modules/')).sort(([a],[b])=>a.localeCompare(b))){let installed;try{installed=JSON.parse(await readFile(path.join(spike,name,'package.json')));}catch(error){assert.ok(error.code==='ENOENT'&&p.optional&&(p.os&&!p.os.includes(process.platform)||p.cpu&&!p.cpu.includes(process.arch)),`Missing compatible dependency ${name}`);metadata.push({path:name,version:p.version,registryIntegrity:p.integrity??null,installation:'OMITTED_OTHER_PLATFORM_LOCK_OPTIONAL',os:p.os,cpu:p.cpu});continue;}assert.equal(installed.version,p.version);metadata.push({path:name,name:installed.name,version:installed.version,license:installed.license??null,exports:installed.exports??null,peers:installed.peerDependencies??null,registryIntegrity:p.integrity??null});}
+const wasm=dependencies.filter(f=>f.path.endsWith('.wasm')).map(f=>({...f,usage:'UNUSED_PEER_OR_TRANSITIVE_TYPES_NOT_EXECUTED_NOT_PHY_MIGRATION'}));
+const shaders=dependencies.filter(f=>/\.(wgsl|glsl)(\.js)?$/.test(f.path)).map(f=>({...f,status:'STATIC_LIBRARY_SOURCE_NOT_GPU_COMPILED'}));
+if(process.argv.includes('--prepare')){
+ receipt.source.lockSha256=sha(await readFile(path.join(spike,'package-lock.json')));receipt.source.inputBindingSha256=sha(await readFile(path.join(spike,'input-bindings.json')));receipt.source.taskBindingSha256=sha(await readFile(path.join(spike,'task-bindings.json')));receipt.source.wasm=wasm;receipt.source.shaderSources=shaders;
+ await writeFile(path.join(root,receiptName),encode(receipt));
+ const parts=[];for(const {name} of dirty.filter(d=>![receiptName,sealName,diffName].includes(d.name)).sort((a,b)=>a.name.localeCompare(b.name,'en'))){const r=spawnSync(gitExe,['-C',root,'-c','core.autocrlf=false','diff','--no-index','--binary','--','NUL',name],{encoding:'utf8',maxBuffer:8*1024*1024});assert.ok(r.status===0||r.status===1,`Diff failed ${name}`);assert.ok(!r.error);parts.push(r.stdout);}
+ await writeFile(path.join(root,diffName),parts.join(''));console.log('PASS receipt inputs and exact payload review diff prepared; binding metadata inspected separately');process.exit(0);
+}
+assert.equal(receipt.source.lockSha256,sha(await readFile(path.join(spike,'package-lock.json'))));assert.equal(receipt.source.inputBindingSha256,sha(await readFile(path.join(spike,'input-bindings.json'))));assert.equal(receipt.source.taskBindingSha256,sha(await readFile(path.join(spike,'task-bindings.json'))));assert.deepEqual(receipt.source.wasm,wasm);assert.deepEqual(receipt.source.shaderSources,shaders);
+const files=[];for(const {state,name} of dirty){if(name===sealName)continue;if(name===receiptName){const normalized=structuredClone(receipt);normalized.source.dirtyTreeSha256=null;normalized.source.bindingManifestSha256=null;const b=encode(normalized);files.push({path:name,gitState:state,byteLength:b.length,sha256:sha(b),normalization:'Only dirtyTreeSha256 and bindingManifestSha256 null to remove self-reference'});}else files.push({...await record(path.join(root,name),name),gitState:state});}
+files.sort((a,b)=>a.path.localeCompare(b.path,'en'));
+const indexRaw=git(['ls-files','--stage','-z']),index=git(['ls-files','--stage','-z','--',prefix,spec]).split('\0').filter(Boolean).sort();
+const external=[];for(const [f,label] of [[process.execPath,'node-executable'],[gitExe,'git-executable'],['C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js','npm-cli-js'],['C:/IFI_SourceCode/Utils/opencode-migration/runtime/chromium-1234/chrome-win64/chrome.exe','approved-dom-browser-executable'],['C:/IFI_SourceCode/Utils/opencode-migration/runtime/chromium-1234/chrome-win64/chrome.dll','approved-dom-browser-library']])external.push(await record(f,label));
+const incident=[];for(const f of receipt.externalArtifactIncident.files)incident.push(await record(f,f));
+const envelope={schema:'hestia.rt08.byte-binding.v1',baseCommit:base,branch,files,index,fullIndex:{sha256:sha(Buffer.from(indexRaw)),entryCount:indexRaw.split('\0').filter(Boolean).length},compiled,dependencies,dependencyMetadata:metadata,wasm,shaderSources:shaders,evidence,external,externalArtifactIncident:incident,runtime:{node:process.version,platform:process.platform,arch:process.arch},exclusions:[{path:sealName,reason:'Self-referential manifest; exact digest asserted by receipt'},{path:prefix+'.cache/',reason:'Preparation cache/logs not source/runtime; installed packages fully bytebound'},{path:prefix+'negative-copies/',reason:'Retained explicit tamper/mock artifact copies, not executable inputs or GPU evidence'},{path:prefix+'captures/',reason:'Runner has NOT_RUN; future captures constitute a separate handoff, not this code seal'}]};
+const bytes=encode(envelope),digest=sha(bytes);
+if(process.argv.includes('--freeze')){await writeFile(path.join(root,sealName),bytes,{flag:'wx'});receipt.source.dirtyTreeSha256=digest;receipt.source.bindingManifestSha256=digest;await writeFile(path.join(root,receiptName),encode(receipt));}
+else{assert.ok(process.argv.includes('--verify'));assert.deepEqual(await readFile(path.join(root,sealName)),bytes,'Full dirty/index/build/dependency/evidence/tool bytes drift');assert.equal(receipt.source.dirtyTreeSha256,digest);assert.equal(receipt.source.bindingManifestSha256,digest);}
+console.log(JSON.stringify({status:'PASS',dirtyTreeSha256:digest,dirtyFiles:files.length,dependencies:dependencies.length,compiled:compiled.length,evidence:evidence.length,wasm:wasm.length,shaderSources:shaders.length,externalArtifacts:incident.length}));

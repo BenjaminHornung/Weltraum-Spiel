@@ -1,5 +1,6 @@
 import {fnv1aHash} from "../core/hash";
 import {buildHvpNeighborProducts} from "../hestia-prototype/runtime/neighborProducts";
+import {createHvpBodyMeshPhaseReserve} from "../hestia-prototype/presentation/bodyMeshAdmission";
 import {encodeHvpProjectionPacket,decodeHvpProjectionPacket,HVP_PROJECTION_PACKET_LIMIT} from "../hestia-prototype/runtime/projectionPacket";
 import {byteCount,contentRevision} from "./ids";
 import {fnv1aBytes,validateTransferableBundle,type TransferableBufferBundle,type WorkerJobRequest,type WorkerJobResult} from "./protocol";
@@ -48,7 +49,7 @@ export const executeHvpNeighborJob=(request:WorkerJobRequest,bundle:Transferable
   const proxies=decodeHvpProjectionPacket(input.buffers[2]!,p.primaryDigest);
   if(proxies.length!==3){throw new Error("Missing base projection products");}
   const value=buildHvpNeighborProducts(source(input.buffers[0]!,-16,p.primaryDigest),source(input.buffers[1]!,16,p.eastDigest),p.lod,
-    {join:proxies[0]!,far:proxies[1]!,water:proxies[2]!});
+    {join:proxies[0]!,far:proxies[1]!,water:proxies[2]!},createHvpBodyMeshPhaseReserve(128*1024));
   const buffer=encodeHvpProjectionPacket([...value.region,value.waterPatch,value.join,value.far,value.water]),buffers=[buffer];
   const output:TransferableBufferBundle={buffers,ownership:"WorkerToConsumer",revision:contentRevision(p.eastRevision),byteLength:byteCount(buffer.byteLength),
     contentHash:fnv1aBytes(buffers),views:[{name:"projections",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:buffer.byteLength}]};

@@ -4,6 +4,22 @@ import {validateHvpNeighborCheckpoint,type HvpNeighborCheckpoint} from "../runti
 
 const within=(x:number,z:number,r=0)=>x+r>=16&&x-r<48&&z+r>=-16&&z-r<16;
 type CollisionEntry={mesh:HvpCollisionSector;collider?:R.Collider};
+/** Owner-internal admission shared by preflight and the native neighbour owner. */
+export const validateHvpNeighborCollisionMeshes=(value:readonly HvpCollisionSector[],resident:boolean,primaryTerrainCount:64|256=64)=>{
+  if(primaryTerrainCount!==64&&primaryTerrainCount!==256){throw new Error("Invalid native terrain segmentation");}
+  if(!Array.isArray(value)||value.length!==(resident?primaryTerrainCount:0)){throw new Error("Incomplete neighbour collision coverage");}
+  let bytes=0;
+  for(const [i,m]of value.entries()){
+    const x=16+(i%8)*4,z=-16+Math.floor(i/(primaryTerrainCount===256?32:8))*4,
+      y=primaryTerrainCount===256?-8+Math.floor(i/8)%4*4:-8,top=primaryTerrainCount===256?y+4:8;
+    if(!(m.vertices instanceof Float32Array)||!(m.indices instanceof Uint32Array)||m.vertices.length%3||m.indices.length%3
+      ||m.indices.some((n:number)=>n>=m.vertices.length/3)
+      ||m.vertices.some((n:number,k:number)=>!Number.isFinite(n)||!Number.isInteger(n*8)||n<([x,y,z][k%3]!)||n>([x+4,top,z+4][k%3]!))){throw new Error("Invalid neighbour collision geometry");}
+    bytes+=m.vertices.byteLength+m.indices.byteLength;
+  }
+  if(bytes>8*1024*1024){throw new Error("Neighbour collision payload budget");}
+  return bytes;
+};
 /** Owns only the eastern region's static colliders; never removes a body owner. */
 export const createHvpNeighborCollision=(world:R.World,baseSectorCount:number,safeTick:()=>boolean,
   restored?:{checkpoint:HvpNeighborCheckpoint;meshes:readonly HvpCollisionSector[]},primary?:Map<number,CollisionEntry>,primaryTerrainCount:64|256=64)=>{
@@ -14,20 +30,7 @@ export const createHvpNeighborCollision=(world:R.World,baseSectorCount:number,sa
     before:Map<number,R.Collider>;committed:boolean;old:HvpNeighborCheckpoint|null;oldMeshes:readonly HvpCollisionSector[];oldColliders:R.Collider[];
     oldEdge:Map<number,CollisionEntry>;newEdge:Map<number,CollisionEntry>};
   let staged:Stage|undefined;
-  const validate=(value:readonly HvpCollisionSector[],resident:boolean)=>{
-    if(!Array.isArray(value)||value.length!==(resident?primaryTerrainCount:0)){throw new Error("Incomplete neighbour collision coverage");}
-    let bytes=0;
-    for(const [i,m]of value.entries()){
-      const x=16+(i%8)*4,z=-16+Math.floor(i/(primaryTerrainCount===256?32:8))*4,
-        y=primaryTerrainCount===256?-8+Math.floor(i/8)%4*4:-8,top=primaryTerrainCount===256?y+4:8;
-      if(!(m.vertices instanceof Float32Array)||!(m.indices instanceof Uint32Array)||m.vertices.length%3||m.indices.length%3
-        ||m.indices.some((n:number)=>n>=m.vertices.length/3)
-        ||m.vertices.some((n:number,k:number)=>!Number.isFinite(n)||!Number.isInteger(n*8)||n<([x,y,z][k%3]!)||n>([x+4,top,z+4][k%3]!))){throw new Error("Invalid neighbour collision geometry");}
-      bytes+=m.vertices.byteLength+m.indices.byteLength;
-    }
-    if(bytes>8*1024*1024){throw new Error("Neighbour collision payload budget");}
-    return bytes;
-  };
+  const validate=(value:readonly HvpCollisionSector[],resident:boolean)=>validateHvpNeighborCollisionMeshes(value,resident,primaryTerrainCount);
   const pinned=(player?:Readonly<{x:number;y:number;z:number}>):boolean=>{
     if(player&&within(player.x,player.z,.3)){return true;}
     let result=false;

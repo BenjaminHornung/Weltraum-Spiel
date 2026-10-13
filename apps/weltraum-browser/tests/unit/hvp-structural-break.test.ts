@@ -159,3 +159,44 @@ describe("HVP structural cut and native split",()=>{
     }finally {world.free();}
   });
 });
+
+// A62: genuine current .21 caller regressions; prepared/typechecked, Native NOT_RUN.
+for(const kind of ["primary-only","cleanup-undefined","coercion"] as const){
+  it(`retains installer and rollback causes through the actual structural caller (${kind})`,()=>{
+    const live=source(),plan=prepareHvpStructuralBreak(live,shape,`a62-${kind}`),world=new R.World({x:0,y:0,z:0});
+    try{
+      const parent=installHvpRigidBody(world,prepareHvpRigidBody(ingestHvpStructuralCells("parent",cells,materials)));
+      const primary=kind==="coercion"?{toString(){throw new Error("formatting");}}:new Error("collider");
+      vi.spyOn(world,"createCollider").mockImplementationOnce(()=>{throw primary;});
+      if(kind==="cleanup-undefined"){vi.spyOn(world,"removeRigidBody").mockImplementationOnce(()=>{throw undefined;});}
+      let caught:unknown;try{stageHvpStructuralBreak(world,parent,live,plan);}catch(error){caught=error;}
+      expect(caught).toBeInstanceOf(StructuralPhysicsCommitError);
+      const outer=caught as StructuralPhysicsCommitError;
+      expect(outer.path).toBe("hvp/structural-prepare");expect(outer.worldRestored).toBe(kind!=="cleanup-undefined");
+      const installed=kind==="cleanup-undefined"?(outer.cause as AggregateError).errors[0]:outer.cause;
+      expect(installed).toBeInstanceOf(StructuralPhysicsCommitError);
+      expect((installed as StructuralPhysicsCommitError).path).toBe("hvp/rigid-install");
+      if(kind==="cleanup-undefined"){
+        expect(((installed as StructuralPhysicsCommitError).cause as AggregateError).errors).toEqual([primary,undefined]);
+        expect((outer.cause as AggregateError).errors[1]).toMatchObject({path:"hvp/structural-cleanup",worldRestored:false});
+      }else{expect((installed as StructuralPhysicsCommitError).cause).toBe(primary);expect(world.bodies.len()).toBe(1);}
+      expect(world.getRigidBody(parent.handle)).toBe(parent);
+    }finally{vi.restoreAllMocks();world.free();}
+  });
+}
+it("retains parent-removal and failed readback causes without claiming rollback",()=>{
+  const live=source(),plan=prepareHvpStructuralBreak(live,shape,"a62-remove-readback"),world=new R.World({x:0,y:0,z:0});
+  try{
+    const parent=installHvpRigidBody(world,prepareHvpRigidBody(ingestHvpStructuralCells("parent",cells,materials)));
+    const stage=stageHvpStructuralBreak(world,parent,live,plan);stage.commit();
+    const primary=new Error("remove"),secondary=new Error("readback");
+    vi.spyOn(world,"removeRigidBody").mockImplementationOnce(()=>{throw primary;});
+    vi.spyOn(world,"getRigidBody").mockImplementationOnce(()=>{throw secondary;});
+    let caught:unknown;try{stage.finalize();}catch(error){caught=error;}
+    expect(caught).toBeInstanceOf(StructuralPhysicsCommitError);
+    const error=caught as StructuralPhysicsCommitError;
+    expect(error.path).toBe("hvp/structural-remove");expect(error.phase).toBe("remove");expect(error.worldRestored).toBe(false);
+    expect((error.cause as AggregateError).errors).toEqual([primary,secondary]);
+    expect(()=>stage.rollback()).toThrow(/closed/);
+  }finally{vi.restoreAllMocks();world.free();}
+});

@@ -7,7 +7,8 @@ import {decodeHvpReceipts,type HvpSimpleOutcome} from "../persistence/receiptChe
 import type {HvpCutTrace} from "../runtime/cutTrace";
 
 /** The local worker does not pause or own a moving parent. Only the commit does. */
-export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:HvpMovingCutPreparation)=>Promise<HvpBodyCutProducts>,
+export const createHvpBodyCutConsumer=(physics:Pick<HvpPhysicsClient,"read"|"command"|"beginBodyCut"|"stageBodyCut"|"commitBodyCut"|"publishBodyCut"
+  |"rollbackBodyCut"|"finalizeBodyCut">,compile:(source:HvpMovingCutPreparation)=>Promise<HvpBodyCutProducts>,
   stage:(parentId:string,products:HvpBodyCutProducts)=>HvpStagedTerrain|Promise<HvpStagedTerrain>,traceInput?:HvpCutTrace,finishCompile?:(id:string)=>Promise<void>)=>{
   let disposed=false,busy=false,held=false;
   let trace=traceInput;
@@ -20,6 +21,7 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
   let last:Readonly<{id:string;status:string;reason:string}>|null=null;
   const receipts=new Map<string,{signature:string;promise:Promise<void>;outcome?:HvpSimpleOutcome}>();
   let active:Promise<void>|undefined,cleanupId:string|undefined;
+  let cleanupRelease:Promise<void>|undefined;
   return {
     read:()=>Object.freeze({state:held?"RecoveryHold":busy?"Pending":"Idle",last,issued:receipts.size}),
     checkpoint(){
@@ -55,7 +57,7 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
         let begun=false,finished=false,render:HvpStagedTerrain|undefined,terminal:NonNullable<typeof last>|undefined;
         try{
           const source=await physics.beginBodyCut(request);begun=true;
-          if(finishCompile!==undefined){cleanupId=request.id;}
+          if(finishCompile!==undefined){cleanupId=request.id;cleanupRelease=undefined;}
           const products=await compile(source);
           if(disposed){throw new Error("Moving preparation cancelled");}
           render=await stage(request.ownerId,products); // New local geometry stays hidden.
@@ -81,10 +83,12 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
           terminal=Object.freeze({id:request.id,status:held?"RecoveryHold":"Rejected",reason:String(error)});
           if(finishCompile===undefined){last=terminal;if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}}
         }finally{
-          if(finishCompile!==undefined&&!held){
+          if(finishCompile!==undefined&&!held&&cleanupId===request.id){
             render=undefined;
-            try{await finishCompile(request.id);cleanupId=undefined;}
-            catch(error){held=true;terminal=Object.freeze({id:request.id,status:"RecoveryHold",reason:`Mesh ownership release unproven: ${String(error)}`});
+            const finish=finishCompile;
+            try{cleanupRelease??=Promise.resolve().then(()=>finish(request.id));await cleanupRelease;cleanupId=undefined;}
+            catch(error){const primary=terminal?.status==="Rejected"?`${terminal.reason}; `:"";
+              held=true;terminal=Object.freeze({id:request.id,status:"RecoveryHold",reason:`${primary}Mesh ownership release unproven: ${String(error)}`});
               try{await physics.command("Pause");}catch{/* Failed release never proves restoration. */}}
           }
           if(finishCompile!==undefined&&terminal!==undefined){
@@ -102,7 +106,12 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
     /** Calling coordinator must first prove complete backend/render resource disposal. */
     async releaseDisposedResources():Promise<void> {
       if(!disposed||busy){throw new Error("Body mesh resource cleanup is not quiescent");}
-      if(cleanupId!==undefined&&finishCompile!==undefined){await finishCompile(cleanupId);cleanupId=undefined;}
+      if(cleanupId!==undefined&&finishCompile!==undefined){
+        const id=cleanupId,finish=finishCompile;
+        // Regular completion and Dispose share one terminal attempt, including its rejection.
+        cleanupRelease??=Promise.resolve().then(()=>finish(id));
+        await cleanupRelease;cleanupId=undefined;
+      }
     }
   };
 };

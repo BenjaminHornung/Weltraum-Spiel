@@ -1,4 +1,4 @@
-import {beforeAll,expect,it} from "vitest";
+import {beforeAll,expect,it,vi} from "vitest";
 import {materializeHvpCoastSource,prepareHvpCoastSource,deriveHvpWaterMask} from "../../src/hvp/hvpCoastSource";
 import {meshHvpFarField,meshHvpJoinRing,meshHvpWaterMask,type HvpCompactMesh} from "../../src/hvp/hvpCoastMesher";
 import {createHvpTerrainRoot} from "../../src/hestia-prototype/terrain/cutPlan";
@@ -29,6 +29,14 @@ const tops=(meshes:readonly HvpCompactMesh[])=>{
     }
   }return {counts,heights};
 };
+it("debits fixed memo scratch before allocating it or projecting any Source",()=>{
+  const float64=vi.spyOn(globalThis,"Float64Array"),reserve=vi.fn(()=>{throw new Error("Memo scratch exhausted");});
+  try{
+    expect(()=>buildHvpNeighborProducts(primary.read(),east.read(),.5,proxies,reserve)).toThrow("Memo scratch exhausted");
+    expect(reserve).toHaveBeenCalledOnce();expect(reserve).toHaveBeenCalledWith(128*1024);
+    expect(float64).not.toHaveBeenCalled();
+  }finally{float64.mockRestore();}
+});
 it.each([.125,.5] as const)("partitions installed land/water and fine/coarse seam spans for LOD %s",lod=>{
   const digest=east.read().sourceDigest,result=buildHvpNeighborProducts(primary.read(),east.read(),lod,proxies);
   const land=tops([...result.region,result.join,result.far]),water=tops([result.waterPatch,result.water]);

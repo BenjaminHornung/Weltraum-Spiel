@@ -3,7 +3,7 @@ import {fnv1aBytes} from "../../workers/protocol";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {decodeStructuralObject} from "../../voxel/structural";
 import {readHvpBodyCells} from "../physics/bodyCutPlan";
-import {HVP_BRANCH_KEY,HVP_INERTIA_KEY,validateHvpPlayerCheckpoint} from "../physics/profile";
+import {HVP_BRANCH_KEY,HVP_INERTIA_KEY,HVP_SOLVER_VERSION,validateHvpPlayerCheckpoint} from "../physics/profile";
 import {createHvpTick,type HvpTickCheckpoint} from "../physics/tick";
 import type {HvpBranchCheckpoint} from "../physics/branchSession";
 import type {HvpMovingCheckpoint} from "../physics/bodyCutSession";
@@ -23,6 +23,10 @@ export interface HvpWorldCheckpoint {
   readonly lastImpulse:Readonly<{status:string;reason:string;point?:Vec;impulse?:Vec;target?:string}>|null;
   readonly neighbor?:HvpNeighborCheckpoint|null;readonly parked?:readonly string[];
 }
+/** @internal Exact PHY-01 lab checkpoint; never accepted by the public restore wrapper. */
+export type HvpLabWorldCheckpoint=Omit<HvpWorldCheckpoint,"solver">&{readonly solver:typeof HVP_SOLVER_VERSION};
+type HvpWorldSolver=HvpWorldCheckpoint["solver"]|typeof HVP_SOLVER_VERSION;
+type HvpWorldCheckpointFor<S extends HvpWorldSolver>=S extends typeof HVP_SOLVER_VERSION?HvpLabWorldCheckpoint:HvpWorldCheckpoint;
 const safeInt=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const validId=(v:unknown):v is string=>typeof v==="string"&&/^[A-Za-z0-9:_-]{1,128}$/.test(v);
 const vector=(v:unknown):v is Vec=>!!v&&typeof v==="object"&&Object.keys(v).sort().join(",")==="x,y,z"
@@ -44,10 +48,10 @@ export const hvpCollisionDigest=(sectors:readonly HvpCollisionSector[]):string=>
 };
 
 /** Decode sources and verify all membership before allocating a replacement World. */
-const inspectHvpWorld=(value:unknown)=>{
-  const c=value as HvpWorldCheckpoint|null;
+const inspectHvpWorld=<S extends HvpWorldSolver>(value:unknown,expectedSolver:S)=>{
+  const c=value as HvpWorldCheckpointFor<S>|null;
   if(!c||Object.keys(c).filter(k=>k!=="neighbor"&&k!=="parked").sort().join(",")!=="bodies,branch,collisionDigest,coverage,dropSpawn,gravity,impulses,lastImpulse,lastImpulseTick,moving,player,sessionId,solver,terrainGeneration,tick,version"
-    ||c.version!=="hvp-world-checkpoint-v1"||c.solver!=="rapier-0.12.0"||!validId(c.sessionId)||!Number.isFinite(c.gravity)||c.gravity<=0
+    ||c.version!=="hvp-world-checkpoint-v1"||c.solver!==expectedSolver||!validId(c.sessionId)||!Number.isFinite(c.gravity)||c.gravity<=0
     ||!safeInt(c.terrainGeneration)||!safeInt(c.impulses)||!vector(c.dropSpawn)||!/^([0-9a-f]{8})$/.test(c.collisionDigest)
     ||!Array.isArray(c.bodies)||c.bodies.length<1||c.bodies.length>64||!Array.isArray(c.coverage)||c.coverage.length>128){throw new Error("Invalid World checkpoint profile/owner budget");}
   if(c.neighbor!==undefined&&c.neighbor!==null){validateHvpNeighborCheckpoint(c.neighbor);}
@@ -113,14 +117,19 @@ const inspectHvpWorld=(value:unknown)=>{
   for(const body of c.bodies){if(!validId(body.ownerId)||owners.has(body.ownerId)){throw new Error("Duplicate or invalid body owner");}owners.add(body.ownerId);}
   return {checkpoint:c,sourceBytes,textBytes};
 };
-export const hvpWorldCheckpointBytes=(value:unknown):number=>inspectHvpWorld(value).sourceBytes;
+export const hvpWorldCheckpointBytes=(value:unknown):number=>inspectHvpWorld(value,"rapier-0.12.0").sourceBytes;
+/** @internal Lab-only bounded preflight bound to the fixed PHY-01 solver identity. */
+export const hvpLabWorldCheckpointBytes=(value:unknown):number=>inspectHvpWorld(value,HVP_SOLVER_VERSION).sourceBytes;
 /** Worker-only logical coexistence allowance; UTF-8 size is not a physical string-heap measurement. */
-export const hvpColdWorldAllocationBytes=(value:unknown)=>{
-  const {checkpoint,sourceBytes,textBytes}=inspectHvpWorld(value);
+const coldWorldAllocationBytes=(value:unknown,solver:HvpWorldSolver)=>{
+  const {checkpoint,sourceBytes,textBytes}=inspectHvpWorld(value,solver);
   return {sourceBytes,checkpointBytes:textBytes*4+checkpoint.bodies.length*65_536+65_536};
 };
-const decodeWorld=(value:unknown,decodeBody:typeof decodeHvpBody)=>{
-  const {checkpoint:c,sourceBytes}=inspectHvpWorld(value),b=c.branch;
+export const hvpColdWorldAllocationBytes=(value:unknown)=>coldWorldAllocationBytes(value,"rapier-0.12.0");
+/** @internal Exact lab profile; identical logical coexistence accounting. */
+export const hvpColdLabWorldAllocationBytes=(value:unknown)=>coldWorldAllocationBytes(value,HVP_SOLVER_VERSION);
+const decodeWorld=<S extends HvpWorldSolver>(value:unknown,decodeBody:typeof decodeHvpBody,solver:S)=>{
+  const {checkpoint:c,sourceBytes}=inspectHvpWorld(value,solver),b=c.branch;
   const decoded=c.bodies.map(decodeBody),drop=decoded.filter(d=>d.checkpoint.family==="drop"),inertia=decoded.filter(d=>d.checkpoint.family==="inertia");
   const parked=new Set(c.parked??[]);
   for(const id of parked){const owner=decoded.find(d=>d.checkpoint.ownerId===id);
@@ -137,10 +146,12 @@ const decodeWorld=(value:unknown,decodeBody:typeof decodeHvpBody)=>{
     ||JSON.stringify(branchSource.materials)!==JSON.stringify(fixed[0]!.recipe.source.materials))){throw new Error("Branch source/body mismatch");}
   return Object.freeze({checkpoint:structuredClone(c),bodies:Object.freeze(decoded),branchSource,sourceBytes});
 };
-export const decodeHvpWorld=(value:unknown)=>decodeWorld(value,decodeHvpBody);
-export const decodeHvpColdWorld=(value:unknown,reserve:StructuralOwnedReserve,
-  onRetainedRecipe?:(recipe:ReturnType<typeof decodeHvpBody>["recipe"],bytes:number)=>void)=>{
-  if(onRetainedRecipe===undefined){return decodeWorld(value,body=>decodeHvpColdBody(body,reserve));}
+export const decodeHvpWorld=(value:unknown)=>decodeWorld(value,decodeHvpBody,"rapier-0.12.0");
+/** @internal Lab-only decoder bound to HVP_SOLVER_VERSION, never payload-selected. */
+export const decodeHvpLabWorld=(value:unknown)=>decodeWorld(value,decodeHvpBody,HVP_SOLVER_VERSION);
+const decodeColdWorld=<S extends HvpWorldSolver>(value:unknown,reserve:StructuralOwnedReserve,
+  onRetainedRecipe:((recipe:ReturnType<typeof decodeHvpBody>["recipe"],bytes:number)=>void)|undefined,solver:S)=>{
+  if(onRetainedRecipe===undefined){return decodeWorld(value,body=>decodeHvpColdBody(body,reserve),solver);}
   const retained:{recipe:ReturnType<typeof decodeHvpBody>["recipe"];bytes:number}[]=[];
   const decoded=decodeWorld(value,body=>{
     let bytes=0;
@@ -148,8 +159,17 @@ export const decodeHvpColdWorld=(value:unknown,reserve:StructuralOwnedReserve,
     if(reserve.hashUnits!==undefined){Object.defineProperty(counted,"hashUnits",{value:reserve.hashUnits});}
     const result=decodeHvpColdBody(body,counted);
     reserve(128);retained.push({recipe:result.recipe,bytes});return result;
-  });
+  },solver);
   for(const entry of retained){onRetainedRecipe(entry.recipe,entry.bytes);}
   return decoded;
 };
+export const decodeHvpColdWorld=(value:unknown,reserve:StructuralOwnedReserve,
+  onRetainedRecipe?:(recipe:ReturnType<typeof decodeHvpBody>["recipe"],bytes:number)=>void)=>
+  decodeColdWorld(value,reserve,onRetainedRecipe,"rapier-0.12.0");
+/** @internal Lab-only Cold wrapper over the same allocation/body/source checks. */
+export const decodeHvpColdLabWorld=(value:unknown,reserve:StructuralOwnedReserve,
+  onRetainedRecipe?:(recipe:ReturnType<typeof decodeHvpBody>["recipe"],bytes:number)=>void)=>
+  decodeColdWorld(value,reserve,onRetainedRecipe,HVP_SOLVER_VERSION);
 export type HvpDecodedWorld=ReturnType<typeof decodeHvpWorld>;
+/** @internal */
+export type HvpDecodedLabWorld=ReturnType<typeof decodeHvpLabWorld>;

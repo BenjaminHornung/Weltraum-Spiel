@@ -6,7 +6,7 @@ import {validateSaveGameEnvelopeV1} from "../../src/persistence";
 import {createHvpTerrainCompiler,releaseHvpOwnedTerrainProducts} from "../../src/hestia-prototype/terrain/terrainProducts";
 import {createHvpBodyMeshPhaseReserve} from "../../src/hestia-prototype/presentation/bodyMeshAdmission";
 import {WorkerPool,type WorkerJobTerminal} from "../../src/workers/workerPool";
-import {executeHvpChunkJobOwned} from "../../src/workers/hvpChunkJob";
+import {executeHvpChunkJobOwned,executeHvpEastChunkCollisionJobOwned,HVP_EAST_CHUNK_COLLISION_JOB} from "../../src/workers/hvpChunkJob";
 import {createHvpBodyMeshTaskPump} from "../../src/workers/hvpBoundedPump";
 import {workerEpoch} from "../../src/workers/ids";
 import {transferListFor} from "../../src/workers/protocol";
@@ -55,20 +55,22 @@ vi.mock("../../src/hestia-prototype/physics/terrainColliders",async importOrigin
 vi.mock("../../src/workers/hvpBodyCutWire",async importOriginal=>{
   const actual=await importOriginal<typeof import("../../src/workers/hvpBodyCutWire")>();
   return {...actual,fnv1aBytesSteps:(...args:Parameters<typeof actual.fnv1aBytesSteps>)=>{
-    const steps=actual.fnv1aBytesSteps(...args),row=args[0].length===1?trace.phases.inputHash:args[0].length===6?trace.phases.renderHash:args[0].length===8?trace.phases.outputHash:undefined;
+    const steps=actual.fnv1aBytesSteps(...args),row=args[0].length===1?trace.phases.inputHash:args[0].length===6?trace.phases.renderHash:args[0].length===8||args[0].length===2?trace.phases.outputHash:undefined;
     return row===undefined?steps:trace.wrap(steps,row);
   }};
 });
 vi.mock("../../src/workers/hvpChunkJob",async importOriginal=>{
   const actual=await importOriginal<typeof import("../../src/workers/hvpChunkJob")>();
-  return {...actual,decodeHvpChunkOutputSteps:(...args:Parameters<typeof actual.decodeHvpChunkOutputSteps>)=>{
-    const steps=actual.decodeHvpChunkOutputSteps(...args);if(!decode.enabled){return steps;}
+  const observe=<T>(steps:Generator<string,T,unknown>)=>{
+    if(!decode.enabled){return steps;}
     decode.calls+=1;const next=steps.next.bind(steps);
     steps.next=(...input)=>{const start=performance.now();decode.nextCalls+=1;
       try{const value=next(...input);if(value.done){decode.completed+=1;}return value;}
       finally{decode.activeNextMs+=performance.now()-start;}};
     return steps;
-  }};
+  };
+  return {...actual,decodeHvpChunkOutputSteps:(...args:Parameters<typeof actual.decodeHvpChunkOutputSteps>)=>observe(actual.decodeHvpChunkOutputSteps(...args)),
+    decodeHvpEastChunkCollisionOutputSteps:(...args:Parameters<typeof actual.decodeHvpEastChunkCollisionOutputSteps>)=>observe(actual.decodeHvpEastChunkCollisionOutputSteps(...args))};
 });
 
 // ponytail: saved-input local attribution; promote only with a portable qualification fixture.
@@ -159,6 +161,7 @@ it.skipIf(!process.env.HVP_CHUNK_STARTUP_INPUT)("attributes the saved-East 512 r
   const totals={jobs:0,executeWallMs:0,quantumCount:0,quantumActiveMs:0,interQuantumGapMs:0};
   const inputClasses={airHalo:0,solidHalo:0,mixedHalo:0,primaryAirHalo:0,eastAirHalo:0,airQuantumMs:0,otherQuantumMs:0};
   const packetDigests=new Uint8Array(512*32),packetSeen=new Uint8Array(512);
+  const eastCollisionDigests=new Uint8Array(256*32);
   const resources={inputBytesEach:34**3,inputTrafficBytes:0,activeJobs:0,activeJobsMax:0,activeInputBytes:0,activeInputBytesMax:0,
     workerReserveMax:0,activeWorkerReserveBytes:0,activeWorkerReserveMax:0,workerGrantMin:Number.MAX_SAFE_INTEGER,workerGrantMax:0,outputTrafficBytes:0,outputMax:0};
   let startupLedger:ReturnType<typeof model.createStructuralOwnerLedger>|undefined,startupCredits:ReturnType<typeof support.createHvpSupportPhaseCredits>|undefined;
@@ -170,7 +173,8 @@ it.skipIf(!process.env.HVP_CHUNK_STARTUP_INPUT)("attributes the saved-East 512 r
   const creditsSpy=vi.spyOn(support,"createHvpSupportPhaseCredits").mockImplementation((...args)=>{
     const credits=createCredits(...args);if(args[0]===32768&&args[1]===16*1024*1024){if(startupCredits){throw new Error("Duplicate startup credits");}startupCredits=credits;}return credits;
   });
-  let population:Readonly<{primaryJobs:number;primaryEmptyBoth:number;eastJobs:number;eastEmptyBoth:number}>|undefined;
+  let population:Readonly<{primaryJobs:number;primaryEmptyBoth:number;eastJobs:number;eastCollisionOnlyJobs:number;eastEmptyCollision:number}>|undefined;
+  let eastCollisionOnlyJobs=0,eastEmptyCollision=0;
   let passed=false,quantumValid=true,startupWallMs=0,collisionDigest="",renderColumns=0,collisionChunks=0;
   const start=vi.spyOn(WorkerPool.prototype,"start").mockResolvedValue(undefined);
   const enqueue=vi.spyOn(WorkerPool.prototype,"enqueueTerrainDerivative").mockImplementation(async(request,bundle,grant,_host,reserve)=>{
@@ -206,7 +210,10 @@ it.skipIf(!process.env.HVP_CHUNK_STARTUP_INPUT)("attributes the saved-East 512 r
     };
     const at=performance.now();
     try{
-      const output=await executeHvpChunkJobOwned(request,transferred,pump,measuredReserve);totals.jobs+=1;
+      const collisionOnly=request.jobKind===HVP_EAST_CHUNK_COLLISION_JOB;
+      const output=await (collisionOnly?executeHvpEastChunkCollisionJobOwned:executeHvpChunkJobOwned)(request,transferred,pump,measuredReserve);totals.jobs+=1;
+      if(collisionOnly){eastCollisionOnlyJobs+=1;expect(payload.sourceOrigin.x).toBe(east.originMeters.x);
+        expect(output.bundle.buffers).toHaveLength(2);if(output.bundle.buffers[1]!.byteLength===0){eastEmptyCollision+=1;}}
       expect(output.bundle.byteLength).toBeLessThanOrEqual(8*1024*1024);
       resources.outputTrafficBytes+=output.bundle.byteLength;resources.outputMax=Math.max(resources.outputMax,output.bundle.byteLength);
       const offset=payload.sourceOrigin.x===source.originMeters.x?0:payload.sourceOrigin.x===east.originMeters.x?256:NaN;
@@ -215,6 +222,10 @@ it.skipIf(!process.env.HVP_CHUNK_STARTUP_INPUT)("attributes the saved-East 512 r
       const hash=createHash("sha256").update(JSON.stringify({views:output.bundle.views,ownership:output.bundle.ownership,revision:output.bundle.revision,byteLength:output.bundle.byteLength,contentHash:output.bundle.contentHash}));
       for(const buffer of output.bundle.buffers){hash.update(new Uint8Array(buffer));}
       packetDigests.set(hash.digest(),index*32);packetSeen[index]=1;
+      if(offset===256){
+        const collisionHash=createHash("sha256");for(const buffer of output.bundle.buffers.slice(-2)){collisionHash.update(new Uint8Array(buffer));}
+        eastCollisionDigests.set(collisionHash.digest(),payload.chunk*32);
+      }
       return {jobId:request.jobId,workerEpoch:workerEpoch(0),result:Promise.resolve({kind:"Completed",result:output.result,output:output.bundle} as WorkerJobTerminal),cancel:()=>false};
     }finally{totals.executeWallMs+=performance.now()-at;pump.dispose();resources.activeJobs-=1;
       resources.activeInputBytes-=transferred.byteLength;resources.activeWorkerReserveBytes-=workerReserved;}
@@ -241,17 +252,25 @@ it.skipIf(!process.env.HVP_CHUNK_STARTUP_INPUT)("attributes the saved-East 512 r
     creditsRemainingBeforeRelease=startupCredits!.remainingBytes;expect(creditsRemainingBeforeRelease).toBeGreaterThanOrEqual(0);
     expect(trace.scope).toEqual({inWorkerNext:false,eastWorker:false});
     for(const [name,row] of Object.entries(trace.phases)){
-      const expectedCalls=name==="meshPrimary"?256-inputClasses.primaryAirHalo:name==="meshEast"?256-inputClasses.eastAirHalo
-        :name==="collisionMesh"||name==="collisionOccupancyMesh"?512-inputClasses.airHalo:512;
-      expect(row.calls).toBe(expectedCalls);expect(row.completed).toBe(expectedCalls);expect(row.nextCalls).toBeGreaterThan(0);
+      const expectedCalls=name==="meshPrimary"?256-inputClasses.primaryAirHalo:name==="meshEast"?256-eastCollisionOnlyJobs-inputClasses.eastAirHalo*(eastCollisionOnlyJobs===0?1:0)
+        :name==="collisionMesh"||name==="collisionOccupancyMesh"?512-inputClasses.airHalo:name==="renderPack"||name==="renderHash"?512-eastCollisionOnlyJobs:512;
+      expect(row.calls).toBe(expectedCalls);expect(row.completed).toBe(expectedCalls);
+      if(expectedCalls===0){expect(row.nextCalls).toBe(0);}else{expect(row.nextCalls).toBeGreaterThan(0);}
       expect(Number.isFinite(row.activeNextMs)&&row.activeNextMs>=0).toBe(true);
     }
     collisionDigest=hvpCollisionDigest([...products.collision.values()]);renderColumns=products.render.size;collisionChunks=products.collision.size;
     expect(renderColumns).toBe(16);expect(collisionChunks).toBe(256);expect(products.source).toBe(source);
     expect(game.checkpoint.signature).toBe(signature);expect(createHash("sha256").update(saved).digest("hex")).toBe(savedSha256);
     expect(savedSha256).toBe(baseline.savedSha256);expect(signature).toBe(baseline.signature);
-    expect(createHash("sha256").update(packetDigests).digest("hex")).toBe(baseline.orderedPacketSha256);
-    expect(population).toEqual(baseline.population);expect(collisionDigest).toBe(baseline.collisionDigest);baselineChecked=true;
+    if(eastCollisionOnlyJobs===0){expect(createHash("sha256").update(packetDigests).digest("hex")).toBe(baseline.orderedPacketSha256);}
+    else{
+      expect(eastCollisionOnlyJobs).toBe(256);
+      expect(createHash("sha256").update(packetDigests.subarray(0,256*32)).digest("hex")).toBe(baseline.primaryPacketSha256);
+      expect(createHash("sha256").update(eastCollisionDigests).digest("hex")).toBe(baseline.eastCollisionSha256);
+      expect(population).toMatchObject({eastCollisionOnlyJobs:256,eastEmptyCollision});
+    }
+    expect(population).toMatchObject({primaryJobs:baseline.population.primaryJobs,primaryEmptyBoth:baseline.population.primaryEmptyBoth,eastJobs:baseline.population.eastJobs});
+    expect(collisionDigest).toBe(baseline.collisionDigest);baselineChecked=true;
     cacheBeforeRelease=compiler.diagnostics().chunkCacheBytes;pendingBeforeRelease=compiler.diagnostics().pendingChunkBytes;
     expect(cacheBeforeRelease).toBe(0);expect(pendingBeforeRelease).toBeGreaterThan(0);
     releaseHvpOwnedTerrainProducts(products);products=undefined;
@@ -267,7 +286,9 @@ it.skipIf(!process.env.HVP_CHUNK_STARTUP_INPUT)("attributes the saved-East 512 r
       sourceDecode,
       coldRecipeOracle:{enabled:process.env.HVP_COLD_RECIPE_ORACLE==="1",residentArgument:game.decodeWorkingBytes,rows:coldRecipeRows,resources:coldRecipeResources,
         meaning:"Full per-body public Recipe JSON and Source identity oracle. decodeWorkingBytes is the existing logical decode working estimate, not physical heap or a complete old-Recipe coexistence proof. No production decoder adoption."},
-      population,renderColumns,collisionChunks,collisionDigest,kernelPhases:trace.phases,inputClasses,orderedPacketSha256:createHash("sha256").update(packetDigests).digest("hex"),baselineChecked,baselineSha256,expectedOrderedPacketSha256:baseline.orderedPacketSha256,
+      population,renderColumns,collisionChunks,collisionDigest,kernelPhases:trace.phases,inputClasses,orderedPacketSha256:createHash("sha256").update(packetDigests).digest("hex"),
+      primaryPacketSha256:createHash("sha256").update(packetDigests.subarray(0,256*32)).digest("hex"),
+      eastCollisionSha256:createHash("sha256").update(eastCollisionDigests).digest("hex"),eastCollisionOnlyJobs,baselineChecked,baselineSha256,expectedOrderedPacketSha256:baseline.orderedPacketSha256,
       logicalResources:{residentBytesArgument:16*1024*1024,reservedHeadroomBytes:96*1024*1024,resources,ledgerBeforeRelease,ledgerAfterRelease:startupLedger?.resources,
         cacheBeforeRelease,pendingBeforeRelease,creditsRemainingBeforeRelease,afterDispose:disposed,physicalHeap:"NOT_PROVEN",
         meaning:"Worker reservation maxima are prepaid logical allocation estimates; never add them to already reserved 96MiB headroom. Input/output traffic totals are not simultaneous residency. Sender input is detached and counted once. Pool/runtime transport is mocked; physical worker heap is unsupported."},

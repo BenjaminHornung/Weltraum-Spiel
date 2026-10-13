@@ -78,7 +78,11 @@ export function createGraphicsSettingsController(options: CreateGraphicsSettings
       const result = await options.runtime.apply(store.getSnapshot().confirmed, ids);
       runtime = result.runtime;
       restartRequired = result.restartRequired;
-      message = result.warnings.length > 0 ? result.warnings.join(" ") : "Graphics settings applied.";
+      const skippedRequested = result.skipped.some((id) => ids.includes(id));
+      message = [
+        skippedRequested ? "Graphics settings saved; some requested changes are not supported by this scene." : "Graphics settings applied.",
+        ...result.warnings
+      ].join(" ");
       notify();
       return { ok: true, snapshot: snapshot(), message };
     } catch (error) {

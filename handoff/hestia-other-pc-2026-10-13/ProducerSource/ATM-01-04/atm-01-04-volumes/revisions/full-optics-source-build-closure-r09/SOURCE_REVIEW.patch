@@ -1,0 +1,364 @@
+# UNAPPLIED private R09 review candidate. a = bound original ATM snapshot; b = R09. No product/A0 patch.
+diff --git a/src/weather-port.ts b/src/weather-port.ts
+new file mode 100644
+--- /dev/null
++++ b/src/weather-port.ts
+@@ -0,0 +1,37 @@
++import {createAnalyticReadView,assertCurrentAnalytic,type AnalyticInput} from '../inputs/wxg/repo/spikes/wxg-01-04-analytic/dist/src/weather.js';
++import type {PlanetWeatherQuery,WeatherResult} from '../inputs/wxg/repo/spikes/wxg-01-04-analytic/dist/src/common.js';
++import {validateFrame,type AtmosphereFrame,type V3} from './optics';
++export {createAnalyticReadView,assertCurrentAnalytic};
++export type {AnalyticInput,PlanetWeatherQuery,WeatherResult};
++export interface AuthoredOpticalMask {cloudCoverage:number;rain01:number}
++export interface OpticalPresentation {originMeters:V3;sourceRevision:number;atlasEpoch:number}
++export function tangentBasis(position:{x:number;y:number;z:number}){
++ const length=Math.hypot(position.x,position.y,position.z);
++ if(!Number.isFinite(length)||length===0)throw Error('TANGENT_POSITION');
++ const up:V3=[position.x/length,position.y/length,position.z/length];
++ // The pole fallback is a deterministic presentation basis, never a weather default.
++ const east:V3=Math.abs(up[1])<0.999999? [up[2],0,-up[0]]:[0,-up[2],up[1]];
++ const e=Math.hypot(...east);for(let i=0;i<3;i++)east[i]/=e;
++ const north:V3=[east[1]*up[2]-east[2]*up[1],east[2]*up[0]-east[0]*up[2],east[0]*up[1]-east[1]*up[0]];
++ return {up,east,north};
++}
++/** Read-only optical projection of the frozen WXG model. Mask/epochs are authored presentation inputs, not producer resources. */
++export async function createOpticalReadPort(input:AnalyticInput){
++ const view=await createAnalyticReadView(input);
++ return Object.freeze({view,read:async(query:PlanetWeatherQuery,mask:AuthoredOpticalMask,presentation:OpticalPresentation)=>{
++  const result=await view.read(query);
++  if(result.status!=='Known'&&result.status!=='NoAtmosphere')return {status:result.status,result,frame:null};
++  const {up,east,north}=tangentBasis(result.query.bodyFixedPositionMeters);
++  const wind=result.status==='Known'?result.sample.windBodyFixedMps:{x:0,y:0,z:0};
++  const project=(axis:V3)=>wind.x*axis[0]+wind.y*axis[1]+wind.z*axis[2];
++  const frame:AtmosphereFrame=validateFrame({status:result.status,simulationTick:result.query.simulationTick,
++   weatherSnapshotId:result.WeatherSnapshotId,binding:result.binding as unknown as Record<string,unknown>,
++   bodyId:result.query.bodyId,bodyRadiusMeters:view.input.bundle.physics.radiusMeters,bodyNormal:up,
++   ...presentation,weatherExtinctionPerM:result.status==='Known'?result.sample.extinctionPerM:0,
++   windMps:[project(east),project(up),project(north)],stormIds:result.status==='Known'?[...result.sample.stormIds]:[],
++   authoredCloudCoverage:result.status==='Known'?mask.cloudCoverage:0,rain01:result.status==='Known'?mask.rain01:0,
++   opticsDigest:view.input.bundle.optics.digest});
++  return {status:result.status,result,frame};
++ }});
++}
++
+diff --git a/scripts/compile-r09.mjs b/scripts/compile-r09.mjs
+new file mode 100644
+--- /dev/null
++++ b/scripts/compile-r09.mjs
+@@ -0,0 +1,14 @@
++import {buildSync} from 'esbuild';
++import {readFileSync,copyFileSync,cpSync,mkdirSync} from 'node:fs';
++import {root,verifyInputs,save,walk,bytes} from './bindings.mjs';
++verifyInputs();
++mkdirSync(root+'/.runtime',{recursive:true});
++for(const name of ['optics','occlusion','timer','init','reuse','composer','weather-port'])
++ {const result=buildSync({entryPoints:[root+'/src/'+name+'.ts'],outfile:root+'/.runtime/'+name+'.mjs',bundle:true,format:'esm',platform:'node',packages:'external',loader:{'.glsl':'text'},metafile:true});save('.runtime/'+name+'-metafile.json',result.metafile);}
++const dataBindings=Object.fromEntries([...walk(root,'fixtures'),...walk(root,'inputs/rd/fixtures/F00-CONTROL')].map(path=>{const f=bytes(path);return [path.replace('inputs/rd/fixtures/F00-CONTROL','rd-fixture'),{bytes:f.bytes,sha256:f.sha256}];}));
++const result=buildSync({entryPoints:[root+'/src/viewer.ts'],outfile:root+'/dist/viewer.js',bundle:true,format:'esm',platform:'browser',sourcemap:true,loader:{'.glsl':'text'},define:{__DATA_BINDINGS__:JSON.stringify(dataBindings)},metafile:true});
++save('.runtime/browser-metafile.json',result.metafile);
++copyFileSync(root+'/index.html',root+'/dist/index.html');cpSync(root+'/fixtures',root+'/dist/fixtures',{recursive:true});cpSync(root+'/inputs/rd/fixtures/F00-CONTROL',root+'/dist/rd-fixture',{recursive:true});
++save('.runtime/build-bindings.json',{sourceBundling:'PASS',glsl:'TEXT_ONLY_GPU_COMPILATION_NOT_RUN',files:[...walk(root,'dist'),...walk(root,'.runtime').filter(p=>p.endsWith('.mjs'))].map(bytes)});
++console.log(JSON.stringify({sourceBundling:'PASS',compiledEntries:7,browserGpu:'NOT_RUN'}));
++
+diff --git a/tsconfig.strict.json b/tsconfig.strict.json
+new file mode 100644
+--- /dev/null
++++ b/tsconfig.strict.json
+@@ -0,0 +1,21 @@
++{
++  "compilerOptions": {
++    "target": "ES2022",
++    "module": "ESNext",
++    "moduleResolution": "Bundler",
++    "strict": true,
++    "noEmit": true,
++    "skipLibCheck": false,
++    "lib": [
++      "ES2022",
++      "DOM"
++    ],
++    "allowImportingTsExtensions": true,
++    "resolveJsonModule": true
++  },
++  "include": [
++    "src/**/*.ts",
++    "inputs/gfx/src/**/*.ts"
++  ]
++}
++
+diff --git a/tests/r09-boundaries.test.mjs b/tests/r09-boundaries.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/tests/r09-boundaries.test.mjs
+@@ -0,0 +1,30 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {integrate,composeWater,shellInterval,validateFrame} from '../.runtime/optics.mjs';
++import {firstSolid} from '../.runtime/occlusion.mjs';
++const empty={T:1,L:[0,0,0]},bg=[1,1,1],water=[0,0,0];
++test('water contract rejects invalid segment transmittance/radiance rather than propagating NaN',()=>{
++ for(const bad of [{T:NaN,L:[0,0,0]},{T:1.1,L:[0,0,0]},{T:1,L:[0,-1,0]},{T:1,L:[0,,0]}])
++  assert.throws(()=>composeWater(bad,empty,bg,water,0.56));
++});
++test('shell requires a strictly positive thickness at planetary meter scale',()=>{
++ assert.throws(()=>shellInterval([0,0,1100],[0,0,-1],1000,1000));
++});
++test('occluder contract rejects malformed vectors including holes',()=>{
++ const box={id:'roof',min:[-1,4,-1],max:[1,5,1]};
++ assert.throws(()=>firstSolid([0,1],[0,1,0],[box],10));
++ assert.throws(()=>firstSolid([0,1,0],[0,1,0],[{...box,min:[-1,, -1]}],10));
++});
++test('parallel slab rays outside either face miss, face and inside rays hit',()=>{
++ const box={id:'roof',min:[-1,4,-1],max:[1,5,1]};
++ assert.equal(firstSolid([-2,0,0],[0,1,0],[box],10),null);
++ assert.equal(firstSolid([2,0,0],[0,1,0],[box],10),null);
++ assert.equal(firstSolid([-1,0,0],[0,1,0],[box],10),4);
++ assert.equal(firstSolid([0,4.5,0],[0,1,0],[box],10),0);
++});
++test('opaque surface clips shell and density monotonicity survives long segments',()=>{
++ assert.deepEqual(shellInterval([0,0,1010],[0,0,-1],1000,2000),[0,10]);
++ assert.equal(shellInterval([0,0,1000],[0,0,-1],1000,2000),null);
++ assert.ok(integrate(()=>1e-6,1e6,128,[1,1,1]).T>integrate(()=>2e-6,1e6,128,[1,1,1]).T);
++});
++
+diff --git a/tests/contracts.test.mjs b/tests/contracts.test.mjs
+--- a/tests/contracts.test.mjs
++++ b/tests/contracts.test.mjs
+@@ -1,78 +1,78 @@
+-import test from 'node:test';
+-import assert from 'node:assert/strict';
+-import {readFileSync} from 'node:fs';
+-import * as T from 'three';
+-import {root,verifyInputs,json} from '../scripts/bindings.mjs';
+-import {firstSolid} from '../.runtime/occlusion.mjs';
+-import {createVolumePort} from '../.runtime/composer.mjs';
+-import {createDepthCameraPort,sampleRainExposure,rainDirection,windInputs,applyWindInputs,surfaceMaterial,bindRestoredOrigin} from '../.runtime/reuse.mjs';
+-import {validateFrame,rebaseFrame} from '../.runtime/optics.mjs';
+-const input=json('fixtures/chosen-weather-input.json'),weather=json('fixtures/chosen-weather-result.json');
+-const pos=weather.query.bodyFixedPositionMeters,norm=Math.hypot(pos.x,pos.y,pos.z);
+-const frame={status:'Known',simulationTick:weather.query.simulationTick,weatherSnapshotId:weather.WeatherSnapshotId,binding:weather.binding,bodyId:weather.query.bodyId,
+- bodyRadiusMeters:input.bundle.physics.radiusMeters,bodyNormal:[pos.x/norm,pos.y/norm,pos.z/norm],originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1,weatherExtinctionPerM:weather.sample.extinctionPerM,
+- windMps:[8,0,-4],stormIds:weather.sample.stormIds,authoredCloudCoverage:0.7,rain01:0.8,opticsDigest:input.bundle.optics.digest};
+-test('actual WXG entry replays same storm for ground and orbit, all six Unsupported semantics retained',async()=>{
+- verifyInputs();const {loadReadPort}=await import('../inputs/wxg/repo/spikes/wxg-01-04-analytic/scripts/read-port.mjs');
+- const port=await loadReadPort(),view=await port.createAnalyticReadView(input),query=json('fixtures/chosen-weather-query.json');
+- const ground=await view.read(query),orbit=await view.read(structuredClone(query));
+- assert.equal(JSON.stringify(ground),JSON.stringify(weather));assert.deepEqual(ground,orbit);assert.ok(ground.sample.stormIds.length>0);
+- const all=json('inputs/wxg/repo/spikes/wxg-01-04-analytic/fixtures/authoring-inputs.json'),statuses=[];
+- for(const p of all){const v=await port.createAnalyticReadView(p);statuses.push((await v.read(p.bundle.query)).status);}
+- assert.ok(statuses.includes('NoAtmosphere'));assert.ok(statuses.includes('Unsupported'));assert.ok(statuses.includes('Known'));
+- const methane=all.find(p=>p.bundle.physics.id.includes('Methane'));
+- if(methane){const v=await port.createAnalyticReadView(methane);assert.equal((await v.read(methane.bundle.query)).status,'Unsupported');}
+- assert.throws(()=>validateFrame({...frame,simulationTick:NaN}));assert.throws(()=>validateFrame({...frame,weatherSnapshotId:'fake'}));
+- assert.throws(()=>validateFrame({...frame,status:'NoAtmosphere'}));
+- assert.equal(validateFrame({...frame,status:'NoAtmosphere',weatherExtinctionPerM:0,authoredCloudCoverage:0,rain01:0}).status,'NoAtmosphere');
+-});
+-test('real Three targets, fake renderer EventTarget: ten mount/dispose restores fog and releases owned targets',()=>{
+- for(let i=0;i<10;i++){
+-  const scene=new T.Scene(),fog=new T.Fog(0x445566,1,200);scene.fog=fog;
+-  const renderer={domElement:new EventTarget()},camera=new T.PerspectiveCamera(),water=new T.Mesh(new T.PlaneGeometry(),new T.MeshBasicMaterial({transparent:true,opacity:0.56,depthWrite:false}));
+-  const port=createVolumePort(renderer,scene,camera,water,frame);assert.equal(scene.fog,null);
+-  port.setFrame(frame);assert.throws(()=>port.setFrame({...frame,bodyRadiusMeters:1}),/REBUILD/);
+-  assert.throws(()=>port.setFrame({...frame,atlasEpoch:0}),/STALE_ATLAS/);
+-  renderer.domElement.dispatchEvent(new Event('webglcontextlost',{cancelable:true}));assert.equal(port.diagnostics().lost,true);
+-  renderer.domElement.dispatchEvent(new Event('webglcontextrestored'));assert.equal(port.diagnostics().lost,false);
+-  port.dispose();port.dispose();assert.equal(scene.fog,fog);assert.equal(port.diagnostics().historyResources,0);
+-  assert.throws(()=>port.setFrame(frame),/DISPOSED/);water.geometry.dispose();water.material.dispose();
+- }
+-});
+-test('GFX borrowed depth snapshot has epoch and consumer never owns disposal',()=>{
+- const camera=new T.PerspectiveCamera(),depth=new T.DepthTexture(1,1);let disposed=0;depth.addEventListener('dispose',()=>disposed++);
+- const first=createDepthCameraPort(camera,depth,1,{weather:weather.WeatherSnapshotId}),second=createDepthCameraPort(camera,depth,2,{weather:weather.WeatherSnapshotId});
+- assert.notEqual(first.epoch,second.epoch);assert.equal(first.depth,depth);assert.equal(disposed,0);
+- assert.throws(()=>createDepthCameraPort(camera,depth,-1,{}));depth.dispose();assert.equal(disposed,1);
+-});
+-test('roof, overhang, hollow cave and opened roof use real reused RD exposure over authored optical projection',()=>{
+- const source=json('fixtures/occluders.json'),solids=source.solids;
+- const index={quantumMeters:0.125,fixtureDigest:'a'.repeat(64),sourceRevision:1,sourceFrame:{id:'atm.body',basis:'right-handed-y-up',originMeters:[0,0,0],rotationXyzw:[0,0,0,1]},
+-  regionCount:1,coverageBindings:[],sample(p){if(p.some((v,i)=>v<source.bounds.min[i]||v>source.bounds.max[i]))return {status:'unknown'};
+-   return {status:solids.some(b=>p.every((v,i)=>v>=b.min[i]&&v<=b.max[i]))?'solid':'air'};}};
+- assert.equal(sampleRainExposure(index,[0,1,0],[0,-1,0],6).status,'shielded');
+- assert.equal(sampleRainExposure(index,[7,1,0],[0,-1,0],6).status,'shielded');
+- assert.equal(firstSolid([15,2,0],[0,0,-1],solids,10),null);
+- assert.equal(sampleRainExposure(index,[15,1,0],[0,-1,0],8).status,'shielded');
+- const opened=solids.filter(b=>!source.openRemoval.includes(b.id));
+- const openIndex={...index,sourceRevision:2,sample:p=>({status:opened.some(b=>p.every((v,i)=>v>=b.min[i]&&v<=b.max[i]))?'solid':'air'})};
+- assert.equal(sampleRainExposure(openIndex,[0,1,0],[0,-1,0],6).status,'exposed');
+- assert.equal(sampleRainExposure(index,[21,1,0],[0,-1,0],6).status,'unknown');
+-});
+-test('actual RD wind/rain inputs agree with GFX port and reject stale/invalid owner rotation',()=>{
+- const weather={windMps:[8,0,-4],rain01:0.8,cloud01:0.7,snow01:0};
+- const rd=applyWindInputs('leaf.1',240,0.4,weather,[0,0,0,1]),gfx=windInputs('leaf.1',240,0.4,weather.windMps,[0,0,0,1]);
+- assert.equal(rd.angles.x,gfx.x);assert.equal(rd.angles.z,gfx.z);assert.ok(rainDirection(weather)[0]>0);
+- assert.throws(()=>windInputs('leaf.1',240,0.4,weather.windMps,[0,0,0,2]));
+-});
+-test('actual GFX water hook restores camera/world together; opened revision and sun direction survive rebase',()=>{
+- const material=surfaceMaterial(T,false,{id:'water',role:'water-presentation',colorLinearRgb:[0.1,0.2,0.3]},true);
+- const origin={value:new T.Vector3(1024,0,0)};bindRestoredOrigin(material,origin);
+- const shader={uniforms:{},vertexShader:'#include <begin_vertex>\n#include <worldpos_vertex>',fragmentShader:'#include <color_fragment>\n#include <roughnessmap_fragment>\n#include <normal_fragment_maps>\n#include <opaque_fragment>'};
+- material.onBeforeCompile(shader,{});assert.ok(shader.fragmentShader.includes('cameraPosition+uRestoredOrigin-vHvpWorld'));assert.ok(shader.vertexShader.includes('.xyz+uRestoredOrigin'));
+- const opened=validateFrame({...frame,sourceRevision:2}),shifted=rebaseFrame(opened,[1024,0,0]);assert.equal(shifted.sourceRevision,2);assert.deepEqual(shifted.stormIds,frame.stormIds);
+- const scene=new T.Scene(),sun=new T.DirectionalLight();sun.position.set(-28,42,-18);scene.add(sun,sun.target);scene.updateMatrixWorld(true);
+- const direction=()=>sun.getWorldPosition(new T.Vector3()).sub(sun.target.getWorldPosition(new T.Vector3())).normalize();
+- const before=direction();scene.position.x=-1024;scene.updateMatrixWorld(true);assert.ok(before.distanceTo(direction())<1e-12);
+- material.dispose();
+-});
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import * as T from 'three';
++import {root,verifyInputs,json} from '../scripts/bindings.mjs';
++import {firstSolid} from '../.runtime/occlusion.mjs';
++import {createVolumePort} from '../.runtime/composer.mjs';
++import {createDepthCameraPort,sampleRainExposure,rainDirection,windInputs,applyWindInputs,surfaceMaterial,bindRestoredOrigin} from '../.runtime/reuse.mjs';
++import {validateFrame,rebaseFrame} from '../.runtime/optics.mjs';
++const input=json('fixtures/chosen-weather-input.json'),weather=json('fixtures/chosen-weather-result.json');
++const pos=weather.query.bodyFixedPositionMeters,norm=Math.hypot(pos.x,pos.y,pos.z);
++const frame={status:'Known',simulationTick:weather.query.simulationTick,weatherSnapshotId:weather.WeatherSnapshotId,binding:weather.binding,bodyId:weather.query.bodyId,
++ bodyRadiusMeters:input.bundle.physics.radiusMeters,bodyNormal:[pos.x/norm,pos.y/norm,pos.z/norm],originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1,weatherExtinctionPerM:weather.sample.extinctionPerM,
++ windMps:[8,0,-4],stormIds:weather.sample.stormIds,authoredCloudCoverage:0.7,rain01:0.8,opticsDigest:input.bundle.optics.digest};
++test('actual WXG entry replays same storm for ground and orbit, all six Unsupported semantics retained',async()=>{
++ verifyInputs();const port=await import('../.runtime/weather-port.mjs');
++ const view=await port.createAnalyticReadView(input),query=json('fixtures/chosen-weather-query.json');
++ const ground=await view.read(query),orbit=await view.read(structuredClone(query));
++ assert.equal(JSON.stringify(ground),JSON.stringify(weather));assert.deepEqual(ground,orbit);assert.ok(ground.sample.stormIds.length>0);
++ const all=json('inputs/wxg/repo/spikes/wxg-01-04-analytic/fixtures/authoring-inputs.json'),statuses=[];
++ for(const p of all){const v=await port.createAnalyticReadView(p);statuses.push((await v.read(p.bundle.query)).status);}
++ assert.ok(statuses.includes('NoAtmosphere'));assert.ok(statuses.includes('Unsupported'));assert.ok(statuses.includes('Known'));
++ const methane=all.find(p=>p.bundle.physics.id.includes('Methane'));
++ if(methane){const v=await port.createAnalyticReadView(methane);assert.equal((await v.read(methane.bundle.query)).status,'Unsupported');}
++ assert.throws(()=>validateFrame({...frame,simulationTick:NaN}));assert.throws(()=>validateFrame({...frame,weatherSnapshotId:'fake'}));
++ assert.throws(()=>validateFrame({...frame,status:'NoAtmosphere'}));
++ assert.equal(validateFrame({...frame,status:'NoAtmosphere',weatherExtinctionPerM:0,authoredCloudCoverage:0,rain01:0}).status,'NoAtmosphere');
++});
++test('real Three targets, fake renderer EventTarget: ten mount/dispose restores fog and releases owned targets',()=>{
++ for(let i=0;i<10;i++){
++  const scene=new T.Scene(),fog=new T.Fog(0x445566,1,200);scene.fog=fog;
++  const renderer={domElement:new EventTarget()},camera=new T.PerspectiveCamera(),water=new T.Mesh(new T.PlaneGeometry(),new T.MeshBasicMaterial({transparent:true,opacity:0.56,depthWrite:false}));
++  const port=createVolumePort(renderer,scene,camera,water,frame);assert.equal(scene.fog,null);
++  port.setFrame(frame);assert.throws(()=>port.setFrame({...frame,bodyRadiusMeters:1}),/REBUILD/);
++  assert.throws(()=>port.setFrame({...frame,atlasEpoch:0}),/STALE_ATLAS/);
++  renderer.domElement.dispatchEvent(new Event('webglcontextlost',{cancelable:true}));assert.equal(port.diagnostics().lost,true);
++  renderer.domElement.dispatchEvent(new Event('webglcontextrestored'));assert.equal(port.diagnostics().lost,false);
++  port.dispose();port.dispose();assert.equal(scene.fog,fog);assert.equal(port.diagnostics().historyResources,0);
++  assert.throws(()=>port.setFrame(frame),/DISPOSED/);water.geometry.dispose();water.material.dispose();
++ }
++});
++test('GFX borrowed depth snapshot has epoch and consumer never owns disposal',()=>{
++ const camera=new T.PerspectiveCamera(),depth=new T.DepthTexture(1,1);let disposed=0;depth.addEventListener('dispose',()=>disposed++);
++ const first=createDepthCameraPort(camera,depth,1,{weather:weather.WeatherSnapshotId}),second=createDepthCameraPort(camera,depth,2,{weather:weather.WeatherSnapshotId});
++ assert.notEqual(first.epoch,second.epoch);assert.equal(first.depth,depth);assert.equal(disposed,0);
++ assert.throws(()=>createDepthCameraPort(camera,depth,-1,{}));depth.dispose();assert.equal(disposed,1);
++});
++test('roof, overhang, hollow cave and opened roof use real reused RD exposure over authored optical projection',()=>{
++ const source=json('fixtures/occluders.json'),solids=source.solids;
++ const index={quantumMeters:0.125,fixtureDigest:'a'.repeat(64),sourceRevision:1,sourceFrame:{id:'atm.body',basis:'right-handed-y-up',originMeters:[0,0,0],rotationXyzw:[0,0,0,1]},
++  regionCount:1,coverageBindings:[],sample(p){if(p.some((v,i)=>v<source.bounds.min[i]||v>source.bounds.max[i]))return {status:'unknown'};
++   return {status:solids.some(b=>p.every((v,i)=>v>=b.min[i]&&v<=b.max[i]))?'solid':'air'};}};
++ assert.equal(sampleRainExposure(index,[0,1,0],[0,-1,0],6).status,'shielded');
++ assert.equal(sampleRainExposure(index,[7,1,0],[0,-1,0],6).status,'shielded');
++ assert.equal(firstSolid([15,2,0],[0,0,-1],solids,10),null);
++ assert.equal(sampleRainExposure(index,[15,1,0],[0,-1,0],8).status,'shielded');
++ const opened=solids.filter(b=>!source.openRemoval.includes(b.id));
++ const openIndex={...index,sourceRevision:2,sample:p=>({status:opened.some(b=>p.every((v,i)=>v>=b.min[i]&&v<=b.max[i]))?'solid':'air'})};
++ assert.equal(sampleRainExposure(openIndex,[0,1,0],[0,-1,0],6).status,'exposed');
++ assert.equal(sampleRainExposure(index,[21,1,0],[0,-1,0],6).status,'unknown');
++});
++test('actual RD wind/rain inputs agree with GFX port and reject stale/invalid owner rotation',()=>{
++ const weather={windMps:[8,0,-4],rain01:0.8,cloud01:0.7,snow01:0};
++ const rd=applyWindInputs('leaf.1',240,0.4,weather,[0,0,0,1]),gfx=windInputs('leaf.1',240,0.4,weather.windMps,[0,0,0,1]);
++ assert.equal(rd.angles.x,gfx.x);assert.equal(rd.angles.z,gfx.z);assert.ok(rainDirection(weather)[0]>0);
++ assert.throws(()=>windInputs('leaf.1',240,0.4,weather.windMps,[0,0,0,2]));
++});
++test('actual GFX water hook restores camera/world together; opened revision and sun direction survive rebase',()=>{
++ const material=surfaceMaterial(T,false,{id:'water',role:'water-presentation',colorLinearRgb:[0.1,0.2,0.3]},true);
++ const origin={value:new T.Vector3(1024,0,0)};bindRestoredOrigin(material,origin);
++ const shader={uniforms:{},vertexShader:'#include <begin_vertex>\n#include <worldpos_vertex>',fragmentShader:'#include <color_fragment>\n#include <roughnessmap_fragment>\n#include <normal_fragment_maps>\n#include <opaque_fragment>'};
++ material.onBeforeCompile(shader,{});assert.ok(shader.fragmentShader.includes('cameraPosition+uRestoredOrigin-vHvpWorld'));assert.ok(shader.vertexShader.includes('.xyz+uRestoredOrigin'));
++ const opened=validateFrame({...frame,sourceRevision:2}),shifted=rebaseFrame(opened,[1024,0,0]);assert.equal(shifted.sourceRevision,2);assert.deepEqual(shifted.stormIds,frame.stormIds);
++ const scene=new T.Scene(),sun=new T.DirectionalLight();sun.position.set(-28,42,-18);scene.add(sun,sun.target);scene.updateMatrixWorld(true);
++ const direction=()=>sun.getWorldPosition(new T.Vector3()).sub(sun.target.getWorldPosition(new T.Vector3())).normalize();
++ const before=direction();scene.position.x=-1024;scene.updateMatrixWorld(true);assert.ok(before.distanceTo(direction())<1e-12);
++ material.dispose();
++});
+diff --git a/scripts/image-oracle.mjs b/scripts/image-oracle.mjs
+--- a/scripts/image-oracle.mjs
++++ b/scripts/image-oracle.mjs
+@@ -1,38 +1,38 @@
+-import assert from 'node:assert/strict';
+-import {writeFileSync,mkdirSync} from 'node:fs';
+-import {deflateSync} from 'node:zlib';
+-import {root,save,bytes} from './bindings.mjs';
+-import {integrate,composeWater} from '../.runtime/optics.mjs';
+-const out=root+'/../../.devtoolbox/specs/changes/atm-01-04-2026-10-09/tests/images';
+-mkdirSync(out,{recursive:true});
+-const width=48,height=32;
+-// Independent closed-form layer oracle: no production integrate or composer call.
+-const closed=(sigma,length,color)=>({T:Math.exp(-sigma*length),L:color.map(v=>v*(1-Math.exp(-sigma*length)))});
+-const crc=b=>{let c=0xffffffff;for(const byte of b){c^=byte;for(let i=0;i<8;i++)c=(c>>>1)^((c&1)?0xedb88320:0);}return (c^0xffffffff)>>>0;};
+-function png(pixels){const chunk=(name,data)=>{const n=Buffer.from(name),size=Buffer.alloc(4),check=Buffer.alloc(4);size.writeUInt32BE(data.length);check.writeUInt32BE(crc(Buffer.concat([n,data])));return Buffer.concat([size,n,data,check]);};
+- const header=Buffer.alloc(13);header.writeUInt32BE(width);header.writeUInt32BE(height,4);header[8]=8;header[9]=2;
+- const rows=Buffer.alloc(height*(width*3+1));for(let y=0;y<height;y++)Buffer.from(pixels.slice(y*width*3,(y+1)*width*3)).copy(rows,y*(width*3+1)+1);
+- return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',header),chunk('IDAT',deflateSync(rows)),chunk('IEND',Buffer.alloc(0))]);}
+-const display=v=>Math.round(Math.max(0,Math.min(1,v))*255);
+-const renders={reference:[],candidate:[],'wrong-water':[],'missing-density':[],'duplicate-fog':[],'opaque-water':[]};
+-for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+- const sigma=0.02+0.12*x/(width-1),frontLength=0.2+4*y/(height-1),backLength=6-frontLength;
+- const frontColor=[0.3,0.4,0.45],backColor=[0.1,0.25,0.3],background=[0.8,0.55,0.3],water=[0.04,0.25,0.4],alpha=0.56;
+- const f=closed(sigma,frontLength,frontColor),b=closed(sigma,backLength,backColor);
+- const reference=background.map((v,i)=>f.L[i]+f.T*(alpha*water[i]+(1-alpha)*(b.L[i]+b.T*v)));
+- const candidate=composeWater(integrate(()=>sigma,frontLength,32,frontColor),integrate(()=>sigma,backLength,32,backColor),background,water,alpha);
+- const wrong=composeWater(integrate(()=>sigma,backLength,32,backColor),integrate(()=>sigma,frontLength,32,frontColor),background,water,alpha);
+- const missing=water.map((v,i)=>alpha*v+(1-alpha)*background[i]);
+- const duplicate=candidate.map((v,i)=>f.L[i]+f.T*v),opaque=composeWater(f,b,background,water,1);
+- for(const [key,color] of Object.entries({reference,candidate,'wrong-water':wrong,'missing-density':missing,'duplicate-fog':duplicate,'opaque-water':opaque}))renders[key].push(...color.map(display));
+-}
+-const results=[];
+-for(const [name,raster] of Object.entries(renders)){
+- writeFileSync(out+'/'+name+'.png',png(raster));
+- let changed=0;for(let i=0;i<raster.length;i+=3)if([0,1,2].some(c=>Math.abs(raster[i+c]-renders.reference[i+c])>1))changed++;
+- const fraction=changed/(width*height),pass=fraction<=0.002;
+- if(name==='candidate')assert.equal(pass,true);else if(name!=='reference')assert.equal(pass,false,name);
+- results.push({name,changedPixelFraction:fraction,threshold:0.002,result:pass?'PASS':'FAIL_EXPECTED_NEGATIVE'});
+-}
+-save('../../.devtoolbox/specs/changes/atm-01-04-2026-10-09/tests/image-oracle.json',{status:'PASS',imageKind:'CPU_SYNTHETIC_ARITHMETIC_NOT_GPU_RASTER',width,height,results,hardwareAcceptance:false});
+-console.log(JSON.stringify({status:'PASS',images:results.length,negativeVariants:4,threshold:0.002}));
++import assert from 'node:assert/strict';
++import {writeFileSync,mkdirSync} from 'node:fs';
++import {deflateSync} from 'node:zlib';
++import {root,save,bytes} from './bindings.mjs';
++import {integrate,composeWater} from '../.runtime/optics.mjs';
++const out=root+'/.runtime/images';
++mkdirSync(out,{recursive:true});
++const width=48,height=32;
++// Independent closed-form layer oracle: no production integrate or composer call.
++const closed=(sigma,length,color)=>({T:Math.exp(-sigma*length),L:color.map(v=>v*(1-Math.exp(-sigma*length)))});
++const crc=b=>{let c=0xffffffff;for(const byte of b){c^=byte;for(let i=0;i<8;i++)c=(c>>>1)^((c&1)?0xedb88320:0);}return (c^0xffffffff)>>>0;};
++function png(pixels){const chunk=(name,data)=>{const n=Buffer.from(name),size=Buffer.alloc(4),check=Buffer.alloc(4);size.writeUInt32BE(data.length);check.writeUInt32BE(crc(Buffer.concat([n,data])));return Buffer.concat([size,n,data,check]);};
++ const header=Buffer.alloc(13);header.writeUInt32BE(width);header.writeUInt32BE(height,4);header[8]=8;header[9]=2;
++ const rows=Buffer.alloc(height*(width*3+1));for(let y=0;y<height;y++)Buffer.from(pixels.slice(y*width*3,(y+1)*width*3)).copy(rows,y*(width*3+1)+1);
++ return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',header),chunk('IDAT',deflateSync(rows)),chunk('IEND',Buffer.alloc(0))]);}
++const display=v=>Math.round(Math.max(0,Math.min(1,v))*255);
++const renders={reference:[],candidate:[],'wrong-water':[],'missing-density':[],'duplicate-fog':[],'opaque-water':[]};
++for(let y=0;y<height;y++)for(let x=0;x<width;x++){
++ const sigma=0.02+0.12*x/(width-1),frontLength=0.2+4*y/(height-1),backLength=6-frontLength;
++ const frontColor=[0.3,0.4,0.45],backColor=[0.1,0.25,0.3],background=[0.8,0.55,0.3],water=[0.04,0.25,0.4],alpha=0.56;
++ const f=closed(sigma,frontLength,frontColor),b=closed(sigma,backLength,backColor);
++ const reference=background.map((v,i)=>f.L[i]+f.T*(alpha*water[i]+(1-alpha)*(b.L[i]+b.T*v)));
++ const candidate=composeWater(integrate(()=>sigma,frontLength,32,frontColor),integrate(()=>sigma,backLength,32,backColor),background,water,alpha);
++ const wrong=composeWater(integrate(()=>sigma,backLength,32,backColor),integrate(()=>sigma,frontLength,32,frontColor),background,water,alpha);
++ const missing=water.map((v,i)=>alpha*v+(1-alpha)*background[i]);
++ const duplicate=candidate.map((v,i)=>f.L[i]+f.T*v),opaque=composeWater(f,b,background,water,1);
++ for(const [key,color] of Object.entries({reference,candidate,'wrong-water':wrong,'missing-density':missing,'duplicate-fog':duplicate,'opaque-water':opaque}))renders[key].push(...color.map(display));
++}
++const results=[];
++for(const [name,raster] of Object.entries(renders)){
++ writeFileSync(out+'/'+name+'.png',png(raster));
++ let changed=0;for(let i=0;i<raster.length;i+=3)if([0,1,2].some(c=>Math.abs(raster[i+c]-renders.reference[i+c])>1))changed++;
++ const fraction=changed/(width*height),pass=fraction<=0.002;
++ if(name==='candidate')assert.equal(pass,true);else if(name!=='reference')assert.equal(pass,false,name);
++ results.push({name,changedPixelFraction:fraction,threshold:0.002,result:pass?'PASS':'FAIL_EXPECTED_NEGATIVE'});
++}
++save('.runtime/image-oracle.json',{status:'PASS',imageKind:'CPU_SYNTHETIC_ARITHMETIC_NOT_GPU_RASTER',width,height,results,hardwareAcceptance:false});
++console.log(JSON.stringify({status:'PASS',images:results.length,negativeVariants:4,threshold:0.002}));
+

@@ -4,8 +4,10 @@ import {startHvpRoute} from "../../src/hvp/hvpRoute";
 
 it("presents a failed deferred bootstrap load through the existing accessible HVP boundary",async()=>{
   const elements:{id:string;textContent:string;attributes:Record<string,string>}[]=[];
+  const flightHud={hidden:false};
+  const reticle={style:"",setAttribute(name:string,value:string){if(name==="style")this.style=value;}};
   const body={dataset:{hestiaPrototypeState:"Ready",hestiaPrototypePhysics:"stale"},append:()=>{}};
-  const documentPort={body,querySelector:()=>null,createElement:()=>{
+  const documentPort={body,querySelector:(selector:string)=>selector==="#flight-hud"?flightHud:selector===".hud-center-safe-area"?reticle:null,createElement:()=>{
     const element={id:"",textContent:"",attributes:{} as Record<string,string>,append:()=>{},
       setAttribute(name:string,value:string){this.attributes[name]=value;}};
     elements.push(element);return element;
@@ -15,6 +17,8 @@ it("presents a failed deferred bootstrap load through the existing accessible HV
   expect(body.dataset.hestiaPrototypePhysics).toBeUndefined();
   expect(elements.find(element=>element.id==="hvp-failure")?.attributes).toEqual({role:"alert","aria-live":"assertive"});
   expect(elements.find(element=>element.id==="hvp-error-detail")?.textContent).toContain("deferred bootstrap unavailable");
+  expect(flightHud.hidden).toBe(true);
+  expect(reticle.style).toBe("display:none");
 });
 
 describe("HVP route bundle boundary", () => {

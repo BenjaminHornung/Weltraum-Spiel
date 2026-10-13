@@ -1,0 +1,11 @@
+import http from 'node:http';
+import {readFile} from 'node:fs/promises';
+import path from 'node:path';
+import {spike} from './inputs.mjs';
+const root=path.join(spike,'dist'),port=Number(process.argv[2]??'4328');
+if(!Number.isSafeInteger(port)||port<1024||port>65535)throw new Error('Invalid local port');
+const mime={'.html':'text/html','.mjs':'text/javascript','.js':'text/javascript','.json':'application/json','.wgsl':'text/plain','.bin':'application/octet-stream'};
+http.createServer(async(req,res)=>{try{const url=new URL(req.url,'http://127.0.0.1'),name=decodeURIComponent(url.pathname),file=path.resolve(root,'.'+(name==='/'?'/index.html':name));
+ if(!file.startsWith(root+path.sep))throw new Error('Path outside own dist');
+ res.setHeader('Content-Type',mime[path.extname(file)]??'application/octet-stream');res.setHeader('Cache-Control','no-store');res.end(await readFile(file));
+ }catch{res.writeHead(404);res.end('Not found');}}).listen(port,'127.0.0.1',()=>console.log('RT02B CPU diagnostic http://127.0.0.1:'+port));

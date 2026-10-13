@@ -1,0 +1,198 @@
+--- a/origin-r05-supervisor.ps1.source (immutable origin data)
++++ b/supervisor-complete.ps1.source (UNAPPLIED complete review replacement)
+@@ -1 +1,194 @@
+-$ErrorActionPreference='Stop';$w='C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09';$s="$w/spikes/rt-02b-dda/revisions/packer-lazy-global-guard-source-r04";function Bind([string]$f){$b=[IO.File]::ReadAllBytes($f);[pscustomobject]@{path=$f;byteLength=$b.Length;sha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($b)).ToLowerInvariant()}};$pre=[IO.File]::ReadAllText("$s/pre-execution.json")|ConvertFrom-Json;foreach($ref in @($pre.binary,$pre.script,$pre.audit,$pre.dispatchInput,$pre.readrows)){$a=Bind $ref.path;if($a.sha256 -ne $ref.sha256 -or $a.byteLength -ne $ref.byteLength){throw ('Prelaunch byte drift: '+$ref.path)}};$preBinding=Bind "$s/pre-execution.json";$psi=[Diagnostics.ProcessStartInfo]::new();$psi.FileName=$pre.binary.path;$psi.WorkingDirectory=$pre.cwd;$psi.UseShellExecute=$false;$psi.CreateNoWindow=$true;$psi.WindowStyle=[Diagnostics.ProcessWindowStyle]::Hidden;$psi.RedirectStandardOutput=$true;$psi.RedirectStandardError=$true;foreach($arg in $pre.argv){$psi.ArgumentList.Add($arg)};$psi.Environment.Clear();foreach($key in @('SystemRoot','WINDIR')){$value=[Environment]::GetEnvironmentVariable($key);if($null -ne $value){$psi.Environment[$key]=$value}};$psi.Environment['UV_THREADPOOL_SIZE']='1';$start=[DateTime]::UtcNow.ToString('o');$p=[Diagnostics.Process]::Start($psi);$out=[IO.MemoryStream]::new();$err=[IO.MemoryStream]::new();$ot=$p.StandardOutput.BaseStream.CopyToAsync($out);$et=$p.StandardError.BaseStream.CopyToAsync($err);$done=$p.WaitForExit(30000);if(-not $done){throw 'SOURCE_EXTRACTION_DEADLINE_EXCEEDED_NO_KILL_NO_RETRY'};[Threading.Tasks.Task]::WaitAll(@($ot,$et));$finish=[DateTime]::UtcNow.ToString('o');$ob=$out.ToArray();$eb=$err.ToArray();[IO.File]::WriteAllBytes("$s/source-extraction.stdout.json",$ob);[IO.File]::WriteAllBytes("$s/source-extraction.stderr.txt",$eb);$durable=[pscustomobject]@{schema='hestia.rt02b.prospective-source-supervisor-event.v5';binary=$pre.binary;argv=$pre.argv;cwd=$pre.cwd;script=$pre.script;audit=$pre.audit;preExecution=$preBinding;supervisorLaunchRequestedAtUtc=$start;supervisorCompletionObservedAtUtc=$finish;childStartedAtUtc=$null;childFinishedAtUtc=$null;deadlineSatisfied=$done;supervisorDeadlineMilliseconds=30000;internalDeadlineMilliseconds=28000;programExitCode=$p.ExitCode;stdout=(Bind "$s/source-extraction.stdout.json");stderr=(Bind "$s/source-extraction.stderr.txt");sourceInterpretation='NOT_YET_PARSED';runtimeAcceptance='NONE'};[IO.File]::WriteAllBytes("$s/source-extraction.supervisor-event.json",[Text.Encoding]::UTF8.GetBytes(($durable|ConvertTo-Json -Depth 15)+"`n"));$sources=@();if($p.ExitCode -eq 0){$data=[Text.Encoding]::UTF8.GetString($ob)|ConvertFrom-Json;$names=@('internal/deps/undici/undici','internal/bootstrap/web/exposed-wildcard','internal/bootstrap/web/exposed-window-or-worker','internal/util','internal/bootstrap/realm');if($data.schema -ne 'hestia.rt02b.selected-node-embedded-source.v4' -or @($data.sources.PSObject.Properties).Count -ne 5){throw 'Unexpected selected-source envelope'};foreach($key in $names){$value=$data.sources.$key;if($value -isnot [string]){throw 'Selected source not text'};$f="$s/"+$key.Replace('/','__')+'.js.source';[IO.File]::WriteAllBytes($f,[Text.Encoding]::UTF8.GetBytes($value));$sources+=Bind $f}};[pscustomobject]@{schema='hestia.rt02b.source-extraction-event.v4';binary=$pre.binary;argv=$pre.argv;cwd=$pre.cwd;preExecution=$preBinding;script=$pre.script;audit=$pre.audit;supervisorDeadlineMilliseconds=30000;internalDeadlineMilliseconds=28000;startedAtUtc=$start;finishedAtUtc=$finish;deadlineSatisfied=$done;programExitCode=$p.ExitCode;stdout=(Bind "$s/source-extraction.stdout.json");stderr=(Bind "$s/source-extraction.stderr.txt");selectedSources=$sources;embeddedModulesEvaluated=@();applicationImports=@();packerEvents=0;environmentKeyNames=@('SystemRoot','WINDIR','UV_THREADPOOL_SIZE');environmentValuesEmitted=$false;externalKill=$false;classification='EMBEDDED_SOURCE_TEXT_EXTRACTION_ONLY_NOT_IMPORT_OR_RUNTIME_PROOF'}|ConvertTo-Json -Depth 15;exit $p.ExitCode
++# A41/R06 UNAPPLIED SOURCE DATA. No launch permission; do not execute this file.
++$ErrorActionPreference = 'Stop'
++$runtimeDispositionAdmitted = $false
++if (-not $runtimeDispositionAdmitted) { throw 'A41_STATIC_ONLY_EXECUTION_NOT_AUTHORIZED' }
++
++$worktree = 'C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09'
++# A later disposition must bind fresh explicit paths; these are inert review targets only.
++$profilePath = 'C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/future-event-UNADMITTED/launch-profile.json'
++$fullBeforePath = 'C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/future-event-UNADMITTED/full-before.json'
++$fullAfterPath = 'C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/future-event-UNADMITTED/full-after.json'
++$completedPath = 'C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/future-event-UNADMITTED/completed.json'
++$incompletePath = 'C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/future-event-UNADMITTED/incomplete.json'
++$stdoutPath = 'C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/future-event-UNADMITTED/stdout.bin'
++$stderrPath = 'C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/future-event-UNADMITTED/stderr.bin'
++$targets = @($fullBeforePath, $fullAfterPath, $completedPath, $incompletePath, $stdoutPath, $stderrPath)
++$ownChildPrefix = [IO.Path]::GetFullPath('C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/future-event-UNADMITTED/')
++$cifiPrefix = [IO.Path]::GetFullPath('C:/IFI_SourceCode/')
++$ownTargetPrefix = [IO.Path]::GetFullPath('C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-RT-02B-2026-10-09/spikes/rt-02b-dda/revisions/packer-durable-event-proposal-r06/')
++$deadlineMilliseconds = 30000
++$pre = $null
++$preBinding = $null
++$process = $null
++$clock = $null
++$exitObserved = $false
++$parentObservedExitCode = $null
++$raw = [ordered]@{ stdout = $null; stderr = $null }
++$parentObservations = [ordered]@{
++    launchRequestedAtUtc = $null
++    exitObservedAtUtc = $null
++    rawFinalizedAtUtc = $null
++    parseObservedAtUtc = $null
++}
++$phase = 'PRELAUNCH'
++$controlStatus = 'NOT_STARTED'
++$parseStatus = 'NOT_ATTEMPTED'
++$holdRecordPersistenceFailure = $false
++$completeFactsPersisted = $false
++$fullAfterAttempted = $false
++$pathCollision = $false
++
++function Bind([string]$path) {
++    $bytes = [IO.File]::ReadAllBytes($path)
++    [pscustomobject]@{ path = $path; byteLength = $bytes.Length; sha256 = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant() }
++}
++function WriteNewBytes([string]$path, [byte[]]$bytes) {
++    $file = [IO.FileStream]::new($path, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
++    try { $file.Write($bytes, 0, $bytes.Length); $file.Flush($true) }
++    finally { $file.Dispose() } # Own file handle only; never process/SDK/pipe disposal.
++}
++function ControlRecord([string]$kind, [string]$status) {
++    [pscustomobject]@{
++        schema = 'hestia.rt02b.proposed-durable-control-event.v6'
++        kind = $kind
++        controlStatus = $status
++        phase = $phase
++        binary = if ($pre) { $pre.binary } else { $null }
++        script = if ($pre) { $pre.script } else { $null }
++        audit = if ($pre) { $pre.audit } else { $null }
++        argv = if ($pre) { $pre.argv } else { $null }
++        cwd = if ($pre) { $pre.cwd } else { $worktree }
++        preExecution = $preBinding
++        deadlineMilliseconds = $deadlineMilliseconds
++        internalDeadlineMilliseconds = 28000
++        parentObservations = $parentObservations
++        childStartedAtUtc = $null
++        childFinishedAtUtc = $null
++        producerTimestampHook = 'NONE_AUTHENTICATED'
++        parentObservedProcessExit = $exitObserved
++        parentObservedExitCode = $parentObservedExitCode
++        raw = $raw
++        parseStatus = $parseStatus
++        priorCompletedFactsPersisted = $completeFactsPersisted
++        processFamilyRetirement = 'UNCONFIRMED'
++        processCleanup = 'NOT_AUTHORIZED_NOT_PERFORMED'
++        runtimeAcceptance = 'NONE'
++        SAFE = $false
++        READY = $false
++    }
++}
++function WriteNewRecord([string]$path, $record) {
++    $text = ($record | ConvertTo-Json -Depth 20) + [string][char]10
++    WriteNewBytes $path ([Text.Encoding]::UTF8.GetBytes($text))
++}
++function RemainingMilliseconds {
++    [Math]::Max(0, $deadlineMilliseconds - [int]$clock.ElapsedMilliseconds)
++}
++try {
++    if (@($targets | Select-Object -Unique).Count -ne 6) { $pathCollision = $true; throw 'DISTINCT_TARGETS_REQUIRED' }
++    foreach ($target in $targets) {
++        if (-not [IO.Path]::GetFullPath($target).StartsWith($ownTargetPrefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'OWN_CIFI_TARGET_REQUIRED' }
++        if (Test-Path -LiteralPath $target) { $pathCollision = $true; throw 'NO_OVERWRITE_PATH_COLLISION' }
++    }
++    # No mkdir, implicit profile, generated admission, retry, or historical argv reuse.
++    $pre = [IO.File]::ReadAllText($profilePath) | ConvertFrom-Json
++    $preBinding = Bind $profilePath
++    if ($pre.cwd -ne $worktree -or $pre.binary.path -ne 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' -or
++        $pre.binary.sha256 -ne '0d0f5e39f9f3d9587bc19f73eab3c2c9c4903fd02d6dbf9c853dd81b3d95fad4' -or
++        $pre.argv.Count -ne 2 -or $pre.argv[0] -ne '--unhandled-rejections=strict' -or $pre.argv[1] -ne $pre.script.path) { throw 'FRESH_BOUND_PROFILE_REQUIRED' }
++    if (-not [IO.Path]::GetFullPath($pre.script.path).StartsWith($ownChildPrefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'FRESH_OWN_CIFI_CHILD_SOURCE_REQUIRED' }
++    foreach ($ref in @($pre.binary, $pre.script, $pre.audit, $pre.dispatchInput, $pre.readrows)) {
++        if (-not [IO.Path]::GetFullPath($ref.path).StartsWith($cifiPrefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'CIFI_INPUT_REQUIRED' }
++        $actual = Bind $ref.path
++        if ($actual.byteLength -ne $ref.byteLength -or $actual.sha256 -ne $ref.sha256) { throw 'PRELAUNCH_INPUT_DRIFT' }
++    }
++    $phase = 'FULL_BEFORE'
++    WriteNewRecord $fullBeforePath (ControlRecord 'FULL_BEFORE' 'NO_CHILD_LAUNCHED')
++    $psi = [Diagnostics.ProcessStartInfo]::new()
++    $psi.FileName = $pre.binary.path
++    $psi.WorkingDirectory = $pre.cwd
++    $psi.UseShellExecute = $false
++    $psi.CreateNoWindow = $true
++    $psi.WindowStyle = [Diagnostics.ProcessWindowStyle]::Hidden
++    $psi.RedirectStandardOutput = $true
++    $psi.RedirectStandardError = $true
++    foreach ($arg in $pre.argv) { $psi.ArgumentList.Add($arg) }
++    $psi.Environment.Clear()
++    foreach ($key in @('SystemRoot', 'WINDIR')) {
++        $value = [Environment]::GetEnvironmentVariable($key)
++        if ($null -ne $value) { $psi.Environment[$key] = $value }
++    }
++    $psi.Environment['UV_THREADPOOL_SIZE'] = '1'
++    $phase = 'OWNED_CHILD_WAIT'
++    $parentObservations.launchRequestedAtUtc = [DateTime]::UtcNow.ToString('o')
++    $clock = [Diagnostics.Stopwatch]::StartNew() # Parent deadline only; no CPU/reference timing.
++    $process = [Diagnostics.Process]::Start($psi)
++    $out = [IO.MemoryStream]::new()
++    $err = [IO.MemoryStream]::new()
++    $outTask = $process.StandardOutput.BaseStream.CopyToAsync($out)
++    $errTask = $process.StandardError.BaseStream.CopyToAsync($err)
++    if (-not $process.WaitForExit((RemainingMilliseconds))) { throw 'PARENT_DEADLINE_NO_EXIT_OBSERVED' }
++    $exitObserved = $true
++    $parentObservedExitCode = $process.ExitCode
++    $parentObservations.exitObservedAtUtc = [DateTime]::UtcNow.ToString('o')
++    $phase = 'OWNED_STREAM_DRAIN'
++    if (-not [Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]@($outTask, $errTask), (RemainingMilliseconds))) { throw 'PARENT_DEADLINE_RAW_NOT_FINALIZED' }
++    if ((RemainingMilliseconds) -eq 0) { throw 'PARENT_DEADLINE_RAW_NOT_FINALIZED' }
++    $phase = 'RAW_CREATE_NEW'
++    WriteNewBytes $stdoutPath ($out.ToArray())
++    WriteNewBytes $stderrPath ($err.ToArray())
++    $raw.stdout = Bind $stdoutPath
++    $raw.stderr = Bind $stderrPath
++    $parentObservations.rawFinalizedAtUtc = [DateTime]::UtcNow.ToString('o')
++    if ((RemainingMilliseconds) -eq 0) { throw 'PARENT_DEADLINE_AFTER_FS_FINALIZATION' }
++    $phase = 'COMPLETED_FACTS'
++    WriteNewRecord $completedPath (ControlRecord 'COMPLETED_EXIT_RAW_FACTS' 'PARENT_EXIT_AND_RAW_FINALIZED_NO_RUNTIME_PASS')
++    $completeFactsPersisted = $true
++
++    $phase = 'OPTIONAL_PARSE'
++    if ((RemainingMilliseconds) -eq 0) { throw 'PARENT_DEADLINE_BEFORE_OPTIONAL_PARSE' }
++    if ($parentObservedExitCode -eq 0) {
++        try {
++            $data = [Text.Encoding]::UTF8.GetString($out.ToArray()) | ConvertFrom-Json
++            if ($data.schema -ne 'hestia.rt02b.selected-node-embedded-source.v4' -or @($data.sources.PSObject.Properties).Count -ne 5) { throw 'UNEXPECTED_SOURCE_ENVELOPE' }
++            foreach ($key in @('internal/deps/undici/undici', 'internal/bootstrap/web/exposed-wildcard', 'internal/bootstrap/web/exposed-window-or-worker', 'internal/util', 'internal/bootstrap/realm')) {
++                if ($data.sources.$key -isnot [string]) { throw 'SELECTED_SOURCE_NOT_TEXT' }
++            }
++            $parseStatus = 'PARSED_AS_DATA_ONLY_NO_MODULE_EVALUATION'
++        } catch { $parseStatus = 'OPTIONAL_PARSE_FAIL_NO_RUNTIME_PASS' }
++    } else { $parseStatus = 'SKIPPED_REAL_NONZERO_EXIT' }
++    $parentObservations.parseObservedAtUtc = [DateTime]::UtcNow.ToString('o')
++    $phase = 'FULL_AFTER'
++    if ((RemainingMilliseconds) -eq 0) { throw 'PARENT_DEADLINE_AFTER_OPTIONAL_PARSE' }
++    $controlStatus = if ($parseStatus -eq 'OPTIONAL_PARSE_FAIL_NO_RUNTIME_PASS') { 'OPTIONAL_PARSE_FAIL_COMPLETED_FACTS_PRESERVED' } else { 'COMPLETED_FACTS_NO_RUNTIME_ACCEPTANCE' }
++    $fullAfterAttempted = $true
++    WriteNewRecord $fullAfterPath (ControlRecord 'FULL_AFTER' $controlStatus)
++    if ((RemainingMilliseconds) -eq 0) { throw 'PARENT_DEADLINE_AFTER_CONTROL_FS_WRITE' }
++} catch {
++    $controlStatus = 'FAILED_CONTROL_EVIDENCE_HOLD'
++    # No arbitrary exception message/env/OS/PID dump; exit is null unless already observed.
++    if (-not $pathCollision) {
++        try { WriteNewRecord $incompletePath (ControlRecord 'INCOMPLETE_CONTROL_EVIDENCE' $controlStatus) }
++        catch { $holdRecordPersistenceFailure = $true }
++        if (-not $fullAfterAttempted) {
++            $fullAfterAttempted = $true
++            try { WriteNewRecord $fullAfterPath (ControlRecord 'FULL_AFTER' $controlStatus) }
++            catch { $holdRecordPersistenceFailure = $true }
++        }
++    }
++    # Retain any partial/colliding file; no alternate filename, overwrite, retry or cleanup.
++}
++[pscustomobject]@{
++    controlStatus = $controlStatus
++    holdRecordPersistenceFailure = $holdRecordPersistenceFailure
++    pathCollision = $pathCollision
++    parentObservedExitCode = $parentObservedExitCode
++    childStartedAtUtc = $null
++    childFinishedAtUtc = $null
++    heldContextRelease = 'NOT_AUTHORIZED_NO_PROCESS_OR_PIPE_CLOSE_BY_THIS_SOURCE'
++    outerWrapperRetirement = 'UNSUPPORTED_NOT_PROVEN'
++    SAFE = $false
++    READY = $false
++    runtimeAcceptance = 'NONE'
++}
++# No exit(), Kill(), SDK.close(), process/pipe Dispose(), PID tree query or cleanup.

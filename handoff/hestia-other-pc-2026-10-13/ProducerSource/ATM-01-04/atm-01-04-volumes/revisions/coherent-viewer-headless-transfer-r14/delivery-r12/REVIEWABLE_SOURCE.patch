@@ -1,0 +1,203 @@
+diff --git a/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/meta/BUILD_WRAPPER.ps1 b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/meta/BUILD_WRAPPER.ps1
+new file mode 100644
+--- /dev/null
++++ b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/meta/BUILD_WRAPPER.ps1
+@@ -0,0 +1,60 @@
++$ErrorActionPreference='Stop'
++$taskRoot='C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-ATM-01-04-2026-10-09/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12'
++$nodePath='C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe'
++$eventDir=$taskRoot+'/meta/events/01-source-build'
++$keys=@('NODE_OPTIONS','NODE_PATH','NODE_COMPILE_CACHE','NODE_INSPECTOR_IPC','VSCODE_INSPECTOR_OPTIONS','ESBUILD_BINARY_PATH','ESBUILD_WORKER_THREADS','ESBUILD_MAX_BUFFER')
++$blocked=@(foreach($key in $keys){if([Environment]::GetEnvironmentVariable($key,'Process')){$key}})
++if($blocked.Count){throw ('PRENODE_NONEMPTY_KEYS:'+($blocked -join ','))}
++$expected=@(
++@{path=$nodePath;sha256='0d0f5e39f9f3d9587bc19f73eab3c2c9c4903fd02d6dbf9c853dd81b3d95fad4';bytes=86997320},
++@{path=$taskRoot+'/scripts/compile-r09.mjs';sha256='a3bdda1dc9ad9c92e758fe9d4642acbd10937a8c47ad407666568a4381d817cd';bytes=2629},
++@{path=$taskRoot+'/node_modules/esbuild/lib/main.js';sha256='b090fe57c79c677256a242703ea07bb2191eced357bece2f9a25539443da070c';bytes=88698},
++@{path=$taskRoot+'/node_modules/@esbuild/win32-x64/esbuild.exe';sha256='f0dd2091eaf58d11b96c64e0c4516f8ecf94486a28d2a8e7a968bd6770db3ffe';bytes=11375616})
++foreach($e in $expected){$f=Get-Item -LiteralPath $e.path;if($f.PSIsContainer -or ($f.Attributes -band [IO.FileAttributes]::ReparsePoint) -or $f.Length -ne $e.bytes -or (Get-FileHash -LiteralPath $e.path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $e.sha256){throw 'IMMEDIATE_TOOL_DRIFT'}}
++if(Test-Path -LiteralPath $eventDir){throw 'EVENT_ALREADY_EXISTS'}
++if(Test-Path -LiteralPath ($taskRoot+'/dist')){throw 'OUTPUT_ALREADY_EXISTS'}
++if(@(Get-ChildItem -LiteralPath ($taskRoot+'/.runtime') -File|Where-Object{$_.Name -match '^(optics|occlusion|timer|init|reuse|composer|weather-port).mjs$'}).Count){throw 'OUTPUT_ALREADY_EXISTS'}
++$wrapperSha=(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash.ToLowerInvariant()
++$prelaunchSha=(Get-FileHash -LiteralPath ($taskRoot+'/meta/PRELAUNCH.json') -Algorithm SHA256).Hash.ToLowerInvariant()
++[IO.Directory]::CreateDirectory($eventDir)|Out-Null
++$outFile=[IO.File]::Open($eventDir+'/stdout.raw',[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::ReadWrite)
++$errFile=[IO.File]::Open($eventDir+'/stderr.raw',[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::ReadWrite)
++$info=[Diagnostics.ProcessStartInfo]::new()
++$info.FileName=$nodePath
++$info.ArgumentList.Add('scripts/compile-r09.mjs')
++$info.WorkingDirectory=$taskRoot
++$info.UseShellExecute=$false
++$info.CreateNoWindow=$true
++$info.RedirectStandardOutput=$true
++$info.RedirectStandardError=$true
++$proc=[Diagnostics.Process]::new()
++$proc.StartInfo=$info
++$started=[DateTime]::UtcNow.ToString('o')
++$actualExit=$null
++$complete=$false
++$captureComplete=$false
++$startError=$null
++$deadline=[Diagnostics.Stopwatch]::StartNew()
++try{
++ $didStart=$proc.Start()
++ if(-not $didStart){throw 'PROCESS_START_RETURNED_FALSE'}
++ $outTask=$proc.StandardOutput.BaseStream.CopyToAsync($outFile)
++ $errTask=$proc.StandardError.BaseStream.CopyToAsync($errFile)
++ $complete=$proc.WaitForExit([Math]::Max(0,90000-[int]$deadline.ElapsedMilliseconds))
++ if($complete){
++  $actualExit=$proc.ExitCode
++  $pipes=[Threading.Tasks.Task]::WhenAll($outTask,$errTask)
++  $captureComplete=$pipes.Wait([Math]::Max(0,90000-[int]$deadline.ElapsedMilliseconds))
++  if($captureComplete){$pipes.GetAwaiter().GetResult()|Out-Null}
++ }
++}catch{$startError=$_.Exception.ToString()}
++$outFile.Flush()
++$errFile.Flush()
++ $outFile.Dispose()
++ $errFile.Dispose()
++$event=[ordered]@{schema='atm.r12.actual-build-event.v1';binary=$nodePath;binarySha256=$expected[0].sha256;argv=@('scripts/compile-r09.mjs');cwd=$taskRoot;deadlineSeconds=90;startedAtUtc=$started;observedAtUtc=[DateTime]::UtcNow.ToString('o');parentExitObserved=$complete;rawCaptureComplete=$captureComplete;deadlineExpired=($deadline.ElapsedMilliseconds -ge 90000);actualExitCode=$actualExit;startOrCaptureError=$startError;ambientCheckedBeforeStart=$keys;ambientNonemptyKeyNames=$blocked;environmentMutation=$false;wrapperPath='meta/BUILD_WRAPPER.ps1';wrapperSha256=$wrapperSha;prelaunchPath='meta/PRELAUNCH.json';prelaunchSha256=$prelaunchSha;stdout='stdout.raw';stderr='stderr.raw';serviceChildExitCode=$null;physicalRetirement='UNVERIFIED_NO_QUERY_NO_KILL';stopServiceCalled=$false;retryCount=0;sandboxDisposition='A55_ONE_REQUIRE_ESCALATED_EXACT_COMMAND';status=$(if($complete -and $captureComplete -and $actualExit -eq 0 -and -not $startError){'SOURCE_EMIT_EXIT0'}else{'HOLD_NO_RETRY'})}
++$stream=[IO.File]::Open($eventDir+'/event.json',[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::Read)
++try{$b=[Text.UTF8Encoding]::new($false).GetBytes(($event|ConvertTo-Json -Depth 8));$stream.Write($b)}finally{$stream.Dispose()}
++$event|ConvertTo-Json -Depth 8
++if($complete -and $captureComplete -and $actualExit -eq 0 -and -not $startError){exit 0}else{exit 3}
++
+diff --git a/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/meta/CPU_PURE_ENTRY.mjs b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/meta/CPU_PURE_ENTRY.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/meta/CPU_PURE_ENTRY.mjs
+@@ -0,0 +1,8 @@
++// Existing assertions run directly; no Node --test file-isolation children.
++import '../tests/optics.test.mjs';
++import '../tests/init.test.mjs';
++import '../tests/timer.test.mjs';
++import '../tests/r09-boundaries.test.mjs';
++import '../tests/r12-pure-weather-contract.test.mjs';
++import '../tests/r12-pure-weather-caller.test.mjs';
++
+diff --git a/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-pure-weather-contract.test.mjs b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-pure-weather-contract.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-pure-weather-contract.test.mjs
+@@ -0,0 +1,25 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import {root,verifyInputs,json} from '../scripts/bindings.mjs';
++import {validateFrame,rebaseFrame} from '../.runtime/optics.mjs';
++const input=json('fixtures/chosen-weather-input.json'),weather=json('fixtures/chosen-weather-result.json');
++const pos=weather.query.bodyFixedPositionMeters,norm=Math.hypot(pos.x,pos.y,pos.z);
++const frame={status:'Known',simulationTick:weather.query.simulationTick,weatherSnapshotId:weather.WeatherSnapshotId,binding:weather.binding,bodyId:weather.query.bodyId,
++ bodyRadiusMeters:input.bundle.physics.radiusMeters,bodyNormal:[pos.x/norm,pos.y/norm,pos.z/norm],originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1,weatherExtinctionPerM:weather.sample.extinctionPerM,
++ windMps:[8,0,-4],stormIds:weather.sample.stormIds,authoredCloudCoverage:0.7,rain01:0.8,opticsDigest:input.bundle.optics.digest};
++test('actual WXG entry replays same storm for ground and orbit, all six Unsupported semantics retained',async()=>{
++ verifyInputs();const port=await import('../.runtime/weather-port.mjs');
++ const view=await port.createAnalyticReadView(input),query=json('fixtures/chosen-weather-query.json');
++ const ground=await view.read(query),orbit=await view.read(structuredClone(query));
++ assert.equal(JSON.stringify(ground),JSON.stringify(weather));assert.deepEqual(ground,orbit);assert.ok(ground.sample.stormIds.length>0);
++ const all=json('inputs/wxg/repo/spikes/wxg-01-04-analytic/fixtures/authoring-inputs.json'),statuses=[];
++ for(const p of all){const v=await port.createAnalyticReadView(p);statuses.push((await v.read(p.bundle.query)).status);}
++ assert.ok(statuses.includes('NoAtmosphere'));assert.ok(statuses.includes('Unsupported'));assert.ok(statuses.includes('Known'));
++ const methane=all.find(p=>p.bundle.physics.id.includes('Methane'));
++ if(methane){const v=await port.createAnalyticReadView(methane);assert.equal((await v.read(methane.bundle.query)).status,'Unsupported');}
++ assert.throws(()=>validateFrame({...frame,simulationTick:NaN}));assert.throws(()=>validateFrame({...frame,weatherSnapshotId:'fake'}));
++ assert.throws(()=>validateFrame({...frame,status:'NoAtmosphere'}));
++ assert.equal(validateFrame({...frame,status:'NoAtmosphere',weatherExtinctionPerM:0,authoredCloudCoverage:0,rain01:0}).status,'NoAtmosphere');
++});
++
+diff --git a/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-pure-weather-caller.test.mjs b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-pure-weather-caller.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-pure-weather-caller.test.mjs
+@@ -0,0 +1,45 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import {createOpticalReadPort,tangentBasis,assertCurrentAnalytic} from '../.runtime/weather-port.mjs';
++const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url),'utf8'));
++const chosen=json('fixtures/chosen-weather-input.json'),query=json('fixtures/chosen-weather-query.json'),gold=json('fixtures/chosen-weather-result.json');
++const mask={cloudCoverage:0.7,rain01:0.8},presentation={originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1};
++test('actual frozen Weather read drives optics and RD mask without a second meteorology or moving import',async()=>{
++ const port=await createOpticalReadPort(chosen),a=await port.read(query,mask,presentation),b=await port.read(structuredClone(query),mask,presentation);
++ assert.equal(a.status,'Known');assert.ok(a.frame);assert.equal(JSON.stringify(a.result),JSON.stringify(gold));
++ await assertCurrentAnalytic(gold,query,port.view);
++ assert.deepEqual(a.frame,b.frame);assert.deepEqual(a.frame.stormIds,gold.sample.stormIds);
++ assert.equal(a.frame.weatherSnapshotId,gold.WeatherSnapshotId);assert.equal(a.frame.weatherExtinctionPerM,gold.sample.extinctionPerM);
++ assert.equal(a.frame.authoredCloudCoverage,mask.cloudCoverage);assert.equal(a.frame.rain01,mask.rain01);
++ const basis=tangentBasis(query.bodyFixedPositionMeters),w=gold.sample.windBodyFixedMps;
++ const expected=[basis.east,basis.up,basis.north].map(axis=>w.x*axis[0]+w.y*axis[1]+w.z*axis[2]);
++ assert.deepEqual(a.frame.windMps,expected);
++ assert.equal(Object.isFrozen(a.frame),true);assert.equal(Object.isFrozen(a.frame.binding),true);
++ await assert.rejects(port.read(query,{cloudCoverage:NaN,rain01:0.8},presentation),/OPTICAL_RANGE/);
++ await assert.rejects(assertCurrentAnalytic({...gold,WeatherSnapshotId:'sha256:'+'0'.repeat(64)},query,port.view),/STALE_ANALYTIC_RESULT/);
++});
++test('six actual synthetic upstream profiles retain NoAtmosphere and Unsupported, not Earth defaults',async()=>{
++ const profiles=json('inputs/wxg/repo/spikes/wxg-01-04-analytic/fixtures/authoring-inputs.json');let vacuum=0,unsupported=0;
++ for(const input of profiles){const result=await (await createOpticalReadPort(input)).read(input.bundle.query,mask,presentation);
++  if(result.status==='NoAtmosphere'){vacuum++;assert.ok(result.frame);assert.equal(result.frame.weatherExtinctionPerM,0);assert.equal(result.frame.rain01,0);assert.equal(result.frame.authoredCloudCoverage,0);}
++  if(result.status==='Unsupported'||result.status==='UnknownCoverage'||result.status==='Pending'){unsupported++;assert.equal(result.frame,null);assert.equal(result.status,result.result.status);}
++ }
++ assert.ok(vacuum>0);assert.ok(unsupported>0);
++});
++test('tangent basis remains orthonormal at either pole, zero position is invalid',()=>{
++ for(const p of [{x:0,y:1,z:0},{x:0,y:-1,z:0},{x:4,y:2,z:1}]){
++  const b=tangentBasis(p),dot=(a,c)=>a.reduce((v,x,i)=>v+x*c[i],0);
++  for(const a of [b.up,b.east,b.north])assert.ok(Math.abs(Math.hypot(...a)-1)<1e-12);
++  assert.ok(Math.abs(dot(b.up,b.east))<1e-12);assert.ok(Math.abs(dot(b.east,b.north))<1e-12);
++ }
++ assert.throws(()=>tangentBasis({x:0,y:0,z:0}),/TANGENT_POSITION/);
++});
++test('GLSL Source has explicit zero-direction slab rejection, no epsilon substitution or fake pixel proof',()=>{
++ const shader=readFileSync(new URL('../shaders/volume.frag.glsl',import.meta.url),'utf8');
++ assert.ok(shader.includes('if(d==0.0)return o>=lo&&o<=hi;'));assert.ok(!shader.includes('safeD'));
++ for(const axis of ['x','y','z'])assert.ok(shader.includes('clipSlab(o.'+axis+',d.'+axis));
++ // Lexical wiring guard only; real GLSL compilation/pixels require the Runner.
++});
++
++
+diff --git a/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-weather-altitude.test.mjs b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-weather-altitude.test.mjs
+new file mode 100644
+--- /dev/null
++++ b/spikes/atm-01-04-volumes/revisions/full-optics-authorized-spawn-build-cpu-closure-r12/tests/r12-weather-altitude.test.mjs
+@@ -0,0 +1,39 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {readFileSync} from 'node:fs';
++import {createOpticalReadPort} from '../.runtime/weather-port.mjs';
++const json=p=>JSON.parse(readFileSync(new URL('../'+p,import.meta.url),'utf8'));
++const input=json('fixtures/chosen-weather-input.json'),query=json('fixtures/chosen-weather-query.json');
++const mask={cloudCoverage:0.7,rain01:0.8},presentation={originMeters:[0,0,0],sourceRevision:1,atlasEpoch:1};
++const radius=input.bundle.physics.radiusMeters;
++const norm=Math.hypot(...Object.values(query.bodyFixedPositionMeters));
++const atHeight=h=>({...structuredClone(query),vertical:{kind:'AltitudeMeters',altitudeMeters:h},
++ bodyFixedPositionMeters:Object.fromEntries(Object.entries(query.bodyFixedPositionMeters).map(([k,v])=>[k,v/norm*(radius+h)]))});
++test('supplemental actual 1km/10km authored Weather queries preserve storm identity with height-dependent pressure and temperature',async()=>{
++ const port=await createOpticalReadPort(input),ground=await port.read(query,mask,presentation);
++ assert.equal(ground.status,'Known');assert.ok(ground.frame.stormIds.length>0);
++ for(const h of [1000,10000]){
++  const q=atHeight(h),high=await port.read(q,mask,presentation);
++  assert.notDeepEqual(q,query);assert.equal(high.status,'Known');assert.equal(high.result.query.vertical.altitudeMeters,h);
++  assert.ok(Math.abs(Math.hypot(...Object.values(q.bodyFixedPositionMeters))-(radius+h))<1e-5);
++  assert.deepEqual(high.frame.stormIds,ground.frame.stormIds);
++  assert.notEqual(high.frame.weatherSnapshotId,ground.frame.weatherSnapshotId);
++  assert.ok(Math.abs(high.result.sample.temperatureK-(ground.result.sample.temperatureK-h*input.config.lapseKPerM))<1e-10);
++  const expectedPressure=ground.result.sample.pressurePa*Math.exp(-h/input.bundle.physics.scaleHeightMeters);
++  assert.ok(Math.abs(high.result.sample.pressurePa-expectedPressure)<expectedPressure*1e-12);
++  const shifted=await port.read(q,mask,{...presentation,originMeters:[1024,2048,-512]});
++  assert.equal(shifted.frame.weatherSnapshotId,high.frame.weatherSnapshotId);
++  assert.deepEqual(shifted.frame.stormIds,high.frame.stormIds);assert.deepEqual(shifted.frame.originMeters,[1024,2048,-512]);
++ }
++});
++test('supplemental real query contracts reject position-height mismatch and out-of-profile altitude; regional remains Unsupported',async()=>{
++ const port=await createOpticalReadPort(input);
++ const incoherent={...structuredClone(query),vertical:{kind:'AltitudeMeters',altitudeMeters:1000}};
++ await assert.rejects(port.read(incoherent,mask,presentation),e=>e.code==='ALTITUDE_POSITION_MISMATCH'&&e.path==='/query/position');
++ const outside=input.bundle.physics.outerRadiusMeters-radius+1;
++ await assert.rejects(port.read(atHeight(outside),mask,presentation),e=>e.code==='NUMBER_RANGE'&&e.path==='/query/altitude');
++ const regional=await port.read({...structuredClone(query),requiredAccuracy:'regional'},mask,presentation);
++ assert.equal(regional.status,'Unsupported');assert.equal(regional.result.reasonCode,'USE_REGIONAL_EXPOSURE_PORT');assert.equal(regional.frame,null);
++});
++// Synthetic authored profile only: changed altitude is not a presented camera/orbit or actual Hestia climate proof.
++
+

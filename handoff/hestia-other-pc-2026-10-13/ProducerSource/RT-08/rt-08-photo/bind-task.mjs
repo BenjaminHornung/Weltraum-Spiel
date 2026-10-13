@@ -1,0 +1,9 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';import path from 'node:path';import {sha} from './verify-inputs.mjs';
+const management='C:/IFI_SourceCode/Temp/WeltraumSpiel/artifacts/hestia-cloud-orchestration-2026-10-09';
+const pkg=management+'/Hestia_Cloud_Spikes_und_ProgrammAmendment_2026-10-09';
+const names=['00_START_HIER.md','01_PRUEFUNG_UND_ENTSCHEIDUNG.md','03_SCHNITTSTELLEN_UND_UEBERNAHME.md','Cloud/00_GEMEINSAMER_VERTRAG.md','Auftraege/RT-08.md','Goals/RT-08.txt','SOURCE_DOCS.json','Quellen/threejs-raytracing-intel-amd-nvidia-2026-10-09.md','Quellen/hestia-konzeptpaket-review-und-arbeitspaket-registry-2026-10-09.md'];
+const files=[];for(const n of names){const b=await readFile(pkg+'/'+n),dest='inputs/task/'+n;await mkdir(path.dirname(dest),{recursive:true});await writeFile(dest,b,{flag:'wx'});files.push({source:pkg+'/'+n,path:dest,byteLength:b.length,sha256:sha(b)});}
+const overrides=await readFile(management+'/USER_OVERRIDES_2026-10-09.md');await writeFile('inputs/task/USER_OVERRIDES_2026-10-09.md',overrides,{flag:'wx'});files.push({source:management+'/USER_OVERRIDES_2026-10-09.md',path:'inputs/task/USER_OVERRIDES_2026-10-09.md',byteLength:overrides.length,sha256:sha(overrides)});
+const stateBytes=await readFile(management+'/STATE.json'),state=JSON.parse(stateBytes),task=state.tasks.find(t=>t.id==='RT-08');
+await writeFile('task-bindings.json',JSON.stringify({files,managementStateRead:{byteLength:stateBytes.length,sha256:sha(stateBytes),taskId:task.id,nativeId:task.sessionId,agentId:task.paseoAgentId,baseCommit:state.baseCommit,branch:task.branch,worktree:task.worktree,boundInputs:task.boundInputs},originalZipSha256:'0136d515ce6c86e3110bfb7fb91e1ccf1ceb8536cbef56dad9b4d6e4a6dd3d4d',original66FileVerification:'USER_PROVIDED_VERIFIED_NOT_RECLAIMED_AS_NEW_RUN'},null,2)+'\n',{flag:'wx'});
+console.log('PASS exact task source copies and read-time management identity');

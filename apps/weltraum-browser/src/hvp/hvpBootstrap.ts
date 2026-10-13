@@ -15,19 +15,23 @@ import { createHvpTerrainConsumer, type HvpStagedTerrain,type HvpPreparedTerrain
 import {meshHvpTerrainFragment,meshHvpBodyCells} from "../hestia-prototype/presentation/terrainFragment";
 import {readHvpBodyCells} from "../hestia-prototype/physics/bodyCutPlan";
 import {createHvpSaveStore,HVP_SAVE_SLOT} from "../hestia-prototype/persistence/saveStore";
-import {encodeHvpGame,type HvpDecodedGame} from "../hestia-prototype/persistence/gameCheckpoint";
+import {createHvpPhy01LabSaveStore,HVP_PHY01_LAB_SAVE_SLOT} from "../hestia-prototype/persistence/phy01LabSave";
+import {MemorySaveRepository} from "../browser-storage/memorySaveRepository";
+import {requirePlainRecord,requireExactKeys} from "../voxel/adaptive/validation";
+import {encodeHvpGame,encodeHvpLabGame,type HvpDecodedGame,type HvpDecodedLabGame} from "../hestia-prototype/persistence/gameCheckpoint";
 import {encodeHvpPlant} from "../hestia-prototype/persistence/plantCheckpoint";
-import {replaceHvpScene} from "../hestia-prototype/persistence/sceneReplacement";
+import {replaceHvpScene,replaceHvpLabScene} from "../hestia-prototype/persistence/sceneReplacement";
 import {createPersistenceSignature} from "../persistence";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../voxel/adaptive";
 import { createHvpPlasmaTool } from "../hestia-prototype/terrain/plasmaTool";
 import { createHvpVisualRenderer, HVP_EFFECT_COST, HVP_EFFECT_VERSION } from "../hestia-prototype/presentation/visualEffects";
 import { createSynchronousBatch } from "../hestia-prototype/presentation/synchronousBatch";
-import { createHvpPhysicsClient,prepareHvpStaticCollision, type HvpPhysicsClient } from "../hestia-prototype/physics/client";
-import type {HvpCompleteStaticCollision} from "../hestia-prototype/physics/worldReplacement";
+import { createHvpPhysicsClient,createHvpFreshLabPhysicsClient,createHvpLabPhysicsClient,prepareHvpStaticCollision,prepareHvpLabStaticCollision,
+  type HvpPhysicsClient,type HvpLabPhysicsClient } from "../hestia-prototype/physics/client";
+import type {HvpCompleteStaticCollision,HvpLabCompleteStaticCollision} from "../hestia-prototype/physics/worldReplacement";
 import {createHvpMeasurements} from "../hestia-prototype/runtime/measurements";
 import {createHvpCutObservation,HVP_CUT_TRACE_RESERVE_BYTES,measureHvpCut,measureHvpCutAsync,type HvpBodyCutRenderFacts,type HvpBodyRenderBinding,type HvpCutRenderFacts,type HvpCutTrace} from "../hestia-prototype/runtime/cutTrace";
-import { HVP_INERTIA_CELLS, HVP_INERTIA_KEY } from "../hestia-prototype/physics/profile";
+import { HVP_INERTIA_CELLS, HVP_INERTIA_KEY, assertHvpPublicSaveCutover } from "../hestia-prototype/physics/profile";
 import {meshHvpBranchProducts,meshHvpBranchFoliage,type HvpBranchProduct} from "../hestia-prototype/presentation/structuralPart";
 import {createHvpStructuralConsumer,type HvpStagedBranch} from "../hestia-prototype/terrain/structuralConsumer";
 import {createHvpBodyCutConsumer} from "../hestia-prototype/terrain/bodyCutConsumer";
@@ -807,8 +811,7 @@ export const assertHvpProductsBound = (products: HvpBoundProducts): void => {
   }
 };
 
-export const startHvp = async (
-  overrides: {
+type HvpBootstrapOverrides = {
     readonly documentPort?: HvpDocumentPort;
     readonly windowPort?: HvpWindowPort;
     readonly createBackend?: (options: ConstructorParameters<typeof ThreeRenderBackend>[0]) => HvpBackend;
@@ -821,8 +824,25 @@ export const startHvp = async (
     readonly onDisposed?: (receipt: unknown) => void;
     readonly createTerrainCompiler?: typeof createHvpTerrainCompiler;
     readonly extraCpuBytes?: () => number;
-  } = {}
-): Promise<HvpBootstrapHandle> => {
+};
+type HvpBootstrapOwner={readonly kind:"public"}|{readonly kind:"phy01-lab";readonly repository:MemorySaveRepository;
+  readonly startMode:"authored-fresh"|"cold"};
+type HvpBootstrapGame={readonly kind:"public";readonly game:HvpDecodedGame}|{readonly kind:"phy01-lab";readonly game:HvpDecodedLabGame};
+
+export const startHvp=(overrides:HvpBootstrapOverrides={}):Promise<HvpBootstrapHandle>=>startHvpCore(overrides,{kind:"public"});
+
+/** @internal Explicit task-owned LAB entry; no route/default or shared database activation. */
+export const startHvpLab=async(owner:{readonly repository:MemorySaveRepository;readonly slot:typeof HVP_PHY01_LAB_SAVE_SLOT;
+  readonly startMode:"authored-fresh"|"cold"},overrides:Omit<HvpBootstrapOverrides,"createPhysics"|"createTerrainCompiler">={}):Promise<HvpBootstrapHandle>=>{
+  const input=requirePlainRecord(owner,"private HVP bootstrap owner");requireExactKeys(input,["repository","slot","startMode"],"private HVP bootstrap owner");
+  if(!(input.repository instanceof MemorySaveRepository)||input.slot!==HVP_PHY01_LAB_SAVE_SLOT
+    ||(input.startMode!=="authored-fresh"&&input.startMode!=="cold")||"createPhysics" in overrides||"createTerrainCompiler" in overrides){
+    throw new Error("Invalid private HVP bootstrap owner");
+  }
+  return startHvpCore(overrides,Object.freeze({kind:"phy01-lab",repository:input.repository,startMode:input.startMode}));
+};
+
+const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner):Promise<HvpBootstrapHandle>=>{
   const documentPort = overrides.documentPort ?? document;
   if (activeHvpMount || documentPort.querySelector("#hvp-hud") !== null) {
     throw new Error("HVP-02 already mounted: dispose the live session before starting again.");
@@ -834,7 +854,7 @@ export const startHvp = async (
   let experimentalDrawSubmits=0;
   const measurement=createHvpMeasurements(new URLSearchParams(windowPort.location?.search??"").get("hvpMeasure")==="1");
   const measurementStarted=performance.now();
-  const privateCutSource=!(measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutSource")==="control");
+  const privateCutSource=owner.kind==="phy01-lab"||!(measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutSource")==="control");
   let cutReady=false;
   let firstSceneReadyV2=false;
   let loadReadyFrame:{start:number;source:HvpTerrainSnapshot}|undefined;
@@ -855,7 +875,7 @@ export const startHvp = async (
   let backend: HvpBackend | undefined;
   let camera: ReturnType<typeof createHvpCamera> | undefined;
   let hud: ReturnType<typeof createHvpHud> | undefined;
-  let physics: HvpPhysicsClient | undefined;
+  let physics: HvpPhysicsClient | HvpLabPhysicsClient | undefined;
   let playerInput: ReturnType<typeof createHvpPlayerInput> | undefined;
   const physicsAbort = new AbortController();
   let physicsPausedByFocus = false;
@@ -874,6 +894,18 @@ export const startHvp = async (
   const neighborCache=new MemoryContentCache(32*1024*1024);
   let plasmaTool: ReturnType<typeof createHvpPlasmaTool> | undefined;
   let saveStore:ReturnType<typeof createHvpSaveStore>|undefined;
+  let labSaveStore:ReturnType<typeof createHvpPhy01LabSaveStore>|undefined;
+  const ownerStore=()=>owner.kind==="phy01-lab"
+    ?{kind:"phy01-lab" as const,store:labSaveStore??=createHvpPhy01LabSaveStore(owner.repository)}
+    :{kind:"public" as const,store:saveStore??=createHvpSaveStore()};
+  const readOwnerSave=async(access:ReturnType<typeof ownerStore>,admitCold?:()=>void)=>{
+    if(access.kind==="phy01-lab"){
+      const record=admitCold?await access.store.loadCold(admitCold):await access.store.load();
+      return {kind:"phy01-lab" as const,...record};
+    }
+    const record=admitCold?await access.store.loadCold(admitCold):await access.store.load();
+    return {kind:"public" as const,...record};
+  };
   let saveBusy=false,saveHold=false;
   let saveView:{state:string;message:string;revision:number|null}={state:"Idle",message:"Lokaler Hestia-Spielstand",revision:null};
   const enterRenderRecoveryHold=(message:string):never=>{
@@ -914,7 +946,8 @@ export const startHvp = async (
   // The post-session launcher must not retain the inner scene/cell closures.
   const launcherListeners=createHvpListeners();
   let launcher:HTMLElement|undefined;
-  const restartAfterEnd=()=>{launcherListeners.dispose();launcher?.remove();launcher=undefined;windowPort.location?.assign(`/?hestiaPrototype=1${measurement.enabled?"&hvpMeasure=1":""}`);};
+  const restartAfterEnd=()=>{launcherListeners.dispose();launcher?.remove();launcher=undefined;
+    if(owner.kind==="public"){windowPort.location?.assign(`/?hestiaPrototype=1${measurement.enabled?"&hvpMeasure=1":""}`);}};
   let plainJoinLease: ThreeMaterialLease | undefined;
   const plainVegetationLeases: Array<{ nodeKey: string; lease: ThreeMaterialLease }> = [];
   let waterEnabled = true;
@@ -922,6 +955,7 @@ export const startHvp = async (
   let failureRoot: HTMLElement | undefined;
   let disposed = false;
   let disposePromise: Promise<void> | undefined;
+  let privateSaveWork:Promise<void>|undefined;
   const flightHud = documentPort.querySelector<HTMLElement>("#flight-hud");
   const flightHudWasHidden = flightHud?.hidden ?? true;
   const reticle = documentPort.querySelector<HTMLElement>(".hud-center-safe-area");
@@ -954,6 +988,8 @@ export const startHvp = async (
       if(animationFrame!==undefined){windowPort.cancelAnimationFrame(animationFrame);animationFrame=undefined;}
       if(cutObservation!==undefined){releaseCutObservation("disposed");}
       else if(measurement.enabled&&cutObservationStatus==="not-requested"){cutObservationStatus="disposed";disableCutTrace();}
+      // Owner-close/remount must wait for borrowed-repository Save/Load to settle.
+      if(owner.kind==="phy01-lab"){await attempt(()=>privateSaveWork);}
       await attempt(()=>listeners.dispose());
       await attempt(()=>physics?.command("Pause"));
       await attempt(()=>playerInput?.dispose()); playerInput=undefined;
@@ -968,6 +1004,8 @@ export const startHvp = async (
       await attempt(()=>closingTerrainConsumer?.whenIdle());
       await attempt(()=>closingStructuralConsumer?.whenIdle());
       await attempt(()=>saveStore?.close());saveStore=undefined;
+      // LAB mounts borrow the repository; its Owner closes it after all mounts.
+      labSaveStore=undefined;
       await attempt(()=>hud?.dispose());
       hud = undefined;
       await attempt(()=>camera?.dispose());
@@ -1350,24 +1388,28 @@ export const startHvp = async (
         drawCalls: 0
       });
     startupPhase("startupRendererMs");
-    const loadQuery=new URLSearchParams(windowPort.location?.search??"").get("hvpLoad");
+    const loadQuery=owner.kind==="phy01-lab"?(owner.startMode==="cold"?"primary":null):new URLSearchParams(windowPort.location?.search??"").get("hvpLoad");
     if(loadQuery!==null&&loadQuery!=="primary"){throw new Error("Unknown Hestia restore slot");}
-    let coldGame:HvpDecodedGame|undefined,coldRevision:number|null=null,checkpointSourceBytes=0;
+    let coldInput:HvpBootstrapGame|undefined,coldGame:HvpDecodedGame|HvpDecodedLabGame|undefined,coldRevision:number|null=null,checkpointSourceBytes=0;
     let coldNeighborSourceTransferred=false;
     if(loadQuery==="primary"){
+      if(owner.kind==="public"){assertHvpPublicSaveCutover();}
       admitScene({totalCpuBytes:80*1024*1024,retainedMeshBytes:0,triangles:0,drawCalls:0});
-      saveStore=createHvpSaveStore();await saveStore.initialize();
-      let record:Awaited<ReturnType<ReturnType<typeof createHvpSaveStore>["load"]>>;
+      const access=ownerStore();await access.store.initialize();
+      let record:Awaited<ReturnType<typeof readOwnerSave>>;
       if(privateCutSource){
-        const loaded=await saveStore.loadCold(()=>{
+        const loaded=await readOwnerSave(access,()=>{
           if(disposed||hvpMountEpoch!==myEpoch){throw new Error("Hestia Cold restore cancelled");}
           admitScene({totalCpuBytes:(80+96)*1024*1024,retainedMeshBytes:0,triangles:0,drawCalls:0});
           if(disposed||hvpMountEpoch!==myEpoch){throw new Error("Hestia Cold restore cancelled");}
         });
         if(disposed||hvpMountEpoch!==myEpoch){return Object.freeze({dispose});}
-        coldRecipeRetainedBytes=loaded.recipeRetainedBytes;record=loaded;
-      }else{record=await saveStore.load();}
-      coldGame=record.game;coldRevision=record.metadata.recordRevision;
+        const recipeBytes="recipeRetainedBytes" in loaded?loaded.recipeRetainedBytes:undefined;
+        if(typeof recipeBytes!=="number"||!Number.isSafeInteger(recipeBytes)||recipeBytes<0){throw new Error("Invalid Cold retained recipe accounting");}
+        coldRecipeRetainedBytes=recipeBytes;record=loaded;
+      }else{record=await readOwnerSave(access);}
+      coldInput=record.kind==="phy01-lab"?{kind:"phy01-lab",game:record.game}:{kind:"public",game:record.game};
+      coldGame=coldInput.game;coldRevision=record.metadata.recordRevision;
         // The decoded game shares its validated immutable primary with Root;
         // the cold estimator adds decoded body sources, raw record peak and
         // the extra decoded neighbour source when present beyond base ownership.
@@ -1400,7 +1442,7 @@ export const startHvp = async (
     const preparingCompiler=terrainCompiler,poolPreparationStart=measurement.enabled?performance.now():0;
     await preparingCompiler.prepare(()=>!disposed&&hvpMountEpoch===myEpoch&&terrainCompiler===preparingCompiler&&terrainRoot.read()===initialSource,privateCutSource?terrainRoot:undefined);
     if(measurement.enabled){measurement.record("startupCutPoolPrepareMs",poolPreparationStart,performance.now()-poolPreparationStart);}
-    const chunkStartup=privateCutSource&&overrides.createTerrainCompiler===undefined&&overrides.createPhysics===undefined;
+    const chunkStartup=owner.kind==="phy01-lab"||(privateCutSource&&overrides.createTerrainCompiler===undefined&&overrides.createPhysics===undefined);
     const initialWorldId=coldGame?.checkpoint.world.sessionId??crypto.randomUUID();
     let renderWorldId=initialWorldId;
     function* admitPrivateRenderSteps(input:MeshArtifactInput,profiles:readonly import("../presentation").MaterialProfile[],source:HvpTerrainSnapshot,renderEpoch:number,worldId=renderWorldId):Generator<string,ThreePrivateMeshHandle["receipt"],unknown>{
@@ -1475,7 +1517,7 @@ export const startHvp = async (
     vegetationTransforms = projectHvpVegetation(vegetation, plants.map((plant) => ({
       ownerId: plant.id, position: plant.position, orientation: { x: 0, y: 0, z: 0, w: 1 }
     })));
-    const scenario=new URLSearchParams(windowPort.location?.search??"").get("hvpScenario")??"coast";
+    const scenario=owner.kind==="phy01-lab"?"coast":new URLSearchParams(windowPort.location?.search??"").get("hvpScenario")??"coast";
     if(!["coast","rock-arm","salvage","east-edge"].includes(scenario)){throw new Error("Unknown Hestia scenario");}
     const salvageScenario=coldGame?coldGame.checkpoint.world.branch?.kind==="salvage":scenario==="salvage";
     const salvageMarker=salvageScenario?createHvpSalvageMarker(readHvpSourceColumnWorld(-11.5,-12.625).topMeters):undefined;
@@ -1525,7 +1567,16 @@ export const startHvp = async (
     const branchSpawn={x:-12,y:Math.max(...[-12,-11.5].flatMap(x=>[-13.5,-13].map(z=>readHvpSourceColumnWorld(x,z).topMeters))),z:-13.5};
     startupPhase("startupAdmissionMs");
     const chunkInput=chunkStartup?bindHvpChunkPhysicsInput(terrainRoot,initialProducts!,collisionSources):undefined;
-    physics = await (overrides.createPhysics ?? createHvpPhysicsClient)(collisionSources, spawn, physicsAbort.signal, playerSpawn, inertiaSpawn,branchSpawn,coldGame?.checkpoint.world,salvageScenario?"salvage":"branch",measurement.enabled?measurement.worker:undefined,undefined,chunkInput);
+    if(owner.kind==="phy01-lab"){
+      if(chunkInput===undefined){throw new Error("Private HVP bootstrap requires its owned Chunk tuple");}
+      if(coldInput){
+        if(coldInput.kind!=="phy01-lab"){throw new Error("Private HVP bootstrap requires a LAB Game");}
+        physics=await createHvpLabPhysicsClient(collisionSources,physicsAbort.signal,chunkInput,coldInput.game,measurement.enabled?measurement.worker:undefined);
+      }else{physics=await createHvpFreshLabPhysicsClient(collisionSources,spawn,physicsAbort.signal,chunkInput,playerSpawn,inertiaSpawn,branchSpawn,measurement.enabled?measurement.worker:undefined);}
+    }else{
+      if(coldInput?.kind==="phy01-lab"){throw new Error("Public HVP bootstrap cannot use a LAB Game");}
+      physics = await (overrides.createPhysics ?? createHvpPhysicsClient)(collisionSources, spawn, physicsAbort.signal, playerSpawn, inertiaSpawn,branchSpawn,coldInput?.game.checkpoint.world,salvageScenario?"salvage":"branch",measurement.enabled?measurement.worker:undefined,undefined,chunkInput);
+    }
     if(initialProducts){if(chunkStartup&&physics.staticTerrainLayout?.()===null){discardHvpOwnedTerrainProducts(initialProducts);}else{releaseHvpOwnedTerrainProducts(initialProducts);}}
     startupPhase("startupPhysicsMs");
     if (disposed || hvpMountEpoch !== myEpoch) { await physics.dispose(); physics = undefined; return Object.freeze({ dispose }); }
@@ -2624,9 +2675,9 @@ export const startHvp = async (
     };
     const sourcesForSave=()=>plantCheckpoints??=(plantSources.map(encodeHvpPlant));
     const openSaveStore=async()=>{
-      saveStore??=createHvpSaveStore();
-      if(!saveInitialized){await saveStore.initialize();const list=await saveStore.list();saveRevision=list.slots.find(s=>s.slotId===HVP_SAVE_SLOT)?.recordRevision??null;saveInitialized=true;}
-      return saveStore;
+      const access=ownerStore();
+      if(!saveInitialized){await access.store.initialize();const list=await access.store.list();saveRevision=list.slots.find(s=>s.slotId===(access.kind==="phy01-lab"?HVP_PHY01_LAB_SAVE_SLOT:HVP_SAVE_SLOT))?.recordRevision??null;saveInitialized=true;}
+      return access;
     };
     const confirmed=()=>!disposed&&hvpMountEpoch===myEpoch&&!supportPending&&!neighbor?.read().busy&&!neighbor?.read().recoveryHold&&!dormancy?.read().busy&&!dormancy?.read().recoveryHold
       &&!["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)
@@ -2643,23 +2694,30 @@ export const startHvp = async (
       admit:admitNeighbor,stage:stageNeighbor});
     const captureGame=async()=>{
       if(!confirmed()){throw new Error("Save requires all commands to be confirmed");}
-      const root=terrainRoot.read(),world=await physics!.checkpoint();
+      const root=terrainRoot.read(),active=physics!;
+      const captured="checkpointLab" in active?{kind:"phy01-lab" as const,world:await active.checkpointLab()}:{kind:"public" as const,world:await active.checkpoint()};
       const receipts={terrain:await terrainConsumer!.checkpoint(),structural:structuralConsumer!.checkpoint(),moving:bodyCutConsumer!.checkpoint()};
       if(!confirmed()||root!==terrainRoot.read()){throw new Error("Scene changed during checkpoint");}
       observeSalvage();let candidate:HvpSalvageCheckpoint|undefined;
-      if(salvage&&["Save","Completed"].includes(salvage.read().stage!)){candidate=salvage.prepareSave(createPersistenceSignature(world));}
+      if(salvage&&["Save","Completed"].includes(salvage.read().stage!)){candidate=salvage.prepareSave(createPersistenceSignature(captured.world));}
       const east=neighbor!.checkpoint();
-      return {candidate,game:encodeHvpGame({terrain:terrainRoot.checkpoint(),plants:sourcesForSave(),world,receipts,view:currentView(),progress:candidate??salvage?.checkpoint()??null,
-        ...(east?{neighbor:{version:"hvp-neighbor-scene-v1" as const,terrain:east,lod:neighbor!.read().renderLod??neighbor!.read().lod}}:{})})};
+      const data={terrain:terrainRoot.checkpoint(),plants:sourcesForSave(),receipts,view:currentView(),progress:candidate??salvage?.checkpoint()??null,
+        ...(east?{neighbor:{version:"hvp-neighbor-scene-v1" as const,terrain:east,lod:neighbor!.read().renderLod??neighbor!.read().lod}}:{})};
+      return captured.kind==="phy01-lab"?{kind:"phy01-lab" as const,candidate,game:encodeHvpLabGame({...data,world:captured.world})}
+        :{kind:"public" as const,candidate,game:encodeHvpGame({...data,world:captured.world})};
     };
-    const loadGame=async(game:HvpDecodedGame)=>{
+    const loadGame=async(input:HvpBootstrapGame)=>{
+      const game=input.game,activePhysics=physics!;
+      if((input.kind==="phy01-lab")!==("checkpointLab" in activePhysics)||(input.kind==="phy01-lab")!==(owner.kind==="phy01-lab")){
+        throw new Error("HVP scene restore owner mismatch");
+      }
       const old=terrainRoot.read();
       if(game.checkpoint.terrain.baseDigest!==prepared.sourceDigest
         ||createPersistenceSignature(game.checkpoint.plants)!==createPersistenceSignature(sourcesForSave())
         ||(game.checkpoint.world.branch?.kind??"branch")!==(physics!.read().structural?.kind??"branch")){
         throw new Error("Different static scene: use an artifact-only new session, not in-place replacement");
       }
-      const originalWorld=await physics!.checkpoint();
+      const originalWorld="checkpointLab" in activePhysics?await activePhysics.checkpointLab():await activePhysics.checkpoint();
       for(const family of ["drop","inertia"]){
         const a=originalWorld.bodies.find(b=>b.family===family),b=game.checkpoint.world.bodies.find(b=>b.family===family);
         if(!a||!b||a.ownerId!==b.ownerId||createPersistenceSignature(JSON.parse(a.region).object)!==createPersistenceSignature(JSON.parse(b.region).object)){
@@ -2674,7 +2732,7 @@ export const startHvp = async (
       for(const entry of neighborCache.snapshot().entries){if(entry.leaseCount===0&&entry.pinCount===0){neighborCache.delete(entry.key);}}
       updateTerrainState();
        admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+retainedDecodedBytes+restorePrepareBytes+physics!.collisionBytes*2});
-      let ownedRestore:HvpTerrainProducts|undefined,completeCollision:HvpCompleteStaticCollision|undefined;
+      let ownedRestore:HvpTerrainProducts|undefined,completeCollision:HvpCompleteStaticCollision|undefined,labCompleteCollision:HvpLabCompleteStaticCollision|undefined;
       try{
       const resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+retainedDecodedBytes+physics!.collisionBytes*2;
       const physicalEast=game.checkpoint.world.neighbor?.resident?game.neighborRoot!.read():undefined;
@@ -2685,8 +2743,14 @@ export const startHvp = async (
         const extras=collisionSources.slice(1,collisionSources.length-(coldEast?1:0));
         const sources:HvpCollisionSource[]=[{...game.root.read(),readHaloSlot:physicalEast?(x,y,z)=>x>=256?physicalEast.readSlot(x-256,y,z):undefined:undefined},...extras,
           ...(physicalEast?[{...physicalEast,readHaloSlot:(x:number,y:number,z:number)=>x<0?game.root.read().readSlot(x+256,y,z):undefined}]:[])];
-        const preparedCollision=await prepareHvpStaticCollision(sources,physicsAbort.signal,game.checkpoint.world,bindHvpChunkPhysicsInput(game.root,raw,sources));
-        preparedCollision.assertCurrent();completeCollision={sectors:preparedCollision.sectors,layout:preparedCollision.staticLayout};
+        const tuple=bindHvpChunkPhysicsInput(game.root,raw,sources);
+        if(input.kind==="phy01-lab"){
+          const preparedCollision=await prepareHvpLabStaticCollision(sources,physicsAbort.signal,input.game,tuple);
+          preparedCollision.assertCurrent();labCompleteCollision=preparedCollision.completeCollision;completeCollision=labCompleteCollision;
+        }else{
+          const preparedCollision=await prepareHvpStaticCollision(sources,physicsAbort.signal,input.game.checkpoint.world,tuple);
+          preparedCollision.assertCurrent();completeCollision={sectors:preparedCollision.sectors,layout:preparedCollision.staticLayout};
+        }
       }
       const render=new Map(raw.render),collision=new Map(raw.collision);
       const regionalRestore=Boolean(completeCollision||originalWorld.neighbor||game.checkpoint.world.neighbor||neighbor!.checkpoint()||game.neighborRoot);
@@ -2706,7 +2770,15 @@ export const startHvp = async (
       if(!current()){throw new Error("Stale scene preparation");}
       const oldReceipts={terrain:await terrainConsumer!.checkpoint(),structural:structuralConsumer!.checkpoint(),moving:bodyCutConsumer!.checkpoint()},oldView=currentView();
        const restoreId=++restoreSequence;
-       await replaceHvpScene(game,`restore-${restoreId}`,physics!,completeCollision?[]:[...products.collision].map(([index,mesh])=>({index,mesh})),async candidate=>{
+       const replaceScene=(stage:Parameters<typeof replaceHvpScene>[4])=>{
+         if(input.kind==="phy01-lab"){
+           if(!("checkpointLab" in activePhysics)||labCompleteCollision===undefined){throw new Error("Missing private complete scene restore binding");}
+           return replaceHvpLabScene(input.game,`restore-${restoreId}`,activePhysics,labCompleteCollision,stage,current);
+         }
+         if("checkpointLab" in activePhysics){throw new Error("Public scene restore owner mismatch");}
+         return replaceHvpScene(input.game,`restore-${restoreId}`,activePhysics,completeCollision?[]:[...products.collision].map(([index,mesh])=>({index,mesh})),stage,current,completeCollision);
+       };
+       await replaceScene(async candidate=>{
          const scope=beginEphemeralScope(loadEpoch);
          const privateLoad=privateCutSource&&backend!.admitPrivateMeshSteps!==undefined;
          const renderPump=privateLoad?createHvpBodyMeshTaskPump(()=>{if(!current()){throw new Error("Stale Load render staging");}}):undefined;
@@ -2844,7 +2916,7 @@ export const startHvp = async (
            catch(cleanupError){throw new AggregateError([error,cleanupError],`HVP Load staging failed and cleanup is unproven: ${String(error)}; ${String(cleanupError)}`);}
            throw error;
          }finally{renderPump?.dispose();}
-       },current,completeCollision);
+      });
        if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==game.root.read()){
          enterRenderRecoveryHold("Finalized HVP Load does not own the live mount and B Root");
        }
@@ -2875,18 +2947,28 @@ export const startHvp = async (
       saveBusy=true;saveView={state:kind==="Save"?"Saving":"Loading",message:"Bestätigte Generation vorbereiten",revision:saveRevision};
       hud?.updateSave();
       try{
+        if(owner.kind==="public"){assertHvpPublicSaveCutover();}
         if(!confirmed()){throw new Error("Mutation/RecoveryHold: zuerst laufenden Befehl abschließen");}
         playerInput!.stop();showCutPreview([],false);await physics!.command("Pause");
         // Before decoding B, reserve A + the bounded checkpoint working set.
          admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+64*1024*1024+16*1024*1024});
         const store=await openSaveStore();if(!confirmed()){throw new Error("Scene disposed during storage access");}
         if(kind==="Save"){
-          const captured=await captureGame(),record=await store.save(captured.game,saveRevision);saveRevision=record.metadata.recordRevision;
+          const captured=await captureGame();
+          let record:Awaited<ReturnType<ReturnType<typeof createHvpSaveStore>["save"]>>;
+          if(store.kind==="phy01-lab"){
+            if(captured.kind!=="phy01-lab"){throw new Error("Private Save capture owner mismatch");}
+            record=await store.store.save(captured.game,saveRevision);
+          }else{
+            if(captured.kind!=="public"){throw new Error("Public Save capture owner mismatch");}
+            record=await store.store.save(captured.game,saveRevision);
+          }
+          saveRevision=record.metadata.recordRevision;
           if(captured.candidate&&salvage){salvage.commitSave(captured.candidate,(record.envelope.player.data.hestia as unknown as {progress:HvpSalvageCheckpoint}).progress);}
           saveView={state:"Saved",message:"Vollständiger Hestia-Spielstand lokal gespeichert",revision:saveRevision};
         }else{
-          const record=await store.load();if(!confirmed()){throw new Error("Scene disposed during load");}
-          await loadGame(record.game);saveRevision=record.metadata.recordRevision;
+          const record=await readOwnerSave(store);if(!confirmed()){throw new Error("Scene disposed during load");}
+          await loadGame(record);saveRevision=record.metadata.recordRevision;
           loadReadyFrame={start:loadStart,source:terrainRoot.read()};
           saveView={state:"Loaded",message:"Spielstand geladen – pausiert, Spielen setzt ausdrücklich fort",revision:saveRevision};
         }
@@ -2896,6 +2978,13 @@ export const startHvp = async (
           documentPort.body.dataset.hestiaPrototypeCutReadiness=JSON.stringify({policy:"hvp-ready-prewarm-v2",sourceMode:privateCutSource?"private-cow":"control",state:"Ready"});
           if(loadReadyFrame){measurement.record("loadToolReadyV2Ms",loadStart,performance.now()-loadStart,{policy:"hvp-ready-prewarm-v2"});}}
       }}}
+    };
+    const runSaveAction=(kind:"Save"|"Load")=>{
+      if(owner.kind==="public"){return saveAction(kind);}
+      if(privateSaveWork!==undefined){return privateSaveWork;}
+      const work=saveAction(kind);privateSaveWork=work;
+      const clear=()=>{if(privateSaveWork===work){privateSaveWork=undefined;}};
+      void work.then(clear,clear);return work;
     };
     if(coldGame){
       terrainConsumer!.restoreReceipts(coldGame.receipts.terrain);structuralConsumer!.restoreReceipts(coldGame.receipts.structural);bodyCutConsumer!.restoreReceipts(coldGame.receipts.moving);
@@ -2909,7 +2998,7 @@ export const startHvp = async (
         }
       }
       restoreView(coldGame.view);syncPhysicsTransforms();presentation.updateProjection();updateTerrainState();
-      coldGame=undefined;coldNeighborSourceTransferred=false;
+      coldGame=undefined;coldInput=undefined;coldNeighborSourceTransferred=false;
     }
     dormancy=createHvpDormancyController({physics,stage:stageDormancy,current:()=>!disposed&&hvpMountEpoch===myEpoch,
       blocked:()=>saveBusy||saveHold||supportPending||Boolean(neighbor?.read().busy||neighbor?.read().recoveryHold)
@@ -2934,8 +3023,16 @@ export const startHvp = async (
       launcher=documentPort.createElement("section");launcher.id="hvp-ended";launcher.setAttribute("role","status");
       launcher.setAttribute("style","position:fixed;inset:20% 15%;padding:24px;background:#10202a;color:#fff;font:16px system-ui;z-index:40");
       const message=documentPort.createElement("p");message.textContent=disposalReceipt?.state==="Disposed"?"Hestia-Sitzung beendet":"Fehler beim Beenden – neu laden";
-      const restart=documentPort.createElement("button");restart.textContent="Neu starten";restart.type="button";
-      launcherListeners.add(restart,"click",restartAfterEnd);launcher.append(message,restart);host.append(launcher);
+      launcher.append(message);
+      if(owner.kind==="public"){
+        const restart=documentPort.createElement("button");restart.textContent="Neu starten";restart.type="button";
+        launcherListeners.add(restart,"click",restartAfterEnd);launcher.append(restart);
+      }
+      host.append(launcher);
+    };
+    const allowPublicRestart=()=>{
+      if(owner.kind==="public"){return true;}
+      saveView={state:"Rejected",message:"Diese private Sitzung wird durch ihren Owner neu geöffnet",revision:saveRevision};hud?.updateSave();return false;
     };
     hud = createHvpHud({
       host,
@@ -2945,13 +3042,13 @@ export const startHvp = async (
         readNeighbor:()=>neighbor?.read()??null,
         readDormancy:()=>dormancy?.read()??null,
         retryNeighbor:()=>{neighbor?.retry();dormancy?.retry();},
-        restartEast:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Neue Sitzung am Ostpfad starten? Ungespeicherte Änderungen werden verworfen.")){
+        restartEast:()=>{if(allowPublicRestart()&&!saveBusy&&!saveHold&&windowPort.confirm?.("Neue Sitzung am Ostpfad starten? Ungespeicherte Änderungen werden verworfen.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpScenario=east-edge");}},
         readSalvage:()=>salvage?.read()??null,
-        restartSalvage:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Neuen Bergungsauftrag starten? Ungespeicherte Änderungen werden verworfen; der gespeicherte Stand bleibt erhalten.")){
+        restartSalvage:()=>{if(allowPublicRestart()&&!saveBusy&&!saveHold&&windowPort.confirm?.("Neuen Bergungsauftrag starten? Ungespeicherte Änderungen werden verworfen; der gespeicherte Stand bleibt erhalten.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpScenario=salvage");}},
-        readSave:()=>saveView,save:()=>{void saveAction("Save");},load:()=>{void saveAction("Load");},
-        loadNewSession:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Gespeicherte Sitzung neu öffnen? Ungespeicherte Änderungen werden verworfen.")){
+        readSave:()=>saveView,save:()=>{void runSaveAction("Save");},load:()=>{void runSaveAction("Load");},
+        loadNewSession:()=>{if(allowPublicRestart()&&!saveBusy&&!saveHold&&windowPort.confirm?.("Gespeicherte Sitzung neu öffnen? Ungespeicherte Änderungen werden verworfen.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpLoad=primary");}},
         setPreset: (preset: HvpCameraPreset) => {
           playerInput!.stop();
@@ -3006,7 +3103,7 @@ export const startHvp = async (
           hud!.update("Ready",camera!.readPose(),stats);
         },
         restartRock:()=>{
-          if(windowPort.confirm?.("Neue Felsarm-Sitzung starten? Ungespeicherte Schnitte dieser Sitzung werden verworfen.")){
+          if(allowPublicRestart()&&windowPort.confirm?.("Neue Felsarm-Sitzung starten? Ungespeicherte Schnitte dieser Sitzung werden verworfen.")){
             windowPort.location?.assign("/?hestiaPrototype=1&hvpScenario=rock-arm");
           }
         },
@@ -3149,9 +3246,11 @@ export const startHvp = async (
     return Object.freeze({ dispose });
   } catch (error) {
     const wasLive = !disposed;
-    try { await dispose(); } catch {
+    try { await dispose(); } catch (cleanupError) {
+      if(owner.kind==="phy01-lab"){throw new AggregateError([error,cleanupError],"Private HVP initialization and cleanup failed");}
       // The technical failure state remains authoritative even if cleanup reports a secondary error.
     }
+    if(owner.kind==="phy01-lab"){throw error;}
     if (!wasLive || hvpMountEpoch !== myEpoch) {
       // Torn down before the failure (pagehide/dispose) or superseded by a
       // newer mount: never install Error UI or wipe another mount's state.

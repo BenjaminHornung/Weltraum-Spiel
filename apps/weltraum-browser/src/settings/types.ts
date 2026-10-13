@@ -117,6 +117,7 @@ export interface GraphicsCapabilityProbe {
   readonly fullscreenAvailable: boolean;
   readonly antiAliasingApplied: boolean;
   readonly effectiveShadows: boolean;
+  readonly renderOnlyDecor: boolean;
   readonly postProcessing: boolean;
   readonly motionEffects: boolean;
   readonly environmentReflections: boolean;

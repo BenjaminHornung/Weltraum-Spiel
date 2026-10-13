@@ -8,6 +8,44 @@ import type {HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
 
 /** Ephemeral transport binding; never a Source, Save or native ownership proof. */
 export const HVP_PHYSICS_PROTOCOL = "hvp-physics-owner-v3";
+/** @internal Fixed private owner context; it is never selected from Save or public settings. */
+export const HVP_LAB_PHYSICS_MODE = "hvp-phy01-lab-worker-v1";
+export type HvpLabPhysicsMode = typeof HVP_LAB_PHYSICS_MODE;
+/** @internal Data-only description of the one authored fresh Chunk root accepted by the private LAB Worker. */
+export interface HvpFreshLabSourceHeader {
+  readonly version:"hvp-fresh-lab-source-v1";
+  readonly worldId:string;readonly sourceSessionId:string;readonly epoch:number;readonly revision:0;
+  readonly baseDigest:string;readonly sourceDigest:string;readonly sizeX:256;readonly sizeY:128;readonly sizeZ:256;
+  readonly cellMeters:.125;readonly originX:-16;readonly originY:-8;readonly originZ:-16;readonly neighbor:false;
+}
+const freshLabSourceHeaderFields=["version","worldId","sourceSessionId","epoch","revision","baseDigest","sourceDigest","sizeX","sizeY","sizeZ",
+  "cellMeters","originX","originY","originZ","neighbor"] as const;
+/** @internal Strict cloned-wire guard; this header carries binding facts, never Source or Native authority. */
+export const readHvpFreshLabSourceHeader=(value:unknown):HvpFreshLabSourceHeader=>{
+  const record=requirePlainRecord(value,"fresh LAB source header");requireExactKeys(record,freshLabSourceHeaderFields,"fresh LAB source header");
+  if(record.version!=="hvp-fresh-lab-source-v1"||typeof record.worldId!=="string"||!/^[A-Za-z0-9:_-]{1,128}$/.test(record.worldId)
+    ||typeof record.sourceSessionId!=="string"||!/^[A-Za-z0-9:._-]{1,128}$/.test(record.sourceSessionId)
+    ||typeof record.epoch!=="number"||!Number.isSafeInteger(record.epoch)||Object.is(record.epoch,-0)||record.epoch<0||record.revision!==0||Object.is(record.revision,-0)
+    ||typeof record.baseDigest!=="string"||!/^[a-f0-9]{8}$/.test(record.baseDigest)
+    ||typeof record.sourceDigest!=="string"||!/^[a-f0-9]{8}$/.test(record.sourceDigest)
+    ||record.sizeX!==256||record.sizeY!==128||record.sizeZ!==256||record.cellMeters!==.125
+    ||record.originX!==-16||record.originY!==-8||record.originZ!==-16||record.neighbor!==false){
+    throw new Error("Invalid fresh LAB source header");
+  }
+  return Object.freeze({version:record.version,worldId:record.worldId,sourceSessionId:record.sourceSessionId,epoch:record.epoch,revision:0,
+    baseDigest:record.baseDigest,sourceDigest:record.sourceDigest,sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originX:-16,originY:-8,originZ:-16,neighbor:false});
+};
+const labWireArrayBufferLength=Object.getOwnPropertyDescriptor(ArrayBuffer.prototype,"byteLength")!.get!;
+const labWireArrayBufferResizable=Object.getOwnPropertyDescriptor(ArrayBuffer.prototype,"resizable")?.get;
+/** @internal Validate an owned fixed Worker wire before any text/JSON allocation. */
+export const readHvpLabGameWireBuffer=(value:unknown):Readonly<{buffer:ArrayBuffer;byteLength:number}>=>{
+  if(!(value instanceof ArrayBuffer)||Object.getPrototypeOf(value)!==ArrayBuffer.prototype){throw new Error("Invalid LAB game wire buffer");}
+  const byteLength=labWireArrayBufferLength.call(value) as number;
+  if(labWireArrayBufferResizable?.call(value)===true||byteLength<1||byteLength>16*1024*1024||byteLength!==value.byteLength){
+    throw new Error("LAB game wire transport budget/fixed buffer");
+  }
+  return Object.freeze({buffer:value,byteLength});
+};
 export interface HvpPhysicsBinding {
   readonly protocol: typeof HVP_PHYSICS_PROTOCOL;
   readonly incarnation: string;

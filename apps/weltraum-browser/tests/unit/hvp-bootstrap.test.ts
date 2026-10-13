@@ -34,7 +34,7 @@ import {
   createHvpCompactLookTerrain,
   createHvpLookTerrain,
   HVP_RESOURCE_CAPS_DEFAULT,
-  startHvp,
+  startHvp,startHvpLab,
   startHvpRoute,
   type HvpBootstrapHandle
 } from "../../src/hvp/hvpBootstrap";
@@ -63,6 +63,17 @@ import * as saveStoreModule from "../../src/hestia-prototype/persistence/saveSto
 import * as sceneReplacementModule from "../../src/hestia-prototype/persistence/sceneReplacement";
 import * as dormancyControllerModule from "../../src/hestia-prototype/runtime/dormancyController";
 import type {HvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
+import * as physicsClientModule from "../../src/hestia-prototype/physics/client";
+import {createHvpPhy01LabSaveStore,HVP_PHY01_LAB_SAVE_SLOT} from "../../src/hestia-prototype/persistence/phy01LabSave";
+import {createSyntheticAuthoredCodecFixtures} from "../fixtures/phy01LabCodecFixtures";
+import {encodeHvpBody} from "../../src/hestia-prototype/persistence/bodyCheckpoint";
+import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
+import {prepareHvpRigidBody} from "../../src/hestia-prototype/physics/rigidRecipe";
+import {HVP_SOLVER_PROFILE} from "../../src/hestia-prototype/physics/profile";
+import {executeHvpChunkJob,executeHvpEastChunkCollisionJob,HVP_CHUNK_JOB,HVP_EAST_CHUNK_COLLISION_JOB} from "../../src/workers/hvpChunkJob";
+import {workerEpoch} from "../../src/workers/ids";
+import {transferListFor} from "../../src/workers/protocol";
+import type {WorkerJobTerminal} from "../../src/workers/workerPool";
 import {bindHvpSupportPlan} from "../../src/hestia-prototype/terrain/supportPlan";
 import * as bodyConsumerModule from "../../src/hestia-prototype/terrain/bodyCutConsumer";
 import {HvpRenderStageRecoveryError} from "../../src/hestia-prototype/presentation/renderStageRecovery";
@@ -262,6 +273,108 @@ const harness = () => {
 };
 
 let k34LoadCheckpoint: ReturnType<typeof encodeHvpGame> | undefined;
+
+it.each(["slot","repository","mode","physics","compiler"])("LAB bootstrap rejects an invalid owner before mounting (%s)",async kind=>{
+  const source=harness(),repository=new MemorySaveRepository([]),base={repository,slot:HVP_PHY01_LAB_SAVE_SLOT,startMode:"authored-fresh" as const};
+  const owner=kind==="slot"?{...base,slot:"hvp-primary"}:kind==="repository"?{...base,repository:{}}:kind==="mode"?{...base,startMode:"other"}:base;
+  const {createPhysics,createTerrainCompiler,...ports}=source.overrides()!;
+  const overrides=kind==="physics"?{...ports,createPhysics}:kind==="compiler"?{...ports,createTerrainCompiler}:ports;
+  try{
+    await expect(startHvpLab(owner as Parameters<typeof startHvpLab>[0],overrides)).rejects.toThrow(/private HVP bootstrap owner/);
+    expect(source.counts().backendConstructions).toBe(0);expect(source.body.dataset.hestiaPrototypeState).toBeUndefined();
+  }finally{await repository.close();}
+});
+
+it.each(["ordinary","deferred-write","deferred-load"])("LAB bootstrap private Memory lifecycle (%s)",async mode=>{
+  // SYNTHETIC/PURE/FAKE: actual Source/compiler/codecs/Memory; fake pool, Physics and backend. No Worker/WASM/GPU.
+  const repository=new MemorySaveRepository([]),source=harness(),{createPhysics:publicFixture,createTerrainCompiler:_compiler,...ports}=source.overrides()!;
+  if(!publicFixture){throw new Error("Missing shared fake Physics fixture");}
+  const close=vi.spyOn(repository,"close"),publicStore=vi.spyOn(saveStoreModule,"createHvpSaveStore"),assign=vi.fn();
+  Reflect.set(source.windowPort,"location",{search:"?hvpMeasure=1&hvpCutSource=control&hvpScenario=salvage&hvpLoad=primary",assign});
+  let root:Parameters<ReturnType<typeof createHvpTerrainCompiler>["prepare"]>[1],worldId="",spawn={x:0,y:4,z:0},player={x:0,y:2,z:0};
+  const originalCompiler=terrainProductsModule.createHvpTerrainCompiler;
+  const compilerFactory=vi.spyOn(terrainProductsModule,"createHvpTerrainCompiler").mockImplementation((...args)=>{
+    const compiler=originalCompiler(...args),prepare=compiler.prepare;
+    compiler.prepare=async(...input)=>{root=input[1];return prepare(...input);};return compiler;
+  });
+  const poolStart=vi.spyOn(WorkerPool.prototype,"start").mockResolvedValue(undefined),accepted=vi.spyOn(WorkerPool.prototype,"isAcceptedCompletedTerminal").mockReturnValue(true);
+  const jobs=vi.spyOn(WorkerPool.prototype,"enqueueTerrainDerivative").mockImplementation(async(request,bundle,_grant,_host,reserve)=>{
+    reserve(16_384);reserve(8192+bundle.byteLength);const input=structuredClone(bundle,{transfer:transferListFor(bundle)});
+    const output=request.jobKind===HVP_CHUNK_JOB?executeHvpChunkJob(request,input):request.jobKind===HVP_EAST_CHUNK_COLLISION_JOB?executeHvpEastChunkCollisionJob(request,input):(()=>{throw new Error("Unexpected LAB bootstrap fixture job");})();
+    return {jobId:request.jobId,workerEpoch:workerEpoch(0),result:Promise.resolve({kind:"Completed",result:output.result,output:output.bundle} as WorkerJobTerminal),cancel:()=>false};
+  });
+  const synthetic=createSyntheticAuthoredCodecFixtures().lab;
+  const inertiaSource=ingestHvpStructuralCells("hvp:physics:inertia",[{x:0,y:0,z:0,materialId:1}],
+    [{materialId:1,densityKgPerCubicMeter:600,structuralClass:"wood",destructible:true,tags:null}]),recipe=prepareHvpRigidBody(inertiaSource);
+  const collider={isSensor:()=>false,isEnabled:()=>true,friction:()=>.5,restitution:()=>0,frictionCombineRule:()=>0,restitutionCombineRule:()=>0};
+  const fakeBody={numColliders:()=>recipe.colliders.length,isEnabled:()=>true,isDynamic:()=>true,isFixed:()=>false,
+    translation:()=>spawn,rotation:()=>({x:0,y:0,z:0,w:1}),linvel:()=>({x:0,y:0,z:0}),angvel:()=>({x:0,y:0,z:0}),collider:()=>collider,isSleeping:()=>false,isCcdEnabled:()=>false} as unknown as Parameters<typeof encodeHvpBody>[3];
+  const checkpointLab=async()=>{
+    if(!root){throw new Error("Missing actual LAB Source owner");}
+    return {...synthetic.world,sessionId:worldId,terrainGeneration:root.read().revision,dropSpawn:spawn,player:{...synthetic.world.player!,position:player},
+      bodies:[synthetic.world.bodies[0]!,encodeHvpBody("hvp:physics:inertia","inertia",recipe,fakeBody)]};
+  };
+  const restorePrepare=vi.fn(),restorePublish=vi.fn();
+  const fakeClient=async()=>({...(await publicFixture([],spawn,new AbortController().signal)),checkpointLab,
+    staticTerrainLayout:()=>({version:"hvp-static-chunks-v1",primaryTerrainCount:256,neighborTerrainCount:256} as const),
+    prepareLabRestore:restorePrepare,commitLabRestore:vi.fn(),publishLabRestore:restorePublish,rollbackLabRestore:vi.fn(),finalizeLabRestore:vi.fn()});
+  const fresh=vi.spyOn(physicsClientModule,"createHvpFreshLabPhysicsClient").mockImplementation(async(sources,start,_signal,tuple,playerSpawn)=>{
+    const bound=terrainProductsModule.bindHvpFreshLabChunkInput(tuple,sources);bound.assertCurrent();worldId=bound.header.worldId;spawn=start;player=playerSpawn!;return fakeClient();
+  });
+  const cold=vi.spyOn(physicsClientModule,"createHvpLabPhysicsClient").mockImplementation(async(sources,_signal,tuple,game)=>{
+    terrainProductsModule.bindHvpLabChunkGameInput(tuple,sources,game)();worldId=game.checkpoint.world.sessionId;return fakeClient();
+  });
+  let handle:HvpBootstrapHandle|undefined,release!:()=>void,entered!:()=>void;
+  const entering=new Promise<void>(r=>{entered=r;}),gate=new Promise<void>(r=>{release=r;});
+  let write:{mockRestore():void}|undefined,read:{mockRestore():void}|undefined;
+  try{
+    handle=await startHvpLab({repository,slot:HVP_PHY01_LAB_SAVE_SLOT,startMode:"authored-fresh"},ports);
+    expect(fresh).toHaveBeenCalledTimes(1);expect(cold).not.toHaveBeenCalled();expect(publicStore).not.toHaveBeenCalled();
+    expect(source.body.dataset.hestiaPrototypeScenario).toBe("coast");expect(source.body.dataset.hestiaPrototypeRestoreSource).toBe("authored-start");
+    const save=descendants(source.body).find(e=>e.id==="hvp-save");if(!save){throw new Error("Missing private Save control");}
+    let written!:()=>void,failed!:(error:unknown)=>void;
+    const writeSettled=new Promise<void>((resolve,reject)=>{written=resolve;failed=reject;});
+    const originalWrite=repository.writeSlot.bind(repository);write=vi.spyOn(repository,"writeSlot").mockImplementation(async input=>{
+      try{if(mode==="deferred-write"){entered();await gate;}const result=await originalWrite(input);written();return result;}
+      catch(error){failed(error);throw error;}
+    });
+    if(mode==="deferred-write"){
+      void writeSettled.catch(()=>{});save.dispatchEvent(new Event("click"));await entering;
+      save.dispatchEvent(new Event("click"));expect(write).toHaveBeenCalledTimes(1);
+      let disposed=false;const disposing=handle.dispose().then(async()=>{disposed=true;await repository.close();});
+      await new Promise(r=>setTimeout(r,0));expect(disposed).toBe(false);expect(close).not.toHaveBeenCalled();
+      await expect(startHvpLab({repository,slot:HVP_PHY01_LAB_SAVE_SLOT,startMode:"cold"},ports)).rejects.toThrow(/already mounted/);
+      release();await disposing;handle=undefined;expect(close).toHaveBeenCalledTimes(1);return;
+    }
+    save.dispatchEvent(new Event("click"));await writeSettled;await new Promise(r=>setTimeout(r,0));
+    expect(source.body.dataset.hestiaPrototypeSave).toContain('"state":"Saved"');
+    const store=createHvpPhy01LabSaveStore(repository),saved=await store.load();expect(saved.game.checkpoint.world.solver).toBe(HVP_SOLVER_PROFILE.id);
+    await expect(store.save(saved.game.checkpoint,null)).rejects.toThrow();expect((await store.load()).metadata.recordRevision).toBe(saved.metadata.recordRevision);
+    if(mode==="deferred-load"){
+      const load=descendants(source.body).find(e=>e.id==="hvp-load");if(!load){throw new Error("Missing private Load control");}
+      const original=repository.readSlot.bind(repository);read=vi.spyOn(repository,"readSlot").mockImplementation(async id=>{entered();await gate;return original(id);});
+      load.dispatchEvent(new Event("click"));await entering;
+      let disposed=false;const disposing=handle.dispose().then(async()=>{disposed=true;await repository.close();});
+      await new Promise(r=>setTimeout(r,0));expect(disposed).toBe(false);expect(close).not.toHaveBeenCalled();
+      release();await disposing;handle=undefined;expect(cold).not.toHaveBeenCalled();expect(restorePrepare).not.toHaveBeenCalled();expect(restorePublish).not.toHaveBeenCalled();expect(close).toHaveBeenCalledTimes(1);return;
+    }
+    await handle.dispose();handle=undefined;expect(close).not.toHaveBeenCalled();expect((await repository.listSlots()).slots).toHaveLength(1);expect(assign).not.toHaveBeenCalled();
+    handle=await startHvpLab({repository,slot:HVP_PHY01_LAB_SAVE_SLOT,startMode:"cold"},ports);
+    expect(cold).toHaveBeenCalledTimes(1);expect(fresh).toHaveBeenCalledTimes(1);expect(publicStore).not.toHaveBeenCalled();
+    await handle.dispose();handle=undefined;expect(close).not.toHaveBeenCalled();await repository.close();expect(close).toHaveBeenCalledTimes(1);
+    await expect(repository.listSlots()).rejects.toThrow();
+  }finally{release();await handle?.dispose();read?.mockRestore();write?.mockRestore();await repository.close();fresh.mockRestore();cold.mockRestore();jobs.mockRestore();accepted.mockRestore();poolStart.mockRestore();compilerFactory.mockRestore();publicStore.mockRestore();close.mockRestore();}
+},120_000);
+
+it("LAB bootstrap rejects an empty Cold slot without falling back to Fresh or closing its owner",async()=>{
+  const source=harness(),repository=new MemorySaveRepository([]),{createPhysics:_physics,createTerrainCompiler:_compiler,...ports}=source.overrides()!;
+  const fresh=vi.spyOn(physicsClientModule,"createHvpFreshLabPhysicsClient"),cold=vi.spyOn(physicsClientModule,"createHvpLabPhysicsClient"),close=vi.spyOn(repository,"close");
+  try{
+    await expect(startHvpLab({repository,slot:HVP_PHY01_LAB_SAVE_SLOT,startMode:"cold"},ports)).rejects.toThrow();
+    expect(fresh).not.toHaveBeenCalled();expect(cold).not.toHaveBeenCalled();expect(close).not.toHaveBeenCalled();
+    expect(source.windowPort.animationFrames.size).toBe(0);expect(source.counts().backendDisposals).toBe(1);
+  }finally{await repository.close();fresh.mockRestore();cold.mockRestore();close.mockRestore();}
+});
 const createK34LoadCheckpoint = async (): Promise<ReturnType<typeof encodeHvpGame>> => {
   if (k34LoadCheckpoint !== undefined) return k34LoadCheckpoint;
   const prepared = prepareHvpCoastSource(materializeHvpCoastSource());
@@ -1267,8 +1380,9 @@ describe("HVP T08 bootstrap lifecycle", () => {
       createBackend: () => ({ ...source.backend, scene: undefined })
     }));
     expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
-    expect(reticle.getAttribute("style")).toBeNull();
+    expect(reticle.getAttribute("style")).toContain("display:none");
     await handle.dispose();
+    expect(reticle.getAttribute("style")).toBeNull();
   });
 
   it("exposes an accessible HUD hide control and a labeled camera inspection mode", async () => {

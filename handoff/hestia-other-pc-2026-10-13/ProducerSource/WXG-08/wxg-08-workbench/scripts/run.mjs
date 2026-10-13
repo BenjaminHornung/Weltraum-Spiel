@@ -1,0 +1,11 @@
+import {spawnSync} from 'node:child_process';
+import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {root,hash,save} from './inputs.mjs';
+const label=process.argv[2];if(!/^[a-z0-9-]+$/.test(label??''))throw Error('LABEL');
+const evidence=resolve(root,'../../.devtoolbox/specs/changes/wxg-08-2026-10-09/tests/runs',label);
+mkdirSync(evidence,{recursive:true});
+const args=process.argv.slice(3),r=spawnSync(process.execPath,args,{cwd:root,windowsHide:true,maxBuffer:16*1024*1024});
+for(const k of ['stdout','stderr'])writeFileSync(resolve(evidence,k+'.log'),r[k]??Buffer.from(String(r.error??'')));
+writeFileSync(resolve(evidence,'command.json'),JSON.stringify({executable:process.execPath,args,cwd:root,exitCode:r.status,error:r.error?.message??null,environment:'LOCAL_WINDOWS_ISOLATED',load:'CONCURRENT_UNCONTROLLED',toolSha256:hash(readFileSync(process.execPath))},null,2)+'\n');
+console.log(JSON.stringify({label,exitCode:r.status,stdout:(r.stdout??'').toString().slice(-1000),stderr:(r.stderr??r.error?.message??'').toString().slice(-1000)}));process.exit(r.status??1);

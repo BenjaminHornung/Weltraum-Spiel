@@ -1,0 +1,11 @@
+--- a/R03/check-packer.mjs (logical base only; immutable)
++++ b/R05/guard-span.mjs.source (inert replacement span)
+@@ -24,7 +24,1 @@
+-  // Process-local guards; no environment/config read or machine-global writes.
+-  for(const key of ['window','__THREE_DEVTOOLS__','navigator','Worker','WebAssembly']){
+-    Object.defineProperty(globalThis,key,{value:undefined,writable:false,configurable:false});
+-  }
+-  for(const key of ['document','fetch','XMLHttpRequest','WebSocket']){
+-    Object.defineProperty(globalThis,key,{get(){throw new Error('Forbidden browser/network access: '+key);},configurable:false});
+-  }
++  must(false,'R05_SOURCE_ONLY_INVOKED_EFFECT_CLOSURE_UNPROVEN');

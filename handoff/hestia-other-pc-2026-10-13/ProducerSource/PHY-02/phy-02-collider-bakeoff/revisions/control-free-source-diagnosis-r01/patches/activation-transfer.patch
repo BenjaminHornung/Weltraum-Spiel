@@ -1,0 +1,13 @@
+diff --git a/candidates/stageEdit.ts b/candidates/stageEdit.ts
+--- a/candidates/stageEdit.ts
++++ b/candidates/stageEdit.ts
+@@ -23,7 +23,9 @@
+         if(status!=="staged")throw new Error("Candidate already consumed");
+         if(!active.body.isValid()||!active.body.isEnabled())throw new Error("Stale active body");
++        const sleeping=active.body.isSleeping();
+         candidate.body.setTranslation(active.body.translation(),false);candidate.body.setRotation(active.body.rotation(),false);
+         candidate.body.setLinvel(active.body.linvel(),false);candidate.body.setAngvel(active.body.angvel(),false);
++        if(sleeping)candidate.body.sleep();
+         active.world.removeRigidBody(active.body);candidate.body.setEnabled(true);status="committed";
+         return {...candidate,recipe:next};
+       },

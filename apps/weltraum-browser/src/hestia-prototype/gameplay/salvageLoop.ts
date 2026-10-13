@@ -100,7 +100,10 @@ export const validateHvpSalvageCheckpoint=(value:unknown,s:HvpSalvageObservation
   return c;
 };
 /** Restore validation uses artifact-owned sources and motion, not HUD completion. */
-export const savedHvpSalvageObservation=(world:ReturnType<typeof decodeHvpWorld>):HvpSalvageObservation=>{
+export const savedHvpSalvageObservation=(world:Readonly<{
+  checkpoint:Pick<ReturnType<typeof decodeHvpWorld>["checkpoint"],"branch"|"tick"|"player"|"lastImpulse"|"lastImpulseTick">;
+  bodies:ReturnType<typeof decodeHvpWorld>["bodies"];
+}>):HvpSalvageObservation=>{
   const c=world.checkpoint,b=c.branch;
   return {ticks:c.tick.ticks,status:"Paused",terrainTransaction:"Idle",movingState:"Idle",
     player:c.player?{position:c.player.position,status:"Inspection"}:null,

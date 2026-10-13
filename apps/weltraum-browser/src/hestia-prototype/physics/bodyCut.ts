@@ -37,7 +37,7 @@ export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCutt
   const position={...body.translation()},rotation={...body.rotation()},inverse={x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w};
   const local=rotateStructuralWorldVector(inverse,{x:eye.x-position.x,y:eye.y-position.y,z:eye.z-position.z});
   const ray=rotateStructuralWorldVector(inverse,direction),center=target.recipe.mass.centerOfMassMeters!;
-  const {reader,min}=readerFor(target.recipe),enter=Math.min(4,contact.toi+1e-6);
+  const {reader,min}=readerFor(target.recipe),enter=Math.min(4,contact.timeOfImpact+1e-6);
   const picked=pickHvpCell(reader,[local.x+center.x+ray.x*enter,local.y+center.y+ray.y*enter,local.z+center.z+ray.z*enter],
     [ray.x,ray.y,ray.z],4-enter);
   if(picked.kind!=="Hit"){return null;}

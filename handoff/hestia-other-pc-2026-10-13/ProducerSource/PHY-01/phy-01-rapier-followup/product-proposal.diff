@@ -1,0 +1,304 @@
+--- a/apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts
+@@ -4,7 +4,7 @@
+ import {HVP_VEGETATION_VERSION} from "../presentation/vegetation";
+ import {createHvpLookProfile} from "../presentation/look";
+ import {HVP_EFFECT_VERSION} from "../presentation/visualEffects";
+-import {HVP_BRANCH_CELLS,HVP_SALVAGE_CELLS,HVP_PLAYER_PROFILE_DIGEST,resolveHvpGravity} from "../physics/profile";
++import {HVP_BRANCH_CELLS,HVP_SALVAGE_CELLS,HVP_PLAYER_PROFILE_DIGEST,HVP_SOLVER_VERSION,resolveHvpGravity} from "../physics/profile";
+ import {readHvpBodyCells} from "../physics/bodyCutPlan";
+ import {createHvpPrivateTerrainRoot,validateHvpTerrainCheckpointHeader,type HvpTerrainCheckpoint} from "../terrain/cutPlan";
+ import type {HvpCutOutcome} from "../terrain/terrainConsumer";
+@@ -19,7 +19,7 @@
+ export const HVP_SAVE_TRANSPORT_BYTES=16*1024*1024;
+ export const HVP_SAVE_DECODE_BYTES=64*1024*1024;
+ export const HVP_SAVE_PROFILES=Object.freeze({source:HVP_COAST_SOURCE_VERSION,vegetation:HVP_VEGETATION_VERSION,
+-  look:createHvpLookProfile("readable").id,effects:HVP_EFFECT_VERSION,player:HVP_PLAYER_PROFILE_DIGEST,solver:"rapier-0.12.0"});
++  look:createHvpLookProfile("readable").id,effects:HVP_EFFECT_VERSION,player:HVP_PLAYER_PROFILE_DIGEST,solver:HVP_SOLVER_VERSION});
+ export interface HvpToolCheckpoint {readonly mode:number;readonly sequence:number;readonly structureSequence:number;readonly movingSequence:number;readonly edges:number}
+ export interface HvpViewCheckpoint {
+   readonly camera:HvpCameraCheckpoint;readonly playerYaw:number;readonly playerPitch:number;readonly thirdPerson:boolean;readonly tool:HvpToolCheckpoint;
+--- a/apps/weltraum-browser/src/hestia-prototype/persistence/worldCheckpoint.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/persistence/worldCheckpoint.ts
+@@ -3,7 +3,7 @@
+ import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
+ import {decodeStructuralObject} from "../../voxel/structural";
+ import {readHvpBodyCells} from "../physics/bodyCutPlan";
+-import {HVP_BRANCH_KEY,HVP_INERTIA_KEY,validateHvpPlayerCheckpoint} from "../physics/profile";
++import {HVP_BRANCH_KEY,HVP_INERTIA_KEY,HVP_SOLVER_VERSION,validateHvpPlayerCheckpoint} from "../physics/profile";
+ import {createHvpTick,type HvpTickCheckpoint} from "../physics/tick";
+ import type {HvpBranchCheckpoint} from "../physics/branchSession";
+ import type {HvpMovingCheckpoint} from "../physics/bodyCutSession";
+@@ -15,7 +15,7 @@
+ 
+ type Vec=Readonly<{x:number;y:number;z:number}>;
+ export interface HvpWorldCheckpoint {
+-  readonly version:"hvp-world-checkpoint-v1";readonly solver:"rapier-0.12.0";readonly sessionId:string;
++  readonly version:"hvp-world-checkpoint-v1";readonly solver:typeof HVP_SOLVER_VERSION;readonly sessionId:string;
+   readonly gravity:number;readonly terrainGeneration:number;readonly tick:HvpTickCheckpoint;readonly collisionDigest:string;
+   readonly dropSpawn:Vec;readonly player:HvpPlayerCheckpoint|null;readonly coverage:readonly HvpCollisionCoverage[];
+   readonly bodies:readonly HvpBodyCheckpoint[];readonly branch:HvpBranchCheckpoint|null;readonly moving:HvpMovingCheckpoint;
+@@ -47,7 +47,7 @@
+ const inspectHvpWorld=(value:unknown)=>{
+   const c=value as HvpWorldCheckpoint|null;
+   if(!c||Object.keys(c).filter(k=>k!=="neighbor"&&k!=="parked").sort().join(",")!=="bodies,branch,collisionDigest,coverage,dropSpawn,gravity,impulses,lastImpulse,lastImpulseTick,moving,player,sessionId,solver,terrainGeneration,tick,version"
+-    ||c.version!=="hvp-world-checkpoint-v1"||c.solver!=="rapier-0.12.0"||!validId(c.sessionId)||!Number.isFinite(c.gravity)||c.gravity<=0
++    ||c.version!=="hvp-world-checkpoint-v1"||c.solver!==HVP_SOLVER_VERSION||!validId(c.sessionId)||!Number.isFinite(c.gravity)||c.gravity<=0
+     ||!safeInt(c.terrainGeneration)||!safeInt(c.impulses)||!vector(c.dropSpawn)||!/^([0-9a-f]{8})$/.test(c.collisionDigest)
+     ||!Array.isArray(c.bodies)||c.bodies.length<1||c.bodies.length>64||!Array.isArray(c.coverage)||c.coverage.length>128){throw new Error("Invalid World checkpoint profile/owner budget");}
+   if(c.neighbor!==undefined&&c.neighbor!==null){validateHvpNeighborCheckpoint(c.neighbor);}
+--- a/apps/weltraum-browser/src/hestia-prototype/physics/bodyCut.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/bodyCut.ts
+@@ -37,7 +37,7 @@
+   const position={...body.translation()},rotation={...body.rotation()},inverse={x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w};
+   const local=rotateStructuralWorldVector(inverse,{x:eye.x-position.x,y:eye.y-position.y,z:eye.z-position.z});
+   const ray=rotateStructuralWorldVector(inverse,direction),center=target.recipe.mass.centerOfMassMeters!;
+-  const {reader,min}=readerFor(target.recipe),enter=Math.min(4,contact.toi+1e-6);
++  const {reader,min}=readerFor(target.recipe),enter=Math.min(4,contact.timeOfImpact+1e-6);
+   const picked=pickHvpCell(reader,[local.x+center.x+ray.x*enter,local.y+center.y+ray.y*enter,local.z+center.z+ray.z*enter],
+     [ray.x,ray.y,ray.z],4-enter);
+   if(picked.kind!=="Hit"){return null;}
+--- a/apps/weltraum-browser/src/hestia-prototype/physics/branchSession.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/branchSession.ts
+@@ -53,12 +53,12 @@
+     const ray=rotateStructuralWorldVector(inverse,direction);
+     // Rapier establishes the unobscured first contact; DDA establishes the actual
+     // canonical cell, just inside the same surface, never a render triangle id.
+-    const enter=hit.toi+1e-6;
++    const enter=hit.timeOfImpact+1e-6;
+     const cell=pickHvpCell({sizeX:16,sizeY:12,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0},
+       readSlot:(x,y,z)=>occupied.has(`${x}:${y}:${z}`)?1:0},
+       [local.x+center.x+ray.x*enter,local.y+center.y+ray.y*enter,local.z+center.z+ray.z*enter],[ray.x,ray.y,ray.z],Math.max(0,4-enter));
+     if(cell.kind!=="Hit") { return null; }
+-    return Object.freeze({cell:cell.cell,point:Object.freeze({x:eye.x+direction.x*hit.toi,y:eye.y+direction.y*hit.toi,z:eye.z+direction.z*hit.toi})});
++    return Object.freeze({cell:cell.cell,point:Object.freeze({x:eye.x+direction.x*hit.timeOfImpact,y:eye.y+direction.y*hit.timeOfImpact,z:eye.z+direction.z*hit.timeOfImpact})});
+   }
+   return {
+     get busy(){return stage!==undefined||held;},
+--- a/apps/weltraum-browser/src/hestia-prototype/physics/profile.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/profile.ts
+@@ -1,5 +1,13 @@
+ import { STARTER_CELESTIAL_CATALOG, STARTER_BODY_IDS, surfaceGravityMetersPerSecondSquared } from "../../celestial";
+ import {fnv1aHash} from "../../core/hash";
++
++/** Lab compatibility profile; A0 owns the explicit product profile selection. */
++export const HVP_SOLVER_SOURCE_PROFILE = "rapier-0.21.0-phy01.migration2" as const;
++export const HVP_SOLVER_VERSION = "rapier-0.21.0-phy01.migration2:legacy-impulse-v1" as const;
++export const HVP_SOLVER_PROFILE = Object.freeze({ id: HVP_SOLVER_VERSION,
++  sourceProfile: HVP_SOLVER_SOURCE_PROFILE, dynamicGyroscopicForces: false,
++  queryPublication: "EXPLICIT_TRANSIENT_BVH_NO_STEP", predicatePolicy: "PRECOMPUTED_HANDLE_MEMBERSHIP",
++  normalNudgeFactor: 0.0001, sleepPolicy: "NATIVE_DEFAULTS_CANONICAL_PARK_WAKE" });
+ 
+ /** Scoped prototype tuning; shared without loading the solver into the UI. */
+ export const HVP_PLAYER_PROFILE = Object.freeze({ height: 1.8, radius: 0.3, eyeHeight: 1.65,
+--- a/apps/weltraum-browser/src/hestia-prototype/physics/rapierPort.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/rapierPort.ts
+@@ -1,4 +1,4 @@
+-import R from "@dimforge/rapier3d-compat";
++import * as R from "./rapier021Candidate";
+ import type {
+   StructuralBodyPoseMotion,
+   StructuralColliderMassSpec,
+@@ -8,7 +8,7 @@
+ 
+ /**
+  * Shared runtime/test adapter for the solver-neutral structural commit port.
+- * Pinned Rapier 0.12.0 (Apache-2.0); the compatibility build embeds its WASM.
++ * Source-bound 0.21 candidate with explicit no-step query publication.
+  */
+ export { R };
+ // Pinned compatibility build: the numeric EXCLUDE_SENSORS flag also rejected
+--- a/apps/weltraum-browser/src/hestia-prototype/physics/session.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/session.ts
+@@ -277,12 +277,12 @@
+       const hit=world.castRayAndGetNormal(new R.Ray(origin,direction),4,true,undefined,undefined,undefined,undefined,
+         collider=>isHvpSolidCollider(collider)&&collider.parent()?.isKinematic()!==true);
+       if(!hit){return blocked("NoContact","No contact within 4 m");}
+-      const point=Object.freeze({x:origin.x+direction.x*hit.toi,y:origin.y+direction.y*hit.toi,z:origin.z+direction.z*hit.toi});
++      const point=Object.freeze({x:origin.x+direction.x*hit.timeOfImpact,y:origin.y+direction.y*hit.timeOfImpact,z:origin.z+direction.z*hit.timeOfImpact});
+       const body=hit.collider.parent();
+-      if(!body?.isDynamic()){return {preview:Object.freeze({...noImpulseTarget,kind:"Fixed",distanceMeters:hit.toi,point}),reason:"Contact is not dynamic"};}
++      if(!body?.isDynamic()){return {preview:Object.freeze({...noImpulseTarget,kind:"Fixed",distanceMeters:hit.timeOfImpact,point}),reason:"Contact is not dynamic"};}
+       const massKg=body.mass(),v=body.linvel(),magnitude=Math.min(15,Math.max(0,20-Math.hypot(v.x,v.y,v.z))*massKg);
+       const target=[...bodies].find(([,b])=>b.handle===body.handle)?.[0]??"dynamic";
+-      return {preview:Object.freeze({kind:magnitude>0?"Dynamic":"SpeedLimit",target,massKg,distanceMeters:hit.toi,point}),
++      return {preview:Object.freeze({kind:magnitude>0?"Dynamic":"SpeedLimit",target,massKg,distanceMeters:hit.timeOfImpact,point}),
+         reason:magnitude>0?"Solver contact impulse":"Speed budget",body,magnitude};
+     };
+     const residencyMembership=()=>JSON.stringify([world.bodies.len(),world.colliders.len(),[...movingBodies.keys()].sort(),residency!.read().map(p=>p.ownerId)]);
+@@ -337,7 +337,7 @@
+       let activeDynamic=0,residentDynamic=disposed?0:residency!.count;
+       if(!disposed){world.bodies.forEach(b=>{if(b.isDynamic()){residentDynamic+=1;if(!b.isSleeping()){activeDynamic+=1;}}});}
+       return Object.freeze({ ...tick.read(), status:bodyResidencyWork?.hold?"RecoveryHold" as const:coverageHeld?"CoverageHold" as const:tick.read().status,gravity, gravityProfile: "local-tangent-gravity-v1",activeDynamic,residentDynamic,
+-      solver: `rapier-${R.version()}`, stepCpuMs, bodyCount: disposed ? 0 : world.bodies.len(),
++      solver: R.PHY01_SOLVER_VERSION, stepCpuMs, bodyCount: disposed ? 0 : world.bodies.len(),
+       colliderCount: disposed ? 0 : world.colliders.len(), nativeBytes: "unsupported", terrainGeneration,
+        collisionBytes: disposed ? 0 : collisionBytes(), terrainTransaction: terrainHeld?"RecoveryHold":staged === undefined ? "Idle" : staged.committed ? "CommittedHeld" : "PreparedHeld",
+          terrainFragments:disposed?[]:[...[...movingBodies.values()].filter(f=>f.family!=="branch").map(fragmentView),...residency!.sources()],
+@@ -389,7 +389,7 @@
+         for(const b of movingBodies.values()){result.push(encodeHvpBody(b.ownerId,b.family??"terrain",b.recipe,b.body));}
+         for(const b of branch?.fixedOwners()??[]){result.push(encodeHvpBody(b.ownerId,"branch",b.recipe,b.body));}
+         result.push(...residency!.checkpoint());
+-        return Object.freeze({version:"hvp-world-checkpoint-v1",solver:"rapier-0.12.0",sessionId,gravity,terrainGeneration,
++        return Object.freeze({version:"hvp-world-checkpoint-v1",solver:R.PHY01_SOLVER_VERSION,sessionId,gravity,terrainGeneration,
+           tick:tick.read(),collisionDigest:hvpCollisionDigest(allCollision()),dropSpawn:Object.freeze({...spawn}),
+           player:character?.checkpoint()??null,coverage:Object.freeze(coverage.map(c=>Object.freeze({...c}))),
+           bodies:Object.freeze(result),branch:branch?.checkpoint()??null,moving:moving.checkpoint(),impulses,
+--- a/apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts
+@@ -38,8 +38,8 @@
+       if (length === 0) { return; }
+       const p = body.translation();
+       const hit = world.castShape({ x: p.x, y: p.y + 0.6, z: p.z }, { x: 0, y: 0, z: 0, w: 1 }, offset,
+-        new R.Ball(0.15), 1, true, undefined, undefined, collider, body, isHvpSolidCollider);
+-      if (hit !== null) { cameraFraction = Math.max(0, hit.toi - 0.1 / length); }
++        new R.Ball(0.15), 0, 1, true, undefined, undefined, collider, body, isHvpSolidCollider);
++      if (hit !== null) { cameraFraction = Math.max(0, hit.time_of_impact - 0.1 / length); }
+     },
+     setEnabled(value: boolean): void { enabled = value; neutralize(); },
+     checkpoint():HvpPlayerCheckpoint {
+@@ -73,7 +73,7 @@
+       // never lift through ceilings, cross tall ledges, or synthesize a floor.
+       if (grounded && velocityY <= 0 && Math.hypot(dx, dz) > 0
+         && movement.x * dx + movement.z * dz < (dx * dx + dz * dz) * 0.5) {
+-        const cast = (at: R.Vector, delta: R.Vector) => world.castShape(at, body.rotation(), delta, collider.shape, 1, true,
++        const cast = (at: R.Vector, delta: R.Vector) => world.castShape(at, body.rotation(), delta, collider.shape, 0, 1, true,
+           undefined, undefined, collider, body, isHvpStaticCollider);
+         const up = { x: position.x, y: position.y + profile.stepHeight, z: position.z };
+         const forward = { x: up.x + dx, y: up.y, z: up.z + dz };
+@@ -90,8 +90,8 @@
+           }, { x: 0, y: -1, z: 0 }), profile.height + profile.stepHeight * 2, true,
+            undefined, undefined, collider, body, isHvpStaticCollider);
+           if (down !== null && tread !== null && tread.normal.y >= Math.cos(profile.slopeRadians) - 0.0001
+-            && up.y + profile.height / 2 - tread.toi - (position.y - profile.height / 2) <= profile.stepHeight) {
+-            const rise = profile.stepHeight * (1 - down.toi);
++            && up.y + profile.height / 2 - tread.timeOfImpact - (position.y - profile.height / 2) <= profile.stepHeight) {
++            const rise = profile.stepHeight * (1 - down.time_of_impact);
+             if (rise > 0 && rise + profile.offset <= profile.stepHeight) {
+               movement.x = dx; movement.z = dz; movement.y = rise + profile.offset;
+             }
+--- a/apps/weltraum-browser/tests/unit/hvp-moving-cut.test.ts
++++ b/apps/weltraum-browser/tests/unit/hvp-moving-cut.test.ts
+@@ -264,6 +264,7 @@
+         const collider=part.body.collider(i),half=collider.halfExtents(),center=collider.translation();
+         expect(collider.parent()).toBe(part.body);
+         expect(collider.shapeType()).toBe(R.ShapeType.Cuboid);
++        if (half === null) { throw new Error("Cuboid must expose actual half extents"); }
+         const q=collider.rotation(),parent=stage.parentPose.rotation;
+         expect(Math.abs(q.x*parent.x+q.y*parent.y+q.z*parent.z+q.w*parent.w)).toBeCloseTo(1,6);
+         const localCenter=rotate(inverse,{x:center.x-sourceOrigin.x,y:center.y-sourceOrigin.y,z:center.z-sourceOrigin.z});
+--- a/apps/weltraum-browser/tests/unit/structuralPgTragwerkF7.test.ts
++++ b/apps/weltraum-browser/tests/unit/structuralPgTragwerkF7.test.ts
+@@ -1,5 +1,5 @@
+ import { beforeAll, describe, expect, it } from "vitest";
+-import R from "@dimforge/rapier3d-compat";
++import * as R from "../../src/hestia-prototype/physics/rapier021Candidate";
+ import {
+   StructuralPhysicsCommitError,
+   applyStructuralDestructionCommand,
+--- a/apps/weltraum-browser/tests/unit/structuralPgTragwerkR3.test.ts
++++ b/apps/weltraum-browser/tests/unit/structuralPgTragwerkR3.test.ts
+@@ -1,5 +1,5 @@
+ import { beforeAll, describe, expect, it } from "vitest";
+-import R from "@dimforge/rapier3d-compat";
++import * as R from "../../src/hestia-prototype/physics/rapier021Candidate";
+ import {
+   STRUCTURAL_COMMAND_SCHEMA_VERSION,
+   StructuralPhysicsTransitionError,
+--- a/apps/weltraum-browser/tests/unit/structuralPgTragwerkR4.test.ts
++++ b/apps/weltraum-browser/tests/unit/structuralPgTragwerkR4.test.ts
+@@ -1,5 +1,5 @@
+ import { beforeAll, describe, expect, it } from "vitest";
+-import R from "@dimforge/rapier3d-compat";
++import * as R from "../../src/hestia-prototype/physics/rapier021Candidate";
+ import {
+   STRUCTURAL_COMMAND_SCHEMA_VERSION,
+   STRUCTURAL_MAX_PERSISTENCE_UTF8_BYTES,
+--- a/apps/weltraum-browser/tests/unit/structuralPgTragwerkSlice2.test.ts
++++ b/apps/weltraum-browser/tests/unit/structuralPgTragwerkSlice2.test.ts
+@@ -1,5 +1,5 @@
+ import { beforeAll, describe, expect, it } from "vitest";
+-import R from "@dimforge/rapier3d-compat";
++import * as R from "../../src/hestia-prototype/physics/rapier021Candidate";
+ import {
+   deriveStructuralComponentClassification,
+   deriveStructuralObjectMassProperties,
+--- /dev/null
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/rapier021Candidate.ts
+@@ -0,0 +1,76 @@
++import C from "../../../vendor/rapier-phy01-migration2/dist/rapier";
++import profile from "../../../vendor/rapier-phy01-migration2/profile.json";
++import { HVP_SOLVER_PROFILE, HVP_SOLVER_SOURCE_PROFILE, HVP_SOLVER_VERSION } from "./profile";
++export * from "../../../vendor/rapier-phy01-migration2/dist/rapier";
++
++export const PHY01_SOLVER_VERSION = HVP_SOLVER_VERSION;
++if (profile.id !== HVP_SOLVER_SOURCE_PROFILE || profile.vanillaNpmBytes !== false) { throw new Error("Candidate profile mismatch"); }
++export const PHY01_SOLVER_PROFILE = Object.freeze({ ...profile, ...HVP_SOLVER_PROFILE });
++export const PHY01_GYROSCOPIC_SOLVER_PROFILE = Object.freeze({ ...PHY01_SOLVER_PROFILE,
++  id: "rapier-0.21.0-phy01.migration2:gyroscopic-v1", dynamicGyroscopicForces: true });
++
++/** Caller predicates run before Rapier borrows ColliderSet. */
++export function cachedPredicate(world: C.World, predicate?: (collider: C.Collider) => boolean): ((collider: C.Collider) => boolean) | undefined {
++  if (predicate === undefined) { return undefined; }
++  const allowed = new Set<number>();
++  world.colliders.forEach(collider => { if (predicate(collider)) { allowed.add(collider.handle); } });
++  return collider => allowed.has(collider.handle);
++}
++
++export class World extends C.World {
++  override createRigidBody(description: C.RigidBodyDesc): C.RigidBody {
++    const body = super.createRigidBody(description);
++    if (body.isDynamic()) { body.enableGyroscopicForces(HVP_SOLVER_PROFILE.dynamicGyroscopicForces); }
++    return body;
++  }
++  static override restoreSnapshot(bytes: Uint8Array): World {
++    // The native factory returns its base class; retain one owner and restore only the adapter methods.
++    return Object.setPrototypeOf(super.restoreSnapshot(bytes), World.prototype) as World;
++  }
++  override castRay(...args: Parameters<C.World["castRay"]>): ReturnType<C.World["castRay"]> {
++    args[7] = cachedPredicate(this, args[7]); return super.castRay(...args);
++  }
++  override castRayAndGetNormal(...args: Parameters<C.World["castRayAndGetNormal"]>): ReturnType<C.World["castRayAndGetNormal"]> {
++    args[7] = cachedPredicate(this, args[7]); return super.castRayAndGetNormal(...args);
++  }
++  override intersectionsWithRay(...args: Parameters<C.World["intersectionsWithRay"]>): void {
++    args[8] = cachedPredicate(this, args[8]); super.intersectionsWithRay(...args);
++  }
++  override intersectionWithShape(...args: Parameters<C.World["intersectionWithShape"]>): ReturnType<C.World["intersectionWithShape"]> {
++    args[7] = cachedPredicate(this, args[7]); return super.intersectionWithShape(...args);
++  }
++  override projectPoint(...args: Parameters<C.World["projectPoint"]>): ReturnType<C.World["projectPoint"]> {
++    args[6] = cachedPredicate(this, args[6]); return super.projectPoint(...args);
++  }
++  override projectPointAndGetFeature(...args: Parameters<C.World["projectPointAndGetFeature"]>): ReturnType<C.World["projectPointAndGetFeature"]> {
++    args[5] = cachedPredicate(this, args[5]); return super.projectPointAndGetFeature(...args);
++  }
++  override intersectionsWithPoint(...args: Parameters<C.World["intersectionsWithPoint"]>): void {
++    args[6] = cachedPredicate(this, args[6]); super.intersectionsWithPoint(...args);
++  }
++  override castShape(...args: Parameters<C.World["castShape"]>): ReturnType<C.World["castShape"]> {
++    args[11] = cachedPredicate(this, args[11]); return super.castShape(...args);
++  }
++  override intersectionsWithShape(...args: Parameters<C.World["intersectionsWithShape"]>): void {
++    args[8] = cachedPredicate(this, args[8]); super.intersectionsWithShape(...args);
++  }
++  override createCharacterController(offset: number): C.KinematicCharacterController {
++    const controller = super.createCharacterController(offset), compute = controller.computeColliderMovement, world = this;
++    controller.computeColliderMovement = function (...args: Parameters<C.KinematicCharacterController["computeColliderMovement"]>): void {
++      args[4] = cachedPredicate(world, args[4]); compute.call(this, ...args);
++    };
++    return controller;
++  }
++}
++
++/** Same native bytes, explicitly separate gyro-on laboratory profile. */
++export class GyroscopicWorld extends World {
++  override createRigidBody(description: C.RigidBodyDesc): C.RigidBody {
++    const body = super.createRigidBody(description);
++    if (body.isDynamic()) { body.enableGyroscopicForces(true); }
++    return body;
++  }
++  static override restoreSnapshot(bytes: Uint8Array): GyroscopicWorld {
++    return Object.setPrototypeOf(super.restoreSnapshot(bytes), GyroscopicWorld.prototype) as GyroscopicWorld;
++  }
++}

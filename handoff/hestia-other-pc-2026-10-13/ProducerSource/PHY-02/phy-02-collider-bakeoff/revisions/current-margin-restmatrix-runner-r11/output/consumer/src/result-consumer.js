@@ -1,0 +1,114 @@
+const maxRawBytes = 8 * 1024 * 1024;
+function object(value) {
+    if (value === null || typeof value !== "object" || Array.isArray(value))
+        throw new Error("Expected record");
+    return value;
+}
+function ownString(row, key) {
+    if (typeof row[key] !== "string")
+        throw new Error("Missing string " + key);
+    return row[key];
+}
+export function parseBoundJson(bytes, maxBytes = maxRawBytes) {
+    if (!Number.isSafeInteger(maxBytes) || maxBytes <= 0 || maxBytes > maxRawBytes || bytes.byteLength > maxBytes)
+        throw new Error("Raw byte limit exceeded");
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    return JSON.parse(text);
+}
+export function consumeCaseRecords(raw, selected, binding) {
+    if (!Array.isArray(raw) || raw.length > selected.length || selected.length === 0 || new Set(selected.map(c => c.id)).size !== selected.length)
+        throw new Error("Case count/selection drift");
+    const expected = new Map(selected.map(c => [c.id, c])), seen = new Set();
+    const records = [];
+    let hold = false;
+    let stopIndex = null;
+    for (const value of raw) {
+        const row = object(value), id = ownString(row, "caseId"), descriptor = expected.get(id);
+        if (!descriptor || seen.has(id))
+            throw new Error("Unknown/duplicate case");
+        if (descriptor !== selected[records.length])
+            throw new Error("Case order drift");
+        seen.add(id);
+        if (row.ordinal !== descriptor.ordinal || row.profile !== descriptor.profile || row.kind !== descriptor.kind || row.group !== descriptor.group || row.gyro !== descriptor.gyro)
+            throw new Error("Case/profile drift");
+        if (row.engineBinding !== binding.engineBinding || row.wasmSha256 !== binding.wasmSha256 || row.classification !== "DIAGNOSTIC_NOT_REFERENCE")
+            throw new Error("Source/engine binding drift");
+        if (!["PASS", "FAIL", "NOT_RUN"].includes(String(row.status)) || typeof row.primaryPresent !== "boolean" || typeof row.poisoned !== "boolean" || !Array.isArray(row.resources))
+            throw new Error("Invalid case status");
+        if (row.status === "FAIL" && !row.primaryPresent || row.status === "PASS" && row.primaryPresent)
+            throw new Error("Primary presence drift");
+        if (row.status === "NOT_RUN" && (row.primaryPresent || !row.poisoned || row.resources.length !== 0))
+            throw new Error("Invalid untouched NOT_RUN");
+        if (row.status !== "NOT_RUN" && (row.resources.length === 0 || row.resources.length > 64))
+            throw new Error("Missing/excessive resource observations");
+        if (hold && row.status !== "NOT_RUN")
+            throw new Error("Acquisition after poison");
+        const resourceIds = new Set();
+        let resourceStop = false;
+        for (const value of row.resources) {
+            const r = object(value), a = object(r.acquisition), p = object(r.primary), c = object(r.cleanup);
+            const resourceId = ownString(r, "caseId");
+            if (!resourceId.startsWith(id + "/") || resourceIds.has(resourceId))
+                throw new Error("Resource identity drift");
+            resourceIds.add(resourceId);
+            if (typeof r.acquired !== "boolean" || typeof r.primaryPresent !== "boolean" || !Number.isSafeInteger(r.releaseAttempts) || !Array.isArray(r.stopCauses))
+                throw new Error("Invalid resource observation");
+            if (!["PASS", "FAIL", "NOT_RUN"].includes(String(a.status)) || !["PASS", "FAIL", "NOT_RUN"].includes(String(p.status)) || !["PASS", "FAIL", "NOT_RUN"].includes(String(c.status)))
+                throw new Error("Invalid observation status");
+            if (r.stopCauses.some(c => typeof c !== "string" || !["ACQUISITION_NATIVE_TRAP", "BODY_NATIVE_TRAP", "CLEANUP_FAILURE"].includes(c)))
+                throw new Error("Unknown stop cause");
+            if (!["PREPARED", "NOT_ACQUIRED", "RELEASED", "POISONED"].includes(String(r.disposition)))
+                throw new Error("Unknown disposition");
+            if (r.acquired) {
+                if (a.status !== "PASS" || r.releaseAttempts !== 1 || c.status === "NOT_RUN")
+                    throw new Error("Acquired handle not released exactly once");
+                if (r.primaryPresent !== (p.status === "FAIL"))
+                    throw new Error("Resource primary presence drift");
+            }
+            else if (a.status === "PASS" || r.releaseAttempts !== 0 || p.status !== "NOT_RUN" || c.status !== "NOT_RUN")
+                throw new Error("Release without returned handle");
+            if (a.status === "FAIL" || c.status === "FAIL" || r.stopCauses.length || r.disposition === "POISONED")
+                resourceStop = true;
+            if (row.status === "PASS" && (p.status !== "PASS" || c.status !== "PASS"))
+                throw new Error("PASS conflicts with resource failure");
+        }
+        if (resourceStop && !row.poisoned)
+            throw new Error("Nonmonotonic poison record");
+        if (resourceStop)
+            hold = true;
+        if (row.poisoned)
+            hold = true;
+        if (hold && stopIndex === null)
+            stopIndex = records.length;
+        records.push(row);
+    }
+    const missing = selected.filter(c => !seen.has(c.id)).map(c => c.id);
+    const ordinaryFailures = records.filter(r => r.status === "FAIL" && !r.poisoned && r.resources.every(o => o.cleanup.status === "PASS" && o.stopCauses.length === 0)).map(r => r.caseId);
+    return Object.freeze({ protocol: hold || missing.length ? "HOLD" : "COMPLETE_DATA_PROTOCOL", records: structuredClone(records), missing, ordinaryFailures, stopIndex,
+        nativeAcceptance: false, physicalHeap: "UNPROVEN", referenceAcceptance: false });
+}
+export function consumeHistorical(raw, cases) {
+    const row = object(raw);
+    if (!Array.isArray(row.records))
+        throw new Error("Missing historical records");
+    const expected = new Map(cases.map(c => [c.title, c]));
+    const seen = new Set();
+    let pass = 0, fail = 0;
+    for (const value of row.records) {
+        const r = object(value), name = ownString(r, "name"), c = expected.get(name);
+        if (!c || seen.has(name))
+            throw new Error("Historical duplicate/unknown title");
+        seen.add(name);
+        if (r.profile !== "rapier-0.21.0-phy01.migration2:" + c.profile || r.kind !== c.kind || r.status !== c.historicalStatus)
+            throw new Error("Historical binding/status drift");
+        if (r.status === "PASS")
+            pass++;
+        else if (r.status === "FAIL")
+            fail++;
+        else
+            throw new Error("Unexpected historical status");
+    }
+    if (seen.size !== cases.length)
+        throw new Error("Historical missing case");
+    return { classification: "HISTORICAL_ED3C_NOT_CURRENT_F26", pass, fail, nativeCurrent: "NOT_RUN" };
+}

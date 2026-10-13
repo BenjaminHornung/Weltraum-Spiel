@@ -36,6 +36,7 @@ function runtimePort(): GraphicsRuntimePort & { calls: GraphicsSettingsV1[] } {
       fullscreenAvailable: true,
       antiAliasingApplied: snapshot.antiAliasingApplied,
       effectiveShadows: false,
+      renderOnlyDecor: false,
       postProcessing: false,
       motionEffects: false,
       environmentReflections: false,

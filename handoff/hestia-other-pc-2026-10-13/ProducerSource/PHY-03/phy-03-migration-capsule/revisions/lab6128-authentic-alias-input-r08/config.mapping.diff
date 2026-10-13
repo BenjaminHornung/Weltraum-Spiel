@@ -1,0 +1,32 @@
+diff --git a/tsconfig.noemit.json b/tsconfig.noemit.json
+--- a/tsconfig.noemit.json
++++ b/tsconfig.noemit.json
+@@ -4,7 +4,7 @@
+     "module": "ESNext",
+     "lib": ["ES2022", "DOM", "DOM.Iterable"],
+     "types": ["node"],
+-    "typeRoots": ["spike/node_modules/@types"],
++    "typeRoots": ["../lab6128-complete-pure-type-input-r07/input/spike/node_modules/@types"],
+     "moduleResolution": "bundler",
+     "allowImportingTsExtensions": true,
+     "resolveJsonModule": true,
+@@ -11,7 +11,7 @@
+     "isolatedModules": true,
+     "paths": {
+-      "three": ["frozen-declarations/node_modules/@types/three/index.d.ts"],
+-      "@hestia/rapier3d-phy01-candidate": ["spike/modern-r01/inputs/a0/snapshot/spike/upstream/candidate-package/migration2/dist/rapier.d.ts"]
++      "three": ["../lab6128-complete-pure-type-input-r07/input/frozen-declarations/node_modules/@types/three/index.d.ts"],
++      "@hestia/rapier3d-phy01-candidate": ["vendor/rapier-phy01-migration2/dist/rapier.d.ts"]
+     },
+     "noEmit": true,
+     "incremental": false,
+@@ -21,7 +21,7 @@
+     "pretty": false
+   },
+   "files": [
+-    "spike/revisions/lab6128-source-contract-r02/candidate/ownedLabStore6128.ts",
+-    "spike/revisions/lab6128-source-contract-r02/regressions/lab6128Contract.source.test.ts"
++    "../lab6128-complete-pure-type-input-r07/input/spike/revisions/lab6128-source-contract-r02/candidate/ownedLabStore6128.ts",
++    "../lab6128-complete-pure-type-input-r07/input/spike/revisions/lab6128-source-contract-r02/regressions/lab6128Contract.source.test.ts"
+   ]
+ }

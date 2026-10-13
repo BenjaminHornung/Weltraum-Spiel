@@ -6,7 +6,8 @@ import {HvpRenderStageRecoveryError} from "../presentation/renderStageRecovery";
 
 export interface HvpStagedBranch {publish():void;rollback():void;finish():void}
 /** Same-tick visual publication while the actual single World remains held. */
-export const createHvpStructuralConsumer=(physics:HvpPhysicsClient,stageRender:(state:HvpBranchSnapshot)=>HvpStagedBranch|Promise<HvpStagedBranch>)=>{
+export const createHvpStructuralConsumer=(physics:Pick<HvpPhysicsClient,"read"|"command"|"prepareBranch"|"commitBranch"|"publishBranch"|"rollbackBranch"|"finalizeBranch">,
+  stageRender:(state:HvpBranchSnapshot)=>HvpStagedBranch|Promise<HvpStagedBranch>)=>{
   let pending=false,hold=false,disposed=false;
   let active:Promise<void>|undefined;
   let last:Readonly<{status:string;reason:string;id:string}>|null=null;

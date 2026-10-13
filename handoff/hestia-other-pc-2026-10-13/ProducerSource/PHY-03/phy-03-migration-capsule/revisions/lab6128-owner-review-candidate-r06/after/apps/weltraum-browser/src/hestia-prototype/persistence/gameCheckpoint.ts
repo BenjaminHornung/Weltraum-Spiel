@@ -1,0 +1,207 @@
+import {canonicalizePersistenceValue,createPersistenceSignature,serializeCanonicalPersistenceValue} from "../../persistence";
+import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_SOURCE_VERSION,restoreHvpOwnedCoastGrid} from "../../hvp/hvpCoastSource";
+import type {HvpCameraCheckpoint} from "../../hvp/hvpCamera";
+import {HVP_VEGETATION_VERSION} from "../presentation/vegetation";
+import {createHvpLookProfile,HVP_EFFECT_VERSION} from "../presentation/look";
+import {HVP_BRANCH_CELLS,HVP_SALVAGE_CELLS,HVP_PLAYER_PROFILE_DIGEST,HVP_SOLVER_PROFILE,resolveHvpGravity} from "../physics/profile";
+import {readHvpBodyCells} from "../physics/bodyCutPlan";
+import {createHvpPrivateTerrainRoot,validateHvpTerrainCheckpointHeader,type HvpTerrainCheckpoint} from "../terrain/cutPlan";
+import type {HvpCutOutcome} from "../terrain/terrainConsumer";
+import {hvpGridCheckpointBytes,decodeHvpGrid} from "./gridCheckpoint";
+import {hvpPlantCheckpointBytes,decodeHvpPlant,type HvpPlantCheckpoint} from "./plantCheckpoint";
+import {hvpWorldCheckpointBytes,hvpLabWorldCheckpointBytes,decodeHvpWorld,decodeHvpLabWorld,decodeHvpColdWorld,decodeHvpColdLabWorld,
+  type HvpDecodedLabWorld,type HvpWorldCheckpoint,type HvpLabWorldCheckpoint} from "./worldCheckpoint";
+import {createStructuralOwnerLedger} from "../../voxel/structural/model";
+import {decodeHvpReceipts,type HvpReceiptCheckpoint,type HvpSimpleOutcome} from "./receiptCheckpoint";
+import {validateHvpSalvageCheckpoint,savedHvpSalvageObservation,type HvpSalvageCheckpoint} from "../gameplay/salvageLoop";
+import {restoreHvpEastRegion} from "../runtime/regionSource";
+
+export const HVP_SAVE_TRANSPORT_BYTES=16*1024*1024;
+export const HVP_SAVE_DECODE_BYTES=64*1024*1024;
+export const HVP_SAVE_PROFILES=Object.freeze({source:HVP_COAST_SOURCE_VERSION,vegetation:HVP_VEGETATION_VERSION,
+  look:createHvpLookProfile("readable").id,effects:HVP_EFFECT_VERSION,player:HVP_PLAYER_PROFILE_DIGEST,solver:"rapier-0.12.0"});
+const HVP_LAB_SAVE_PROFILES=Object.freeze({...HVP_SAVE_PROFILES,solver:HVP_SOLVER_PROFILE});
+const publicContext=Object.freeze({admission:"public" as const,profiles:HVP_SAVE_PROFILES});
+const phy01LabContext=Object.freeze({admission:"phy01-lab" as const,profiles:HVP_LAB_SAVE_PROFILES});
+export interface HvpToolCheckpoint {readonly mode:number;readonly sequence:number;readonly structureSequence:number;readonly movingSequence:number;readonly edges:number}
+export interface HvpViewCheckpoint {
+  readonly camera:HvpCameraCheckpoint;readonly playerYaw:number;readonly playerPitch:number;readonly thirdPerson:boolean;readonly tool:HvpToolCheckpoint;
+  readonly waterEnabled:boolean;readonly aoEnabled:boolean;
+}
+export interface HvpGameCheckpoint {
+  readonly version:"hvp-game-checkpoint-v1";readonly profiles:typeof HVP_SAVE_PROFILES;
+  readonly terrain:HvpTerrainCheckpoint;readonly plants:readonly HvpPlantCheckpoint[];readonly world:HvpWorldCheckpoint;
+  readonly receipts:Readonly<{terrain:HvpReceiptCheckpoint<HvpCutOutcome>;structural:HvpReceiptCheckpoint<HvpSimpleOutcome>;moving:HvpReceiptCheckpoint<HvpSimpleOutcome>}>;
+  readonly view:HvpViewCheckpoint;readonly progress:HvpSalvageCheckpoint|null;readonly signature:string;
+  readonly neighbor?:Readonly<{version:"hvp-neighbor-scene-v1";terrain:HvpTerrainCheckpoint;lod:.125|.5}>|null;
+}
+/** @internal PHY-01 migration2 checkpoint type; not part of the public solver union. */
+export interface HvpLabGameCheckpoint extends Omit<HvpGameCheckpoint,"profiles"|"world"> {
+  readonly profiles:typeof HVP_LAB_SAVE_PROFILES;readonly world:HvpLabWorldCheckpoint;
+}
+type HvpDecodedGameShape<TCheckpoint extends HvpGameCheckpoint|HvpLabGameCheckpoint,TWorld> = Readonly<{
+  checkpoint:TCheckpoint;base:ReturnType<typeof restoreHvpOwnedCoastGrid>;root:ReturnType<typeof createHvpPrivateTerrainRoot>;
+  plants:readonly ReturnType<typeof decodeHvpPlant>[];world:TWorld;neighborRoot:ReturnType<typeof restoreHvpEastRegion>|undefined;
+  receipts:HvpGameCheckpoint["receipts"];view:TCheckpoint["view"];decodedBytes:number;decodeWorkingBytes:number;
+}>;
+type HvpDecodedLegacyGame=HvpDecodedGameShape<HvpGameCheckpoint,ReturnType<typeof decodeHvpWorld>>;
+type HvpDecodedPhy01LabGame=HvpDecodedGameShape<HvpLabGameCheckpoint,HvpDecodedLabWorld>;
+const issued=new WeakMap<object,"public"|"phy01-lab">();
+const safeInt=(n:number)=>Number.isSafeInteger(n)&&n>=0;
+const vector=(v:unknown,quaternion=false):boolean=>{
+  if(!v||typeof v!=="object"||Object.keys(v).sort().join(",")!==(quaternion?"w,x,y,z":"x,y,z")){return false;}
+  const a=Object.values(v);return a.every(n=>typeof n==="number"&&Number.isFinite(n)&&Math.abs(n)<1_000_000)
+    &&(!quaternion||Math.abs(Math.hypot(...a)-1)<1e-6);
+};
+export const validateHvpViewCheckpoint=(value:unknown):HvpViewCheckpoint=>{
+  const v=value as HvpViewCheckpoint|null,c=v?.camera,t=v?.tool;
+  if(!v||Object.keys(v).sort().join(",")!=="aoEnabled,camera,playerPitch,playerYaw,thirdPerson,tool,waterEnabled"||!c
+    ||Object.keys(c).sort().join(",")!=="fov,mode,position,preset,quaternion,target"||!["Orbit","Fly"].includes(c.mode)
+    ||!Number.isFinite(c.fov)||c.fov<=0||c.fov>=180
+    ||!["C01-EYE","C02-SHORE","C03-ROOTS","C04-WIDE","C05-ROCKARM","C07-QUARRY"].includes(c.preset)
+    ||!vector(c.position)||!vector(c.target)||!vector(c.quaternion,true)
+    ||!Number.isFinite(v.playerYaw)||Math.abs(v.playerYaw)>1_000_000||!Number.isFinite(v.playerPitch)||Math.abs(v.playerPitch)>1.4
+    ||typeof v.thirdPerson!=="boolean"||typeof v.waterEnabled!=="boolean"||typeof v.aoEnabled!=="boolean"||!t||Object.keys(t).sort().join(",")!=="edges,mode,movingSequence,sequence,structureSequence"
+    ||!Number.isInteger(t.mode)||t.mode<1||t.mode>3||![t.sequence,t.structureSequence,t.movingSequence,t.edges].every(safeInt)){
+    throw new Error("Invalid saved input/view state");
+  }
+  return v;
+};
+
+/** Decode bounded data only. No generator, native World, GPU, URL or file loader. */
+const decodeGame=(value:unknown,cold:{admitPrepare:(workingBytes:number)=>void;recipeRetainedBytes:number}|undefined,
+  context:typeof publicContext|typeof phy01LabContext)=>{
+  const p=value as HvpGameCheckpoint|HvpLabGameCheckpoint|null;
+  if(!p||Object.keys(p).filter(k=>k!=="neighbor").sort().join(",")!=="plants,profiles,progress,receipts,signature,terrain,version,view,world"
+    ||p.version!=="hvp-game-checkpoint-v1"||createPersistenceSignature(p.profiles)!==createPersistenceSignature(context.profiles)){
+    throw new Error("Unsupported Hestia save schema/profile");
+  }
+  if(!p.terrain||!Array.isArray(p.terrain.leaves)||p.terrain.leaves.length>2048||!Array.isArray(p.plants)||p.plants.length>256
+    ||!p.world||p.world.gravity!==resolveHvpGravity()||p.world.terrainGeneration!==p.terrain.revision||p.world.player===null){throw new Error("Hestia save owner/generation mismatch");}
+  if(p.neighbor!==undefined&&p.neighbor!==null&&(typeof p.neighbor!=="object"||Array.isArray(p.neighbor))){throw new Error("Invalid saved neighbour");}
+  const baseBytes=hvpGridCheckpointBytes(p.terrain.base);
+  if(JSON.stringify(p.terrain.base.size)!=="[256,128,256]"||createPersistenceSignature(p.terrain.base.origin)!==createPersistenceSignature({x:-16,y:-8,z:-16})){
+    throw new Error("Hestia canonical region mismatch");
+  }
+  let decodedBytes=baseBytes;
+  const admitBytes=(n:number)=>{decodedBytes+=n;if(decodedBytes+3*baseBytes>HVP_SAVE_DECODE_BYTES){throw new Error("Hestia decoded-source budget exceeded before allocation");}};
+  for(const leaf of p.terrain.leaves){admitBytes(hvpGridCheckpointBytes(leaf.grid));}
+  if(p.neighbor){
+    const n=p.neighbor,t=n.terrain;
+    if(Object.keys(n).sort().join(",")!=="lod,terrain,version"||n.version!=="hvp-neighbor-scene-v1"||(n.lod!==.125&&n.lod!==.5)
+      ||!t||!Array.isArray(t.leaves)||t.leaves.length>2048||JSON.stringify(t.base?.size)!=="[256,128,256]"
+      ||createPersistenceSignature(t.base?.origin)!==createPersistenceSignature({x:16,y:-8,z:-16})
+      ||!p.world.neighbor||p.world.neighbor.sourceDigest!==t.sourceDigest){throw new Error("Saved neighbour source/World mismatch");}
+    admitBytes(hvpGridCheckpointBytes(t.base));for(const leaf of t.leaves){admitBytes(hvpGridCheckpointBytes(leaf.grid));}
+  }else if(p.world.neighbor){throw new Error("Missing saved neighbour source");}
+  const plantIds=new Set<string>();
+  for(const plant of p.plants){admitBytes(hvpPlantCheckpointBytes(plant));
+    if(plantIds.has(plant.instance.id)){throw new Error("Duplicate saved plant owner");}plantIds.add(plant.instance.id);}
+  admitBytes(context.admission==="phy01-lab"?hvpLabWorldCheckpointBytes(p.world):hvpWorldCheckpointBytes(p.world));
+  const ownershipBytes=p.world.bodies.some(b=>b.family==="terrain")?baseBytes:0;
+  // Conservative RLE and defensive-copy working allowance remains unchanged.
+  const decodeWorkingBytes=decodedBytes+3*baseBytes+ownershipBytes;
+  if(decodeWorkingBytes>HVP_SAVE_DECODE_BYTES){throw new Error("Hestia decoded-source budget exceeded before allocation");}
+  const view=validateHvpViewCheckpoint(p.view);
+  if(!p.receipts||Object.keys(p.receipts).sort().join(",")!=="moving,structural,terrain"){throw new Error("Missing command history");}
+  const receipts={terrain:decodeHvpReceipts(p.receipts.terrain,"terrain",p.terrain.revision),
+    structural:decodeHvpReceipts(p.receipts.structural,"structural"),moving:decodeHvpReceipts(p.receipts.moving,"moving")};
+  for(const [checkpoint,prefix,count] of [[receipts.terrain,"cut-",view.tool.sequence],
+    [receipts.structural,"branch-cut-",view.tool.structureSequence],[receipts.moving,"moving-cut-",view.tool.movingSequence]] as const){
+    for(const entry of checkpoint.entries){if(entry.id.startsWith(prefix)){
+      const n=Number(entry.id.slice(prefix.length));if(!safeInt(n)||n<1||n>count){throw new Error("Saved command counter would reuse an identity");}
+    }}
+  }
+  // This object comes from bounded repository/import bytes or owned live data;
+  // validate all per-field budgets before canonical cloning/serialization.
+  const admittedSignature=p.signature;
+  cold?.admitPrepare(decodeWorkingBytes);
+  const text=serializeCanonicalPersistenceValue(p);
+  if(text.length>HVP_SAVE_TRANSPORT_BYTES||new TextEncoder().encode(text).byteLength>HVP_SAVE_TRANSPORT_BYTES){throw new Error("Hestia save transport budget");}
+  const {signature,...data}=p;
+  if(signature!==admittedSignature||admittedSignature!==createPersistenceSignature(data)){throw new Error("Hestia save signature mismatch");}
+  const owned=canonicalizePersistenceValue(p) as unknown as HvpGameCheckpoint|HvpLabGameCheckpoint;
+  // Cold admission has completed before the owned snapshot is decoded.
+  const snapshot=cold?owned:p;
+  const decodedBase=decodeHvpGrid(snapshot.terrain.base);
+  const base=restoreHvpOwnedCoastGrid(decodedBase,snapshot.terrain.baseDigest);
+  const savedTerrain=validateHvpTerrainCheckpointHeader(snapshot.terrain);
+  const root=createHvpPrivateTerrainRoot(base,savedTerrain.sessionId,savedTerrain.epoch,undefined,savedTerrain);
+  const plants=snapshot.plants.map(plant=>decodeHvpPlant(plant,root.read()));
+  let world:ReturnType<typeof decodeHvpWorld>|HvpDecodedLabWorld;
+  if(cold){
+    const ledger=createStructuralOwnerLedger(decodeWorkingBytes);
+    try{world=context.admission==="phy01-lab"?decodeHvpColdLabWorld(snapshot.world,ledger.reserve):decodeHvpColdWorld(snapshot.world,ledger.reserve);}
+    finally{cold.recipeRetainedBytes=ledger.resources.retainedEstimateBytes;ledger.release();}
+  }else{world=context.admission==="phy01-lab"?decodeHvpLabWorld(snapshot.world):decodeHvpWorld(snapshot.world);}
+  const neighborRoot=snapshot.neighbor?restoreHvpEastRegion(snapshot.neighbor.terrain):undefined;
+  if(snapshot.progress!==null){
+    if(snapshot.progress.sessionId!==snapshot.terrain.sessionId){throw new Error("Foreign objective session");}
+    validateHvpSalvageCheckpoint(snapshot.progress,savedHvpSalvageObservation(world),createPersistenceSignature(snapshot.world));
+  }else if(snapshot.world.branch?.kind==="salvage"){throw new Error("Missing salvage objective state");}
+  // A save must not recreate material simultaneously in static terrain and a
+  // moving owner, nor copy the same authored cell into two fragment owners.
+  const terrainOwners=new Uint8Array(ownershipBytes),branchOwners=new Set<string>();
+  const branchCells=new Set((snapshot.world.branch?.kind==="salvage"?HVP_SALVAGE_CELLS:HVP_BRANCH_CELLS).map(c=>`${c.x}:${c.y}:${c.z}`));
+  for(const body of world.bodies){
+    const family=body.checkpoint.family;
+    if(family!=="terrain"&&family!=="branch"){continue;}
+    if(body.checkpoint.dynamic&&body.checkpoint.ownerId!==body.recipe.source.objectId){throw new Error("Saved fragment owner/source mismatch");}
+    for(const material of body.recipe.source.materials){
+      const expected=family==="terrain"?HVP_COAST_MATERIAL_REGISTRY.find(m=>m.slot===material.materialId):undefined;
+      if(family==="terrain"?(!expected||material.densityKgPerCubicMeter!==expected.densityKgPerM3||material.structuralClass!==expected.role)
+        :(material.materialId!==1||material.densityKgPerCubicMeter!==600||material.structuralClass!=="wood")){
+        throw new Error("Saved fragment material profile mismatch");
+      }
+    }
+    let anchored=false;
+    for(const c of readHvpBodyCells(body.recipe.source)){
+      if(family==="terrain"){
+        const index=c.x+c.y*256+c.z*256*128;
+        if(c.x<0||c.x>=256||c.y<1||c.y>=128||c.z<0||c.z>=256||base.readSlot(c.x,c.y,c.z)!==c.materialId
+          ||root.read().readSlot(c.x,c.y,c.z)!==0||terrainOwners[index]!==0){throw new Error("Saved terrain ownership overlap or missing origin");}
+        terrainOwners[index]=1;
+      }else{
+        const key=`${c.x}:${c.y}:${c.z}`;
+        if(!branchCells.has(key)||branchOwners.has(key)||c.materialId!==1){throw new Error("Saved wood ownership overlap or missing origin");}
+        branchOwners.add(key);anchored ||= c.x===0&&c.y===0&&c.z===0;
+      }
+    }
+    if(family==="branch"&&body.checkpoint.dynamic===anchored){throw new Error("Saved wood anchor/body-kind mismatch");}
+  }
+  const result=Object.freeze({checkpoint:owned,base,root,plants:Object.freeze(plants),world,neighborRoot,
+    receipts:Object.freeze(receipts),view:owned.view,decodedBytes,decodeWorkingBytes});
+  issued.set(result,context.admission);return result;
+};
+export const decodeHvpGame=(value:unknown)=>decodeGame(value,undefined,publicContext) as HvpDecodedLegacyGame;
+/** @internal Exact profile-bound lab decoder; no payload-selected profile context. */
+export const decodeHvpLabGame=(value:unknown)=>decodeGame(value,undefined,phy01LabContext) as HvpDecodedPhy01LabGame;
+/** Internal fresh-ColdStart wrapper; released scratch does not release published Recipes. */
+export const decodeHvpColdGame=(value:unknown,admitPrepare:(workingBytes:number)=>void)=>{
+  const cold={admitPrepare,recipeRetainedBytes:0},game=decodeGame(value,cold,publicContext) as HvpDecodedLegacyGame;
+  return Object.freeze({game,recipeRetainedBytes:cold.recipeRetainedBytes});
+};
+/** @internal Cold-start lab wrapper shares the original bounded preparation and body admission. */
+export const decodeHvpColdLabGame=(value:unknown,admitPrepare:(workingBytes:number)=>void)=>{
+  const cold={admitPrepare,recipeRetainedBytes:0},game=decodeGame(value,cold,phy01LabContext) as HvpDecodedPhy01LabGame;
+  return Object.freeze({game,recipeRetainedBytes:cold.recipeRetainedBytes});
+};
+export type HvpDecodedGame=ReturnType<typeof decodeHvpGame>;
+/** @internal */
+export type HvpDecodedLabGame=ReturnType<typeof decodeHvpLabGame>;
+export const assertHvpDecodedGame=(value:HvpDecodedGame):void=>{if(issued.get(value)!=="public"){throw new Error("Unvalidated Hestia restore candidate");}};
+/** @internal A lab candidate cannot cross the public restore admission marker. */
+export const assertHvpDecodedLabGame=(value:HvpDecodedLabGame):void=>{if(issued.get(value)!=="phy01-lab"){throw new Error("Unvalidated Hestia lab restore candidate");}};
+export const parseHvpGame=(bytes:Uint8Array):HvpDecodedGame=>{
+  if(!(bytes instanceof Uint8Array)||bytes.byteLength===0||bytes.byteLength>HVP_SAVE_TRANSPORT_BYTES){throw new Error("Hestia save transport budget before decode");}
+  return decodeHvpGame(JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes)));
+};
+export const encodeHvpGame=(data:Omit<HvpGameCheckpoint,"version"|"profiles"|"signature">):HvpGameCheckpoint=>{
+  const value={version:"hvp-game-checkpoint-v1" as const,profiles:HVP_SAVE_PROFILES,...data};
+  return canonicalizePersistenceValue({...value,signature:createPersistenceSignature(value)}) as unknown as HvpGameCheckpoint;
+};
+/** @internal Encoder for the one exact PHY-01 migration2 lab profile. */
+export const encodeHvpLabGame=(data:Omit<HvpLabGameCheckpoint,"version"|"profiles"|"signature">):HvpLabGameCheckpoint=>{
+  const value={version:"hvp-game-checkpoint-v1" as const,profiles:HVP_LAB_SAVE_PROFILES,...data};
+  return canonicalizePersistenceValue({...value,signature:createPersistenceSignature(value)}) as unknown as HvpLabGameCheckpoint;
+};

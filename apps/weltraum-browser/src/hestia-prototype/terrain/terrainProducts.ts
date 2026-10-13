@@ -25,13 +25,19 @@ import {encodeHvpProjectionPacket} from "../runtime/projectionPacket";
 import type {HvpNeighborProxies} from "../runtime/neighborProducts";
 import {buildHvpChunkInputSteps,hvpChunkCoordinates,hvpDirtyChunks,hvpRestoreChunksSteps,type HvpChunkPayload} from "./terrainChunkInput";
 import {HVP_CHUNK_JOB,HVP_CHUNK_MAX_OUTPUT,decodeHvpChunkOutput,decodeHvpChunkOutputSteps,hvpChunkInputDigestSteps} from "../../workers/hvpChunkJob";
+import {HVP_EAST_CHUNK_COLLISION_JOB,HVP_EAST_CHUNK_COLLISION_PURPOSE,HVP_EAST_CHUNK_COLLISION_ALGORITHM,HVP_EAST_CHUNK_COLLISION_MAX_OUTPUT,
+  hvpEastChunkCollisionInputDigestSteps,decodeHvpEastChunkCollisionOutput,decodeHvpEastChunkCollisionOutputSteps,type HvpEastChunkCollisionPayload} from "../../workers/hvpChunkJob";
 import {composeHvpTerrainColumnSteps} from "./terrainChunkComposition";
+import {assertHvpDecodedLabGame,type HvpDecodedLabGame} from "../persistence/gameCheckpoint";
+import type {HvpTerrainCheckpoint} from "./cutPlan";
+import {readHvpFreshLabSourceHeader,type HvpFreshLabSourceHeader} from "../physics/physicsProtocol";
 
 interface HvpChunkStartupPopulation {
   primaryJobs:number;
   primaryEmptyBoth:number;
   eastJobs:number;
-  eastEmptyBoth:number;
+  eastCollisionOnlyJobs:number;
+  eastEmptyCollision:number;
 }
 interface HvpChunkStartupObservation {
   readonly primarySource:HvpTerrainSnapshot;
@@ -79,6 +85,7 @@ const ownedChunkNeighbors=new WeakMap<HvpTerrainProducts,ReadonlyMap<number,HvpC
 const ownedChunkBindings=new WeakMap<HvpTerrainProducts,{owner:object;source:HvpTerrainSnapshot;neighbor?:HvpTerrainSnapshot;worldId:string;current:()=>void}>();
 declare const chunkPhysicsInputBrand:unique symbol;
 export interface HvpChunkPhysicsInput {readonly [chunkPhysicsInputBrand]:true}
+export type HvpFreshLabChunkBinding=Readonly<{header:HvpFreshLabSourceHeader;assertCurrent:()=>void}>;
 const chunkPhysicsInputs=new WeakMap<HvpChunkPhysicsInput,{products:HvpTerrainProducts;sources:readonly HvpCollisionSource[];current:()=>void;neighbor?:HvpTerrainSnapshot;worldId:string}>();
 const collisionSourceValues=(s:HvpCollisionSource)=>[s.sizeX,s.sizeY,s.sizeZ,s.cellMeters,s.originMeters.x,s.originMeters.y,s.originMeters.z,s.readSlot,s.readHaloSlot,
   (s as Partial<HvpTerrainSnapshot>).sessionId,(s as Partial<HvpTerrainSnapshot>).epoch,(s as Partial<HvpTerrainSnapshot>).revision,
@@ -101,6 +108,55 @@ export const bindHvpChunkPhysicsInput=(owner:{read:()=>HvpTerrainSnapshot},produ
 export const hvpChunkPhysicsInputCredits=(input:HvpChunkPhysicsInput):HvpSupportPhaseCredits=>{
   const bound=chunkPhysicsInputs.get(input);if(bound===undefined){throw new Error("Foreign initial chunk tuple");}bound.current();
   const credits=ownedProducts.get(bound.products)?.credits;if(credits===undefined){throw new Error("Initial chunk credits expired");}return credits;
+};
+/** @internal Join the issued LAB checkpoint to the existing producer-owned tuple, never to a caller digest. */
+export const bindHvpLabChunkGameInput=(input:HvpChunkPhysicsInput,sources:readonly HvpCollisionSource[],game:HvpDecodedLabGame):(()=>void)=>{
+  assertHvpDecodedLabGame(game);
+  const bound=chunkPhysicsInputs.get(input);
+  if(!bound||bound.sources!==sources){throw new Error("Foreign LAB chunk tuple");}
+  const expected=(saved:HvpTerrainCheckpoint)=>Object.freeze([saved.sessionId,saved.epoch,saved.revision,saved.baseDigest,saved.sourceDigest,
+    ...saved.base.size,saved.base.cellMeters,saved.base.origin.x,saved.base.origin.y,saved.base.origin.z]);
+  const observed=(source:HvpTerrainSnapshot)=>[source.sessionId,source.epoch,source.revision,source.baseDigest,source.sourceDigest,
+    source.sizeX,source.sizeY,source.sizeZ,source.cellMeters,source.originMeters.x,source.originMeters.y,source.originMeters.z];
+  const primary=expected(game.checkpoint.terrain),worldId=game.checkpoint.world.sessionId;
+  const neighbor=game.checkpoint.world.neighbor?.resident?game.checkpoint.neighbor?.terrain:undefined;
+  const east=neighbor?expected(neighbor):undefined;
+  const current=()=>{
+    bound.current();
+    if(bound.worldId!==worldId||observed(bound.products.source).some((v,i)=>!Object.is(v,primary[i]))
+      ||Boolean(bound.neighbor)!==Boolean(east)||bound.neighbor&&observed(bound.neighbor).some((v,i)=>!Object.is(v,east![i]))){
+      throw new Error("LAB Game/Chunk Source binding mismatch");
+    }
+  };
+  current();return current;
+};
+/** @internal Bind the fixed Fresh-LAB header only to a live producer-owned revision-zero primary tuple. */
+export const bindHvpFreshLabChunkInput=(input:HvpChunkPhysicsInput,sources:readonly HvpCollisionSource[]):HvpFreshLabChunkBinding=>{
+  const bound=chunkPhysicsInputs.get(input);
+  if(!bound||bound.sources!==sources){throw new Error("Foreign fresh LAB Chunk tuple");}
+  bound.current();
+  const source=bound.products.source;
+  if(bound.neighbor!==undefined||ownedChunkNeighbors.has(bound.products)){throw new Error("Fresh LAB cannot bind an initial physical neighbor");}
+  if(source.revision!==0||source.sizeX!==256||source.sizeY!==128||source.sizeZ!==256||source.cellMeters!==.125
+    ||source.originMeters.x!==-16||source.originMeters.y!==-8||source.originMeters.z!==-16){
+    throw new Error("Fresh LAB requires a revision-zero canonical primary Root");
+  }
+  for(let index=1;index<sources.length;index+=1){
+    const extra=sources[index];
+    if(extra?.sizeX===256&&extra.sizeY===128&&extra.sizeZ===256){
+      throw new Error("Fresh LAB cannot bind a secondary canonical terrain Source or neighbor");
+    }
+  }
+  const header=readHvpFreshLabSourceHeader({version:"hvp-fresh-lab-source-v1",worldId:bound.worldId,sourceSessionId:source.sessionId,
+    epoch:source.epoch,revision:source.revision,baseDigest:source.baseDigest,sourceDigest:source.sourceDigest,
+    sizeX:source.sizeX,sizeY:source.sizeY,sizeZ:source.sizeZ,cellMeters:source.cellMeters,
+    originX:source.originMeters.x,originY:source.originMeters.y,originZ:source.originMeters.z,neighbor:false});
+  const assertCurrent=()=>{
+    bound.current();
+    if(chunkPhysicsInputs.get(input)!==bound||bound.sources!==sources||bound.products.source!==source
+      ||bound.neighbor!==undefined||ownedChunkNeighbors.has(bound.products)){throw new Error("Stale fresh LAB Chunk tuple");}
+  };
+  assertCurrent();return Object.freeze({header,assertCurrent});
 };
 export function* prepareHvpChunkPhysicsInputSteps(input:HvpChunkPhysicsInput,sources:readonly HvpCollisionSource[],reserve:import("../../voxel/structural/validation").StructuralOwnedReserve){
   const bound=chunkPhysicsInputs.get(input);if(bound===undefined||bound.sources!==sources){throw new Error("Foreign initial chunk tuple");}
@@ -224,7 +280,9 @@ const terrainDigestFromHash=(p:{sessionId:string;epoch:number;sector:number;gene
   fnv1aHash(JSON.stringify([p.sessionId,p.epoch,p.sector,p.generation,p.sourceDigest,hash]));
 function* chunkJobInputSteps(source:HvpTerrainSnapshot,id:number,sequence:number,worldId:string,neighbor:HvpTerrainSnapshot|undefined,
   renderNeighbor:HvpTerrainSnapshot|undefined,
-  reserve:import("../../voxel/structural/validation").StructuralOwnedReserve):Generator<string,{kind:"chunk";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpChunkPayload},unknown>{
+  reserve:import("../../voxel/structural/validation").StructuralOwnedReserve,eastCollisionOnly=false):Generator<string,
+    {kind:"chunk";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpChunkPayload}|
+    {kind:"east-collision";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpEastChunkCollisionPayload},unknown>{
   if(neighbor!==undefined&&renderNeighbor!==neighbor){throw new Error("Unmatched physical chunk neighbour");}
   reserve(16_384);const tops=new Map<string,number>();
   const halo=(x:number,y:number,z:number):number|undefined=>{
@@ -240,6 +298,14 @@ function* chunkJobInputSteps(source:HvpTerrainSnapshot,id:number,sequence:number
   const {slots,payload}=yield* buildHvpChunkInputSteps(source,id,halo,haloBinding,reserve,worldId,neighbor),buffers=[slots.buffer as ArrayBuffer];
   const bundle:TransferableBufferBundle={buffers,ownership:"SenderToWorker",revision:contentRevision(source.revision),byteLength:byteCount(slots.byteLength),
     views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
+  if(eastCollisionOnly){
+    const collisionPayload:HvpEastChunkCollisionPayload={...payload,purpose:HVP_EAST_CHUNK_COLLISION_PURPOSE};
+    const digest=yield* hvpEastChunkCollisionInputDigestSteps(collisionPayload,buffers);
+    return {kind:"east-collision",payload:collisionPayload,bundle,request:{jobId:workerJobId(`hvp-products-${sequence}`),targetKey:workerTargetKey(`hvp-chunk-${id}`),
+      jobKind:workerJobKind(HVP_EAST_CHUNK_COLLISION_JOB),workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),
+      inputRevision:contentRevision(source.revision),sourceInputDigest:digest,algorithmVersion:algorithmVersion(HVP_EAST_CHUNK_COLLISION_ALGORITHM),
+      priority:"Urgent",deadline:jobDeadline(sequence),estimatedInputBytes:bundle.byteLength,estimatedOutputBytes:byteCount(HVP_EAST_CHUNK_COLLISION_MAX_OUTPUT),payload:collisionPayload}};
+  }
   const digest=yield* hvpChunkInputDigestSteps(payload,buffers);
   return {kind:"chunk",payload,bundle,request:{jobId:workerJobId(`hvp-products-${sequence}`),targetKey:workerTargetKey(`hvp-chunk-${id}`),jobKind:workerJobKind(HVP_CHUNK_JOB),
     workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(source.revision),sourceInputDigest:digest,algorithmVersion:algorithmVersion(1),
@@ -325,12 +391,12 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
   };
   const compileSectors=async(source:HvpTerrainSnapshot,renderIds:readonly number[],collisionIds:readonly number[],limit:number,
     readNeighbor?:(x:number,y:number,z:number)=>number|undefined,signal?:AbortSignal,parallel=count,credits?:HvpSupportPhaseCredits,
-    observeInput?:((start:number,duration:number)=>void),chunks?:{ids:readonly number[];worldId:string;neighbor?:HvpTerrainSnapshot;renderNeighbor?:HvpTerrainSnapshot;assertCurrent:()=>void},startup?:HvpChunkStartupObservation):Promise<HvpTerrainProducts>=>{
+    observeInput?:((start:number,duration:number)=>void),chunks?:{ids:readonly number[];worldId:string;neighbor?:HvpTerrainSnapshot;renderNeighbor?:HvpTerrainSnapshot;assertCurrent:()=>void;eastCollisionOnly?:true},startup?:HvpChunkStartupObservation):Promise<HvpTerrainProducts>=>{
     if(disposed||rolloverFailed){throw new Error("Terrain compiler disposed");}
     if(!Number.isInteger(parallel)||parallel<1||parallel>count){throw new Error("Invalid preparation concurrency");}
     const render=new Map<number,HvpCompactMesh>(),collision=new Map<number,HvpCollisionSector>();
     const work:Array<{id:number;render:boolean;chunk?:boolean}>=chunks===undefined?
-      [...renderIds.map(id=>({id,render:true})),...collisionIds.map(id=>({id,render:false}))]:chunks.ids.map(id=>({id,render:true,chunk:true}));
+      [...renderIds.map(id=>({id,render:true})),...collisionIds.map(id=>({id,render:false}))]:chunks.ids.map(id=>({id,render:chunks.eastCollisionOnly!==true,chunk:true}));
     if(work.length>limit||new Set(renderIds).size!==renderIds.length||new Set(collisionIds).size!==collisionIds.length){throw new Error("Terrain derivative BudgetExceeded");}
     if(chunks&&(new Set(chunks.ids).size!==chunks.ids.length||credits===undefined)){throw new Error("Owned unique chunk phase credits required");}
     if(work.length!==0){await startPool();}
@@ -348,7 +414,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
       if(workerBytes!==undefined&&workerBytes<=0){throw new Error("Terrain derivative phase budget exhausted");}
       const resultReserve=workerBytes===undefined?undefined:createHvpBodyMeshPhaseReserve(workerBytes);
       const inputStart=observeInput===undefined?0:performance.now();
-      const job=part.chunk?await pump!.run(chunkJobInputSteps(source,part.id,sequence++,chunks!.worldId,chunks!.neighbor,chunks!.renderNeighbor,packReserve!)):
+      const job=part.chunk?await pump!.run(chunkJobInputSteps(source,part.id,sequence++,chunks!.worldId,chunks!.neighbor,chunks!.renderNeighbor,packReserve!,chunks!.eastCollisionOnly===true)):
         {kind:"sector" as const,...(pump===undefined?jobInput(source,part.id,part.render,sequence++,readNeighbor):await pump.run(jobInputSteps(source,part.id,part.render,sequence++,readNeighbor,packReserve,cacheGhosts)))};
       if(observeInput!==undefined){try{observeInput(inputStart,performance.now()-inputStart);}catch{/* Diagnostics cannot invalidate products. */}}
       const ticket=pump===undefined?pool.enqueue(job.request,job.bundle):await pool.enqueueTerrainDerivative(job.request,job.bundle,workerBytes!,pump.host,packReserve!,resultReserve!);
@@ -366,9 +432,15 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
           if(startup){
             const primary=source===startup.primarySource;
             startup.population[primary?"primaryJobs":"eastJobs"]+=1;
-            if(pair.render.indices.length===0&&pair.collision.indices.length===0){startup.population[primary?"primaryEmptyBoth":"eastEmptyBoth"]+=1;}
+            if(primary&&pair.render.indices.length===0&&pair.collision.indices.length===0){startup.population.primaryEmptyBoth+=1;}
+            if(!primary&&pair.collision.indices.length===0){startup.population.eastEmptyCollision+=1;}
           }
           product={id:part.id,render:true,mesh:pair.render,collision:pair.collision};
+        }else if(job.kind==="east-collision"){
+          const mesh=pump===undefined?decodeHvpEastChunkCollisionOutput(terminal.output,job.payload):await pump.run(decodeHvpEastChunkCollisionOutputSteps(terminal.output,job.payload,resultReserve!));
+          if(startup){startup.population.eastJobs+=1;startup.population.eastCollisionOnlyJobs+=1;
+            if(mesh.indices.length===0){startup.population.eastEmptyCollision+=1;}}
+          product={id:part.id,render:false,mesh};
         }else{product=part.render?{id:part.id,render:true as const,mesh:pump===undefined?decodeHvpTerrainOutput(terminal.output,job.identity)
           :await pump.run(decodeHvpTerrainOutputSteps(terminal.output,job.identity,resultReserve!))}
           :{id:part.id,render:false as const,mesh:pump===undefined?decodeHvpCollisionOutput(terminal.output,job.collision)
@@ -398,7 +470,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
     const neighborIds=neighbor&&completeCollision?(before?.neighbor===neighbor&&before.neighborCollision!==undefined
       ?before.neighborCollisionSource===source?[]:Array.from({length:32},(_,i)=>i*8):Array.from({length:256},(_,i)=>i)):[];
     const neighborRaw=neighborIds.length===0?undefined:await compileSectors(neighbor!,[],[],256,undefined,undefined,count,credits,observeInput,
-      {ids:neighborIds,worldId,neighbor:source,renderNeighbor:source,assertCurrent:current},startup);
+      {ids:neighborIds,worldId,neighbor:source,renderNeighbor:source,assertCurrent:current,eastCollisionOnly:true},startup);
     const lane=credits.beginLane(1),reserve=createHvpBodyMeshPhaseReserve(lane.bytes);
     const pump=createHvpBodyMeshTaskPump(current);
     let retained=0,failed=false,produced:{products:HvpTerrainProducts;cache:ChunkCache;bytes:number}|undefined;
@@ -478,7 +550,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
         if(east&&east.originMeters.x!==source.originMeters.x+32){throw new Error("Invalid initial chunk neighbour coverage");}
         const ledger=createStructuralOwnerLedger(residentBytes,96*1024*1024,128),credits=createHvpSupportPhaseCredits(32_768,residentBytes);
         ledger.reserve(96*1024*1024);let handedOff=false,products:HvpTerrainProducts|undefined;
-        const startup=observePopulation?{primarySource:source,population:{primaryJobs:0,primaryEmptyBoth:0,eastJobs:0,eastEmptyBoth:0}}:undefined;
+        const startup=observePopulation?{primarySource:source,population:{primaryJobs:0,primaryEmptyBoth:0,eastJobs:0,eastCollisionOnlyJobs:0,eastEmptyCollision:0}}:undefined;
         const observation=observePool?createHvpChunkPoolObservation():undefined;chunkPoolObservation=observation;
         try{
           const binding=readyRoot,current=()=>{if(disposed||readyRoot!==binding||binding.read()!==source){throw new Error("Initial chunk source changed");}};

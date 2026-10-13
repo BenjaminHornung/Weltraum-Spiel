@@ -6,7 +6,7 @@ import {prepareHvpTerrainTransfer} from "../../src/hestia-prototype/terrain/terr
 import {releaseHvpOwnedSupportPlan,type HvpSupportPlan} from "../../src/hestia-prototype/terrain/supportPlan";
 import {createHvpTerrainCompiler,releaseHvpOwnedTerrainProducts,copyHvpOwnedChunkCollisionSteps} from "../../src/hestia-prototype/terrain/terrainProducts";
 import {WorkerPool,type WorkerJobTerminal} from "../../src/workers/workerPool";
-import {executeHvpChunkJob,executeHvpChunkJobOwned,HVP_CHUNK_JOB} from "../../src/workers/hvpChunkJob";
+import {executeHvpChunkJob,executeHvpChunkJobOwned,HVP_CHUNK_JOB,executeHvpEastChunkCollisionJob,executeHvpEastChunkCollisionJobOwned,HVP_EAST_CHUNK_COLLISION_JOB} from "../../src/workers/hvpChunkJob";
 import {createHvpBodyMeshTaskPump} from "../../src/workers/hvpBoundedPump";
 import {createHvpBodyMeshPhaseReserve} from "../../src/hestia-prototype/presentation/bodyMeshAdmission";
 import {workerEpoch} from "../../src/workers/ids";
@@ -24,7 +24,8 @@ it.each([false,true])("loads actual Coast East seams after the authored RockArm 
     reserve(16_384);reserve(8192+bundle.byteLength);
     const input=structuredClone(bundle,{transfer:transferListFor(bundle)}),pump=owned?createHvpBodyMeshTaskPump(()=>{}):undefined;
     try{
-      const output=pump?await executeHvpChunkJobOwned(request,input,pump,createHvpBodyMeshPhaseReserve(grant)):executeHvpChunkJob(request,input);
+      const output=pump?await (request.jobKind===HVP_EAST_CHUNK_COLLISION_JOB?executeHvpEastChunkCollisionJobOwned:executeHvpChunkJobOwned)(request,input,pump,createHvpBodyMeshPhaseReserve(grant))
+        :(request.jobKind===HVP_EAST_CHUNK_COLLISION_JOB?executeHvpEastChunkCollisionJob:executeHvpChunkJob)(request,input);
       return {jobId:request.jobId,workerEpoch:workerEpoch(0),result:Promise.resolve({kind:"Completed",result:output.result,output:output.bundle} as WorkerJobTerminal),cancel:()=>false};
     }finally{pump?.dispose();}
   });
@@ -56,7 +57,7 @@ it.each(["base","budget","root","concurrent","no-cache"] as const)("keeps exact 
   const start=vi.spyOn(WorkerPool.prototype,"start").mockResolvedValue(undefined),kinds:string[]=[],ids:number[]=[],halos:string[]=[];
   const enqueue=vi.spyOn(WorkerPool.prototype,"enqueueTerrainDerivative").mockImplementation(async(request,bundle,_grant,_host,reserve)=>{
     reserve(16_384);reserve(8192+bundle.byteLength);kinds.push(request.jobKind);ids.push((request.payload as {chunk:number}).chunk);halos.push((request.payload as {physicalHalo:string}).physicalHalo);
-    const input=structuredClone(bundle,{transfer:transferListFor(bundle)}),output=executeHvpChunkJob(request,input);
+    const input=structuredClone(bundle,{transfer:transferListFor(bundle)}),output=(request.jobKind===HVP_EAST_CHUNK_COLLISION_JOB?executeHvpEastChunkCollisionJob:executeHvpChunkJob)(request,input);
     return {jobId:request.jobId,workerEpoch:workerEpoch(0),result:Promise.resolve({kind:"Completed",result:output.result,output:output.bundle} as WorkerJobTerminal),cancel:()=>false};
   });
   const accepted=vi.spyOn(WorkerPool.prototype,"isAcceptedCompletedTerminal").mockReturnValue(true),compiler=createHvpTerrainCompiler();
@@ -151,7 +152,7 @@ it("keeps actual capsule, small-drop and rotated-body contacts across production
   const start=vi.spyOn(WorkerPool.prototype,"start").mockResolvedValue(undefined);
   const enqueue=vi.spyOn(WorkerPool.prototype,"enqueueTerrainDerivative").mockImplementation(async(request,bundle,_grant,_host,reserve)=>{
     reserve(16_384);reserve(8192+bundle.byteLength);
-    const output=executeHvpChunkJob(request,structuredClone(bundle,{transfer:transferListFor(bundle)}));
+    const output=(request.jobKind===HVP_EAST_CHUNK_COLLISION_JOB?executeHvpEastChunkCollisionJob:executeHvpChunkJob)(request,structuredClone(bundle,{transfer:transferListFor(bundle)}));
     return {jobId:request.jobId,workerEpoch:workerEpoch(0),result:Promise.resolve({kind:"Completed",result:output.result,output:output.bundle} as WorkerJobTerminal),cancel:()=>false};
   });
   const accepted=vi.spyOn(WorkerPool.prototype,"isAcceptedCompletedTerminal").mockReturnValue(true),compiler=createHvpTerrainCompiler();
@@ -163,7 +164,7 @@ it("keeps actual capsule, small-drop and rotated-body contacts across production
       const terrain=sectors.filter(mesh=>mesh.indices.length>0).map(mesh=>world.createCollider(R.ColliderDesc.trimesh(mesh.vertices,mesh.indices).setFriction(.8)));
       const rayHeights=()=>{world.updateSceneQueries();return [-.025,.025].flatMap(dx=>[-.025,.025].map(dz=>{
         const ray=new R.Ray({x:-12+dx,y:5,z:-12+dz},{x:0,y:-1,z:0}),hit=world.castRay(ray,2,true,undefined,undefined,undefined,undefined,isHvpStaticCollider);
-        expect(hit).not.toBeNull();return 5-hit!.toi;
+        expect(hit).not.toBeNull();return 5-hit!.timeOfImpact;
       }));};
       expect(rayHeights().every(y=>Math.abs(y-4)<.0001)).toBe(true);
       const small=world.createRigidBody(R.RigidBodyDesc.dynamic().setTranslation(-12,5,-12).setCcdEnabled(true));
@@ -182,7 +183,7 @@ it("keeps actual capsule, small-drop and rotated-body contacts across production
       expect(small.translation().y-.0625).toBeCloseTo(4,2);expect(rotated.translation().y-.08).toBeCloseTo(4,2);
       expect(Math.min(...smallYs)).toBeGreaterThan(4.04);expect(Math.abs(rotatedContactYaw!),rest).toBeGreaterThan(.1);
       expect(rayHeights().every(y=>Math.abs(y-4)<.0001)).toBe(true);
-      return {smallY:small.translation().y,rotatedY:rotated.translation().y,tolerance:world.integrationParameters.allowedLinearError};
+      return {smallY:small.translation().y,rotatedY:rotated.translation().y,tolerance:world.integrationParameters.normalizedAllowedLinearError*world.integrationParameters.lengthUnit};
     }finally{world.free();}
   };
   const verticalSeam=(sectors:readonly HvpCollisionSector[])=>{

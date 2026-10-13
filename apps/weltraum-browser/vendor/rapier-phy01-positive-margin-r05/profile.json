@@ -1,0 +1,29 @@
+{
+  "id": "rapier-0.21.0-phy01.migration2",
+  "npmBaseVersion": "0.21.0",
+  "vanillaNpmBytes": false,
+  "upstreamRevision": "b716d375efc0201003f0cd9ef7168eee0b62c177",
+  "nativeReceiptSha256": "3f75069e5757bc1030d98c9ac2052bd677e634f13b4c97c014bd1447b92736c7",
+  "nativeSourceDigest": "f6f31c7d6fe0f7a8d6820664d291d62514b23de0893b36d82e3dbee283369ab3",
+  "cargoLockSha256": "49d71b43e4c15d137121f19b917d110f28ab6e49334f5b77bf8de1d75fec2762",
+  "wasmSha256": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+  "queryPublication": "EXPLICIT_TRANSIENT_BVH_NO_PHYSICS_STEP",
+  "forkStatus": "LAB_CANDIDATE_REQUIRES_A0_REVIEW",
+  "geometryFork": {
+    "base": "parry3d-0.31.1",
+    "historicalBaseProvenanceSha256": "464e4de3dff9930455dbd4f85f9a5c2e01df5a705d75266618e7318e8f1da236",
+    "currentSourceBinding": "inputs/r04/inputs/r03/candidate/parry3d/**;852 aggregateSourceDigest f6f31c7d6fe0f7a8d6820664d291d62514b23de0893b36d82e3dbee283369ab3;new margin patch;no vanillaParry byte claim"
+  },
+  "packageRevision": "positive-margin-descriptor-package-r05",
+  "labArtifactId": "rapier-0.21.0-phy01.migration2:positive-margin-r05:f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+  "rawCargoWasmSha256": "9f6a79d440b1d4f102624752109fade394f4460bea8ed7992ea52be3b38efc37",
+  "provenanceClass": "A52_BOUNDED_OFFICIAL_BUILD_TOOL_OPAQUE_REPRODUCTION_LIMIT",
+  "marginRepair": "R03_PROVEN_POSITIVE_MARGIN_SOURCE_FIX_INCLUDED_RUNTIME_UNVERIFIED",
+  "runtimeAcceptance": "NOT_RUN_40CAUSES_UNPROVEN_NO_PRODUCT_OR_SAVE_ADOPTION",
+  "solverIdentityStatus": "Original migration2 Source policy IDs preserved; unique labArtifactId identifies new bytes; public Save compatibility/identity decision remains A0/Owner-gated",
+  "generatedJsSha256": "3352d74638111c659bf50566af2be3f151040b1cd6a22310542ce3c5c46d2fea",
+  "generatedDtsSha256": "44c5b5386eb391454830d58c16fba5a7cd0166b4bf351013b9e637a19f2ae29d",
+  "processedWasmDtsSha256": "207627a664d488cd17086a51fbfb556fcedcfccbd8d6d5518b3d2e85a0865214",
+  "processingReceiptSha256": "3f75069e5757bc1030d98c9ac2052bd677e634f13b4c97c014bd1447b92736c7",
+  "nativeReceiptKind": "A52_DESCRIPTOR_PROCESSOR_OUTPUT_RECEIPT"
+}

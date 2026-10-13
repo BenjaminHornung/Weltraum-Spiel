@@ -1,0 +1,67 @@
+import { spawnSync } from 'node:child_process';
+import { cp, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+
+const argv = ['../../../node_modules/typescript/lib/_tsc.js', '-p', 'tsconfig.json', '--pretty', 'false', '--listFiles', '--listEmittedFiles'];
+const startedUtc = new Date().toISOString();
+const compiled = spawnSync(process.execPath, argv, { cwd: process.cwd(), shell: false, maxBuffer: 16 * 1024 * 1024 });
+const endedUtc = new Date().toISOString();
+await writeFile('compiler.stdout.raw', compiled.stdout ?? Buffer.alloc(0), { flag: 'wx' });
+await writeFile('compiler.stderr.raw', compiled.stderr ?? Buffer.alloc(0), { flag: 'wx' });
+await writeFile('compiler-event.json', JSON.stringify({
+  binary: process.execPath, argv, cwd: process.cwd(), startedUtc, endedUtc,
+  nativeExit: compiled.status, signal: compiled.signal, spawnError: compiled.error?.message ?? null,
+  stdout: 'compiler.stdout.raw', stderr: 'compiler.stderr.raw',
+  deadlineMs: 60000, deadlineOwner: 'outer authorized serial process; timeout HOLD, no kill'
+}, null, 2) + '\n', { flag: 'wx' });
+if (compiled.error || compiled.status !== 0) {
+  process.stdout.write(compiled.stdout ?? Buffer.alloc(0));
+  process.stderr.write(compiled.stderr ?? Buffer.alloc(0));
+  throw new Error(`Genuine compiler failed: ${compiled.status ?? compiled.error?.code}`);
+}
+
+await mkdir('dist', { recursive: true });
+for (const [from, to] of [
+  ['index.html', 'dist/index.html'],
+  ['vendor/current', 'dist/vendor/current'],
+  ['vendor/historical', 'dist/vendor/historical'],
+  ['fixtures', 'dist/fixtures'],
+  ['package.json', 'dist/source-package.json'],
+  ['package-lock.json', 'dist/source-package-lock.json']
+]) await cp(from, to, { recursive: true, errorOnExist: true, force: false });
+
+const sourcePackage = JSON.parse(await readFile('package.json', 'utf8'));
+const exports = {};
+for (const [name, file, extension] of [
+  ['port', 'port', 'js'], ['materials', 'b2-materials', 'js'],
+  ['capability', 'capability', 'mjs'], ['image-oracle', 'image-oracle', 'mjs']
+]) exports[`./${name}`] = {
+  types: `./src/${file}.${extension === 'mjs' ? 'd.mts' : 'd.ts'}`,
+  import: `./src/${file}.${extension}`
+};
+await writeFile('dist/package.json', JSON.stringify({
+  name: sourcePackage.name, version: sourcePackage.version, private: true, type: 'module',
+  engines: sourcePackage.engines, dependencies: sourcePackage.dependencies,
+  devDependencies: sourcePackage.devDependencies, exports
+}, null, 2) + '\n', { flag: 'wx' });
+
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const inputFiles = ['index.html', 'tsconfig.json', 'package.json', 'package-lock.json', 'build.mjs'];
+async function walk(dir) {
+  for (const entry of (await readdir(dir, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
+    const name = `${dir}/${entry.name}`;
+    if (entry.isDirectory()) await walk(name); else inputFiles.push(name);
+  }
+}
+await walk('src'); await walk('fixtures'); await walk('vendor');
+const inputs = [];
+for (const name of inputFiles.sort()) {
+  const bytes = await readFile(name);
+  inputs.push({ path: name, byteLength: bytes.length, sha256: sha(bytes) });
+}
+await writeFile('dist/build-proof.json', JSON.stringify({
+  schema: 'hestia.gfx03-build-inputs.v1', node: process.version, inputs,
+  declarationOnlyApi: 'existing exports; no product or owner adoption',
+  rendererShaderShadowPixelProduct: 'NOT_RUN'
+}, null, 2) + '\n', { flag: 'wx' });
+console.log('Detached ES modules and declarations built; shader/shadow/pixel/product acceptance NOT_RUN');

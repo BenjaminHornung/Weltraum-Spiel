@@ -1,0 +1,16 @@
+{
+  "id": "rapier-0.21.0-phy01.migration2",
+  "npmBaseVersion": "0.21.0",
+  "vanillaNpmBytes": false,
+  "upstreamRevision": "b716d375efc0201003f0cd9ef7168eee0b62c177",
+  "nativeReceiptSha256": "b3d861d8a3b82a3f4fb45c33915c225f446f768b72b5b0eda48f587f1030e798",
+  "nativeSourceDigest": "4784dfa77559cbd748774c0fd41618c558a3ecb447824e3cbfe48b0052f0f859",
+  "cargoLockSha256": "49d71b43e4c15d137121f19b917d110f28ab6e49334f5b77bf8de1d75fec2762",
+  "wasmSha256": "ed3c8933d523eafb7d4d7a9a8efa04dd0da9d2279d4ae8cefb794c276ee98ea9",
+  "queryPublication": "EXPLICIT_TRANSIENT_BVH_NO_PHYSICS_STEP",
+  "forkStatus": "LAB_CANDIDATE_REQUIRES_A0_REVIEW",
+  "geometryFork": {
+    "base": "parry3d-0.31.1",
+    "provenanceSha256": "464e4de3dff9930455dbd4f85f9a5c2e01df5a705d75266618e7318e8f1da236"
+  }
+}

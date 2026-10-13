@@ -2,15 +2,15 @@ import {canonicalizePersistenceValue,createPersistenceSignature,serializeCanonic
 import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_SOURCE_VERSION,restoreHvpOwnedCoastGrid} from "../../hvp/hvpCoastSource";
 import type {HvpCameraCheckpoint} from "../../hvp/hvpCamera";
 import {HVP_VEGETATION_VERSION} from "../presentation/vegetation";
-import {createHvpLookProfile} from "../presentation/look";
-import {HVP_EFFECT_VERSION} from "../presentation/visualEffects";
-import {HVP_BRANCH_CELLS,HVP_SALVAGE_CELLS,HVP_PLAYER_PROFILE_DIGEST,resolveHvpGravity} from "../physics/profile";
+import {createHvpLookProfile,HVP_EFFECT_VERSION} from "../presentation/look";
+import {HVP_BRANCH_CELLS,HVP_SALVAGE_CELLS,HVP_PLAYER_PROFILE_DIGEST,HVP_SOLVER_PROFILE,resolveHvpGravity} from "../physics/profile";
 import {readHvpBodyCells} from "../physics/bodyCutPlan";
 import {createHvpPrivateTerrainRoot,validateHvpTerrainCheckpointHeader,type HvpTerrainCheckpoint} from "../terrain/cutPlan";
 import type {HvpCutOutcome} from "../terrain/terrainConsumer";
 import {hvpGridCheckpointBytes,decodeHvpGrid} from "./gridCheckpoint";
 import {hvpPlantCheckpointBytes,decodeHvpPlant,type HvpPlantCheckpoint} from "./plantCheckpoint";
-import {hvpWorldCheckpointBytes,decodeHvpWorld,decodeHvpColdWorld,type HvpWorldCheckpoint} from "./worldCheckpoint";
+import {hvpWorldCheckpointBytes,hvpLabWorldCheckpointBytes,decodeHvpWorld,decodeHvpLabWorld,decodeHvpColdWorld,decodeHvpColdLabWorld,
+  type HvpDecodedLabWorld,type HvpWorldCheckpoint,type HvpLabWorldCheckpoint} from "./worldCheckpoint";
 import {createStructuralOwnerLedger} from "../../voxel/structural/model";
 import {decodeHvpReceipts,type HvpReceiptCheckpoint,type HvpSimpleOutcome} from "./receiptCheckpoint";
 import {validateHvpSalvageCheckpoint,savedHvpSalvageObservation,type HvpSalvageCheckpoint} from "../gameplay/salvageLoop";
@@ -20,6 +20,9 @@ export const HVP_SAVE_TRANSPORT_BYTES=16*1024*1024;
 export const HVP_SAVE_DECODE_BYTES=64*1024*1024;
 export const HVP_SAVE_PROFILES=Object.freeze({source:HVP_COAST_SOURCE_VERSION,vegetation:HVP_VEGETATION_VERSION,
   look:createHvpLookProfile("readable").id,effects:HVP_EFFECT_VERSION,player:HVP_PLAYER_PROFILE_DIGEST,solver:"rapier-0.12.0"});
+const HVP_LAB_SAVE_PROFILES=Object.freeze({...HVP_SAVE_PROFILES,solver:HVP_SOLVER_PROFILE});
+const publicContext=Object.freeze({admission:"public" as const,profiles:HVP_SAVE_PROFILES});
+const phy01LabContext=Object.freeze({admission:"phy01-lab" as const,profiles:HVP_LAB_SAVE_PROFILES});
 export interface HvpToolCheckpoint {readonly mode:number;readonly sequence:number;readonly structureSequence:number;readonly movingSequence:number;readonly edges:number}
 export interface HvpViewCheckpoint {
   readonly camera:HvpCameraCheckpoint;readonly playerYaw:number;readonly playerPitch:number;readonly thirdPerson:boolean;readonly tool:HvpToolCheckpoint;
@@ -32,7 +35,18 @@ export interface HvpGameCheckpoint {
   readonly view:HvpViewCheckpoint;readonly progress:HvpSalvageCheckpoint|null;readonly signature:string;
   readonly neighbor?:Readonly<{version:"hvp-neighbor-scene-v1";terrain:HvpTerrainCheckpoint;lod:.125|.5}>|null;
 }
-const issued=new WeakSet<object>();
+/** @internal PHY-01 migration2 checkpoint type; not part of the public solver union. */
+export interface HvpLabGameCheckpoint extends Omit<HvpGameCheckpoint,"profiles"|"world"> {
+  readonly profiles:typeof HVP_LAB_SAVE_PROFILES;readonly world:HvpLabWorldCheckpoint;
+}
+type HvpDecodedGameShape<TCheckpoint extends HvpGameCheckpoint|HvpLabGameCheckpoint,TWorld> = Readonly<{
+  checkpoint:TCheckpoint;base:ReturnType<typeof restoreHvpOwnedCoastGrid>;root:ReturnType<typeof createHvpPrivateTerrainRoot>;
+  plants:readonly ReturnType<typeof decodeHvpPlant>[];world:TWorld;neighborRoot:ReturnType<typeof restoreHvpEastRegion>|undefined;
+  receipts:HvpGameCheckpoint["receipts"];view:TCheckpoint["view"];decodedBytes:number;decodeWorkingBytes:number;
+}>;
+type HvpDecodedLegacyGame=HvpDecodedGameShape<HvpGameCheckpoint,ReturnType<typeof decodeHvpWorld>>;
+type HvpDecodedPhy01LabGame=HvpDecodedGameShape<HvpLabGameCheckpoint,HvpDecodedLabWorld>;
+const issued=new WeakMap<object,"public"|"phy01-lab">();
 const safeInt=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const vector=(v:unknown,quaternion=false):boolean=>{
   if(!v||typeof v!=="object"||Object.keys(v).sort().join(",")!==(quaternion?"w,x,y,z":"x,y,z")){return false;}
@@ -55,10 +69,11 @@ export const validateHvpViewCheckpoint=(value:unknown):HvpViewCheckpoint=>{
 };
 
 /** Decode bounded data only. No generator, native World, GPU, URL or file loader. */
-const decodeGame=(value:unknown,cold?:{admitPrepare:(workingBytes:number)=>void;recipeRetainedBytes:number})=>{
-  const p=value as HvpGameCheckpoint|null;
+const decodeGame=(value:unknown,cold:{admitPrepare:(workingBytes:number)=>void;recipeRetainedBytes:number}|undefined,
+  context:typeof publicContext|typeof phy01LabContext)=>{
+  const p=value as HvpGameCheckpoint|HvpLabGameCheckpoint|null;
   if(!p||Object.keys(p).filter(k=>k!=="neighbor").sort().join(",")!=="plants,profiles,progress,receipts,signature,terrain,version,view,world"
-    ||p.version!=="hvp-game-checkpoint-v1"||createPersistenceSignature(p.profiles)!==createPersistenceSignature(HVP_SAVE_PROFILES)){
+    ||p.version!=="hvp-game-checkpoint-v1"||createPersistenceSignature(p.profiles)!==createPersistenceSignature(context.profiles)){
     throw new Error("Unsupported Hestia save schema/profile");
   }
   if(!p.terrain||!Array.isArray(p.terrain.leaves)||p.terrain.leaves.length>2048||!Array.isArray(p.plants)||p.plants.length>256
@@ -82,7 +97,7 @@ const decodeGame=(value:unknown,cold?:{admitPrepare:(workingBytes:number)=>void;
   const plantIds=new Set<string>();
   for(const plant of p.plants){admitBytes(hvpPlantCheckpointBytes(plant));
     if(plantIds.has(plant.instance.id)){throw new Error("Duplicate saved plant owner");}plantIds.add(plant.instance.id);}
-  admitBytes(hvpWorldCheckpointBytes(p.world));
+  admitBytes(context.admission==="phy01-lab"?hvpLabWorldCheckpointBytes(p.world):hvpWorldCheckpointBytes(p.world));
   const ownershipBytes=p.world.bodies.some(b=>b.family==="terrain")?baseBytes:0;
   // Conservative RLE and defensive-copy working allowance remains unchanged.
   const decodeWorkingBytes=decodedBytes+3*baseBytes+ownershipBytes;
@@ -99,24 +114,26 @@ const decodeGame=(value:unknown,cold?:{admitPrepare:(workingBytes:number)=>void;
   }
   // This object comes from bounded repository/import bytes or owned live data;
   // validate all per-field budgets before canonical cloning/serialization.
+  const admittedSignature=p.signature;
+  cold?.admitPrepare(decodeWorkingBytes);
   const text=serializeCanonicalPersistenceValue(p);
   if(text.length>HVP_SAVE_TRANSPORT_BYTES||new TextEncoder().encode(text).byteLength>HVP_SAVE_TRANSPORT_BYTES){throw new Error("Hestia save transport budget");}
   const {signature,...data}=p;
-  if(signature!==createPersistenceSignature(data)){throw new Error("Hestia save signature mismatch");}
-  const owned=canonicalizePersistenceValue(p) as unknown as HvpGameCheckpoint;
-  // The Cold admission callback must not change data after signature validation.
+  if(signature!==admittedSignature||admittedSignature!==createPersistenceSignature(data)){throw new Error("Hestia save signature mismatch");}
+  const owned=canonicalizePersistenceValue(p) as unknown as HvpGameCheckpoint|HvpLabGameCheckpoint;
+  // Cold admission has completed before the owned snapshot is decoded.
   const snapshot=cold?owned:p;
   const decodedBase=decodeHvpGrid(snapshot.terrain.base);
   const base=restoreHvpOwnedCoastGrid(decodedBase,snapshot.terrain.baseDigest);
   const savedTerrain=validateHvpTerrainCheckpointHeader(snapshot.terrain);
   const root=createHvpPrivateTerrainRoot(base,savedTerrain.sessionId,savedTerrain.epoch,undefined,savedTerrain);
   const plants=snapshot.plants.map(plant=>decodeHvpPlant(plant,root.read()));
-  let world:ReturnType<typeof decodeHvpWorld>;
+  let world:ReturnType<typeof decodeHvpWorld>|HvpDecodedLabWorld;
   if(cold){
-    cold.admitPrepare(decodeWorkingBytes);const ledger=createStructuralOwnerLedger(decodeWorkingBytes);
-    try{world=decodeHvpColdWorld(snapshot.world,ledger.reserve);}
+    const ledger=createStructuralOwnerLedger(decodeWorkingBytes);
+    try{world=context.admission==="phy01-lab"?decodeHvpColdLabWorld(snapshot.world,ledger.reserve):decodeHvpColdWorld(snapshot.world,ledger.reserve);}
     finally{cold.recipeRetainedBytes=ledger.resources.retainedEstimateBytes;ledger.release();}
-  }else{world=decodeHvpWorld(snapshot.world);}
+  }else{world=context.admission==="phy01-lab"?decodeHvpLabWorld(snapshot.world):decodeHvpWorld(snapshot.world);}
   const neighborRoot=snapshot.neighbor?restoreHvpEastRegion(snapshot.neighbor.terrain):undefined;
   if(snapshot.progress!==null){
     if(snapshot.progress.sessionId!==snapshot.terrain.sessionId){throw new Error("Foreign objective session");}
@@ -154,16 +171,27 @@ const decodeGame=(value:unknown,cold?:{admitPrepare:(workingBytes:number)=>void;
   }
   const result=Object.freeze({checkpoint:owned,base,root,plants:Object.freeze(plants),world,neighborRoot,
     receipts:Object.freeze(receipts),view:owned.view,decodedBytes,decodeWorkingBytes});
-  issued.add(result);return result;
+  issued.set(result,context.admission);return result;
 };
-export const decodeHvpGame=(value:unknown)=>decodeGame(value);
+export const decodeHvpGame=(value:unknown)=>decodeGame(value,undefined,publicContext) as HvpDecodedLegacyGame;
+/** @internal Exact profile-bound lab decoder; no payload-selected profile context. */
+export const decodeHvpLabGame=(value:unknown)=>decodeGame(value,undefined,phy01LabContext) as HvpDecodedPhy01LabGame;
 /** Internal fresh-ColdStart wrapper; released scratch does not release published Recipes. */
 export const decodeHvpColdGame=(value:unknown,admitPrepare:(workingBytes:number)=>void)=>{
-  const cold={admitPrepare,recipeRetainedBytes:0},game=decodeGame(value,cold);
+  const cold={admitPrepare,recipeRetainedBytes:0},game=decodeGame(value,cold,publicContext) as HvpDecodedLegacyGame;
+  return Object.freeze({game,recipeRetainedBytes:cold.recipeRetainedBytes});
+};
+/** @internal Cold-start lab wrapper shares the original bounded preparation and body admission. */
+export const decodeHvpColdLabGame=(value:unknown,admitPrepare:(workingBytes:number)=>void)=>{
+  const cold={admitPrepare,recipeRetainedBytes:0},game=decodeGame(value,cold,phy01LabContext) as HvpDecodedPhy01LabGame;
   return Object.freeze({game,recipeRetainedBytes:cold.recipeRetainedBytes});
 };
 export type HvpDecodedGame=ReturnType<typeof decodeHvpGame>;
-export const assertHvpDecodedGame=(value:HvpDecodedGame):void=>{if(!issued.has(value)){throw new Error("Unvalidated Hestia restore candidate");}};
+/** @internal */
+export type HvpDecodedLabGame=ReturnType<typeof decodeHvpLabGame>;
+export const assertHvpDecodedGame=(value:HvpDecodedGame):void=>{if(issued.get(value)!=="public"){throw new Error("Unvalidated Hestia restore candidate");}};
+/** @internal A lab candidate cannot cross the public restore admission marker. */
+export const assertHvpDecodedLabGame=(value:HvpDecodedLabGame):void=>{if(issued.get(value)!=="phy01-lab"){throw new Error("Unvalidated Hestia lab restore candidate");}};
 export const parseHvpGame=(bytes:Uint8Array):HvpDecodedGame=>{
   if(!(bytes instanceof Uint8Array)||bytes.byteLength===0||bytes.byteLength>HVP_SAVE_TRANSPORT_BYTES){throw new Error("Hestia save transport budget before decode");}
   return decodeHvpGame(JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(bytes)));
@@ -171,4 +199,9 @@ export const parseHvpGame=(bytes:Uint8Array):HvpDecodedGame=>{
 export const encodeHvpGame=(data:Omit<HvpGameCheckpoint,"version"|"profiles"|"signature">):HvpGameCheckpoint=>{
   const value={version:"hvp-game-checkpoint-v1" as const,profiles:HVP_SAVE_PROFILES,...data};
   return canonicalizePersistenceValue({...value,signature:createPersistenceSignature(value)}) as unknown as HvpGameCheckpoint;
+};
+/** @internal Encoder for the one exact PHY-01 migration2 lab profile. */
+export const encodeHvpLabGame=(data:Omit<HvpLabGameCheckpoint,"version"|"profiles"|"signature">):HvpLabGameCheckpoint=>{
+  const value={version:"hvp-game-checkpoint-v1" as const,profiles:HVP_LAB_SAVE_PROFILES,...data};
+  return canonicalizePersistenceValue({...value,signature:createPersistenceSignature(value)}) as unknown as HvpLabGameCheckpoint;
 };

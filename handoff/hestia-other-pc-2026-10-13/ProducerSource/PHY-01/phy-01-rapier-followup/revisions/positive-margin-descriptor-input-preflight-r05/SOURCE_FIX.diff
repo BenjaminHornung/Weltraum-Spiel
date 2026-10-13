@@ -1,0 +1,7 @@
+--- source-revisions/static-input-01/static-metadata-reader.mjs
++++ scripts/static-metadata-reader.mjs
+@@
+-                return {name:v[1],type:v[2]?.replaceAll("<'a>","")??null};
++                return {name:v[1],type:v[2]?.replaceAll("<'a>","").replaceAll("&'a str","str")??null};
+
+Regression coverage: actual Named enum borrowed-string payload; normalization/resolution of every type in the genuine shared_api DSL. Old first-failure Source/preflight/stderr remains unchanged. No wasm-bindgen, candidate physics or historical assertion Source was changed.

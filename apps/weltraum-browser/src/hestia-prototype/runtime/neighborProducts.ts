@@ -2,6 +2,7 @@ import {fnv1aHash} from "../../core/hash";
 import {readHvpSourceColumnWorld} from "../../hvp/hvpCoastSource";
 import {clipHvpProjection,meshHvpOccupancy,meshHvpWaterPatch,type HvpCompactMesh,type HvpMeshOccupancy} from "../../hvp/hvpCoastMesher";
 import {projectHvpRegionOccupancy,type HvpRegionSource} from "./regionSource";
+import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 
 export const HVP_EAST_COLLAR=Object.freeze({minX:15,maxX:49,minZ:-17,maxZ:17});
 const inEast=(x:number,z:number)=>x>=16&&x<48&&z>=-16&&z<16;
@@ -10,10 +11,14 @@ export interface HvpNeighborProxies {readonly join:HvpCompactMesh;readonly far:H
 
 /** Only the replacement region and a 1 m collar are newly meshed. Unaffected
  * proxy faces are clipped, not regenerated from the entire 480 m ocean mask. */
-export const buildHvpNeighborProducts=(primary:HvpRegionSource,east:HvpRegionSource,lod:.125|.5,proxies:HvpNeighborProxies)=>{
+export const buildHvpNeighborProducts=(primary:HvpRegionSource,east:HvpRegionSource,lod:.125|.5,proxies:HvpNeighborProxies,reserve?:StructuralOwnedReserve)=>{
   if(primary.cellMeters!==.125||east.cellMeters!==.125||primary.sizeX!==256||primary.sizeY!==128||primary.sizeZ!==256
     ||east.sizeX!==256||east.sizeY!==128||east.sizeZ!==256||primary.originMeters.x!==-16||east.originMeters.x!==16
     ||primary.originMeters.y!==-8||east.originMeters.y!==-8||primary.originMeters.z!==-16||east.originMeters.z!==-16){throw new Error("Unsupported neighbouring source extents");}
+  // Exact immutable authored points only; this fixed scratch stays inside the prepaid neighbor phase.
+  reserve?.(128*1024);
+  const fineWidth=41,fineDepth=274,coarseWidth=30,coarseDepth=36,fineCount=fineWidth*fineDepth;
+  const columnTops=new Float64Array(fineCount+coarseWidth*coarseDepth),columnSlots=new Uint8Array(columnTops.length);
   const digest=fnv1aHash(JSON.stringify(["hvp-east-products-v1",primary.sourceDigest,east.sourceDigest,lod]));
   const projection=projectHvpRegionOccupancy(east,lod);
   const slot=(x:number,y:number,z:number):number=>{
@@ -29,10 +34,19 @@ export const buildHvpNeighborProducts=(primary:HvpRegionSource,east:HvpRegionSou
       return projection.slotAt(Math.floor((x-16)/lod),Math.floor((y+8)/lod),Math.floor((z+16)/lod));
     }
     const fine=Math.max(Math.abs(x),Math.abs(z))<20;
-    const column=readHvpSourceColumnWorld(fine?x:Math.floor(x)+.5,fine?z:Math.floor(z)+.5);
-    const top=column.topMeters;
+    const cx=fine?(x-14.9375)*8:Math.floor(x)-20,cz=fine?(z+17.0625)*8:Math.floor(z)+18;
+    const width=fine?fineWidth:coarseWidth,depth=fine?fineDepth:coarseDepth;
+    const index=Number.isInteger(cx)&&Number.isInteger(cz)&&cx>=0&&cx<width&&cz>=0&&cz<depth
+      ?(fine?0:fineCount)+cx+cz*width:-1;
+    let top:number,sourceSlot:number;
+    if(index>=0&&columnSlots[index]!==0){top=columnTops[index]!;sourceSlot=columnSlots[index]!;}
+    else{
+      const column=readHvpSourceColumnWorld(fine?x:Math.floor(x)+.5,fine?z:Math.floor(z)+.5);
+      top=column.topMeters;sourceSlot=column.slot;
+      if(index>=0){columnTops[index]=top;columnSlots[index]=sourceSlot;}
+    }
     if(y>=top){return 0;}
-    const material=!fine&&(column.slot===3||column.slot===4)?1:column.slot;
+    const material=!fine&&(sourceSlot===3||sourceSlot===4)?1:sourceSlot;
     return y>=top-(top<0?.25:.125)?material:1;
   };
   const ghost=(origin:{x:number;y:number;z:number},cell:number)=>(x:number,y:number,z:number)=>

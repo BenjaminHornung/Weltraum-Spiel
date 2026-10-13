@@ -32,8 +32,12 @@ export function detectGraphicsCapabilities(probe: GraphicsCapabilityProbe): Grap
     environmentReflections: probe.environmentReflections
       ? capability("SupportedLive", "The scene exposes managed environment/reflection resources.")
       : capability("Planned", "No managed environment/reflection pipeline exists."),
-    effectsQuality: capability("SupportedLive", "Effects quality controls render-only decor density in V1."),
-    decorDensity: capability("SupportedLive", "Explicitly tagged render-only decoration supports live density changes."),
+    effectsQuality: probe.renderOnlyDecor
+      ? capability("SupportedLive", "Effects quality controls render-only decor density in V1.")
+      : capability("Unsupported", "This scene has no managed render-only decoration."),
+    decorDensity: probe.renderOnlyDecor
+      ? capability("SupportedLive", "Explicitly tagged render-only decoration supports live density changes.")
+      : capability("Unsupported", "This scene has no managed render-only decoration."),
     bloom: probe.postProcessing
       ? capability("SupportedLive", "A managed post-processing pipeline is available.")
       : capability("Unsupported", "No post-processing pipeline is installed."),

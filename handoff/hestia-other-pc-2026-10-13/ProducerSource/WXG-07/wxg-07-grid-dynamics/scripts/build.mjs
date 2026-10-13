@@ -1,0 +1,11 @@
+import {spawnSync} from 'node:child_process';
+import {readFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {root,verifyInputs,save,binding,walk} from './bindings.mjs';
+verifyInputs();
+if(process.versions.node!=='22.23.2')throw Error('NODE_PIN');
+const r=spawnSync(process.execPath,['inputs/wxg/node_modules/typescript/bin/tsc','-p','tsconfig.json','--singleThreaded'],{cwd:root,windowsHide:true,encoding:'utf8'});
+process.stdout.write(r.stdout??'');process.stderr.write(r.stderr??'');
+if(r.status!==0)process.exit(r.status??1);
+save('.runtime/build-bindings.json',{status:'PASS',node:process.versions.node,typescript:'7.0.2',inputs:walk('src').map(binding),compiler:binding('inputs/wxg/node_modules/@typescript/typescript-win32-x64/lib/tsc.exe'),lock:binding('inputs/wxg/package-lock.json'),files:walk('dist').map(binding)});
+console.log('PASS strict typecheck and emitted build');

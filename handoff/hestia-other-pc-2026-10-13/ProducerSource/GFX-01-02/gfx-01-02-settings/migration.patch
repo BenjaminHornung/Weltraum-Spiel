@@ -1,0 +1,1354 @@
+diff --git a/apps/weltraum-browser/src/settings/capabilities.ts b/apps/weltraum-browser/src/settings/capabilities.ts
+index c4f5220e..17e0af8f 100644
+--- a/apps/weltraum-browser/src/settings/capabilities.ts
++++ b/apps/weltraum-browser/src/settings/capabilities.ts
+@@ -8,6 +8,7 @@ function capability(status: GraphicsCapability["status"], reason: string, numeri
+ export function detectGraphicsCapabilities(probe: GraphicsCapabilityProbe): GraphicsCapabilityMap {
+   const maxAnisotropy = Number.isFinite(probe.maxAnisotropy) ? Math.max(1, probe.maxAnisotropy) : 1;
+   const maxTextureSize = Number.isFinite(probe.maxTextureSize) ? Math.max(1, probe.maxTextureSize) : 1;
++  const rendererUnavailable = probe.backend === "unavailable";
+   const map: Record<GraphicsSettingId, GraphicsCapability> = {
+     renderScale: capability("SupportedLive", "Canvas backing resolution is controlled by the renderer adapter.", maxTextureSize),
+     maxDevicePixelRatio: capability("SupportedLive", "Device pixel ratio is feature-detected and hardware-capped.", Math.max(1, probe.devicePixelRatio)),
+@@ -44,7 +45,26 @@ export function detectGraphicsCapabilities(probe: GraphicsCapabilityProbe): Grap
+       "SupportedAfterRendererRestart",
+       `WebGL anti-aliasing is fixed at renderer creation; current context is ${probe.antiAliasingApplied ? "on" : "off"}.`
+     ),
+-    vsync: capability("BrowserManaged", "requestAnimationFrame synchronization is controlled by the browser.")
++    vsync: capability("BrowserManaged", "requestAnimationFrame synchronization is controlled by the browser."),
++    rayTracing: rendererUnavailable
++      ? capability("Unsupported", "No renderer context is available.")
++      : capability("Planned", "The current renderer port has no ray-tracing pipeline."),
++    weatherQuality: rendererUnavailable
++      ? capability("Unsupported", "No renderer context is available.")
++      : capability("Planned", "The current renderer port has no weather-quality pipeline."),
++    powerPreference: capability("SupportedAfterRendererRestart", "Power preference is requested when the renderer context is created; the browser selects the actual adapter."),
++    adaptiveResolution: capability("SupportedLive", "Adaptive resolution can adjust the same live render scale controlled by the renderer adapter.", maxTextureSize)
+   };
++  if (rendererUnavailable) {
++    const unavailable = capability("Unsupported", "No renderer context is available.");
++    for (const id of [
++      "renderScale", "maxDevicePixelRatio", "fieldOfView", "renderDistance", "fpsLimit", "shadows", "textureQuality",
++      "textureVariants", "lightingQuality", "toneMapping", "exposure", "environmentReflections", "effectsQuality",
++      "decorDensity", "bloom", "motionEffects", "antiAliasing", "rayTracing", "weatherQuality", "powerPreference"
++    ] as const) {
++      map[id] = unavailable;
++    }
++  }
++  map.adaptiveResolution = map.renderScale;
+   return cloneAndFreeze(map) as GraphicsCapabilityMap;
+ }
+diff --git a/apps/weltraum-browser/src/settings/defaults.ts b/apps/weltraum-browser/src/settings/defaults.ts
+index a7373641..f9ffdcdb 100644
+--- a/apps/weltraum-browser/src/settings/defaults.ts
++++ b/apps/weltraum-browser/src/settings/defaults.ts
+@@ -1,7 +1,7 @@
+ import { cloneAndFreeze } from "./schema";
+-import type { GraphicsRuntimeSnapshot, GraphicsSettingsV1 } from "./types";
++import type { GraphicsRuntimeSnapshot, GraphicsSettingsV2 } from "./types";
+ 
+-const highDefaults: GraphicsSettingsV1 = {
++const highDefaults: GraphicsSettingsV2 = {
+   qualityPreset: "High",
+   display: {
+     renderScale: 1,
+@@ -26,11 +26,22 @@ const highDefaults: GraphicsSettingsV1 = {
+     motionEffectsPreference: false
+   },
+   antiAliasing: { enabled: true },
+-  vsync: { mode: "BrowserManaged" }
++  vsync: { mode: "BrowserManaged" },
++  rayTracing: "off",
++  weatherQuality: "Low",
++  powerPreference: "high-performance",
++  adaptiveResolution: {
++    enabled: false,
++    minRenderScale: 0.5,
++    maxRenderScale: 1.25,
++    minDevicePixelRatio: 1,
++    maxDevicePixelRatio: 2,
++    targetFps: 60
++  }
+ };
+ 
+-export function createDefaultGraphicsSettings(): GraphicsSettingsV1 {
+-  return cloneAndFreeze(highDefaults) as GraphicsSettingsV1;
++export function createDefaultGraphicsSettings(): GraphicsSettingsV2 {
++  return cloneAndFreeze(highDefaults) as GraphicsSettingsV2;
+ }
+ 
+ export function createDefaultRuntimeSnapshot(antiAliasingApplied = true): GraphicsRuntimeSnapshot {
+@@ -47,6 +58,9 @@ export function createDefaultRuntimeSnapshot(antiAliasingApplied = true): Graphi
+     toneMapping: "None",
+     exposure: 1,
+     decorDensity: 1,
+-    antiAliasingApplied
++    antiAliasingApplied,
++    powerPreferenceApplied: "default",
++    rayTracing: "off",
++    weatherQuality: null
+   }) as GraphicsRuntimeSnapshot;
+ }
+diff --git a/apps/weltraum-browser/src/settings/graphicsSettings.ts b/apps/weltraum-browser/src/settings/graphicsSettings.ts
+index 141606d7..c4c87185 100644
+--- a/apps/weltraum-browser/src/settings/graphicsSettings.ts
++++ b/apps/weltraum-browser/src/settings/graphicsSettings.ts
+@@ -40,6 +40,10 @@ function valueForId(settings: GraphicsSettingsControllerSnapshot["draft"], id: G
+     case "motionEffects": return settings.effects.motionEffectsPreference;
+     case "antiAliasing": return settings.antiAliasing.enabled;
+     case "vsync": return settings.vsync.mode;
++    case "rayTracing": return settings.rayTracing;
++    case "weatherQuality": return settings.weatherQuality;
++    case "powerPreference": return settings.powerPreference;
++    case "adaptiveResolution": return settings.adaptiveResolution;
+   }
+ }
+ 
+@@ -51,13 +55,16 @@ export function createGraphicsSettingsController(options: CreateGraphicsSettings
+   let message = options.initial.message;
+ 
+   const snapshot = (): GraphicsSettingsControllerSnapshot => {
++    runtime = options.runtime.getSnapshot();
+     const draft = store.getSnapshot();
+-    const derivedRestart: GraphicsSettingId[] = draft.confirmed.antiAliasing.enabled === runtime.antiAliasingApplied ? [] : ["antiAliasing"];
++    const derivedRestart: GraphicsSettingId[] = [];
++    if (draft.confirmed.antiAliasing.enabled !== runtime.antiAliasingApplied) derivedRestart.push("antiAliasing");
++    if (draft.confirmed.powerPreference !== runtime.powerPreferenceApplied) derivedRestart.push("powerPreference");
+     return cloneAndFreeze({
+       ...draft,
+       runtime,
+       capabilities: options.runtime.getCapabilities(),
+-      restartRequired: [...new Set([...restartRequired, ...derivedRestart])],
++      restartRequired: [...new Set([...restartRequired.filter((id) => id !== "antiAliasing" && id !== "powerPreference"), ...derivedRestart])],
+       loadReason: options.initial.reason,
+       message
+     }) as GraphicsSettingsControllerSnapshot;
+@@ -119,6 +126,11 @@ export function createGraphicsSettingsController(options: CreateGraphicsSettings
+       return runRuntime(ALL_GRAPHICS_SETTING_IDS.filter((id) => id !== "fullscreen"));
+     },
+     async apply() {
++      if (options.initial.reason === "FutureVersion") {
++        message = "Apply blocked because stored graphics settings use an unsupported future schema; stored bytes were preserved.";
++        notify();
++        return { ok: false, snapshot: snapshot(), message };
++      }
+       const ids = changedIds();
+       const current = store.getSnapshot();
+       const saved = saveGraphicsSettings(options.storage, current.draft);
+diff --git a/apps/weltraum-browser/src/settings/presets.ts b/apps/weltraum-browser/src/settings/presets.ts
+index 99b813db..6545b580 100644
+--- a/apps/weltraum-browser/src/settings/presets.ts
++++ b/apps/weltraum-browser/src/settings/presets.ts
+@@ -2,7 +2,7 @@ import { CONCRETE_PRESETS, cloneAndFreeze } from "./schema";
+ import type {
+   ConcreteQualityPreset,
+   GraphicsSettingPath,
+-  GraphicsSettingsV1,
++  GraphicsSettingsV2,
+   ShadowPolicy,
+   ShadowQuality,
+   TexturePolicy,
+@@ -15,7 +15,7 @@ interface PresetPolicy {
+   readonly renderDistance: number;
+   readonly shadowQuality: ShadowQuality;
+   readonly textureQuality: TextureQuality;
+-  readonly toneMapping: GraphicsSettingsV1["lighting"]["toneMapping"];
++  readonly toneMapping: GraphicsSettingsV2["lighting"]["toneMapping"];
+   readonly exposure: number;
+   readonly decorDensity: number;
+   readonly bloomPreference: boolean;
+@@ -100,7 +100,7 @@ export function resolveTexturePolicy(quality: TextureQuality, maxAnisotropy: num
+   }) as TexturePolicy;
+ }
+ 
+-export function applyQualityPreset(base: GraphicsSettingsV1, preset: ConcreteQualityPreset): GraphicsSettingsV1 {
++export function applyQualityPreset(base: GraphicsSettingsV2, preset: ConcreteQualityPreset): GraphicsSettingsV2 {
+   const policy = QUALITY_PRESET_POLICIES[preset];
+   return cloneAndFreeze({
+     ...base,
+@@ -126,10 +126,10 @@ export function applyQualityPreset(base: GraphicsSettingsV1, preset: ConcreteQua
+       motionEffectsPreference: policy.motionEffectsPreference
+     },
+     antiAliasing: { enabled: policy.antiAliasing }
+-  }) as GraphicsSettingsV1;
++  }) as GraphicsSettingsV2;
+ }
+ 
+-function presetOwnedValue(settings: GraphicsSettingsV1): unknown {
++function presetOwnedValue(settings: GraphicsSettingsV2): unknown {
+   return {
+     display: {
+       renderScale: settings.display.renderScale,
+@@ -144,7 +144,7 @@ function presetOwnedValue(settings: GraphicsSettingsV1): unknown {
+   };
+ }
+ 
+-export function inferQualityPreset(settings: GraphicsSettingsV1): GraphicsSettingsV1["qualityPreset"] {
++export function inferQualityPreset(settings: GraphicsSettingsV2): GraphicsSettingsV2["qualityPreset"] {
+   const comparable = JSON.stringify(presetOwnedValue(settings));
+   for (const preset of CONCRETE_PRESETS) {
+     if (JSON.stringify(presetOwnedValue(applyQualityPreset(settings, preset))) === comparable) {
+@@ -155,5 +155,11 @@ export function inferQualityPreset(settings: GraphicsSettingsV1): GraphicsSettin
+ }
+ 
+ export function isPresetOwnedPath(path: GraphicsSettingPath): boolean {
+-  return path !== "display.fieldOfView" && path !== "display.fpsLimit" && path !== "display.fullscreenPreference";
++  return path !== "display.fieldOfView" &&
++    path !== "display.fpsLimit" &&
++    path !== "display.fullscreenPreference" &&
++    path !== "rayTracing" &&
++    path !== "weatherQuality" &&
++    path !== "powerPreference" &&
++    !path.startsWith("adaptiveResolution.");
+ }
+diff --git a/apps/weltraum-browser/src/settings/schema.ts b/apps/weltraum-browser/src/settings/schema.ts
+index 6d19ee23..d2e8c7fd 100644
+--- a/apps/weltraum-browser/src/settings/schema.ts
++++ b/apps/weltraum-browser/src/settings/schema.ts
+@@ -1,6 +1,6 @@
+ import type { ConcreteQualityPreset, FpsLimit, GraphicsSettingId, GraphicsSettingPath } from "./types";
+ 
+-export const GRAPHICS_SETTINGS_SCHEMA_VERSION = 1 as const;
++export const GRAPHICS_SETTINGS_SCHEMA_VERSION = 2 as const;
+ export const GRAPHICS_SETTINGS_STORAGE_KEY = "weltraum.browser.graphics-settings";
+ 
+ export const GRAPHICS_LIMITS = Object.freeze({
+@@ -32,7 +32,16 @@ export const GRAPHICS_SETTING_PATH_TO_ID: Readonly<Record<GraphicsSettingPath, G
+   "effects.decorDensity": "decorDensity",
+   "effects.bloomPreference": "bloom",
+   "effects.motionEffectsPreference": "motionEffects",
+-  "antiAliasing.enabled": "antiAliasing"
++  "antiAliasing.enabled": "antiAliasing",
++  rayTracing: "rayTracing",
++  weatherQuality: "weatherQuality",
++  powerPreference: "powerPreference",
++  "adaptiveResolution.enabled": "adaptiveResolution",
++  "adaptiveResolution.minRenderScale": "adaptiveResolution",
++  "adaptiveResolution.maxRenderScale": "adaptiveResolution",
++  "adaptiveResolution.minDevicePixelRatio": "adaptiveResolution",
++  "adaptiveResolution.maxDevicePixelRatio": "adaptiveResolution",
++  "adaptiveResolution.targetFps": "adaptiveResolution"
+ });
+ 
+ export const ALL_GRAPHICS_SETTING_IDS = Object.freeze<readonly GraphicsSettingId[]>([
+@@ -54,7 +63,11 @@ export const ALL_GRAPHICS_SETTING_IDS = Object.freeze<readonly GraphicsSettingId
+   "bloom",
+   "motionEffects",
+   "antiAliasing",
+-  "vsync"
++  "vsync",
++  "rayTracing",
++  "weatherQuality",
++  "powerPreference",
++  "adaptiveResolution"
+ ]);
+ 
+ export function cloneValue<T>(value: T): T {
+diff --git a/apps/weltraum-browser/src/settings/storage.ts b/apps/weltraum-browser/src/settings/storage.ts
+index 687a67dd..849753b9 100644
+--- a/apps/weltraum-browser/src/settings/storage.ts
++++ b/apps/weltraum-browser/src/settings/storage.ts
+@@ -1,7 +1,7 @@
+ import { createDefaultGraphicsSettings } from "./defaults";
+ import { GRAPHICS_SETTINGS_STORAGE_KEY, cloneAndFreeze } from "./schema";
+ import { createGraphicsSettingsEnvelope, decodeGraphicsSettingsEnvelope, validateGraphicsSettings } from "./validation";
+-import type { GraphicsSettingsLoadResult, GraphicsSettingsV1, StorageLike } from "./types";
++import type { GraphicsSettingsLoadResult, GraphicsSettingsV2, StorageLike } from "./types";
+ 
+ export interface SaveGraphicsSettingsResult {
+   readonly ok: boolean;
+@@ -54,7 +54,7 @@ export function loadGraphicsSettings(storage: StorageLike | null | undefined): G
+   return cloneAndFreeze({ settings: decoded.value, reason: "Stored", message: "Stored graphics settings loaded." }) as GraphicsSettingsLoadResult;
+ }
+ 
+-export function saveGraphicsSettings(storage: StorageLike | null | undefined, settings: GraphicsSettingsV1): SaveGraphicsSettingsResult {
++export function saveGraphicsSettings(storage: StorageLike | null | undefined, settings: GraphicsSettingsV2): SaveGraphicsSettingsResult {
+   if (!storage) {
+     return { ok: false, message: "LocalStorage is unavailable." };
+   }
+@@ -62,9 +62,20 @@ export function saveGraphicsSettings(storage: StorageLike | null | undefined, se
+     return { ok: false, message: "Graphics settings failed validation." };
+   }
+   try {
++    const existing = storage.getItem(GRAPHICS_SETTINGS_STORAGE_KEY);
++    if (existing !== null) {
++      try {
++        const decoded = decodeGraphicsSettingsEnvelope(JSON.parse(existing) as unknown);
++        if (!decoded.ok && decoded.reason === "FutureVersion") {
++          return { ok: false, message: "Stored graphics settings use an unsupported future schema and were preserved." };
++        }
++      } catch {
++        // Corrupt bytes may be replaced after the user explicitly applies valid settings.
++      }
++    }
+     storage.setItem(GRAPHICS_SETTINGS_STORAGE_KEY, JSON.stringify(createGraphicsSettingsEnvelope(settings)));
+     return { ok: true, message: "Graphics settings persisted." };
+   } catch (error) {
+-    return { ok: false, message: `LocalStorage write failed: ${error instanceof Error ? error.message : String(error)}` };
++    return { ok: false, message: `LocalStorage read or write failed: ${error instanceof Error ? error.message : String(error)}` };
+   }
+ }
+diff --git a/apps/weltraum-browser/src/settings/store.ts b/apps/weltraum-browser/src/settings/store.ts
+index b69f26d9..c48feb7c 100644
+--- a/apps/weltraum-browser/src/settings/store.ts
++++ b/apps/weltraum-browser/src/settings/store.ts
+@@ -6,16 +6,19 @@ import type {
+   FpsLimit,
+   FullscreenPreference,
+   GraphicsSettingPath,
+-  GraphicsSettingsV1,
++  GraphicsSettingsV2,
+   QualityPreset,
++  PowerPreference,
++  RayTracingPreference,
+   ShadowQuality,
++  TargetFps,
+   TextureQuality,
+   ToneMappingPreference
+ } from "./types";
+ 
+ export interface GraphicsDraftStoreSnapshot {
+-  readonly confirmed: GraphicsSettingsV1;
+-  readonly draft: GraphicsSettingsV1;
++  readonly confirmed: GraphicsSettingsV2;
++  readonly draft: GraphicsSettingsV2;
+   readonly hasPendingChanges: boolean;
+ }
+ 
+@@ -25,6 +28,9 @@ const concretePresets: readonly ConcreteQualityPreset[] = ["Low", "Medium", "Hig
+ const toneMappings: readonly ToneMappingPreference[] = ["None", "Reinhard", "ACESFilmic"];
+ const fullscreenPreferences: readonly FullscreenPreference[] = ["Windowed", "Fullscreen"];
+ const fpsLimits: readonly FpsLimit[] = [0, 30, 60, 120];
++const rayTracingPreferences: readonly RayTracingPreference[] = ["off", "auto", "contact", "hybrid", "photo"];
++const powerPreferences: readonly PowerPreference[] = ["default", "high-performance", "low-power"];
++const targetFpsValues: readonly TargetFps[] = [30, 60, 90, 120];
+ 
+ function oneOf<T extends string | number>(value: unknown, allowed: readonly T[], fallback: T): T {
+   return allowed.includes(value as T) ? (value as T) : fallback;
+@@ -32,17 +38,17 @@ function oneOf<T extends string | number>(value: unknown, allowed: readonly T[],
+ 
+ type Mutable<T> = { -readonly [Key in keyof T]: T[Key] extends object ? Mutable<T[Key]> : T[Key] };
+ 
+-function mutable(settings: GraphicsSettingsV1): Mutable<GraphicsSettingsV1> {
+-  return structuredClone(settings) as Mutable<GraphicsSettingsV1>;
++function mutable(settings: GraphicsSettingsV2): Mutable<GraphicsSettingsV2> {
++  return structuredClone(settings) as Mutable<GraphicsSettingsV2>;
+ }
+ 
+ export class GraphicsDraftStore {
+-  private confirmed: GraphicsSettingsV1;
+-  private draft: GraphicsSettingsV1;
++  private confirmed: GraphicsSettingsV2;
++  private draft: GraphicsSettingsV2;
+ 
+-  constructor(initial: GraphicsSettingsV1) {
+-    this.confirmed = cloneAndFreeze(initial) as GraphicsSettingsV1;
+-    this.draft = cloneAndFreeze(initial) as GraphicsSettingsV1;
++  constructor(initial: GraphicsSettingsV2) {
++    this.confirmed = cloneAndFreeze(initial) as GraphicsSettingsV2;
++    this.draft = cloneAndFreeze(initial) as GraphicsSettingsV2;
+   }
+ 
+   getSnapshot(): GraphicsDraftStoreSnapshot {
+@@ -133,11 +139,50 @@ export class GraphicsDraftStore {
+       case "antiAliasing.enabled":
+         if (typeof value === "boolean") next.antiAliasing.enabled = value;
+         break;
++      case "rayTracing":
++        next.rayTracing = oneOf(value, rayTracingPreferences, next.rayTracing);
++        break;
++      case "weatherQuality":
++        next.weatherQuality = oneOf(value, concretePresets, next.weatherQuality);
++        break;
++      case "powerPreference":
++        next.powerPreference = oneOf(value, powerPreferences, next.powerPreference);
++        break;
++      case "adaptiveResolution.enabled":
++        if (typeof value === "boolean") next.adaptiveResolution.enabled = value;
++        break;
++      case "adaptiveResolution.minRenderScale":
++        next.adaptiveResolution.minRenderScale = Math.min(
++          clampFinite(value, GRAPHICS_LIMITS.renderScale.min, GRAPHICS_LIMITS.renderScale.max, next.adaptiveResolution.minRenderScale),
++          next.adaptiveResolution.maxRenderScale
++        );
++        break;
++      case "adaptiveResolution.maxRenderScale":
++        next.adaptiveResolution.maxRenderScale = Math.max(
++          clampFinite(value, GRAPHICS_LIMITS.renderScale.min, GRAPHICS_LIMITS.renderScale.max, next.adaptiveResolution.maxRenderScale),
++          next.adaptiveResolution.minRenderScale
++        );
++        break;
++      case "adaptiveResolution.minDevicePixelRatio":
++        next.adaptiveResolution.minDevicePixelRatio = Math.min(
++          clampFinite(value, GRAPHICS_LIMITS.maxDevicePixelRatio.min, GRAPHICS_LIMITS.maxDevicePixelRatio.max, next.adaptiveResolution.minDevicePixelRatio),
++          next.adaptiveResolution.maxDevicePixelRatio
++        );
++        break;
++      case "adaptiveResolution.maxDevicePixelRatio":
++        next.adaptiveResolution.maxDevicePixelRatio = Math.max(
++          clampFinite(value, GRAPHICS_LIMITS.maxDevicePixelRatio.min, GRAPHICS_LIMITS.maxDevicePixelRatio.max, next.adaptiveResolution.maxDevicePixelRatio),
++          next.adaptiveResolution.minDevicePixelRatio
++        );
++        break;
++      case "adaptiveResolution.targetFps":
++        next.adaptiveResolution.targetFps = oneOf(value, targetFpsValues, next.adaptiveResolution.targetFps);
++        break;
+     }
+     if (isPresetOwnedPath(path)) {
+       next.qualityPreset = inferQualityPreset(next);
+     }
+-    this.draft = cloneAndFreeze(next) as GraphicsSettingsV1;
++    this.draft = cloneAndFreeze(next) as GraphicsSettingsV2;
+   }
+ 
+   reset(): void {
+@@ -145,12 +190,12 @@ export class GraphicsDraftStore {
+   }
+ 
+   cancel(): void {
+-    this.draft = cloneAndFreeze(this.confirmed) as GraphicsSettingsV1;
++    this.draft = cloneAndFreeze(this.confirmed) as GraphicsSettingsV2;
+   }
+ 
+-  confirm(settings: GraphicsSettingsV1 = this.draft): void {
+-    this.confirmed = cloneAndFreeze(settings) as GraphicsSettingsV1;
+-    this.draft = cloneAndFreeze(settings) as GraphicsSettingsV1;
++  confirm(settings: GraphicsSettingsV2 = this.draft): void {
++    this.confirmed = cloneAndFreeze(settings) as GraphicsSettingsV2;
++    this.draft = cloneAndFreeze(settings) as GraphicsSettingsV2;
+   }
+ }
+ 
+diff --git a/apps/weltraum-browser/src/settings/types.ts b/apps/weltraum-browser/src/settings/types.ts
+index 48c8a4c9..fd79da07 100644
+--- a/apps/weltraum-browser/src/settings/types.ts
++++ b/apps/weltraum-browser/src/settings/types.ts
+@@ -5,6 +5,10 @@ export type TextureQuality = "Low" | "Medium" | "High" | "Ultra";
+ export type ToneMappingPreference = "None" | "Reinhard" | "ACESFilmic";
+ export type FullscreenPreference = "Windowed" | "Fullscreen";
+ export type FpsLimit = 0 | 30 | 60 | 120;
++export type TargetFps = 30 | 60 | 90 | 120;
++export type RayTracingPreference = "off" | "auto" | "contact" | "hybrid" | "photo";
++export type PowerPreference = "default" | "high-performance" | "low-power";
++export type GraphicsBackend = "webgl2" | "webgpu" | "unavailable";
+ export type CapabilityStatus =
+   | "SupportedLive"
+   | "SupportedAfterRendererRestart"
+@@ -31,7 +35,11 @@ export type GraphicsSettingId =
+   | "bloom"
+   | "motionEffects"
+   | "antiAliasing"
+-  | "vsync";
++  | "vsync"
++  | "rayTracing"
++  | "weatherQuality"
++  | "powerPreference"
++  | "adaptiveResolution";
+ 
+ export type GraphicsSettingPath =
+   | "display.renderScale"
+@@ -50,7 +58,16 @@ export type GraphicsSettingPath =
+   | "effects.decorDensity"
+   | "effects.bloomPreference"
+   | "effects.motionEffectsPreference"
+-  | "antiAliasing.enabled";
++  | "antiAliasing.enabled"
++  | "rayTracing"
++  | "weatherQuality"
++  | "powerPreference"
++  | "adaptiveResolution.enabled"
++  | "adaptiveResolution.minRenderScale"
++  | "adaptiveResolution.maxRenderScale"
++  | "adaptiveResolution.minDevicePixelRatio"
++  | "adaptiveResolution.maxDevicePixelRatio"
++  | "adaptiveResolution.targetFps";
+ 
+ export interface GraphicsSettingsV1 {
+   readonly qualityPreset: QualityPreset;
+@@ -88,6 +105,20 @@ export interface GraphicsSettingsV1 {
+   };
+ }
+ 
++export interface GraphicsSettingsV2 extends GraphicsSettingsV1 {
++  readonly rayTracing: RayTracingPreference;
++  readonly weatherQuality: ConcreteQualityPreset;
++  readonly powerPreference: PowerPreference;
++  readonly adaptiveResolution: {
++    readonly enabled: boolean;
++    readonly minRenderScale: number;
++    readonly maxRenderScale: number;
++    readonly minDevicePixelRatio: number;
++    readonly maxDevicePixelRatio: number;
++    readonly targetFps: TargetFps;
++  };
++}
++
+ export interface ShadowPolicy {
+   readonly enabled: boolean;
+   readonly mapType: "Basic" | "PCF" | "PCFSoft";
+@@ -121,6 +152,7 @@ export interface GraphicsCapabilityProbe {
+   readonly motionEffects: boolean;
+   readonly environmentReflections: boolean;
+   readonly textureVariants: boolean;
++  readonly backend?: GraphicsBackend;
+ }
+ 
+ export interface GraphicsRuntimeSnapshot {
+@@ -137,6 +169,9 @@ export interface GraphicsRuntimeSnapshot {
+   readonly exposure: number;
+   readonly decorDensity: number;
+   readonly antiAliasingApplied: boolean;
++  readonly powerPreferenceApplied: PowerPreference;
++  readonly rayTracing: RayTracingPreference;
++  readonly weatherQuality: ConcreteQualityPreset | null;
+ }
+ 
+ export interface GraphicsApplyResult {
+@@ -151,7 +186,7 @@ export interface GraphicsRuntimePort {
+   getCapabilities(): GraphicsCapabilityMap;
+   getSnapshot(): GraphicsRuntimeSnapshot;
+   apply(
+-    settings: GraphicsSettingsV1,
++    settings: GraphicsSettingsV2,
+     changedSettings: readonly GraphicsSettingId[]
+   ): Promise<GraphicsApplyResult>;
+ }
+@@ -164,14 +199,14 @@ export interface StorageLike {
+ export type GraphicsSettingsLoadReason = "Stored" | "Missing" | "Corrupt" | "Invalid" | "FutureVersion" | "Unavailable";
+ 
+ export interface GraphicsSettingsLoadResult {
+-  readonly settings: GraphicsSettingsV1;
++  readonly settings: GraphicsSettingsV2;
+   readonly reason: GraphicsSettingsLoadReason;
+   readonly message: string;
+ }
+ 
+ export interface GraphicsSettingsControllerSnapshot {
+-  readonly confirmed: GraphicsSettingsV1;
+-  readonly draft: GraphicsSettingsV1;
++  readonly confirmed: GraphicsSettingsV2;
++  readonly draft: GraphicsSettingsV2;
+   readonly runtime: GraphicsRuntimeSnapshot;
+   readonly capabilities: GraphicsCapabilityMap;
+   readonly hasPendingChanges: boolean;
+diff --git a/apps/weltraum-browser/src/settings/validation.ts b/apps/weltraum-browser/src/settings/validation.ts
+index 4785c6cc..8393545d 100644
+--- a/apps/weltraum-browser/src/settings/validation.ts
++++ b/apps/weltraum-browser/src/settings/validation.ts
+@@ -1,14 +1,14 @@
++import { decodeGraphicsSettingsEnvelope as decodeV1Envelope } from "./legacyV1/validation";
++import { createDefaultGraphicsSettings } from "./defaults";
+ import { GRAPHICS_LIMITS, GRAPHICS_SETTINGS_SCHEMA_VERSION, cloneAndFreeze } from "./schema";
+ import { inferQualityPreset } from "./presets";
+ import type {
+   ConcreteQualityPreset,
+-  FpsLimit,
+-  FullscreenPreference,
+   GraphicsSettingsV1,
+-  QualityPreset,
+-  ShadowQuality,
+-  TextureQuality,
+-  ToneMappingPreference
++  GraphicsSettingsV2,
++  PowerPreference,
++  RayTracingPreference,
++  TargetFps
+ } from "./types";
+ 
+ export interface GraphicsSettingsEnvelopeV1 {
+@@ -16,17 +16,21 @@ export interface GraphicsSettingsEnvelopeV1 {
+   readonly settings: GraphicsSettingsV1;
+ }
+ 
++export interface GraphicsSettingsEnvelopeV2 {
++  readonly schemaVersion: 2;
++  readonly settings: GraphicsSettingsV2;
++}
++
+ export type DecodeGraphicsSettingsResult =
+-  | { readonly ok: true; readonly value: GraphicsSettingsV1 }
++  | { readonly ok: true; readonly value: GraphicsSettingsV2 }
+   | { readonly ok: false; readonly reason: "Invalid" | "FutureVersion"; readonly message: string };
+ 
+-const qualityPresets: readonly QualityPreset[] = ["Low", "Medium", "High", "Ultra", "Custom"];
+ const concretePresets: readonly ConcreteQualityPreset[] = ["Low", "Medium", "High", "Ultra"];
+-const shadowQualities: readonly ShadowQuality[] = ["Off", "Low", "Medium", "High"];
+-const textureQualities: readonly TextureQuality[] = ["Low", "Medium", "High", "Ultra"];
+-const toneMappings: readonly ToneMappingPreference[] = ["None", "Reinhard", "ACESFilmic"];
+-const fullscreenPreferences: readonly FullscreenPreference[] = ["Windowed", "Fullscreen"];
+-const fpsLimits: readonly FpsLimit[] = [0, 30, 60, 120];
++const rayTracingPreferences: readonly RayTracingPreference[] = ["off", "auto", "contact", "hybrid", "photo"];
++const powerPreferences: readonly PowerPreference[] = ["default", "high-performance", "low-power"];
++const targetFpsValues: readonly TargetFps[] = [30, 60, 90, 120];
++const v1Keys = ["qualityPreset", "display", "shadows", "textures", "lighting", "effects", "antiAliasing", "vsync"] as const;
++const v2Keys = [...v1Keys, "rayTracing", "weatherQuality", "powerPreference", "adaptiveResolution"] as const;
+ 
+ function isRecord(value: unknown): value is Record<string, unknown> {
+   return value !== null && typeof value === "object" && !Array.isArray(value);
+@@ -46,100 +50,88 @@ function isFiniteInRange(value: unknown, min: number, max: number): value is num
+   return typeof value === "number" && Number.isFinite(value) && value >= min && value <= max;
+ }
+ 
+-export function validateGraphicsSettings(value: unknown): value is GraphicsSettingsV1 {
+-  if (!isRecord(value) || !hasExactKeys(value, ["qualityPreset", "display", "shadows", "textures", "lighting", "effects", "antiAliasing", "vsync"])) {
+-    return false;
+-  }
+-  if (!isOneOf(value.qualityPreset, qualityPresets)) {
+-    return false;
+-  }
+-
+-  const display = value.display;
+-  if (!isRecord(display) || !hasExactKeys(display, ["renderScale", "maxDevicePixelRatio", "fieldOfView", "renderDistance", "fpsLimit", "fullscreenPreference"])) {
+-    return false;
+-  }
+-  if (
+-    !isFiniteInRange(display.renderScale, GRAPHICS_LIMITS.renderScale.min, GRAPHICS_LIMITS.renderScale.max) ||
+-    !isFiniteInRange(display.maxDevicePixelRatio, GRAPHICS_LIMITS.maxDevicePixelRatio.min, GRAPHICS_LIMITS.maxDevicePixelRatio.max) ||
+-    !isFiniteInRange(display.fieldOfView, GRAPHICS_LIMITS.fieldOfView.min, GRAPHICS_LIMITS.fieldOfView.max) ||
+-    !isFiniteInRange(display.renderDistance, GRAPHICS_LIMITS.renderDistance.min, GRAPHICS_LIMITS.renderDistance.max) ||
+-    !isOneOf(display.fpsLimit, fpsLimits) ||
+-    !isOneOf(display.fullscreenPreference, fullscreenPreferences)
+-  ) {
+-    return false;
+-  }
+-
+-  const shadows = value.shadows;
+-  if (!isRecord(shadows) || !hasExactKeys(shadows, ["quality"]) || !isOneOf(shadows.quality, shadowQualities)) {
+-    return false;
+-  }
+-
+-  const textures = value.textures;
+-  if (!isRecord(textures) || !hasExactKeys(textures, ["quality"]) || !isOneOf(textures.quality, textureQualities)) {
+-    return false;
+-  }
+-
+-  const lighting = value.lighting;
+-  if (
+-    !isRecord(lighting) ||
+-    !hasExactKeys(lighting, ["quality", "toneMapping", "exposure", "environmentReflectionQuality"]) ||
+-    !isOneOf(lighting.quality, qualityPresets) ||
+-    !isOneOf(lighting.toneMapping, toneMappings) ||
+-    !isFiniteInRange(lighting.exposure, GRAPHICS_LIMITS.exposure.min, GRAPHICS_LIMITS.exposure.max) ||
+-    !isOneOf(lighting.environmentReflectionQuality, concretePresets)
+-  ) {
+-    return false;
+-  }
+-
+-  const effects = value.effects;
+-  if (
+-    !isRecord(effects) ||
+-    !hasExactKeys(effects, ["quality", "decorDensity", "bloomPreference", "motionEffectsPreference"]) ||
+-    !isOneOf(effects.quality, qualityPresets) ||
+-    !isFiniteInRange(effects.decorDensity, GRAPHICS_LIMITS.decorDensity.min, GRAPHICS_LIMITS.decorDensity.max) ||
+-    typeof effects.bloomPreference !== "boolean" ||
+-    typeof effects.motionEffectsPreference !== "boolean"
+-  ) {
+-    return false;
+-  }
+-
+-  const antiAliasing = value.antiAliasing;
+-  if (!isRecord(antiAliasing) || !hasExactKeys(antiAliasing, ["enabled"]) || typeof antiAliasing.enabled !== "boolean") {
+-    return false;
+-  }
++function legacySettings(value: Record<string, unknown>): GraphicsSettingsV1 {
++  return {
++    qualityPreset: value.qualityPreset as GraphicsSettingsV1["qualityPreset"],
++    display: value.display as GraphicsSettingsV1["display"],
++    shadows: value.shadows as GraphicsSettingsV1["shadows"],
++    textures: value.textures as GraphicsSettingsV1["textures"],
++    lighting: value.lighting as GraphicsSettingsV1["lighting"],
++    effects: value.effects as GraphicsSettingsV1["effects"],
++    antiAliasing: value.antiAliasing as GraphicsSettingsV1["antiAliasing"],
++    vsync: value.vsync as GraphicsSettingsV1["vsync"]
++  };
++}
+ 
+-  const vsync = value.vsync;
+-  return isRecord(vsync) && hasExactKeys(vsync, ["mode"]) && vsync.mode === "BrowserManaged";
++export function validateGraphicsSettings(value: unknown): value is GraphicsSettingsV2 {
++  if (!isRecord(value) || !hasExactKeys(value, v2Keys)) return false;
++  const adaptive = value.adaptiveResolution;
++  if (!decodeV1Envelope({ schemaVersion: 1, settings: legacySettings(value) }).ok) return false;
++  return isOneOf(value.rayTracing, rayTracingPreferences) &&
++    isOneOf(value.weatherQuality, concretePresets) &&
++    isOneOf(value.powerPreference, powerPreferences) &&
++    isRecord(adaptive) &&
++    hasExactKeys(adaptive, ["enabled", "minRenderScale", "maxRenderScale", "minDevicePixelRatio", "maxDevicePixelRatio", "targetFps"]) &&
++    typeof adaptive.enabled === "boolean" &&
++    isFiniteInRange(adaptive.minRenderScale, GRAPHICS_LIMITS.renderScale.min, GRAPHICS_LIMITS.renderScale.max) &&
++    isFiniteInRange(adaptive.maxRenderScale, GRAPHICS_LIMITS.renderScale.min, GRAPHICS_LIMITS.renderScale.max) &&
++    adaptive.minRenderScale <= adaptive.maxRenderScale &&
++    isFiniteInRange(adaptive.minDevicePixelRatio, GRAPHICS_LIMITS.maxDevicePixelRatio.min, GRAPHICS_LIMITS.maxDevicePixelRatio.max) &&
++    isFiniteInRange(adaptive.maxDevicePixelRatio, GRAPHICS_LIMITS.maxDevicePixelRatio.min, GRAPHICS_LIMITS.maxDevicePixelRatio.max) &&
++    adaptive.minDevicePixelRatio <= adaptive.maxDevicePixelRatio &&
++    isOneOf(adaptive.targetFps, targetFpsValues);
+ }
+ 
+-export function normalizeGraphicsSettings(settings: GraphicsSettingsV1): GraphicsSettingsV1 {
++export function normalizeGraphicsSettings(settings: GraphicsSettingsV2): GraphicsSettingsV2 {
+   const cloned = structuredClone(settings);
+-  const normalized: GraphicsSettingsV1 = {
++  const normalized: GraphicsSettingsV2 = {
+     ...cloned,
+     qualityPreset: inferQualityPreset(cloned)
+   };
+-  return cloneAndFreeze(normalized) as GraphicsSettingsV1;
++  return cloneAndFreeze(normalized) as GraphicsSettingsV2;
++}
++
++function migrateV1(value: unknown): GraphicsSettingsV2 | null {
++  const decoded = decodeV1Envelope(value);
++  if (!decoded.ok) return null;
++  const defaults = createDefaultGraphicsSettings();
++  return normalizeGraphicsSettings({
++    ...decoded.value,
++    rayTracing: defaults.rayTracing,
++    weatherQuality: defaults.weatherQuality,
++    powerPreference: defaults.powerPreference,
++    adaptiveResolution: defaults.adaptiveResolution
++  });
+ }
+ 
+ export function decodeGraphicsSettingsEnvelope(value: unknown): DecodeGraphicsSettingsResult {
+-  if (!isRecord(value) || !hasExactKeys(value, ["schemaVersion", "settings"])) {
++  if (!isRecord(value)) {
+     return { ok: false, reason: "Invalid", message: "Settings envelope is malformed." };
+   }
+   if (typeof value.schemaVersion === "number" && value.schemaVersion > GRAPHICS_SETTINGS_SCHEMA_VERSION) {
+     return { ok: false, reason: "FutureVersion", message: `Unsupported future schema version ${value.schemaVersion}.` };
+   }
++  if (!hasExactKeys(value, ["schemaVersion", "settings"])) {
++    return { ok: false, reason: "Invalid", message: "Settings envelope is malformed." };
++  }
++  if (value.schemaVersion === 1) {
++    const migrated = migrateV1(value);
++    return migrated
++      ? { ok: true, value: migrated }
++      : { ok: false, reason: "Invalid", message: "Stored v1 settings failed legacy schema validation." };
++  }
+   if (value.schemaVersion !== GRAPHICS_SETTINGS_SCHEMA_VERSION || !validateGraphicsSettings(value.settings)) {
+     return { ok: false, reason: "Invalid", message: "Settings payload failed schema validation." };
+   }
+   return { ok: true, value: normalizeGraphicsSettings(value.settings) };
+ }
+ 
+-export function createGraphicsSettingsEnvelope(settings: GraphicsSettingsV1): GraphicsSettingsEnvelopeV1 {
++export function createGraphicsSettingsEnvelope(settings: GraphicsSettingsV2): GraphicsSettingsEnvelopeV2 {
+   if (!validateGraphicsSettings(settings)) {
+     throw new Error("Cannot encode invalid graphics settings.");
+   }
+   return cloneAndFreeze({
+     schemaVersion: GRAPHICS_SETTINGS_SCHEMA_VERSION,
+     settings: normalizeGraphicsSettings(settings)
+-  }) as GraphicsSettingsEnvelopeV1;
++  }) as GraphicsSettingsEnvelopeV2;
+ }
+diff --git a/apps/weltraum-browser/src/settings/legacyV1/validation.ts b/apps/weltraum-browser/src/settings/legacyV1/validation.ts
+new file mode 100644
+index 00000000..4785c6cc
+--- /dev/null
++++ b/apps/weltraum-browser/src/settings/legacyV1/validation.ts
+@@ -0,0 +1,145 @@
++import { GRAPHICS_LIMITS, GRAPHICS_SETTINGS_SCHEMA_VERSION, cloneAndFreeze } from "./schema";
++import { inferQualityPreset } from "./presets";
++import type {
++  ConcreteQualityPreset,
++  FpsLimit,
++  FullscreenPreference,
++  GraphicsSettingsV1,
++  QualityPreset,
++  ShadowQuality,
++  TextureQuality,
++  ToneMappingPreference
++} from "./types";
++
++export interface GraphicsSettingsEnvelopeV1 {
++  readonly schemaVersion: 1;
++  readonly settings: GraphicsSettingsV1;
++}
++
++export type DecodeGraphicsSettingsResult =
++  | { readonly ok: true; readonly value: GraphicsSettingsV1 }
++  | { readonly ok: false; readonly reason: "Invalid" | "FutureVersion"; readonly message: string };
++
++const qualityPresets: readonly QualityPreset[] = ["Low", "Medium", "High", "Ultra", "Custom"];
++const concretePresets: readonly ConcreteQualityPreset[] = ["Low", "Medium", "High", "Ultra"];
++const shadowQualities: readonly ShadowQuality[] = ["Off", "Low", "Medium", "High"];
++const textureQualities: readonly TextureQuality[] = ["Low", "Medium", "High", "Ultra"];
++const toneMappings: readonly ToneMappingPreference[] = ["None", "Reinhard", "ACESFilmic"];
++const fullscreenPreferences: readonly FullscreenPreference[] = ["Windowed", "Fullscreen"];
++const fpsLimits: readonly FpsLimit[] = [0, 30, 60, 120];
++
++function isRecord(value: unknown): value is Record<string, unknown> {
++  return value !== null && typeof value === "object" && !Array.isArray(value);
++}
++
++function hasExactKeys(value: Record<string, unknown>, keys: readonly string[]): boolean {
++  const actual = Object.keys(value).sort();
++  const expected = [...keys].sort();
++  return actual.length === expected.length && actual.every((key, index) => key === expected[index]);
++}
++
++function isOneOf<T extends string | number>(value: unknown, allowed: readonly T[]): value is T {
++  return allowed.includes(value as T);
++}
++
++function isFiniteInRange(value: unknown, min: number, max: number): value is number {
++  return typeof value === "number" && Number.isFinite(value) && value >= min && value <= max;
++}
++
++export function validateGraphicsSettings(value: unknown): value is GraphicsSettingsV1 {
++  if (!isRecord(value) || !hasExactKeys(value, ["qualityPreset", "display", "shadows", "textures", "lighting", "effects", "antiAliasing", "vsync"])) {
++    return false;
++  }
++  if (!isOneOf(value.qualityPreset, qualityPresets)) {
++    return false;
++  }
++
++  const display = value.display;
++  if (!isRecord(display) || !hasExactKeys(display, ["renderScale", "maxDevicePixelRatio", "fieldOfView", "renderDistance", "fpsLimit", "fullscreenPreference"])) {
++    return false;
++  }
++  if (
++    !isFiniteInRange(display.renderScale, GRAPHICS_LIMITS.renderScale.min, GRAPHICS_LIMITS.renderScale.max) ||
++    !isFiniteInRange(display.maxDevicePixelRatio, GRAPHICS_LIMITS.maxDevicePixelRatio.min, GRAPHICS_LIMITS.maxDevicePixelRatio.max) ||
++    !isFiniteInRange(display.fieldOfView, GRAPHICS_LIMITS.fieldOfView.min, GRAPHICS_LIMITS.fieldOfView.max) ||
++    !isFiniteInRange(display.renderDistance, GRAPHICS_LIMITS.renderDistance.min, GRAPHICS_LIMITS.renderDistance.max) ||
++    !isOneOf(display.fpsLimit, fpsLimits) ||
++    !isOneOf(display.fullscreenPreference, fullscreenPreferences)
++  ) {
++    return false;
++  }
++
++  const shadows = value.shadows;
++  if (!isRecord(shadows) || !hasExactKeys(shadows, ["quality"]) || !isOneOf(shadows.quality, shadowQualities)) {
++    return false;
++  }
++
++  const textures = value.textures;
++  if (!isRecord(textures) || !hasExactKeys(textures, ["quality"]) || !isOneOf(textures.quality, textureQualities)) {
++    return false;
++  }
++
++  const lighting = value.lighting;
++  if (
++    !isRecord(lighting) ||
++    !hasExactKeys(lighting, ["quality", "toneMapping", "exposure", "environmentReflectionQuality"]) ||
++    !isOneOf(lighting.quality, qualityPresets) ||
++    !isOneOf(lighting.toneMapping, toneMappings) ||
++    !isFiniteInRange(lighting.exposure, GRAPHICS_LIMITS.exposure.min, GRAPHICS_LIMITS.exposure.max) ||
++    !isOneOf(lighting.environmentReflectionQuality, concretePresets)
++  ) {
++    return false;
++  }
++
++  const effects = value.effects;
++  if (
++    !isRecord(effects) ||
++    !hasExactKeys(effects, ["quality", "decorDensity", "bloomPreference", "motionEffectsPreference"]) ||
++    !isOneOf(effects.quality, qualityPresets) ||
++    !isFiniteInRange(effects.decorDensity, GRAPHICS_LIMITS.decorDensity.min, GRAPHICS_LIMITS.decorDensity.max) ||
++    typeof effects.bloomPreference !== "boolean" ||
++    typeof effects.motionEffectsPreference !== "boolean"
++  ) {
++    return false;
++  }
++
++  const antiAliasing = value.antiAliasing;
++  if (!isRecord(antiAliasing) || !hasExactKeys(antiAliasing, ["enabled"]) || typeof antiAliasing.enabled !== "boolean") {
++    return false;
++  }
++
++  const vsync = value.vsync;
++  return isRecord(vsync) && hasExactKeys(vsync, ["mode"]) && vsync.mode === "BrowserManaged";
++}
++
++export function normalizeGraphicsSettings(settings: GraphicsSettingsV1): GraphicsSettingsV1 {
++  const cloned = structuredClone(settings);
++  const normalized: GraphicsSettingsV1 = {
++    ...cloned,
++    qualityPreset: inferQualityPreset(cloned)
++  };
++  return cloneAndFreeze(normalized) as GraphicsSettingsV1;
++}
++
++export function decodeGraphicsSettingsEnvelope(value: unknown): DecodeGraphicsSettingsResult {
++  if (!isRecord(value) || !hasExactKeys(value, ["schemaVersion", "settings"])) {
++    return { ok: false, reason: "Invalid", message: "Settings envelope is malformed." };
++  }
++  if (typeof value.schemaVersion === "number" && value.schemaVersion > GRAPHICS_SETTINGS_SCHEMA_VERSION) {
++    return { ok: false, reason: "FutureVersion", message: `Unsupported future schema version ${value.schemaVersion}.` };
++  }
++  if (value.schemaVersion !== GRAPHICS_SETTINGS_SCHEMA_VERSION || !validateGraphicsSettings(value.settings)) {
++    return { ok: false, reason: "Invalid", message: "Settings payload failed schema validation." };
++  }
++  return { ok: true, value: normalizeGraphicsSettings(value.settings) };
++}
++
++export function createGraphicsSettingsEnvelope(settings: GraphicsSettingsV1): GraphicsSettingsEnvelopeV1 {
++  if (!validateGraphicsSettings(settings)) {
++    throw new Error("Cannot encode invalid graphics settings.");
++  }
++  return cloneAndFreeze({
++    schemaVersion: GRAPHICS_SETTINGS_SCHEMA_VERSION,
++    settings: normalizeGraphicsSettings(settings)
++  }) as GraphicsSettingsEnvelopeV1;
++}
+diff --git a/apps/weltraum-browser/src/settings/legacyV1/schema.ts b/apps/weltraum-browser/src/settings/legacyV1/schema.ts
+new file mode 100644
+index 00000000..6d19ee23
+--- /dev/null
++++ b/apps/weltraum-browser/src/settings/legacyV1/schema.ts
+@@ -0,0 +1,83 @@
++import type { ConcreteQualityPreset, FpsLimit, GraphicsSettingId, GraphicsSettingPath } from "./types";
++
++export const GRAPHICS_SETTINGS_SCHEMA_VERSION = 1 as const;
++export const GRAPHICS_SETTINGS_STORAGE_KEY = "weltraum.browser.graphics-settings";
++
++export const GRAPHICS_LIMITS = Object.freeze({
++  renderScale: Object.freeze({ min: 0.5, max: 1.25 }),
++  maxDevicePixelRatio: Object.freeze({ min: 1, max: 2 }),
++  fieldOfView: Object.freeze({ min: 45, max: 100 }),
++  renderDistance: Object.freeze({ min: 500, max: 20_000 }),
++  exposure: Object.freeze({ min: 0.5, max: 2 }),
++  decorDensity: Object.freeze({ min: 0, max: 1 })
++});
++
++export const CONCRETE_PRESETS = Object.freeze<readonly ConcreteQualityPreset[]>(["Low", "Medium", "High", "Ultra"]);
++export const FPS_LIMITS = Object.freeze<readonly FpsLimit[]>([0, 30, 60, 120]);
++
++export const GRAPHICS_SETTING_PATH_TO_ID: Readonly<Record<GraphicsSettingPath, GraphicsSettingId>> = Object.freeze({
++  "display.renderScale": "renderScale",
++  "display.maxDevicePixelRatio": "maxDevicePixelRatio",
++  "display.fieldOfView": "fieldOfView",
++  "display.renderDistance": "renderDistance",
++  "display.fpsLimit": "fpsLimit",
++  "display.fullscreenPreference": "fullscreen",
++  "shadows.quality": "shadows",
++  "textures.quality": "textureQuality",
++  "lighting.quality": "lightingQuality",
++  "lighting.toneMapping": "toneMapping",
++  "lighting.exposure": "exposure",
++  "lighting.environmentReflectionQuality": "environmentReflections",
++  "effects.quality": "effectsQuality",
++  "effects.decorDensity": "decorDensity",
++  "effects.bloomPreference": "bloom",
++  "effects.motionEffectsPreference": "motionEffects",
++  "antiAliasing.enabled": "antiAliasing"
++});
++
++export const ALL_GRAPHICS_SETTING_IDS = Object.freeze<readonly GraphicsSettingId[]>([
++  "renderScale",
++  "maxDevicePixelRatio",
++  "fieldOfView",
++  "renderDistance",
++  "fpsLimit",
++  "fullscreen",
++  "shadows",
++  "textureQuality",
++  "textureVariants",
++  "lightingQuality",
++  "toneMapping",
++  "exposure",
++  "environmentReflections",
++  "effectsQuality",
++  "decorDensity",
++  "bloom",
++  "motionEffects",
++  "antiAliasing",
++  "vsync"
++]);
++
++export function cloneValue<T>(value: T): T {
++  return structuredClone(value);
++}
++
++export function deepFreeze<T>(value: T): Readonly<T> {
++  if (value !== null && typeof value === "object" && !Object.isFrozen(value)) {
++    Object.freeze(value);
++    for (const child of Object.values(value as Record<string, unknown>)) {
++      deepFreeze(child);
++    }
++  }
++  return value;
++}
++
++export function cloneAndFreeze<T>(value: T): Readonly<T> {
++  return deepFreeze(cloneValue(value));
++}
++
++export function clampFinite(value: unknown, min: number, max: number, fallback: number): number {
++  if (typeof value !== "number" || !Number.isFinite(value)) {
++    return fallback;
++  }
++  return Math.min(max, Math.max(min, value));
++}
+diff --git a/apps/weltraum-browser/src/settings/legacyV1/presets.ts b/apps/weltraum-browser/src/settings/legacyV1/presets.ts
+new file mode 100644
+index 00000000..99b813db
+--- /dev/null
++++ b/apps/weltraum-browser/src/settings/legacyV1/presets.ts
+@@ -0,0 +1,159 @@
++import { CONCRETE_PRESETS, cloneAndFreeze } from "./schema";
++import type {
++  ConcreteQualityPreset,
++  GraphicsSettingPath,
++  GraphicsSettingsV1,
++  ShadowPolicy,
++  ShadowQuality,
++  TexturePolicy,
++  TextureQuality
++} from "./types";
++
++interface PresetPolicy {
++  readonly renderScale: number;
++  readonly maxDevicePixelRatio: number;
++  readonly renderDistance: number;
++  readonly shadowQuality: ShadowQuality;
++  readonly textureQuality: TextureQuality;
++  readonly toneMapping: GraphicsSettingsV1["lighting"]["toneMapping"];
++  readonly exposure: number;
++  readonly decorDensity: number;
++  readonly bloomPreference: boolean;
++  readonly motionEffectsPreference: boolean;
++  readonly antiAliasing: boolean;
++}
++
++export const QUALITY_PRESET_POLICIES: Readonly<Record<ConcreteQualityPreset, PresetPolicy>> = Object.freeze({
++  Low: Object.freeze({
++    renderScale: 0.65,
++    maxDevicePixelRatio: 1,
++    renderDistance: 1_500,
++    shadowQuality: "Off",
++    textureQuality: "Low",
++    toneMapping: "None",
++    exposure: 0.85,
++    decorDensity: 0.35,
++    bloomPreference: false,
++    motionEffectsPreference: false,
++    antiAliasing: false
++  }),
++  Medium: Object.freeze({
++    renderScale: 0.8,
++    maxDevicePixelRatio: 1.5,
++    renderDistance: 3_000,
++    shadowQuality: "Low",
++    textureQuality: "Medium",
++    toneMapping: "Reinhard",
++    exposure: 0.95,
++    decorDensity: 0.65,
++    bloomPreference: false,
++    motionEffectsPreference: false,
++    antiAliasing: true
++  }),
++  High: Object.freeze({
++    renderScale: 1,
++    maxDevicePixelRatio: 2,
++    renderDistance: 5_000,
++    shadowQuality: "Medium",
++    textureQuality: "High",
++    toneMapping: "None",
++    exposure: 1,
++    decorDensity: 1,
++    bloomPreference: false,
++    motionEffectsPreference: false,
++    antiAliasing: true
++  }),
++  Ultra: Object.freeze({
++    renderScale: 1.25,
++    maxDevicePixelRatio: 2,
++    renderDistance: 10_000,
++    shadowQuality: "High",
++    textureQuality: "Ultra",
++    toneMapping: "ACESFilmic",
++    exposure: 1,
++    decorDensity: 1,
++    bloomPreference: true,
++    motionEffectsPreference: true,
++    antiAliasing: true
++  })
++});
++
++export const SHADOW_POLICIES: Readonly<Record<ShadowQuality, ShadowPolicy>> = Object.freeze({
++  Off: Object.freeze({ enabled: false, mapType: "Basic", mapSize: 0, updatePolicy: "Never" }),
++  Low: Object.freeze({ enabled: true, mapType: "Basic", mapSize: 512, updatePolicy: "OnDemand" }),
++  Medium: Object.freeze({ enabled: true, mapType: "PCF", mapSize: 1024, updatePolicy: "OnDemand" }),
++  High: Object.freeze({ enabled: true, mapType: "PCFSoft", mapSize: 2048, updatePolicy: "EveryFrame" })
++});
++
++export function resolveShadowPolicy(quality: ShadowQuality): ShadowPolicy {
++  return cloneAndFreeze(SHADOW_POLICIES[quality]) as ShadowPolicy;
++}
++
++export function resolveTexturePolicy(quality: TextureQuality, maxAnisotropy: number): TexturePolicy {
++  const safeMaximum = Math.max(1, Math.floor(Number.isFinite(maxAnisotropy) ? maxAnisotropy : 1));
++  const requested = quality === "Low" ? 1 : quality === "Medium" ? 2 : quality === "High" ? 4 : safeMaximum;
++  return cloneAndFreeze({
++    anisotropy: Math.min(requested, safeMaximum),
++    maxTextureSizePolicy: "Native",
++    mipPolicy: "RendererManaged",
++    assetLoaderPreference: "CurrentAsset"
++  }) as TexturePolicy;
++}
++
++export function applyQualityPreset(base: GraphicsSettingsV1, preset: ConcreteQualityPreset): GraphicsSettingsV1 {
++  const policy = QUALITY_PRESET_POLICIES[preset];
++  return cloneAndFreeze({
++    ...base,
++    qualityPreset: preset,
++    display: {
++      ...base.display,
++      renderScale: policy.renderScale,
++      maxDevicePixelRatio: policy.maxDevicePixelRatio,
++      renderDistance: policy.renderDistance
++    },
++    shadows: { quality: policy.shadowQuality },
++    textures: { quality: policy.textureQuality },
++    lighting: {
++      quality: preset,
++      toneMapping: policy.toneMapping,
++      exposure: policy.exposure,
++      environmentReflectionQuality: preset
++    },
++    effects: {
++      quality: preset,
++      decorDensity: policy.decorDensity,
++      bloomPreference: policy.bloomPreference,
++      motionEffectsPreference: policy.motionEffectsPreference
++    },
++    antiAliasing: { enabled: policy.antiAliasing }
++  }) as GraphicsSettingsV1;
++}
++
++function presetOwnedValue(settings: GraphicsSettingsV1): unknown {
++  return {
++    display: {
++      renderScale: settings.display.renderScale,
++      maxDevicePixelRatio: settings.display.maxDevicePixelRatio,
++      renderDistance: settings.display.renderDistance
++    },
++    shadows: settings.shadows,
++    textures: settings.textures,
++    lighting: settings.lighting,
++    effects: settings.effects,
++    antiAliasing: settings.antiAliasing
++  };
++}
++
++export function inferQualityPreset(settings: GraphicsSettingsV1): GraphicsSettingsV1["qualityPreset"] {
++  const comparable = JSON.stringify(presetOwnedValue(settings));
++  for (const preset of CONCRETE_PRESETS) {
++    if (JSON.stringify(presetOwnedValue(applyQualityPreset(settings, preset))) === comparable) {
++      return preset;
++    }
++  }
++  return "Custom";
++}
++
++export function isPresetOwnedPath(path: GraphicsSettingPath): boolean {
++  return path !== "display.fieldOfView" && path !== "display.fpsLimit" && path !== "display.fullscreenPreference";
++}
+diff --git a/apps/weltraum-browser/src/settings/legacyV1/types.ts b/apps/weltraum-browser/src/settings/legacyV1/types.ts
+new file mode 100644
+index 00000000..48c8a4c9
+--- /dev/null
++++ b/apps/weltraum-browser/src/settings/legacyV1/types.ts
+@@ -0,0 +1,198 @@
++export type QualityPreset = "Low" | "Medium" | "High" | "Ultra" | "Custom";
++export type ConcreteQualityPreset = Exclude<QualityPreset, "Custom">;
++export type ShadowQuality = "Off" | "Low" | "Medium" | "High";
++export type TextureQuality = "Low" | "Medium" | "High" | "Ultra";
++export type ToneMappingPreference = "None" | "Reinhard" | "ACESFilmic";
++export type FullscreenPreference = "Windowed" | "Fullscreen";
++export type FpsLimit = 0 | 30 | 60 | 120;
++export type CapabilityStatus =
++  | "SupportedLive"
++  | "SupportedAfterRendererRestart"
++  | "BrowserManaged"
++  | "Unsupported"
++  | "Planned";
++
++export type GraphicsSettingId =
++  | "renderScale"
++  | "maxDevicePixelRatio"
++  | "fieldOfView"
++  | "renderDistance"
++  | "fpsLimit"
++  | "fullscreen"
++  | "shadows"
++  | "textureQuality"
++  | "textureVariants"
++  | "lightingQuality"
++  | "toneMapping"
++  | "exposure"
++  | "environmentReflections"
++  | "effectsQuality"
++  | "decorDensity"
++  | "bloom"
++  | "motionEffects"
++  | "antiAliasing"
++  | "vsync";
++
++export type GraphicsSettingPath =
++  | "display.renderScale"
++  | "display.maxDevicePixelRatio"
++  | "display.fieldOfView"
++  | "display.renderDistance"
++  | "display.fpsLimit"
++  | "display.fullscreenPreference"
++  | "shadows.quality"
++  | "textures.quality"
++  | "lighting.quality"
++  | "lighting.toneMapping"
++  | "lighting.exposure"
++  | "lighting.environmentReflectionQuality"
++  | "effects.quality"
++  | "effects.decorDensity"
++  | "effects.bloomPreference"
++  | "effects.motionEffectsPreference"
++  | "antiAliasing.enabled";
++
++export interface GraphicsSettingsV1 {
++  readonly qualityPreset: QualityPreset;
++  readonly display: {
++    readonly renderScale: number;
++    readonly maxDevicePixelRatio: number;
++    readonly fieldOfView: number;
++    readonly renderDistance: number;
++    readonly fpsLimit: FpsLimit;
++    readonly fullscreenPreference: FullscreenPreference;
++  };
++  readonly shadows: {
++    readonly quality: ShadowQuality;
++  };
++  readonly textures: {
++    readonly quality: TextureQuality;
++  };
++  readonly lighting: {
++    readonly quality: QualityPreset;
++    readonly toneMapping: ToneMappingPreference;
++    readonly exposure: number;
++    readonly environmentReflectionQuality: ConcreteQualityPreset;
++  };
++  readonly effects: {
++    readonly quality: QualityPreset;
++    readonly decorDensity: number;
++    readonly bloomPreference: boolean;
++    readonly motionEffectsPreference: boolean;
++  };
++  readonly antiAliasing: {
++    readonly enabled: boolean;
++  };
++  readonly vsync: {
++    readonly mode: "BrowserManaged";
++  };
++}
++
++export interface ShadowPolicy {
++  readonly enabled: boolean;
++  readonly mapType: "Basic" | "PCF" | "PCFSoft";
++  readonly mapSize: 0 | 512 | 1024 | 2048;
++  readonly updatePolicy: "Never" | "OnDemand" | "EveryFrame";
++}
++
++export interface TexturePolicy {
++  readonly anisotropy: number;
++  readonly maxTextureSizePolicy: "Native";
++  readonly mipPolicy: "RendererManaged";
++  readonly assetLoaderPreference: "CurrentAsset";
++}
++
++export interface GraphicsCapability {
++  readonly status: CapabilityStatus;
++  readonly reason: string;
++  readonly numericLimit?: number;
++}
++
++export type GraphicsCapabilityMap = Readonly<Record<GraphicsSettingId, GraphicsCapability>>;
++
++export interface GraphicsCapabilityProbe {
++  readonly devicePixelRatio: number;
++  readonly maxAnisotropy: number;
++  readonly maxTextureSize: number;
++  readonly fullscreenAvailable: boolean;
++  readonly antiAliasingApplied: boolean;
++  readonly effectiveShadows: boolean;
++  readonly postProcessing: boolean;
++  readonly motionEffects: boolean;
++  readonly environmentReflections: boolean;
++  readonly textureVariants: boolean;
++}
++
++export interface GraphicsRuntimeSnapshot {
++  readonly renderScale: number;
++  readonly maxDevicePixelRatio: number;
++  readonly effectivePixelRatio: number;
++  readonly fieldOfView: number;
++  readonly renderDistance: number;
++  readonly fpsLimit: FpsLimit;
++  readonly fullscreenActual: FullscreenPreference;
++  readonly shadowPolicy: ShadowPolicy | null;
++  readonly textureAnisotropy: number;
++  readonly toneMapping: ToneMappingPreference;
++  readonly exposure: number;
++  readonly decorDensity: number;
++  readonly antiAliasingApplied: boolean;
++}
++
++export interface GraphicsApplyResult {
++  readonly runtime: GraphicsRuntimeSnapshot;
++  readonly applied: readonly GraphicsSettingId[];
++  readonly restartRequired: readonly GraphicsSettingId[];
++  readonly skipped: readonly GraphicsSettingId[];
++  readonly warnings: readonly string[];
++}
++
++export interface GraphicsRuntimePort {
++  getCapabilities(): GraphicsCapabilityMap;
++  getSnapshot(): GraphicsRuntimeSnapshot;
++  apply(
++    settings: GraphicsSettingsV1,
++    changedSettings: readonly GraphicsSettingId[]
++  ): Promise<GraphicsApplyResult>;
++}
++
++export interface StorageLike {
++  getItem(key: string): string | null;
++  setItem(key: string, value: string): void;
++}
++
++export type GraphicsSettingsLoadReason = "Stored" | "Missing" | "Corrupt" | "Invalid" | "FutureVersion" | "Unavailable";
++
++export interface GraphicsSettingsLoadResult {
++  readonly settings: GraphicsSettingsV1;
++  readonly reason: GraphicsSettingsLoadReason;
++  readonly message: string;
++}
++
++export interface GraphicsSettingsControllerSnapshot {
++  readonly confirmed: GraphicsSettingsV1;
++  readonly draft: GraphicsSettingsV1;
++  readonly runtime: GraphicsRuntimeSnapshot;
++  readonly capabilities: GraphicsCapabilityMap;
++  readonly hasPendingChanges: boolean;
++  readonly restartRequired: readonly GraphicsSettingId[];
++  readonly loadReason: GraphicsSettingsLoadReason;
++  readonly message: string;
++}
++
++export interface GraphicsControllerApplyResult {
++  readonly ok: boolean;
++  readonly snapshot: GraphicsSettingsControllerSnapshot;
++  readonly message: string;
++}
++
++export interface GraphicsSettingsController {
++  getSnapshot(): GraphicsSettingsControllerSnapshot;
++  subscribe(listener: (snapshot: GraphicsSettingsControllerSnapshot) => void): () => void;
++  applyPreset(preset: ConcreteQualityPreset): void;
++  updateSetting(path: GraphicsSettingPath, value: unknown): void;
++  resetDefaults(): void;
++  cancel(): void;
++  initializeRuntime(): Promise<GraphicsControllerApplyResult>;
++  apply(): Promise<GraphicsControllerApplyResult>;
++}

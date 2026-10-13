@@ -80,6 +80,7 @@ export interface HvpLookProjection extends HvpCanonicalMaterialState {
 }
 
 export const HVP_READABLE_COAST_LOOK_ID = "hvp:readable-coast-v6";
+export const HVP_EFFECT_VERSION = "hvp-surface-light-v1";
 
 const profile = (
   role: HvpLookMaterialRole,

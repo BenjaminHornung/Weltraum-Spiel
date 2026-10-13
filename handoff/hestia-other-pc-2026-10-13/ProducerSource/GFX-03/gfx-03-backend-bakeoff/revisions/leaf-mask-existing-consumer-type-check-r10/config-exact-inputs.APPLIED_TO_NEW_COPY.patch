@@ -1,0 +1,15 @@
+--- a/spikes/gfx-03-backend-bakeoff/revisions/leaf-mask-existing-build-input-r08/build-input/tsconfig.json
++++ b/spikes/gfx-03-backend-bakeoff/revisions/leaf-mask-existing-build-input-r08/build-input/tsconfig.json
+@@ -36,5 +36,8 @@
+-  "include": [
+-    "src/**/*.ts",
+-    "src/**/*.mjs"
+-  ]
++  "files": [
++    "src/main.ts",
++    "src/b2-materials.ts",
++    "src/port.ts",
++    "src/capability.mjs",
++    "src/image-oracle.mjs"
++  ]
+ }

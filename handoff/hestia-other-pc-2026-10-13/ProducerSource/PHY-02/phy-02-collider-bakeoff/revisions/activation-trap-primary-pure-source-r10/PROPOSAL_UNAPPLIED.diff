@@ -1,0 +1,56 @@
+--- a/R07/candidates/harness.ts.source
++++ b/R10/candidates/harness.ts
+@@ -33,14 +33,11 @@
+ }
+ export function observe(values:Record<string,unknown>){if(current)Object.assign(current,values);}
+ export function withCleanup<T>(run:()=>T,dispose:()=>void,owner:string):T{
+-  let primary:unknown;
+-  try{return run();}catch(error){primary=error;throw error;}
+-  finally{
+-    const cleanups=(current?.ownerCleanup??[]) as Record<string,unknown>[];
+-    if(current)current.ownerCleanup=cleanups;
+-    try{dispose();cleanups.push({owner,status:"PASS"});}
+-    catch(error){receiverBatch.poisoned=true;cleanups.push({owner,status:"FAIL",error:errorData(error)});if(primary===undefined)throw error;}
+-  }
++  const owned=prepareCase(receiverBatch,owner);
++  const cleanups=(current?.ownerCleanup??[]) as unknown[];
++  if(current)current.ownerCleanup=cleanups;
++  cleanups.push(owned.observation);
++  return owned.run(()=>undefined,run,dispose);
+ }
+ afterAll(()=>{
+   const output=process.env.PHY02_OBSERVATIONS;if(!output)return;
+--- a/R07/candidates/prepared18.proposal.test.ts.source
++++ b/R10/candidates/prepared18.proposal.test.ts
+@@ -4,12 +4,13 @@
+ export const cleanupObservations:CaseObservation[]=[];
+ import {Candidate,context,worldFor,installFixture,publish} from "../../phy01-migration2-r01/src/fork";
+ import {fixture} from "../../phy01-migration2-r01/previous/src/fixtures";
+-import {stageEdit} from "../../activation-source-contract-r02/candidates/stageEdit";
+-beforeAll(()=>Candidate.init());
+-for(const profile of ["legacy-impulse-v1","gyroscopic-v1"] as const){
+-  for(const kind of ["triangles","multi-cuboid","voxels"] as const){
+-    for(const parentState of ["sleeping","awake","wakes-after-stage"] as const){
+-      it(`${profile}/${kind}: transfer latest activation (${parentState}) without ghosts or profile rewrite`,()=>{
++import {stageEdit} from "./stageEdit";
++beforeAll(()=>Candidate.init());
++for(const profile of ["legacy-impulse-v1","gyroscopic-v1"] as const){
++  for(const kind of ["triangles","multi-cuboid","voxels"] as const){
++    for(const parentState of ["sleeping","awake","wakes-after-stage"] as const){
++      it(`${profile}/${kind}: transfer latest activation (${parentState}) without ghosts or profile rewrite`,ctx=>{
++        if(receiverBatch.poisoned){ctx.skip("Earlier trap or cleanup failure poisoned this receiver module instance");return;}
+         const owned=prepareCase(receiverBatch,`${profile}/${kind}/${parentState}`);
+         cleanupObservations.push(owned.observation);
+         const c=context(profile,kind);
+--- a/R06/candidates/original-six.proposal.test.ts.source
++++ b/R10/candidates/original-six.proposal.test.ts
+@@ -1,7 +1,7 @@
+ // SOURCE_ONLY / NO_GRANTS: never register or execute this source in this task.
+ import {beforeAll,expect} from "vitest";
+ import {Candidate,installFixture,publish} from "../../phy01-migration2-r01/src/fork";
+-import {stageEdit} from "../../activation-source-contract-r02/candidates/stageEdit";
++import {stageEdit} from "./stageEdit";
+ import {fixture} from "../../phy01-migration2-r01/previous/src/fixtures";
+ import {worldRay} from "../../phy01-migration2-r01/previous/src/native";
+ import {active,functional,observe,withWorld} from "./harness";
+

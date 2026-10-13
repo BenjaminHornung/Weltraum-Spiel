@@ -1,0 +1,20 @@
+import {resolve} from 'node:path';
+import {existsSync} from 'node:fs';
+import {root,repo,save,bytes,verifyInputs,verifyBuild,json,hash} from './bindings.mjs';
+import {config,event,readControl} from '../tests/helpers.mjs';
+import {createF1} from '../dist/f1.js';
+import {createF2} from '../dist/f2.js';
+import {canonical} from '../dist/contracts.js';
+verifyInputs();verifyBuild();const id=process.argv[process.argv.indexOf('--run-id')+1];if(!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(id??''))throw Error('RUN_ID');
+const output=resolve(repo,'.devtoolbox/specs/changes/wxg-06-2026-10-09/tests',id,'runtime');if(existsSync(output))throw Error('RUNTIME_EXISTS');
+const fixtures=[{name:'trajectory-nozzle',options:{},event:{kind:'Trajectory'}},{name:'radial-visual-impulse',options:{wind:[0,0,0]},event:{kind:'PressureImpulse',from:[16,16,16],to:[16,16,16],radiusMeters:4,durationTicks:1}},{name:'opened-obstacle',options:{wall:true,opening:true,revision:2},event:{}}];
+const records=[],profile=json(resolve(root,'fixtures/profile.json')),{view,result,input}=await readControl(),w1Before=hash(canonical(result));
+for(const fixture of fixtures){const c=await config(fixture.options);for(const [mode,create] of [['F1',createF1],['F2',createF2]]){const begin=performance.now(),f=await create(c),initial=f.snapshot(),signal=event(c,fixture.event);f.enqueue(signal);f.step(c.background.tick+1);const first=f.snapshot();for(let t=2;t<=4;t++)f.step(c.background.tick+t);const final=f.snapshot(),beforeOrigin=hash(canonical(final));f.rebase([100000,-100000,0]);const after=f.snapshot();if(canonical(after.density)!==canonical(final.density))throw Error('ORIGIN_FIELD_DRIFT');f.evict();const evicted=f.snapshot();
+ const record={fixture:fixture.name,mode,config:c,profile,signal,initial,first,final,eviction:{status:evicted.status,allocatedBytes:evicted.allocatedBytes,eventCursor:evicted.eventCursor,eventJournalHash:hash(canonical(evicted.events))},diagnostic:{elapsedCpuWallMs:performance.now()-begin,hostLoad:'CONCURRENT_UNCONTROLLED_SESSIONS',gpuTimer:null,actualAdapter:'NOT_APPLICABLE_CPU_ONLY',frameCost:'NOT_RUN',fieldCost:'CPU_WALL_DIAGNOSTIC_ONLY'},origin:{beforeFieldHash:hash(canonical(final.density)),afterFieldHash:hash(canonical(after.density)),presentationOnly:true},beforeOrigin};
+ records.push(record);
+ }}
+await view.read({...input.bundle.query,simulationTick:124});const w1After=hash(canonical(await view.read(input.bundle.query)));if(w1Before!==w1After)throw Error('W1_MUTATED');
+save(resolve(output,'fields.json'),{schema:'wxg06.actual-fields/v1',w1Before,w1After,records});
+const compact=records.map(r=>({fixture:r.fixture,mode:r.mode,grid:r.config.grid,controlWind:r.config.controlWind,initial:r.initial.metrics,first:r.first.metrics,final:r.final.metrics,allocatedBytes:r.first.allocatedBytes,eviction:r.eviction,diagnostic:r.diagnostic,w1SnapshotId:r.final.w1SnapshotId}));
+save(resolve(output,'summary.json'),{status:'PASS',executionLocation:'LOCAL_WINDOWS_ISOLATED',productIntegration:'NO',w1Before,w1After,fields:bytes(output,'fields.json'),records:compact,hardware:'NOT_RUN_NO_SLOT',actualAdapter:'NOT_APPLICABLE_CPU_ONLY',gpuTimer:null,ATMComposition:'NOT_RUN_NO_REAL_PORT',genuineProductExports:'ABSENT_NOT_RELABELLED',capture3D:'NOT_RUN_RUNNER_PENDING'});
+console.log(JSON.stringify({status:'PASS',records:records.length,w1Unchanged:true,summary:bytes(output,'summary.json')}));

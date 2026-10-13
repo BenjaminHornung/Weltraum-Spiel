@@ -4,6 +4,7 @@ import {execFileSync} from "node:child_process";
 import {readFile,mkdir,writeFile,readdir,stat} from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import {readPhy01SolverBinding} from "./phy01SolverBinding";
 import {freezeHvpMeasurement,assessHvpRuns,type HvpMeasurementPlan,type HvpMeasuredRun,type HvpRawSample} from "../e2e/hvp-performance-evidence";
 import {measurementUrl,prepareHvpWorkload,runHvpWorkload,type HvpWorkloadProgress} from "./hvp-workloads";
 
@@ -47,8 +48,9 @@ test("HVP14 records a frozen workload population, never promotes a diagnostic ru
   if(!executablePath||!(await stat(executablePath)).isFile()){throw new Error("An explicit installed browser is required");}
   // A populated target is never reused, cleaned or silently mixed with older runs.
   await mkdir(directory,{recursive:true});if((await readdir(directory)).length!==0){throw new Error("Measurement directory is not fresh");}
+  const solverBinding=await readPhy01SolverBinding();
   const source=await inventory("src"),build=await inventory("dist");
-  const fixture=await Promise.all(["tests/performance/hvp-performance.spec.ts","tests/performance/hvp-workloads.ts","playwright.performance.config.ts","tests/e2e/hvp-performance-evidence.ts"]
+  const fixture=await Promise.all(["tests/performance/phy01SolverBinding.ts","tests/performance/hvpCutRtReport.ts","tests/performance/hvp-performance.spec.ts","tests/performance/hvp-workloads.ts","playwright.performance.config.ts","tests/e2e/hvp-performance-evidence.ts"]
     .map(async p=>({path:p,sha256:sha(await readFile(p))})));
   const adapters=JSON.parse(shell("Get-CimInstance Win32_VideoController | Select-Object Name,DriverVersion,CurrentRefreshRate,CurrentHorizontalResolution | ConvertTo-Json -Compress")) as {Name:string;DriverVersion:string;CurrentRefreshRate:number;CurrentHorizontalResolution:number}[];
   const power=()=>shell("powercfg /getactivescheme")+" / "+shell("Get-CimInstance -Namespace root/wmi -ClassName BatteryStatus | Select-Object PowerOnline,Charging,Discharging | ConvertTo-Json -Compress");
@@ -74,10 +76,10 @@ test("HVP14 records a frozen workload population, never promotes a diagnostic ru
     width:1280,height:720,dpr:1,trace:false,screenshots:false,syntheticHardwareProfile:false,fixtureKind:"normal-product-route",
     fixtureSha256:sha(JSON.stringify(fixture)),commit:execFileSync("git",["rev-parse","HEAD"],{encoding:"utf8"}).trim(),dirty:execFileSync("git",["status","--porcelain"],{encoding:"utf8"}).trim()!=="",
     sourceSha256:sha(JSON.stringify(source)),buildSha256:sha(JSON.stringify(build)),lockSha256:sha(await readFile("package-lock.json")),
-    wasmSha256:sha(await readFile("node_modules/@dimforge/rapier3d-compat/rapier_wasm3d_bg.wasm")),browser:{version:browserVersion,binarySha256:sha(await readFile(executablePath)),headed:true},
+    wasmSha256:solverBinding.wasmSha256,browser:{version:browserVersion,binarySha256:sha(await readFile(executablePath)),headed:true},
     hardware:{os:`${os.type()} ${os.release()} ${os.arch()}`,cpu:os.cpus()[0]!.model,ramBytes:os.totalmem(),gpu,driver:adapter.DriverVersion,power:powerState,refreshHz:rates[0]!}};
   const frozen=freezeHvpMeasurement(p),runId=randomUUID();
-  await writeFile(path.join(directory,"plan.json"),JSON.stringify({runId,...frozen,source,build,fixture,launchArgs,
+  await writeFile(path.join(directory,"plan.json"),JSON.stringify({runId,...frozen,source,build,fixture,solverBinding,launchArgs,
     scopes:{coldReadyMs:"bootstrap entry through first completed Ready renderer submission; local worker/WASM loading included, not GPU fence time",navigationReadyMs:"entire document startup through first Ready renderer submission including local asset loading",
       mainCpuMs:"UNSUPPORTED: main-frame callback only excludes asynchronous handlers; values retained as diagnostic",solverStepCpuMs:"each actual World.step, excluding character controller"}},null,2));
   const runs:HvpMeasuredRun[]=[];

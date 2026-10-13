@@ -1,0 +1,11 @@
+--- a/src/materials.ts
++++ b/src/materials.ts
+@@ -28,6 +28,8 @@
+     if(leaf){
+       const q=uv().sub(0.5);const mask=float(1).sub(smoothstep(0.15,0.22,q.x.mul(q.x).mul(2).add(q.y.mul(q.y))));
+       m.opacityNode=mask;
++      m.alphaTest=0;
++      m.maskNode=mask.greaterThanEqual(0.5);
+       m.positionNode=vec3(positionLocal.x.add(materialUniforms.wind.y.mul(positionLocal.y)),positionLocal.y,
+         positionLocal.z.sub(materialUniforms.wind.x.mul(positionLocal.y)));
+     }

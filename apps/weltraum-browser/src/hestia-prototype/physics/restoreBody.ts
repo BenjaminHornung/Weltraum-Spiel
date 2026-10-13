@@ -20,8 +20,12 @@ export const restoreHvpBody=(world:R.World,saved:HvpDecodedBody):R.RigidBody=>{
     if(checkpoint.sleeping){body.sleep();}else{body.wakeUp();}
     return body;
   }catch(error){
-    let restored=false;
-    try{world.removeRigidBody(body);restored=world.bodies.len()===count&&world.colliders.len()===colliders;}catch{/* Fail closed. */}
-    throw new StructuralPhysicsCommitError("CommitFailed","savedBody/restore",String(error),"create",restored);
+    let restored=false,cleanupFailed=false,cleanupError:unknown;
+    try{world.removeRigidBody(body);restored=world.bodies.len()===count&&world.colliders.len()===colliders;}
+    catch(failure){cleanupFailed=true;cleanupError=failure;}
+    let message="Saved body restore failed";
+    try{message=String(error);}catch{/* Formatting must not replace the primary or cleanup error. */}
+    throw new StructuralPhysicsCommitError("CommitFailed","savedBody/restore",message,"create",restored,
+      {cause:cleanupFailed?new AggregateError([error,cleanupError],"Saved body restore and cleanup failed"):error});
   }
 };

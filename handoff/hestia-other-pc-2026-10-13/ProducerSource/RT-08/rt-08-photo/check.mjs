@@ -1,0 +1,14 @@
+import {spawnSync} from 'node:child_process';
+import {mkdir,writeFile,readdir} from 'node:fs/promises';
+import path from 'node:path';
+const [kind,label=kind]=process.argv.slice(2);
+if(!/^[a-z0-9-]+$/.test(label))throw new Error('Bounded evidence label required');
+const tests=(await readdir('tests').catch(()=>[])).filter(n=>n.endsWith('.test.mjs')).sort().map(n=>'tests/'+n);
+const commands={control:['--test','--test-concurrency=1','inputs/rt01/spikes/rt-01-oracle/tests/control.test.mjs','inputs/rt01/spikes/rt-01-oracle/tests/oracle.test.mjs'],test:['--test','--test-concurrency=1',...tests],typecheck:['node_modules/typescript/bin/tsc','--noEmit'],build:['build.mjs'],inputs:['verify-inputs.mjs']};
+if(!commands[kind])throw new Error('Unknown finite check');
+const start=Date.now(),result=spawnSync(process.execPath,commands[kind],{encoding:'utf8',maxBuffer:8*1024*1024});
+const dir=path.resolve('../../.devtoolbox/specs/changes/rt-08-2026-10-09/tests');await mkdir(dir,{recursive:true});
+const output=(result.stdout??'')+(result.stderr??'');
+await writeFile(path.join(dir,label+'.log'),output,{flag:'wx'});
+await writeFile(path.join(dir,label+'.json'),JSON.stringify({command:[process.execPath,...commands[kind]],cwd:process.cwd(),exitCode:result.status,signal:result.signal,spawnError:result.error?.code??null,elapsedDiagnosticMs:Date.now()-start,executionLocation:'LOCAL_WINDOWS_ISOLATED',gpu:'NOT_RUN'},null,2)+'\n',{flag:'wx'});
+console.log(output);console.log(`${label}: exit ${result.status}`);process.exitCode=result.status??1;

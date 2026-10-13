@@ -1,0 +1,40 @@
+diff --git a/apps/weltraum-browser/src/hestia-prototype/presentation/look.ts b/apps/weltraum-browser/src/hestia-prototype/presentation/look.ts
+--- a/apps/weltraum-browser/src/hestia-prototype/presentation/look.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/presentation/look.ts
+@@ -80,5 +80,6 @@
+ }
+ 
+ export const HVP_READABLE_COAST_LOOK_ID = "hvp:readable-coast-v6";
++export const HVP_EFFECT_VERSION = "hvp-surface-light-v1";
+ 
+ const profile = (
+diff --git a/apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts b/apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts
+--- a/apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts
+@@ -2,11 +2,12 @@
+ import type { ThreeRendererPort } from "../../render/three/backend/threeRenderBackend";
+ import { HVP_SHADOW_REVISION_MAX_BYTES, sameHvpShadowRevision, type HvpShadowAtom, type HvpShadowCasterRevision,
+   type HvpShadowRevision } from "./shadowRevision";
++import { HVP_EFFECT_VERSION } from "./look";
++export { HVP_EFFECT_VERSION } from "./look";
+ 
+ /** One sky draw, native tone mapping, one cached 1024² depth map; no fullscreen targets. */
+ export const HVP_EFFECT_COST = Object.freeze({ triangles: 528, drawCalls: 1, meshBytes: 13568,
+   cpuBytes: 16384 + 65536 + 2 * HVP_SHADOW_REVISION_MAX_BYTES });
+-export const HVP_EFFECT_VERSION = "hvp-surface-light-v1";
+ 
+ export const shadeHvpSurface = (material: THREE.Material, water: boolean): void => {
+   // A single flat sheet has no front/back transparency ordering to resolve.
+diff --git a/apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts b/apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts
+--- a/apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts
+@@ -2,8 +2,7 @@
+ import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_SOURCE_VERSION,restoreHvpOwnedCoastGrid} from "../../hvp/hvpCoastSource";
+ import type {HvpCameraCheckpoint} from "../../hvp/hvpCamera";
+ import {HVP_VEGETATION_VERSION} from "../presentation/vegetation";
+-import {createHvpLookProfile} from "../presentation/look";
+-import {HVP_EFFECT_VERSION} from "../presentation/visualEffects";
++import {createHvpLookProfile,HVP_EFFECT_VERSION} from "../presentation/look";
+ import {HVP_BRANCH_CELLS,HVP_SALVAGE_CELLS,HVP_PLAYER_PROFILE_DIGEST,HVP_SOLVER_PROFILE,resolveHvpGravity} from "../physics/profile";
+ import {readHvpBodyCells} from "../physics/bodyCutPlan";
+ import {createHvpPrivateTerrainRoot,validateHvpTerrainCheckpointHeader,type HvpTerrainCheckpoint} from "../terrain/cutPlan";

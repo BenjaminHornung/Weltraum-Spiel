@@ -1,0 +1,12 @@
+import http from 'node:http';
+import {readFile} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=fileURLToPath(new URL('./',import.meta.url)),port=Number(process.env.RT02A_PORT??43220);
+const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.json':'application/json','.bin':'application/octet-stream'};
+const server=http.createServer(async(req,res)=>{try{const relative=decodeURIComponent(new URL(req.url,'http://localhost').pathname).slice(1)||'index.html';
+  if(relative.split(/[\\/]/).some(p=>p==='..'||p.startsWith('.'))||!types[path.extname(relative)])throw new Error('Denied');const target=path.resolve(root,relative);if(!target.startsWith(root))throw new Error('Denied');
+  const data=await readFile(target);res.writeHead(200,{'Content-Type':types[path.extname(relative)],'Cache-Control':'no-store'});res.end(data);
+}catch{res.writeHead(404);res.end('Unavailable');}});
+server.listen(port,'127.0.0.1',()=>console.log(JSON.stringify({ownedProfile:'RT02A',url:`http://127.0.0.1:${port}`,gpu:'NOT_REQUESTED'})));
+process.on('SIGINT',()=>server.close(()=>process.exit(0)));

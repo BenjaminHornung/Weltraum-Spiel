@@ -4,8 +4,9 @@ import { fnv1aBytes, type TransferableBufferBundle,type WorkerJobRequest } from 
 import { HVP_COLLISION_JOB, HVP_COLLISION_ALGORITHM, HVP_COLLISION_MAX_OUTPUT, decodeHvpCollisionOutput,decodeHvpCollisionOutputSteps } from "../../workers/hvpCollisionJob";
 import { collisionInputs, type HvpCollisionSector, type HvpCollisionSource } from "./terrainColliders";
 import { resolveHvpGravity } from "./profile";
-import type { HvpPhysicsRequest, HvpPhysicsReply, HvpPhysicsSnapshot, HvpPhysicsClock } from "./physicsWorker";
-import {HVP_PHYSICS_PROTOCOL,hvpBodyProjectionBinding,readHvpBodyProjectionReply,readHvpBodyProjectionReplySteps,readHvpBodyMeshBudget,readHvpBodyMeshAdmissionReply,type HvpBodyProjectionRequest} from "./physicsProtocol";
+import type { HvpPhysicsMessage,HvpLabPhysicsMessage,HvpPhysicsRequest,HvpPhysicsReply,HvpLabPhysicsRequest,HvpLabPhysicsReply,HvpPhysicsSnapshot,HvpPhysicsClock } from "./physicsWorker";
+import {HVP_PHYSICS_PROTOCOL,HVP_LAB_PHYSICS_MODE,hvpBodyProjectionBinding,readHvpBodyProjectionReply,readHvpBodyProjectionReplySteps,
+  readHvpBodyMeshBudget,readHvpBodyMeshAdmissionReply,type HvpBodyProjectionRequest} from "./physicsProtocol";
 import {requirePlainRecord,requireExactKeys} from "../../voxel/adaptive/validation";
 import {createHvpBodyMeshPhaseReserve,HVP_BODY_RENDER_BYTES_PER_FACE,type HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
 import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
@@ -14,12 +15,16 @@ import type { HvpBranchRequest } from "./branchSession";
 import type {HvpTerrainFragmentRequest} from "./terrainFragment";
 import {hvpTerrainSubsetCloneBytes,copyHvpTerrainSubset} from "./terrainFragment";
 import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission,HvpBodyChildProjection} from "./bodyCutSession";
-import {hvpCollisionDigest,type HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
-import type {HvpCompleteStaticCollision} from "./worldReplacement";
+import {hvpCollisionDigest,type HvpWorldCheckpoint,type HvpLabWorldCheckpoint} from "../persistence/worldCheckpoint";
+import {assertHvpDecodedLabGame,HVP_SAVE_TRANSPORT_BYTES,type HvpDecodedLabGame} from "../persistence/gameCheckpoint";
+import type {HvpCompleteStaticCollision,HvpLabCompleteStaticCollision} from "./worldReplacement";
 import {validateHvpChunkStaticLayout,type HvpChunkStaticLayout} from "./staticTerrainLayout";
-import {prepareHvpChunkPhysicsInputSteps,hvpChunkPhysicsInputCredits,type HvpChunkPhysicsInput} from "../terrain/terrainProducts";
+import {prepareHvpChunkPhysicsInputSteps,hvpChunkPhysicsInputCredits,bindHvpLabChunkGameInput,bindHvpFreshLabChunkInput,
+  type HvpChunkPhysicsInput,type HvpFreshLabChunkBinding} from "../terrain/terrainProducts";
 import {validateHvpNeighborCheckpoint,type HvpNeighborCheckpoint} from "../runtime/residency";
 import {measureHvpCutAsync,type HvpCutTrace} from "../runtime/cutTrace";
+import {createStructuralOwnerLedger} from "../../voxel/structural/model";
+import {ownHvpLabCompleteStaticCollision} from "./labCollisionCapture";
 
 export interface HvpPhysicsClient {
   staticTerrainLayout?():HvpChunkStaticLayout|null;
@@ -80,6 +85,18 @@ export interface HvpPhysicsClient {
   rollbackBodyResidency(id:string):Promise<void>;
   dispose(): Promise<void>;
 }
+type HvpLabPhysicsClientMethods={
+  checkpointLab():Promise<HvpLabWorldCheckpoint>;
+  prepareLabRestore(id:string,game:HvpDecodedLabGame,completeCollision:HvpLabCompleteStaticCollision):Promise<HvpPhysicsSnapshot>;
+  commitLabRestore(id:string):Promise<void>;publishLabRestore():void;rollbackLabRestore(id:string):Promise<void>;finalizeLabRestore(id:string):Promise<void>;
+};
+
+export type HvpLabPhysicsClient=Omit<HvpPhysicsClient,"checkpoint"|"prepareRestore"|"commitRestore"|"publishRestore"|"rollbackRestore"|"finalizeRestore">&HvpLabPhysicsClientMethods;
+type HvpInternalPhysicsClient=HvpPhysicsClient&HvpLabPhysicsClientMethods;
+type HvpClientOwnerContext={readonly kind:"public"}|{readonly kind:"phy01-lab";readonly game:HvpDecodedLabGame}
+  |{readonly kind:"phy01-lab-fresh";readonly binding:HvpFreshLabChunkBinding};
+type HvpClientRequest=HvpPhysicsRequest|HvpLabPhysicsRequest;
+type HvpClientReply=HvpPhysicsReply|HvpLabPhysicsReply;
 
 /** Hysteresis around the 4 ms main-thread preparation budget, never above two. */
 export const chooseHvpParallelism = (current: number, available: number, recentMainMs: readonly number[]): number => {
@@ -89,7 +106,8 @@ export const chooseHvpParallelism = (current: number, available: number, recentM
 };
 
 /** Initial and whole-catalogue Restore use the same bounded, exact Save selector. */
-export const prepareHvpStaticCollision=async(sources:readonly HvpCollisionSource[],signal:AbortSignal,checkpoint?:HvpWorldCheckpoint,initialChunks?:HvpChunkPhysicsInput)=>{
+const prepareHvpStaticCollisionFor=async(sources:readonly HvpCollisionSource[],signal:AbortSignal,checkpoint:HvpWorldCheckpoint|HvpLabWorldCheckpoint|undefined,
+  initialChunks:HvpChunkPhysicsInput|undefined,allowLegacyFallback:boolean)=>{
   const hinted = globalThis.navigator?.hardwareConcurrency ?? 2;
   const workerCount = Math.max(1, Math.min(2, Number.isSafeInteger(hinted) ? hinted - 1 : 1));
   const pool = new WorkerPool({ workerCount, queueCapacity: 32 });
@@ -181,6 +199,7 @@ export const prepareHvpStaticCollision=async(sources:readonly HvpCollisionSource
         sectors=candidate;staticLayout=Object.freeze({version:"hvp-static-chunks-v1",primaryTerrainCount:256,neighborTerrainCount:256});
         coverage.length=0;for(let z=0;z<8;z+=1){for(let x=0;x<8;x+=1){coverage.push({minX:-16+x*4,minZ:-16+z*4,maxX:-12+x*4,maxZ:-12+z*4});}}
       }else{
+        if(!allowLegacyFallback){throw new Error("LAB saved collision requires complete Chunk representation");}
         sectors=[];job=0;coverage.length=0;collisionBytes=0;
         await derive(sources[0]!,true);sectors.push(...extras);job=sectors.length;
         if(preparedChunks.east.length!==0){await derive(sources[sources.length-1]!,false);}
@@ -196,14 +215,72 @@ export const prepareHvpStaticCollision=async(sources:readonly HvpCollisionSource
   if (signal.aborted) { throw new Error("Physics loading cancelled"); }
   return {sectors,coverage,collisionBytes,workerCount,staticLayout,worldId:preparedChunks?.worldId,assertCurrent:assertPrepared,preparation:Object.freeze({jobs:job,peakParallelJobs,mainPrepareMaxMs})};
 };
+export const prepareHvpStaticCollision=(sources:readonly HvpCollisionSource[],signal:AbortSignal,checkpoint?:HvpWorldCheckpoint,initialChunks?:HvpChunkPhysicsInput)=>
+  prepareHvpStaticCollisionFor(sources,signal,checkpoint,initialChunks,true);
+
+export type HvpLabStaticCollisionPreparation=Omit<Awaited<ReturnType<typeof prepareHvpStaticCollision>>,"staticLayout"|"assertCurrent">&{
+  readonly staticLayout:HvpChunkStaticLayout;readonly completeCollision:HvpLabCompleteStaticCollision;readonly assertCurrent:()=>void
+};
+/** @internal Reuses the bounded Save selector only for an issued LAB Game and its live producer-owned Chunk tuple. */
+export const prepareHvpLabStaticCollision=async(sources:readonly HvpCollisionSource[],signal:AbortSignal,game:HvpDecodedLabGame,
+  initialChunks:HvpChunkPhysicsInput):Promise<HvpLabStaticCollisionPreparation>=>{
+  assertHvpDecodedLabGame(game);
+  const assertGameTuple=bindHvpLabChunkGameInput(initialChunks,sources,game);
+  assertGameTuple();
+  const prepared=await prepareHvpStaticCollisionFor(sources,signal,game.checkpoint.world,initialChunks,false);
+  assertGameTuple();prepared.assertCurrent();
+  if(prepared.staticLayout===null||prepared.worldId!==game.checkpoint.world.sessionId){throw new Error("LAB Worker source/Chunk session mismatch");}
+  const staticLayout=validateHvpChunkStaticLayout(prepared.staticLayout);
+  if(staticLayout.primaryTerrainCount!==256||staticLayout.neighborTerrainCount!==256){throw new Error("LAB restore requires the complete 256/256 Chunk layout");}
+  const completeCollision:HvpLabCompleteStaticCollision=Object.freeze({sectors:prepared.sectors,layout:staticLayout});
+  const assertCurrent=()=>{assertGameTuple();prepared.assertCurrent();
+    if(prepared.worldId!==game.checkpoint.world.sessionId||prepared.staticLayout===null){throw new Error("Stale LAB Chunk collision preparation");}};
+  assertCurrent();return Object.freeze({...prepared,staticLayout,completeCollision,assertCurrent});
+};
 
 /** Existing bounded pool prepares exact sectors. Never more than two heavy jobs. */
-export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSource[], spawn: { x: number; y: number; z: number }, signal: AbortSignal,
+const labArrayBufferLength=Object.getOwnPropertyDescriptor(ArrayBuffer.prototype,"byteLength")!.get!;
+const labArrayBufferResizable=Object.getOwnPropertyDescriptor(ArrayBuffer.prototype,"resizable")?.get;
+const prepareHvpLabGameWire=(game:HvpDecodedLabGame,ledger:ReturnType<typeof createStructuralOwnerLedger>)=>{
+  assertHvpDecodedLabGame(game);
+  try{
+    // Full worst-case String/UTF-8/transfer quote is charged before JSON.stringify or TextEncoder.
+    ledger.reserve(HVP_SAVE_TRANSPORT_BYTES*4);
+    const text=JSON.stringify(game.checkpoint);
+    if(typeof text!=="string"||text.length>HVP_SAVE_TRANSPORT_BYTES){throw new Error("Hestia save transport budget");}
+    const bytes=new TextEncoder().encode(text);
+    if(bytes.byteLength<1||bytes.byteLength>HVP_SAVE_TRANSPORT_BYTES||bytes.byteOffset!==0
+      ||!(bytes.buffer instanceof ArrayBuffer)||labArrayBufferLength.call(bytes.buffer)!==bytes.byteLength
+      ||labArrayBufferResizable?.call(bytes.buffer)===true){throw new Error("Invalid fixed LAB game wire buffer");}
+    return {checkpointBytes:bytes.buffer as ArrayBuffer,release:()=>ledger.release()};
+  }catch(error){ledger.release();throw error;}
+};
+const prepareHvpLabCompleteTransfer=(input:HvpLabCompleteStaticCollision,ledger:ReturnType<typeof createStructuralOwnerLedger>)=>{
+  try{
+    const owned=ownHvpLabCompleteStaticCollision(input,ledger.reserve);
+    return {...owned,release:()=>ledger.release()};
+  }catch(error){ledger.release();throw error;}
+};
+
+const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[], spawn: { x: number; y: number; z: number }, signal: AbortSignal,
   playerSpawn?: { x: number; y: number; z: number }, inertiaSpawn?:{x:number;y:number;z:number},branchSpawn?:{x:number;y:number;z:number},checkpoint?:HvpWorldCheckpoint,branchKind:"branch"|"salvage"="branch",
-  onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void,experimentalKernel?:"direct-known-cells-v1"|"owned-moving-subset-v2"|"owned-terrain-subset-v3",initialChunks?:HvpChunkPhysicsInput): Promise<HvpPhysicsClient> => {
-  const prepared=await prepareHvpStaticCollision(sources,signal,checkpoint,initialChunks);
+  onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void,experimentalKernel?:"direct-known-cells-v1"|"owned-moving-subset-v2"|"owned-terrain-subset-v3",initialChunks?:HvpChunkPhysicsInput,
+  ownerContext:HvpClientOwnerContext={kind:"public"}): Promise<HvpInternalPhysicsClient> => {
+  const ownerKind=ownerContext.kind==="public"?"public":"phy01-lab";
+  let labGame=ownerContext.kind==="phy01-lab"?ownerContext.game:undefined;
+  let freshBinding=ownerContext.kind==="phy01-lab-fresh"?ownerContext.binding:undefined;
+  if(ownerKind==="phy01-lab"&&initialChunks===undefined){throw new Error("LAB Worker requires the exact owned Chunk tuple");}
+  if(labGame!==undefined){assertHvpDecodedLabGame(labGame);}
+  let assertLabTuple=labGame?bindHvpLabChunkGameInput(initialChunks!,sources,labGame):freshBinding?.assertCurrent;
+  assertLabTuple?.();
+  const prepared=await prepareHvpStaticCollisionFor(sources,signal,labGame?.checkpoint.world??checkpoint,initialChunks,ownerKind==="public");
   const {sectors,coverage,collisionBytes,workerCount}=prepared;
   let staticLayout=prepared.staticLayout;const assertPrepared=prepared.assertCurrent;
+  if(ownerKind==="phy01-lab"){
+    assertLabTuple?.();
+    if(staticLayout===null||prepared.worldId!==(labGame?.checkpoint.world.sessionId??freshBinding?.header.worldId)){throw new Error("LAB Worker source/Chunk session mismatch");}
+    staticLayout=validateHvpChunkStaticLayout(staticLayout);
+  }
   const worker = new Worker(new URL("./physicsWorker.ts", import.meta.url), { type: "module", name: "hvp-simulation-owner" });
   let nextId = 0;
   const incarnation=crypto.randomUUID();
@@ -230,7 +307,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let playerInput: HvpPlayerInput = { x: 0, z: 0, sprint: false, jump: false };
   let cameraOffset: { x: number; y: number; z: number } | undefined;
   let cutAim: {x:number;y:number;z:number}|undefined;
-  const pending = new Map<number, { resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;ownsState:boolean;ownsClock:boolean;onReply?:(reply:HvpPhysicsReply)=>void }>();
+  const pending = new Map<number, { resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;ownsState:boolean;ownsClock:boolean;onReply?:(reply:HvpClientReply)=>void }>();
   const terminate=()=>{if(!terminated){worker.terminate();terminated=true;}worker.onmessage=null;worker.onerror=null;worker.onmessageerror=null;};
   const fail = (error: Error): void => {
     failure = error;
@@ -240,12 +317,16 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   };
   worker.onerror = event => fail(new Error(event.message || "Physics worker error"));
   worker.onmessageerror = () => fail(new Error("Physics worker transfer error"));
-  worker.onmessage = ({ data }: MessageEvent<HvpPhysicsReply>) => {
+  worker.onmessage = ({ data }: MessageEvent<HvpClientReply>) => {
     if(disposed||terminated){return;}
     const p = pending.get(data.id);
     if(data.incarnation!==incarnation){
       if(typeof data.incarnation!=="string"&&(p!==undefined||data.id===-1)){fail(new Error("Invalid physics reply binding"));}
       return;
+    }
+    const hasLabProof="labModeProof" in data&&data.labModeProof===HVP_LAB_PHYSICS_MODE;
+    if((ownerKind==="phy01-lab"&&!hasLabProof)||(ownerKind==="public"&&"labModeProof" in data)){
+      if(p!==undefined||data.id===-1){fail(new Error("Invalid physics owner mode reply"));}return;
     }
     if(data.protocol!==HVP_PHYSICS_PROTOCOL||!Number.isSafeInteger(data.sequence)||data.sequence<1){
       if(p!==undefined||data.id===-1){fail(new Error("Invalid physics reply binding"));}
@@ -271,7 +352,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       try{onTimings(data.timings);}catch{timingSinkDisabled=true;timingSinkFailures+=1;onTimings=undefined;}
     }
   };
-  const send = (message: HvpPhysicsRequest, transfers: Transferable[] = [], publish = true,onReply?:(reply:HvpPhysicsReply)=>void): Promise<void> => new Promise((resolve, reject) => {
+  const send = (message: HvpClientRequest, transfers: Transferable[] = [], publish = true,onReply?:(reply:HvpClientReply)=>void): Promise<void> => new Promise((resolve, reject) => {
     if (failure !== undefined || disposed) { reject(failure ?? new Error("Physics disposed")); return; }
     if (pending.size >= 8) { reject(new Error("Physics command backpressure")); return; }
     const id = nextId++;
@@ -280,7 +361,11 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     if(!publish&&ownsState){publishRequestFloor=Math.max(publishRequestFloor,id);}
     const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
     pending.set(id, { resolve, reject, timeout, publish,ownsState,ownsClock,onReply });
-    try { worker.postMessage({ ...message, id,protocol:HVP_PHYSICS_PROTOCOL,incarnation }, transfers); } catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
+    const wireMessage=ownerKind==="phy01-lab"
+      ?("labMode" in message?message:{...message,labMode:HVP_LAB_PHYSICS_MODE}) as HvpLabPhysicsRequest
+      :message as HvpPhysicsRequest;
+    try { worker.postMessage({ ...wireMessage, id,protocol:HVP_PHYSICS_PROTOCOL,incarnation } as HvpPhysicsMessage|HvpLabPhysicsMessage, transfers); }
+    catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
   });
   const abort = (): void => fail(new Error("Physics loading cancelled"));
   const requireBodyProjectionTicket=(ticket:typeof bodyProjectionTicket)=>{
@@ -294,14 +379,27 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   };
   signal.addEventListener("abort", abort, { once: true });
   try {
+    assertLabTuple?.();
     assertPrepared();
-    await send({ kind: "Initialize", sectors, spawn, gravity: resolveHvpGravity(), inertiaSpawn,branchSpawn,checkpoint,branchKind,measure:onTimings!==undefined,...(staticLayout===null?{}:{staticLayout}),...(experimentalKernel===undefined?{}:{experimentalKernel}),
-      sessionId:checkpoint?.sessionId??prepared.worldId??crypto.randomUUID(), player: playerSpawn === undefined ? undefined : { spawn: playerSpawn, coverage } },
-      sectors.flatMap(s => [s.vertices.buffer as ArrayBuffer, s.indices.buffer as ArrayBuffer]));
+    const sectorTransfers=sectors.flatMap(s=>[s.vertices.buffer as ArrayBuffer,s.indices.buffer as ArrayBuffer]);
+    if(labGame!==undefined){
+      const wire=prepareHvpLabGameWire(labGame,createStructuralOwnerLedger(collisionBytes+labGame.decodedBytes+labGame.decodeWorkingBytes,96*1024*1024,128));
+      try{await send({kind:"InitializeLab",labMode:HVP_LAB_PHYSICS_MODE,sectors,staticLayout:staticLayout!,checkpointBytes:wire.checkpointBytes,measure:onTimings!==undefined},
+        [...sectorTransfers,wire.checkpointBytes]);}
+      finally{wire.release();}
+    }else if(freshBinding!==undefined){
+      await send({kind:"InitializeFreshLab",labMode:HVP_LAB_PHYSICS_MODE,sourceHeader:freshBinding.header,sectors,staticLayout:staticLayout!,
+        spawn,gravity:resolveHvpGravity(),inertiaSpawn,branchSpawn,measure:onTimings!==undefined,
+        ...(playerSpawn===undefined?{}:{player:{spawn:playerSpawn,coverage}})},sectorTransfers);
+    }else{
+      await send({ kind: "Initialize", sectors, spawn, gravity: resolveHvpGravity(), inertiaSpawn,branchSpawn,checkpoint,branchKind,measure:onTimings!==undefined,...(staticLayout===null?{}:{staticLayout}),...(experimentalKernel===undefined?{}:{experimentalKernel}),
+        sessionId:checkpoint?.sessionId??prepared.worldId??crypto.randomUUID(), player: playerSpawn === undefined ? undefined : { spawn: playerSpawn, coverage } },sectorTransfers);
+    }
     if (signal.aborted || snapshot === undefined) { throw new Error("Physics initialization did not publish a snapshot"); }
+    assertLabTuple?.();
     assertPrepared();
   } catch (e) { worker.terminate(); throw e; }
-  finally { signal.removeEventListener("abort", abort); }
+  finally { labGame=undefined;freshBinding=undefined;assertLabTuple=undefined;signal.removeEventListener("abort", abort); }
   return {
     staticTerrainLayout:()=>staticLayout,
     get collisionBytes() { return snapshot?.collisionBytes ?? collisionBytes; }, workerCount, preparation: prepared.preparation,
@@ -331,6 +429,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     async finalizeBodyResidency(id){await send({kind:"FinalizeBodyResidency",transactionId:id});mutating=false;heldSnapshot=undefined;},
     async rollbackBodyResidency(id){await send({kind:"RollbackBodyResidency",transactionId:id});mutating=false;heldSnapshot=undefined;},
     async checkpoint(){
+      if(ownerKind!=="public"){throw new Error("Use the fixed LAB checkpoint form");}
       if(mutating||bodyPending||snapshot?.status!=="Paused"){throw new Error("Checkpoint requires an idle paused World");}
       mutating=true;
       try{let saved:HvpWorldCheckpoint|undefined;
@@ -338,7 +437,19 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
         if(!saved){throw new Error("Missing World checkpoint");}return saved;
       }finally{mutating=false;}
     },
+    async checkpointLab(){
+      if(ownerKind!=="phy01-lab"){throw new Error("LAB checkpoint owner unavailable");}
+      if(mutating||bodyPending||snapshot?.status!=="Paused"){throw new Error("Checkpoint requires an idle paused World");}
+      mutating=true;
+      try{let saved:HvpLabWorldCheckpoint|undefined;
+        await send({kind:"CheckpointLab",labMode:HVP_LAB_PHYSICS_MODE},[],true,reply=>{
+          saved="checkpointLab" in reply?reply.checkpointLab:undefined;
+        });
+        if(!saved){throw new Error("Missing LAB World checkpoint");}return saved;
+      }finally{mutating=false;}
+    },
     async prepareRestore(id,checkpoint,replacements,completeCollision){
+      if(ownerKind!=="public"){throw new Error("Use the fixed LAB restore form");}
       if(mutating||bodyPending||snapshot?.status!=="Paused"){throw new Error("Restore requires an idle paused World");}
       if(completeCollision!==undefined&&replacements.length!==0){throw new Error("Mixed complete static collision replacement");}
       const nextLayout=completeCollision===undefined?staticLayout:completeCollision.layout===null?null:validateHvpChunkStaticLayout(completeCollision.layout);
@@ -360,15 +471,57 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
         heldSnapshot=undefined;restorePhase=undefined;restoreLayout=undefined;mutating=false;throw error;
       }
     },
-    async commitRestore(id){await send({kind:"CommitRestore",transactionId:id},[],false);},
-    publishRestore(){if(!mutating||restorePhase!=="Committed"||!heldSnapshot){throw new Error("Missing committed restore snapshot");}
+    async prepareLabRestore(id,game,completeCollision){
+      if(ownerKind!=="phy01-lab"){throw new Error("LAB restore owner unavailable");}
+      assertHvpDecodedLabGame(game);
+      if(mutating||bodyPending||snapshot?.status!=="Paused"){throw new Error("Restore requires an idle paused World");}
+      const resident=snapshot?.collisionBytes??collisionBytes;
+      const ledger=createStructuralOwnerLedger(resident+game.decodedBytes+game.decodeWorkingBytes,96*1024*1024,128);
+      let owned:ReturnType<typeof prepareHvpLabCompleteTransfer>|undefined;
+      let wire:ReturnType<typeof prepareHvpLabGameWire>|undefined;
+      try{
+        owned=prepareHvpLabCompleteTransfer(completeCollision,ledger);
+        wire=prepareHvpLabGameWire(game,ledger);
+        mutating=true;restorePhase=undefined;heldSnapshot=undefined;let acknowledged=false;
+        try{await send({kind:"PrepareLabRestore",labMode:HVP_LAB_PHYSICS_MODE,transactionId:id,checkpointBytes:wire.checkpointBytes,
+          completeCollision:owned.completeCollision},[wire.checkpointBytes,...owned.transfers],false);
+          acknowledged=true;
+          const candidate=readHeldSnapshot();
+          if(restorePhase!=="Prepared"||!candidate){throw new Error("Missing prepared LAB restore snapshot");}
+          restoreLayout={before:staticLayout,next:owned.completeCollision.layout};return candidate.value;
+        }catch(error){
+          if(failure!==undefined||restorePhase==="RecoveryHold"){throw new Error(`RecoveryHold: LAB restore preparation uncertain: ${String(error)}`);}
+          if(acknowledged||restorePhase==="Prepared"||restorePhase==="Committed"){
+            try{await send({kind:"RollbackRestore",transactionId:id},[],false);
+              if(restorePhase!=="RolledBack"){throw new Error("Missing LAB rollback acknowledgement");}
+            }catch(cleanup){throw new Error(`RecoveryHold: LAB restore preparation cleanup failed: ${String(cleanup)}`);}
+          }
+          heldSnapshot=undefined;restorePhase=undefined;restoreLayout=undefined;mutating=false;throw error;
+        }
+      }finally{ledger.release();}
+    },
+    async commitRestore(id){if(ownerKind!=="public"){throw new Error("Use the LAB restore transaction form");}await send({kind:"CommitRestore",transactionId:id},[],false);},
+    publishRestore(){if(ownerKind!=="public"||!mutating||restorePhase!=="Committed"||!heldSnapshot){throw new Error("Missing committed restore snapshot");}
       snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;heldSnapshot=undefined;if(restoreLayout!==undefined){staticLayout=restoreLayout.next;}
       playerInput={x:0,z:0,sprint:false,jump:false};cutAim=undefined;cameraOffset=undefined;},
-    async rollbackRestore(id){await send({kind:"RollbackRestore",transactionId:id});
+    async rollbackRestore(id){if(ownerKind!=="public"){throw new Error("Use the LAB restore transaction form");}await send({kind:"RollbackRestore",transactionId:id});
       if(restorePhase!=="RolledBack"){throw new Error("RecoveryHold: missing restore rollback acknowledgement");}
       if(restoreLayout!==undefined){staticLayout=restoreLayout.before;}restoreLayout=undefined;heldSnapshot=undefined;restorePhase=undefined;mutating=false;},
-    async finalizeRestore(id){await send({kind:"FinalizeRestore",transactionId:id});
+    async finalizeRestore(id){if(ownerKind!=="public"){throw new Error("Use the LAB restore transaction form");}await send({kind:"FinalizeRestore",transactionId:id});
       if(restorePhase!=="Finalized"){throw new Error("RecoveryHold: missing restore finalization acknowledgement");}
+      restoreLayout=undefined;heldSnapshot=undefined;restorePhase=undefined;mutating=false;},
+    async commitLabRestore(id){if(ownerKind!=="phy01-lab"){throw new Error("LAB restore owner unavailable");}
+      await send({kind:"CommitRestore",transactionId:id},[],false);},
+    publishLabRestore(){if(ownerKind!=="phy01-lab"||!mutating||restorePhase!=="Committed"||!heldSnapshot){throw new Error("Missing committed LAB restore snapshot");}
+      snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;heldSnapshot=undefined;if(restoreLayout!==undefined){staticLayout=restoreLayout.next;}
+      playerInput={x:0,z:0,sprint:false,jump:false};cutAim=undefined;cameraOffset=undefined;},
+    async rollbackLabRestore(id){if(ownerKind!=="phy01-lab"){throw new Error("LAB restore owner unavailable");}
+      await send({kind:"RollbackRestore",transactionId:id});
+      if(restorePhase!=="RolledBack"){throw new Error("RecoveryHold: missing LAB restore rollback acknowledgement");}
+      if(restoreLayout!==undefined){staticLayout=restoreLayout.before;}restoreLayout=undefined;heldSnapshot=undefined;restorePhase=undefined;mutating=false;},
+    async finalizeLabRestore(id){if(ownerKind!=="phy01-lab"){throw new Error("LAB restore owner unavailable");}
+      await send({kind:"FinalizeRestore",transactionId:id});
+      if(restorePhase!=="Finalized"){throw new Error("RecoveryHold: missing LAB restore finalization acknowledgement");}
       restoreLayout=undefined;heldSnapshot=undefined;restorePhase=undefined;mutating=false;},
     async prepareNeighbor(id,next,meshes,edge){
       if(mutating||bodyPending){throw new Error("World Pending");}
@@ -659,4 +812,35 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       finally { disposed = true; fail(new Error("Physics disposed")); }
     }
   };
+};
+
+/** Public .12 client signature and defaults remain bound to the unchanged public worker protocol. */
+export const createHvpPhysicsClient=async(sources:readonly HvpCollisionSource[],spawn:{x:number;y:number;z:number},signal:AbortSignal,
+  playerSpawn?:{x:number;y:number;z:number},inertiaSpawn?:{x:number;y:number;z:number},branchSpawn?:{x:number;y:number;z:number},checkpoint?:HvpWorldCheckpoint,
+  branchKind:"branch"|"salvage"="branch",onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void,
+  experimentalKernel?:"direct-known-cells-v1"|"owned-moving-subset-v2"|"owned-terrain-subset-v3",initialChunks?:HvpChunkPhysicsInput
+):Promise<HvpPhysicsClient>=>createHvpPhysicsClientCore(sources,spawn,signal,playerSpawn,inertiaSpawn,branchSpawn,checkpoint,branchKind,
+  onTimings,experimentalKernel,initialChunks,{kind:"public"});
+
+/** @internal Fixed migration2 LAB client; it requires the owned complete Chunk compiler tuple. */
+export const createHvpLabPhysicsClient=async(sources:readonly HvpCollisionSource[],signal:AbortSignal,initialChunks:HvpChunkPhysicsInput,
+  game:HvpDecodedLabGame,onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void):Promise<HvpLabPhysicsClient>=>{
+  assertHvpDecodedLabGame(game);
+  const world=game.checkpoint.world;
+  const core=await createHvpPhysicsClientCore(sources,world.dropSpawn,signal,undefined,undefined,undefined,undefined,world.branch?.kind??"branch",
+    onTimings,undefined,initialChunks,{kind:"phy01-lab",game});
+  return labPhysicsClientFacade(core);
+};
+const labPhysicsClientFacade=(core:HvpInternalPhysicsClient):HvpLabPhysicsClient=>{
+  const {checkpoint:_publicCheckpoint,prepareRestore:_publicPrepareRestore,commitRestore:_publicCommitRestore,publishRestore:_publicPublishRestore,
+    rollbackRestore:_publicRollbackRestore,finalizeRestore:_publicFinalizeRestore,...labClient}=core;
+  return labClient;
+};
+/** @internal Authored revision-zero primary only; no Save is fabricated to initialize this owner. */
+export const createHvpFreshLabPhysicsClient=async(sources:readonly HvpCollisionSource[],spawn:{x:number;y:number;z:number},signal:AbortSignal,
+  initialChunks:HvpChunkPhysicsInput,playerSpawn?:{x:number;y:number;z:number},inertiaSpawn?:{x:number;y:number;z:number},branchSpawn?:{x:number;y:number;z:number},
+  onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void):Promise<HvpLabPhysicsClient>=>{
+  const binding=bindHvpFreshLabChunkInput(initialChunks,sources);
+  return labPhysicsClientFacade(await createHvpPhysicsClientCore(sources,spawn,signal,playerSpawn,inertiaSpawn,branchSpawn,undefined,"branch",
+    onTimings,undefined,initialChunks,{kind:"phy01-lab-fresh",binding}));
 };

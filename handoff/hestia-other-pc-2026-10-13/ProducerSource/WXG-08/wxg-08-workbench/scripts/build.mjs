@@ -1,0 +1,11 @@
+import {spawnSync} from 'node:child_process';
+import {cpSync,readFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {root,json,check,walk,member,save} from './inputs.mjs';
+for(const f of json('InputBindings.json').members)check(f);
+const compiler=resolve(root,'inputs/wxg/node_modules/typescript/lib/tsc.js');
+const r=spawnSync(process.execPath,[compiler,'-p','tsconfig.json'],{cwd:root,windowsHide:true,encoding:'utf8'});process.stdout.write(r.stdout??'');process.stderr.write(r.stderr??'');if(r.status!==0)process.exit(r.status??1);
+cpSync(resolve(root,'inputs/wxg/dist'),resolve(root,'dist/inputs/wxg/dist'),{recursive:true});
+cpSync(resolve(root,'inputs/wxg/fixtures/authoring-inputs.json'),resolve(root,'dist/inputs/wxg/fixtures/authoring-inputs.json'));
+save('.runtime/build-bindings.json',{files:[...walk(resolve(root,'dist')),...walk(resolve(root,'web'))].map(member),inputs:walk(resolve(root,'src')).map(member),compiler:'typescript@7.0.2',inputBinding:member(resolve(root,'InputBindings.json'))});
+console.log('BUILD_PASS');

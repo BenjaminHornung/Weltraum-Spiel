@@ -5,7 +5,7 @@ import {
   type RenderCommand,
   type RenderCommandResult
 } from "../../../presentation";
-import { ThreeRenderBackend } from "./threeRenderBackend";
+import { ThreeRenderBackend, createThreeRendererPort } from "./threeRenderBackend";
 
 export interface DeterministicRenderHarness {
   readonly canvas: HTMLCanvasElement;
@@ -46,7 +46,7 @@ export const createDeterministicRenderHarness = (
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.NoToneMapping;
       renderer.shadowMap.enabled = false;
-      return renderer;
+      return createThreeRendererPort(renderer);
     }
   });
   const initialized = backend.dispatch({ kind: "InitializeBackend", backendRevision: backendRevision(0) });

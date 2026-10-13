@@ -29,20 +29,21 @@ export const stageHvpStructuralBreak=(world:R.World,parent:R.RigidBody,live:Stru
   let closed=false,committed=false;
   const rollback=():void=>{
     if(closed) { throw new Error("Structural stage is closed"); }
-    let clean=true;
+    let clean=true;const failures:unknown[]=[];
     for(const part of [...children].reverse()) {
-      try { world.removeRigidBody(part.body); } catch { clean=false; }
+      try { world.removeRigidBody(part.body); } catch(error) { clean=false;failures.push(error); }
     }
     const parentLive=world.getRigidBody(parent.handle)===parent;
     if(parentLive) {
-      try {parent.setEnabled(parentEnabled);if(parentSleeping){parent.sleep();}else{parent.wakeUp();}}catch {clean=false;}
+      try {parent.setEnabled(parentEnabled);if(parentSleeping){parent.sleep();}else{parent.wakeUp();}}catch(error) {clean=false;failures.push(error);}
     }
     const sameMotion=parentLive&&JSON.stringify([parent.translation(),parent.rotation(),parent.linvel(),parent.angvel()])
       ===JSON.stringify([position,rotation,velocity,angular]);
     const restored=clean&&sameMotion&&world.bodies.len()===beforeBodies&&world.colliders.len()===beforeColliders;
     closed=true;
     if(restored) { committing.delete(world); }
-    else { throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-cleanup","Native restoration is unproven","create",false); }
+    else { throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-cleanup","Native restoration is unproven","create",false,
+      failures.length?{cause:new AggregateError(failures,"Structural rollback failed")}:undefined); }
   };
   committing.add(world);
   try {
@@ -57,8 +58,11 @@ export const stageHvpStructuralBreak=(world:R.World,parent:R.RigidBody,live:Stru
       body.setEnabled(false);
     }
   } catch(error) {
-    try {rollback();}catch {throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-prepare",String(error),"create",false);}
-    throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-prepare",String(error),"create",true);
+    let message="Structural preparation failed";
+    try{message=String(error);}catch{/* Preserve the failure even when its formatting throws. */}
+    try {rollback();}catch(cleanup){throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-prepare",message,"create",false,
+      {cause:new AggregateError([error,cleanup],"Structural preparation and rollback failed")});}
+    throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-prepare",message,"create",true,{cause:error});
   }
   const result=Object.freeze({source:plan.after,removedMassKg:plan.removedMassKg,parts:Object.freeze(children.map(part=>Object.freeze(part)))});
   return {
@@ -76,12 +80,19 @@ export const stageHvpStructuralBreak=(world:R.World,parent:R.RigidBody,live:Stru
         if(world.getRigidBody(parent.handle)!==null) {throw new Error("Parent removal was not effective");}
         closed=true;committing.delete(world);
       }catch(error) {
-        if(world.getRigidBody(parent.handle)===parent) {
-          try {rollback();}catch {throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-remove",String(error),"remove",false);}
-          throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-remove",String(error),"remove",true);
+        let message="Structural parent removal failed";
+        try{message=String(error);}catch{/* Preserve the failure even when its formatting throws. */}
+        let parentLive=false;
+        try{parentLive=world.getRigidBody(parent.handle)===parent;}
+        catch(readback){closed=true;throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-remove",message,"remove",false,
+          {cause:new AggregateError([error,readback],"Structural parent removal and readback failed")});}
+        if(parentLive) {
+          try {rollback();}catch(cleanup){throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-remove",message,"remove",false,
+            {cause:new AggregateError([error,cleanup],"Structural parent removal and rollback failed")});}
+          throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-remove",message,"remove",true,{cause:error});
         }
         closed=true;
-        throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-remove",String(error),"remove",false);
+        throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-remove",message,"remove",false,{cause:error});
       }
     }
   };
@@ -91,8 +102,11 @@ export const stageHvpStructuralBreak=(world:R.World,parent:R.RigidBody,live:Stru
 export const commitHvpStructuralBreak=(world:R.World,parent:R.RigidBody,live:StructuralObject,plan:HvpStructuralBreakPlan)=>{
   const stage=stageHvpStructuralBreak(world,parent,live,plan);
   try {stage.commit();}catch(error) {
-    try {stage.rollback();}catch {throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-enable",String(error),"create",false);}
-    throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-enable",String(error),"create",true);
+    let message="Structural enable failed";
+    try{message=String(error);}catch{/* Preserve the failure even when its formatting throws. */}
+    try {stage.rollback();}catch(cleanup){throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-enable",message,"create",false,
+      {cause:new AggregateError([error,cleanup],"Structural enable and rollback failed")});}
+    throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-enable",message,"create",true,{cause:error});
   }
   stage.finalize();return stage.result;
 };

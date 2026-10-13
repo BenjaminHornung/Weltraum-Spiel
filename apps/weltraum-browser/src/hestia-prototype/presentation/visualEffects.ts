@@ -2,11 +2,12 @@ import * as THREE from "three";
 import type { ThreeRendererPort } from "../../render/three/backend/threeRenderBackend";
 import { HVP_SHADOW_REVISION_MAX_BYTES, sameHvpShadowRevision, type HvpShadowAtom, type HvpShadowCasterRevision,
   type HvpShadowRevision } from "./shadowRevision";
+import { HVP_EFFECT_VERSION } from "./look";
+export { HVP_EFFECT_VERSION } from "./look";
 
 /** One sky draw, native tone mapping, one cached 1024² depth map; no fullscreen targets. */
 export const HVP_EFFECT_COST = Object.freeze({ triangles: 528, drawCalls: 1, meshBytes: 13568,
   cpuBytes: 16384 + 65536 + 2 * HVP_SHADOW_REVISION_MAX_BYTES });
-export const HVP_EFFECT_VERSION = "hvp-surface-light-v1";
 
 export const shadeHvpSurface = (material: THREE.Material, water: boolean): void => {
   // A single flat sheet has no front/back transparency ordering to resolve.
@@ -201,8 +202,9 @@ export const createHvpVisualRenderer = (
   return {
     setPixelRatio: (value) => renderer.setPixelRatio(value),
     setSize: (width,height,updateStyle) => renderer.setSize(width,height,updateStyle),
+    getDrawingBufferSize: (target) => renderer.getDrawingBufferSize(target),
     render: (scene,camera) => {
-      if (disposed) { return; }
+      if (disposed) { return false; }
       const preparationStarted = performance.now();
       if (attachedScene !== scene) {
         attachedScene?.remove(sky);
@@ -233,7 +235,11 @@ export const createHvpVisualRenderer = (
       if (changed) { renderer.shadowMap.needsUpdate = true; }
       const shadowUpdated = renderer.shadowMap.needsUpdate;
       const started=performance.now();
+      const beforeFrame = renderer.info.render.frame;
       renderer.render(scene,camera);
+      const afterFrame = renderer.info.render.frame;
+      if (!Number.isSafeInteger(beforeFrame) || !Number.isSafeInteger(afterFrame)) return;
+      if (afterFrame <= beforeFrame) return false;
       // A throwing render does not admit the new cache; an unsupported snapshot
       // is never truncated or retained as if it described the complete depth pass.
       prior = next?.revision;
@@ -244,6 +250,7 @@ export const createHvpVisualRenderer = (
           shadowMapSize:1024,fullscreenTargets:0
         });
       }
+      return true;
     },
     dispose: () => {
       if (disposed) { return; }

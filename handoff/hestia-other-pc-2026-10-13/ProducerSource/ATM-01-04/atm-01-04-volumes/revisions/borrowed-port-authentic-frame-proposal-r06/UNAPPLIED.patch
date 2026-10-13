@@ -1,0 +1,233 @@
+diff --git a/apps/weltraum-browser/src/hvp/hvpBootstrap.ts b/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
+--- a/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
++++ b/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
+@@ -64,7 +64,8 @@
+   materialProfileId,
+   sourceRevision,
+   visibilityPlanRevision,
+-  type FrameId,
++  type FrameId,
++  type FrameProjectionSnapshot,
+   type MaterialProfile,
+   type MaterialRange,
+   type RenderBackend,
+@@ -152,9 +153,26 @@
+ };
+ type HvpRenderArtifact=MeshArtifact|ThreePrivateMeshHandle["receipt"];
+ 
+-export interface HvpBootstrapHandle {
+-  dispose(): Promise<void>;
+-}
++type HvpPublishedProjectionScalars = Readonly<Pick<FrameProjectionSnapshot,
++  "frameId" | "frameRevision" | "cameraPositionRelative" | "cameraOrientation" | "projectionParameters">> & {
++  readonly backendRevision: ReturnType<RenderBackend["readDiagnostics"]>["backendRevision"];
++};
++
++type HvpFrameScalarProposal = {
++  readonly status: "Pending";
++  readonly temporalReady: false;
++  readonly mountEpoch: number;
++  readonly projection: HvpPublishedProjectionScalars | undefined;
++  readonly terrainSource: Readonly<Pick<HvpTerrainSnapshot,
++    "sessionId" | "epoch" | "revision" | "sourceDigest" | "cellMeters" | "originMeters">>;
++  readonly viewportRequest: Readonly<{ width: number; height: number; pixelRatioAtMount: number }>;
++};
++
++export interface HvpBootstrapHandle {
++  dispose(): Promise<void>;
++  /** UNAPPLIED review candidate; raw owner scalars do not admit an ATM frame. */
++  readFrameScalarProposal?(): HvpFrameScalarProposal | undefined;
++}
+ 
+ const HVP_JOIN_REPRESENTATION_KEY = "hvp:join";
+ const HVP_FAR_REPRESENTATION_KEY = "hvp:far";
+@@ -469,7 +487,8 @@
+   releasePrivateMesh(handle:ThreePrivateMeshHandle,binding:ThreePrivateMeshBinding):RenderCommandResult;
+   batch<T>(action: () => T): T;
+   setWaterEnabled(enabled: boolean): void;
+-  updateProjection(): void;
++  updateProjection(): void;
++  readPublishedProjectionScalars(): HvpPublishedProjectionScalars | undefined;
+ }
+ 
+ export const createHvpPresentationBackend = (
+@@ -483,8 +502,9 @@
+ ): HvpPresentationBackend => {
+   const framesByRepresentation = new Map<RepresentationKey, FrameId>();
+   let lastFrameId: FrameId | undefined;
+-  let projectionRevision = 0;
+-  let waterEnabled = true;
++  let projectionRevision = 0;
++  let waterEnabled = true;
++  let publishedProjection: HvpPublishedProjectionScalars | undefined;
+ 
+   const sharedProjectionFrame = ():FrameId|undefined => {
+     const current = framesByRepresentation.values().next().value ?? lastFrameId;
+@@ -504,29 +524,31 @@
+     const isVisible = (key: RepresentationKey): boolean => (waterEnabled || (key !== waterRepresentationKey && !key.startsWith(`${waterRepresentationKey}:`))) && isRepresentationVisible(key);
+     const objectTransforms = new Map(readObjectTransforms().map((transform) => [transform.representationKey, transform]));
+     const revision = backend.readDiagnostics().backendRevision;
+-    requireAccepted(backend.dispatch(Object.freeze({
+-      kind: "ApplyFrameProjection",
+-      backendRevision: revision,
+-      snapshot: createFrameProjectionSnapshot({
+-        frameId: current,
+-        frameRevision: frameRevision(projectionRevision),
+-        cameraPositionRelative: camera.position,
+-        cameraOrientation: camera.orientation,
+-        projectionParameters: {
+-          kind: "Perspective",
+-          verticalFovDegrees: camera.verticalFovDegrees,
+-          aspect: camera.aspect,
+-          near: camera.near,
+-          far: camera.far
+-        },
+-        representationTransforms: keys.map((key) => objectTransforms.get(key) ?? ({
+-          representationKey: key,
+-          positionRelative: { x: 0, y: 0, z: 0 },
+-          orientation: { x: 0, y: 0, z: 0, w: 1 },
+-          scale: { x: 1, y: 1, z: 1 }
+-        }))
+-      })
+-    })), "HVP frame projection");
++    publishedProjection = undefined;
++    const snapshot = createFrameProjectionSnapshot({
++      frameId: current,
++      frameRevision: frameRevision(projectionRevision),
++      cameraPositionRelative: camera.position,
++      cameraOrientation: camera.orientation,
++      projectionParameters: {
++        kind: "Perspective",
++        verticalFovDegrees: camera.verticalFovDegrees,
++        aspect: camera.aspect,
++        near: camera.near,
++        far: camera.far
++      },
++      representationTransforms: keys.map((key) => objectTransforms.get(key) ?? ({
++        representationKey: key,
++        positionRelative: { x: 0, y: 0, z: 0 },
++        orientation: { x: 0, y: 0, z: 0, w: 1 },
++        scale: { x: 1, y: 1, z: 1 }
++      }))
++    });
++    requireAccepted(backend.dispatch(Object.freeze({
++      kind: "ApplyFrameProjection",
++      backendRevision: revision,
++      snapshot
++    })), "HVP frame projection");
+     const projectionEnded=onTiming?performance.now():0;
+     const visibilityBuildStarted=onTiming?performance.now():0;
+     const plan=createVisibilityPlan({
+@@ -546,7 +568,15 @@
+     onTiming?.("startupProjectionSnapshotCpuMs",projectionStarted,projectionEnded-projectionStarted);
+     onTiming?.("startupVisibilityPlanBuildCpuMs",visibilityBuildStarted,visibilityBuildEnded-visibilityBuildStarted);
+     onTiming?.("startupVisibilityPlanDispatchCpuMs",visibilityDispatchStarted,visibilityDispatchEnded-visibilityDispatchStarted);
+-    onTiming?.("startupProjectionMs",started,visibilityDispatchEnded-started);
++    onTiming?.("startupProjectionMs",started,visibilityDispatchEnded-started);
++    publishedProjection = Object.freeze({
++      backendRevision: revision,
++      frameId: snapshot.frameId,
++      frameRevision: snapshot.frameRevision,
++      cameraPositionRelative: snapshot.cameraPositionRelative,
++      cameraOrientation: snapshot.cameraOrientation,
++      projectionParameters: snapshot.projectionParameters
++    });
+   };
+   const batcher = createSynchronousBatch(publishCurrentSet);
+ 
+@@ -559,8 +589,9 @@
+       framesByRepresentation.delete(command.representationKey);
+       if(command.kind==="EvictRepresentation"||isRepresentationVisible(command.representationKey)){batcher.request();}
+     } else if (command.kind === "ResetBackend" || command.kind === "DisposeBackend") {
+-      framesByRepresentation.clear();
+-      lastFrameId = undefined;
++      framesByRepresentation.clear();
++      lastFrameId = undefined;
++      publishedProjection = undefined;
+     }
+     return result;
+   };
+@@ -604,7 +635,12 @@
+     updateProjection: () => { deferInitialProjection = false; batcher.request(); },
+     renderFrame: () => backend.renderFrame(),
+     getCapabilities: () => backend.getCapabilities(),
+-    readDiagnostics: () => backend.readDiagnostics(),
++    readDiagnostics: () => backend.readDiagnostics(),
++    readPublishedProjectionScalars: () => {
++      const current = backend.readDiagnostics();
++      return current.backendState === "Available" && current.backendRevision === publishedProjection?.backendRevision
++        ? publishedProjection : undefined;
++    },
+     setWaterEnabled(enabled: boolean): void {
+       if (waterEnabled === enabled) return;
+       waterEnabled = enabled;
+@@ -1083,11 +1119,16 @@
+     if (flightHud) flightHud.hidden = true;
+     reticle?.setAttribute("style", "display:none");
+ 
+-    backend = (overrides.createBackend ?? ((options) => new ThreeRenderBackend(options)))({
+-      canvas,
+-      width: Math.max(1, windowPort.innerWidth),
+-      height: Math.max(1, windowPort.innerHeight),
+-      pixelRatio: Math.max(1, windowPort.devicePixelRatio),
++    let viewportRequest = Object.freeze({
++      width: Math.max(1, windowPort.innerWidth),
++      height: Math.max(1, windowPort.innerHeight),
++      pixelRatioAtMount: Math.max(1, windowPort.devicePixelRatio)
++    });
++    backend = (overrides.createBackend ?? ((options) => new ThreeRenderBackend(options)))({
++      canvas,
++      width: viewportRequest.width,
++      height: viewportRequest.height,
++      pixelRatio: viewportRequest.pixelRatioAtMount,
+       antialias: true,
+       backgroundColor: 0x0a141c,
+       lightingMode: "None",
+@@ -1824,8 +1865,13 @@
+       isInputBlocked: () => playerInput?.active ?? false });
+     const resizeViewport=()=>{
+       if(disposed||myEpoch!==hvpMountEpoch||backend===undefined){return;}
+-      const result=backend.resizeViewport?.(Math.max(1,windowPort.innerWidth),Math.max(1,windowPort.innerHeight));
+-      if(result!==undefined){requireAccepted(result,"HVP viewport resize");}
++      const nextRequest = Object.freeze({
++        width: Math.max(1, windowPort.innerWidth),
++        height: Math.max(1, windowPort.innerHeight),
++        pixelRatioAtMount: viewportRequest.pixelRatioAtMount
++      });
++      const result=backend.resizeViewport?.(nextRequest.width,nextRequest.height);
++      if(result!==undefined){requireAccepted(result,"HVP viewport resize");viewportRequest=nextRequest;}
+     };
+     listeners.add(windowPort,"resize",resizeViewport);
+     resizeViewport();
+@@ -3242,9 +3288,28 @@
+       if (!disposed) animationFrame = windowPort.requestAnimationFrame(renderFrame);
+       }finally{mainCpuFrameStart=undefined;}
+     };
+-    animationFrame = windowPort.requestAnimationFrame(renderFrame);
+-    return Object.freeze({ dispose });
+-  } catch (error) {
++    animationFrame = windowPort.requestAnimationFrame(renderFrame);
++    return Object.freeze({
++      dispose,
++      readFrameScalarProposal: (): HvpFrameScalarProposal | undefined => {
++        if (disposed || hvpMountEpoch !== myEpoch || backend === undefined) return undefined;
++        const source = terrainRoot.read();
++        // shortcut: independently sampled owner facts; atomic ATM frame binding requires A0's owner contract.
++        return Object.freeze({
++          status: "Pending",
++          temporalReady: false,
++          mountEpoch: myEpoch,
++          projection: presentation.readPublishedProjectionScalars(),
++          terrainSource: Object.freeze({
++            sessionId: source.sessionId, epoch: source.epoch, revision: source.revision,
++            sourceDigest: source.sourceDigest, cellMeters: source.cellMeters,
++            originMeters: Object.freeze({ ...source.originMeters })
++          }),
++          viewportRequest
++        });
++      }
++    });
++  } catch (error) {
+     const wasLive = !disposed;
+     try { await dispose(); } catch (cleanupError) {
+       if(owner.kind==="phy01-lab"){throw new AggregateError([error,cleanupError],"Private HVP initialization and cleanup failed");}

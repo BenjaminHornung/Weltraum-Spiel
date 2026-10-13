@@ -1,4 +1,4 @@
-import { resolveHvpGravity, HVP_INERTIA_CELLS, HVP_INERTIA_KEY, HVP_PLAYER_PROFILE } from "./profile";
+import { resolveHvpGravity, HVP_INERTIA_CELLS, HVP_INERTIA_KEY, HVP_PLAYER_PROFILE, HVP_SOLVER_VERSION, assertHvpPublicSaveCutover } from "./profile";
 import {validateHvpChunkStaticLayout,validateHvpChunkCollisionSteps,type HvpChunkStaticLayout} from "./staticTerrainLayout";
 export { resolveHvpGravity } from "./profile";
 import { R, initializeHvpRapier, isHvpSolidCollider } from "./rapierPort";
@@ -17,11 +17,17 @@ import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {validatedFrozenDenseArrayInitializationBytes} from "../../voxel/adaptive/validation";
 import {createHvpBodyCutSession,createHvpOwnedHashBodyCutSession,type HvpMovingCutRequest,type HvpBodyCutAdmission,type HvpBodyPlanTrace,type HvpBodyChildProjection} from "./bodyCutSession";
 import type {HvpCuttableBody} from "./bodyCut";
-import {decodeHvpWorld,decodeHvpColdWorld,hvpColdWorldAllocationBytes,hvpCollisionDigest,type HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
+import {decodeHvpWorld,decodeHvpColdWorld,decodeHvpLabWorld,decodeHvpColdLabWorld,hvpColdWorldAllocationBytes,hvpColdLabWorldAllocationBytes,
+  hvpCollisionDigest,type HvpWorldCheckpoint,type HvpLabWorldCheckpoint,type HvpDecodedWorld} from "../persistence/worldCheckpoint";
+import {assertHvpDecodedLabGame,decodeHvpLabGame,decodeHvpColdLabGame,HVP_SAVE_TRANSPORT_BYTES,HVP_SAVE_DECODE_BYTES,type HvpDecodedLabGame} from "../persistence/gameCheckpoint";
+import {HVP_LAB_PHYSICS_MODE,readHvpLabGameWireBuffer} from "./physicsProtocol";
+import {copyHvpLabCollisionArray,copyLabCompleteCollisionPlans,copyLabReplacementPlans,inspectLabCompleteCollisionInputs,
+  inspectLabReplacementInputs,ownHvpLabCompleteCollisionSectors,ownHvpLabReplacementMeshes,reserveCaptureBytes} from "./labCollisionCapture";
+export {ownHvpLabCompleteCollisionSectors,ownHvpLabReplacementMeshes};
 import {createStructuralOwnerLedger} from "../../voxel/structural/model";
-import {encodeHvpBody} from "../persistence/bodyCheckpoint";
+import {encodeHvpBody,reserveHvpBodyCapture} from "../persistence/bodyCheckpoint";
 import {restoreHvpBody} from "./restoreBody";
-import {createHvpNeighborCollision} from "./neighborRegion";
+import {createHvpNeighborCollision,validateHvpNeighborCollisionMeshes} from "./neighborRegion";
 import {createHvpBodyResidency,createHvpWorkerBodyResidency} from "./bodyResidency";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 import type {WorkerJobRequest,TransferableBufferBundle} from "../../workers/protocol";
@@ -30,7 +36,231 @@ import type {HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
 import type {HvpCutSpan} from "../runtime/cutTrace";
 
 export type HvpPhysicsSession = Awaited<ReturnType<typeof createHvpPhysicsSession>>;
+/** @internal Separate lab return contract; never passed to the public WorldReplacement/Worker DTO. */
+export type HvpLabPhysicsSession = Awaited<ReturnType<ReturnType<typeof physicsSessionFor<HvpLabWorldCheckpoint>>>>;
+type SessionWorld<C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>=Omit<HvpDecodedWorld,"checkpoint">&{readonly checkpoint:C};
+type SessionCheckpointContext<C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>={
+  readonly captureKind:"public"|"phy01-lab";
+  readonly coexistenceBytes:number;
+  readonly prepareAvailableBytes?:()=>number;
+  readonly admitRestore:()=>void;readonly admitCapture:()=>void;
+  readonly decode:(value:unknown)=>SessionWorld<C>;
+  readonly decodeCold:(value:unknown,reserve:StructuralOwnedReserve,
+    onRetained?:(recipe:ReturnType<typeof decodeHvpWorld>["bodies"][number]["recipe"],bytes:number)=>void)=>SessionWorld<C>;
+  readonly allocation:typeof hvpColdWorldAllocationBytes;
+  readonly build:(data:Omit<HvpWorldCheckpoint,"solver">)=>C;
+};
+const publicCheckpointContext:SessionCheckpointContext<HvpWorldCheckpoint>={
+  captureKind:"public",
+  coexistenceBytes:0,
+  admitRestore:assertHvpPublicSaveCutover,admitCapture:assertHvpPublicSaveCutover,
+  decode:decodeHvpWorld,decodeCold:decodeHvpColdWorld,allocation:hvpColdWorldAllocationBytes,
+  build:data=>Object.freeze({...data,solver:"rapier-0.12.0"})
+};
+const labCheckpointContext:SessionCheckpointContext<HvpLabWorldCheckpoint>={
+  captureKind:"phy01-lab",
+  coexistenceBytes:0,
+  admitRestore:()=>{},admitCapture:()=>{},decode:decodeHvpLabWorld,decodeCold:decodeHvpColdLabWorld,
+  allocation:hvpColdLabWorldAllocationBytes,build:data=>Object.freeze({...data,solver:HVP_SOLVER_VERSION})
+};
 type TerrainReplacement=Readonly<{index:number;mesh:HvpCollisionSector}>;
+declare const labReplacementCaptureBrand:unique symbol;
+/** @internal Opaque, single-use capability issued only for a live LAB owner. */
+export type HvpLabWorldReplacementCaptureWitness=Readonly<{readonly [labReplacementCaptureBrand]:true}>;
+/** @internal Snapshot view; resource footprint and issuance authority remain in the session WeakMap. */
+export type HvpLabWorldReplacementCapture=Readonly<{readonly witness:HvpLabWorldReplacementCaptureWitness;
+  readonly checkpoint:HvpLabWorldCheckpoint;readonly baseCollision:readonly HvpCollisionSector[];readonly replacements:readonly TerrainReplacement[];
+  readonly complete?:Readonly<{sectors:readonly HvpCollisionSector[];layout:HvpChunkStaticLayout}>}>;
+type HvpLabWorldReplacementCaptureRecord={readonly before:HvpLabPhysicsSession;readonly game:HvpDecodedLabGame;
+  readonly mode:"delta"|"complete";
+  readonly checkpoint:HvpLabWorldCheckpoint;readonly baseCollision:readonly HvpCollisionSector[];readonly replacements:readonly TerrainReplacement[];
+  readonly ledger:ReturnType<typeof createStructuralOwnerLedger>;readonly footprint:number;readonly closeCaptureScratch?:()=>void;readonly layout?:HvpChunkStaticLayout;
+  readonly completeSectors?:readonly HvpCollisionSector[];assembledSectors?:readonly HvpCollisionSector[]};
+type HvpLabWorldReplacementCaptureAccess={assertReady():void;assertCompatible(game:HvpDecodedLabGame,layout:HvpChunkStaticLayout):void;
+  residentBytes():number;collisionCopyBytes():number;
+  checkpoint(reserve:StructuralOwnedReserve):HvpLabWorldCheckpoint;copyCollision():readonly HvpCollisionSector[]};
+const labWorldReplacementCaptureAccess=new WeakMap<object,HvpLabWorldReplacementCaptureAccess>();
+const labWorldReplacementCaptures=new WeakMap<object,HvpLabWorldReplacementCaptureRecord>();
+type HvpLabWorkerGameWireRecord={readonly mode:typeof HVP_LAB_PHYSICS_MODE;before:HvpLabPhysicsSession|undefined;readonly incarnation:string;current:(()=>boolean)|undefined;
+  game:HvpDecodedLabGame|undefined;readonly wireLedger:ReturnType<typeof createStructuralOwnerLedger>;
+  captureLedger?:ReturnType<typeof createStructuralOwnerLedger>;
+  raw?:ArrayBuffer;text?:string;parsed?:unknown;captured:boolean;leases:number;releaseRequested:boolean};
+const labWorkerGameWires=new WeakMap<object,HvpLabWorkerGameWireRecord>();
+const labWorkerGameWireHandles=new WeakMap<object,HvpLabWorkerGameWireRecord>();
+const finishLabWire=(record:HvpLabWorkerGameWireRecord):void=>{
+  if(!record.releaseRequested||record.leases!==0){return;}
+  if(record.game&&labWorkerGameWires.get(record.game as object)===record){labWorkerGameWires.delete(record.game as object);}
+  record.captureLedger?.release();record.captureLedger=undefined;
+  record.wireLedger.release();record.raw=undefined;record.text=undefined;record.parsed=undefined;
+  record.game=undefined;record.before=undefined;record.current=undefined;
+};
+const leaseLabWire=(record:HvpLabWorkerGameWireRecord):(()=>void)=>{
+  if(record.releaseRequested||record.current?.()!==true){throw new Error("Stale LAB Worker game-wire owner");}
+  record.leases+=1;let released=false;
+  return ()=>{if(!released){released=true;record.leases-=1;finishLabWire(record);}};
+};
+const labWirePrepareAvailable=(record:HvpLabWorkerGameWireRecord):number=>{
+  const remaining=96*1024*1024-record.wireLedger.resources.reservedBytes-(record.captureLedger?.resources.reservedBytes??0);
+  if(remaining<=0){throw new Error("Prepare96MiB LAB wire phase budget");}return remaining;
+};
+export type HvpLabWorkerGameWireAdmission=Readonly<{game:HvpDecodedLabGame;release():void}>;
+/** @internal Worker-only full-game transport admission. The capability binds a fixed owner and incarnation. */
+export const decodeHvpLabWorkerGameWire=(before:HvpLabPhysicsSession|undefined,wire:unknown,incarnation:string,current:()=>boolean):HvpLabWorkerGameWireAdmission=>{
+  if(typeof current!=="function"||typeof incarnation!=="string"||!/^[A-Za-z0-9_-]{1,128}$/.test(incarnation)){
+    throw new Error("Invalid LAB Worker game-wire binding");
+  }
+  const input=readHvpLabGameWireBuffer(wire),access=before===undefined?undefined:labWorldReplacementCaptureAccess.get(before as object);
+  if(before!==undefined&&!access){throw new Error("LAB game wire requires a module-issued owner");}
+  access?.assertReady();
+  const resident=access?.residentBytes()??0,rawBytes=input.byteLength,textQuote=rawBytes*2,parsedQuote=rawBytes*2;
+  if(!Number.isSafeInteger(resident+rawBytes+textQuote+parsedQuote+HVP_SAVE_DECODE_BYTES)
+    ||resident+rawBytes+textQuote+parsedQuote+HVP_SAVE_DECODE_BYTES>256*1024*1024){
+    throw new Error("LAB Worker game-wire coexistence budget");
+  }
+  const wireLedger=createStructuralOwnerLedger(resident+rawBytes,96*1024*1024,128);
+  let decodeLedger:ReturnType<typeof createStructuralOwnerLedger>|undefined;
+  try{
+    if(current()!==true){throw new Error("Stale LAB Worker game-wire owner");}
+    wireLedger.reserve(textQuote);
+    const text=new TextDecoder("utf-8",{fatal:true}).decode(input.buffer);
+    if(text.length>HVP_SAVE_TRANSPORT_BYTES){throw new Error("Hestia save transport budget");}
+    wireLedger.reserve(parsedQuote);
+    const parsed=JSON.parse(text);
+    // Scratch and the retained wire share one aggregate CPU/Prepare ceiling.
+    decodeLedger=createStructuralOwnerLedger(wireLedger.resources.residentBytes+wireLedger.resources.reservedBytes,
+      96*1024*1024-wireLedger.resources.reservedBytes,128);
+    let admittedWorkingBytes=0;
+    const decoded=decodeHvpColdLabGame(parsed,workingBytes=>{
+      if(current()!==true||!Number.isSafeInteger(workingBytes)||workingBytes<0||workingBytes>HVP_SAVE_DECODE_BYTES){
+        throw new Error("LAB Worker game decode admission changed");
+      }
+      decodeLedger!.reserve(workingBytes);admittedWorkingBytes+=workingBytes;
+    });
+    const game=decoded.game;
+    assertHvpDecodedLabGame(game);
+    if(current()!==true){throw new Error("Stale LAB Worker game-wire owner");}
+    if(!Number.isSafeInteger(game.decodedBytes)||game.decodedBytes<0||game.decodedBytes>admittedWorkingBytes){throw new Error("Invalid LAB retained Game footprint");}
+    // Transfer the retained result from the completed decoder scratch phase; no allocation or await intervenes.
+    decodeLedger.release();decodeLedger=undefined;wireLedger.reserve(game.decodedBytes);
+    const record:HvpLabWorkerGameWireRecord={mode:HVP_LAB_PHYSICS_MODE,before,incarnation,current,game,wireLedger,
+      raw:input.buffer,text,parsed,captured:false,leases:0,releaseRequested:false};
+    labWorkerGameWires.set(game as object,record);
+    const admission:HvpLabWorkerGameWireAdmission=Object.freeze({game,release:()=>releaseHvpLabWorkerGameWireAdmission(admission)});
+    labWorkerGameWireHandles.set(admission as object,record);
+    return admission;
+  }catch(error){wireLedger.release();decodeLedger?.release();throw error;}
+};
+/** @internal Releases temporary parser/decode quotes only after the owning factory or replacement settles. */
+export const releaseHvpLabWorkerGameWireAdmission=(admission:HvpLabWorkerGameWireAdmission):void=>{
+  const key=admission as object,record=labWorkerGameWireHandles.get(key);
+  if(!record){return;}
+  labWorkerGameWireHandles.delete(key);
+  record.releaseRequested=true;finishLabWire(record);
+};
+const sameChunkLayout=(left:HvpChunkStaticLayout,right:HvpChunkStaticLayout):boolean=>left.version===right.version
+  &&left.primaryTerrainCount===right.primaryTerrainCount&&left.neighborTerrainCount===right.neighborTerrainCount;
+/** @internal Captures live A only through a module-issued LAB Session capability. */
+export const issueHvpLabWorldReplacementCapture=(before:HvpLabPhysicsSession,game:HvpDecodedLabGame,input:unknown,current:()=>boolean,
+  complete?:Readonly<{sectors:unknown;layout:HvpChunkStaticLayout}>):HvpLabWorldReplacementCapture=>{
+  assertHvpDecodedLabGame(game);
+  const access=labWorldReplacementCaptureAccess.get(before as object);
+  if(!access){throw new Error("LAB replacement requires a module-issued idle owner");}
+  const wire=labWorkerGameWires.get(game as object);
+  if(wire&&(wire.mode!==HVP_LAB_PHYSICS_MODE||wire.before!==before||wire.captured||wire.releaseRequested||wire.current?.()!==true||current()!==true)){
+    throw new Error("LAB replacement game-wire owner mismatch");
+  }
+  access.assertReady();
+  const layout=complete===undefined?undefined:validateHvpChunkStaticLayout(complete.layout);
+  if(complete){
+    if(current()!==true){throw new Error("Stale World replacement");}
+    if(!layout){throw new Error("LAB complete replacement requires a static layout");}
+    access.assertCompatible(game,layout);
+  }
+  const heldWire=wire?wire.wireLedger.resources.residentBytes+wire.wireLedger.resources.reservedBytes:0;
+  let activeLedger=createStructuralOwnerLedger(wire?heldWire:access.residentBytes(),wire?labWirePrepareAvailable(wire):undefined,128);
+  const releaseWire=wire?leaseLabWire(wire):undefined;
+  if(wire){wire.captureLedger=activeLedger;}
+  const reserve:StructuralOwnedReserve=(bytes,retained,kind)=>activeLedger.reserve(bytes,retained,kind);
+  Object.defineProperty(reserve,"hashUnits",{value:128});
+  let released=false;
+  const ledger={reserve,get resources(){return activeLedger.resources;},release:()=>{
+    if(released){return;}released=true;activeLedger.release();
+    if(wire){wire.captureLedger=undefined;}releaseWire?.();
+  }};
+  try{
+    const deltaPlans=inspectLabReplacementInputs(input,ledger.reserve);
+    if(complete&&deltaPlans.items.length!==0){throw new Error("Complete LAB replacement cannot include sector deltas");}
+    const plans=complete?inspectLabCompleteCollisionInputs(complete.sectors,ledger.reserve):deltaPlans;
+    if(complete){
+      const world=game.checkpoint.world,baseCount=world.neighbor?.baseSectorCount??plans.items.length;
+      if(baseCount<layout!.primaryTerrainCount||plans.items.length!==baseCount+(world.neighbor?.resident?layout!.neighborTerrainCount:0)){
+        throw new Error("Invalid complete static collision coverage");
+      }
+    }
+    reserveCaptureBytes(ledger.reserve,plans.borrowedBytes);
+    reserveCaptureBytes(ledger.reserve,plans.copyBytes);
+    const baseCollisionBytes=access.collisionCopyBytes();
+    // Account for the private base-collision copy records before copying their typed buffers.
+    reserveCaptureBytes(ledger.reserve,baseCollisionBytes+64+4094*128);
+    // The shared kernel builds the final sector list and its bounded temporary index list before B.
+    reserveCaptureBytes(ledger.reserve,64+4094*16);
+    if(complete){reserveCaptureBytes(ledger.reserve,64+plans.items.length*16);}
+    // World text/header and the existing 64-body envelope are reserved before any body is encoded.
+    reserveCaptureBytes(ledger.reserve,HVP_SAVE_TRANSPORT_BYTES*4+64*65_536+65_536);
+    // Capture record and replacement record storage are owned alongside their buffers.
+    reserveCaptureBytes(ledger.reserve,512+plans.items.length*128);
+    if(current()!==true){throw new Error("Stale World replacement");}
+    const checkpoint=access.checkpoint(ledger.reserve);
+    const baseCollision=access.copyCollision();
+    const actualBaseBytes=baseCollision.reduce((bytes,mesh)=>bytes+mesh.vertices.byteLength+mesh.indices.byteLength,0);
+    if(actualBaseBytes!==baseCollisionBytes){throw new Error("A collision changed during capture");}
+    const replacements=complete?Object.freeze([]) as readonly TerrainReplacement[]:copyLabReplacementPlans(plans.items);
+    const completeSectors=complete?copyLabCompleteCollisionPlans(plans.items):undefined;
+    Object.freeze(baseCollision);Object.freeze(replacements);
+    const retainedCaptureBytes=plans.borrowedBytes+plans.copyBytes+baseCollisionBytes
+      +hvpColdLabWorldAllocationBytes(checkpoint).checkpointBytes+512+baseCollision.length*128+plans.items.length*128
+      +64+4094*16+(complete?64+plans.items.length*16:0);
+    if(!Number.isSafeInteger(retainedCaptureBytes)){throw new Error("Invalid LAB replacement footprint");}
+    // The intake plans/text are scratch until this call returns and the kernel binds its candidate list.
+    const closeCaptureScratch=wire?()=>{
+      const retained=createStructuralOwnerLedger(heldWire,96*1024*1024-wire.wireLedger.resources.reservedBytes,128);
+      retained.reserve(retainedCaptureBytes);
+      activeLedger.release();activeLedger=retained;wire.captureLedger=retained;
+    }:undefined;
+    const witness=Object.freeze(Object.create(null)) as HvpLabWorldReplacementCaptureWitness;
+    const target=completeSectors?Object.freeze({sectors:completeSectors,layout:layout!}):undefined;
+    const snapshot=Object.freeze({witness,checkpoint,baseCollision,replacements,...(target?{complete:target}:{})});
+    labWorldReplacementCaptures.set(witness as object,{before,game,mode:complete?"complete":"delta",checkpoint,baseCollision,replacements,ledger,
+      get footprint(){return ledger.resources.residentBytes+ledger.resources.reservedBytes;},closeCaptureScratch,
+      ...(target?{layout:target.layout,completeSectors:target.sectors}:{})});
+    if(wire){wire.captured=true;}
+    return snapshot;
+  }catch(error){ledger.release();throw error;}
+};
+/** @internal Binds the one assembled sector array to the capture capability before its async factory call. */
+export const bindHvpLabWorldReplacementCaptureSectors=(witness:HvpLabWorldReplacementCaptureWitness,sectors:readonly HvpCollisionSector[],layout?:HvpChunkStaticLayout|null):void=>{
+  const record=labWorldReplacementCaptures.get(witness as object);
+  if(!record||record.assembledSectors!==undefined){throw new Error("Expired or already-bound LAB replacement capture");}
+  if(record.mode==="complete"){
+    if(record.layout===undefined||sectors!==record.completeSectors||layout===null||layout===undefined
+      ||!sameChunkLayout(validateHvpChunkStaticLayout(layout),record.layout)){throw new Error("LAB complete replacement does not match its capture");}
+    record.closeCaptureScratch?.();record.assembledSectors=sectors;return;
+  }
+  if(layout!==undefined){throw new Error("Delta LAB replacement cannot bind a static layout");}
+  const world=record.game.checkpoint.world,baseCount=record.checkpoint.neighbor?.baseSectorCount??record.baseCollision.length;
+  const count=baseCount+(world.neighbor?.resident?64:0);
+  if(sectors.length!==count){throw new Error("LAB replacement sectors do not match their capture");}
+  for(let index=0;index<count;index+=1){
+    const replacement=record.replacements.find(value=>value.index===index),expected=replacement?.mesh??record.baseCollision[index];
+    if(expected===undefined||sectors[index]!==expected){throw new Error("LAB replacement sectors do not match their capture");}
+  }
+  record.closeCaptureScratch?.();record.assembledSectors=sectors;
+};
+/** @internal Releases an unconsumed witness on every validation or preparation exit. */
+export const releaseHvpLabWorldReplacementCapture=(witness:HvpLabWorldReplacementCaptureWitness):void=>{
+  const key=witness as object,record=labWorldReplacementCaptures.get(key);
+  if(record){labWorldReplacementCaptures.delete(key);record.ledger.release();}
+};
 export interface HvpTerrainSourceTiming {readonly origin:number;readonly workElapsedMs:number;readonly yieldWaitMs:number;readonly workSteps:number;readonly taskYields:number;
   readonly maxWork:Readonly<{label:string;start:number;duration:number}>;readonly maxYield:Readonly<{label:string;start:number;duration:number}>}
 type TerrainPlan={readonly id:string;readonly expected:number;readonly replacements:readonly TerrainReplacement[];
@@ -69,7 +299,8 @@ const logSlowHvpBodyPlan=(trace:HvpBodyPlanTrace):void=>{
         ...(step.sub===undefined?{}:{sub:step.sub})}))})}`);
 };
 /** `workerOwned` is fixed per factory (never a caller input); only it selects the owned-payload body hash. */
-const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayout) => async (
+const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(workerOwned: boolean,
+  checkpointContext:SessionCheckpointContext<C>,staticLayout?:HvpChunkStaticLayout,assertCurrent:()=>void=()=>{}) => async (
   sectors: readonly HvpCollisionSector[],
   spawn: Readonly<{ x: number; y: number; z: number }>,
   gravity = resolveHvpGravity(),
@@ -81,47 +312,53 @@ const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayo
     branchKind:"branch"|"salvage"="branch",
     measureBodyHold=false
 ) => {
+  assertCurrent();
   if (!Number.isFinite(gravity) || gravity <= 0 || ![spawn.x, spawn.y, spawn.z].every(Number.isFinite) || sectors.length > 4094) {
     throw new RangeError("Invalid HVP physics admission");
   }
+  if(checkpoint!==undefined){checkpointContext.admitRestore();}
   const collisionDigest=hvpCollisionDigest(sectors);
   if(checkpoint!==undefined){
-    const header=checkpoint as Partial<HvpWorldCheckpoint>|null;
+    const header=checkpoint as Partial<Pick<HvpWorldCheckpoint,"gravity"|"sessionId"|"collisionDigest">>|null;
     if(!header||header.gravity!==gravity||header.sessionId!==sessionId){throw new Error("Saved World gravity/session profile mismatch");}
     if(header.collisionDigest!==collisionDigest){throw new Error("Saved collision does not match candidate sources");}
   }
   let coldRecipes:WeakSet<object>|undefined;
   let coldResidentBytes=0;
   let restored=checkpoint===undefined?undefined:workerOwned?(()=>{
-    const allocation=hvpColdWorldAllocationBytes(checkpoint);
+    const allocation=checkpointContext.allocation(checkpoint);
     const ledger=createStructuralOwnerLedger(allocation.sourceBytes+allocation.checkpointBytes
-      +sectors.reduce((bytes,sector)=>bytes+sector.vertices.byteLength+sector.indices.byteLength,0)+4096,undefined,128);
+      +sectors.reduce((bytes,sector)=>bytes+sector.vertices.byteLength+sector.indices.byteLength,0)+4096
+      +checkpointContext.coexistenceBytes,checkpointContext.prepareAvailableBytes?.(),128);
     try{
       coldRecipes=new WeakSet<object>();
-      const decoded=decodeHvpColdWorld(checkpoint,ledger.reserve,recipe=>coldRecipes!.add(recipe));
+      const decoded=checkpointContext.decodeCold(checkpoint,ledger.reserve,recipe=>coldRecipes!.add(recipe));
       coldResidentBytes=ledger.resources.retainedEstimateBytes+allocation.checkpointBytes+4096
         +(decoded.branchSource?.bricks.length??0)*ADAPTIVE_BRICK_ESTIMATED_BYTES;
       return decoded;
     }finally{ledger.release();}
-  })():decodeHvpWorld(checkpoint);
+  })():checkpointContext.decode(checkpoint);
   let saved=restored?.checkpoint;
   const parkedIds=new Set(saved?.parked??[]);
   const baseSectorCount=saved?.neighbor?.baseSectorCount??sectors.length;
   const primaryTerrainCount=staticLayout?.primaryTerrainCount??64,neighborTerrainCount=staticLayout?.neighborTerrainCount??64;
   if((staticLayout&&baseSectorCount<primaryTerrainCount)||sectors.length!==baseSectorCount+(saved?.neighbor?.resident?neighborTerrainCount:0)){throw new Error("Saved neighbour collision membership mismatch");}
+  if(staticLayout&&saved?.neighbor?.resident){validateHvpNeighborCollisionMeshes(sectors.slice(baseSectorCount),true,neighborTerrainCount);}
   if(staticLayout){const pump=createHvpBodyMeshTaskPump(()=>{});
     try{await pump.run((function*(){for(let i=0;i<256;i+=1){if(!Object.hasOwn(sectors,i)){throw new Error("Incomplete primary chunk coverage");}
       yield* validateHvpChunkCollisionSteps(sectors[i]!,i);}})());}finally{pump.dispose();}}
+  assertCurrent();
   if(saved){spawn=saved.dropSpawn;player=saved.player===null?undefined:{spawn:saved.player.position,coverage:saved.coverage};}
-  await initializeHvpRapier();
   if(inertiaSpawn!==undefined&&![inertiaSpawn.x,inertiaSpawn.y,inertiaSpawn.z].every(Number.isFinite)) { throw new Error("Invalid inertia spawn"); }
   let inertiaRecipe=restored?restored.bodies.find(b=>b.checkpoint.family==="inertia")?.recipe??null:
     inertiaSpawn!==undefined?prepareHvpRigidBody(ingestHvpStructuralCells("hvp-inertia-l",HVP_INERTIA_CELLS,
     [{materialId:1,densityKgPerCubicMeter:600,structuralClass:"wood",destructible:true,tags:null}])):null;
   const bodyColliderCount=restored?restored.bodies.filter(b=>!parkedIds.has(b.checkpoint.ownerId)).reduce((n,b)=>n+b.recipe.colliders.length,0):1+(inertiaRecipe?.colliders.length??0)+(branchSpawn?2:0);
   if(sectors.filter(s=>s.indices.length>0).length+bodyColliderCount+(player===undefined?0:1)>4096) { throw new Error("Physics collider BudgetExceeded"); }
+  assertCurrent();await initializeHvpRapier();assertCurrent();
   const world = new R.World({ x: 0, y: -gravity, z: 0 });
   let disposed = false;
+  let labCaptureReserve:StructuralOwnedReserve|undefined;
   const probeTerrainSource=workerOwned&&isProbeTerrainSubsetEnabled()?createHvpProbeTerrainSourceOwner():undefined;
   try {
     world.timestep = HVP_PHYSICS_DT;
@@ -277,12 +514,12 @@ const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayo
       const hit=world.castRayAndGetNormal(new R.Ray(origin,direction),4,true,undefined,undefined,undefined,undefined,
         collider=>isHvpSolidCollider(collider)&&collider.parent()?.isKinematic()!==true);
       if(!hit){return blocked("NoContact","No contact within 4 m");}
-      const point=Object.freeze({x:origin.x+direction.x*hit.toi,y:origin.y+direction.y*hit.toi,z:origin.z+direction.z*hit.toi});
+      const point=Object.freeze({x:origin.x+direction.x*hit.timeOfImpact,y:origin.y+direction.y*hit.timeOfImpact,z:origin.z+direction.z*hit.timeOfImpact});
       const body=hit.collider.parent();
-      if(!body?.isDynamic()){return {preview:Object.freeze({...noImpulseTarget,kind:"Fixed",distanceMeters:hit.toi,point}),reason:"Contact is not dynamic"};}
+      if(!body?.isDynamic()){return {preview:Object.freeze({...noImpulseTarget,kind:"Fixed",distanceMeters:hit.timeOfImpact,point}),reason:"Contact is not dynamic"};}
       const massKg=body.mass(),v=body.linvel(),magnitude=Math.min(15,Math.max(0,20-Math.hypot(v.x,v.y,v.z))*massKg);
       const target=[...bodies].find(([,b])=>b.handle===body.handle)?.[0]??"dynamic";
-      return {preview:Object.freeze({kind:magnitude>0?"Dynamic":"SpeedLimit",target,massKg,distanceMeters:hit.toi,point}),
+      return {preview:Object.freeze({kind:magnitude>0?"Dynamic":"SpeedLimit",target,massKg,distanceMeters:hit.timeOfImpact,point}),
         reason:magnitude>0?"Solver contact impulse":"Speed budget",body,magnitude};
     };
     const residencyMembership=()=>JSON.stringify([world.bodies.len(),world.colliders.len(),[...movingBodies.keys()].sort(),residency!.read().map(p=>p.ownerId)]);
@@ -337,7 +574,7 @@ const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayo
       let activeDynamic=0,residentDynamic=disposed?0:residency!.count;
       if(!disposed){world.bodies.forEach(b=>{if(b.isDynamic()){residentDynamic+=1;if(!b.isSleeping()){activeDynamic+=1;}}});}
       return Object.freeze({ ...tick.read(), status:bodyResidencyWork?.hold?"RecoveryHold" as const:coverageHeld?"CoverageHold" as const:tick.read().status,gravity, gravityProfile: "local-tangent-gravity-v1",activeDynamic,residentDynamic,
-      solver: `rapier-${R.version()}`, stepCpuMs, bodyCount: disposed ? 0 : world.bodies.len(),
+      solver: R.PHY01_SOLVER_VERSION, stepCpuMs, bodyCount: disposed ? 0 : world.bodies.len(),
       colliderCount: disposed ? 0 : world.colliders.len(), nativeBytes: "unsupported", terrainGeneration,
        collisionBytes: disposed ? 0 : collisionBytes(), terrainTransaction: terrainHeld?"RecoveryHold":staged === undefined ? "Idle" : staged.committed ? "CommittedHeld" : "PreparedHeld",
          terrainFragments:disposed?[]:[...[...movingBodies.values()].filter(f=>f.family!=="branch").map(fragmentView),...residency!.sources()],
@@ -365,7 +602,12 @@ const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayo
         ...(structural?.parts??[]).filter(p=>!bodies.has(p.ownerId)).map(p=>({ownerId:p.ownerId,position:p.position,orientation:p.orientation,velocity:p.velocity,sleeping:p.sleeping,massKg:p.massKg}))] });};
     const playerEye=()=>{const avatar=character?.read();if(avatar?.status!=="Walking"){throw new Error("Player is not walking");}
       return {x:avatar.position.x,y:avatar.position.y+HVP_PLAYER_PROFILE.eyeHeight-HVP_PLAYER_PROFILE.height/2,z:avatar.position.z};};
-    return {
+    const assertCheckpointReady=()=>{
+      if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){
+        throw new Error("World checkpoint requires a confirmed paused generation");
+      }
+    };
+    const session={
       staticTerrainLayout:()=>staticLayout??null,
       read,
       readTickClock:tick.read,
@@ -377,19 +619,28 @@ const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayo
         const released=bodyReleasedHold;bodyReleasedHold=undefined;
         return released?.id===id?released.ms:undefined;
       },
-      checkpoint():HvpWorldCheckpoint {
-        if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){
-          throw new Error("World checkpoint requires a confirmed paused generation");
-        }
-        const dropRecipe=restored?.bodies.find(b=>b.checkpoint.family==="drop")?.recipe??prepareHvpRigidBody(ingestHvpStructuralCells("hvp-drop",
+      checkpoint():C {
+        assertCheckpointReady();
+        checkpointContext.admitCapture();
+        const captureReserve=labCaptureReserve;
+        const restoredDrop=restored?.bodies.find(b=>b.checkpoint.family==="drop")?.recipe;
+        if(captureReserve&&restoredDrop===undefined){reserveCaptureBytes(captureReserve,2*ADAPTIVE_BRICK_ESTIMATED_BYTES+64*1024+64*256);}
+        const dropRecipe=restoredDrop??prepareHvpRigidBody(ingestHvpStructuralCells("hvp-drop",
           Array.from({length:64},(_,i)=>({x:i%4,y:Math.floor(i/4)%4,z:Math.floor(i/16),materialId:1})),
           [{materialId:1,densityKgPerCubicMeter:2400,structuralClass:"limestone",destructible:true,tags:null}]));
+        const liveMoving=[...movingBodies.values()],fixedBranch=branch?.fixedOwners()??[];
+        if(captureReserve){
+          reserveHvpBodyCapture(dropRecipe,captureReserve);
+          if(inertiaRecipe&&inertiaBody){reserveHvpBodyCapture(inertiaRecipe,captureReserve);}
+          for(const target of liveMoving){reserveHvpBodyCapture(target.recipe,captureReserve);}
+          for(const target of fixedBranch){reserveHvpBodyCapture(target.recipe,captureReserve);}
+        }
         const result=[encodeHvpBody(id,"drop",dropRecipe,body)];
         if(inertiaRecipe&&inertiaBody){result.push(encodeHvpBody(HVP_INERTIA_KEY,"inertia",inertiaRecipe,inertiaBody));}
-        for(const b of movingBodies.values()){result.push(encodeHvpBody(b.ownerId,b.family??"terrain",b.recipe,b.body));}
-        for(const b of branch?.fixedOwners()??[]){result.push(encodeHvpBody(b.ownerId,"branch",b.recipe,b.body));}
+        for(const b of liveMoving){result.push(encodeHvpBody(b.ownerId,b.family??"terrain",b.recipe,b.body));}
+        for(const b of fixedBranch){result.push(encodeHvpBody(b.ownerId,"branch",b.recipe,b.body));}
         result.push(...residency!.checkpoint());
-        return Object.freeze({version:"hvp-world-checkpoint-v1",solver:"rapier-0.12.0",sessionId,gravity,terrainGeneration,
+        return checkpointContext.build({version:"hvp-world-checkpoint-v1",sessionId,gravity,terrainGeneration,
           tick:tick.read(),collisionDigest:hvpCollisionDigest(allCollision()),dropSpawn:Object.freeze({...spawn}),
           player:character?.checkpoint()??null,coverage:Object.freeze(coverage.map(c=>Object.freeze({...c}))),
           bodies:Object.freeze(result),branch:branch?.checkpoint()??null,moving:moving.checkpoint(),impulses,
@@ -750,6 +1001,7 @@ const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayo
       },
       dispose(): void {
         if (disposed) { return; }
+         labWorldReplacementCaptureAccess.delete(session as object);
          disposed = true;probeTerrainSource?.dispose();tick.dispose(); character?.dispose();
          bodyChannel?.port1.close();bodyChannel?.port2.close();bodyChannel=undefined;
          const waiting=bodyYield;bodyYield=undefined;waiting?.reject(new Error("Moving preparation disposed"));
@@ -758,14 +1010,126 @@ const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayo
          coldRecipes=undefined;coldResidentBytes=0;
       }
     };
+    if(workerOwned&&checkpointContext.captureKind==="phy01-lab"){
+      labWorldReplacementCaptureAccess.set(session as object,{
+        assertReady:assertCheckpointReady,
+        assertCompatible:(game,layout)=>{
+          assertCheckpointReady();
+          const target=game.checkpoint.world;
+          if(checkpointContext.captureKind!=="phy01-lab"||target.solver!==HVP_SOLVER_VERSION||target.sessionId!==sessionId||target.gravity!==gravity){
+            throw new Error("LAB World replacement solver/session/gravity mismatch");
+          }
+          if(!staticLayout||!sameChunkLayout(staticLayout,layout)){throw new Error("LAB World replacement static layout mismatch");}
+        },
+        residentBytes:()=>bodySourceResidentBytes()+residency!.bytes+retainedCollisionBytes(),
+        collisionCopyBytes:()=>allCollision().reduce((bytes,mesh)=>bytes+mesh.vertices.byteLength+mesh.indices.byteLength,0),
+        checkpoint:reserve=>{
+          if(labCaptureReserve!==undefined){throw new Error("Concurrent LAB replacement capture");}
+          labCaptureReserve=reserve;
+          try{return session.checkpoint() as HvpLabWorldCheckpoint;}finally{labCaptureReserve=undefined;}
+        },
+        copyCollision:()=>{
+          assertCheckpointReady();
+          const meshes=allCollision(),copies=new Array<HvpCollisionSector>(meshes.length);
+          for(let index=0;index<meshes.length;index+=1){
+            const mesh=meshes[index]!;
+            const vertices=copyHvpLabCollisionArray(mesh.vertices,"Float32Array") as Float32Array;
+            const indices=copyHvpLabCollisionArray(mesh.indices,"Uint32Array") as Uint32Array;
+            copies[index]=Object.freeze({vertices,indices});
+          }
+          return Object.freeze(copies);
+        }
+      });
+    }
+    return session;
   } catch (error) {probeTerrainSource?.dispose();world.free();throw error;}
 };
-export const createHvpPhysicsSession = physicsSessionFor(false);
+export const createHvpPhysicsSession = physicsSessionFor(false,publicCheckpointContext);
 /**
  * OWNER-INTERNAL (module export only): the first-party Physics-Worker World (Initialize and its Restore
  * candidates). Same session; only its body owner hashes child transitions through the owned-payload cursor.
  */
-export const createHvpWorkerPhysicsSession = physicsSessionFor(true);
+export const createHvpWorkerPhysicsSession = physicsSessionFor(true,publicCheckpointContext);
 /** Owner-internal complete chunk catalogue. Public/legacy factories keep their original arguments. */
 export const createHvpChunkWorkerPhysicsSession=async(layout:HvpChunkStaticLayout,...args:Parameters<typeof createHvpWorkerPhysicsSession>)=>
-  physicsSessionFor(true,validateHvpChunkStaticLayout(layout))(...args);
+  physicsSessionFor(true,publicCheckpointContext,validateHvpChunkStaticLayout(layout))(...args);
+
+/** @internal Shared fixed LAB engine path; only the replacement wrapper may add a captured coexistence allowance. */
+const createHvpLabPhysicsSessionCore=async(
+  sectors:readonly HvpCollisionSector[],spawn:Readonly<{x:number;y:number;z:number}>,gravity=resolveHvpGravity(),
+  player?:Readonly<{spawn:{x:number;y:number;z:number};coverage:readonly HvpCollisionCoverage[]}>,
+  inertiaSpawn?:Readonly<{x:number;y:number;z:number}>,branchSpawn?:Readonly<{x:number;y:number;z:number}>,
+  sessionId="hvp-world",game?:HvpDecodedLabGame,branchKind:"branch"|"salvage"="branch",measureBodyHold=false,
+  additionalCoexistenceBytes=0,staticLayout?:HvpChunkStaticLayout,current?:()=>boolean
+)=>{
+  const wire=game===undefined?undefined:labWorkerGameWires.get(game as object);
+  if(wire&&(wire.mode!==HVP_LAB_PHYSICS_MODE||wire.releaseRequested||wire.current?.()!==true
+    ||(!wire.captured&&(wire.before!==undefined||staticLayout===undefined)))){throw new Error("Invalid LAB Worker game-wire admission");}
+  if(!Number.isSafeInteger(additionalCoexistenceBytes)||additionalCoexistenceBytes<0){throw new Error("Invalid LAB coexistence allowance");}
+  const releaseWire=wire?leaseLabWire(wire):undefined;
+  let checkpoint:HvpLabWorldCheckpoint|undefined;
+  let revalidation:ReturnType<typeof createStructuralOwnerLedger>|undefined;
+  let context=labCheckpointContext;
+  try{
+    if(game!==undefined){
+      assertHvpDecodedLabGame(game);
+      const allocation=hvpColdLabWorldAllocationBytes(game.checkpoint.world);
+      const sectorBytes=sectors.reduce((bytes,sector)=>bytes+sector.vertices.byteLength+sector.indices.byteLength,0);
+      const heldWire=wire?(wire.captureLedger??wire.wireLedger).resources.residentBytes
+        +(wire.captureLedger??wire.wireLedger).resources.reservedBytes:0;
+      revalidation=createStructuralOwnerLedger(game.decodedBytes+allocation.sourceBytes+allocation.checkpointBytes
+        +sectorBytes+4096+(wire?heldWire:additionalCoexistenceBytes),wire?labWirePrepareAvailable(wire):undefined,128);
+      revalidation.reserve(game.decodeWorkingBytes);
+      checkpoint=decodeHvpLabGame(game.checkpoint).world.checkpoint;
+      revalidation.release();revalidation=undefined;
+      context={...labCheckpointContext,coexistenceBytes:game.decodedBytes+game.decodeWorkingBytes+additionalCoexistenceBytes
+        +(wire&&!wire.captured?heldWire:0),...(wire?{prepareAvailableBytes:()=>labWirePrepareAvailable(wire)}:{})};
+    }
+    const requireCurrent=()=>{
+      if(current!==undefined&&current()!==true){throw new Error("Stale fresh LAB Worker owner");}
+      if(wire&&(wire.releaseRequested||wire.current?.()!==true)){throw new Error("Stale LAB Worker game-wire owner");}
+    };
+    return await physicsSessionFor(true,context,staticLayout,requireCurrent)(sectors,spawn,gravity,player,inertiaSpawn,branchSpawn,
+      sessionId,checkpoint,branchKind,measureBodyHold);
+  }finally{revalidation?.release();releaseWire?.();}
+};
+/** @internal Direct LAB owner only; the public-facing internal factory signature remains fixed. */
+export const createHvpLabPhysicsSession=async(
+  sectors:readonly HvpCollisionSector[],spawn:Readonly<{x:number;y:number;z:number}>,gravity=resolveHvpGravity(),
+  player?:Readonly<{spawn:{x:number;y:number;z:number};coverage:readonly HvpCollisionCoverage[]}>,
+  inertiaSpawn?:Readonly<{x:number;y:number;z:number}>,branchSpawn?:Readonly<{x:number;y:number;z:number}>,
+  sessionId="hvp-world",game?:HvpDecodedLabGame,branchKind:"branch"|"salvage"="branch",measureBodyHold=false
+)=>createHvpLabPhysicsSessionCore(sectors,spawn,gravity,player,inertiaSpawn,branchSpawn,sessionId,game,branchKind,measureBodyHold,0);
+/** @internal Separate full-catalogue LAB owner; validates layout before restore revalidation or Native admission. */
+export const createHvpChunkLabPhysicsSession=async(layout:HvpChunkStaticLayout,...args:Parameters<typeof createHvpLabPhysicsSession>):Promise<HvpLabPhysicsSession>=>{
+  const staticLayout=validateHvpChunkStaticLayout(layout);
+  const [sectors,spawn,gravity,player,inertiaSpawn,branchSpawn,sessionId,game,branchKind,measureBodyHold]=args;
+  return createHvpLabPhysicsSessionCore(sectors,spawn,gravity,player,inertiaSpawn,branchSpawn,sessionId,game,branchKind,measureBodyHold,0,staticLayout);
+};
+/** @internal Fixed fresh owner guard; cannot substitute a Save or caller-defined resource ceiling. */
+export const createHvpFreshChunkLabPhysicsSession=async(layout:HvpChunkStaticLayout,current:()=>boolean,
+  ...args:Parameters<typeof createHvpLabPhysicsSession>):Promise<HvpLabPhysicsSession>=>{
+  const staticLayout=validateHvpChunkStaticLayout(layout);
+  const [sectors,spawn,gravity,player,inertiaSpawn,branchSpawn,sessionId,game,branchKind,measureBodyHold]=args;
+  if(typeof current!=="function"||current()!==true||game!==undefined){throw new Error("Invalid fresh LAB Worker admission");}
+  return createHvpLabPhysicsSessionCore(sectors,spawn,gravity,player,inertiaSpawn,branchSpawn,sessionId,undefined,branchKind,measureBodyHold,0,staticLayout,current);
+};
+/** @internal Single-use candidate construction consumes only a bound capture issued for this Game and sector array. */
+export const createHvpLabReplacementCandidate=async(witness:HvpLabWorldReplacementCaptureWitness,game:HvpDecodedLabGame,
+  sectors:readonly HvpCollisionSector[],measureBodyHold:boolean):Promise<HvpLabPhysicsSession>=>{
+  const key=witness as object,record=labWorldReplacementCaptures.get(key);
+  if(!record||record.game!==game||record.assembledSectors!==sectors){throw new Error("Invalid or consumed LAB replacement capture");}
+  if(record.mode==="complete"&&(!record.completeSectors||record.layout===undefined)){
+    throw new Error("Invalid LAB complete replacement layout capture");
+  }
+  if(record.mode==="delta"&&(record.completeSectors!==undefined||record.layout!==undefined)){
+    throw new Error("Invalid LAB delta replacement capture");
+  }
+  labWorldReplacementCaptures.delete(key);
+  try{
+    assertHvpDecodedLabGame(game);
+    const checkpoint=game.checkpoint.world;
+    return await createHvpLabPhysicsSessionCore(sectors,checkpoint.dropSpawn,checkpoint.gravity,undefined,undefined,undefined,
+      checkpoint.sessionId,game,checkpoint.branch?.kind??"branch",measureBodyHold,record.footprint,record.layout);
+  }finally{record.ledger.release();}
+};

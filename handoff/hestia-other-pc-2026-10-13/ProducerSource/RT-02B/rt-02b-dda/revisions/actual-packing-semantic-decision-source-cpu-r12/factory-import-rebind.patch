@@ -1,0 +1,7 @@
+diff --git a/tools/fixtures.mjs b/context/fixtures.mjs
+--- a/tools/fixtures.mjs
++++ b/context/fixtures.mjs
+@@ -1,2 +1,2 @@
+ import { createHash } from 'node:crypto';
+-import { validateVolume, assertExclusiveOwners } from '../emitted/imported/rt01/src/validate.mjs';
++import { validateVolume, assertExclusiveOwners } from './imported/rt01/src/validate.mts';

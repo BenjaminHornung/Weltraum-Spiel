@@ -45,9 +45,10 @@ export class StructuralPhysicsCommitError extends Error {
     path: string,
     message: string,
     phase: "validate" | "create" | "remove",
-    worldRestored: boolean
+    worldRestored: boolean,
+    options?: ErrorOptions
   ) {
-    super(message);
+    super(message, options);
     this.name = "StructuralPhysicsCommitError";
     this.code = code;
     this.path = path;

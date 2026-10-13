@@ -18,6 +18,8 @@ import {createHvpBodyMeshTaskPump} from "../../src/workers/hvpBoundedPump";
 import {createStructuralOwnerLedger} from "../../src/voxel/structural/model";
 import {HVP_TERRAIN_JOB,HVP_TERRAIN_MAX_OUTPUT,hvpTerrainInputDigest,decodeHvpTerrainOutput,type HvpTerrainPayload} from "../../src/workers/hvpTerrainJob";
 import {HVP_CHUNK_JOB,HVP_CHUNK_MAX_OUTPUT,hvpChunkInputDigest,decodeHvpChunkOutput} from "../../src/workers/hvpChunkJob";
+import {HVP_EAST_CHUNK_COLLISION_JOB,HVP_EAST_CHUNK_COLLISION_PURPOSE,HVP_EAST_CHUNK_COLLISION_ALGORITHM,HVP_EAST_CHUNK_COLLISION_MAX_OUTPUT,
+  hvpEastChunkCollisionInputDigest,decodeHvpEastChunkCollisionOutput} from "../../src/workers/hvpChunkJob";
 import {buildHvpChunkInput} from "../../src/hestia-prototype/terrain/terrainChunkInput";
 import {
   StreamingWorkerRuntime,
@@ -51,6 +53,7 @@ class RuntimeTransport implements WorkerTransport {
   public onmessageerror: ((event: MessageEvent<unknown>) => void) | null = null;
   public terminated = false;
   public corruptNextOutputOwnership = false;
+  public corruptNextAlgorithm = false;
   public statusAtCompletion:string|undefined;
   readonly #runtime = new StreamingWorkerRuntime((message, transfer = []) => {
     if(message.type==="JobCompleted"){this.#runtime.handleMessage({type:"ReadStatus",workerEpoch:message.result.workerEpoch});}
@@ -58,8 +61,10 @@ class RuntimeTransport implements WorkerTransport {
     const cloned = structuredClone(message, { transfer: [...transfer] }) as WorkerToHostMessage;
     const delivered: WorkerToHostMessage = this.corruptNextOutputOwnership && cloned.type === "JobOutputData"
       ? { ...cloned, bundle: { ...cloned.bundle, ownership: "SenderToWorker" } }
+      : this.corruptNextAlgorithm&&cloned.type==="JobCompleted"?{...cloned,result:{...cloned.result,algorithmVersion:algorithmVersion(1)}}
       : cloned;
     if (cloned.type === "JobOutputData") this.corruptNextOutputOwnership = false;
+    if (cloned.type === "JobCompleted") this.corruptNextAlgorithm = false;
     queueMicrotask(() => { if (!this.terminated) this.onmessage?.({ data: delivered } as MessageEvent<unknown>); });
   });
 
@@ -76,6 +81,45 @@ class RuntimeTransport implements WorkerTransport {
     this.retiredMessageHandler?.({ data: message } as MessageEvent<unknown>);
   }
 }
+
+it.each(["normal","algorithm","cancel","expired","generic"] as const)("closes private East collision custody before publication (%s)",async mode=>{
+  const primary={sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},
+    sessionId:"east-pool-primary",epoch:0,revision:1,sourceDigest:"12345678",baseDigest:"87654321",overlayBytes:0,
+    readSlot:(x:number,y:number,z:number)=>x===1&&y===1&&z===1?1:0,copyLeaf:()=>new Uint8Array(4096),leafRevision:()=>0};
+  const east={...primary,originMeters:{x:16,y:-8,z:-16},sessionId:"east-pool-east"};
+  const built=buildHvpChunkInput(east,0,()=>0,"render:primary:exact-halo",east.sessionId,primary),
+    payload={...built.payload,purpose:HVP_EAST_CHUNK_COLLISION_PURPOSE} as const;
+  const input:TransferableBufferBundle={buffers:[built.slots.buffer as ArrayBuffer],ownership:"SenderToWorker",revision:contentRevision(1),
+    byteLength:byteCount(34**3),views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:34**3}]};
+  const request:WorkerJobRequest={jobId:workerJobId(`east-pool-${mode}`),targetKey:workerTargetKey("east-chunk-0"),jobKind:workerJobKind(HVP_EAST_CHUNK_COLLISION_JOB),
+    workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(1),sourceInputDigest:hvpEastChunkCollisionInputDigest(payload,input.buffers),
+    algorithmVersion:algorithmVersion(HVP_EAST_CHUNK_COLLISION_ALGORITHM),priority:"Urgent",deadline:jobDeadline(0),estimatedInputBytes:input.byteLength,
+    estimatedOutputBytes:byteCount(HVP_EAST_CHUNK_COLLISION_MAX_OUTPUT),payload};
+  const transport=new RuntimeTransport(),pool=new WorkerPool({workerCount:1,queueCapacity:32,transportFactory:()=>transport});
+  const pump=createHvpBodyMeshTaskPump(()=>{if(mode==="expired"){throw new Error("Retired East owner");}});
+  try{
+    await pool.start();
+    if(mode==="generic"){
+      expect(()=>pool.enqueue(request,input)).toThrow(/private terrain admission/);expect(input.buffers[0]!.byteLength).toBe(34**3);return;
+    }
+    const enqueue=()=>pool.enqueueTerrainDerivative(request,input,38*1024*1024,pump.host,
+      createHvpBodyMeshPhaseReserve(2*1024*1024),createHvpBodyMeshPhaseReserve(38*1024*1024));
+    if(mode==="expired"){
+      await expect(enqueue()).rejects.toThrow("Retired East owner");expect(input.buffers[0]!.byteLength).toBe(34**3);return;
+    }
+    transport.corruptNextAlgorithm=mode==="algorithm";const ticket=await enqueue();
+    expect(input.buffers[0]!.byteLength).toBe(0);if(mode==="cancel"){expect(ticket.cancel()).toBe(true);}
+    const terminal=await ticket.result;
+    if(mode==="normal"){
+      if(terminal.kind!=="Completed"){throw new Error(`East worker ${terminal.kind}`);}
+      expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(true);expect(terminal.output.buffers).toHaveLength(2);
+      expect(decodeHvpEastChunkCollisionOutput(terminal.output,payload).indices).toHaveLength(36);
+    }else{
+      expect(terminal.kind).toBe(mode==="cancel"?"Cancelled":"Failed");expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(false);
+    }
+    expect(pool.snapshot().runningJobs).toBe(0);
+  }finally{pump.dispose();await pool.shutdown();}
+});
 
 it("dispatches one combined chunk through the private eight-channel accepted-terminal drain",async()=>{
   const {slots,payload}=buildHvpChunkInput({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},

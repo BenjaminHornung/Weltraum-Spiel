@@ -8,6 +8,7 @@ const probe: GraphicsCapabilityProbe = {
   fullscreenAvailable: true,
   antiAliasingApplied: true,
   effectiveShadows: false,
+  renderOnlyDecor: true,
   postProcessing: false,
   motionEffects: false,
   environmentReflections: false,
@@ -15,6 +16,11 @@ const probe: GraphicsCapabilityProbe = {
 };
 
 describe("graphics settings capabilities", () => {
+  it("does not claim live effects or density without managed scene decoration", () => {
+    const capabilities = detectGraphicsCapabilities({ ...probe, renderOnlyDecor: false });
+    expect(capabilities.effectsQuality.status).toBe("Unsupported");
+    expect(capabilities.decorDensity.status).toBe("Unsupported");
+  });
   it("reports current live, restart, browser-managed, planned, and unsupported truth", () => {
     const capabilities = detectGraphicsCapabilities(probe);
     expect(capabilities.renderScale.status).toBe("SupportedLive");

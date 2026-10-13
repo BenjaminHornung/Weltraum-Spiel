@@ -53,12 +53,12 @@ export const createHvpBranchSession=(world:R.World,origin:Vec,targets=new Map<st
     const ray=rotateStructuralWorldVector(inverse,direction);
     // Rapier establishes the unobscured first contact; DDA establishes the actual
     // canonical cell, just inside the same surface, never a render triangle id.
-    const enter=hit.toi+1e-6;
+    const enter=hit.timeOfImpact+1e-6;
     const cell=pickHvpCell({sizeX:16,sizeY:12,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0},
       readSlot:(x,y,z)=>occupied.has(`${x}:${y}:${z}`)?1:0},
       [local.x+center.x+ray.x*enter,local.y+center.y+ray.y*enter,local.z+center.z+ray.z*enter],[ray.x,ray.y,ray.z],Math.max(0,4-enter));
     if(cell.kind!=="Hit") { return null; }
-    return Object.freeze({cell:cell.cell,point:Object.freeze({x:eye.x+direction.x*hit.toi,y:eye.y+direction.y*hit.toi,z:eye.z+direction.z*hit.toi})});
+    return Object.freeze({cell:cell.cell,point:Object.freeze({x:eye.x+direction.x*hit.timeOfImpact,y:eye.y+direction.y*hit.timeOfImpact,z:eye.z+direction.z*hit.timeOfImpact})});
   }
   return {
     get busy(){return stage!==undefined||held;},

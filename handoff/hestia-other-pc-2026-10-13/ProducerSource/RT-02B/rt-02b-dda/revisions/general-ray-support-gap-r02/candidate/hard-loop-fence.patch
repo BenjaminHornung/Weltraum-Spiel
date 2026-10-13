@@ -1,0 +1,36 @@
+diff --git a/spikes/rt-02b-dda/src/dda.wgsl b/spikes/rt-02b-dda/src/dda.wgsl
+--- a/spikes/rt-02b-dda/src/dda.wgsl
++++ b/spikes/rt-02b-dda/src/dda.wgsl
+@@ -42,14 +42,15 @@
+  var c=cell_at(o,d,t);var n=vec3<f32>(0);if(outside&&entry>0.0){n[entry_axis]=-sign(d[entry_axis]);}
+  var next=next_at(c,o,d);var visited=0u;let can_skip=ray.limits.x>=size.x+size.y+size.z+3u;
+  var last_root=0xffffffffu;var root_empty=false;var last_page=0xffffffffu;var page_code=0u;
++ var traversal_complete=false;
+  for(var iteration=0u;iteration<256u;iteration++){
+-  if(any(c<vec3<i32>(0))||any(c>=vec3<i32>(size))){break;}
++  if(any(c<vec3<i32>(0))||any(c>=vec3<i32>(size))){traversal_complete=true;break;}
+   var edge=1i;
+   if(hierarchy&&can_skip){let root=linear(c/32,rs);if(root!=last_root){counts.y++;last_root=root;root_empty=roots[root]==0u;}if(root_empty){edge=32;}}
+   if(edge==1){let pi=linear(c/8,ps);if(pi!=last_page){counts.x++;last_page=pi;page_code=pages[pi];}if(can_skip&&page_code==0u){edge=8;}}
+   if(edge>1){
+    var crossing=1e30;for(var a=0u;a<3u;a++){if(d[a]!=0.0){let lo=(c[a]/edge)*edge;let boundary=select(lo,min(i32(size[a]),lo+edge),d[a]>0.0);crossing=min(crossing,(f32(boundary)-o[a])/d[a]);}}
+-   counts.w++;if(crossing>=end-epsilon(crossing,end)){break;}t=crossing;c=cell_at(o,d,t);n=vec3<f32>(0);
++   counts.w++;if(crossing>=end-epsilon(crossing,end)){traversal_complete=true;break;}t=crossing;c=cell_at(o,d,t);n=vec3<f32>(0);
+    for(var a=0u;a<3u;a++){if(d[a]!=0.0){let incoming=f32(c[a])+select(0.0,1.0,d[a]<0.0);let nt=(incoming-o[a])/d[a];if(abs(nt-t)<=epsilon(nt,t)){n[a]=-sign(d[a]);break;}}}
+    next=next_at(c,o,d);continue;
+   }
+@@ -60,12 +61,13 @@
+    if(visited>=ray.limits.x){results[ri]=answer(3,c,n,t,0u,counts);return;}visited++;counts.z++;
+    if(slot==255u){results[ri]=answer(2,c,n,t,0u,counts);return;}if(slot>0u){results[ri]=answer(1,c,n,t,slot,counts);return;}
+   }
+-  if(crossing>=end-epsilon(crossing,end)){break;}n=vec3<f32>(0);var picked=false;
++  if(crossing>=end-epsilon(crossing,end)){traversal_complete=true;break;}n=vec3<f32>(0);var picked=false;
+   for(var a=0u;a<3u;a++){if(d[a]!=0.0&&abs(next[a]-crossing)<=epsilon(next[a],crossing)){
+    if(!picked){n[a]=-sign(d[a]);picked=true;}c[a]+=i32(sign(d[a]));next[a]+=1.0/abs(d[a]);}}
+   t=crossing;
+   if(iteration==255u){results[ri]=answer(3,c,n,t,0u,counts);return;}
+  }
++ if(!traversal_complete){results[ri]=answer(3,vec3<i32>(-1),vec3<f32>(0),clamp(t,0.0,radius),0u,counts);return;}
+  if(unknown&&exit<radius-epsilon(exit,radius)){results[ri]=answer(2,vec3<i32>(-1),vec3<f32>(0),max(0.0,exit),0u,counts);}
+  else if(strict&&exit>radius+epsilon(exit,radius)){results[ri]=answer(3,vec3<i32>(-1),vec3<f32>(0),radius,0u,counts);}
+  else{results[ri]=answer(0,vec3<i32>(-1),vec3<f32>(0),radius,0u,counts);}

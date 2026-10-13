@@ -1,0 +1,15 @@
+import {readFileSync,copyFileSync,mkdirSync} from 'node:fs';
+import {resolve,dirname} from 'node:path';
+import {root,repo,save,hash,member,walk} from './inputs.mjs';
+const admin=resolve(repo,'../../artifacts/hestia-cloud-orchestration-2026-10-09'),pack=resolve(admin,'Hestia_Cloud_Spikes_und_ProgrammAmendment_2026-10-09');
+const paths=['00_START_HIER.md','01_PRUEFUNG_UND_ENTSCHEIDUNG.md','03_SCHNITTSTELLEN_UND_UEBERNAHME.md','Cloud/00_GEMEINSAMER_VERTRAG.md','Auftraege/WXG-08.md','Goals/WXG-08.txt','SOURCE_DOCS.json',...['weltraum-universeller-planeten-wetter-climate-core-architektur-v2-2026-10-09.md','hestia-dynamisches-volumetrisches-wetter-architekturkonzept-2026-10-09.md','hestia-konzeptpaket-review-und-arbeitspaket-registry-2026-10-09.md'].map(p=>'Quellen/'+p)];
+const sources=[];
+for(const p of paths){const from=resolve(pack,p),dest=resolve(root,'inputs/order',p);mkdirSync(dirname(dest),{recursive:true});copyFileSync(from,dest);sources.push({...member(dest),sourcePath:from});}
+const from=resolve(admin,'USER_OVERRIDES_2026-10-09.md'),dest=resolve(root,'inputs/order/USER_OVERRIDES_2026-10-09.md');copyFileSync(from,dest);sources.push({...member(dest),sourcePath:from});
+const state=readFileSync(resolve(admin,'STATE.json'));save('SourceBindings.json',{originalZipSha256:'0136d515ce6c86e3110bfb7fb91e1ccf1ceb8536cbef56dad9b4d6e4a6dd3d4d',sources,stateObserved:{bytes:state.length,sha256:hash(state),scope:'SLOT_AND_PRODUCER_AUTHORITY_READ_ONLY'},sourceStatus:'SYNTHETIC_ONLY',historicalAssertions:'UNCHANGED_IN_INPUT_COPY'});
+const tools=['C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe','C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe','C:/IFI_SourceCode/Utils/Python/cpython-3.12.13-windows-x86_64-none/python.exe'];
+save('ToolBindings.json',{files:tools.map(path=>{const b=readFileSync(path);return {path,bytes:b.length,sha256:hash(b)};}),npm:walk('C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm').map(path=>{const b=readFileSync(path);return {path,bytes:b.length,sha256:hash(b)};}),compilerMembers:JSON.parse(readFileSync(resolve(root,'InputBindings.json'))).members.filter(f=>f.path.startsWith('inputs/wxg/node_modules/')),versions:{node:'22.23.2',npm:'10.9.8',python:'3.12.13',compiler:'7.0.2',rust:'NOT_USED',three:'NOT_USED_CPU_DOM; accepted ATM source pins 0.186.1',rapier:'NOT_USED; accepted ATM source override 0.21.0'}});
+const packageJson=JSON.parse(readFileSync(resolve(root,'package.json'))),upstream=JSON.parse(readFileSync(resolve(root,'inputs/wxg/package-lock.json'))),entry=upstream.packages['node_modules/typescript'];
+if(entry.version!=='7.0.2')throw Error('COMPILER_PIN');
+save('package-lock.json',{name:packageJson.name,version:'1.0.0',lockfileVersion:3,requires:true,packages:{'':{name:packageJson.name,version:'1.0.0',devDependencies:packageJson.devDependencies},...Object.fromEntries(Object.entries(upstream.packages).filter(([p])=>p==='node_modules/typescript'||p.startsWith('node_modules/@typescript/')))}});
+console.log(JSON.stringify({status:'PASS',sources:sources.length,compiler:entry}));

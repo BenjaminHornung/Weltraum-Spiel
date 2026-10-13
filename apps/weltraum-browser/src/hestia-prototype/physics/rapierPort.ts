@@ -1,4 +1,4 @@
-import R from "@dimforge/rapier3d-compat";
+import * as R from "./rapier021Candidate";
 import type {
   StructuralBodyPoseMotion,
   StructuralColliderMassSpec,
@@ -8,7 +8,7 @@ import type {
 
 /**
  * Shared runtime/test adapter for the solver-neutral structural commit port.
- * Pinned Rapier 0.12.0 (Apache-2.0); the compatibility build embeds its WASM.
+ * Source-bound 0.21 candidate with explicit no-step query publication.
  */
 export { R };
 // Pinned compatibility build: the numeric EXCLUDE_SENSORS flag also rejected

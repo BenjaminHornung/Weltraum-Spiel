@@ -5,7 +5,7 @@ import {createHvpListeners} from "../runtime/listeners";
 import { createHvpPlayerVisualPose } from "./presentation";
 
 /** Input owns intent, never avatar position. Camera consumes solver readback only. */
-export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: PerspectiveCamera, physics: HvpPhysicsClient,
+export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: PerspectiveCamera, physics: Pick<HvpPhysicsClient,"command"|"impulse"|"read"|"setCameraOffset"|"setPlayerInput">,
   doc: Document = document, win: Pick<Window, "addEventListener" | "removeEventListener"> = window,
   onInspect: () => void = () => {}, tool: {confirm():void;select(mode:number):void} = {confirm:()=>{},select:()=>{}},isBlocked:()=>boolean=()=>false) => {
   const listeners=createHvpListeners();

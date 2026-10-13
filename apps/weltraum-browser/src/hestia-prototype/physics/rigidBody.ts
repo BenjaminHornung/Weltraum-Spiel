@@ -36,9 +36,15 @@ export const installHvpRigidBody = (world:R.World, recipe:HvpRigidRecipe,
     if(port.bodyColliderCount(ref)!==recipe.colliders.length) { throw new Error("Incomplete exact rigid collision"); }
     ref.body.enableCcd(true);return ref.body;
   } catch(error) {
-    let cleanup="";
-    try { if(ref!==undefined) { port.removeBody(ref); } } catch(failure) { cleanup=`; cleanup: ${String(failure)}`; }
-    const restored=cleanup===""&&port.bodiesLen()===before.bodies&&port.collidersLen()===before.colliders;
-    throw new StructuralPhysicsCommitError("CommitFailed","hvp/rigid-install",`${String(error)}${cleanup}`,"create",restored);
+    let restored=false,cleanupFailed=false,cleanupError:unknown;
+    try {
+      if(ref!==undefined) { port.removeBody(ref); }
+      restored=port.bodiesLen()===before.bodies&&port.collidersLen()===before.colliders;
+    } catch(failure) { cleanupFailed=true;cleanupError=failure; }
+    let message="Rigid install failed";
+    try { message=`${String(error)}${cleanupFailed?`; cleanup: ${String(cleanupError)}`:""}`; }
+    catch { /* Formatting must not replace the primary or cleanup error. */ }
+    throw new StructuralPhysicsCommitError("CommitFailed","hvp/rigid-install",message,"create",restored,
+      {cause:cleanupFailed?new AggregateError([error,cleanupError],"Rigid install and cleanup failed"):error});
   }
 };

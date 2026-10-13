@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {verifyFiles,verifyInputs,root,repo,bytes} from '../scripts/bindings.mjs';
+import {resolve} from 'node:path';
+import {parseStatus,scopeFiles,verifyArtifacts} from '../scripts/seal.mjs';
+import {validateRun} from '../scripts/receipt.mjs';
+test('closed input full membership and supplied producer receipt/seal anchors match',()=>assert.equal(verifyInputs().files.length,905));
+test('byte mismatch/path traversal/empty membership fail closed',()=>{assert.throws(()=>verifyFiles(root,[]),/EMPTY/);assert.throws(()=>verifyFiles(root,[{path:'../package.json',bytes:1,sha256:'x'}]),/PATH/);assert.throws(()=>verifyFiles(root,[{path:'package.json',bytes:1,sha256:'x'}]),/BYTE_DRIFT/);});
+test('scope seal rejects foreign/empty/malformed and preserves rename XY membership',()=>{assert.throws(()=>scopeFiles([]),/EMPTY/);assert.throws(()=>scopeFiles(['apps/weltraum-browser/package.json']),/OUT_OF_SCOPE/);assert.throws(()=>parseStatus(Buffer.from('R  new\0')),/RENAME/);assert.deepEqual(parseStatus(Buffer.from('R  new\0old\0?? path with spaces\0')),[{xy:'R ',path:'new',originalPath:'old'},{xy:'??',path:'path with spaces'}]);});
+test('receipt never promotes a failed/null-exit/skipped run',()=>{const pass={status:'PASS',commands:Array.from({length:4},()=>({exitCode:0,error:null,signal:null})),tests:{passed:33,failed:0,skipped:0}};assert.equal(validateRun(pass),pass);for(const s of [{...pass,status:'FAIL'},{...pass,commands:[...pass.commands.slice(1),{exitCode:null,error:'EPERM',signal:null}]},{...pass,tests:{passed:33,failed:0,skipped:1}}])assert.throws(()=>validateRun(s),/INCOMPLETE/);});
+test('seal verifies separately bound raw evidence and rejects evidence byte drift',()=>{const evidenceRoot=resolve(repo,'.devtoolbox/specs/changes/wxg-06-2026-10-09/tests'),record={source:[bytes(root,'package.json')],compiled:[bytes(root,'dist/contracts.js')],evidence:[bytes(evidenceRoot,'initial-controls/summary.json')]};verifyArtifacts(record);assert.throws(()=>verifyArtifacts({...record,evidence:record.evidence.map(f=>({...f,bytes:f.bytes+1}))}),/BYTE_DRIFT/);});

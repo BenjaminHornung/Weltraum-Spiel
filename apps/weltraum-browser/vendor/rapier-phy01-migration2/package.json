@@ -1,0 +1,9 @@
+{
+  "name": "@hestia/rapier3d-phy01-candidate",
+  "version": "0.21.0-phy01.migration2",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "main": "dist/rapier.js",
+  "types": "dist/rapier.d.ts"
+}

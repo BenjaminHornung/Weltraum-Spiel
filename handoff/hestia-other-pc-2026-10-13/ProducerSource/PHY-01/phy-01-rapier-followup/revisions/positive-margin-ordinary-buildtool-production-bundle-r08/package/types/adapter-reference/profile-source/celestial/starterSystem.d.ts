@@ -1,0 +1,26 @@
+export declare const ASTRONOMICAL_UNIT_METERS = 149597870700;
+export declare const SOLAR_RADIUS_METERS = 695700000;
+export declare const SOLAR_MASS_KG = 1.98847e+30;
+export declare const EARTH_MASS_KG = 5.9722e+24;
+export declare const LUNAR_MASS_KG = 7.342e+22;
+export declare const DAY_SECONDS = 86400;
+export declare const STARTER_BODY_IDS: Readonly<{
+    readonly aurelia: "star.aurelia";
+    readonly korus: "planet.korus";
+    readonly pyra: "planet.pyra";
+    readonly hestia: "planet.hestia";
+    readonly tharos: "planet.tharos";
+    readonly aureon: "planet.aureon";
+    readonly nereion: "planet.nereion";
+    readonly umbra: "planet.umbra";
+    readonly luma: "moon.hestia.luma";
+    readonly sela: "moon.hestia.sela";
+    readonly nixia: "moon.hestia.nixia";
+    readonly oru: "moon.hestia.oru";
+    readonly eber: "asteroid.eber";
+    readonly kallisto: "asteroid.kallisto";
+    readonly minoa: "asteroid.minoa";
+}>;
+export declare const createStarterCelestialCatalog: () => import("./types").CelestialCatalog;
+export declare const STARTER_CELESTIAL_CATALOG: import("./types").CelestialCatalog;
+export declare const STARTER_CELESTIAL_CATALOG_SIGNATURE: string;

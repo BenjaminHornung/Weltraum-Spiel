@@ -1,0 +1,12 @@
+diff --git a/apps/weltraum-browser/src/hvp/hvpBootstrap.ts b/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
+--- a/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
++++ b/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
+@@ -3144,7 +3144,7 @@
+      let firstReadyFrame=false;
+      let residencyDiagnosticFrames=0;
+      let physicsTick = -1;
+-     const submitRenderFrame=():RenderCommandResult=>backend!.renderFrame();
++     const submitRenderFrame=():RenderCommandResult=>presentation.renderFrame();
+      const failFrame=(error:unknown)=>{
+        const show=(cause:unknown)=>{
+          if(hvpMountEpoch!==myEpoch){return;}

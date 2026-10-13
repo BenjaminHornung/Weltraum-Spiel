@@ -1,0 +1,13 @@
+--- R03/check-packer.mjs (immutable evidence; DO NOT APPLY THERE)
++++ R04/check-packer.guard-candidate.mjs.source (inert review data)
+@@ -24,7 +24,3 @@
+-  // Process-local guards; no environment/config read or machine-global writes.
+-  for(const key of ['window','__THREE_DEVTOOLS__','navigator','Worker','WebAssembly']){
+-    Object.defineProperty(globalThis,key,{value:undefined,writable:false,configurable:false});
+-  }
+-  for(const key of ['document','fetch','XMLHttpRequest','WebSocket']){
+-    Object.defineProperty(globalThis,key,{get(){throw new Error('Forbidden browser/network access: '+key);},configurable:false});
+-  }
++  // Native lazy globals can evaluate internal modules during descriptor operations.
++  // Keep application WASM/network/renderer/GPU forbidden until a new bound effect review.
++  must(false,'R04_SOURCE_ONLY_EFFECT_CLOSURE_NOT_APPROVED');

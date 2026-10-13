@@ -7,7 +7,7 @@ import {hvpCollisionDigest} from "../../src/hestia-prototype/persistence/worldCh
 import type {HvpWorldCheckpoint} from "../../src/hestia-prototype/persistence/worldCheckpoint";
 import type {HvpPhysicsMessage,HvpPhysicsReply,HvpPhysicsSnapshot} from "../../src/hestia-prototype/physics/physicsWorker";
 import {WorkerPool,type WorkerJobTerminal} from "../../src/workers/workerPool";
-import {executeHvpChunkJob,HVP_CHUNK_JOB} from "../../src/workers/hvpChunkJob";
+import {executeHvpChunkJob,HVP_CHUNK_JOB,executeHvpEastChunkCollisionJob,HVP_EAST_CHUNK_COLLISION_JOB} from "../../src/workers/hvpChunkJob";
 import {executeHvpCollisionJob} from "../../src/workers/hvpCollisionJob";
 import {workerEpoch} from "../../src/workers/ids";
 import {transferListFor} from "../../src/workers/protocol";
@@ -18,7 +18,8 @@ it.each(["new","legacy","bad","east","bad-world"] as const)("uses an exact prepa
   const start=vi.spyOn(WorkerPool.prototype,"start").mockResolvedValue(undefined),kinds:string[]=[];
   const enqueue=vi.spyOn(WorkerPool.prototype,"enqueueTerrainDerivative").mockImplementation(async(request,bundle,_grant,_host,reserve)=>{
     reserve(16_384);reserve(8192+bundle.byteLength);kinds.push(request.jobKind);
-    const input=structuredClone(bundle,{transfer:transferListFor(bundle)}),output=request.jobKind===HVP_CHUNK_JOB?executeHvpChunkJob(request,input):executeHvpCollisionJob(request,input);
+    const input=structuredClone(bundle,{transfer:transferListFor(bundle)}),output=request.jobKind===HVP_CHUNK_JOB?executeHvpChunkJob(request,input)
+      :request.jobKind===HVP_EAST_CHUNK_COLLISION_JOB?executeHvpEastChunkCollisionJob(request,input):executeHvpCollisionJob(request,input);
     return {jobId:request.jobId,workerEpoch:workerEpoch(0),result:Promise.resolve({kind:"Completed",result:output.result,output:output.bundle} as WorkerJobTerminal),cancel:()=>false};
   });
   const accepted=vi.spyOn(WorkerPool.prototype,"isAcceptedCompletedTerminal").mockReturnValue(true),compiler=createHvpTerrainCompiler(),abort=new AbortController();
@@ -38,7 +39,7 @@ it.each(["new","legacy","bad","east","bad-world"] as const)("uses an exact prepa
   }
   vi.stubGlobal("Worker",OwnerWorker);
   let products:Awaited<ReturnType<typeof compiler.initialChunks>>|undefined,client:Awaited<ReturnType<typeof createHvpPhysicsClient>>|undefined;
-  const populations:{primaryJobs:number;primaryEmptyBoth:number;eastJobs:number;eastEmptyBoth:number}[]=[];
+  const populations:{primaryJobs:number;primaryEmptyBoth:number;eastJobs:number;eastCollisionOnlyJobs:number;eastEmptyCollision:number}[]=[];
   const poolSummaries:{jobs:number;complete:boolean}[]=[];
   try{
     const east=mode==="east"?restoreHvpPrivateTerrainRoot(createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:16,y:-8,z:-16},sourceDigest:"87654321",
@@ -47,7 +48,7 @@ it.each(["new","legacy","bad","east","bad-world"] as const)("uses an exact prepa
       mode==="east"?population=>{populations.push(population);throw new Error("Population sink failed");}:undefined,
       mode==="east"?summary=>{poolSummaries.push(summary);throw new Error("Pool summary sink failed");}:undefined);
     if(mode==="east"){
-      expect(populations).toEqual([{primaryJobs:256,primaryEmptyBoth:255,eastJobs:256,eastEmptyBoth:255}]);
+      expect(populations).toEqual([{primaryJobs:256,primaryEmptyBoth:255,eastJobs:256,eastCollisionOnlyJobs:256,eastEmptyCollision:255}]);
       expect(Object.isFrozen(populations[0])).toBe(true);
       // This fixture bypasses real pool events; incomplete observation must never fabricate a complete summary.
       expect(poolSummaries).toHaveLength(1);expect(poolSummaries[0]).toMatchObject({jobs:0,complete:false});

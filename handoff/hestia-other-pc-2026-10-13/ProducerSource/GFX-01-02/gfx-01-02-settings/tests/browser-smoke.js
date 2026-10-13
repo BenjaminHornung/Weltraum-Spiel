@@ -1,0 +1,60 @@
+async (page) => {
+  if (page.url() !== 'http://127.0.0.1:5192/') throw Error('Wrong GFX origin');
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const assert = (condition, message) => { if (!condition) throw Error(message); };
+  await page.reload();
+  await page.waitForFunction(() => document.querySelector('#probe').textContent.includes('actualBackend'));
+  const key = 'weltraum.browser.graphics-settings';
+  const originalBytes = await page.evaluate(key => localStorage.getItem(key), key);
+  const loaded = await page.locator('#load').textContent();
+  assert(await page.locator('canvas').count() === 1, 'Probe created another canvas');
+  const fixture = await page.locator('#confirmed').textContent();
+  const { rayTracing, weatherQuality, powerPreference, adaptiveResolution, ...legacy } = JSON.parse(fixture);
+  legacy.qualityPreset = 'Custom'; legacy.display.renderScale = 0.777; legacy.display.maxDevicePixelRatio = 1.333;
+  await page.evaluate(({key, legacy}) => localStorage.setItem(key, JSON.stringify({schemaVersion:1,settings:legacy})), {key,legacy});
+  await page.reload();
+  await page.waitForFunction(() => document.querySelector('#probe').textContent.includes('actualBackend'));
+  assert(await page.locator('#scale').inputValue() === '0.777', 'Lost custom v1 scale');
+  assert(await page.locator('#dpr').inputValue() === '1.333', 'Lost custom v1 DPR');
+  assert(await page.locator('#settings').evaluate(form => form.checkValidity()), 'Schema-valid decimals blocked by UI step');
+  await page.locator('#ray').selectOption('contact');
+  await page.getByRole('button', {name:'Anwenden',exact:true}).focus();
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => JSON.parse(document.querySelector('#confirmed').textContent).rayTracing === 'contact');
+  const migrated = await page.evaluate(key => JSON.parse(localStorage.getItem(key)), key);
+  assert(migrated.schemaVersion === 2 && migrated.settings.display.renderScale === 0.777 && migrated.settings.display.maxDevicePixelRatio === 1.333, 'Wrong v1 migration/apply');
+  assert(JSON.parse(await page.locator('#effective').textContent()).rayTracing === 'off', 'Missing pipeline claimed live');
+
+  await page.locator('#scale').focus(); await page.keyboard.press('Control+A'); await page.keyboard.type('0.9'); await page.keyboard.press('Tab');
+  assert(JSON.parse(await page.locator('#confirmed').textContent()).display.renderScale === 0.777, 'Draft changed confirmed');
+  await page.getByRole('button', {name:'Verwerfen',exact:true}).click();
+  assert(await page.locator('#scale').inputValue() === '0.777', 'Cancel did not restore confirmed');
+  await page.locator('#scale').fill('3'); await page.locator('#scale').press('Tab');
+  assert(await page.locator('#scale').inputValue() === '1.25', 'Manual global ceiling not enforced');
+  await page.getByRole('button', {name:'Verwerfen',exact:true}).click();
+  await page.locator('#minScale').fill('0.555'); await page.locator('#minScale').press('Tab');
+  await page.locator('#maxScale').fill('0.555'); await page.locator('#maxScale').press('Tab');
+  await page.locator('#power').selectOption('low-power');
+  await page.getByRole('button', {name:'Anwenden',exact:true}).click();
+  await page.waitForFunction(() => JSON.parse(document.querySelector('#confirmed').textContent).powerPreference === 'low-power');
+  const effective = JSON.parse(await page.locator('#effective').textContent());
+  assert(effective.restartRequired.includes('powerPreference'), 'Power switch lacked restart indication');
+  const confirmed = JSON.parse(await page.locator('#confirmed').textContent());
+  assert(confirmed.adaptiveResolution.minRenderScale === 0.555 && confirmed.adaptiveResolution.maxRenderScale === 0.555, 'Fractional manual limits changed');
+  const evidence = JSON.parse(await page.locator('#probe').textContent());
+  await page.setViewportSize({width:360,height:780});
+  await page.locator('#ray').selectOption('auto');
+  assert(await page.locator('canvas').count() === 1, 'Resize created another canvas');
+  const responsive = await page.evaluate(() => ({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,font:getComputedStyle(document.querySelector('h1')).fontSize}));
+  assert(responsive.scrollWidth <= responsive.width, 'Mobile horizontal overflow');
+  await page.getByRole('button', {name:'Verwerfen',exact:true}).click();
+  await page.setViewportSize({width:1100,height:850});
+  const server = {};
+  for (const [path,status] of [['/dist/settings-v2-candidate/src/settings',200],['/dist/src/probe',200],['/package.json',404],['/dist/%2e%2e/package.json',404]]) {
+    server[path] = (await page.request.get('http://127.0.0.1:5192'+path)).status();
+    assert(server[path] === status, 'Unexpected server exposure/import status: '+path);
+  }
+  assert(errors.length === 0, 'Browser module/page errors: '+errors.join(';'));
+  return {status:'PASS',browserVersion:page.context().browser().version(),url:page.url(),loaded,canvasCount:1,migration:migrated,confirmed,effective,evidence,responsive,server,errors,originalBytes,claims:['actual v1 custom load/apply','keyboard cancel/apply','manual decimals/ceilings','restart desired/effective separation','responsive DOM + safe compiled imports']};
+}
