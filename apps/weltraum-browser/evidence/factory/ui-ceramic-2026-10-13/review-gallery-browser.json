@@ -1,0 +1,325 @@
+{
+  "result": "PASS",
+  "kind": "ACTUAL_SELF_CONTAINED_HTML_HTTP_BROWSER_REVIEW",
+  "images": [
+    {
+      "embedded": true,
+      "width": 1672,
+      "height": 941,
+      "title": "Freigegebene Assetvorlage"
+    },
+    {
+      "embedded": true,
+      "width": 1440,
+      "height": 900,
+      "title": "Blender: Ladebucht und beide Geschütze"
+    },
+    {
+      "embedded": true,
+      "width": 1440,
+      "height": 900,
+      "title": "Blender: beschädigtes Heck"
+    },
+    {
+      "embedded": true,
+      "width": 1440,
+      "height": 900,
+      "title": "Blender: Zugang und Draufsicht"
+    },
+    {
+      "embedded": true,
+      "width": 1440,
+      "height": 900,
+      "title": "GLB im echten Three.js-Browserimport"
+    },
+    {
+      "embedded": true,
+      "width": 1672,
+      "height": 941,
+      "title": "Freigegebene HUD-Richtung"
+    },
+    {
+      "embedded": true,
+      "width": 2600,
+      "height": 800,
+      "title": "Cargo: kompletter direkter Vergleich"
+    },
+    {
+      "embedded": true,
+      "width": 900,
+      "height": 570,
+      "title": "Cargo: Inspectorvergleich nach Korrektur"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Vorher: Cargo-Panel"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Vorher: pausierter HUD"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Cargo: ausgewählter Former"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Start und Fortsetzen"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Bauvorschau: tatsächlich abgewiesen"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Maschinen: ehrlicher leerer Startzustand"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Energie: ehrlicher leerer Startzustand"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Technikübersicht in Englisch"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Aktuelle Karte: veröffentlichte Startsite"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Pausierter HUD, Minimap oben rechts"
+    },
+    {
+      "embedded": true,
+      "width": 1920,
+      "height": 1080,
+      "title": "Großer Viewport 1920×1080"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Tatsächlicher SimulationHold"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Recovery über normale Taste bestätigt"
+    },
+    {
+      "embedded": true,
+      "width": 375,
+      "height": 812,
+      "title": "Schmaler HUD: 375×812"
+    },
+    {
+      "embedded": true,
+      "width": 375,
+      "height": 812,
+      "title": "Schmales Cargo-Panel nach Korrektur"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Sichtbarer Tastatur-Fokus"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Normaler Browserentry in Englisch"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Graphics-Dialog in Englisch"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Start aus frisch gebauter Quellkopie"
+    },
+    {
+      "embedded": true,
+      "width": 1280,
+      "height": 720,
+      "title": "Workshop aus frisch gebauter Quellkopie"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "belt"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "brace"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "carrier-heavy"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "carrier-light"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "carrier-medium"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "cutter"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "former"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "offcut"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "profile"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "semi"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "sheet"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "steel"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "battery"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "cable-end"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "cable-link"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "distribution"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "pv"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "wind"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "storage-open"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "storage"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "workbench"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "wreck-cargo-open"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "wreck-cargo"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "cutter-v2"
+    },
+    {
+      "embedded": true,
+      "width": 1024,
+      "height": 768,
+      "title": "former-v2"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,58 @@
+{
+  "schema": "hestia.source.review-delivery/v1",
+  "sourceCommitSha": "fb1e219802c984aa2fef2d651985ae860bd4468f",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "deliveredAtUtc": "2026-10-13T17:19:15.864796+00:00",
+  "fullPackage": {
+    "result": "PASS",
+    "sourceCommitSha": "fb1e219802c984aa2fef2d651985ae860bd4468f",
+    "zip": "/workspace/review-packages/Hestia-English-UI-Crashsite-Review-2026-10-13.zip",
+    "bytes": 182238968,
+    "zipSha256": "26e2a4ac63586efefa82f35387313567eaf4580470b2155f901e984ce3508663",
+    "fileCount": 1491,
+    "imageCount": 53,
+    "nativeFactoryBlenderSources": 26,
+    "zipCRC": "PASS",
+    "zipManifestBytes": "PASS",
+    "markdownImages": "PASS",
+    "standaloneHTML": "PASS, all 53 embedded images actually decoded over HTTP",
+    "mode": "0644 files / 0755 directories",
+    "scope": "Browser/Factory source plus actual assets and tested prebuilt dist, current evidence; no .git, node_modules, credentials or unrelated historical art",
+    "ownerVisualAcceptance": "OWNER_REVIEW_PENDING",
+    "wholePrototypeGate": "BLOCKED"
+  },
+  "splitPackages": [
+    {
+      "kind": "VISUAL_SUBSET",
+      "path": "/workspace/review-packages/Hestia-English-UI-Crashsite-VISUAL-2026-10-13.zip",
+      "bytes": 82261349,
+      "sha256": "f131f6ece59b9dedb1e94c6fb9fb3f844d10ee1fbae0b7eddde0c145d4ae11ea",
+      "zipCRC": "PASS",
+      "images": 53
+    },
+    {
+      "kind": "SOURCE_BUILD_SUBSET",
+      "path": "/workspace/review-packages/Hestia-English-UI-Crashsite-SOURCE_BUILD-2026-10-13.zip",
+      "bytes": 62347268,
+      "sha256": "f878b1547bbac401b2837bc9e100a8c2af15f24fa0f18df844ec1567f0ddf707",
+      "zipCRC": "PASS",
+      "factoryBlendSources": 26
+    }
+  ],
+  "html": "/workspace/review-packages/Hestia-English-UI-Crashsite-Review-2026-10-13/GALERIE.html",
+  "markdown": "/workspace/review-packages/Hestia-English-UI-Crashsite-Review-2026-10-13/REVIEW.md",
+  "README_PLAY": "/workspace/review-packages/Hestia-English-UI-Crashsite-Review-2026-10-13/README_PLAY.md",
+  "actualHtmlImagesDecoded": 53,
+  "sourceScope": "Complete Browser/Factory snapshot; all 26 Factory blend files, runtime assets and prebuilt dist. No credentials, node_modules, Git history or unrelated legacy art.",
+  "validation": {
+    "uiFocusedTests": "110 PASS, 7 files",
+    "build": "PASS in original and clean source copy",
+    "cleanBrowserSmoke": "PASS",
+    "wholeSuite": "FAIL, historical 2419 PASS / 21 FAIL; five known unresolved source/timeout cases",
+    "designQA": "BLOCKED",
+    "newHullNativeAdmission": "NOT_ADMITTED",
+    "full16kgSaveRestart": "NOT_RUN here",
+    "humanAcceptance": "OWNER_REVIEW_PENDING"
+  },
+  "noMainMergePushPublishing": true
+}
