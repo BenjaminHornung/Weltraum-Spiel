@@ -1,0 +1,5 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+sh: 1: tsc: not found

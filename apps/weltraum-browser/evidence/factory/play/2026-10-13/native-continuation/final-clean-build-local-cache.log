@@ -1,0 +1,43 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+vite v8.1.5 building client environment for production...
+[2Ktransforming...✓ 322 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/factory.html                                 1.28 kB │ gzip:   0.51 kB
+dist/index.html                                  40.81 kB │ gzip:   7.12 kB
+dist/assets/streamingWorker-CZ5H7ot8.js         200.14 kB
+dist/assets/physicsWorker-_5ZnIb4m.js         2,475.70 kB
+dist/assets/factory-Bs497DX8.css                 19.55 kB │ gzip:   4.18 kB
+dist/assets/hvpBootstrap-GeJ96uLU.css           170.33 kB │ gzip:  27.08 kB
+dist/assets/rolldown-runtime-DK3Fl9T5.js          0.15 kB │ gzip:   0.15 kB
+dist/assets/hash-_jyFVLd7.js                      1.15 kB │ gzip:   0.62 kB │ map:     4.67 kB
+dist/assets/cargoSite-BaYgopaV.js                 2.09 kB │ gzip:   1.03 kB │ map:     6.19 kB
+dist/assets/installationProfile-Cgqok3yp.js       2.59 kB │ gzip:   1.27 kB │ map:     8.52 kB
+dist/assets/hvp-8zo4bjsd.js                       4.21 kB │ gzip:   1.68 kB
+dist/assets/cargoHandlingProfile-Cm4C8Flc.js      4.23 kB │ gzip:   1.91 kB │ map:    12.53 kB
+dist/assets/factoryS1Assets-CJ0oeDZw.js           6.98 kB │ gzip:   2.77 kB │ map:    21.06 kB
+dist/assets/hvpCoastSource-CRr-NT3R.js           13.30 kB │ gzip:   4.63 kB │ map:    58.05 kB
+dist/assets/factoryAssets-FkSRdcQv.js            29.99 kB │ gzip:   6.44 kB │ map:    98.30 kB
+dist/assets/fp02Catalog-CTtyykHS.js              32.80 kB │ gzip:  10.26 kB │ map:   105.16 kB
+dist/assets/surface-lab-BpqE6nqE.js              56.22 kB │ gzip:  18.41 kB │ map:   221.66 kB
+dist/assets/factoryPartCells-CMyEUhub.js         57.49 kB │ gzip:   6.55 kB │ map:    23.30 kB
+dist/assets/browserBridge-CwBpMWJr.js            61.70 kB │ gzip:  14.12 kB │ map:   179.80 kB
+dist/assets/playAssetLoader-FCWFJFqh.js         103.38 kB │ gzip:  16.75 kB │ map:    33.25 kB
+dist/assets/factory-B5kKPV5m.js                 298.30 kB │ gzip:  93.26 kB │ map:   789.97 kB
+dist/assets/main-D67AdGje.js                    336.47 kB │ gzip:  91.99 kB │ map: 1,220.67 kB
+dist/assets/hvpBootstrap-D0u18F_E.js          1,262.10 kB │ gzip: 338.64 kB │ map: 5,187.39 kB
+
+✓ built in 2.05s
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

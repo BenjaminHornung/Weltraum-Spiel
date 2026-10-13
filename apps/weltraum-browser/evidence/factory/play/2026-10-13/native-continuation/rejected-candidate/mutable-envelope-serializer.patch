@@ -1,0 +1,37 @@
+diff --git a/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts b/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts
+index 04d45146..4595cd42 100644
+--- a/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts
++++ b/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts
+@@ -45,19 +45,26 @@ const isImmutableData=(value:unknown):boolean=>{
+  };
+  remember(value);return true;
+ };
+-const canonicalJson = (value:unknown):string => {
+- if(!value||typeof value!=="object"||!isImmutableData(value))return uncachedCanonicalJson(value);
+- const old=canonicalBytes.get(value);if(old!==undefined)return old;
++// The caller proves the whole ordinary data tree once. Mutable envelopes are
++// always written afresh; only independently proven immutable children reuse bytes.
++const serializeDryData = (value:unknown):string => {
++ if(!value||typeof value!=="object")return uncachedCanonicalJson(value);
++ const immutable=isImmutableData(value);
++ const old=immutable?canonicalBytes.get(value):undefined;if(old!==undefined)return old;
+  let bytes:string;
+  if(Array.isArray(value)){
+   for(let i=0;i<value.length;i++)if(!Object.hasOwn(value,i))return uncachedCanonicalJson(value);
+-  const entries:string[]=[];for(let i=0;i<value.length;i++)entries.push(canonicalJson(value[i]));
++  const entries:string[]=[];for(let i=0;i<value.length;i++)entries.push(serializeDryData(value[i]));
+   bytes=`[${entries.join(",")}]`;
+  }else{
+   const record=value as Record<string,unknown>;
+-  bytes=`{${Object.keys(record).sort().map(key=>`${JSON.stringify(key)}:${canonicalJson(record[key])}`).join(",")}}`;
++  bytes=`{${Object.keys(record).sort().map(key=>`${JSON.stringify(key)}:${serializeDryData(record[key])}`).join(",")}}`;
+  }
+- canonicalBytes.set(value,bytes);return bytes;
++ if(immutable)canonicalBytes.set(value,bytes);return bytes;
++};
++const canonicalJson = (value:unknown):string => {
++ if(!value||typeof value!=="object"||!isImmutableData(value)&&!dataOnly(value))return uncachedCanonicalJson(value);
++ return serializeDryData(value);
+ };
+ const stateBytes = new WeakMap<DryFactoryState,string>();
+ const preparedTransitions = new WeakMap<Extract<DryFactoryProposal,{status:"Prepared"}>,Readonly<{base:DryFactoryState;material:MaterialView}>>();

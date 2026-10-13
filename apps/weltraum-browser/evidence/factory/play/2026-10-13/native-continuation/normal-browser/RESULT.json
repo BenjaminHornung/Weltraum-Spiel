@@ -1,0 +1,54 @@
+{
+  "startedAtUtc": "2026-10-13T17:52:14.080Z",
+  "endedAtUtc": "2026-10-13T17:52:49.796Z",
+  "entry": "http://127.0.0.1:5191/factory.html",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "browser": "154.0.8037.57",
+  "hardware": {
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpuQuota": "400000 100000\n",
+    "gpu": "Mesa llvmpipe software; GPU hardware acceptance NOT_RUN",
+    "LP_NUM_THREADS": "1"
+  },
+  "input": "Visible normal English UI, trusted Playwright keyboard, read-only DOM evidence; no TestBridge/pose/world/clock writes",
+  "verdict": "FAIL_START_OR_SUSTAIN_Paused",
+  "recovery": "NOT_RUN",
+  "events": [
+    {
+      "attempt": 1,
+      "sample": 0,
+      "atUtc": "2026-10-13T17:52:45.671Z",
+      "status": "Paused",
+      "ticks": 0,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "clock": {
+        "maxTimerGapMs": 47.1000000089407,
+        "maxAdvanceMs": 2,
+        "maxHandlerMs": 2735.2999999970198,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000059604645,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    }
+  ],
+  "errors": [],
+  "badResponses": []
+}

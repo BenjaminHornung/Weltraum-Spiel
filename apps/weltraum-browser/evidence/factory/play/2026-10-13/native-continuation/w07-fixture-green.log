@@ -1,0 +1,25 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+------------------------x---------------------------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/unit/hvp-bootstrap.test.ts:1029:27
+    1027|       const paid=artifacts.filter(value=>value.representationKey.start…
+    1028|       const ghosts=artifacts.filter(value=>value.representationKey.sta…
+    1029|       expect(paid.length).toBeGreaterThan(0);expect(ghosts.length).toB…
+       |                           ^
+    1030|       expect(paid.every(value=>!ghosts.some(ghost=>ghost.representatio…
+    1031|       port.construction!.projectGhost(null);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 51 skipped (52)
+   Start at  17:39:54
+   Duration  15.73s (transform 2.80s, setup 0ms, import 3.17s, tests 12.39s, environment 0ms)
+

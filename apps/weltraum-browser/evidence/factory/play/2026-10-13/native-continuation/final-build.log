@@ -1,0 +1,23 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+tests/unit/resourceCanonicalBytes.test.ts(39,5): error TS2322: Type '() => Generator<number, void, unknown>' is not assignable to type '() => ArrayIterator<any>'.
+  Type 'Generator<number, void, unknown>' is not assignable to type 'ArrayIterator<any>'.
+    The types returned by 'next(...)' are incompatible between these types.
+      Type 'IteratorResult<number, void>' is not assignable to type 'IteratorResult<any, undefined>'.
+        Type 'IteratorReturnResult<void>' is not assignable to type 'IteratorResult<any, undefined>'.
+          Type 'IteratorReturnResult<void>' is not assignable to type 'IteratorReturnResult<undefined>'.
+            Type 'void' is not assignable to type 'undefined'.
+tests/unit/resourceCanonicalBytes.test.ts(43,5): error TS2322: Type '() => Generator<1 | undefined, void, unknown>' is not assignable to type '() => ArrayIterator<unknown>'.
+  Type 'Generator<1 | undefined, void, unknown>' is not assignable to type 'ArrayIterator<unknown>'.
+    The types returned by 'next(...)' are incompatible between these types.
+      Type 'IteratorResult<1 | undefined, void>' is not assignable to type 'IteratorResult<unknown, undefined>'.
+        Type 'IteratorReturnResult<void>' is not assignable to type 'IteratorResult<unknown, undefined>'.
+          Type 'IteratorReturnResult<void>' is not assignable to type 'IteratorReturnResult<undefined>'.
+            Type 'void' is not assignable to type 'undefined'.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

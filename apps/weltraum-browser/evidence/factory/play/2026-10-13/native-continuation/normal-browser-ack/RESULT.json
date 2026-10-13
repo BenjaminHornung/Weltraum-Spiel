@@ -1,0 +1,333 @@
+{
+  "startedAtUtc": "2026-10-13T17:54:09.500Z",
+  "endedAtUtc": "2026-10-13T17:54:45.983Z",
+  "entry": "http://127.0.0.1:5191/factory.html",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "browser": "154.0.8037.57",
+  "hardware": {
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpuQuota": "400000 100000\n",
+    "gpu": "Mesa llvmpipe software; GPU hardware acceptance NOT_RUN",
+    "LP_NUM_THREADS": "1"
+  },
+  "input": "Visible normal English UI, trusted Playwright keyboard, read-only DOM evidence; no TestBridge/pose/world/clock writes",
+  "verdict": "PASS_BOUNDED_START_MOVEMENT",
+  "recovery": "NOT_RUN",
+  "events": [
+    {
+      "attempt": 1,
+      "sample": 0,
+      "atUtc": "2026-10-13T17:54:38.224Z",
+      "status": "Running",
+      "ticks": 28,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.41003680229187,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 2.5999999940395355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 1,
+      "atUtc": "2026-10-13T17:54:39.003Z",
+      "status": "Running",
+      "ticks": 59,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.41003680229187,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 5.700000002980232,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 2,
+      "atUtc": "2026-10-13T17:54:40.264Z",
+      "status": "Running",
+      "ticks": 147,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.400003433227539,
+          "y": 2.400095224380493,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000059604645,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 3,
+      "atUtc": "2026-10-13T17:54:40.949Z",
+      "status": "Running",
+      "ticks": 204,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.300006866455078,
+          "y": 2.400003433227539,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 1.0999999940395355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 4,
+      "atUtc": "2026-10-13T17:54:41.526Z",
+      "status": "Running",
+      "ticks": 226,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.300006866455078,
+          "y": 2.400003433227539,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 5,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 5,
+      "atUtc": "2026-10-13T17:54:42.129Z",
+      "status": "Running",
+      "ticks": 255,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.300006866455078,
+          "y": 2.400003433227539,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000059604645,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 6,
+      "atUtc": "2026-10-13T17:54:42.769Z",
+      "status": "Running",
+      "ticks": 277,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.300006866455078,
+          "y": 2.400003433227539,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 7,
+      "atUtc": "2026-10-13T17:54:43.402Z",
+      "status": "Running",
+      "ticks": 354,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.300006866455078,
+          "y": 2.400003433227539,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.3999999910593033,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 8,
+      "atUtc": "2026-10-13T17:54:43.962Z",
+      "status": "Running",
+      "ticks": 392,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.300006866455078,
+          "y": 2.400003433227539,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    },
+    {
+      "attempt": 1,
+      "sample": 9,
+      "atUtc": "2026-10-13T17:54:44.623Z",
+      "status": "Running",
+      "ticks": 438,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.300006866455078,
+          "y": 2.400003433227539,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "clock": {
+        "maxTimerGapMs": 56.1000000089407,
+        "maxAdvanceMs": 56.1000000089407,
+        "maxHandlerMs": 2571.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.3999999910593033,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "confirmed": true,
+      "massMg": 2984400000
+    }
+  ],
+  "errors": [],
+  "badResponses": []
+}

@@ -1,0 +1,69 @@
+{
+  "atUtc": "2026-10-13T18:09:58.776321+00:00",
+  "sourceHead": "c774b3019e23e00b152dc40136c700f48d3e9d57",
+  "codeChanges": [
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "beforeSha256": "4b063de46373e2faa4326d7e22b05ed0e577a5346f9a069a043314e41c4ea457",
+      "afterSha256": "99af1f10c1b99d01d32b4e6048d8b99f7ba6de5d8a4d9cd4e4f35adf4afd1fac",
+      "bytes": 114296
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "beforeSha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909",
+      "afterSha256": "a27f38b937dc7e65eb3c469b397669598305bda5d0d338b372df504296c1419a",
+      "bytes": 25487
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+      "beforeSha256": "cfc7bc73598f084d251a9bcdf8d9aa1d84ac9fefd3e2aa5284b68a190b4b65a4",
+      "afterSha256": "056cd3bb7cabced10b14f39f517769095f8f1d3658e5a74daeeb962ba33818ad",
+      "bytes": 18524
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/resourceCanonicalBytes.test.ts",
+      "beforeSha256": "ABSENT",
+      "afterSha256": "9ba105230af48fe2e9bef5fa232e1d1e69a058fc0063cbe84dc78286facd0dcc",
+      "bytes": 3160
+    }
+  ],
+  "unchangedProtected": [
+    {
+      "path": "apps/weltraum-browser/src/resources/serialization.ts",
+      "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "sha256": "890882e41a8b7aa4f1dc344602b093fbbb3192b195d28c2e1190e4f8572a6710"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "sha256": "793db55ad9d2df803f637c83ce77ada6d39a613850e166bc233bbde1a9609dbd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "sha256": "ccf5ecd952f866bf242fd6f14e3aee9a44dbf1b5d5080317d699d131c7694868"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+      "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3"
+    }
+  ],
+  "originalPaidBandBlock": {
+    "sha256": "a16258decde43993c5b6bc6c41248ef6e34294a86572bca2f108eb64c6ae8223",
+    "bytes": 15736,
+    "sliceStart": "const paidBeltFixture=",
+    "sliceEnd": "describe(\"W09 one Host material authority"
+  },
+  "writers": [
+    "/root"
+  ],
+  "reviewer": "/root/ui_ceramic_readonly_review",
+  "reviews": "READ_ONLY_SCOPE_PASS_NO_CRITICAL_IMPORTANT",
+  "runtimeStatus": "W09_BLOCKED; W10_BLOCKED; W11_BLOCKED",
+  "harnessAudit": {
+    "normal-browser/RESULT.json": "Premature status branch without StartACK wait; final nativeRunning222, cannot infer product failure from raw FAIL_START_OR_SUSTAIN_Paused",
+    "normal-browser-ack/RESULT.json": "ExplicitStartACK then10normal samples; boundedStartMovementPASS, notFullGameplayPASS",
+    "normal-v5-current/normal-route-execution.json": "Actualcurrent routeFAILSimulationHold tick72 beforepickup. Preserve noVideo flag/normalinputs and original5000ms ACK waits."
+  }
+}

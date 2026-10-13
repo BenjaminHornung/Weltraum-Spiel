@@ -1,0 +1,58 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+-----xx-----
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/playAssetDerivatives.test.ts > R2/R6 correction admission > rejects a catalog-only source change before any snapshot is written
+AssertionError: expected { blocked: true, …(1) } to deeply equal { blocked: true, …(1) }
+
+- Expected
++ Received
+
+  {
+    "blocked": true,
+-   "reason": "Frozen source changed: apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
++   "reason": "Frozen source changed: apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+  }
+
+ ❯ tests/unit/factory/playAssetDerivatives.test.ts:105:41
+    103|       const result = spawnSync("python3", ["-B", "-c", code], {encodin…
+    104|       expect(result.status, result.stderr).toBe(0);
+    105|       expect(JSON.parse(result.stdout)).toEqual({blocked: true, reason…
+       |                                         ^
+    106|     } finally {rmSync(temporary, {recursive: true, force: true});}
+    107|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/playAssetDerivatives.test.ts > R2/R6 correction admission > rejects an incompatible catalog digest immediately after SSR before snapshot writes
+AssertionError: expected { blocked: true, …(2) } to deeply equal { blocked: true, …(2) }
+
+- Expected
++ Received
+
+  {
+    "blocked": true,
+-   "reason": "Frozen catalog digest mismatch",
++   "reason": "Frozen source changed: apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "writtenSnapshots": 0,
+  }
+
+ ❯ tests/unit/factory/playAssetDerivatives.test.ts:119:68
+    117|       const result = spawnSync("python3", ["-B", "-c", code], {encodin…
+    118|       expect(result.status, result.stderr).toBe(0);
+    119|       expect(JSON.parse(result.stdout.trim().split("\n").at(-1)!)).toE…
+       |                                                                    ^
+    120|     } finally {rmSync(temporary, {recursive: true, force: true});}
+    121|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 10 skipped (12)
+   Start at  17:45:33
+   Duration  722ms (transform 288ms, setup 0ms, import 368ms, tests 217ms, environment 0ms)
+

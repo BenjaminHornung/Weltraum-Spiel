@@ -1,0 +1,41 @@
+{"kind": "click", "name": "New game"}
+{"kind": "click", "name": "Open workshop"}
+{"kind": "click", "name": "Open cargo"}
+{"kind": "capture", "label": "01-v5-normal-open-cargo"}
+{"kind": "click", "name": "Close"}
+{"kind": "play"}
+{"kind": "walk", "axis": "x", "target": -5.9}
+{"kind": "pause"}
+{"kind": "click", "name": "Open workshop"}
+{"kind": "click", "name": "Former kit select"}
+{"kind": "click", "name": "Pick up: Former kit"}
+{"kind": "capture", "label": "02-paid-341kg-pickup"}
+{"kind": "click", "name": "Close"}
+{"kind": "play"}
+{"kind": "walk", "axis": "z", "target": 12.175}
+{"kind": "walk", "axis": "x", "target": -8.125}
+{"kind": "capture", "label": "03-v5-heavy-west-clearance"}
+{"kind": "walk", "axis": "z", "target": -1.5}
+{"kind": "walk", "axis": "x", "target": -6.25}
+{"kind": "pause"}
+{"kind": "click", "name": "Open workshop"}
+{"kind": "click", "name": "Set down here"}
+{"kind": "capture", "label": "04-heavy-ground-depot"}
+{"kind": "click", "name": "Close"}
+{"kind": "play"}
+{"kind": "walk", "axis": "x", "target": -4.25}
+{"kind": "pause"}
+{"kind": "click", "name": "Open workshop"}
+{"kind": "click", "name": "Build"}
+{"kind": "click", "name": "Preview former"}
+{"kind": "click", "name": "Confirm build"}
+{"kind": "await-installed", "sourceId": "B07"}
+{"kind": "capture", "label": "05-paid-native-former"}
+{"kind": "assert-model", "sourceId": "B07"}
+{"kind": "click", "name": "Close"}
+{"kind": "play"}
+{"kind": "mouse", "dx": 946, "dy": 25}
+{"kind": "pause"}
+{"kind": "click", "name": "Close"}
+{"kind": "capture", "label": "06-current-paused-S1-former"}
+{"kind": "close"}

@@ -1,0 +1,62 @@
+diff --git a/apps/weltraum-browser/src/resources/serialization.ts b/apps/weltraum-browser/src/resources/serialization.ts
+index 651a3b84..c0d65f60 100644
+--- a/apps/weltraum-browser/src/resources/serialization.ts
++++ b/apps/weltraum-browser/src/resources/serialization.ts
+@@ -101,27 +101,47 @@ const canonicalize = (value: unknown, parents: WeakSet<object>): CanonicalJsonVa
+ /** Recursively sorts object keys while intentionally preserving array order. */
+ export const canonicalizeJsonValue = (value: unknown): CanonicalJsonValue => canonicalize(value, new WeakSet<object>());
+ 
+-const serializeCanonicalJson = (value: CanonicalJsonValue): string => {
++// Validate and write in the same traversal. Persistent bytes do not need the
++// defensive frozen tree returned by the separate canonicalizeJsonValue API.
++const serializeCanonicalJson = (value: unknown, parents: WeakSet<object>): string => {
+   if (value === null) {
+     return "null";
+   }
+   if (typeof value === "string" || typeof value === "boolean" || typeof value === "number") {
+-    const serialized = JSON.stringify(value);
++    if (typeof value === "number" && !Number.isFinite(value)) {
++      return fail("Canonical JSON does not permit non-finite numbers");
++    }
++    const serialized = JSON.stringify(Object.is(value, -0) ? 0 : value);
+     return serialized ?? fail("Canonical JSON could not serialize a primitive value");
+   }
+   if (Array.isArray(value)) {
+-    return `[${value.map(serializeCanonicalJson).join(",")}]`;
++    if (parents.has(value)) {
++      return fail("Canonical JSON does not permit cyclic values");
++    }
++    requireDenseArray(value);
++    parents.add(value);
++    const entries: string[] = [];
++    for (const entry of value) entries.push(serializeCanonicalJson(entry, parents));
++    parents.delete(value);
++    return `[${entries.join(",")}]`;
+   }
+-
+-  const record = value as CanonicalJsonObject;
+-  return `{${Object.keys(record)
+-    .sort(codeUnitCompare)
+-    .map((key) => `${JSON.stringify(key)}:${serializeCanonicalJson(record[key])}`)
+-    .join(",")}}`;
++  if (!isPlainRecord(value)) {
++    return fail("Canonical JSON only accepts JSON-compatible plain objects and arrays");
++  }
++  if (parents.has(value)) {
++    return fail("Canonical JSON does not permit cyclic values");
++  }
++  parents.add(value);
++  const entries: string[] = [];
++  for (const key of Object.keys(value).sort(codeUnitCompare)) {
++    entries.push(`${JSON.stringify(key)}:${serializeCanonicalJson(value[key], parents)}`);
++  }
++  parents.delete(value);
++  return `{${entries.join(",")}}`;
+ };
+ 
+ /** Byte-stable JSON for persistent resource data; unlike planner hashing, numeric precision is never rounded. */
+-export const canonicalJson = (value: unknown): string => serializeCanonicalJson(canonicalizeJsonValue(value));
++export const canonicalJson = (value: unknown): string => serializeCanonicalJson(value, new WeakSet<object>());
+ 
+ /** Deterministic synchronous signature over canonical JSON with no clock, random, or global registry state. */
+ export const canonicalSignature = (value: unknown): string => fnv1aHash(canonicalJson(value));

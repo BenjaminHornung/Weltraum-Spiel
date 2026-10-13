@@ -1,0 +1,1241 @@
+{
+  "startedAtUtc": "2026-10-13T18:04:48.454Z",
+  "endedAtUtc": "2026-10-13T18:05:29.353Z",
+  "entry": "http://127.0.0.1:5191/factory.html",
+  "browserVersion": "154.0.8037.57",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "backend": "Declared software Mesa wrapper; hardware acceptance NOT_RUN",
+  "recording": "Disabled for this bounded V5 Native UI/map/mouse calibration; no video or W11 claim",
+  "input": "normal visible UI and trusted CDP WASD; read-only diagnostics; no pose/world mutation",
+  "videoPath": null,
+  "events": [
+    {
+      "kind": "driver-ready",
+      "atUtc": "2026-10-13T18:05:05.946Z",
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 21.30000001192093,
+          "maxAdvanceMs": 0.10000000894069672,
+          "maxHandlerMs": 1748.2999999970198,
+          "lastCommand": "Read",
+          "lastHandlerMs": 1.2000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 2,
+          "lastAckId": 2,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "camera": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": null,
+        "inputError": null
+      },
+      "nativeStatus": "Paused",
+      "nativeTicks": 0
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "New game"
+      },
+      "start": "2026-10-13T18:05:05.949Z",
+      "end": "2026-10-13T18:05:07.819Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "GoalOpen wreck cargo",
+            "disabled": false
+          },
+          {
+            "name": "Close",
+            "disabled": false
+          },
+          {
+            "name": "Play",
+            "disabled": false
+          },
+          {
+            "name": "Save",
+            "disabled": true
+          },
+          {
+            "name": "Load game",
+            "disabled": true
+          },
+          {
+            "name": "Open settings",
+            "disabled": true
+          },
+          {
+            "name": "Back to menu",
+            "disabled": false
+          },
+          {
+            "name": "Open workshop",
+            "disabled": false
+          },
+          {
+            "name": "Open field guide",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 88.80000001192093,
+            "maxAdvanceMs": 0.20000000298023224,
+            "maxHandlerMs": 1748.2999999970198,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.7000000029802322,
+            "delayedCallbacks": [
+              {
+                "gapMs": 66.20000000298023,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 88.80000001192093,
+                "previousCommand": "Read",
+                "handlerMs": 0.7000000029802322,
+                "advanceMs": 0
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 1,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 2,
+            "lastAckId": 2,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Open workshop"
+      },
+      "start": "2026-10-13T18:05:07.831Z",
+      "end": "2026-10-13T18:05:09.726Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "GoalOpen wreck cargo",
+            "disabled": false
+          },
+          {
+            "name": "Views",
+            "disabled": false
+          },
+          {
+            "name": "Close",
+            "disabled": false
+          },
+          {
+            "name": "Open cargo",
+            "disabled": false
+          },
+          {
+            "name": "Former kit341 kg",
+            "disabled": false
+          },
+          {
+            "name": "Cutter kit208 kg",
+            "disabled": false
+          },
+          {
+            "name": "Battery50 kg",
+            "disabled": false
+          },
+          {
+            "name": "Cable pack · 40 m10 kg",
+            "disabled": false
+          },
+          {
+            "name": "Pick up: Former kit",
+            "disabled": true
+          },
+          {
+            "name": "View materials",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 88.80000001192093,
+            "maxAdvanceMs": 0.20000000298023224,
+            "maxHandlerMs": 1748.2999999970198,
+            "lastCommand": "Read",
+            "lastHandlerMs": 4.600000008940697,
+            "delayedCallbacks": [
+              {
+                "gapMs": 66.20000000298023,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 88.80000001192093,
+                "previousCommand": "Read",
+                "handlerMs": 0.7000000029802322,
+                "advanceMs": 0
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Open cargo"
+      },
+      "start": "2026-10-13T18:05:09.728Z",
+      "end": "2026-10-13T18:05:13.028Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "GoalConfirming workshop state",
+            "disabled": true
+          },
+          {
+            "name": "Views",
+            "disabled": false
+          },
+          {
+            "name": "Close",
+            "disabled": false
+          },
+          {
+            "name": "Former kit341 kg",
+            "disabled": true
+          },
+          {
+            "name": "Cutter kit208 kg",
+            "disabled": true
+          },
+          {
+            "name": "Battery50 kg",
+            "disabled": true
+          },
+          {
+            "name": "Cable pack · 40 m10 kg",
+            "disabled": true
+          },
+          {
+            "name": "Pick up: Former kit",
+            "disabled": true
+          },
+          {
+            "name": "View materials",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 88.80000001192093,
+            "maxAdvanceMs": 0.20000000298023224,
+            "maxHandlerMs": 1748.2999999970198,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.4000000059604645,
+            "delayedCallbacks": [
+              {
+                "gapMs": 66.20000000298023,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 88.80000001192093,
+                "previousCommand": "Read",
+                "handlerMs": 0.7000000029802322,
+                "advanceMs": 0
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "capture",
+        "label": "01-v5-normal-open-cargo"
+      },
+      "start": "2026-10-13T18:05:13.033Z",
+      "end": "2026-10-13T18:05:18.076Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "GoalBuild a cutter and former",
+            "disabled": false
+          },
+          {
+            "name": "Views",
+            "disabled": false
+          },
+          {
+            "name": "Close",
+            "disabled": false
+          },
+          {
+            "name": "Former kit341 kg",
+            "disabled": false
+          },
+          {
+            "name": "Cutter kit208 kg",
+            "disabled": false
+          },
+          {
+            "name": "Battery50 kg",
+            "disabled": false
+          },
+          {
+            "name": "Cable pack · 40 m10 kg",
+            "disabled": false
+          },
+          {
+            "name": "Pick up: Former kit",
+            "disabled": false
+          },
+          {
+            "name": "View materials",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 88.80000001192093,
+            "maxAdvanceMs": 0.20000000298023224,
+            "maxHandlerMs": 1748.2999999970198,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.800000011920929,
+            "delayedCallbacks": [
+              {
+                "gapMs": 66.20000000298023,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 88.80000001192093,
+                "previousCommand": "Read",
+                "handlerMs": 0.7000000029802322,
+                "advanceMs": 0
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Close"
+      },
+      "start": "2026-10-13T18:05:18.077Z",
+      "end": "2026-10-13T18:05:20.325Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "GoalBuild a cutter and former",
+            "disabled": false
+          },
+          {
+            "name": "Pause",
+            "disabled": false
+          },
+          {
+            "name": "Play",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 88.80000001192093,
+            "maxAdvanceMs": 8.5,
+            "maxHandlerMs": 1748.2999999970198,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.29999999701976776,
+            "delayedCallbacks": [
+              {
+                "gapMs": 66.20000000298023,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 88.80000001192093,
+                "previousCommand": "Read",
+                "handlerMs": 0.7000000029802322,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 73,
+                "previousCommand": "Read",
+                "handlerMs": 12.200000002980232,
+                "advanceMs": 0
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "play"
+      },
+      "start": "2026-10-13T18:05:20.326Z",
+      "end": "2026-10-13T18:05:23.193Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "GoalBuild a cutter and former",
+            "disabled": false
+          },
+          {
+            "name": "Pause",
+            "disabled": false
+          },
+          {
+            "name": "View cargo",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 88.80000001192093,
+            "maxAdvanceMs": 8.5,
+            "maxHandlerMs": 1748.2999999970198,
+            "lastCommand": "Play",
+            "lastHandlerMs": 1.2999999970197678,
+            "delayedCallbacks": [
+              {
+                "gapMs": 66.20000000298023,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 88.80000001192093,
+                "previousCommand": "Read",
+                "handlerMs": 0.7000000029802322,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 73,
+                "previousCommand": "Read",
+                "handlerMs": 12.200000002980232,
+                "advanceMs": 0
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 27,
+            "lastAckId": 27,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.5,
+              3.1700000762939453,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.5,
+              2.4200000762939453,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        },
+        "nativeStatus": "Running"
+      }
+    },
+    {
+      "kind": "trusted-physical-key-exposure",
+      "key": "d",
+      "requestedMs": 133,
+      "observedElapsedMs": 142,
+      "heldAtUtc": "2026-10-13T18:05:23.405Z",
+      "before": {
+        "ticks": 0,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 88.80000001192093,
+            "maxAdvanceMs": 8.5,
+            "maxHandlerMs": 1748.2999999970198,
+            "lastCommand": "Play",
+            "lastHandlerMs": 1.2999999970197678,
+            "delayedCallbacks": [
+              {
+                "gapMs": 66.20000000298023,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 88.80000001192093,
+                "previousCommand": "Read",
+                "handlerMs": 0.7000000029802322,
+                "advanceMs": 0
+              },
+              {
+                "gapMs": 73,
+                "previousCommand": "Read",
+                "handlerMs": 12.200000002980232,
+                "advanceMs": 0
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 27,
+            "lastAckId": 27,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.5,
+              3.1700000762939453,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.5,
+              2.4200000762939453,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": null
+    },
+    {
+      "command": {
+        "kind": "walk",
+        "axis": "x",
+        "target": -5.9
+      },
+      "start": "2026-10-13T18:05:23.194Z",
+      "end": "2026-10-13T18:05:28.968Z",
+      "status": "failed",
+      "error": "TimeoutError: page.waitForFunction: Timeout 5000ms exceeded."
+    }
+  ],
+  "errors": [],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:5191/factory.html",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/hvpBootstrap-GeJ96uLU.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/rolldown-runtime-DK3Fl9T5.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/hash-_jyFVLd7.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/hvpCoastSource-CRr-NT3R.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/factory-Bs497DX8.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/cargoHandlingProfile-Cm4C8Flc.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/fp02Catalog-CTtyykHS.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/factory-B5kKPV5m.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/factoryAssets-FkSRdcQv.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/installationProfile-Cgqok3yp.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/hvpBootstrap-D0u18F_E.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/cargoSite-BaYgopaV.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/favicon.png",
+      "status": 200,
+      "type": "other"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/physicsWorker-_5ZnIb4m.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/playAssetLoader-FCWFJFqh.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/factoryPartCells-CMyEUhub.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/assets/factoryS1Assets-CJ0oeDZw.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/play-2026-10-12/wreck-cargo.glb",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/play-2026-10-12/wreck-cargo-open.glb",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/cutter.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/former.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/storage.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/bench.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/brace.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/battery.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/cable.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/steel.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/profile.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/belt.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/sheet.png",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "url": "http://127.0.0.1:5191/factory/ui-ceramic-v1/carrier.png",
+      "status": 200,
+      "type": "image"
+    }
+  ]
+}

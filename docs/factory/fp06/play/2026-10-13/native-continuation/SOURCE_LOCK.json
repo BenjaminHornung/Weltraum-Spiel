@@ -1,0 +1,34 @@
+{
+  "schema": "hestia.fp06.current-continuation-lock/v1",
+  "atUtc": "2026-10-13T18:25:32.170840+00:00",
+  "repository": "BenjaminHornung/Weltraum-Spiel",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "codeCommit": "1e1c60ee17098cf04844d96c78ec0742a0be1e98",
+  "continuationBase": "c774b3019e23e00b152dc40136c700f48d3e9d57",
+  "runtimeCodeCheckpoint": "fb1e219802c984aa2fef2d651985ae860bd4468f",
+  "remoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "remoteMainIsImplementationBasis": false,
+  "implementationWritersDuringWork": [
+    "/root"
+  ],
+  "independentReadOnlyReviewer": "/root/ui_ceramic_readonly_review",
+  "originalManifest": "33/33 size and SHA256 verified",
+  "archiveInstructions": "Read and verified planning sources; task authorization comes from explicit owner requests/grants, historical reports do not override current repository",
+  "standingOwnerGrants": [
+    "W01 source/quantity freeze",
+    "D03 restart policy",
+    "D05 confirmed100ms/no offline catchup",
+    "D06 finite persistent1kg/s credit10kg max",
+    "D07 existingThree/HVP browser factory entry",
+    "D11 fixedfacility16owner/nativecombinedcheckpoint contract",
+    "versioned native handling carrier5colliders",
+    "isolated startsite candidatesV1-V5"
+  ],
+  "finalTerrainAcceptance": "OWNER_REVIEW_PENDING",
+  "codeScope": "4 test paths only; failed production candidates exactly reverted",
+  "protectedMaterialRecipesGoldenSavesTerrainPhysicsCaps": "UNCHANGED",
+  "w09": "BLOCKED",
+  "w10": "BLOCKED_NOT_RUN",
+  "w11": "BLOCKED_PARTIAL_EVIDENCE",
+  "mergePushPublish": false
+}

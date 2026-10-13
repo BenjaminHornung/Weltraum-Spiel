@@ -1,0 +1,66 @@
+{
+  "schema": "hestia.fp06.mutable-envelope-canonical-derivation/v1",
+  "status": "GRANTED_ONE_REVIEWED_CANDIDATE",
+  "actor": "/root",
+  "atUtc": "2026-10-13T17:47:30.652845+00:00",
+  "base": "c774b3019e23e00b152dc40136c700f48d3e9d57",
+  "authorization": "Explicit owner bounded composition/performance fix task; existing sole serial Integrator. New exact candidate following documented current original5000ms FAIL and existing profile, no new product policy.",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "sha256": "890882e41a8b7aa4f1dc344602b093fbbb3192b195d28c2e1190e4f8572a6710"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "sha256": "793db55ad9d2df803f637c83ce77ada6d39a613850e166bc233bbde1a9609dbd"
+    }
+  ],
+  "rootCauseHypothesis": "Dry canonicalJson currently falls back on a mutable outer record, serializing already deeply immutable descendants repeatedly. Original W09 output-blocked lot test FAIL6.83s; existing V8 profile35% serializeCanonicalJson,12.7% DrycanonicalJson.",
+  "candidate": "One public dataOnly/structuredClone proof; internal recursive serialization may reuse existing proven immutable subtree byte WeakMap. Mutable records always fresh, never cached. Preserve primitive fallback, dense own-index check, exact bytes/errors and all current guards.",
+  "budget": {
+    "implementationCandidates": 1,
+    "newProfiles": 0,
+    "originalSelectedBeforeAfterPair": 1
+  },
+  "protectedOriginalBlock": "W09 paid-band tests and 5000ms default byte-identical; record block hash before/after",
+  "excluded": [
+    "resources/serialization.ts",
+    "W02",
+    "W03",
+    "W04",
+    "recipes",
+    "Goldens",
+    "Save",
+    "materialhistory",
+    "Terrain",
+    "Collider",
+    "nativeclock",
+    "caps",
+    "timeouts",
+    "dependencies",
+    "W12-W29",
+    "publishing",
+    "mainmerge"
+  ],
+  "reviewer": "/root/ui_ceramic_readonly_review read-only proposal review",
+  "gates": [
+    "Original blocked-output baseline RED already captured",
+    "One minimal candidate then same unmodified original case; no automatic second candidate on failure",
+    "Byte equality and mutable/proxy/accessor/sparse/primitive protection tests",
+    "FullDry regression plus typecheck/originalbuild and actualnormalbrowser only after relevant PASS"
+  ],
+  "completion": {
+    "atUtc": "2026-10-13T17:50:11.536775+00:00",
+    "status": "FAIL_REJECTED_AND_REVERTED",
+    "baselineTestMs": 6830,
+    "candidateTestMs": 9800,
+    "timeoutMs": 5000,
+    "implementationCandidatesConsumed": 1,
+    "productionSourceRestoredToBeforeSha": "890882e41a8b7aa4f1dc344602b093fbbb3192b195d28c2e1190e4f8572a6710",
+    "scope": "No dependent W09/W10 PASS, no additional candidate automatically admitted"
+  }
+}

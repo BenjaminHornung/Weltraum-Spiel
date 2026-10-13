@@ -1,0 +1,23 @@
+{
+  "events": [
+    {
+      "url": "http://127.0.0.1:5194/",
+      "title": "Weltraum Browser",
+      "language": "en",
+      "testBridge": false,
+      "canvasCount": 1,
+      "bodyLength": 292
+    },
+    {
+      "url": "http://127.0.0.1:5194/factory.html",
+      "title": "Hestia · Workshop",
+      "language": "en",
+      "testBridge": false,
+      "canvasCount": 1,
+      "bodyLength": 229
+    }
+  ],
+  "errors": [],
+  "browser": "154.0.8037.57",
+  "scope": "Clean-copy built main and factory normal entry startup only; no gameplay/save/performance acceptance"
+}

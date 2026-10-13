@@ -1,0 +1,17 @@
+/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts:25
+	throw new CanonicalSerializationError(message);
+	      ^
+
+CanonicalSerializationError: Canonical JSON only accepts JSON-compatible plain objects and arrays
+    at fail (/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts:25:8)
+    at canonicalize (/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts:67:10)
+    at canonicalize (/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts:75:40)
+    at canonicalize (/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts:61:16)
+    at canonicalize (/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts:75:40)
+    at canonicalizeJsonValue (/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts:81:42)
+    at Module.canonicalJson (/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts:97:57)
+    at file:///workspace/.cloud-setup/fp06-native-continuation-2026-10-13/canonical-reference.mjs:8:248
+    at Array.map (<anonymous>)
+    at file:///workspace/.cloud-setup/fp06-native-continuation-2026-10-13/canonical-reference.mjs:8:220
+
+Node.js v22.23.3

@@ -1,0 +1,64 @@
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > validates cold immutable material but avoids redundant W02 work when adoption changes nothing
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > binds nested frozen ArrayProxy facts with the original canonical iterator semantics
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects changed frozen ArrayProxy domain membership between prepare and adoption
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > preserves exact cold and warm material projection bytes without admitting a later mutable clone
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > preserves canonical array contents with an own map property null
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > preserves canonical array contents with an own map property () => {
+		throw Error("Caller array map must not execute");
+	}
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects actual Native source quantity tampering even when copied canonical receipts are unchanged
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects caller-forged Native OUTPUT quantity despite copied canonical proposal receipts
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external state output from later caller mutation
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external material output from later caller mutation
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > isolates adopted external accessor output from mutable values retained by its caller
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > binds the complete external joint receipt payload rather than its copied signature
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > binds the complete external power output payload rather than its copied signature
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > validates actual W02 receipt chain even in an empty confirmed domain
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > validates actual W02 reservation claim even in an empty confirmed domain
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rechecks mutable facts, frozen accessors and caller-forged immutable proposals
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects invalid canonical prototype input rather than memoizing it
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects invalid canonical cycle input rather than memoizing it
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects invalid canonical sparse input rather than memoizing it
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects invalid canonical symbol input rather than memoizing it
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 complete private proposal byte guards > rejects invalid canonical nonfinite input rather than memoizing it
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 binds one actually paid four-metre line to exact Native endpoints and zero initial bounded transport credit
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > adopts only the fully paid installed Cutter with finite native buffers and preserves one real serialized C03 SOC across graph changes
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band joint adoption preserves real custody and credit across blackout and a later graph revision
+ × tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band output blockage retains the same lot at the end until actual receiver room exists 6169ms
+   → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > admits an actual Native UUID without losing its full identity or colliding with other session strings
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > evaluates one complete confirmed100ms power interval and preserves every finite native resource with no machines
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > construction reads the same authority after a real handling Resources transfer instead of retaining initial cargo
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > adopts an exact real Resources candidate once and lets every consumer read the same complete view
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > answers the exact historical handling command from its receipt before any current revision or Native allocation
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > rejects changed revision bytes under an accepted handling ID even after the carrier slot is reused
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 one Host material authority and complete command receipts > rejects changed lot bytes under an accepted handling ID even after the carrier slot is reused
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 Native quarter-turn 0 binds the exact installed Solid port to the accepted Belt convention
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 Native quarter-turn 1 binds the exact installed Solid port to the accepted Belt convention
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 Native quarter-turn 2 binds the exact installed Solid port to the accepted Belt convention
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 Native quarter-turn 3 binds the exact installed Solid port to the accepted Belt convention
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > W09 q1 Cutter OUT to Former IN is exactly four metres toward Native minus-Z
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > PLAY04 control disabling the paid battery cuts actual supply routes without changing finite SOC or custody
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > PLAY04 control disables only the paid band and preserves packet, credit and paid machine owners
+ ↓ tests/unit/factory/dryFactorySlice.test.ts > PLAY04 control replay preserves the same disabled state and rejects changed command payload
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band output blockage retains the same lot at the end until actual receiver room exists
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:213:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 39 skipped (40)
+   Start at  17:58:27
+   Duration  6.85s (transform 424ms, setup 0ms, import 540ms, tests 6.17s, environment 0ms)
+
