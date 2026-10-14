@@ -35,7 +35,7 @@ Both original cases timed out. Existing product files restored to original hashe
 - [x] Complete baseline/candidate bytes and typecheck PASS. Preliminary tests retain two Conveyor timeout FAILs; no broad regression PASS claimed.
 - [x] One original pair FAIL: 8164/20463 ms vs 5000 ms. No further pair/profile/candidate.
 - [x] Exact product rollback, baseline five guards PASS, baseline/candidate/restored complete bytes identical.
-- [ ] Record final commits and independent rollback seal.
+- [x] Changeset commit 7f5060cda131e925bda2d20028bd714eaee09460; independent rollback seal PASS; all 41 artifact references and 20 actual LFS files verified. FINAL_CHECKPOINT.json closes the window as FAIL_REJECTED_REVERTED.
 
 ## Definition of Done
 This integration window is complete as REJECTED_REVERTED, with concrete source, tests, logs, ownership and rollback proof. It is not a W09 completion. W09 remains BLOCKED, W10 BLOCKED_NOT_RUN and W11 PARTIAL_BLOCKED.

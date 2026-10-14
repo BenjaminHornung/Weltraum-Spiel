@@ -1,0 +1,132 @@
+{
+  "status": "PASS",
+  "changesetCommit": "7f5060cda131e925bda2d20028bd714eaee09460",
+  "manifestReferences": 41,
+  "lfsFiles": 20,
+  "uniqueLfsPayloads": 14,
+  "actualLfsBytesVerified": 2032486,
+  "verifiedLfsPayloads": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/01-red-seam.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "15187bab0907f19e63525e6969ebda7f4cc48847c6d17cb63624e8ec5a4db91e",
+      "bytes": 538
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/02-baseline-bytes.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "12965db3a48e61e966ae199aae33d7f7811a1d4ac861397cf204138273bc1296",
+      "bytes": 790
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/03-baseline-bytes-corrected.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "c261fce900f437dd0e376a6301e29067c890b048d1436c630938ddee9a69eb54",
+      "bytes": 313
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/04-helper-guards.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "2f35e2902281130d6b4635938922ce1babcd0f36b7230f19d1a108ff89099a9f",
+      "bytes": 652
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/05-preliminary-guards.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "e25066c20ef893d57aee78d608d3386fd84f5764471e60caa1525d91894a64dc",
+      "bytes": 825
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/06-review-correction-guards.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "5c26b8573fef17547219d88c13c9ab1cc0a814b62c2582e1f7b6501b3f64f866",
+      "bytes": 320
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/07-final-preliminary-guards.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "c29a06aca18cfa295bcde2101e6a2e87c0be16e423ece0155077193cb3826ab4",
+      "bytes": 1137
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/08-final-boundary-and-bytes.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "7d36a7d4f28d2318ecc00b39e65e05ab25d2fa64c66d15e0148ebfebb803e079",
+      "bytes": 392
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/09-typecheck.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "bytes": 20
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/10-original-paid-pair.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "b5154156c404fe7931f3ccca051f95e4eea17d7565b1398fcdbb88328c8268cd",
+      "bytes": 613
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/11-restored-domain-guards.log.raw.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "f08bd7dc388543974a27320ddde3f85b7966f7d16bbe9827761f9cfa71e808c4",
+      "bytes": 305
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/baseline-conveyor.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "0d51545ef827de7537ac4e8c8ac6e84e3faa226f729d61a867a8ab887363adec",
+      "bytes": 73290
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/baseline-dry.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "cf15bfb73fa70b0548370f6ac1d840780add49c50645226d06e0a6f044e74daf",
+      "bytes": 138931
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/baseline-production.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "6a628567df6765cd48b413e903c56d40f9b40845f49d669ae6bef1722719c9e7",
+      "bytes": 463306
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/candidate-conveyor.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "0d51545ef827de7537ac4e8c8ac6e84e3faa226f729d61a867a8ab887363adec",
+      "bytes": 73290
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/candidate-dry.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "cf15bfb73fa70b0548370f6ac1d840780add49c50645226d06e0a6f044e74daf",
+      "bytes": 138931
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/candidate-production.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "6a628567df6765cd48b413e903c56d40f9b40845f49d669ae6bef1722719c9e7",
+      "bytes": 463306
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/restored-conveyor.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "0d51545ef827de7537ac4e8c8ac6e84e3faa226f729d61a867a8ab887363adec",
+      "bytes": 73290
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/restored-dry.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "cf15bfb73fa70b0548370f6ac1d840780add49c50645226d06e0a6f044e74daf",
+      "bytes": 138931
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/restored-production.json.gz",
+      "storage": "REAL_LOCAL_LFS_PAYLOAD",
+      "oid": "6a628567df6765cd48b413e903c56d40f9b40845f49d669ae6bef1722719c9e7",
+      "bytes": 463306
+    }
+  ],
+  "regularGitBlobBytes": "exactly match all other referenced working payloads",
+  "publishing": false
+}
