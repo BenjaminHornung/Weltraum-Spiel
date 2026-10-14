@@ -1,0 +1,22 @@
+{
+  "url": "http://127.0.0.1:5190/factory.html",
+  "text": "",
+  "sourceDigest": "0e2a0bcb",
+  "sourceRevision": "hvp-authored-coast-v5",
+  "ui": null,
+  "construction": null,
+  "presentation": null,
+  "native": null,
+  "diagnostics": {
+    "physicsClock": null,
+    "input": null,
+    "transport": null,
+    "ownedRender": null,
+    "camera": null,
+    "visibility": "visible",
+    "hasFocus": true,
+    "pointerLockElement": null,
+    "inputError": null
+  },
+  "testBridge": false
+}

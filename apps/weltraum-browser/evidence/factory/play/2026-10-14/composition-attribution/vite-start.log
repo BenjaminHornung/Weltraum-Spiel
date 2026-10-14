@@ -1,0 +1,8 @@
+
+> weltraum-browser@0.1.0 dev
+> vite --host 127.0.0.1 --port 5190 --strictPort
+
+
+  VITE v8.1.5  ready in 463 ms
+
+  ➜  Local:   http://127.0.0.1:5190/

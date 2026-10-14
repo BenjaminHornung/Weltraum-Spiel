@@ -1,0 +1,5 @@
+TimeoutError: locator.waitFor: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('#factory-shell') to be visible[22m
+
+DRIVER_CLOSED null

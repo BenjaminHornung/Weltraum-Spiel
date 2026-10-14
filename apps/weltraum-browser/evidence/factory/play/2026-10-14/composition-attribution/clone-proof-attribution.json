@@ -1,0 +1,50 @@
+[
+  {
+    "file": "CPU.20261014.085940.7237.0.001.cpuprofile",
+    "advanceBandSampledSeconds": 0.0,
+    "structuredCloneSelfSeconds": 0.0,
+    "cloneCallersDisjoint": []
+  },
+  {
+    "file": "CPU.20261014.085941.7262.0.001.cpuprofile",
+    "advanceBandSampledSeconds": 17.944511,
+    "structuredCloneSelfSeconds": 5.703305,
+    "cloneCallersDisjoint": [
+      {
+        "function": "prepareDryFactoryStep",
+        "src": "factory/session/dryFactorySlice.ts",
+        "seconds": 4.777644
+      },
+      {
+        "function": "canonicalJson",
+        "src": "factory/session/dryFactorySlice.ts",
+        "seconds": 0.450716
+      },
+      {
+        "function": "dryStateBytes",
+        "src": "factory/session/dryFactorySlice.ts",
+        "seconds": 0.253389
+      },
+      {
+        "function": "commitDryFactoryStep",
+        "src": "factory/session/dryFactorySlice.ts",
+        "seconds": 0.188394
+      },
+      {
+        "function": "dataOnlyShape",
+        "src": "factory/session/dryFactorySlice.ts",
+        "seconds": 0.017641
+      },
+      {
+        "function": "assertBeltMaterialSnapshots",
+        "src": "factory/conveyor/beltReference.ts",
+        "seconds": 0.010899
+      },
+      {
+        "function": "validateDryMaterial",
+        "src": "factory/session/dryFactorySlice.ts",
+        "seconds": 0.004622
+      }
+    ]
+  }
+]

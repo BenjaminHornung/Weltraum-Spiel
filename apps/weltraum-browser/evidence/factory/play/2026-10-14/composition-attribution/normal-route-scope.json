@@ -1,0 +1,15 @@
+{
+  "kind": "NORMAL_ROUTE_HARNESS_BOUNDARY",
+  "baseCommit": "a89c1991aa148ff77d001d204de6a3e56fda13ef",
+  "driverChange": "Only actual owned service URL 5191 to 5190, two occurrences",
+  "commandsSHA256": "c92ceee95a961a945602487219bac467f1aefc2d2c344ce29e1529c30e0c49e0",
+  "movement": "Trusted normal WASD only; no Native advance, teleports, pose writes or TestBridge",
+  "unchangedWaitsMs": 5000,
+  "actualImplementationWriters": [
+    "/root"
+  ],
+  "readonlyReviewers": [
+    "/root/composition_contract_readonly"
+  ],
+  "productionCandidate": "NONE"
+}

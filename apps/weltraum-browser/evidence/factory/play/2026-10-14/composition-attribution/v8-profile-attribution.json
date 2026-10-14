@@ -1,0 +1,448 @@
+[
+  {
+    "path": "CPU.20261014.085940.7237.0.001.cpuprofile",
+    "bytes": 516844,
+    "sha256": "2a29d608dd4815697634ba67bcfa4687046681723062e254b83270e7a49be13b",
+    "wallSpanSeconds": 25.325836,
+    "sampledSeconds": 25.325067,
+    "sampleCount": 19800,
+    "topSelf": [
+      {
+        "function": "(idle)",
+        "url": "",
+        "line": 0,
+        "seconds": 23.052785,
+        "sampleSharePercent": 91.02753805152815
+      },
+      {
+        "function": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "seconds": 0.271732,
+        "sampleSharePercent": 1.0729764308224732
+      },
+      {
+        "function": "compileSourceTextModule",
+        "url": "node:internal/modules/esm/utils",
+        "line": 344,
+        "seconds": 0.179153,
+        "sampleSharePercent": 0.7074137256971521
+      },
+      {
+        "function": "decode$1",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+        "line": 778,
+        "seconds": 0.0702,
+        "sampleSharePercent": 0.2771957128484596
+      },
+      {
+        "function": "(program)",
+        "url": "",
+        "line": 0,
+        "seconds": 0.069803,
+        "sampleSharePercent": 0.27562809606782085
+      },
+      {
+        "function": "transformSync",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/resolve-tsconfig-DxqIJB3x.mjs",
+        "line": 93,
+        "seconds": 0.063087,
+        "sampleSharePercent": 0.2491089164739426
+      },
+      {
+        "function": "jsonParseAst",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/parse-D4dtlfWy.mjs",
+        "line": 25,
+        "seconds": 0.057063,
+        "sampleSharePercent": 0.22532220743976708
+      },
+      {
+        "function": "addUneditedChunk",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+        "line": 4412,
+        "seconds": 0.053368,
+        "sampleSharePercent": 0.21073192027488022
+      },
+      {
+        "function": "compileForInternalLoader",
+        "url": "node:internal/bootstrap/realm",
+        "line": 385,
+        "seconds": 0.045261,
+        "sampleSharePercent": 0.17872015896344914
+      },
+      {
+        "function": "decode",
+        "url": "node:internal/encoding",
+        "line": 442,
+        "seconds": 0.040923,
+        "sampleSharePercent": 0.16159088542589048
+      },
+      {
+        "function": "visit",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+        "line": 11766,
+        "seconds": 0.03859,
+        "sampleSharePercent": 0.1523786689290891
+      },
+      {
+        "function": "wrappedHook",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/normalize-string-or-regex-dnh67V_w.mjs",
+        "line": 19,
+        "seconds": 0.037102,
+        "sampleSharePercent": 0.14650306749435255
+      },
+      {
+        "function": "enter",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+        "line": 12084,
+        "seconds": 0.031909,
+        "sampleSharePercent": 0.12599769232594726
+      },
+      {
+        "function": "",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/rolldown-build-CtPvmZgJ.mjs",
+        "line": 1,
+        "seconds": 0.026304,
+        "sampleSharePercent": 0.1038654705237305
+      },
+      {
+        "function": "traceMappings",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+        "line": 1353,
+        "seconds": 0.026143,
+        "sampleSharePercent": 0.103229736766343
+      },
+      {
+        "function": "encode$1",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+        "line": 833,
+        "seconds": 0.024162,
+        "sampleSharePercent": 0.09540744749066211
+      },
+      {
+        "function": "parse",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/parse-D4dtlfWy.mjs",
+        "line": 55,
+        "seconds": 0.023171,
+        "sampleSharePercent": 0.09149432852438258
+      },
+      {
+        "function": "get program",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/parse-D4dtlfWy.mjs",
+        "line": 7,
+        "seconds": 0.023103,
+        "sampleSharePercent": 0.09122581985666613
+      },
+      {
+        "function": "spawn",
+        "url": "node:internal/child_process",
+        "line": 354,
+        "seconds": 0.022603,
+        "sampleSharePercent": 0.08925149141757453
+      },
+      {
+        "function": "",
+        "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+        "line": 54,
+        "seconds": 0.021503,
+        "sampleSharePercent": 0.08490796885157303
+      }
+    ],
+    "inclusiveSelectedFunctions": {},
+    "canonicalSamplesByNearestFactoryCaller": [],
+    "materialValidationSamplesByNearestFactoryCaller": [],
+    "disjointNearestSourceBuckets": {
+      "runner/native/idle/other": 25.323677,
+      "walker.js": 0.00139
+    },
+    "method": "V8 sample timeDeltas weighted in microseconds. Self values are disjoint. Inclusive function values overlap and MUST NOT be added. Each canonical sample assigned once to nearest Factory ancestor. Separate processes are never added."
+  },
+  {
+    "path": "CPU.20261014.085941.7262.0.001.cpuprofile",
+    "bytes": 1551788,
+    "sha256": "26385615ae73e02de18286cbf0fee3dacc4a18f81c185f7ab4f9fff6ade24737",
+    "wallSpanSeconds": 24.046244,
+    "sampledSeconds": 24.045277,
+    "sampleCount": 18030,
+    "topSelf": [
+      {
+        "function": "serializeCanonicalJson",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+        "line": 79,
+        "seconds": 5.800926,
+        "sampleSharePercent": 24.12501215935254
+      },
+      {
+        "function": "structuredClone",
+        "url": "node:internal/worker/js_transferable",
+        "line": 112,
+        "seconds": 5.686615,
+        "sampleSharePercent": 23.649613185990745
+      },
+      {
+        "function": "canonicalJson",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "line": 80,
+        "seconds": 2.769333,
+        "sampleSharePercent": 11.517159897970815
+      },
+      {
+        "function": "(garbage collector)",
+        "url": "",
+        "line": 0,
+        "seconds": 1.564399,
+        "sampleSharePercent": 6.506055222403967
+      },
+      {
+        "function": "(idle)",
+        "url": "",
+        "line": 0,
+        "seconds": 1.535445,
+        "sampleSharePercent": 6.3856407227082475
+      },
+      {
+        "function": "canonicalize",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+        "line": 40,
+        "seconds": 1.129755,
+        "sampleSharePercent": 4.698448680794985
+      },
+      {
+        "function": "fnv1aHash",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/core/hash.ts",
+        "line": 75,
+        "seconds": 1.048733,
+        "sampleSharePercent": 4.3614926956341575
+      },
+      {
+        "function": "defineCanonicalProperty",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+        "line": 32,
+        "seconds": 1.023486,
+        "sampleSharePercent": 4.256494944932429
+      },
+      {
+        "function": "",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+        "line": 91,
+        "seconds": 0.532798,
+        "sampleSharePercent": 2.2158114460482197
+      },
+      {
+        "function": "compileSourceTextModule",
+        "url": "node:internal/modules/esm/utils",
+        "line": 344,
+        "seconds": 0.183465,
+        "sampleSharePercent": 0.7629980723449349
+      },
+      {
+        "function": "cloneExtensionValue",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/types.ts",
+        "line": 71,
+        "seconds": 0.091083,
+        "sampleSharePercent": 0.37879788201233866
+      },
+      {
+        "function": "defineExtensionProperty",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/types.ts",
+        "line": 63,
+        "seconds": 0.084302,
+        "sampleSharePercent": 0.35059691764000056
+      },
+      {
+        "function": "compileForInternalLoader",
+        "url": "node:internal/bootstrap/realm",
+        "line": 385,
+        "seconds": 0.080891,
+        "sampleSharePercent": 0.3364111796258367
+      },
+      {
+        "function": "codeUnitCompare",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+        "line": 13,
+        "seconds": 0.07288,
+        "sampleSharePercent": 0.30309486557380894
+      },
+      {
+        "function": "commitDryFactoryStep",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "line": 687,
+        "seconds": 0.068247,
+        "sampleSharePercent": 0.28382704844697776
+      },
+      {
+        "function": "(program)",
+        "url": "",
+        "line": 0,
+        "seconds": 0.067361,
+        "sampleSharePercent": 0.2801423331492501
+      },
+      {
+        "function": "stepFactoryPower",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/power/factoryPower.ts",
+        "line": 97,
+        "seconds": 0.063639,
+        "sampleSharePercent": 0.26466320184209147
+      },
+      {
+        "function": "canonicalSignature",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+        "line": 96,
+        "seconds": 0.060671,
+        "sampleSharePercent": 0.2523198214767915
+      },
+      {
+        "function": "assertMaterialSnapshots",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+        "line": 61,
+        "seconds": 0.059869,
+        "sampleSharePercent": 0.2489844471327987
+      },
+      {
+        "function": "isImmutableDataShape",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "line": 43,
+        "seconds": 0.057255,
+        "sampleSharePercent": 0.23811328935823864
+      }
+    ],
+    "inclusiveSelectedFunctions": {
+      "serializeCanonicalJson": 6.360615,
+      "canonicalize": 2.219969,
+      "poweredBandFixture": 1.552724,
+      "createResourceContainerSnapshot": 1.19378,
+      "assertMaterialSnapshots": 1.599921,
+      "assertFactoryBeltState": 0.283622,
+      "prepareDryFactoryStep": 16.405981,
+      "inputBytes": 2.080236,
+      "proposalBytes": 0.201884,
+      "advanceFactoryBelt": 3.177421,
+      "commitDryFactoryStep": 0.600656
+    },
+    "canonicalSamplesByNearestFactoryCaller": [
+      {
+        "function": "canonicalJson",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "seconds": 1.813645
+      },
+      {
+        "function": "inputBytes",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "seconds": 1.259811
+      },
+      {
+        "function": "assertMaterialSnapshots",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+        "seconds": 1.211529
+      },
+      {
+        "function": "applyMove",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/material/reservations.ts",
+        "seconds": 0.645745
+      },
+      {
+        "function": "inputBytes",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "seconds": 0.615985
+      },
+      {
+        "function": "advanceFactoryBelt",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "seconds": 0.544557
+      },
+      {
+        "function": "",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+        "seconds": 0.446733
+      },
+      {
+        "function": "allocatedWork",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "seconds": 0.434427
+      },
+      {
+        "function": "binding",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/material/reservations.ts",
+        "seconds": 0.4059
+      },
+      {
+        "function": "stepFactoryPower",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/power/factoryPower.ts",
+        "seconds": 0.388585
+      },
+      {
+        "function": "powered",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "seconds": 0.20707
+      },
+      {
+        "function": "prepareFactoryPowerSources",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+        "seconds": 0.139471
+      },
+      {
+        "function": "proposalBytes",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "seconds": 0.108403
+      },
+      {
+        "function": "productionMaterialCanonicalJson",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "seconds": 0.101732
+      },
+      {
+        "function": "loadFactoryCatalog",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "seconds": 0.092809
+      }
+    ],
+    "materialValidationSamplesByNearestFactoryCaller": [
+      {
+        "function": "assertView",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/material/reservations.ts",
+        "seconds": 1.106661
+      },
+      {
+        "function": "validateMaterial",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "seconds": 0.290095
+      },
+      {
+        "function": "assertBeltMaterialSnapshots",
+        "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "seconds": 0.203165
+      }
+    ],
+    "disjointNearestSourceBuckets": {
+      "factory/session/dryFactorySlice.ts": 8.756392,
+      "resources/serialization.ts": 8.671176,
+      "runner/native/idle/other": 4.434793,
+      "core/hash.ts": 1.050232,
+      "resources/types.ts": 0.244057,
+      "factory/conveyor/beltReference.ts": 0.137829,
+      "factory/material/resourcesAdapter.ts": 0.121767,
+      "resources/containers.ts": 0.106533,
+      "factory/production/productionStep.ts": 0.074034,
+      "factory/material/quantity.ts": 0.072799,
+      "factory/power/factoryPower.ts": 0.072767,
+      "resources/catalog.ts": 0.068923,
+      "factory/material/reservations.ts": 0.059294,
+      "factory/power/sourceAdapter.ts": 0.028968,
+      "resources/transfer.ts": 0.027487,
+      "factory/production/recipeAdmission.ts": 0.02713,
+      "resources/ids.ts": 0.023775,
+      "factory/conveyor/beltPorts.ts": 0.02213,
+      "factory/catalog/fp02Catalog.ts": 0.015897,
+      "presentation/canonical.ts": 0.011292,
+      "factory/presentation/factoryAssets.ts": 0.004057,
+      "presentation/validation.ts": 0.003769,
+      "factory/construction/cargoHandlingProfile.ts": 0.002546,
+      "factory/construction/installationProfile.ts": 0.00253,
+      "presentation/renderCommands.ts": 0.001414,
+      "presentation/materialProfile.ts": 0.00138,
+      "presentation/index.ts": 0.001231,
+      "hvp/hvpCoastSource.ts": 0.001075
+    },
+    "method": "V8 sample timeDeltas weighted in microseconds. Self values are disjoint. Inclusive function values overlap and MUST NOT be added. Each canonical sample assigned once to nearest Factory ancestor. Separate processes are never added."
+  }
+]
