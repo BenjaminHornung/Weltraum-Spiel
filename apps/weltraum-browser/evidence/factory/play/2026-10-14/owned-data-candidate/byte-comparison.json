@@ -1,0 +1,31 @@
+{
+  "fullByteReferences": [
+    {
+      "fixture": "production",
+      "bytes": 7267042,
+      "sha256": "5b9ffd469f468c09bc52e8cb376f8b2f0724049cb3dd6fd22b60e178e47ad933",
+      "fullBytes": "IDENTICAL",
+      "covered": "proposal, native material and catalog, full receipts/history, power, commit/copy/replay"
+    },
+    {
+      "fixture": "conveyor",
+      "bytes": 707428,
+      "sha256": "fbaf2b8a02148842add33756d4312a8053857f50e270938ed3fde9ab69da717f",
+      "fullBytes": "IDENTICAL",
+      "covered": "proposal, native material and catalog, full receipts/history, power, commit/copy/replay"
+    },
+    {
+      "fixture": "dry",
+      "bytes": 2332494,
+      "sha256": "512028842480beb2213c1902b4339ec5964211c83f369150d5413d95b5ee4e01",
+      "fullBytes": "IDENTICAL",
+      "covered": "proposal, native material and catalog, full receipts/history, power, commit/copy/replay"
+    }
+  ],
+  "originalPaidBlock": {
+    "bytes": 15736,
+    "sha256": "a16258decde43993c5b6bc6c41248ef6e34294a86572bca2f108eb64c6ae8223",
+    "status": "UNCHANGED"
+  },
+  "note": "Baseline and candidate fixture export omits only Native optional undefined depletion through JSON export; production/material receipt strings remain exact."
+}

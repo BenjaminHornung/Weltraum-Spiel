@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "note": "Readable log projections trim terminal blank lines only. Deterministic gzip archives retain every original stdout/stderr byte, including blank lines. Explicitly scope-added despite repository *.log ignore rule.",
+  "logs": [
+    {
+      "readable": "01-red-seam.log",
+      "rawArchive": "01-red-seam.log.raw.gz",
+      "rawBytes": 1180,
+      "rawSha256": "313fc93f40ea66578fabe2ec3908d05c01048e42b8eeedcfd47c404df935ecf1",
+      "archiveSha256": "15187bab0907f19e63525e6969ebda7f4cc48847c6d17cb63624e8ec5a4db91e"
+    },
+    {
+      "readable": "02-baseline-bytes.log",
+      "rawArchive": "02-baseline-bytes.log.raw.gz",
+      "rawBytes": 3957,
+      "rawSha256": "90b21c5788608eb44a965fb00fda28fe4425288652e03036d5122dfbda1498f1",
+      "archiveSha256": "12965db3a48e61e966ae199aae33d7f7811a1d4ac861397cf204138273bc1296"
+    },
+    {
+      "readable": "03-baseline-bytes-corrected.log",
+      "rawArchive": "03-baseline-bytes-corrected.log.raw.gz",
+      "rawBytes": 475,
+      "rawSha256": "bb496cccda588236cccb172af5aa6da0e4306dcdb9654c8b380d6122f0713e20",
+      "archiveSha256": "c261fce900f437dd0e376a6301e29067c890b048d1436c630938ddee9a69eb54"
+    },
+    {
+      "readable": "04-helper-guards.log",
+      "rawArchive": "04-helper-guards.log.raw.gz",
+      "rawBytes": 1471,
+      "rawSha256": "28dc8a64fb852b4b5a229fd56b733a255324855789ac7eca2801ef02f49dcb95",
+      "archiveSha256": "2f35e2902281130d6b4635938922ce1babcd0f36b7230f19d1a108ff89099a9f"
+    },
+    {
+      "readable": "05-preliminary-guards.log",
+      "rawArchive": "05-preliminary-guards.log.raw.gz",
+      "rawBytes": 2255,
+      "rawSha256": "f25bfee4b60760eb0ad693af6898093fe03e233e78d1193a4d7fad8e0c599ffd",
+      "archiveSha256": "e25066c20ef893d57aee78d608d3386fd84f5764471e60caa1525d91894a64dc"
+    },
+    {
+      "readable": "06-review-correction-guards.log",
+      "rawArchive": "06-review-correction-guards.log.raw.gz",
+      "rawBytes": 493,
+      "rawSha256": "4680febf8c803f0232c60a268a2a665cdd8088adebf7734f682dd8795b5cf282",
+      "archiveSha256": "5c26b8573fef17547219d88c13c9ab1cc0a814b62c2582e1f7b6501b3f64f866"
+    },
+    {
+      "readable": "07-final-preliminary-guards.log",
+      "rawArchive": "07-final-preliminary-guards.log.raw.gz",
+      "rawBytes": 3106,
+      "rawSha256": "37ac15d109594e63bac45cabcd780121a0fef2b2deffa895db638209c185ab08",
+      "archiveSha256": "c29a06aca18cfa295bcde2101e6a2e87c0be16e423ece0155077193cb3826ab4"
+    },
+    {
+      "readable": "08-final-boundary-and-bytes.log",
+      "rawArchive": "08-final-boundary-and-bytes.log.raw.gz",
+      "rawBytes": 659,
+      "rawSha256": "83ff823628bddf3938139329738c569996fb4a2de274260166a160ce2bc14a74",
+      "archiveSha256": "7d36a7d4f28d2318ecc00b39e65e05ab25d2fa64c66d15e0148ebfebb803e079"
+    },
+    {
+      "readable": "09-typecheck.log",
+      "rawArchive": "09-typecheck.log.raw.gz",
+      "rawBytes": 0,
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archiveSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "readable": "10-original-paid-pair.log",
+      "rawArchive": "10-original-paid-pair.log.raw.gz",
+      "rawBytes": 1658,
+      "rawSha256": "72abee643bd1dc2244dc60b532b76254d3b7de2bd29bdf7c8da8a1f23dc2805a",
+      "archiveSha256": "b5154156c404fe7931f3ccca051f95e4eea17d7565b1398fcdbb88328c8268cd"
+    },
+    {
+      "readable": "11-restored-domain-guards.log",
+      "rawArchive": "11-restored-domain-guards.log.raw.gz",
+      "rawBytes": 460,
+      "rawSha256": "b4ee7f0da286fbe54bbf644bf0388a8fa46cabc408d24327fa106e598dea8d7f",
+      "archiveSha256": "f08bd7dc388543974a27320ddde3f85b7966f7d16bbe9827761f9cfa71e808c4"
+    }
+  ]
+}

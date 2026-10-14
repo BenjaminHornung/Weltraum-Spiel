@@ -1,3 +1,4 @@
+import { writeFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import * as resourcesAdapter from "../../../src/factory/material/resourcesAdapter";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
@@ -435,4 +436,29 @@ describe("FP06 native one-packet conveyor reference", () => {
     const small = initial(4_000_000);
     expect(advanceFactoryBelt(small.line, input(small, true, true, 8_000_000))).toMatchObject({ status: "Rejected" });
   });
+});
+
+it("owned-data baseline bytes: conveyor cold, copied, custody and replay", () => {
+ const bytesOf=(value:unknown)=>canonicalJson(JSON.parse(JSON.stringify(value)));
+ const pair=initial(),request=input(pair,true,true,100_000),proposal=advanceFactoryBelt(pair.line,request);
+ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+ const copy=JSON.parse(JSON.stringify(proposal)) as typeof proposal;
+ const adopted=commitFactoryBeltStep(pair.line,request,proposal),restored=commitFactoryBeltStep(pair.line,request,copy);
+ expect(adopted.status).toBe("Committed");expect(bytesOf(restored)).toBe(bytesOf(adopted));
+ const replay=commitFactoryBeltStep(adopted.line,{...request,material:adopted.material},proposal);
+ expect(replay.status).toBe("NoOp");expect(readMaterialMassMg(adopted.material)).toBe(readMaterialMassMg(pair.material));
+ const bytes=bytesOf({proposal,adopted,replay,power:request.power});
+ if(process.env.HESTIA_OWNED_REFERENCE)writeFileSync(`evidence/factory/play/2026-10-14/owned-data-candidate/${process.env.HESTIA_OWNED_REFERENCE}-conveyor.json`,bytes);
+ const forged={...copy,nextLine:{...copy.nextLine,packet:{...copy.nextLine.packet!,injectionReceiptCanonicalJson:copy.nextLine.packet!.injectionReceiptCanonicalJson+" "}}};
+ expect(commitFactoryBeltStep(pair.line,request,forged).status).toBe("Rejected");
+});
+
+it("owned-data retains a blocked borrowed packet with an accessor and exact position bytes", () => {
+ const admitted=step(initial(),true,true,100_000),original=admitted.line.packet!;let reads=0;
+ const packet=Object.freeze({...original,get positionMm(){reads++;return original.positionMm;}});
+ const pair={...admitted,line:{...admitted.line,packet}},request=input(pair,false,false),proposal=advanceFactoryBelt(pair.line,request);
+ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+ expect(proposal.nextLine.packet).toBe(packet);expect(reads).toBeGreaterThan(0);
+ expect(canonicalJson(proposal.nextLine.packet)).toBe(canonicalJson(original));
+ expect(commitFactoryBeltStep(pair.line,request,proposal).status).toBe("Committed");
 });

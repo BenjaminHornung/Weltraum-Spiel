@@ -1,0 +1,67 @@
+[
+  {
+    "path": "apps/weltraum-browser/src/factory/internal/ownedData.ts",
+    "sha256": "ABSENT",
+    "bytes": 0
+  },
+  {
+    "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "sha256": "890882e41a8b7aa4f1dc344602b093fbbb3192b195d28c2e1190e4f8572a6710",
+    "bytes": 36108
+  },
+  {
+    "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+    "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+    "bytes": 29154
+  },
+  {
+    "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+    "sha256": "2e8a33d97553567d5e17092151d75a4c0e0d98abbaf73c5450cfc4a28500dae7",
+    "bytes": 23568
+  },
+  {
+    "path": "apps/weltraum-browser/tests/unit/factory/ownedData.test.ts",
+    "sha256": "ABSENT",
+    "bytes": 0
+  },
+  {
+    "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+    "sha256": "793db55ad9d2df803f637c83ce77ada6d39a613850e166bc233bbde1a9609dbd",
+    "bytes": 41413
+  },
+  {
+    "path": "apps/weltraum-browser/tests/unit/factory/production.test.ts",
+    "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+    "bytes": 23542
+  },
+  {
+    "path": "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts",
+    "sha256": "4a2fa15da9dd29a76fdddb85566956d29081663d63115c78754f93ed352bfb67",
+    "bytes": 29664
+  },
+  {
+    "path": "apps/weltraum-browser/src/resources/serialization.ts",
+    "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f",
+    "bytes": 4186
+  },
+  {
+    "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+    "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+    "bytes": 23335
+  },
+  {
+    "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "sha256": "7bac925c8e76e4d6e3ba79f0bab8a7fa50f16d66570918e89ea944718aef43ac",
+    "bytes": 40143
+  },
+  {
+    "path": "apps/weltraum-browser/package.json",
+    "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416",
+    "bytes": 2605
+  },
+  {
+    "path": "apps/weltraum-browser/package-lock.json",
+    "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890",
+    "bytes": 59899
+  }
+]

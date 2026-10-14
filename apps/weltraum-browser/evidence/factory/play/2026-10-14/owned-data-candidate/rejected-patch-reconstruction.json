@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "base": "9724ba4f66be54afa560b3e398dab17ae2c8bfc1",
+  "patchSha256": "6cdbc2d04b4a3cf5e5da7adb4ddbd3207ed7781699715e3a53e69c11677870af",
+  "reconstructedExactFiles": 8,
+  "check": "git apply --check then apply into isolated /tmp source copy; all eight hashes match pre-gate seal",
+  "noExecutionOrNewCandidate": true
+}

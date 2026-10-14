@@ -1,0 +1,50 @@
+{
+  "status": "ONE_CANDIDATE_READY_FOR_RESERVED_PAIR",
+  "recordedUtc": "2026-10-14T09:58:47.846947+00:00",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/factory/internal/ownedData.ts",
+      "sha256": "c74ac6d96fc841a645872ea9ed7d5d2a742967f5a650fe26a468a9dcd727f7fa",
+      "bytes": 6349
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "sha256": "a6a710e75ed81769a2c82a46c975e376db0d79a0caa552558681fd0193e1246a",
+      "bytes": 33815
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "sha256": "a897f02f937115ab6bddc478a204b0076e71885c47f6df8b8eb81726c2fbf243",
+      "bytes": 29848
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "sha256": "93b492fd35da6bf549dc187b8ac5ff082d8f9b9c1f94b81702b945be5f72f161",
+      "bytes": 24047
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/ownedData.test.ts",
+      "sha256": "ba06b407dad44164f6479d5705937914bb11205a5612bfa4cf0d48b393f119a8",
+      "bytes": 7454
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "sha256": "e2c5264c0ea8adae7de17a8c4daa16fd3395d8b954f573e775fc0cb65692b982",
+      "bytes": 42705
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/production.test.ts",
+      "sha256": "6ea7da6590e0b682411392532731a95144eb29f6be8d299673c1011a3cc1359e",
+      "bytes": 25738
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts",
+      "sha256": "16f7dee29e3186ba380fa74875ff578fe80cfe9bfd87cebfc3be60d05d214da6",
+      "bytes": 31824
+    }
+  ],
+  "cpuProfilesAfterGrant": 0,
+  "originalPaidPairAfterGrantRunsSoFar": 0,
+  "correctness": "Full baseline comparison PASS; 18 boundary cases PASS; tsc PASS. Preliminary suite has two 5000ms Conveyor timeout failures; candidate cannot be promoted on those results. Original pair is a diagnostic acceptance run inside the one explicitly approved allowance.",
+  "otherExecution": "No active node/browser/art processes; four defunct Chromium children only."
+}

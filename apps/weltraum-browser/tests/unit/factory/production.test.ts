@@ -1,3 +1,4 @@
+import { writeFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
 import { createFactoryMaterialView, prepareFactoryMaterialStep, commitFactoryMaterialStep,
@@ -235,4 +236,31 @@ describe("FP06 W04 exact paid process steps over native Resources", () => {
     }
     const wrongActor = input(pair, false, { ...command, actorId: "remote_actor" }); expect(stepFactoryProduction(pair.state, wrongActor).status).toBe("Rejected");
   });
+});
+
+it("owned-data baseline bytes: production cold, copied, committed and replay", () => {
+ const bytesOf=(value:unknown)=>canonicalJson(JSON.parse(JSON.stringify(value)));
+ const pair=initial(),request=input(pair,true,pair.command),proposal=stepFactoryProduction(pair.state,request);
+ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+ const copy=JSON.parse(JSON.stringify(proposal)) as typeof proposal;
+ const adopted=commitFactoryProductionStep(pair.state,request,proposal),restored=commitFactoryProductionStep(pair.state,request,copy);
+ expect(adopted.status).toBe("Committed");expect(bytesOf(restored)).toBe(bytesOf(adopted));
+ const replay=commitFactoryProductionStep(adopted.state,{...request,material:adopted.material},proposal);
+ expect(replay.status).toBe("NoOp");
+ const bytes=bytesOf({proposal,adopted,replay,power:request.power});
+ if(process.env.HESTIA_OWNED_REFERENCE)writeFileSync(`evidence/factory/play/2026-10-14/owned-data-candidate/${process.env.HESTIA_OWNED_REFERENCE}-production.json`,bytes);
+ const forged={...copy,nextState:{...copy.nextState,lastStep:{...copy.nextState.lastStep!,adoptedPayload:{...copy.nextState.lastStep!.adoptedPayload,materialCanonicalJson:copy.nextState.lastStep!.adoptedPayload.materialCanonicalJson+" "}}}};
+ expect(commitFactoryProductionStep(pair.state,request,forged).status).toBe("Rejected");
+});
+
+it("owned-data retains a passive borrowed job with an accessor and its actual canonical bytes", () => {
+ let pair=initial("B05");pair=advance(pair,false,pair.command);
+ const original=pair.state.job!;let reads=0;
+ const job=Object.freeze({...original,get workMilliJoule(){reads++;return original.workMilliJoule;}});
+ pair={...pair,state:{...pair.state,job}};
+ const request=input(pair,false),proposal=stepFactoryProduction(pair.state,request);
+ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+ expect(proposal.nextState.job).toBe(job);expect(reads).toBeGreaterThan(0);
+ expect(canonicalJson(proposal.nextState.job)).toBe(canonicalJson(original));
+ expect(commitFactoryProductionStep(pair.state,request,proposal).status).toBe("Committed");
 });

@@ -1,0 +1,82 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/production.test.ts tests/unit/factory/conveyor.test.ts tests/unit/factory/dryFactorySlice.test.ts -t owned-data baseline bytes
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/dryFactorySlice.test.ts (41 tests | 1 failed | 40 skipped) 637ms
+   × owned-data baseline bytes: Dry cold, copied, joint material and replay 627ms
+ ❯ tests/unit/factory/production.test.ts (17 tests | 1 failed | 16 skipped) 926ms
+   × owned-data baseline bytes: production cold, copied, committed and replay 923ms
+ ❯ tests/unit/factory/conveyor.test.ts (26 tests | 1 failed | 25 skipped) 131ms
+   × owned-data baseline bytes: conveyor cold, copied, custody and replay 129ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/conveyor.test.ts > owned-data baseline bytes: conveyor cold, copied, custody and replay
+CanonicalSerializationError: Canonical JSON only accepts JSON-compatible plain objects and arrays
+ ❯ fail src/resources/serialization.ts:30:9
+     28|
+     29| const fail = (message: string): never => {
+     30|   throw new CanonicalSerializationError(message);
+       |         ^
+     31| };
+     32|
+ ❯ canonicalize src/resources/serialization.ts:85:12
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:78:19
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalizeJsonValue src/resources/serialization.ts:102:78
+ ❯ canonicalJson src/resources/serialization.ts:124:81
+ ❯ tests/unit/factory/conveyor.test.ts:444:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/dryFactorySlice.test.ts > owned-data baseline bytes: Dry cold, copied, joint material and replay
+CanonicalSerializationError: Canonical JSON only accepts JSON-compatible plain objects and arrays
+ ❯ fail src/resources/serialization.ts:30:9
+     28|
+     29| const fail = (message: string): never => {
+     30|   throw new CanonicalSerializationError(message);
+       |         ^
+     31| };
+     32|
+ ❯ canonicalize src/resources/serialization.ts:85:12
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:78:19
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalizeJsonValue src/resources/serialization.ts:102:78
+ ❯ canonicalJson src/resources/serialization.ts:124:81
+ ❯ tests/unit/factory/dryFactorySlice.test.ts:323:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/factory/production.test.ts > owned-data baseline bytes: production cold, copied, committed and replay
+CanonicalSerializationError: Canonical JSON only accepts JSON-compatible plain objects and arrays
+ ❯ fail src/resources/serialization.ts:30:9
+     28|
+     29| const fail = (message: string): never => {
+     30|   throw new CanonicalSerializationError(message);
+       |         ^
+     31| };
+     32|
+ ❯ canonicalize src/resources/serialization.ts:85:12
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:78:19
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalizeJsonValue src/resources/serialization.ts:102:78
+ ❯ canonicalJson src/resources/serialization.ts:124:81
+ ❯ tests/unit/factory/production.test.ts:244:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 81 skipped (84)
+   Start at  09:44:18
+   Duration  5.96s (transform 1.49s, setup 0ms, import 2.29s, tests 1.69s, environment 1ms)

@@ -1,0 +1,655 @@
+diff --git a/apps/weltraum-browser/src/factory/conveyor/beltReference.ts b/apps/weltraum-browser/src/factory/conveyor/beltReference.ts
+index ae71c43a..7536f1b5 100644
+--- a/apps/weltraum-browser/src/factory/conveyor/beltReference.ts
++++ b/apps/weltraum-browser/src/factory/conveyor/beltReference.ts
+@@ -1,7 +1,8 @@
++import { factoryCanonicalJson as canonicalJson, isFactoryImmutableData, ownedRecord } from "../internal/ownedData";
+ import { commitFactoryMaterialStep, prepareFactoryMaterialStep, type MaterialPlan, type MaterialView, type MaterialIntent } from "../material/reservations";
+ import { assertMaterialSnapshots } from "../material/resourcesAdapter";
+ import { findFactoryItem, safeWhole, safeBigIntNumber, validateFactoryAmount } from "../material/quantity";
+-import { canonicalJson, canonicalSignature } from "../../resources/serialization";
++import { canonicalSignature } from "../../resources/serialization";
+ import { isSaveSafeResourceId } from "../../resources/ids";
+ import type { ResourceStack } from "../../resources/types";
+ import { assertFactoryBeltPorts, assertFactoryBeltItemPorts, type BeltInstallation } from "./beltPorts";
+@@ -276,7 +277,12 @@ export function advanceFactoryBelt(line: BeltState, input: BeltStepInput): BeltS
+     const nextLine: BeltState = { ...line, revision, tickEndUs: input.tickEndUs, creditMg, packetCursor, packet,
+       lastStep: { tickEndUs: input.tickEndUs, requestDigest: canonicalSignature(requestBytes), outcome } };
+     assertFactoryBeltState(nextLine, materialPlan?.candidate ?? input.material);
+-    return freeze({ status: "Prepared", baseLineCanonicalJson: canonicalJson(line), inputCanonicalJson: requestBytes, nextLine, materialPlan, outcome });
++    const baseLineCanonicalJson = canonicalJson(line);
++    const frozenLine = freeze(nextLine);
++    isFactoryImmutableData(frozenLine);
++    const ownedLine = ownedRecord({ ...frozenLine, packet: frozenLine.packet && isFactoryImmutableData(frozenLine.packet) ? ownedRecord(frozenLine.packet) : frozenLine.packet,
++      lastStep: ownedRecord(frozenLine.lastStep!) });
++    return ownedRecord(freeze({ status: "Prepared" as const, baseLineCanonicalJson, inputCanonicalJson: requestBytes, nextLine: ownedLine, materialPlan, outcome }));
+   } catch (error) { return { status: "Rejected", reason: error instanceof Error ? error.message : "InvalidBeltStep" }; }
+ }
+ /** Returns an atomic pair for the sole Host to adopt at its combined World CAS. */
+diff --git a/apps/weltraum-browser/src/factory/production/productionStep.ts b/apps/weltraum-browser/src/factory/production/productionStep.ts
+index b9358aab..615b2bbc 100644
+--- a/apps/weltraum-browser/src/factory/production/productionStep.ts
++++ b/apps/weltraum-browser/src/factory/production/productionStep.ts
+@@ -1,9 +1,10 @@
++import { factoryCanonicalJson as canonicalJson, isFactoryImmutableData, ownedRecord, ownedArray } from "../internal/ownedData";
+ import type { MaterialPlan, MaterialRecipeRef, MaterialView } from "../material/reservations";
+ import type { FactoryPowerBinding, FactoryPowerRequest, FactoryPowerSuccess } from "../power/factoryPower";
+ import type { ProductionHostFacts, ProductionStart } from "./recipeAdmission";
+-import { admitFactoryRecipe, isImmutableProductionData, productionContainer, productionId, productionMaterialCanonicalJson, productionOutputs, productionRevision } from "./recipeAdmission";
++import { admitFactoryRecipe, productionContainer, productionId, productionMaterialCanonicalJson, productionOutputs, productionRevision } from "./recipeAdmission";
+ import { commitFactoryMaterialStep, prepareFactoryMaterialStep } from "../material/reservations";
+-import { canonicalJson, canonicalSignature } from "../../resources/serialization";
++import { canonicalSignature } from "../../resources/serialization";
+ 
+ export type ProductionCommand = ProductionStart | Readonly<{
+   kind: "manual-work" | "manual-finish"; commandId: string; jobId: string; actorId: string;
+@@ -90,29 +91,29 @@ const validateCanonicalBytes = (bytes: string): void => {
+   if (typeof bytes !== "string" || canonicalJson(JSON.parse(bytes)) !== bytes) throw Error("ProductionReceiptBytesMismatch");
+ };
+ const validateInputBinding = (binding: ProductionInputBinding): void => {
+-  if (checkedInputBindings.has(binding)) return;
++  if (checkedInputBindings.has(binding) && isFactoryImmutableData(binding)) return;
+   exactKeys(binding, ["authorityCanonicalJson", "materialCanonicalJson"]);
+   validateCanonicalBytes(binding.authorityCanonicalJson); validateCanonicalBytes(binding.materialCanonicalJson);
+-  if (isImmutableProductionData(binding)) checkedInputBindings.add(binding);
++  if (isFactoryImmutableData(binding)) checkedInputBindings.add(binding);
+ };
+ const inputBytes = (input: ProductionStepInput): ProductionInputBinding => {
+   const { material, ...current } = input;
+-  const binding = freeze({ authorityCanonicalJson: canonicalJson(current), materialCanonicalJson: productionMaterialCanonicalJson(material) });
++  const binding = ownedRecord({ authorityCanonicalJson: canonicalJson(current), materialCanonicalJson: productionMaterialCanonicalJson(material) });
+   // These two complete strings just came from the canonical serializer and
+   // validated native snapshots. Re-parsing our own immutable output adds no
+   // admission evidence. External records take validateInputBinding instead.
+-  if (isImmutableProductionData(binding)) checkedInputBindings.add(binding); return binding;
++  if (isFactoryImmutableData(binding)) checkedInputBindings.add(binding); return binding;
+ };
+ const sameInputBinding = (a: ProductionInputBinding, b: ProductionInputBinding): boolean => {
+   validateInputBinding(a); validateInputBinding(b);
+   return a.authorityCanonicalJson === b.authorityCanonicalJson && a.materialCanonicalJson === b.materialCanonicalJson;
+ };
+ const validatePayload = (payload: ProductionAdoptedPayload): void => {
+-  if (checkedPayloads.has(payload)) return;
++  if (checkedPayloads.has(payload) && isFactoryImmutableData(payload)) return;
+   exactKeys(payload, ["proposalCanonicalJson", "inputBinding", "nextStateCoreCanonicalJson", "materialCanonicalJson", "materialPlansCanonicalJson"]);
+   validateInputBinding(payload.inputBinding);
+   for (const bytes of [payload.proposalCanonicalJson, payload.nextStateCoreCanonicalJson, payload.materialCanonicalJson, payload.materialPlansCanonicalJson]) validateCanonicalBytes(bytes);
+-  if (isImmutableProductionData(payload)) checkedPayloads.add(payload);
++  if (isFactoryImmutableData(payload)) checkedPayloads.add(payload);
+ };
+ const samePayload = (a: ProductionAdoptedPayload, b: ProductionAdoptedPayload): boolean => {
+   validatePayload(a); validatePayload(b);
+@@ -125,17 +126,17 @@ const sameReplay = (a: ProductionReplayReceipt | null, b: ProductionReplayReceip
+   exactKeys(a, ["inputBinding", "resultCoreCanonicalJson", "adoptedPayload"]); exactKeys(b, ["inputBinding", "resultCoreCanonicalJson", "adoptedPayload"]);
+   return a.resultCoreCanonicalJson === b.resultCoreCanonicalJson && sameInputBinding(a.inputBinding, b.inputBinding) && samePayload(a.adoptedPayload, b.adoptedPayload);
+ };
+-const stateCore = (state: ProductionState) => { const { lastStep: _lastStep, ...core } = state; return canonicalJson(core); };
++const stateCore = (state: ProductionState) => { const { lastStep: _lastStep, ...core } = state; return canonicalJson(ownedRecord(core)); };
+ const bindingCore = (binding: FactoryPowerBinding) => canonicalJson({ sessionId: binding.sessionId, epoch: binding.epoch,
+   catalogDigest: binding.catalogDigest, sourceProfileDigest: binding.sourceProfileDigest });
+ const reason = (error: unknown) => error instanceof Error ? error.message : "ProductionRejected";
+ const waiting = (value: string): value is "WAIT_INPUT" | "WAIT_OUTPUT" | "WAIT_WASTE" => ["WAIT_INPUT", "WAIT_OUTPUT", "WAIT_WASTE"].includes(value);
+-const commandReceipt = (input: ProductionStepInput, command: ProductionCommand, materialTransactionId: string | null): ProductionCommandReceipt => ({
++const commandReceipt = (input: ProductionStepInput, command: ProductionCommand, materialTransactionId: string | null): ProductionCommandReceipt => ownedRecord({
+   commandId: command.commandId, jobId: command.jobId, commandCanonicalJson: canonicalJson(command), tickEndUs: input.tickEndUs, kind: command.kind, materialTransactionId
+ });
+ const checkedStates = new WeakSet<ProductionState>();
+ const validateState = (state: ProductionState): void => {
+-  if (checkedStates.has(state)) return;
++  if (checkedStates.has(state) && isFactoryImmutableData(state)) return;
+   if (state.version !== "fp06-production-state-v1") throw Error("ProductionStateVersionMismatch");
+   if (!["IDLE", "RUNNING", "WAIT_INPUT", "WAIT_POWER", "WAIT_OUTPUT", "WAIT_WASTE", "FAULT", "COMPLETED", "LAID_OUT", "ASSEMBLED"].includes(state.status)) throw Error("ProductionStatusMismatch");
+   productionId(state.machineInstanceId); productionRevision(state.revision);
+@@ -167,7 +168,7 @@ const validateState = (state: ProductionState): void => {
+     if (state.lastStep.resultCoreCanonicalJson !== core || payload.nextStateCoreCanonicalJson !== core
+       || !sameInputBinding(payload.inputBinding, state.lastStep.inputBinding)) throw Error("ProductionReplayReceiptMismatch");
+   }
+-  if (isImmutableProductionData(state)) checkedStates.add(state);
++  if (isFactoryImmutableData(state)) checkedStates.add(state);
+ };
+ const validateInterval = (state: ProductionState, input: Omit<ProductionStepInput, "power">): void => {
+   validateState(state);
+@@ -330,8 +331,8 @@ export const stepFactoryProduction = (state: ProductionState, input: ProductionS
+             adoptMaterial(plan);
+             const completionId = admission.process.kind === "manual" ? command!.commandId : finishId;
+             const completion: ProductionCommandReceipt = admission.process.kind === "manual" ? commandReceipt(input, command!, finishId)
+-              : { commandId: completionId, jobId: job.start.jobId, commandCanonicalJson: canonicalJson({ kind: "electric-finish", jobId: job.start.jobId, recipeRef: job.recipeRef,
+-                reservationId: job.reservationId, workMilliJoule: job.workMilliJoule }), tickEndUs: input.tickEndUs, kind: "electric-finish", materialTransactionId: finishId };
++              : ownedRecord({ commandId: completionId, jobId: job.start.jobId, commandCanonicalJson: canonicalJson({ kind: "electric-finish", jobId: job.start.jobId, recipeRef: job.recipeRef,
++                reservationId: job.reservationId, workMilliJoule: job.workMilliJoule }), tickEndUs: input.tickEndUs, kind: "electric-finish" as const, materialTransactionId: finishId });
+             commandReceipts.push(completion); job = { ...job, phase: "COMPLETED", completionReceiptId: completionId }; status = "COMPLETED";
+           }
+         }
+@@ -341,23 +342,26 @@ export const stepFactoryProduction = (state: ProductionState, input: ProductionS
+     productionRevision(core.revision);
+     const prepared = { status: "Prepared" as const, baseStateCanonicalJson, inputBinding: initialInputBytes, nextState: core, material, materialPlans, workMilliJoule: String(work) };
+     const payload = proposalBytes(prepared);
+-    const nextState = freeze({ ...core, lastStep: { inputBinding: initialInputBytes, resultCoreCanonicalJson: stateCore(core), adoptedPayload: payload } });
++    const frozenNextState = freeze({ ...core, lastStep: { inputBinding: initialInputBytes, resultCoreCanonicalJson: stateCore(core), adoptedPayload: payload } });
++    isFactoryImmutableData(frozenNextState.binding);
++    const nextState = ownedRecord({ ...frozenNextState, job: frozenNextState.job && isFactoryImmutableData(frozenNextState.job) ? ownedRecord(frozenNextState.job) : frozenNextState.job,
++      commandReceipts: ownedArray(frozenNextState.commandReceipts), lastStep: ownedRecord(frozenNextState.lastStep) });
+     validateState(nextState);
+-    const result = freeze({ ...prepared, nextState });
+-    if (isImmutableProductionData(result)) checkedProposals.set(result, payload);
++    const result = ownedRecord(freeze({ ...prepared, nextState, materialPlans: ownedArray(materialPlans) }));
++    if (isFactoryImmutableData(result)) checkedProposals.set(result, payload);
+     return result;
+   } catch (error) { return { status: "Rejected", reason: reason(error) }; }
+ };
+ const checkedProposals = new WeakMap<Extract<ProductionProposal, { status: "Prepared" }>, ProductionAdoptedPayload>();
+ const proposalBytes = (proposal: Extract<ProductionProposal, { status: "Prepared" }>): ProductionAdoptedPayload => {
+-  const cached = checkedProposals.get(proposal); if (cached) return cached;
++  const cached = isFactoryImmutableData(proposal) ? checkedProposals.get(proposal) : undefined; if (cached) return cached;
+   const { inputBinding, nextState, material, materialPlans, ...current } = proposal;
+   validateInputBinding(inputBinding);
+-  const payload = freeze({ proposalCanonicalJson: canonicalJson(current), inputBinding, nextStateCoreCanonicalJson: stateCore(nextState),
++  const payload = ownedRecord({ proposalCanonicalJson: canonicalJson(current), inputBinding, nextStateCoreCanonicalJson: stateCore(nextState),
+     materialCanonicalJson: productionMaterialCanonicalJson(material),
+     materialPlansCanonicalJson: canonicalJson(materialPlans.map(plan => { const { candidate, ...planData } = plan;
+       return { ...planData, candidateCanonicalJson: productionMaterialCanonicalJson(candidate) }; })) });
+-  if (isImmutableProductionData(payload)) checkedPayloads.add(payload); return payload;
++  if (isFactoryImmutableData(payload)) checkedPayloads.add(payload); return payload;
+ };
+ export const commitFactoryProductionStep = (state: ProductionState, input: ProductionStepInput, proposal: ProductionProposal): ProductionCommit => {
+   try {
+diff --git a/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts b/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts
+index 04d45146..4edfe5a9 100644
+--- a/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts
++++ b/apps/weltraum-browser/src/factory/session/dryFactorySlice.ts
+@@ -1,7 +1,8 @@
++import { factoryCanonicalJson as canonicalJson, isFactoryImmutableData as isImmutableData, ownedRecord, ownedArray } from "../internal/ownedData";
+ import { prepareFactoryMaterialStep, type MaterialView } from "../material/reservations";
+ import { factoryMaterialBytes as uncachedFactoryMaterialBytes } from "../construction/placement";
+ import { readMaterialMassMg } from "../material/resourcesAdapter";
+-import { canonicalJson as uncachedCanonicalJson, canonicalSignature } from "../../resources/serialization";
++import { canonicalSignature } from "../../resources/serialization";
+ import type { FactoryUiCommand, FactoryUiReceipt, FactoryUiResult } from "./hostPort";
+ import { stepFactoryPower,FACTORY_POWER_POLICY, type FactoryPowerBinding, type FactoryPowerState, type FactoryPowerSupply, type FactoryPowerSuccess, type FactoryPowerRequest,type FactoryPowerLink,type FactoryPowerPort } from "../power/factoryPower";
+ import { createFactoryProductionState, readFactoryProductionRequest, stepFactoryProduction, commitFactoryProductionStep, type ProductionState, type ProductionCommand } from "../production/productionStep";
+@@ -15,50 +16,6 @@ import {prepareFactoryPowerSources,type FactoryInstalledPowerAsset} from "../pow
+ import type {BeltInstalledPort} from "../conveyor/beltPorts";
+ // Derived bytes only: quantities and decisions remain in the existing domain
+ // validators. Mutable data, accessors and exotic prototypes never enter caches.
+-const canonicalBytes = new WeakMap<object,string>();
+-const immutableShape = new WeakSet<object>();
+-const cloneableImmutableData = new WeakSet<object>();
+-const isImmutableDataShape = (value:unknown,parents=new WeakSet<object>()):boolean => {
+- if(!value||typeof value!=="object")return typeof value!=="function"&&typeof value!=="symbol"&&(typeof value!=="number"||Number.isFinite(value));
+- if(immutableShape.has(value))return true;
+- if(!Object.isFrozen(value)||parents.has(value))return false;
+- const prototype=Object.getPrototypeOf(value);
+- if(Array.isArray(value)?prototype!==Array.prototype:prototype!==Object.prototype&&prototype!==null)return false;
+- const descriptors=Object.getOwnPropertyDescriptors(value);parents.add(value);
+- const keys=Reflect.ownKeys(descriptors),array=Array.isArray(value);
+- const okay=keys.every(key=>typeof key==="string"&&(key==="length"&&array||descriptors[key]!.enumerable))
+-  &&(!array||keys.length===value.length+1&&keys.every(key=>key==="length"||/^(0|[1-9][0-9]*)$/.test(key as string)&&Number(key)<value.length))
+-  &&Object.values(descriptors).every(d=>"value" in d&&isImmutableDataShape(d.value,parents));
+- parents.delete(value);if(okay)immutableShape.add(value);return okay;
+-};
+-const isImmutableData=(value:unknown):boolean=>{
+- if(!isImmutableDataShape(value))return false;
+- if(!value||typeof value!=="object"||cloneableImmutableData.has(value))return true;
+- if(typeof globalThis.structuredClone!=="function")return false;
+- // Frozen descriptor inspection cannot exclude Proxies with changing inherited
+- // iterators. The standard clone rejects them, including nested ones. Every
+- // property below is enumerable own data, so this proof visits the whole tree.
+- try{globalThis.structuredClone(value);}catch{return false;}
+- const remember=(node:object):void=>{
+-  if(cloneableImmutableData.has(node))return;cloneableImmutableData.add(node);
+-  for(const descriptor of Object.values(Object.getOwnPropertyDescriptors(node))){const child=descriptor.value;if(child&&typeof child==="object")remember(child);}
+- };
+- remember(value);return true;
+-};
+-const canonicalJson = (value:unknown):string => {
+- if(!value||typeof value!=="object"||!isImmutableData(value))return uncachedCanonicalJson(value);
+- const old=canonicalBytes.get(value);if(old!==undefined)return old;
+- let bytes:string;
+- if(Array.isArray(value)){
+-  for(let i=0;i<value.length;i++)if(!Object.hasOwn(value,i))return uncachedCanonicalJson(value);
+-  const entries:string[]=[];for(let i=0;i<value.length;i++)entries.push(canonicalJson(value[i]));
+-  bytes=`[${entries.join(",")}]`;
+- }else{
+-  const record=value as Record<string,unknown>;
+-  bytes=`{${Object.keys(record).sort().map(key=>`${JSON.stringify(key)}:${canonicalJson(record[key])}`).join(",")}}`;
+- }
+- canonicalBytes.set(value,bytes);return bytes;
+-};
+ const stateBytes = new WeakMap<DryFactoryState,string>();
+ const preparedTransitions = new WeakMap<Extract<DryFactoryProposal,{status:"Prepared"}>,Readonly<{base:DryFactoryState;material:MaterialView}>>();
+ const dataOnlyShape = (value:unknown,parents=new WeakSet<object>()):boolean => {
+@@ -83,7 +40,7 @@ const dataOnly=(value:unknown):boolean=>{
+ };
+ const admittedMaterials = new WeakSet<MaterialView>();
+ const validateDryMaterial = (material:MaterialView):void => {
+- if(admittedMaterials.has(material))return;
++ if(admittedMaterials.has(material)&&isImmutableData(material))return;
+  productionMaterialCanonicalJson(material);
+  const ids=new Set(material.receipts.map(receipt=>receipt.transactionId));let ordinal=0;
+  while(ids.has(`dry_validation_${ordinal}`))ordinal++;
+@@ -94,7 +51,7 @@ const validateDryMaterial = (material:MaterialView):void => {
+ };
+ const exactMaterialBindings=new WeakMap<MaterialView,string>();
+ const factoryMaterialBytes=(material:MaterialView):string=>{
+- const old=exactMaterialBindings.get(material);if(old!==undefined)return old;
++ const old=isImmutableData(material)?exactMaterialBindings.get(material):undefined;if(old!==undefined)return old;
+  validateDryMaterial(material);
+  const bytes=uncachedFactoryMaterialBytes(material);
+  if(isImmutableData(material))exactMaterialBindings.set(material,bytes);
+@@ -218,8 +175,8 @@ export interface DryFactoryStepInput {
+ export type DryFactoryProposal = Readonly<{ status: "Prepared"; baseStateBytes: string; inputBytes: string; materialBaseBytes: string;
+   state: DryFactoryState; material: MaterialView; power: FactoryPowerSuccess }> | Readonly<{ status: "Rejected"; reason: string }>;
+ const dryStateBytes = (state: DryFactoryState): string => {
+- const old=stateBytes.get(state);if(old!==undefined)return old;
+- const {lastStep:_receipt,...core}=state,bytes=canonicalJson(Object.freeze(core));
++ const old=isImmutableData(state)?stateBytes.get(state):undefined;if(old!==undefined)return old;
++ const {lastStep:_receipt,...core}=state,bytes=canonicalJson(ownedRecord(core));
+  if(isImmutableData(state))stateBytes.set(state,bytes);return bytes;
+ };
+ const dryInputBytes = (input: DryFactoryStepInput): string => {const {material,...facts}=input;return canonicalJson({facts,materialBytes:factoryMaterialBytes(material)});};
+@@ -270,11 +227,13 @@ export const prepareDryFactoryStep = (state: DryFactoryState, input: DryFactoryS
+       if(proposed.materialPlan===null&&isImmutableData(proposed))belts.push(proposed.nextLine);
+       else {const committed=commitFactoryBeltStep(line,stepInput,proposed);if(committed.status==="Rejected")throw Error(committed.reason);material=committed.material;belts.push(committed.line);}
+     }
+-    const next=freeze({...state,revision:state.revision+1,tickEndUs:input.tickEndUs,power:power.nextState,machines,belts,lastStep:null});
++    isImmutableData(power);
++    const next=ownedRecord(freeze({...state,revision:state.revision+1,tickEndUs:input.tickEndUs,power:power.nextState,machines:ownedArray(machines),belts:ownedArray(belts),lastStep:null}));
+     if(!Number.isSafeInteger(next.revision)||readMaterialMassMg(material)!==readMaterialMassMg(input.material))throw Error("DryMassOrRevisionMismatch");
+     const inputBytes=dryInputBytes(input),nextStateBytes=dryStateBytes(next),materialBytes=factoryMaterialBytes(material);
+-    const proposal=freeze({status:"Prepared" as const,baseStateBytes:dryStateBytes(state),inputBytes,materialBaseBytes:factoryMaterialBytes(input.material),
++    const frozenProposal=freeze({status:"Prepared" as const,baseStateBytes:dryStateBytes(state),inputBytes,materialBaseBytes:factoryMaterialBytes(input.material),
+       state:{...next,lastStep:{inputBytes,factsBytes:dryFactsBytes(input),nextStateBytes,materialBytes}},material,power});
++    const proposal=ownedRecord({...frozenProposal,state:ownedRecord({...frozenProposal.state,lastStep:ownedRecord(frozenProposal.state.lastStep)})});
+     if(isImmutableData(state)&&isImmutableData(input.material)&&isImmutableData(proposal)&&dataOnly(input))
+       preparedTransitions.set(proposal,{base:state,material:input.material});
+     return proposal;
+@@ -285,7 +244,7 @@ export const commitDryFactoryStep = (state:DryFactoryState,input:DryFactoryStepI
+   if(proposal.status!=="Prepared")return proposal;
+   try{
+   validateDryMaterial(input.material);validateDryMaterial(proposal.material);
+-  if(!preparedTransitions.has(proposal)){
++  if(!preparedTransitions.has(proposal)||!isImmutableData(proposal)){
+     const {canonicalJson:bytes,digest,...power}=proposal.power;
+     if(canonicalJson(power)!==bytes||canonicalSignature(power)!==digest)throw Error("InvalidDryPowerOutput");
+   }
+@@ -294,7 +253,7 @@ export const commitDryFactoryStep = (state:DryFactoryState,input:DryFactoryStepI
+     &&state.lastStep.materialBytes===factoryMaterialBytes(input.material)&&dryStateBytes(proposal.state)===dryStateBytes(state)
+     &&canonicalJson(state.lastStep)===canonicalJson(proposal.state.lastStep))return {status:"NoOp",state,material:input.material};
+   if(dryStateBytes(state)!==proposal.baseStateBytes||dryInputBytes(input)!==proposal.inputBytes||factoryMaterialBytes(input.material)!==proposal.materialBaseBytes)return {status:"Rejected",reason:"StaleDryStep"};
+-  const own=preparedTransitions.get(proposal);
++  const own=isImmutableData(proposal)?preparedTransitions.get(proposal):undefined;
+   // This exact immutable proposal was fully validated above. Fresh complete
+   // input bytes and the same immutable Native material/base still bind it.
+   if(own?.base===state&&own.material===input.material&&dataOnly(input))return {status:"Committed",state:proposal.state,material:proposal.material};
+diff --git a/apps/weltraum-browser/tests/unit/factory/conveyor.test.ts b/apps/weltraum-browser/tests/unit/factory/conveyor.test.ts
+index fdd517ba..d78665fe 100644
+--- a/apps/weltraum-browser/tests/unit/factory/conveyor.test.ts
++++ b/apps/weltraum-browser/tests/unit/factory/conveyor.test.ts
+@@ -1,3 +1,4 @@
++import { writeFileSync } from "node:fs";
+ import { describe, expect, it, vi } from "vitest";
+ import * as resourcesAdapter from "../../../src/factory/material/resourcesAdapter";
+ import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
+@@ -436,3 +437,28 @@ describe("FP06 native one-packet conveyor reference", () => {
+     expect(advanceFactoryBelt(small.line, input(small, true, true, 8_000_000))).toMatchObject({ status: "Rejected" });
+   });
+ });
++
++it("owned-data baseline bytes: conveyor cold, copied, custody and replay", () => {
++ const bytesOf=(value:unknown)=>canonicalJson(JSON.parse(JSON.stringify(value)));
++ const pair=initial(),request=input(pair,true,true,100_000),proposal=advanceFactoryBelt(pair.line,request);
++ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
++ const copy=JSON.parse(JSON.stringify(proposal)) as typeof proposal;
++ const adopted=commitFactoryBeltStep(pair.line,request,proposal),restored=commitFactoryBeltStep(pair.line,request,copy);
++ expect(adopted.status).toBe("Committed");expect(bytesOf(restored)).toBe(bytesOf(adopted));
++ const replay=commitFactoryBeltStep(adopted.line,{...request,material:adopted.material},proposal);
++ expect(replay.status).toBe("NoOp");expect(readMaterialMassMg(adopted.material)).toBe(readMaterialMassMg(pair.material));
++ const bytes=bytesOf({proposal,adopted,replay,power:request.power});
++ if(process.env.HESTIA_OWNED_REFERENCE)writeFileSync(`evidence/factory/play/2026-10-14/owned-data-candidate/${process.env.HESTIA_OWNED_REFERENCE}-conveyor.json`,bytes);
++ const forged={...copy,nextLine:{...copy.nextLine,packet:{...copy.nextLine.packet!,injectionReceiptCanonicalJson:copy.nextLine.packet!.injectionReceiptCanonicalJson+" "}}};
++ expect(commitFactoryBeltStep(pair.line,request,forged).status).toBe("Rejected");
++});
++
++it("owned-data retains a blocked borrowed packet with an accessor and exact position bytes", () => {
++ const admitted=step(initial(),true,true,100_000),original=admitted.line.packet!;let reads=0;
++ const packet=Object.freeze({...original,get positionMm(){reads++;return original.positionMm;}});
++ const pair={...admitted,line:{...admitted.line,packet}},request=input(pair,false,false),proposal=advanceFactoryBelt(pair.line,request);
++ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
++ expect(proposal.nextLine.packet).toBe(packet);expect(reads).toBeGreaterThan(0);
++ expect(canonicalJson(proposal.nextLine.packet)).toBe(canonicalJson(original));
++ expect(commitFactoryBeltStep(pair.line,request,proposal).status).toBe("Committed");
++});
+diff --git a/apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts b/apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts
+index 9771471c..0be929fa 100644
+--- a/apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts
++++ b/apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts
+@@ -1,3 +1,4 @@
++import { writeFileSync } from "node:fs";
+ import { describe, expect, it, vi } from "vitest";
+ import * as materialSteps from "../../../src/factory/material/reservations";
+ import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
+@@ -315,3 +316,19 @@ it("PLAY04 control replay preserves the same disabled state and rejects changed
+  expect(()=>controlCandidate(state,adopted.material,owners[3]!,true,"control_replay")).toThrow(/Idempotency/);
+ });
+ import * as dryControls from "../../../src/factory/session/dryFactorySlice";
++
++it("owned-data baseline bytes: Dry cold, copied, joint material and replay", () => {
++ const bytesOf=(value:unknown)=>canonicalJson(JSON.parse(JSON.stringify(value)));
++ const f=emptyDryFixture(),request=f.inputFor(f.state,f.material),proposal=prepareDryFactoryStep(f.state,request);
++ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
++ const copy=JSON.parse(JSON.stringify(proposal)) as typeof proposal;
++ const adopted=commitDryFactoryStep(f.state,request,proposal),restored=commitDryFactoryStep(f.state,request,copy);
++ expect(adopted.status).toBe("Committed");expect(bytesOf(restored)).toBe(bytesOf(adopted));
++ if(adopted.status!=="Committed")return;
++ const replay=commitDryFactoryStep(adopted.state,{...request,material:adopted.material},proposal);
++ expect(replay.status).toBe("NoOp");
++ const bytes=bytesOf({proposal,adopted,replay});
++ if(process.env.HESTIA_OWNED_REFERENCE)writeFileSync(`evidence/factory/play/2026-10-14/owned-data-candidate/${process.env.HESTIA_OWNED_REFERENCE}-dry.json`,bytes);
++ const forged={...copy,state:{...copy.state,lastStep:{...copy.state.lastStep!,nextStateBytes:copy.state.lastStep!.nextStateBytes+" "}}};
++ expect(commitDryFactoryStep(f.state,request,forged).status).toBe("Rejected");
++});
+diff --git a/apps/weltraum-browser/tests/unit/factory/production.test.ts b/apps/weltraum-browser/tests/unit/factory/production.test.ts
+index 8f90636f..acf57b59 100644
+--- a/apps/weltraum-browser/tests/unit/factory/production.test.ts
++++ b/apps/weltraum-browser/tests/unit/factory/production.test.ts
+@@ -1,3 +1,4 @@
++import { writeFileSync } from "node:fs";
+ import { describe, expect, it } from "vitest";
+ import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
+ import { createFactoryMaterialView, prepareFactoryMaterialStep, commitFactoryMaterialStep,
+@@ -236,3 +237,30 @@ describe("FP06 W04 exact paid process steps over native Resources", () => {
+     const wrongActor = input(pair, false, { ...command, actorId: "remote_actor" }); expect(stepFactoryProduction(pair.state, wrongActor).status).toBe("Rejected");
+   });
+ });
++
++it("owned-data baseline bytes: production cold, copied, committed and replay", () => {
++ const bytesOf=(value:unknown)=>canonicalJson(JSON.parse(JSON.stringify(value)));
++ const pair=initial(),request=input(pair,true,pair.command),proposal=stepFactoryProduction(pair.state,request);
++ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
++ const copy=JSON.parse(JSON.stringify(proposal)) as typeof proposal;
++ const adopted=commitFactoryProductionStep(pair.state,request,proposal),restored=commitFactoryProductionStep(pair.state,request,copy);
++ expect(adopted.status).toBe("Committed");expect(bytesOf(restored)).toBe(bytesOf(adopted));
++ const replay=commitFactoryProductionStep(adopted.state,{...request,material:adopted.material},proposal);
++ expect(replay.status).toBe("NoOp");
++ const bytes=bytesOf({proposal,adopted,replay,power:request.power});
++ if(process.env.HESTIA_OWNED_REFERENCE)writeFileSync(`evidence/factory/play/2026-10-14/owned-data-candidate/${process.env.HESTIA_OWNED_REFERENCE}-production.json`,bytes);
++ const forged={...copy,nextState:{...copy.nextState,lastStep:{...copy.nextState.lastStep!,adoptedPayload:{...copy.nextState.lastStep!.adoptedPayload,materialCanonicalJson:copy.nextState.lastStep!.adoptedPayload.materialCanonicalJson+" "}}}};
++ expect(commitFactoryProductionStep(pair.state,request,forged).status).toBe("Rejected");
++});
++
++it("owned-data retains a passive borrowed job with an accessor and its actual canonical bytes", () => {
++ let pair=initial("B05");pair=advance(pair,false,pair.command);
++ const original=pair.state.job!;let reads=0;
++ const job=Object.freeze({...original,get workMilliJoule(){reads++;return original.workMilliJoule;}});
++ pair={...pair,state:{...pair.state,job}};
++ const request=input(pair,false),proposal=stepFactoryProduction(pair.state,request);
++ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
++ expect(proposal.nextState.job).toBe(job);expect(reads).toBeGreaterThan(0);
++ expect(canonicalJson(proposal.nextState.job)).toBe(canonicalJson(original));
++ expect(commitFactoryProductionStep(pair.state,request,proposal).status).toBe("Committed");
++});
+diff --git a/apps/weltraum-browser/src/factory/internal/ownedData.ts b/apps/weltraum-browser/src/factory/internal/ownedData.ts
+new file mode 100644
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/internal/ownedData.ts
+@@ -0,0 +1,116 @@
++import { canonicalJson } from "../../resources/serialization";
++
++// This is a data/byte proof, never a World, material or transaction capability.
++// Only our freshly allocated shells may compose already proved children.
++const shapes = new WeakSet<object>();
++const proved = new WeakSet<object>();
++const bytes = new WeakMap<object, string>();
++const iteratorDescriptor = Object.getOwnPropertyDescriptor(Array.prototype, Symbol.iterator)!;
++const iteratorPrototype = Object.getPrototypeOf([][Symbol.iterator]());
++const nextDescriptor = Object.getOwnPropertyDescriptor(iteratorPrototype, "next")!;
++const unchangedData = (actual: PropertyDescriptor | undefined, expected: PropertyDescriptor): boolean => !!actual
++  && "value" in actual && actual.value === expected.value && actual.writable === expected.writable
++  && actual.enumerable === expected.enumerable && actual.configurable === expected.configurable;
++const noIteratorReturn = (): boolean => {
++  let prototype = iteratorPrototype;
++  while (prototype) {
++    if (Object.getOwnPropertyDescriptor(prototype, "return")) return false;
++    prototype = Object.getPrototypeOf(prototype);
++  }
++  return true;
++};
++const ordinaryIteration = (): boolean => noIteratorReturn() && unchangedData(Object.getOwnPropertyDescriptor(Array.prototype, Symbol.iterator), iteratorDescriptor)
++  && unchangedData(Object.getOwnPropertyDescriptor(iteratorPrototype, "next"), nextDescriptor);
++const primitive = (value: unknown): boolean => value === null || value === undefined
++  || typeof value === "string" || typeof value === "boolean"
++  || (typeof value === "number" && Number.isFinite(value));
++
++const immutableShape = (value: unknown, parents = new WeakSet<object>()): boolean => {
++  if (!value || typeof value !== "object") return primitive(value);
++  if (shapes.has(value)) return true;
++  if (!Object.isFrozen(value) || parents.has(value)) return false;
++  const array = Array.isArray(value), prototype = Object.getPrototypeOf(value);
++  if (array ? prototype !== Array.prototype : prototype !== Object.prototype && prototype !== null) return false;
++  const descriptors = Object.getOwnPropertyDescriptors(value), keys = Reflect.ownKeys(descriptors);
++  if (array && keys.length !== value.length + 1) return false;
++  parents.add(value);
++  const okay = keys.every(key => typeof key === "string"
++    && (array && key === "length" || descriptors[key]!.enumerable)
++    && (!array || key === "length" || /^(0|[1-9][0-9]*)$/.test(key) && Number(key) < value.length)
++    && "value" in descriptors[key]! && immutableShape(descriptors[key]!.value, parents));
++  parents.delete(value);
++  if (okay) shapes.add(value);
++  return okay;
++};
++
++/** Frozen descriptors alone cannot exclude a nested Proxy. External graphs
++ * must first pass the full standard clone proof. No input is frozen here. */
++export const isFactoryImmutableData = (value: unknown): boolean => {
++  if (!ordinaryIteration()) return false;
++  if (!value || typeof value !== "object") return primitive(value);
++  if (proved.has(value)) return true;
++  if (!immutableShape(value) || typeof globalThis.structuredClone !== "function") return false;
++  try { globalThis.structuredClone(value); } catch { return false; }
++  const remember = (node: object): void => {
++    if (proved.has(node)) return;
++    proved.add(node);
++    for (const descriptor of Object.values(Object.getOwnPropertyDescriptors(node))) {
++      if (descriptor.value && typeof descriptor.value === "object") remember(descriptor.value);
++    }
++  };
++  remember(value);
++  return true;
++};
++
++/** Copies data fields into a new root; never registers the passed-in root.
++ * A borrowed child retains its identity and must already have independent
++ * proof. Building a shell never probes an unproved child before serialization. */
++export const ownedRecord = <T extends object>(fields: T): T => {
++  const prototype = Object.getPrototypeOf(fields);
++  if (Array.isArray(fields) || prototype !== Object.prototype && prototype !== null) throw Error("InvalidOwnedRecord");
++  const result = Object.create(prototype) as T;
++  let complete = ordinaryIteration();
++  for (const key of Reflect.ownKeys(fields)) {
++    const descriptor = Object.getOwnPropertyDescriptor(fields, key)!;
++    if (!("value" in descriptor)) throw Error("InvalidOwnedRecordField");
++    Object.defineProperty(result, key, { value: descriptor.value, enumerable: descriptor.enumerable, configurable: false, writable: false });
++    complete = (primitive(descriptor.value) || descriptor.value && typeof descriptor.value === "object" && proved.has(descriptor.value)) && complete && typeof key === "string" && descriptor.enumerable === true;
++  }
++  Object.freeze(result);
++  if (complete) { shapes.add(result); proved.add(result); }
++  return result;
++};
++
++/** The indexed source is copied; only the fresh, dense result can earn proof. */
++export const ownedArray = <T>(items: readonly T[]): readonly T[] => {
++  const result: T[] = [];
++  let complete = ordinaryIteration();
++  for (let index = 0; index < items.length; index++) {
++    const descriptor = Object.getOwnPropertyDescriptor(items, String(index));
++    if (!descriptor || !("value" in descriptor)) throw Error("InvalidOwnedArrayIndex");
++    result.push(descriptor.value);
++    complete = (primitive(descriptor.value) || descriptor.value && typeof descriptor.value === "object" && proved.has(descriptor.value)) && complete;
++  }
++  Object.freeze(result);
++  if (complete) { shapes.add(result); proved.add(result); }
++  return result;
++};
++
++/** Exact canonical bytes for proved graphs. Unsupported or external mutable
++ * values retain Resources' getter, iterator, density and error semantics. */
++export const factoryCanonicalJson = (value: unknown): string => {
++  if (!value || typeof value !== "object" || !ordinaryIteration() || !proved.has(value)) return canonicalJson(value);
++  const cached = bytes.get(value);
++  if (cached !== undefined) return cached;
++  let result: string;
++  if (Array.isArray(value)) {
++    const entries: string[] = [];
++    for (let index = 0; index < value.length; index++) entries.push(factoryCanonicalJson(value[index]));
++    result = `[${entries.join(",")}]`;
++  } else {
++    const record = value as Record<string, unknown>;
++    result = `{${Object.keys(record).sort().map(key => `${JSON.stringify(key)}:${factoryCanonicalJson(record[key])}`).join(",")}}`;
++  }
++  bytes.set(value, result);
++  return result;
++};
+diff --git a/apps/weltraum-browser/tests/unit/factory/ownedData.test.ts b/apps/weltraum-browser/tests/unit/factory/ownedData.test.ts
+new file mode 100644
+--- /dev/null
++++ b/apps/weltraum-browser/tests/unit/factory/ownedData.test.ts
+@@ -0,0 +1,139 @@
++import { describe, expect, it } from "vitest";
++import { canonicalJson } from "../../../src/resources/serialization";
++import { ownedRecord, ownedArray, isFactoryImmutableData, factoryCanonicalJson } from "../../../src/factory/internal/ownedData";
++
++describe("Factory owned data composition boundary", () => {
++  it("allocates a fresh root and reuses only defensively proved children", () => {
++    const child = Object.freeze({ value: 1 });
++    expect(isFactoryImmutableData(child)).toBe(true);
++    const source = { child, label: "complete" };
++    const result = ownedRecord(source);
++    expect(result).not.toBe(source);
++    expect(result.child).toBe(child);
++    expect(Object.isFrozen(source)).toBe(false);
++    expect(isFactoryImmutableData(result)).toBe(true);
++    expect(factoryCanonicalJson(result)).toBe(canonicalJson(result));
++    expect(ownedArray([result])).not.toBe(source);
++  });
++
++  it("does not freeze borrowed mutable children or reuse stale bytes", () => {
++    const child = { value: 1 };
++    const result = ownedRecord({ child });
++    expect(isFactoryImmutableData(result)).toBe(false);
++    expect(Object.isFrozen(child)).toBe(false);
++    expect(factoryCanonicalJson(result)).toBe('{"child":{"value":1}}');
++    child.value = 2;
++    expect(factoryCanonicalJson(result)).toBe('{"child":{"value":2}}');
++  });
++
++  it("never invokes accessors to confer ownership", () => {
++    let reads = 0;
++    const child = Object.freeze({ get value() { reads++; return 1; } });
++    expect(isFactoryImmutableData(child)).toBe(false);
++    expect(isFactoryImmutableData(ownedRecord({ child }))).toBe(false);
++    expect(reads).toBe(0);
++    expect(() => ownedRecord(child)).toThrow();
++    expect(reads).toBe(0);
++  });
++
++  it("rejects nested frozen Proxies and keeps their actual iterator semantics", () => {
++    let virtual = 2;
++    const rows = new Proxy(Object.freeze([1]), {
++      get(target, key, receiver) {
++        if (key === Symbol.iterator) return function* () { yield virtual; };
++        return Reflect.get(target, key, receiver);
++      }
++    });
++    const result = ownedRecord({ child: Object.freeze({ rows }) });
++    expect(isFactoryImmutableData(result)).toBe(false);
++    expect(factoryCanonicalJson(result)).toBe('{"child":{"rows":[2]}}');
++    virtual = 3;
++    expect(factoryCanonicalJson(result)).toBe('{"child":{"rows":[3]}}');
++  });
++
++  it("does not trust caller freezing, copied ownership flags, cycles or exotic prototypes", () => {
++    const mutable = { value: 1 };
++    const forged = Object.freeze({ owned: true, child: mutable });
++    const cycle: Record<string, unknown> = {}; cycle.self = cycle; Object.freeze(cycle);
++    expect(isFactoryImmutableData(forged)).toBe(false);
++    expect(isFactoryImmutableData(cycle)).toBe(false);
++    expect(isFactoryImmutableData(Object.freeze(new Date(0)))).toBe(false);
++    expect(() => factoryCanonicalJson(cycle)).toThrow();
++    expect(isFactoryImmutableData(JSON.parse(JSON.stringify(ownedRecord({ value: 1 }))))).toBe(false);
++  });
++
++  it("falls back after inherited array iteration changes, including warm roots", () => {
++    const rows = ownedArray([1]); const root = ownedRecord({ rows });
++    expect(factoryCanonicalJson(root)).toBe('{"rows":[1]}');
++    const iterator = Object.getOwnPropertyDescriptor(Array.prototype, Symbol.iterator)!;
++    try {
++      Object.defineProperty(Array.prototype, Symbol.iterator, { ...iterator, value: function* (this: unknown[]) { if (this.length === 1 && this[0] === 1) yield 7; else yield* iterator.value.call(this); } });
++      const actual = factoryCanonicalJson(root);
++      const expected = canonicalJson(root);
++      const trusted = isFactoryImmutableData(root);
++      // Restore before assertion machinery itself consumes arrays.
++      Object.defineProperty(Array.prototype, Symbol.iterator, iterator);
++      expect(trusted).toBe(false);
++      expect(actual).toBe(expected);
++      expect(actual).toBe('{"rows":[7]}');
++    } finally { Object.defineProperty(Array.prototype, Symbol.iterator, iterator); }
++  });
++
++  it("preserves complete bytes, lexical numeric keys, exact numbers and clone behavior", () => {
++    const root = ownedRecord({ "2": 2, "10": 10, precise: 1.2345678901234567, negativeZero: -0,
++      rows: ownedArray([ownedRecord({ z: "receipt\\\"\n", a: 3 }), null, true]) });
++    expect(factoryCanonicalJson(root)).toBe(canonicalJson(root));
++    expect(factoryCanonicalJson(root).indexOf('"10"')).toBeLessThan(factoryCanonicalJson(root).indexOf('"2"'));
++    expect(factoryCanonicalJson(root)).toContain('"negativeZero":0');
++    const invalid = Object.freeze([, 1]);
++    expect(isFactoryImmutableData(invalid)).toBe(false);
++    expect(() => factoryCanonicalJson(invalid)).toThrow();
++  });
++});
++
++it("inherited iterator accessors cannot earn proof or add getter reads", () => {
++ const root=ownedRecord({rows:ownedArray([1])});factoryCanonicalJson(root);
++ const descriptor=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator)!;let reads=0;
++ let trusted=true;
++ try {
++  Object.defineProperty(Array.prototype,Symbol.iterator,{configurable:true,get(){reads++;return descriptor.value;}});
++  trusted=isFactoryImmutableData(root);
++ } finally {Object.defineProperty(Array.prototype,Symbol.iterator,descriptor);}
++ expect(trusted).toBe(false);expect(reads).toBe(0);
++});
++it("inherited iterator next changes disable warm byte reuse", () => {
++ const root=ownedRecord({rows:ownedArray([1])});factoryCanonicalJson(root);
++ const prototype=Object.getPrototypeOf([][Symbol.iterator]()),descriptor=Object.getOwnPropertyDescriptor(prototype,"next")!;
++ let trusted=true;
++ try {
++  Object.defineProperty(prototype,"next",{...descriptor,value:function(){return {done:true,value:undefined};}});
++  trusted=isFactoryImmutableData(root);
++ } finally {Object.defineProperty(prototype,"next",descriptor);}
++ expect(trusted).toBe(false);
++});
++
++it("preserves IteratorClose on errors after an inherited return is added", () => {
++ const root=ownedRecord({rows:ownedArray([undefined])});
++ const prototype=Object.getPrototypeOf([][Symbol.iterator]());let closed=0,error:unknown,expectedError:unknown;let actualClosed=0;
++ try {
++  Object.defineProperty(prototype,"return",{configurable:true,value(){closed++;return {done:true};}});
++  try {factoryCanonicalJson(root);}catch(caught){error=caught;}
++  actualClosed=closed;closed=0;
++  try {canonicalJson(root);}catch(caught){expectedError=caught;}
++ } finally {delete prototype.return;}
++ expect(error).toBeDefined();expect(expectedError).toBeDefined();expect(actualClosed).toBe(closed);expect(closed).toBe(2);
++});
++it("keeps ignored symbol and nonenumerable data fields on the defensive path", () => {
++ const fields={value:1,[Symbol("ignored")]:2};Object.defineProperty(fields,"hidden",{value:3,enumerable:false});
++ const result=ownedRecord(fields);
++ expect(isFactoryImmutableData(result)).toBe(false);expect(factoryCanonicalJson(result)).toBe(canonicalJson(fields));
++});
++
++it("unproved ArrayProxy serialization does not probe ownKeys before its virtual iterator", () => {
++ let virtual=2,ownKeys=0;
++ const rows=new Proxy(Object.freeze([1]),{ownKeys(target){ownKeys++;virtual=3;return Reflect.ownKeys(target);},
++  get(target,key,receiver){if(key===Symbol.iterator)return function*(){yield virtual;};return Reflect.get(target,key,receiver);}});
++ expect(factoryCanonicalJson(rows)).toBe("[2]");expect(ownKeys).toBe(0);
++ virtual=2;const root=ownedRecord({rows});
++ expect(factoryCanonicalJson(root)).toBe('{"rows":[2]}');expect(ownKeys).toBe(0);
++});

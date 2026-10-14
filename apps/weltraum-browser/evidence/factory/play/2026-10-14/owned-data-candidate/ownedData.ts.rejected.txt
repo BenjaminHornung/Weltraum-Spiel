@@ -1,0 +1,116 @@
+import { canonicalJson } from "../../resources/serialization";
+
+// This is a data/byte proof, never a World, material or transaction capability.
+// Only our freshly allocated shells may compose already proved children.
+const shapes = new WeakSet<object>();
+const proved = new WeakSet<object>();
+const bytes = new WeakMap<object, string>();
+const iteratorDescriptor = Object.getOwnPropertyDescriptor(Array.prototype, Symbol.iterator)!;
+const iteratorPrototype = Object.getPrototypeOf([][Symbol.iterator]());
+const nextDescriptor = Object.getOwnPropertyDescriptor(iteratorPrototype, "next")!;
+const unchangedData = (actual: PropertyDescriptor | undefined, expected: PropertyDescriptor): boolean => !!actual
+  && "value" in actual && actual.value === expected.value && actual.writable === expected.writable
+  && actual.enumerable === expected.enumerable && actual.configurable === expected.configurable;
+const noIteratorReturn = (): boolean => {
+  let prototype = iteratorPrototype;
+  while (prototype) {
+    if (Object.getOwnPropertyDescriptor(prototype, "return")) return false;
+    prototype = Object.getPrototypeOf(prototype);
+  }
+  return true;
+};
+const ordinaryIteration = (): boolean => noIteratorReturn() && unchangedData(Object.getOwnPropertyDescriptor(Array.prototype, Symbol.iterator), iteratorDescriptor)
+  && unchangedData(Object.getOwnPropertyDescriptor(iteratorPrototype, "next"), nextDescriptor);
+const primitive = (value: unknown): boolean => value === null || value === undefined
+  || typeof value === "string" || typeof value === "boolean"
+  || (typeof value === "number" && Number.isFinite(value));
+
+const immutableShape = (value: unknown, parents = new WeakSet<object>()): boolean => {
+  if (!value || typeof value !== "object") return primitive(value);
+  if (shapes.has(value)) return true;
+  if (!Object.isFrozen(value) || parents.has(value)) return false;
+  const array = Array.isArray(value), prototype = Object.getPrototypeOf(value);
+  if (array ? prototype !== Array.prototype : prototype !== Object.prototype && prototype !== null) return false;
+  const descriptors = Object.getOwnPropertyDescriptors(value), keys = Reflect.ownKeys(descriptors);
+  if (array && keys.length !== value.length + 1) return false;
+  parents.add(value);
+  const okay = keys.every(key => typeof key === "string"
+    && (array && key === "length" || descriptors[key]!.enumerable)
+    && (!array || key === "length" || /^(0|[1-9][0-9]*)$/.test(key) && Number(key) < value.length)
+    && "value" in descriptors[key]! && immutableShape(descriptors[key]!.value, parents));
+  parents.delete(value);
+  if (okay) shapes.add(value);
+  return okay;
+};
+
+/** Frozen descriptors alone cannot exclude a nested Proxy. External graphs
+ * must first pass the full standard clone proof. No input is frozen here. */
+export const isFactoryImmutableData = (value: unknown): boolean => {
+  if (!ordinaryIteration()) return false;
+  if (!value || typeof value !== "object") return primitive(value);
+  if (proved.has(value)) return true;
+  if (!immutableShape(value) || typeof globalThis.structuredClone !== "function") return false;
+  try { globalThis.structuredClone(value); } catch { return false; }
+  const remember = (node: object): void => {
+    if (proved.has(node)) return;
+    proved.add(node);
+    for (const descriptor of Object.values(Object.getOwnPropertyDescriptors(node))) {
+      if (descriptor.value && typeof descriptor.value === "object") remember(descriptor.value);
+    }
+  };
+  remember(value);
+  return true;
+};
+
+/** Copies data fields into a new root; never registers the passed-in root.
+ * A borrowed child retains its identity and must already have independent
+ * proof. Building a shell never probes an unproved child before serialization. */
+export const ownedRecord = <T extends object>(fields: T): T => {
+  const prototype = Object.getPrototypeOf(fields);
+  if (Array.isArray(fields) || prototype !== Object.prototype && prototype !== null) throw Error("InvalidOwnedRecord");
+  const result = Object.create(prototype) as T;
+  let complete = ordinaryIteration();
+  for (const key of Reflect.ownKeys(fields)) {
+    const descriptor = Object.getOwnPropertyDescriptor(fields, key)!;
+    if (!("value" in descriptor)) throw Error("InvalidOwnedRecordField");
+    Object.defineProperty(result, key, { value: descriptor.value, enumerable: descriptor.enumerable, configurable: false, writable: false });
+    complete = (primitive(descriptor.value) || descriptor.value && typeof descriptor.value === "object" && proved.has(descriptor.value)) && complete && typeof key === "string" && descriptor.enumerable === true;
+  }
+  Object.freeze(result);
+  if (complete) { shapes.add(result); proved.add(result); }
+  return result;
+};
+
+/** The indexed source is copied; only the fresh, dense result can earn proof. */
+export const ownedArray = <T>(items: readonly T[]): readonly T[] => {
+  const result: T[] = [];
+  let complete = ordinaryIteration();
+  for (let index = 0; index < items.length; index++) {
+    const descriptor = Object.getOwnPropertyDescriptor(items, String(index));
+    if (!descriptor || !("value" in descriptor)) throw Error("InvalidOwnedArrayIndex");
+    result.push(descriptor.value);
+    complete = (primitive(descriptor.value) || descriptor.value && typeof descriptor.value === "object" && proved.has(descriptor.value)) && complete;
+  }
+  Object.freeze(result);
+  if (complete) { shapes.add(result); proved.add(result); }
+  return result;
+};
+
+/** Exact canonical bytes for proved graphs. Unsupported or external mutable
+ * values retain Resources' getter, iterator, density and error semantics. */
+export const factoryCanonicalJson = (value: unknown): string => {
+  if (!value || typeof value !== "object" || !ordinaryIteration() || !proved.has(value)) return canonicalJson(value);
+  const cached = bytes.get(value);
+  if (cached !== undefined) return cached;
+  let result: string;
+  if (Array.isArray(value)) {
+    const entries: string[] = [];
+    for (let index = 0; index < value.length; index++) entries.push(factoryCanonicalJson(value[index]));
+    result = `[${entries.join(",")}]`;
+  } else {
+    const record = value as Record<string, unknown>;
+    result = `{${Object.keys(record).sort().map(key => `${JSON.stringify(key)}:${factoryCanonicalJson(record[key])}`).join(",")}}`;
+  }
+  bytes.set(value, result);
+  return result;
+};

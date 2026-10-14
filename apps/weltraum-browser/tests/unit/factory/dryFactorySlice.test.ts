@@ -1,3 +1,4 @@
+import { writeFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import * as materialSteps from "../../../src/factory/material/reservations";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
@@ -315,3 +316,19 @@ it("PLAY04 control replay preserves the same disabled state and rejects changed 
  expect(()=>controlCandidate(state,adopted.material,owners[3]!,true,"control_replay")).toThrow(/Idempotency/);
 });
 import * as dryControls from "../../../src/factory/session/dryFactorySlice";
+
+it("owned-data baseline bytes: Dry cold, copied, joint material and replay", () => {
+ const bytesOf=(value:unknown)=>canonicalJson(JSON.parse(JSON.stringify(value)));
+ const f=emptyDryFixture(),request=f.inputFor(f.state,f.material),proposal=prepareDryFactoryStep(f.state,request);
+ expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+ const copy=JSON.parse(JSON.stringify(proposal)) as typeof proposal;
+ const adopted=commitDryFactoryStep(f.state,request,proposal),restored=commitDryFactoryStep(f.state,request,copy);
+ expect(adopted.status).toBe("Committed");expect(bytesOf(restored)).toBe(bytesOf(adopted));
+ if(adopted.status!=="Committed")return;
+ const replay=commitDryFactoryStep(adopted.state,{...request,material:adopted.material},proposal);
+ expect(replay.status).toBe("NoOp");
+ const bytes=bytesOf({proposal,adopted,replay});
+ if(process.env.HESTIA_OWNED_REFERENCE)writeFileSync(`evidence/factory/play/2026-10-14/owned-data-candidate/${process.env.HESTIA_OWNED_REFERENCE}-dry.json`,bytes);
+ const forged={...copy,state:{...copy.state,lastStep:{...copy.state.lastStep!,nextStateBytes:copy.state.lastStep!.nextStateBytes+" "}}};
+ expect(commitDryFactoryStep(f.state,request,forged).status).toBe("Rejected");
+});

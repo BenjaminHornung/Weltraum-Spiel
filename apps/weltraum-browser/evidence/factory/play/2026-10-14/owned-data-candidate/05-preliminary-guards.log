@@ -1,0 +1,44 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/ownedData.test.ts tests/unit/factory/production.test.ts tests/unit/factory/conveyor.test.ts tests/unit/factory/dryFactorySlice.test.ts -t ^(?!.*W09 paid-band)
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/conveyor.test.ts (26 tests | 2 failed) 33321ms
+     × FP06-T034 transports 20kg as two paced native 10kg children with receipt-bound parent lineage 5433ms
+     × rejects stale receiver/capacity/clock and forged candidates without a material or position partial commit 6470ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/conveyor.test.ts > FP06 native one-packet conveyor reference > FP06-T034 transports 20kg as two paced native 10kg children with receipt-bound parent lineage
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/factory/conveyor.test.ts:240:3
+    238|   });
+    239|
+    240|   it("FP06-T034 transports 20kg as two paced native 10kg children with…
+       |   ^
+    241|     let pair = initial(20_000_000);
+    242|     pair = ticks(pair, 100);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/conveyor.test.ts > FP06 native one-packet conveyor reference > rejects stale receiver/capacity/clock and forged candidates without a material or position partial commit
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/factory/conveyor.test.ts:359:3
+    357|   });
+    358|
+    359|   it("rejects stale receiver/capacity/clock and forged candidates with…
+       |   ^
+    360|     let pair = ticks(initial(), 100);
+    361|     pair = ticks(pair, 53, true, false);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  2 failed | 87 passed | 2 skipped (91)
+   Start at  09:48:05
+   Duration  74.98s (transform 1.24s, setup 0ms, import 1.92s, tests 71.73s, environment 1ms)

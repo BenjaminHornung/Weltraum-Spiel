@@ -1,0 +1,35 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/ownedData.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/ownedData.test.ts (7 tests | 1 failed) 37ms
+     × falls back after inherited array iteration changes, including warm roots 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/ownedData.test.ts > Factory owned data composition boundary > falls back after inherited array iteration changes, including warm roots
+CanonicalSerializationError: Canonical JSON only accepts JSON-compatible plain objects and arrays
+ ❯ fail src/resources/serialization.ts:30:9
+     28|
+     29| const fail = (message: string): never => {
+     30|   throw new CanonicalSerializationError(message);
+       |         ^
+     31| };
+     32|
+ ❯ canonicalize src/resources/serialization.ts:85:12
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalizeJsonValue src/resources/serialization.ts:102:78
+ ❯ canonicalJson src/resources/serialization.ts:124:81
+ ❯ factoryCanonicalJson src/factory/internal/ownedData.ts:90:85
+ ❯ tests/unit/factory/ownedData.test.ts:70:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  09:46:28
+   Duration  615ms (transform 153ms, setup 0ms, import 197ms, tests 37ms, environment 0ms)

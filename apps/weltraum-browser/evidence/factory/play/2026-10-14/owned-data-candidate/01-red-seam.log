@@ -1,0 +1,28 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/ownedData.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/ownedData.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/ownedData.test.ts [ tests/unit/factory/ownedData.test.ts ]
+Error: Cannot find module '../../../src/factory/internal/ownedData' imported from /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/unit/factory/ownedData.test.ts
+ ❯ tests/unit/factory/ownedData.test.ts:3:1
+      1| import { describe, expect, it } from "vitest";
+      2| import { canonicalJson } from "../../../src/resources/serialization";
+      3| import { ownedRecord, ownedArray, isFactoryImmutableData, factoryCanon…
+       | ^
+      4|
+      5| describe("Factory owned data composition boundary", () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  09:43:22
+   Duration  536ms (transform 128ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)

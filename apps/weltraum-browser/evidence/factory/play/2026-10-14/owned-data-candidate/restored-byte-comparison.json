@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "fixture": "production",
+      "status": "BASELINE_CANDIDATE_RESTORED_IDENTICAL",
+      "bytes": 7267042,
+      "sha256": "5b9ffd469f468c09bc52e8cb376f8b2f0724049cb3dd6fd22b60e178e47ad933",
+      "archives": [
+        "baseline-production.json.gz",
+        "candidate-production.json.gz",
+        "restored-production.json.gz"
+      ]
+    },
+    {
+      "fixture": "conveyor",
+      "status": "BASELINE_CANDIDATE_RESTORED_IDENTICAL",
+      "bytes": 707428,
+      "sha256": "fbaf2b8a02148842add33756d4312a8053857f50e270938ed3fde9ab69da717f",
+      "archives": [
+        "baseline-conveyor.json.gz",
+        "candidate-conveyor.json.gz",
+        "restored-conveyor.json.gz"
+      ]
+    },
+    {
+      "fixture": "dry",
+      "status": "BASELINE_CANDIDATE_RESTORED_IDENTICAL",
+      "bytes": 2332494,
+      "sha256": "512028842480beb2213c1902b4339ec5964211c83f369150d5413d95b5ee4e01",
+      "archives": [
+        "baseline-dry.json.gz",
+        "candidate-dry.json.gz",
+        "restored-dry.json.gz"
+      ]
+    }
+  ],
+  "compression": "deterministic gzip; decoded raw bytes verified exactly",
+  "domainGuards": "5 PASS /81 filtered, including both original paid cases filtered"
+}

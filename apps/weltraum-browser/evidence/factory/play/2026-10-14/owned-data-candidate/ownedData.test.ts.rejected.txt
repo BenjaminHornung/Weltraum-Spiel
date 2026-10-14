@@ -1,0 +1,139 @@
+import { describe, expect, it } from "vitest";
+import { canonicalJson } from "../../../src/resources/serialization";
+import { ownedRecord, ownedArray, isFactoryImmutableData, factoryCanonicalJson } from "../../../src/factory/internal/ownedData";
+
+describe("Factory owned data composition boundary", () => {
+  it("allocates a fresh root and reuses only defensively proved children", () => {
+    const child = Object.freeze({ value: 1 });
+    expect(isFactoryImmutableData(child)).toBe(true);
+    const source = { child, label: "complete" };
+    const result = ownedRecord(source);
+    expect(result).not.toBe(source);
+    expect(result.child).toBe(child);
+    expect(Object.isFrozen(source)).toBe(false);
+    expect(isFactoryImmutableData(result)).toBe(true);
+    expect(factoryCanonicalJson(result)).toBe(canonicalJson(result));
+    expect(ownedArray([result])).not.toBe(source);
+  });
+
+  it("does not freeze borrowed mutable children or reuse stale bytes", () => {
+    const child = { value: 1 };
+    const result = ownedRecord({ child });
+    expect(isFactoryImmutableData(result)).toBe(false);
+    expect(Object.isFrozen(child)).toBe(false);
+    expect(factoryCanonicalJson(result)).toBe('{"child":{"value":1}}');
+    child.value = 2;
+    expect(factoryCanonicalJson(result)).toBe('{"child":{"value":2}}');
+  });
+
+  it("never invokes accessors to confer ownership", () => {
+    let reads = 0;
+    const child = Object.freeze({ get value() { reads++; return 1; } });
+    expect(isFactoryImmutableData(child)).toBe(false);
+    expect(isFactoryImmutableData(ownedRecord({ child }))).toBe(false);
+    expect(reads).toBe(0);
+    expect(() => ownedRecord(child)).toThrow();
+    expect(reads).toBe(0);
+  });
+
+  it("rejects nested frozen Proxies and keeps their actual iterator semantics", () => {
+    let virtual = 2;
+    const rows = new Proxy(Object.freeze([1]), {
+      get(target, key, receiver) {
+        if (key === Symbol.iterator) return function* () { yield virtual; };
+        return Reflect.get(target, key, receiver);
+      }
+    });
+    const result = ownedRecord({ child: Object.freeze({ rows }) });
+    expect(isFactoryImmutableData(result)).toBe(false);
+    expect(factoryCanonicalJson(result)).toBe('{"child":{"rows":[2]}}');
+    virtual = 3;
+    expect(factoryCanonicalJson(result)).toBe('{"child":{"rows":[3]}}');
+  });
+
+  it("does not trust caller freezing, copied ownership flags, cycles or exotic prototypes", () => {
+    const mutable = { value: 1 };
+    const forged = Object.freeze({ owned: true, child: mutable });
+    const cycle: Record<string, unknown> = {}; cycle.self = cycle; Object.freeze(cycle);
+    expect(isFactoryImmutableData(forged)).toBe(false);
+    expect(isFactoryImmutableData(cycle)).toBe(false);
+    expect(isFactoryImmutableData(Object.freeze(new Date(0)))).toBe(false);
+    expect(() => factoryCanonicalJson(cycle)).toThrow();
+    expect(isFactoryImmutableData(JSON.parse(JSON.stringify(ownedRecord({ value: 1 }))))).toBe(false);
+  });
+
+  it("falls back after inherited array iteration changes, including warm roots", () => {
+    const rows = ownedArray([1]); const root = ownedRecord({ rows });
+    expect(factoryCanonicalJson(root)).toBe('{"rows":[1]}');
+    const iterator = Object.getOwnPropertyDescriptor(Array.prototype, Symbol.iterator)!;
+    try {
+      Object.defineProperty(Array.prototype, Symbol.iterator, { ...iterator, value: function* (this: unknown[]) { if (this.length === 1 && this[0] === 1) yield 7; else yield* iterator.value.call(this); } });
+      const actual = factoryCanonicalJson(root);
+      const expected = canonicalJson(root);
+      const trusted = isFactoryImmutableData(root);
+      // Restore before assertion machinery itself consumes arrays.
+      Object.defineProperty(Array.prototype, Symbol.iterator, iterator);
+      expect(trusted).toBe(false);
+      expect(actual).toBe(expected);
+      expect(actual).toBe('{"rows":[7]}');
+    } finally { Object.defineProperty(Array.prototype, Symbol.iterator, iterator); }
+  });
+
+  it("preserves complete bytes, lexical numeric keys, exact numbers and clone behavior", () => {
+    const root = ownedRecord({ "2": 2, "10": 10, precise: 1.2345678901234567, negativeZero: -0,
+      rows: ownedArray([ownedRecord({ z: "receipt\\\"\n", a: 3 }), null, true]) });
+    expect(factoryCanonicalJson(root)).toBe(canonicalJson(root));
+    expect(factoryCanonicalJson(root).indexOf('"10"')).toBeLessThan(factoryCanonicalJson(root).indexOf('"2"'));
+    expect(factoryCanonicalJson(root)).toContain('"negativeZero":0');
+    const invalid = Object.freeze([, 1]);
+    expect(isFactoryImmutableData(invalid)).toBe(false);
+    expect(() => factoryCanonicalJson(invalid)).toThrow();
+  });
+});
+
+it("inherited iterator accessors cannot earn proof or add getter reads", () => {
+ const root=ownedRecord({rows:ownedArray([1])});factoryCanonicalJson(root);
+ const descriptor=Object.getOwnPropertyDescriptor(Array.prototype,Symbol.iterator)!;let reads=0;
+ let trusted=true;
+ try {
+  Object.defineProperty(Array.prototype,Symbol.iterator,{configurable:true,get(){reads++;return descriptor.value;}});
+  trusted=isFactoryImmutableData(root);
+ } finally {Object.defineProperty(Array.prototype,Symbol.iterator,descriptor);}
+ expect(trusted).toBe(false);expect(reads).toBe(0);
+});
+it("inherited iterator next changes disable warm byte reuse", () => {
+ const root=ownedRecord({rows:ownedArray([1])});factoryCanonicalJson(root);
+ const prototype=Object.getPrototypeOf([][Symbol.iterator]()),descriptor=Object.getOwnPropertyDescriptor(prototype,"next")!;
+ let trusted=true;
+ try {
+  Object.defineProperty(prototype,"next",{...descriptor,value:function(){return {done:true,value:undefined};}});
+  trusted=isFactoryImmutableData(root);
+ } finally {Object.defineProperty(prototype,"next",descriptor);}
+ expect(trusted).toBe(false);
+});
+
+it("preserves IteratorClose on errors after an inherited return is added", () => {
+ const root=ownedRecord({rows:ownedArray([undefined])});
+ const prototype=Object.getPrototypeOf([][Symbol.iterator]());let closed=0,error:unknown,expectedError:unknown;let actualClosed=0;
+ try {
+  Object.defineProperty(prototype,"return",{configurable:true,value(){closed++;return {done:true};}});
+  try {factoryCanonicalJson(root);}catch(caught){error=caught;}
+  actualClosed=closed;closed=0;
+  try {canonicalJson(root);}catch(caught){expectedError=caught;}
+ } finally {delete prototype.return;}
+ expect(error).toBeDefined();expect(expectedError).toBeDefined();expect(actualClosed).toBe(closed);expect(closed).toBe(2);
+});
+it("keeps ignored symbol and nonenumerable data fields on the defensive path", () => {
+ const fields={value:1,[Symbol("ignored")]:2};Object.defineProperty(fields,"hidden",{value:3,enumerable:false});
+ const result=ownedRecord(fields);
+ expect(isFactoryImmutableData(result)).toBe(false);expect(factoryCanonicalJson(result)).toBe(canonicalJson(fields));
+});
+
+it("unproved ArrayProxy serialization does not probe ownKeys before its virtual iterator", () => {
+ let virtual=2,ownKeys=0;
+ const rows=new Proxy(Object.freeze([1]),{ownKeys(target){ownKeys++;virtual=3;return Reflect.ownKeys(target);},
+  get(target,key,receiver){if(key===Symbol.iterator)return function*(){yield virtual;};return Reflect.get(target,key,receiver);}});
+ expect(factoryCanonicalJson(rows)).toBe("[2]");expect(ownKeys).toBe(0);
+ virtual=2;const root=ownedRecord({rows});
+ expect(factoryCanonicalJson(root)).toBe('{"rows":[2]}');expect(ownKeys).toBe(0);
+});

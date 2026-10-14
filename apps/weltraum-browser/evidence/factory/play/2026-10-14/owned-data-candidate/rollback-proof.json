@@ -1,0 +1,73 @@
+{
+  "status": "REJECTED_REVERTED",
+  "recordedUtc": "2026-10-14T10:00:45.604870+00:00",
+  "candidateCount": 1,
+  "originalPaidPairRunsAfterCandidate": 1,
+  "additionalCpuProfiles": 0,
+  "performance": {
+    "timeoutMs": 5000,
+    "blackoutGraphRevisionMs": 8164,
+    "outputBlockageMs": 20463,
+    "pairTestPhaseMs": 28631,
+    "status": "FAIL"
+  },
+  "rollbackChecks": [
+    {
+      "path": "apps/weltraum-browser/src/factory/internal/ownedData.ts",
+      "sha256": "ABSENT",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "sha256": "890882e41a8b7aa4f1dc344602b093fbbb3192b195d28c2e1190e4f8572a6710",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "sha256": "2e8a33d97553567d5e17092151d75a4c0e0d98abbaf73c5450cfc4a28500dae7",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/ownedData.test.ts",
+      "sha256": "ABSENT",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/serialization.ts",
+      "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+      "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "sha256": "7bac925c8e76e4d6e3ba79f0bab8a7fa50f16d66570918e89ea944718aef43ac",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    },
+    {
+      "path": "apps/weltraum-browser/package-lock.json",
+      "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890",
+      "status": "BASELINE_RESTORED_OR_EXCLUDED_UNCHANGED"
+    }
+  ],
+  "retainedProductChanges": [],
+  "retainedTestChanges": [
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/production.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
+  ],
+  "reason": "Both original paid-band cases exceed unchanged gates; no automatic additional candidate/refactor/profile."
+}

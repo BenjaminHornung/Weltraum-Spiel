@@ -1,0 +1,12 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/production.test.ts tests/unit/factory/conveyor.test.ts tests/unit/factory/dryFactorySlice.test.ts -t owned-data
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  3 passed (3)
+      Tests  5 passed | 81 skipped (86)
+   Start at  10:00:46
+   Duration  6.98s (transform 1.09s, setup 0ms, import 1.64s, tests 4.36s, environment 2ms)

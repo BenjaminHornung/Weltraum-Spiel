@@ -1,0 +1,12 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/ownedData.test.ts tests/unit/factory/production.test.ts tests/unit/factory/conveyor.test.ts tests/unit/factory/dryFactorySlice.test.ts tests/unit/resourceCanonicalBytes.test.ts -t owned-data|Factory owned data|inherited iterator|IteratorClose|ignored symbol|unproved ArrayProxy|resource canonical
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  4 passed | 1 skipped (5)
+      Tests  18 passed | 93 skipped (111)
+   Start at  09:57:15
+   Duration  7.34s (transform 966ms, setup 0ms, import 1.60s, tests 4.36s, environment 1ms)

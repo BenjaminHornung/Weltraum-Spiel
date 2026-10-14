@@ -1,0 +1,12 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/ownedData.test.ts tests/unit/factory/production.test.ts tests/unit/factory/conveyor.test.ts -t owned-data|Factory owned data|inherited iterator
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  3 passed (3)
+      Tests  14 passed | 40 skipped (54)
+   Start at  09:52:12
+   Duration  5.95s (transform 697ms, setup 0ms, import 1.14s, tests 3.93s, environment 2ms)
