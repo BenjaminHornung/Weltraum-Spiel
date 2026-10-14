@@ -1,0 +1,47 @@
+{
+  "schema": "hestia.fp06.owned-data-control-closure/v1",
+  "recordedUtc": "2026-10-14T10:11:11.912837+00:00",
+  "ownerGrantStatus": "OWNER_APPROVED_EXECUTED",
+  "actor": "/root",
+  "branch": "codex/hestia-fp06-w00-2026-10-11",
+  "integratorBranch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "integratorChangesetCommit": "7f5060cda131e925bda2d20028bd714eaee09460",
+  "integratorFinalHead": "9ebd8cad469651edb1d47023c8d58041d4f32672",
+  "result": "FAIL_REJECTED_REVERTED",
+  "retainedProductChanges": [],
+  "retainedBusinessGuards": {
+    "files": 3,
+    "cases": 5,
+    "baselineResult": "PASS"
+  },
+  "originalPaidPair": {
+    "runs": 1,
+    "timeoutMs": 5000,
+    "blackoutGraphRevisionMs": 8164,
+    "outputBlockageMs": 20463,
+    "result": "FAIL"
+  },
+  "additionalCpuProfilesAfterGrant": 0,
+  "candidateCount": 1,
+  "payloadVerification": "PASS 41 manifest references,20 actual local LFS files,14 unique payloads",
+  "independentRollback": "PASS by actual read-only composition_contract_readonly",
+  "packageStatus": {
+    "W09": "BLOCKED",
+    "W10": "BLOCKED_NOT_RUN",
+    "W11": "PARTIAL_BLOCKED"
+  },
+  "separateNativeHold": "UNRESOLVED tick324 after real341kgpickup",
+  "scope": "CLOSED_AFTER_FAIL_NO_AUTOMATIC_RETRIAL",
+  "resultDoc": "docs/factory/fp06/play/2026-10-14/composition-closure/RESULT.md on Integrator head",
+  "controlChangedFiles": [
+    "docs/factory/fp06/play/2026-10-14/composition-closure/OWNER_GRANT.json",
+    "docs/factory/fp06/play/2026-10-14/composition-closure/CLOSURE_RECEIPT.json"
+  ],
+  "preservedPreexistingDirtyFiles": [
+    "docs/factory/fp06/play/2026-10-12/current-package-status.md",
+    "docs/factory/fp06/play/2026-10-12/exec-plan.md",
+    "docs/factory/fp06/play/2026-10-12/source-lock.json",
+    "docs/factory/fp06/play/2026-10-12/write-ownership.json"
+  ],
+  "noMergePushPublishing": true
+}
