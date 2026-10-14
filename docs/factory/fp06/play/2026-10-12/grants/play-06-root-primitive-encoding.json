@@ -1,0 +1,44 @@
+{
+  "schema": "hestia.fp06.play-local-serialization-repair/v1",
+  "atUtc": "2026-10-12T20:40:59.926268+00:00",
+  "actor": "/root",
+  "authorization": "Existing W09 completion and actual measured regression; routine exact-byte private serializer simplification, no product policy",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 34219,
+      "sha256": "ebf698865a650931cde47d5e70ece7bd5e3c9a4abfd3eff35b605b78db24f07b"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 39314,
+      "sha256": "1e35b17c24d436e1c55b67f14ef5445b5812ff563e06d8002474d6775cb6fc73"
+    }
+  ],
+  "hypothesis": "JSON-compatible primitive leaves need no copied canonical tree or WeakSet; direct JSON.stringify has the exact original primitive bytes. Invalid primitives remain on original validation path.",
+  "budget": {
+    "candidates": 1,
+    "additionalProfiles": 0
+  },
+  "constraints": [
+    "No recipes, saves, material history, authority, validators, global serializer, dependencies, timeouts or queue limits changed.",
+    "No mutable input caching or cross-call string retention. Cache exact string value only within one serialization.",
+    "Original output-blockage test and 5000ms limit remain unchanged. Full canonical byte equality and existing tamper/replay guards required.",
+    "Focused unprofiled pair, full dry domain and affected regressions then original tsc/build. Do not proceed W10 before actual W09 endgate."
+  ],
+  "precedingFailedCandidate": "play-06-root-local-string-encoding.json",
+  "status": "CANDIDATE_FAILED_AND_OWN_CHANGE_REVERTED",
+  "result": {
+    "receipt": "03-primitive-encoding-paid-pair.command.json",
+    "exitCode": 1,
+    "testMs": 6955,
+    "limitMs": 5000,
+    "rawSha256": "042914d2841873df36e3611a8517d0ba10cd9157e91836a3bb890b320f7c048f"
+  },
+  "revertedBytesVerified": true,
+  "next": "Independent read-only diagnosis, no further speculative runtime candidate"
+}

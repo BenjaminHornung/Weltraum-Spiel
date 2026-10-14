@@ -1,0 +1,23 @@
+{
+  "schema": "hestia.fp06.play-test-verification-batching/v1",
+  "atUtc": "2026-10-12T21:00:15.112298+00:00",
+  "actor": "/root",
+  "authorization": "Existing W09 verification/performance task, preserved original failing5000ms gates. Explicit disclosed test-only matcher overhead repair, not silent Golden change.",
+  "writeSet": [
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
+  ],
+  "before": {
+    "bytes": 53598,
+    "sha256": "50b7bf46b50816744246c95ab2bf68def7449c51c860c3394fc3af16d351f589"
+  },
+  "independentReadOnlyReviewer": "/root/current_native_closure_review",
+  "equivalence": "Every identicalx/y/z Source slot read remains. Uint8slot nonzero for every visitedcell iff zeroCount===0. Counter and firstcoordinate only; aggregateassert beforeFacilityprepare. Up to645120/702464matcherallocations percase, actualvisitedcounts notyetmeasured.",
+  "preserved": [
+    "Allfivecases and 5000ms limit",
+    "SameSourceconstruction/version/rawslots/receipt/noholes invariant",
+    "SameNativebodies/colliders/geometry/support/LOS/access/socketpositions",
+    "SamecableBOM/lengths/negativebattery/distantactor asserts",
+    "Same0 materialcredit/recipes/historicalbookings/Save/runtimebudgets"
+  ],
+  "scope": "Test-harness matcher batching only; no product performance claim. Actualbefore fiveTimeouts7\u20139s, functionalfinishwithoutassertfailure; after outcomes notyetknown."
+}

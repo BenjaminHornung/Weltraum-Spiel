@@ -1,0 +1,29 @@
+{
+  "schema": "hestia.fp06.play-goal-projection-repair/v1",
+  "atUtc": "2026-10-12T20:53:38.867091+00:00",
+  "actor": "/root",
+  "authorization": "Existing authorized playable UI/performance implementation; current native0owner browser SimulationHold, independent source diagnosis; routine negative projection shortcut, no product policy/recipe/history/save/source change.",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 80333,
+      "sha256": "0d6d7932bf9483517bfe4f13da5e14288dde144692c1a827944733c4fb010499"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 80044,
+      "sha256": "8df68f3fcd27aee66fe15a86da757e95ff4442d58bd93138f12efb5514878571"
+    }
+  ],
+  "scope": "Only do not run full fresh-lineage history projector when current private domain has zero machines, or Native confirmation is false; production remains null. All machine-present positive and retainedinitial-baseline paths keep the reviewed pureprojector unchanged.",
+  "sourceProof": "Domain machines initializeempty and only append/map/retain. Puregoal jobs come only from these machines commandreceipts, and requires unique two completedCUTs. Empty domain cannot have a positive fresh production goal. Reader /root/blocked_band_readonly_review independently verified paths.",
+  "gate": [
+    "New genuineRED emptydomain repeatedread no expensivehistorywalk; positive machine-present retainedinitial-source test unchanged, foreignHostnull retained.",
+    "Affected focused Host/read-onlyGoal23/unit UI cases; original tsc/build. Same ordinary V5start/cargo/map/Play/mouse route as actualFAIL before candidate.",
+    "No globalmemo/cache/throttle/timeouts or World/protocol/Authority changes. Screenshot/functional/browser/hardware outcomes separate. W09 complete remains open."
+  ]
+}

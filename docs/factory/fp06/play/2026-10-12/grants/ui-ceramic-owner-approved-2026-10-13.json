@@ -1,0 +1,204 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "actor": "/root",
+  "role": "sole Integrator and serial UI/art writer",
+  "baseCommitSha": "f0a901db4ea3cfc64061dca3a2a89cc92f38fc6e",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "status": "GRANTED",
+  "authorization": "Explicit owner: schaut gut aus so umsetzen; all three screen concepts and approved baseline, existing Factory flows only",
+  "openedAtUtc": "2026-10-13T13:09:39.034559+00:00",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+    "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+    "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/localMap.ts",
+    "apps/weltraum-browser/src/factory/ui/itemVisuals.ts",
+    "apps/weltraum-browser/src/factory/ui/buildPresentation.ts",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/buildPresentation.test.ts",
+    "apps/weltraum-browser/public/factory/ui-ceramic-v1/**",
+    "art/factory/ui-ceramic-v1/**",
+    "docs/factory/fp06/play/2026-10-13/ui-ceramic/**",
+    "apps/weltraum-browser/evidence/factory/ui-ceramic-2026-10-13/**",
+    "design-qa.md",
+    "apps/weltraum-browser/src/factory/ui/english.ts",
+    "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+    "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+    "apps/weltraum-browser/src/ui/graphicsSettingsPanel.ts",
+    "apps/weltraum-browser/src/ui/pgTragwerkPlayerPanel.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+    "docs/factory/fp06/visual-style/2026-10-13/crashsite/**",
+    "art/factory/visual-reference/2026-10-13/crashsite/**",
+    "apps/weltraum-browser/factory.html",
+    "apps/weltraum-browser/src/hvp/hvpHud.ts",
+    "apps/weltraum-browser/tests/unit/hvp-interaction.test.ts",
+    "art/factory/crashsite-hybrid-v1/**",
+    "docs/factory/fp06/play/2026-10-13/crashsite-hybrid-v1/**",
+    "apps/weltraum-browser/index.html",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/public/factory/crashsite-hybrid-v1/**",
+    ".gitattributes"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+      "sha256": "88f6dc0fad4479d8ea9d6f44c072f23a111fc2750349d7ff48df0d12d13887e6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+      "sha256": "7a48c7af3ed2c8b810e137e4fb8227c9222ca27f73b4cde5ea44f86888afbe15"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "sha256": "fa105f26d2feb5fcfaa7b6c0c4e079b3f911e2adf23e6825427cf5102224a21e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "sha256": "ceb6f0c9be68772cdf5be709b985a20f024e07259b0ec9ebc9c30f17dfdee37c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "sha256": "160cf898153c267e61e7cd5ac54910c228d43b2b490766f4fc40d6f57cc043f7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/localMap.ts",
+      "sha256": "601a26422ab73f095759cc1009a423316eec5f4227d599b063c43b87345ffd68"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/itemVisuals.ts",
+      "sha256": "930a7874bbe99af032c3cc0b88ef963259ecbbdebbd48769367fdcdcce447894"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "sha256": "ef393b60724fa8d0d0e01abaf91980e123a9c323e78515b6d8f07b80ddc17d87"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+      "sha256": "efc3092f13995f0fb09aba0cbf48c9090482678beecb348f8ea0c148cddd359a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts",
+      "sha256": "ac8d3b6b5465ce752a1957a9061fb3e8e2872be091605b45ae1fad47b96151eb"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+      "sha256": "d49791579eab4a190a089096b6a2cbe385241b524b9008f2a6099eb7a5c2f99e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+      "sha256": "0de49c107d9742f1bbc0dc9217775a733461d6e29a74007edfc8a4e4c9287c7c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "sha256": "327470e188bba8a12e44be66ddd9d629ce7e72d1d5221f8534eed8eb3a897c37"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ui/graphicsSettingsPanel.ts",
+      "sha256": "a89eeba56894eca8b24b91a123883891cfbee69c9e69607841101633474d59b3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ui/pgTragwerkPlayerPanel.ts",
+      "sha256": "56ff3d4f2d176aefb0b9c4f020e669346bcd18e106a01079be99eb311ba699aa"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "sha256": "ce9c73073918b5f1bdad790be737b1a9036ebd1e93ca914cdfca6492407d1fa9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "sha256": "94e2dae1ab702a9a2f14afd28c9fc7f835962f1b0a5f8d91affc6145ea80e6bf"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+      "sha256": "e4ebcdc631236d73e6cc2bdff1fd1dddd32eb7dd77f75ac863f0adf56fc8010e"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "sha256": "bfe734be37d5da4b097e41d6b31cb76a6d14764f895bda55afb544004a4061e9"
+    },
+    {
+      "path": "apps/weltraum-browser/factory.html",
+      "sha256": "bf8af5027bbe9381b79b4b52a8ca054fbb594e8f94d7f1acbc0ef71bba56fea3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpHud.ts",
+      "sha256": "67b223c31d76002f22097e6b9175ac6d4dab7aad583a4413ae9a2c05ce0a6910"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-interaction.test.ts",
+      "sha256": "549a195b73265b68a16f8cc9d3b3b292bc3d6b4ef0f968dbcc1b1617218efeba"
+    },
+    {
+      "path": "apps/weltraum-browser/index.html",
+      "sha256": "93c4ec358bca75fa789e61d8e8fc7caec322d9500f0a541440052a9a8c3bd1bf"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "sha256": "bf7a96a192dd36f8ed3b46e42e46260e39354a1d59e92df846e132a6374f539e"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "sha256": "00f26e1e10ec9b8e91b0bc76a44e5ab609da45e9e582620f0490e67350de5ccb"
+    },
+    {
+      "path": ".gitattributes",
+      "sha256": "b94781de54ca8d9ac828f388342de56cba95c5e1874857ffa81443e15a3cfc55"
+    }
+  ],
+  "constraints": [
+    "No World/Physics/Save/recipe/terrain changes",
+    "Native confirmed facts and explicit commands remain authority",
+    "Root single implementation writer; no art delegate",
+    "Concept fixtures never replace real browserstate",
+    "No dependency upgrades, main merge, push or publication",
+    "Later customizer remains separate planned stage; shared styling tokens now"
+  ],
+  "preflight": {
+    "trackedProductDrafts": 0,
+    "actualImplementationWriters": [
+      "/root"
+    ],
+    "baselineTests": "35 PASS",
+    "beforeCapture": "/workspace/.cloud-setup/ui-ceramic-2026-10-13/before",
+    "beforeCaptureLimit": "Seven real normal-route screens; preexisting404 console resource recorded; no page exception"
+  },
+  "scopeAmendment": {
+    "atUtc": "2026-10-13T14:29:40.676709+00:00",
+    "authorization": "Explicit owner: entire player UI/game language English; audit actual cargo-only wreck and show two concept candidates, assets only from selected candidate",
+    "additionalPaths": [
+      "apps/weltraum-browser/src/factory/ui/english.ts",
+      "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+      "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "apps/weltraum-browser/src/ui/graphicsSettingsPanel.ts",
+      "apps/weltraum-browser/src/ui/pgTragwerkPlayerPanel.ts",
+      "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+      "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "docs/factory/fp06/visual-style/2026-10-13/crashsite/**",
+      "art/factory/visual-reference/2026-10-13/crashsite/**"
+    ],
+    "constraints": [
+      "Only player-facing copy changes in HvpBootstrap/player input; Host/Physics/Save behavior and protected catalog/history remain unchanged",
+      "Crashsite concepts are not terrain/hull/Collider admission",
+      "No new wreck asset until exact displayed design is chosen",
+      "English-only presentation copy in HvpHud/factory HTML; unchanged native commands and confirmed-source data"
+    ]
+  },
+  "crashsiteAssetAuthorization": {
+    "owner": "So als Assetvorlage verwenden",
+    "reference": "03-hybrid-revision.png",
+    "role": "Root serial art writer",
+    "scope": "New Blender source, GLB candidate and actual previews in new versioned art directory. No terrain, cargo, collider or gameplay admission from concept alone. Static GLB candidate is included in normal build public output; closed game asset loader/World owner are unchanged."
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "schema": "hestia.fp06.explicit-simulation-hold-recovery/v1",
+  "atUtc": "2026-10-12T23:29:04.287982+00:00",
+  "status": "GRANTED_ROOT_ONLY",
+  "actor": "/root",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "base": "eb84b3e06b8e4f1b01cc4cca93b0fbafbc46e80a",
+  "authorization": "User requests fully playable FP06 with coherent interruption/retry and normal inputs. Source-proven FactorySimulationHold deadlock fix with separate explicit action. Existing normalHold/Play/Resume constraints remain unchanged. No productOwnerdecision is silently accepted.",
+  "writeSet": [
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 39475,
+      "sha256": "9ffd0d47f00977ec093d920a3f897a6da176dbbba0c5326beba0b75df034c349"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "bytes": 41700,
+      "sha256": "fd5ca0b6edc34275bf40684ac407c7e79335d441a32f8c281935c55bc2ede901"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 17473,
+      "sha256": "4516a3978ac10b0996fa9c48f6a5a0bf3d3cb297a34cf414c05408cf1bb2d4c4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 12315,
+      "sha256": "86703b5406be9110e8ea2560cb93f2f8029780ade9dd62a4190d6e79efc1c74d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 80524,
+      "sha256": "cfe8686badcc4bc25c84aaa6274ed7da84ead2e9f3e518eb577323eeba8fcbe8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 17698,
+      "sha256": "2f73026b816125bcdf0efb54ffabe97086a9fa8691d140927fc0e6a17d5756b6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+      "bytes": 19713,
+      "sha256": "6c17543789b58b3691e461d28040897edf10632ff05d5a23d618fad8276b8eed"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 194659,
+      "sha256": "97439a2c3996ba5398069f5e290ae7cb9cdf38c1729bad1beef2acc7a04c81bb"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 55812,
+      "sha256": "00fcf7527686889673c28345af33e641b0b4216e791a120702c006338f92756c"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 81821,
+      "sha256": "245850ef96952122bacc980c52cc9837bd6ef57336335342f04dc4c615acaca4"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+      "bytes": 13249,
+      "sha256": "7a00e14e755ee25902358d9732e1f40ab0d164dd1692fa00a655b141a7642c10"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 106982,
+      "sha256": "2cbc323e7cd985b8faf4bec9269c07eaab458ed042cf2c0261529f11c0f98369"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+      "bytes": 9736,
+      "sha256": "cbab1e3815dd4483c517c3ab1520d3b8d832cd36d1095f38d0ba3e8377aa2004"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "bytes": 41971,
+      "sha256": "ff508546719ac1b77bada36ed0a0d8034995b1ba9741463cb769b76b4dd820a3"
+    }
+  ],
+  "contract": "Explicit newNativeRecoverFactorySimulationHold(expectedTick), factory-only/currentSimulationHold/exacttick/allnativeWorldholds clear. Neutralizes input/disablescharacter. Atomicexistingtick.resume()->tick.pause() withoutadvance/world.step -> sameWorld/ticks/body/collider/pose/custody, backlog0 andexactdiscardedSecondsaddition. NativeWorker stale/hold/restore refusals nonterminal rejected, existingtimers/caps unchanged. RootHostguards currentvisible/otherwiseconfirmedWorld/terrain/Idlefacilities/Save/Input/commands; recovery privatebarrier spanscallback. Session distinctrecoveryBusy fence closesreentrant/disposal/observe; rejects onlyunadoptedpendingcommand onceknownRejected InterruptedBeforeAdoption, adoptedjobs/history/material untouched. AfterRPC rereadACTUALHost+handling exactbinding/terrain/facility andPausedtick. RebaseobservationnativeTickonly, retain steps/remainder/domain/WIP/SOC/belt/history; no unconfirmedheldintervalcatchup. UI remainsunconfirmeduntilRootclearsbarrier/publishesNativePaused, thenrequiresseparate normalPlay. No automaticrecovery, noWorldcopy/pose/physics/time-limit change.",
+  "review": "Actual /root/blocked_band_readonly_review Sourcecontractapproval and concretepreTDD risks/tests; oldR1normalHoldGolden retained. Sourceverification pending implementedGate.",
+  "gate": "RealNativeHold+stale/nonFactoryRED->minimalNativeRPCGREEN; DomainACKrebase/material/history/queuedreceipt/raceRED->GREEN; Hostallguard-oldR1negative/UIinputbusinessRED->GREEN; affectedregressions+originalbuild+realnormalbrowserRecovery/V5. Performance andfullW09remainseparategates.",
+  "scopeAmendment": {
+    "atUtc": "2026-10-12T23:35:37.071348+00:00",
+    "actor": "/root",
+    "reason": "ActualNative-backed HvpPhysicsClient transport fixture resides in hvp-player-input.test.ts; addoneexactexistingTestPath for meaningfulRPC/clientbarrier verification. No additionalproductwriter orproductscope."
+  },
+  "completion": {
+    "atUtc": "2026-10-13T00:47:02.402541+00:00",
+    "sourceCommit": "d59f978250348e8ec85360a49b2863520949135c",
+    "evidenceCommit": "b0871cfe851a6d519f40e56dc885a980a113e095",
+    "status": "SCOPED_RECOVERY_PASS",
+    "actualChanges": 14,
+    "browserRecovery": "3 real holds with retained finite custody and separate Play",
+    "wholeExtendedRoute": "FAIL",
+    "fullW09W10W11": "NOT_ACCEPTED"
+  }
+}

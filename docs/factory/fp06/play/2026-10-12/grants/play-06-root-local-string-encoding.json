@@ -1,0 +1,47 @@
+{
+  "schema": "hestia.fp06.play-local-serialization-repair/v1",
+  "atUtc": "2026-10-12T20:40:00.041407+00:00",
+  "actor": "/root",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "head": "4ca33091bc104f5098a2a4f2fce9f428b32d3c2a",
+  "authorization": "Existing owner W09 completion and targeted composition performance request; fresh repeated actual 5000ms regression, sole serial Integrator; no product policy change. Earlier C1 results remain historical, not overwritten.",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 34219,
+      "sha256": "ebf698865a650931cde47d5e70ece7bd5e3c9a4abfd3eff35b605b78db24f07b"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 39314,
+      "sha256": "1e35b17c24d436e1c55b67f14ef5445b5812ff563e06d8002474d6775cb6fc73"
+    }
+  ],
+  "profile": "PLAY-06/20261012T203800Z-root-blocked-band/01-current-blocked-band-profile.command.json",
+  "hypothesis": "Within each private immutable canonical traversal, identical large receipt strings are encoded repeatedly. An invocation-local exact-string encoder memo can reuse bytes without retaining history or skipping fields/validation.",
+  "budget": {
+    "candidates": 1,
+    "additionalProfiles": 0
+  },
+  "constraints": [
+    "No recipes, saves, material history, authority, validators, global serializer, dependencies, timeouts or queue limits changed.",
+    "No mutable input caching or cross-call string retention. Cache exact string value only within one serialization.",
+    "Original output-blockage test and 5000ms limit remain unchanged. Full canonical byte equality and existing tamper/replay guards required.",
+    "Focused unprofiled pair, full dry domain and affected regressions then original tsc/build. Do not proceed W10 before actual W09 endgate."
+  ],
+  "status": "CANDIDATE_FAILED_AND_OWN_CHANGE_REVERTED",
+  "result": {
+    "receipt": "02-local-string-encoding-paid-pair.command.json",
+    "exitCode": 1,
+    "testMs": 6838,
+    "limitMs": 5000,
+    "rawSha256": "17b6e453e6e3d78583f9c548d7c44c0fc8cbeb2c60f6f2db3a331df7ec00095a",
+    "interpretation": "Per-traversal memo did not resolve failure; no shipping optimization retained."
+  },
+  "nextInvestigation": "Existing private cached canonical serializer invokes general Resources canonicalizer and allocates a WeakSet for every primitive leaf. Compare exact primitive serialization using JSON.stringify; general invalid/accessor/mutable paths unchanged.",
+  "revertedBytesVerified": true
+}

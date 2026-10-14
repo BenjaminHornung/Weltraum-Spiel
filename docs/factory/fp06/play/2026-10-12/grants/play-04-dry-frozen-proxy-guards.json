@@ -1,0 +1,30 @@
+{
+  "schema": "hestia.fp06.play-dry-proxy-guard/v1",
+  "atUtc": "2026-10-12T21:04:04.280791+00:00",
+  "actor": "/root",
+  "authorization": "Existing owner material/authority/immutable-proposal safety task; independent read-only currentSource witness. Routine boundary correction, no product decision/recipes/goldens/saves/history/Source quantities.",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 34219,
+      "sha256": "ebf698865a650931cde47d5e70ece7bd5e3c9a4abfd3eff35b605b78db24f07b"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 39314,
+      "sha256": "1e35b17c24d436e1c55b67f14ef5445b5812ff563e06d8002474d6775cb6fc73"
+    }
+  ],
+  "reviewer": "/root/blocked_band_readonly_review",
+  "scope": "Prove exactcanonicalbyte mismatch and stale frozenArrayProxy membership adoption by actualfailingguards; then smallest strict cacheadmissionfix using standardcloneability likeexisting W08guard. Retain general canonicalizer/freshvalidation for untrustedaccessors/proxies; no broaderProduction/globalserialization change.",
+  "constraints": [
+    "Original55tick/57adoption paid-bandblock byte-identical and5000mslimit preserved.",
+    "No fields/quantity/source/receipt omitted; failedvalidation and replay respected.",
+    "No callback/time/queue/caps/dependency/framework/WorldAuthority change.",
+    "Focused actualREDthenGREEN, existingcanonical/material/replay/blackout/custody regressions; report performanceindependently."
+  ]
+}

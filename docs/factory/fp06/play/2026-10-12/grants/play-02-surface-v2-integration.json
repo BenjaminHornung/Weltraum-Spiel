@@ -1,0 +1,49 @@
+{
+  "schema": "hestia.fp06.play-surface-v2-integration/v1",
+  "atUtc": "2026-10-12T23:09:56.948677+00:00",
+  "actor": "/root",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "baseCommit": "035fed5b6547e1cd06267063046c6d1da54845c6",
+  "artCommit": "55b45f7084f104d09e4ac4bdd6edb293aa91f238",
+  "authorization": "User explicit readableBlender/nativeSources/runtimeProducts actualbuild integration; technicalcoplanarityrepair within originalSource union and palette. No newproductPolicy or geometryWorldgrant.",
+  "writeSet": [
+    "apps/weltraum-browser/public/factory/play-2026-10-12/manifest-surface-v2.json",
+    "apps/weltraum-browser/src/factory/presentation/playAssetLoader.ts",
+    "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest-surface-v2.json",
+      "absent": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/playAssetLoader.ts",
+      "bytes": 18666,
+      "sha256": "7db5db2357f58e6b7b5785f886939235b70af932134010ca0dc0ff96e6ec75b3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+      "bytes": 10747,
+      "sha256": "cb3e400ef173aa397bf35a096c9038b3d3e1aafb1990228f4fbf83a33f80fe21"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 194645,
+      "sha256": "6634eba4ada00b6314318dd8f51fc0ade9b3d76cf3676a0b2811ee80b19cefb4"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts",
+      "bytes": 14718,
+      "sha256": "4676e909f7f66d401f6d85924851732c589ccc6a932723b17f811a285b6fb138"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+      "bytes": 15097,
+      "sha256": "54c666c2517d7ca6c41903b1765f34cb6b23146527eb96fc442e371fb9c4fbb1"
+    }
+  ],
+  "gate": "V2 realGLB loaderbusinessRED -> minimal2entrysealedmanifest/census and S1choice -> focusedloader/nativeS1/build -> actualnormalCurrentFormer+newRuntimePNGs. Existing23V1manifest unchanged, Native/BOM/ports/budgets/authority unchanged; Human OWNER_REVIEW_PENDING."
+}

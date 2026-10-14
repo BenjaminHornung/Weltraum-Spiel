@@ -1,0 +1,21 @@
+{
+  "schema": "hestia.fp06.continuation-checkpoint/v1",
+  "atUtc": "2026-10-13T17:21:01.897525+00:00",
+  "integrator": "/root",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "sourceCommitSha": "fb1e219802c984aa2fef2d651985ae860bd4468f",
+  "deliveryEvidenceCommitSha": "c774b3019e23e00b152dc40136c700f48d3e9d57",
+  "implementationWriters": 1,
+  "reviewer": "/root/ui_ceramic_readonly_review, no repository implementation/art writes",
+  "englishUI": "SOURCE_CHECKPOINTED; bounded UI/tests PASS, visual gate BLOCKED",
+  "crashsite": "NATIVE_ART_SOURCE_CREATED; static build payload, NOT_ADMITTED in World",
+  "humanVisualAcceptance": "OWNER_REVIEW_PENDING",
+  "w09": "BLOCKED / full ordinary-input 16kg proof still required",
+  "w10": "NOT_RUN here; dependent shared save/restart proof remains open",
+  "w11": "NOT_ACCEPTED; native source, visual/gameplay/performance gates open",
+  "grantsPreserved": true,
+  "terrainCollisionSaveRecipesChangedByThisCheckpoint": false,
+  "mainMergePushPublishing": false,
+  "reviewReceipt": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/docs/factory/fp06/play/2026-10-13/ui-ceramic/DELIVERY_RECEIPT.json",
+  "trackedWorkingTreeAfterCheckpoint": "clean; unrelated old untracked evidence preserved"
+}

@@ -5,11 +5,9 @@
   "integrator": "/root",
   "controlPlaneRoot": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
   "previousOwnership": "../../write-ownership.json",
-  "activeImplementationWriters": [
-    "/root"
-  ],
+  "activeImplementationWriters": [],
   "activeDocumentationWriter": "/root",
-  "browserCpuLease": "/root/play_integrator input/Host/native runtime; other jobs coordinate directly",
+  "browserCpuLease": null,
   "plannedWriters": [
     {
       "actor": "/root/play_integrator",
@@ -72,7 +70,10 @@
     "/root/play_art_review",
     "/root/play_c1_review",
     "/root/cloud_environment_copy",
-    "/root/play_cell_bridge/independent_review"
+    "/root/play_cell_bridge/independent_review",
+    "/root/blocked_band_readonly_review",
+    "/root/current_native_closure_review",
+    "/root/current_former_visual_readonly"
   ],
   "localWorktreesAtAudit": "five clean; Integrator96cced23, Root245dcb61, actual W05 integrationd5502ae7 ancestor",
   "externalVisibility": "Remote branch existence does not prove activity or inactivity. External uncommitted writers cannot be enumerated here. GitHub API blocked; public visible PR listing captured separately.",
@@ -3231,6 +3232,201 @@
         "Actual23Puretests+tscSourcePASS notUI/Native/S1/full16kg/Save/PerformancePASS. FocusedcurrentIntegratorimport/affectedRegression/tsc then normalfresh16kgactualcommands. No newwriter, Cell58cbhold; activeIntegrator+Artpreview.",
         "NoW12-W29/remote-mainrestart/engine/dependency/limit/queue/timeout/Mainmerge/push/forcepush/PR/publish. FinalhumanreviewsOWNER_REVIEW_PENDING."
       ]
+    },
+    "PLAY-06-ROOT-NOOP": {
+      "actor": "/root",
+      "status": "GRANTED",
+      "grant": "grants/play-06-unchanged-material-adoption.json",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "boundary": "Onlyexact2boundpaths; otherdraftspreserved; bounded27Power/28DryguardsPASS; Original5000msBandFAIL remains"
+    },
+    "PLAY-06-ROOT-CATALOG": {
+      "actor": "/root",
+      "status": "GRANTED",
+      "grant": "grants/play-06-source-catalog-cache.json",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "boundary": "Onlyexact2boundpaths; otherdraftspreserved; bounded27Power/28DryguardsPASS; Original5000msBandFAIL remains"
+    },
+    "PLAY-02-SURFACE-V2": {
+      "schema": "hestia.fp06.play-art-surface-v2/v1",
+      "atUtc": "2026-10-12T22:56:26.739248+00:00",
+      "actor": "/root/play_surface_v2",
+      "role": "Art, counts assecondImplementationWriter",
+      "branch": "codex/hestia-fp06-play-surface-v2-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-surface-v2-2026-10-12",
+      "baseCommitSha": "035fed5b6547e1cd06267063046c6d1da54845c6",
+      "authorization": "Explicit user actualBlender/model/readability task; measuredDifferentMaterialcoplanarity in realCutter/Former runtimeGLBs. Technicalvisualrepair; Native/sources/physics/playpolicy unchanged; localBlender authorization persists.",
+      "writeSet": [
+        "art/factory/play-surface-v2-2026-10-12/build_surface_v2.py",
+        "art/factory/play-surface-v2-2026-10-12/README.md",
+        "art/factory/play-surface-v2-2026-10-12/manifest.json",
+        "art/factory/play-surface-v2-2026-10-12/tests/test_surface_v2.py",
+        "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/cutter-v2.blend",
+        "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/model-spec.json",
+        "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-source.json",
+        "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-owner-source.blob",
+        "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/provenance.json",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/cutter-v2.glb",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/cutter-v2.hestia-authoring-report.json",
+        "art/factory/play-surface-v2-2026-10-12/former/former-v2/former-v2.blend",
+        "art/factory/play-surface-v2-2026-10-12/former/former-v2/model-spec.json",
+        "art/factory/play-surface-v2-2026-10-12/former/former-v2/native-source.json",
+        "art/factory/play-surface-v2-2026-10-12/former/former-v2/native-owner-source.blob",
+        "art/factory/play-surface-v2-2026-10-12/former/former-v2/provenance.json",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/former-v2.glb",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/former-v2.hestia-authoring-report.json"
+      ],
+      "newPathsAbsentAtGrant": true,
+      "hydratedOnlySameLfsPayloads": [
+        {
+          "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter.glb",
+          "bytes": 60724,
+          "sha256": "94bb74a02431d8d08f004a7f7220c56a8e6d25eb07c7f6afed24f6b5efa1f5ea"
+        },
+        {
+          "path": "art/factory/play-2026-10-12/cutter/cutter/cutter.blend",
+          "bytes": 717388,
+          "sha256": "62d503483ecbaa1a26154ebcd452ca081e90951ca50e4bf1f1fe74126e67e31f"
+        },
+        {
+          "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former.glb",
+          "bytes": 63180,
+          "sha256": "6cf637ede540e0072d76160f85b37a07501150b1ef7666b384b3dfa2d77c0f4a"
+        },
+        {
+          "path": "art/factory/play-2026-10-12/former/former/former.blend",
+          "bytes": 726892,
+          "sha256": "426c2d5ee238432a1023b74004513efd69ff755b1379064ca8036b7c5448ec01"
+        }
+      ],
+      "preserve": "All23V1GLB/blendproducts and83,735byteV1manifest/generator byteidentical; originalSourceScene/NativeBounds/parts/definitionRefs/Palette/rotations unchanged",
+      "implementation": "Exactly2versionedDerivedAssets newIDsplay_cutter_v2/play_former_v2. Fix ALL positiveDifferentMaterialcoplanarity within2wholeassets includingcutter_chamber via boundedaxisalignedsurface recess/occlusion. Own fixed2jobwrapper importsOriginalMesh/native_bounds/validate_binding/exporter butneverOriginalcheck_sources/build_blender/manifest writeflows. Separate2Entrymanifest. Every vertexwithinoriginalperpartboxunion. GLB/animationremainpresentationonly.",
+      "rootExclusive": [
+        "Publicmanifest-surface-v2.json",
+        "playAssetLoader.ts",
+        "factoryS1Assets.ts",
+        "hvpBootstrap.ts",
+        "RuntimeIntegrationtests",
+        ".gitattributes",
+        "Host",
+        "Physics",
+        "Native",
+        "Save",
+        "Contracts"
+      ],
+      "cpuLease": "No Blender/Render/Test/heavyjobs untilRootmessage. Authorcode/specs onlywhileRootprofiling. ActualBlender4.3.2 threads1 maxfixed2assets, projectexporter; noinstalls/providers/GPUspend.",
+      "commands": [
+        "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s art/factory/play-surface-v2-2026-10-12/tests -p test_surface_v2.py",
+        "/usr/bin/blender --background --factory-startup --threads 1 --python art/factory/play-surface-v2-2026-10-12/build_surface_v2.py -- --assets cutter-v2 former-v2"
+      ],
+      "gate": "RealpassthroughgeometryRED\u2192smallcorrection\u2192whole2GLBcoplanarity/NativeBounds/neutralnodes/partIDs/palette/oldpayloadhashGREEN; nativeblends save/reopen, actualsealedGLBs, exactdiff/commit/sourcehashreport andindependentreview. HumanArt/visualacceptanceOWNER_REVIEW_PENDING."
+    },
+    "PLAY-04-explicit-simulation-hold-recovery": {
+      "schema": "hestia.fp06.explicit-simulation-hold-recovery/v1",
+      "atUtc": "2026-10-12T23:29:04.287982+00:00",
+      "status": "GRANTED_ROOT_ONLY",
+      "actor": "/root",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "base": "eb84b3e06b8e4f1b01cc4cca93b0fbafbc46e80a",
+      "authorization": "User requests fully playable FP06 with coherent interruption/retry and normal inputs. Source-proven FactorySimulationHold deadlock fix with separate explicit action. Existing normalHold/Play/Resume constraints remain unchanged. No productOwnerdecision is silently accepted.",
+      "writeSet": [
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+      ],
+      "before": [
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+          "bytes": 39475,
+          "sha256": "9ffd0d47f00977ec093d920a3f897a6da176dbbba0c5326beba0b75df034c349"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+          "bytes": 41700,
+          "sha256": "fd5ca0b6edc34275bf40684ac407c7e79335d441a32f8c281935c55bc2ede901"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+          "bytes": 17473,
+          "sha256": "4516a3978ac10b0996fa9c48f6a5a0bf3d3cb297a34cf414c05408cf1bb2d4c4"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "bytes": 12315,
+          "sha256": "86703b5406be9110e8ea2560cb93f2f8029780ade9dd62a4190d6e79efc1c74d"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+          "bytes": 80524,
+          "sha256": "cfe8686badcc4bc25c84aaa6274ed7da84ead2e9f3e518eb577323eeba8fcbe8"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+          "bytes": 17698,
+          "sha256": "2f73026b816125bcdf0efb54ffabe97086a9fa8691d140927fc0e6a17d5756b6"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+          "bytes": 19713,
+          "sha256": "6c17543789b58b3691e461d28040897edf10632ff05d5a23d618fad8276b8eed"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+          "bytes": 194659,
+          "sha256": "97439a2c3996ba5398069f5e290ae7cb9cdf38c1729bad1beef2acc7a04c81bb"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+          "bytes": 55812,
+          "sha256": "00fcf7527686889673c28345af33e641b0b4216e791a120702c006338f92756c"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+          "bytes": 81821,
+          "sha256": "245850ef96952122bacc980c52cc9837bd6ef57336335342f04dc4c615acaca4"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+          "bytes": 13249,
+          "sha256": "7a00e14e755ee25902358d9732e1f40ab0d164dd1692fa00a655b141a7642c10"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+          "bytes": 106982,
+          "sha256": "2cbc323e7cd985b8faf4bec9269c07eaab458ed042cf2c0261529f11c0f98369"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+          "bytes": 9736,
+          "sha256": "cbab1e3815dd4483c517c3ab1520d3b8d832cd36d1095f38d0ba3e8377aa2004"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+          "bytes": 41971,
+          "sha256": "ff508546719ac1b77bada36ed0a0d8034995b1ba9741463cb769b76b4dd820a3"
+        }
+      ],
+      "contract": "Explicit newNativeRecoverFactorySimulationHold(expectedTick), factory-only/currentSimulationHold/exacttick/allnativeWorldholds clear. Neutralizes input/disablescharacter. Atomicexistingtick.resume()->tick.pause() withoutadvance/world.step -> sameWorld/ticks/body/collider/pose/custody, backlog0 andexactdiscardedSecondsaddition. NativeWorker stale/hold/restore refusals nonterminal rejected, existingtimers/caps unchanged. RootHostguards currentvisible/otherwiseconfirmedWorld/terrain/Idlefacilities/Save/Input/commands; recovery privatebarrier spanscallback. Session distinctrecoveryBusy fence closesreentrant/disposal/observe; rejects onlyunadoptedpendingcommand onceknownRejected InterruptedBeforeAdoption, adoptedjobs/history/material untouched. AfterRPC rereadACTUALHost+handling exactbinding/terrain/facility andPausedtick. RebaseobservationnativeTickonly, retain steps/remainder/domain/WIP/SOC/belt/history; no unconfirmedheldintervalcatchup. UI remainsunconfirmeduntilRootclearsbarrier/publishesNativePaused, thenrequiresseparate normalPlay. No automaticrecovery, noWorldcopy/pose/physics/time-limit change.",
+      "review": "Actual /root/blocked_band_readonly_review Sourcecontractapproval and concretepreTDD risks/tests; oldR1normalHoldGolden retained. Sourceverification pending implementedGate.",
+      "gate": "RealNativeHold+stale/nonFactoryRED->minimalNativeRPCGREEN; DomainACKrebase/material/history/queuedreceipt/raceRED->GREEN; Hostallguard-oldR1negative/UIinputbusinessRED->GREEN; affectedregressions+originalbuild+realnormalbrowserRecovery/V5. Performance andfullW09remainseparategates.",
+      "scopeAmendment": {
+        "atUtc": "2026-10-12T23:35:37.071348+00:00",
+        "actor": "/root",
+        "reason": "ActualNative-backed HvpPhysicsClient transport fixture resides in hvp-player-input.test.ts; addoneexactexistingTestPath for meaningfulRPC/clientbarrier verification. No additionalproductwriter orproductscope."
+      }
     }
   },
   "actorTransfers": [
@@ -3334,5 +3530,76 @@
     "reason": "Execute owner-authorized preview package serially while noactual delegatedwriterturn runs. Do not claim retired/pending agents as working. Root coordinates ownCPU, noSource/reset/remote-mainrestart.",
     "rootRole": "Sole serial implementation writer; sharedIntegrator role after artifactrender, control/preview now; maximum1activewriter",
     "existingPreviewScriptCommit": "6012300817f615b26786d84bacb3d1c1fe8f6613"
+  },
+  "independentReviewerStatuses": {
+    "/root/blocked_band_readonly_review": "COMPLETED_READ_ONLY",
+    "/root/current_native_closure_review": "COMPLETED_READ_ONLY"
+  },
+  "currentContinuation": {
+    "atUtc": "2026-10-12T23:09:56.948677+00:00",
+    "integrator": "/root",
+    "actualWriters": [
+      "/root"
+    ],
+    "currentProductHead": "eb84b3e06b8e4f1b01cc4cca93b0fbafbc46e80a",
+    "preservedProductDraftPaths": 0,
+    "boundedClosures": [
+      "native cold finite-cargo pause",
+      "dry proxy proof",
+      "empty-machine goal negative gate",
+      "same validated immutable material adoption",
+      "source catalog exactcurrentraw reuse"
+    ],
+    "open": [
+      "original5000ms dry band case",
+      "realNativeBrowserholds",
+      "full16kgW09",
+      "W10",
+      "W11"
+    ],
+    "activeReadOnlyReviewer": null,
+    "browserCpuLease": "/root",
+    "v5NormalHeavyRoute": {
+      "status": "PASS",
+      "evidence": "PLAY04/20261012T223400Z-root-fresh-released-native/01-normal-v5-heavy-former",
+      "elapsedSeconds": 96.50760401,
+      "massMg": 2984400000,
+      "nativeTick": 2645,
+      "limit": "Local3CPU/Mesa1/ordinaryinput route; no full16kg/performance/save/human acceptance"
+    },
+    "completedArtWriter": "/root/play_surface_v2; immutable55b45f7084f104d09e4ac4bdd6edb293aa91f238",
+    "preservedSourceCheckpoint": "74a8d7db61072f59cd36c968546a14a102cc444e",
+    "head": "f0a901db4ea3cfc64061dca3a2a89cc92f38fc6e",
+    "updatedAtUtc": "2026-10-13T12:42:16.700333+00:00",
+    "actualImplementationWriters": [
+      "/root"
+    ],
+    "explicitRecoverySourceCommit": "d59f978250348e8ec85360a49b2863520949135c",
+    "explicitRecoveryEvidenceCommit": "b0871cfe851a6d519f40e56dc885a980a113e095",
+    "trackedProductDrafts": 0,
+    "latestVisualReferenceCommit": "f0a901db4ea3cfc64061dca3a2a89cc92f38fc6e",
+    "runtimeCodeUnchangedByVisualReference": true,
+    "visualReferenceStatus": "BASE_APPROVED; THREE_NEW_SCREENS_OWNER_REVIEW_PENDING"
+  },
+  "externalReviewCheckpoint": {
+    "recordedAt": "2026-10-14T13:34:05.273609+02:00",
+    "ownerRequest": "aktuellen stand commit und push damit die externen review agent auch einsicht haben",
+    "implementationSourceCheckpoint": "9ebd8cad469651edb1d47023c8d58041d4f32672",
+    "integratorReviewHead": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+    "integratorBranch": "codex/hestia-fp06-play-candidate-2026-10-12",
+    "controlBranch": "codex/hestia-fp06-w00-2026-10-11",
+    "remoteMainReadAtPreparation": "e40592c113b72a8dc93725187f92cf948e07f44d",
+    "pushStatus": "REQUESTED_PENDING_REMOTE_VERIFICATION",
+    "newImplementationAuthorization": false,
+    "ownedDataWindow": "CLOSED_AFTER_FAIL_NO_AUTOMATIC_RETRIAL",
+    "packages": {
+      "W09": "BLOCKED",
+      "W10": "BLOCKED_NOT_RUN",
+      "W11": "PARTIAL_BLOCKED"
+    },
+    "humanAcceptance": "OWNER_REVIEW_PENDING",
+    "actualImplementationWriters": [],
+    "documentationWriter": "/root",
+    "entryPoint": "docs/factory/fp06/external-review/2026-10-14/README.md on Integrator branch"
   }
 }

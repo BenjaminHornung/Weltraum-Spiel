@@ -173,3 +173,22 @@ A clean-copy normal entry is playable and saveable; full fresh-material flow and
 ## Owner-Steuerung: UI- und Gameplayqualität
 
 Die vollständig vom Owner eingefügten Skills [game-ui-quality](skills/game-ui-quality.md) und [gameplay-flow](skills/gameplay-flow.md) gelten ab jetzt für den laufenden UI-/Gameplayumfang. Ihre konkrete Anwendung ist in [application.md](skills/application.md) festgehalten. Reale Eingaben und gerenderte Vorher/Nachherzustände bleiben Gate; kein Spaß-/Nutzbarkeitsclaim aus Build oder Screenshot. Vorherige Grants, maximalzweiWriter und W09→W10→W11-Abhängigkeiten bleiben verbindlich.
+
+
+### Root serial continuation, 2026-10-12 20:47 UTC
+
+Preserved existing Integrator4ca and26 drafts; Rootsolewriter. Delivered complete78-image reviewpackage with actualBlender previews/nativepayloads. Source/Cargo/UI76tests PASS. Dry37tests36PASS1unchanged5000msFAIL; two scoped encoderattemptsFAILEDandreverted byte-identically. No further speculative candidate; actual read-only reviewer `/root/blocked_band_readonly_review`. Separate currentprivate-stage read-only review `/root/current_native_closure_review`; noCPU/implementationleases granted. Native/Host/Input affectedsuite running withfiveSourcecaseTimeouts observed, outcome pending. Continue independent UI/NativeSource gates and currentbuild/browser inputs; W10/W11 gates blocked until realW09complete.
+
+
+### Root continuation 21:16 UTC
+
+ActualNative/Sourcecellfive5000msGates repaired only by equivalent full-cell assertion batching; actualfivePASS3.74s. Dryproxyboundary2realRED→20GREEN and independentreview; fullpairedperformance pending. Empty-machine Goal no-work shortcut42GREEN with actualretainedbaselineunchanged, no globalcache; alone didnotresolvecoldstartup. NativecoldfiniteCargo initializationnowPaused beforeWorkerTimer,3actualNative/default testsGREEN plus76affectedNative/Physics/WorldSaveGREEN; originalbuildPASS. SamevisibleV5browserflowPASS39.7567s,0→173actualNative ticks,2984.4kg unchanged,4capturedPNGs. CurrentrealheavyV5route input-onlydriverrunning; no otherheavyCPUjobs. Preserveall earlierFAIL/setupFAIL/receipts. W09full16kg/blackout/fulloutput/remainingdry+Hosttimeouts stillgate, W10/W11 blocked.
+
+
+### Root continuation 22:24 UTC
+
+RealNoOp materialadoption businessRED5extravalidations→28focusedGREEN/differentactorSourcePASS; completeDry/Host98PASS/1unchanged5000msDryFAIL (all59HostPASS), originalbuildPASS. Actualsamebrowserprofile showsadoptinclusive1.092389→0.001129sampledseconds butstillHoldtick345 andworseP95/frameinterval; diagnosticExit0 isnotPerformancePASS. Singlelocalbrowseraffinity3vCPU/Mesa1 hypothesis nowtested withsameACK-driver/V5heavyactions; host5vCPU/4CPUquota, noglobalruntime/tick/timeout/queue/budget/sourcechange. Fouractualnormalbrowserpictures shippedinseparatereviewupdateZIP. W09fullfresh16kg/W10/W11remainopen.
+
+## Externer Reviewcheckpoint — 14.10.2026
+
+Owner fordert ausdrücklich Commit und Push der eigenen aktuellen Branches. Implementierungscode bleibt bei `9ebd8cad469651edb1d47023c8d58041d4f32672`; archivierte historische Evidence und Revieweinstieg sind in `7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e` gesichert. Kontrollmetadaten, zuvor lokaleGrants/Reviews und spätere Checkpoints werden separat committed. Source bleibt unverändert; keine Tests/CPU-Profile erneut ausgeführt, keine Rezept-/Save-/Terrain-/Physics-/Limitänderung. Originale PerformanceFAILs und W09/W10/W11-Blockaden bleiben sichtbar. Nach normalem Push werden beideRemote-SHAs und tatsächliche LFS-Payload-Verfügbarkeit geprüft. KeinMainmerge/Force-Push.

@@ -1,3 +1,68 @@
+# Aktueller externer Reviewstand — 14.10.2026
+
+Aufnahme `2026-10-14T13:34:05.273609+02:00`. Implementierungscodecheckpoint `9ebd8cad469651edb1d47023c8d58041d4f32672`; Review-/Evidencehead `7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e`, Branch `codex/hestia-fp06-play-candidate-2026-10-12`. Die unten erhaltenen älteren Aufnahmen sind historische Teilstände. Die ausdrückliche Owneranweisung erlaubt jetzt Commit und Push der eigenen Reviewbranches; sie eröffnet keine neuen Implementierungs- oder Performancefenster.
+
+| Paket / Dimension | Aktueller Status | Nachweis / Grenze |
+| --- | --- | --- |
+| W09 | BLOCKED | Letztes originales Paid-band-Paar: 8164 /20463 ms bei unveränderten5000 ms; Kandidat vollständig zurückgenommen. Native SimulationHold nach tatsächlicher341-kg-Aufnahme weiter offen; kein vollständiger frischer16-kg-Kreis. |
+| W10 | BLOCKED_NOT_RUN | Kein gemeinsamer Factorysave-/Browserneustartnachweis; W09-Gate fehlt. |
+| W11 | PARTIAL_BLOCKED | Functional/UI/Visual-Teile und echte Assets liegen vor; Save/Gameplay/Performance-Gesamtabnahme fehlt. |
+| Owned-data-Reviewfenster | FAIL_REJECTED_REVERTED | Ein Kandidat/ein originalesPaar/keine weiterenCPU-Profile; fünf baselinekompatible Guards bestehen, vollständige drei Bytefixtures identisch. |
+| Asset-/Terrain-/Gameplayabnahme | OWNER_REVIEW_PENDING | Keine menschliche Abnahme erfunden; Wrack-V2 ist reale Blender/GLB-Quelle, native Aufnahme weiterhin offen. |
+| Reviewbereitstellung | PUSH_REQUESTED | 676 historische Evidence-Dateien bytegenau gesichert; bestehendeSource-/LFS-Integrität geprüft. Remoteverifikation folgt nach Push. |
+
+Aktueller Einstieg auf dem Implementierungsbranch: `docs/factory/fp06/external-review/2026-10-14/README.md`. Neuester ausgeführter Ergebnisbericht: `docs/factory/fp06/play/2026-10-14/composition-closure/RESULT.md`. Mainmerge undForce-Push bleiben ausgeschlossen. Root führt diese Dokumentations-/Pusharbeit seriell aus; aktuell keine Implementierungswriter.
+
+## Erhaltene vorherige Aufnahme
+
+# Aktueller PLAY-Paketstatus
+
+Aufnahme 2026-10-13T00:47:02.402541+00:00. Integrator `/root`, Branch `codex/hestia-fp06-play-candidate-2026-10-12`, HEAD `b0871cfe851a6d519f40e56dc885a980a113e095`. Root ist einziger Implementierungswriter; keine fremden Sourceänderungen wurden überschrieben. Die 32 vorherigen Drafts bleiben in `74a8d7db61072f59cd36c968546a14a102cc444e` erhalten. Die exakt 14-pfadige Recoverykorrektur ist in `d59f978250348e8ec85360a49b2863520949135c` gesichert; ihre echten Gates und fehlgeschlagenen Browserläufe stehen im Evidencecommit `b0871cfe851a6d519f40e56dc885a980a113e095`. Aktuell keine ungesicherten getrackten Produktänderungen. Kein Mainmerge, Push oder Publishing.
+
+| Umfang | Status | Nachweis / Grenze |
+| --- | --- | --- |
+| Vollständiges Bildreview 13.10. | PASS Paket / OWNER_REVIEW_PENDING Gestaltung | 98 ausgewählte Bilder zu allen 26 versionierten Blenderquellen; 25 Factory-GLBs, 40 tatsächliche Browserbilder. Galeriefilter/Suche/Zoom/Escape und 800-px-Layout geprüft. Ältere Schiffsvorlage nur vorhandene Referenzbilder; neuer Native-Open unter Blender4.3 FAIL dokumentiert. Finale ZIP-Seal PASS: 87246583 Bytes, SHA256 `9ab843f0191e1309cb2f16a83529ba1ac049ac6ffd1e2aacfd063967009b9784`; 522 Dateihashes und ZIP-CRC geprüft. |
+| Explizite Recovery Native/Worker/Client/Session/UI | PASS enger Umfang | TDD-RED/GREEN, 140 betroffene Regressionen, danach 130 vollständige aktuelle Session/Nativefälle, sechs Bootstrap-Holdfälle, aktueller Originalbuild, unabhängiger Source-Review. Keine zusätzliche Arbeit oder Material-/Energiegutschrift. |
+| Tatsächliche Browser-Recovery | PASS begrenzt | Drei echte Holds bei Tick910/1803/2828 über sichtbare Freigabe, Paused-ACK mit gleichem World-/Custody-/Inventarzustand, dann separates normales Spielen. Erster Hold mit 341 kg im Carrier. |
+| Neueste V5-Route bis Former | PASS Teilstrecke | Bezahlte 341-kg-Aufnahme, Westweg, Depot, Playerexit und native V2-Formerinstallation. Gesamte Masse 2984400000 mg erhalten. |
+| Erweiterter Batterie-/Kabelweg | FAIL / NOT_RUN | Browser14 insgesamt198,247s FAIL: vor Batterieaufnahme kurzer17-ms-Tastendruck ohne weiteren Gehschritt bei Rest0,0839m zum Wegpunkt. Kein Nachweis einer neuen Terrainblockade und kein weiterer Geometriediff. |
+| Performance | FAIL | Reale Holds weiterhin offen; unveränderter OriginalDry-Bandtest historisch6809ms/5000ms. Recovery ist kein Performancefix und keine Ziel-GPU-Abnahme. |
+| W09 frischer16-kg-Kreis | BLOCKED | Vollständige Anlage, Leitungen, echte Band-/Produktionsjobs, frische verbaute Stütze, Stromausfall und voller Ausgang fehlen. |
+| W10 gemeinsamer Save / Browserneustart | BLOCKED / NOT_RUN | Keine gemeinsame Factorysave-Anbindung oder tatsächliches Fortsetzen behauptet. |
+| W11 Gesamtlieferung | BLOCKED / NOT_RUN | Keine vollständige saubere Kopie mit abgeschlossenem Gameplay-/Save-/Performance-Gate. |
+| Endgültige Visual-/UI-/Terrain-/Gameplayabnahme | OWNER_REVIEW_PENDING | Sieben konkrete visuelle Befunde und alle originalen Bildzustände im Review; keine automatische Akzeptanz. |
+
+Nächste unabhängige technische Arbeit: kurze normale Eingaben zuverlässig messen, restliche V5-Batterie-/Kabelroute und vollständigen W09-Flow schließen. Keine geschützten Rezepte, Golden-Tests, Terrain oder Mengen stillschweigend ändern. W10 erst nach bestandenem W09-Gate.
+
+## Historischer Stand vor diesem Abschluss
+
+# Aktueller PLAY-Paketstatus
+
+Aufnahme2026-10-13, Fortsetzung des2026-10-12-Pakets. Integrator `/root`, Branch `codex/hestia-fp06-play-candidate-2026-10-12`, HEAD `eb84b3e06b8e4f1b01cc4cca93b0fbafbc46e80a`. Die32 erhaltenen freigegebenen Source-/Test-/Runtimeänderungen sind in `74a8d7db61072f59cd36c968546a14a102cc444e` gesichert. Root ist aktuell einziger Implementierungswriter; Art ist am abgeschlossenen Commit55b45f7 sauber. Ein neuer exakt abgegrenzter14-Pfad-Recoverydraft läuft. KeinMainmerge oderPublishing.
+
+| Umfang | Status | Tatsächlicher Nachweis / Grenze |
+| --- | --- | --- |
+| Vollständiges ursprüngliches Bildreview | PASS |78Bilder,24Blenderquellen,23GLBs; ZIP68.845.541Byte/SHAfa6b85c5f2497a6c1a72fe8fed7afe31f9694406f40a473cb432bfb08d225fc0. |
+| Neues V2-Bildreview samt Quellen | PASS |Vier protokollierte neue Blenderansichten,vier echteBrowserbilder,zweiV2Blends/zweiGLBs und32exakteSource-Dateien;91Dateihashes/ZIPCRC geprüft. ZIP11.010.164Byte/SHA3f42b7f1e4c73d9f6e89231464305a5e03d31dc7ce0d36b1e7da5321e17bd7bf. HumanVisual bleibt offen. |
+| Cutter-/Former-SurfaceV2 | PASS |Art55b45f7084f104d09e4ac4bdd6edb293aa91f238, Import20da08c1aa380c54e76c796a98e16f8afa8ad630;9 unabhängige BinärprüfungenPASS,95Loader/S1PASS,13BootstrapPASS/37SKIP, originalBuildPASS. Separate9721-Byte-Seal;alle46Originalpayloads unverändert. EngerSource-/ContractreviewPASS. |
+| V2-Servicegestaltung | OWNER_REVIEW_PENDING |KleineSTRUCT-Lüftungsflächen können hinterFUNCTION-Fronten verborgen sein. NeueBlenderbilder vorhanden, echteIn-game-Service-Frontaufnahme fehlt; Screenshot05 ist zu klein. Keine visuelle Gesamtabnahme. |
+| Tatsächliche V5-Schwertransportroute | PASS |Root96,507604s:341kg→Westweg→Depot→Playerexit→bezahlteNativeB07/S1,2984400000mg erhalten, neutralerInput/Source0e2a0bcb. EngerRoutenbeweis;keinVollflow. |
+| Neuer V2-Browserlauf07 | FAIL |101,535715s. Route/Depot/Exit/paidNativeV2Former/13Parts belegt; späterSimulationHoldtick2785/gap109,8ms amFotostandpunkt. Gesamtstatus bleibtFAIL. |
+| Aktuelle Batterie-/Kabelroute | FAIL / NOT_RUN |Letzter erweiterterV5-Batterielauf endet vorPickup beiHoldtick216. ÄltererV4-Batterie-PASS bleibthistorisch; kein aktueller vollständigerV5-Abschluss. |
+| Root SourceCatalogreuse | PASS |Commit035fed5b6547e1cd06267063046c6d1da54845c6;27PowerprüfungenPASS, originalBuildPASS;NativeResourcemengen/Digests werden weiter geprüft. OriginalDry-Band bleibtFAIL6809ms/5000ms. |
+| Native Workerprofil | Teilbeweis PASS / BrowserFAIL |Tatsächlicher partiellerTrace6,892648s,~6,764669s idle;~84,388msWasm um erstenaktivenStep. Quelle:KCC13,389ms/World.step62,993ms/Query8,006ms. TeurerStep fließt in nächstenTimergap und Vierstep-Hold. JIT-spezifische Ursache unbewiesen; spätererHold zeigt zusätzliche Ursachen. KeineWarmup-/Timer-/Budgetänderung. |
+| Separate explizite Recovery – Native/Worker/Client | PASS |NativeFachRED→6fokussiertePASS;echterWorker staleRPC-RED→15WholePhysicsPASS;ClientfehlendeAPI-RED→44WholeInputPASS. KeineNativeSteps/Body-/Pose-/Frachtänderung durchRecovery; pausiert und braucht neuesPlay. NurFoundation, nochkeinBrowser-/UI-PASS. |
+| Separate Recovery – Session/Queue | Teilumfang PASS |5ACK-/Remainder-/Race-/Mismatch-REDs→5PASS;unadoptierteQueue ohneAbschluss→RED→bekannterRejected-Receipt exakt einmal/replayPASS. NormalePlay/Resume-Holdgoldens bleiben unverändert. NativeACK rebasiert nurBeobachtungscursor;keineHeldintervalle alsProduktionszeit. |
+| Separate Recovery – WIP/Energie | FAIL |IsolierterFachlauf bestätigt8kgWIP/Job/SOC ohneACK-Catchup und Folgeallokation126,315789J=120J/0,95. SpätererGruppenlauf überschreitet original5000ms-Grenze mit7442ms. Exakte95%-Entladeeffizienz imTest berücksichtigt; kein Energie-/Rezeptwechsel. Performance muss geschlossen werden. |
+| Separate Recovery – Host/UI | NOT_RUN / RED |EchteShell-RED:fehlendeFreigabeaktion. NeueHostprüfung zunächstaußerhalb bestehenderlangsamerBootstrap-Suite→SetupTimeout; in bestehendeSuiteverschoben,keineTimeoutwerte geändert. Implementierung und echteBrowserprüfung laufen weiter. |
+| W09 frischer16-kg-Kreis und Unterbrechungen | BLOCKED |GesamterGameplaynachweis fehlt; originaleDry5000ms-Performance undNativeHolds offen. Keine frischproduzierte5,8kg-Stütze als tatsächlich verbaut belegt. |
+| W10 gemeinsamer Save/Recovery | BLOCKED |KeinCodebeginn vorW09-Endgate. LegacyHVP-Savetests sindkeinFactorySave-PASS. |
+| W11 und saubereKopie | BLOCKED |Functional/UI/Save/Visual/Gameplay/Performance getrennt; gesamteQualitätsabnahme/saubereKopie fehlen. Terrain/Visual/Gameplay OWNER_REVIEW_PENDING. |
+
+Reviewpakete liegen unter `/workspace/review-packages/`; neueV2-Runtime-Evidence ist imIntegrator unter `apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/`. Recovery-Evidence: `PLAY-04/20261012T233000Z-root-explicit-hold-recovery/`; tatsächlicheBefehlszeitstempel sind maßgeblich, auchüberMitternacht.
+
+## Erhaltene historische Aufnahme
+
 # Aktueller PLAY-Paketstatus
 
 Aufnahme 2026-10-12 14:00 UTC. Aktive Basis ist der vorhandene lokale Integrator, HEAD `f85d1379c3458488d225105156adfb66837799ce`, mit separat freigegebenen V4-/Eingabe-/Host-/Runtime-Drafts. Historische Fehlversuche und frühere Berichte bleiben erhalten.

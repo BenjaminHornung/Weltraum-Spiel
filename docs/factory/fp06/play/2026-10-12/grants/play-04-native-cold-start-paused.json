@@ -1,0 +1,36 @@
+{
+  "schema": "hestia.fp06.play-native-cold-start-state/v1",
+  "atUtc": "2026-10-12T21:07:17.462582+00:00",
+  "actor": "/root",
+  "authorization": "Existing owner Start/onboarding/playable Factory task, no offline catchup, D07 separate Factory profile and Native-authority constraint. ActualcoldV5browser SimulationHold beforeStart available; independentSource reviewsupports explicitpaused initialization. Routine Native owned startup correction, disclosed behavior change.",
+  "writeSet": [
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 39221,
+      "sha256": "0255e1c83ac0428326dcc90408568a10183add31725a50ebc0e6ef09dd063e3d"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 53799,
+      "sha256": "16cccdec0cd9511db68b76b345cd71d96936d888d0d6f0b1870f3b5f66f94d16"
+    }
+  ],
+  "reviewer": "/root/current_native_closure_review",
+  "change": "ImmediatelyaftercreateHvpTick, pause only iffactoryEnabled && initialFactoryCargo!==undefined && checkpoint===undefined. NativeWorker timercreatedafterSessionresolve, so coldFactorywarmup cannotadvance/accumulatebacklog before normalPlay.",
+  "preserved": [
+    "Existing nonFactory/noCargo/anyCheckpoint behavior",
+    "Worldposes/memberships/source/materials/finiteCargo",
+    "60Hz/fourstep/backlog/timeout/queue/caps policy",
+    "Existing explicitNativePlay and trustedResume/Drop API; noPlay-onlyAPIclaim",
+    "No engine/dependency/protocol/terrain/recipe/history/save changes"
+  ],
+  "gates": [
+    "ActualNative RED: finiteCargocoldworldstartsPaused0tick, staysunchangedthroughfinitewarmup, thennormalPlayproducesone60Hztick",
+    "Boundary defaultnoCargo ordinaryHVP andFactory remainsRunning",
+    "AffectedNative andoriginalType/build thenactualnormalV5Start/Play/browser; reviewprechange not runtimePASS."
+  ]
+}

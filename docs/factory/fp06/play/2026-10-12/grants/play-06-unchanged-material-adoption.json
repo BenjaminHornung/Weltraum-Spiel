@@ -1,0 +1,32 @@
+{
+  "schema": "hestia.fp06.play-material-adoption-noop/v1",
+  "atUtc": "2026-10-12T22:14:09.738243+00:00",
+  "actor": "/root",
+  "authorization": "Existing performance/material-authority task, actualmainbrowserprofile and independent source equivalence review. Routine unchanged-material adoption optimization, no gameplaypolicy.",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 35953,
+      "sha256": "0bb36c5a92fe68583ba6de9d95314ffc59c6581af0f8daa5b6f0a813fca13d46"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 40604,
+      "sha256": "04a1e1bdfafff913c585da3b7353594b5a5181aec97c0be2d7cebddb26af15bd"
+    }
+  ],
+  "profile": "PLAY06/20261012T220500Z-root-main-frame/diagnostic/main-thread.cpuprofile",
+  "measurement": "adopt1.092389s inclusive sampled; mainCPU p50 115.3ms/p95 267ms, profileoverhead; noFPS/performancePASS",
+  "reviewer": "/root/blocked_band_readonly_review",
+  "change": "Onlyafterfreshcompletecurrent/expectedfactoryMaterialBytes comparison, ifcandidate===current && strictisImmutableData(current), returntrue. CompleteW02emptytransfer alreadyvalidated sameimmutablecurrent in bytehelper. Everyother/mutable/accessor/Proxy/different/stale case retainsoriginalpath.",
+  "constraints": [
+    "No initial/unvalidated pointer shortcut; coldvalidation mustexecute",
+    "No cache/field/receipt omitted, invalidcurrent behavior preserved",
+    "Original55tickpaidblock,5000ms limit and alloldguards unchanged",
+    "ActualREDwarmrevalidation spy +cold/currentidentity/sourcebytes/sourcequantity/staleexpected guards\u2192GREEN thenrelevantfullDry/Host tests, originalbuild/browser"
+  ]
+}

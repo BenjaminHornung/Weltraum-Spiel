@@ -1,0 +1,25 @@
+{
+  "schema": "hestia.fp06.play-source-catalog-cache/v1",
+  "atUtc": "2026-10-12T22:25:43.557267+00:00",
+  "actor": "/root",
+  "authorization": "Existing targeted composition/browserperformance task; independent sourceequivalence review; routine derivedcatalog reuse, no productdecision",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+    "apps/weltraum-browser/tests/unit/factory/power.test.ts"
+  ],
+  "before": [
+    {
+      "path": "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+      "bytes": 8655,
+      "sha256": "3c4886c67b79475783f287e93edcb8412db5a26f1156624c70283416fbeb5d9b"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/power.test.ts",
+      "bytes": 24386,
+      "sha256": "91b8e559baed841a66e830532b8ec78192471912d26fa6c885c7eadf6a5bc13c"
+    }
+  ],
+  "reviewer": "/root/blocked_band_readonly_review",
+  "change": "Private WeakMap catalogobject -> one exact rawcanonicalJSON string + existingloader validatedfrozencatalog. Fresh one canonicalpropertyread percall, exactstringkey, everycurrentdigest/binding/profile/interval/collection/resource/finiteorigin/port/observation guard retained. Nonstringraw uncached. Failedloader notcached. No resourcesstatecache.",
+  "tests": "RealRED coldloaderrequired + warm noadditionalcalls; completewarm/copied output; mutable rawbytes, canonical getters, invalidJSON/definition, freshdeclared/bindingdigests. Fullpower/Dry relevantgates original limits; originalbuild thennormalbrowser."
+}

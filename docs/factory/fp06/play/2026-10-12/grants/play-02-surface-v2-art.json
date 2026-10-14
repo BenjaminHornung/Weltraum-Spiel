@@ -1,0 +1,74 @@
+{
+  "schema": "hestia.fp06.play-art-surface-v2/v1",
+  "atUtc": "2026-10-12T22:56:26.739248+00:00",
+  "actor": "/root/play_surface_v2",
+  "role": "Art, counts assecondImplementationWriter",
+  "branch": "codex/hestia-fp06-play-surface-v2-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-surface-v2-2026-10-12",
+  "baseCommitSha": "035fed5b6547e1cd06267063046c6d1da54845c6",
+  "authorization": "Explicit user actualBlender/model/readability task; measuredDifferentMaterialcoplanarity in realCutter/Former runtimeGLBs. Technicalvisualrepair; Native/sources/physics/playpolicy unchanged; localBlender authorization persists.",
+  "writeSet": [
+    "art/factory/play-surface-v2-2026-10-12/build_surface_v2.py",
+    "art/factory/play-surface-v2-2026-10-12/README.md",
+    "art/factory/play-surface-v2-2026-10-12/manifest.json",
+    "art/factory/play-surface-v2-2026-10-12/tests/test_surface_v2.py",
+    "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/cutter-v2.blend",
+    "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/model-spec.json",
+    "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-source.json",
+    "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-owner-source.blob",
+    "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/provenance.json",
+    "apps/weltraum-browser/public/factory/play-2026-10-12/cutter-v2.glb",
+    "apps/weltraum-browser/public/factory/play-2026-10-12/cutter-v2.hestia-authoring-report.json",
+    "art/factory/play-surface-v2-2026-10-12/former/former-v2/former-v2.blend",
+    "art/factory/play-surface-v2-2026-10-12/former/former-v2/model-spec.json",
+    "art/factory/play-surface-v2-2026-10-12/former/former-v2/native-source.json",
+    "art/factory/play-surface-v2-2026-10-12/former/former-v2/native-owner-source.blob",
+    "art/factory/play-surface-v2-2026-10-12/former/former-v2/provenance.json",
+    "apps/weltraum-browser/public/factory/play-2026-10-12/former-v2.glb",
+    "apps/weltraum-browser/public/factory/play-2026-10-12/former-v2.hestia-authoring-report.json"
+  ],
+  "newPathsAbsentAtGrant": true,
+  "hydratedOnlySameLfsPayloads": [
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter.glb",
+      "bytes": 60724,
+      "sha256": "94bb74a02431d8d08f004a7f7220c56a8e6d25eb07c7f6afed24f6b5efa1f5ea"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/cutter/cutter/cutter.blend",
+      "bytes": 717388,
+      "sha256": "62d503483ecbaa1a26154ebcd452ca081e90951ca50e4bf1f1fe74126e67e31f"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former.glb",
+      "bytes": 63180,
+      "sha256": "6cf637ede540e0072d76160f85b37a07501150b1ef7666b384b3dfa2d77c0f4a"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/former/former/former.blend",
+      "bytes": 726892,
+      "sha256": "426c2d5ee238432a1023b74004513efd69ff755b1379064ca8036b7c5448ec01"
+    }
+  ],
+  "preserve": "All23V1GLB/blendproducts and83,735byteV1manifest/generator byteidentical; originalSourceScene/NativeBounds/parts/definitionRefs/Palette/rotations unchanged",
+  "implementation": "Exactly2versionedDerivedAssets newIDsplay_cutter_v2/play_former_v2. Fix ALL positiveDifferentMaterialcoplanarity within2wholeassets includingcutter_chamber via boundedaxisalignedsurface recess/occlusion. Own fixed2jobwrapper importsOriginalMesh/native_bounds/validate_binding/exporter butneverOriginalcheck_sources/build_blender/manifest writeflows. Separate2Entrymanifest. Every vertexwithinoriginalperpartboxunion. GLB/animationremainpresentationonly.",
+  "rootExclusive": [
+    "Publicmanifest-surface-v2.json",
+    "playAssetLoader.ts",
+    "factoryS1Assets.ts",
+    "hvpBootstrap.ts",
+    "RuntimeIntegrationtests",
+    ".gitattributes",
+    "Host",
+    "Physics",
+    "Native",
+    "Save",
+    "Contracts"
+  ],
+  "cpuLease": "No Blender/Render/Test/heavyjobs untilRootmessage. Authorcode/specs onlywhileRootprofiling. ActualBlender4.3.2 threads1 maxfixed2assets, projectexporter; noinstalls/providers/GPUspend.",
+  "commands": [
+    "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s art/factory/play-surface-v2-2026-10-12/tests -p test_surface_v2.py",
+    "/usr/bin/blender --background --factory-startup --threads 1 --python art/factory/play-surface-v2-2026-10-12/build_surface_v2.py -- --assets cutter-v2 former-v2"
+  ],
+  "gate": "RealpassthroughgeometryRED\u2192smallcorrection\u2192whole2GLBcoplanarity/NativeBounds/neutralnodes/partIDs/palette/oldpayloadhashGREEN; nativeblends save/reopen, actualsealedGLBs, exactdiff/commit/sourcehashreport andindependentreview. HumanArt/visualacceptanceOWNER_REVIEW_PENDING."
+}

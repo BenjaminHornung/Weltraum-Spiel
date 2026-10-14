@@ -1,0 +1,35 @@
+{
+  "schema": "hestia.fp06.visual-reference-grant/v1",
+  "authorizedBy": "Direct owner message approving hybrid and hard voxel style; save reference and generate other existing screens; add shared asset/machine theme vision",
+  "actor": "/root",
+  "baseCommitSha": "b0871cfe851a6d519f40e56dc885a980a113e095",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "status": "COMPLETED_REFERENCE_DOCUMENTATION",
+  "writeSet": [
+    "docs/factory/fp06/visual-style/2026-10-13/**",
+    "art/factory/visual-reference/2026-10-13/**"
+  ],
+  "runtimeWriteSet": [],
+  "otherWriters": [],
+  "maxSimultaneousImplementationWriters": 2,
+  "openedAtUtc": "2026-10-13T12:31:54.067740+00:00",
+  "constraints": [
+    "New reference/doc files only",
+    "ImageGen concepts never runtime evidence",
+    "Do not alter recipes, saves, colliders, grids, grants or old art",
+    "No push, publishing or main merge"
+  ],
+  "preflight": {
+    "trackedProductDrafts": 0,
+    "targetPathsAlreadyExist": false,
+    "controlActualWriters": [
+      "/root"
+    ]
+  },
+  "commitSha": "f0a901db4ea3cfc64061dca3a2a89cc92f38fc6e",
+  "verification": "docs/factory/fp06/visual-style/2026-10-13/VERIFICATION.json",
+  "completedAtUtc": "2026-10-13T12:42:16.698776+00:00",
+  "newScreensOwnerAcceptance": "OWNER_REVIEW_PENDING",
+  "runtimeFilesChanged": 0
+}
