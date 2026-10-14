@@ -1,0 +1,177 @@
+{
+  "status": "PASS",
+  "remoteCloneHead": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "source": "fresh independent HTTPS clone and origin LFS fetch; no original clone alternates/cache reuse",
+  "verifiedLfsFiles": 33,
+  "uniqueFetchedPayloads": 26,
+  "verifiedBytes": 24376093,
+  "subset": "wreck V2 Blender/GLB, Cutter/Former and surface V2 sources, complete owned-data archived LFS evidence",
+  "scope": "Selected remote payloads verified; not a new build/gameplay/visual acceptance",
+  "payloads": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/01-red-seam.log.raw.gz",
+      "bytes": 538,
+      "sha256": "15187bab0907f19e63525e6969ebda7f4cc48847c6d17cb63624e8ec5a4db91e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/02-baseline-bytes.log.raw.gz",
+      "bytes": 790,
+      "sha256": "12965db3a48e61e966ae199aae33d7f7811a1d4ac861397cf204138273bc1296"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/03-baseline-bytes-corrected.log.raw.gz",
+      "bytes": 313,
+      "sha256": "c261fce900f437dd0e376a6301e29067c890b048d1436c630938ddee9a69eb54"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/04-helper-guards.log.raw.gz",
+      "bytes": 652,
+      "sha256": "2f35e2902281130d6b4635938922ce1babcd0f36b7230f19d1a108ff89099a9f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/05-preliminary-guards.log.raw.gz",
+      "bytes": 825,
+      "sha256": "e25066c20ef893d57aee78d608d3386fd84f5764471e60caa1525d91894a64dc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/06-review-correction-guards.log.raw.gz",
+      "bytes": 320,
+      "sha256": "5c26b8573fef17547219d88c13c9ab1cc0a814b62c2582e1f7b6501b3f64f866"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/07-final-preliminary-guards.log.raw.gz",
+      "bytes": 1137,
+      "sha256": "c29a06aca18cfa295bcde2101e6a2e87c0be16e423ece0155077193cb3826ab4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/08-final-boundary-and-bytes.log.raw.gz",
+      "bytes": 392,
+      "sha256": "7d36a7d4f28d2318ecc00b39e65e05ab25d2fa64c66d15e0148ebfebb803e079"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/09-typecheck.log.raw.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/10-original-paid-pair.log.raw.gz",
+      "bytes": 613,
+      "sha256": "b5154156c404fe7931f3ccca051f95e4eea17d7565b1398fcdbb88328c8268cd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/11-restored-domain-guards.log.raw.gz",
+      "bytes": 305,
+      "sha256": "f08bd7dc388543974a27320ddde3f85b7966f7d16bbe9827761f9cfa71e808c4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/baseline-conveyor.json.gz",
+      "bytes": 73290,
+      "sha256": "0d51545ef827de7537ac4e8c8ac6e84e3faa226f729d61a867a8ab887363adec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/baseline-dry.json.gz",
+      "bytes": 138931,
+      "sha256": "cf15bfb73fa70b0548370f6ac1d840780add49c50645226d06e0a6f044e74daf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/baseline-production.json.gz",
+      "bytes": 463306,
+      "sha256": "6a628567df6765cd48b413e903c56d40f9b40845f49d669ae6bef1722719c9e7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/candidate-conveyor.json.gz",
+      "bytes": 73290,
+      "sha256": "0d51545ef827de7537ac4e8c8ac6e84e3faa226f729d61a867a8ab887363adec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/candidate-dry.json.gz",
+      "bytes": 138931,
+      "sha256": "cf15bfb73fa70b0548370f6ac1d840780add49c50645226d06e0a6f044e74daf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/candidate-production.json.gz",
+      "bytes": 463306,
+      "sha256": "6a628567df6765cd48b413e903c56d40f9b40845f49d669ae6bef1722719c9e7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/restored-conveyor.json.gz",
+      "bytes": 73290,
+      "sha256": "0d51545ef827de7537ac4e8c8ac6e84e3faa226f729d61a867a8ab887363adec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/restored-dry.json.gz",
+      "bytes": 138931,
+      "sha256": "cf15bfb73fa70b0548370f6ac1d840780add49c50645226d06e0a6f044e74daf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-14/owned-data-candidate/restored-production.json.gz",
+      "bytes": 463306,
+      "sha256": "6a628567df6765cd48b413e903c56d40f9b40845f49d669ae6bef1722719c9e7"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.glb",
+      "bytes": 1073900,
+      "sha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/01-bay-and-turrets.png",
+      "bytes": 1965391,
+      "sha256": "52ec8c5eff0fad822d41f49714082290d9155749baf688bac8679aa69706961e"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/02-rear-damage.png",
+      "bytes": 1985163,
+      "sha256": "a3b84d2c16531d0d4ac3a4b7115a25136c72d2fee6e0485d20f286a363d130b5"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/03-plan-access.png",
+      "bytes": 2021763,
+      "sha256": "8e07ed8616cf4935a68924844ee00d055d3d2c953738152d9f01920806bb185d"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/04-cargo-detail.png",
+      "bytes": 2364017,
+      "sha256": "6bb56bef25ec4d80dbcf8e34f1d1ce495c1f4180dabe7b45c3c015ef405bb9fb"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/05-cockpit-and-turret.png",
+      "bytes": 2222508,
+      "sha256": "4e195356635152bee718549c27ef20f74f19150101253a676b60b8c42c3bc336"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/06-broken-propulsion.png",
+      "bytes": 2304430,
+      "sha256": "6ee6c771163907e8bf108dbb297253de68b2346a4f5117517863ab7a62231493"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.blend",
+      "bytes": 1923084,
+      "sha256": "c3c3e441e361f062a6436f7c61c0c62cbfe5f704e5c3e5c34dec9f24dd500ac0"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.glb",
+      "bytes": 1073900,
+      "sha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/iteration-01/01-bay-and-turrets.png",
+      "bytes": 1970893,
+      "sha256": "e03dd6c863991d5db126db9c27a82c5d8ae295e510a1ddcb004f22bf34e6367a"
+    },
+    {
+      "path": "art/factory/crashsite-hybrid-v2/iteration-01/02-rear-damage.png",
+      "bytes": 1993430,
+      "sha256": "6c0ebbaa366f6f036e3e0ffa05fca9490e944a0ee0c3e6127b805d8d9df367e7"
+    },
+    {
+      "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/cutter-v2.blend",
+      "bytes": 717812,
+      "sha256": "6e2ba489abd053b0e7654c9e2eaf6f97037408474d45fff3dc39323ab93040f8"
+    },
+    {
+      "path": "art/factory/play-surface-v2-2026-10-12/former/former-v2/former-v2.blend",
+      "bytes": 727316,
+      "sha256": "2ac344e492d73145f0b11f17e22854d5fda2e44ab45283de9ea7be0c5a7fe78c"
+    }
+  ]
+}

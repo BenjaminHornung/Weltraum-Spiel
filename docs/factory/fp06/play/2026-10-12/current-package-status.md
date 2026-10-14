@@ -9,7 +9,7 @@ Aufnahme `2026-10-14T13:34:05.273609+02:00`. Implementierungscodecheckpoint `9eb
 | W11 | PARTIAL_BLOCKED | Functional/UI/Visual-Teile und echte Assets liegen vor; Save/Gameplay/Performance-Gesamtabnahme fehlt. |
 | Owned-data-Reviewfenster | FAIL_REJECTED_REVERTED | Ein Kandidat/ein originalesPaar/keine weiterenCPU-Profile; fünf baselinekompatible Guards bestehen, vollständige drei Bytefixtures identisch. |
 | Asset-/Terrain-/Gameplayabnahme | OWNER_REVIEW_PENDING | Keine menschliche Abnahme erfunden; Wrack-V2 ist reale Blender/GLB-Quelle, native Aufnahme weiterhin offen. |
-| Reviewbereitstellung | COMMITTED / PUSH_BLOCKED_HTTP503 | 676 historischeEvidence-Dateien bytegenau gesichert; aktuelleLFS-PrüfungPASS. 1090/1118Objekte lautUploadsummary übertragen; dannGitHubLFS503. AuchGitread/Retry scheitern imCloud-Verbindungsweg. Remoteverifikation undfrischerLFS-Download fehlen. |
+| Reviewbereitstellung | PASS / PUSHED_REMOTE_VERIFIED | BeideReviewbranches erstellt;1118/1118LFS-Objekte bestätigt. Remote-SHAs geprüft; frischeunabhängigeGitkopie plus33Asset-/Evidence-LFS-Dateien (26Payloads) vollständig perSHA/Größe geprüft. KeinGameplay-/Performance-PASS abgeleitet. |
 
 Aktueller Einstieg auf dem Implementierungsbranch: `docs/factory/fp06/external-review/2026-10-14/README.md`. Neuester ausgeführter Ergebnisbericht: `docs/factory/fp06/play/2026-10-14/composition-closure/RESULT.md`. Mainmerge undForce-Push bleiben ausgeschlossen. Root führt diese Dokumentations-/Pusharbeit seriell aus; aktuell keine Implementierungswriter.
 

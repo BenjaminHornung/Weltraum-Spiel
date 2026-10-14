@@ -3589,7 +3589,7 @@
     "integratorBranch": "codex/hestia-fp06-play-candidate-2026-10-12",
     "controlBranch": "codex/hestia-fp06-w00-2026-10-11",
     "remoteMainReadAtPreparation": "e40592c113b72a8dc93725187f92cf948e07f44d",
-    "pushStatus": "BLOCKED_EXTERNAL_HTTP503",
+    "pushStatus": "PUSHED_REMOTE_VERIFIED",
     "newImplementationAuthorization": false,
     "ownedDataWindow": "CLOSED_AFTER_FAIL_NO_AUTOMATIC_RETRIAL",
     "packages": {
@@ -3601,6 +3601,9 @@
     "actualImplementationWriters": [],
     "documentationWriter": "/root",
     "entryPoint": "docs/factory/fp06/external-review/2026-10-14/README.md on Integrator branch",
-    "pushReceipt": "docs/factory/fp06/external-review/2026-10-14/PUSH_STATUS.json"
+    "pushReceipt": "docs/factory/fp06/external-review/2026-10-14/PUSH_STATUS.json",
+    "remoteVerifiedAt": "2026-10-14T17:22:33.394561+02:00",
+    "remotePayloadFilesVerified": 33,
+    "controlBeforeSuccessReceipt": "8da869eb9a073c6ee3461d46b1461c9a921536c4"
   }
 }

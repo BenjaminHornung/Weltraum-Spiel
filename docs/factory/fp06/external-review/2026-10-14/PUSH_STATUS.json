@@ -1,46 +1,79 @@
 {
   "schema": "hestia.fp06.external-review-push-status/v1",
-  "recordedAt": "2026-10-14T13:44:35.065258+02:00",
-  "status": "COMMITTED_PUSH_BLOCKED_EXTERNAL_HTTP503",
+  "recordedAt": "2026-10-14T17:22:33.394561+02:00",
+  "status": "PUSHED_REMOTE_VERIFIED",
   "ownerExplicitlyAuthorizedCommitAndPush": true,
   "integratorBranch": "codex/hestia-fp06-play-candidate-2026-10-12",
   "integratorHead": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
   "controlBranch": "codex/hestia-fp06-w00-2026-10-11",
-  "controlBeforeTransportReceipt": "27547063c30d36e7ccb553c840dc4d6677cca4df",
-  "firstPush": {
+  "verifiedControlHeadBeforeSuccessReceipt": "8da869eb9a073c6ee3461d46b1461c9a921536c4",
+  "mainHeadUnchanged": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "successfulPush": {
     "atomic": true,
-    "result": "FAIL",
-    "lfsSummary": "97% (1090/1118),399MB",
-    "remainingObjectsNotConfirmed": 28,
-    "failure": "GitHub LFS storage HTTP503"
-  },
-  "retry": {
+    "result": "PASS",
+    "lfsSummary": "100% (1118/1118),419MB",
+    "newBranches": 2,
+    "http503Count": 0,
     "lfsConcurrentTransfers": 2,
-    "configurationScope": "command only, no global settings",
-    "result": "FAIL before transfer",
-    "failure": "Git HTTPS returns503"
+    "configurationScope": "command only"
   },
-  "readOnlyConnectivityChecks": {
-    "result": "FAIL503, including a later check after20seconds",
-    "message": "upstream connect error or disconnect/reset before headers; remote connection failure; immediate connect error: Invalid argument; envoy cloudflare_https_tunnel"
+  "remoteRefsVerified": true,
+  "freshRemotePayloadVerification": {
+    "status": "PASS",
+    "files": 33,
+    "uniquePayloads": 26,
+    "artifact": "REMOTE_PAYLOAD_VERIFICATION.json",
+    "subset": "wreck V2 Blender/GLB, Cutter/Former and surface V2 sources, complete owned-data archived LFS evidence",
+    "scope": "Selected remote payloads verified; not a new build/gameplay/visual acceptance"
   },
-  "environmentObservations": {
-    "connected": true,
-    "observationsCurrent": true,
-    "networkPolicyEnforced": true,
-    "githubAllowed": true,
-    "note": "Runtime readiness does not prove the specific remote operation; actual Git transport stillfails."
+  "controlSuccessReceipt": "This metadata update is committed/pushed after the verified initial publication; its commit SHA is read from Git rather than embedded self-referentially.",
+  "previousFailure": {
+    "schema": "hestia.fp06.external-review-push-status/v1",
+    "recordedAt": "2026-10-14T13:44:35.065258+02:00",
+    "status": "COMMITTED_PUSH_BLOCKED_EXTERNAL_HTTP503",
+    "ownerExplicitlyAuthorizedCommitAndPush": true,
+    "integratorBranch": "codex/hestia-fp06-play-candidate-2026-10-12",
+    "integratorHead": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+    "controlBranch": "codex/hestia-fp06-w00-2026-10-11",
+    "controlBeforeTransportReceipt": "27547063c30d36e7ccb553c840dc4d6677cca4df",
+    "firstPush": {
+      "atomic": true,
+      "result": "FAIL",
+      "lfsSummary": "97% (1090/1118),399MB",
+      "remainingObjectsNotConfirmed": 28,
+      "failure": "GitHub LFS storage HTTP503"
+    },
+    "retry": {
+      "lfsConcurrentTransfers": 2,
+      "configurationScope": "command only, no global settings",
+      "result": "FAIL before transfer",
+      "failure": "Git HTTPS returns503"
+    },
+    "readOnlyConnectivityChecks": {
+      "result": "FAIL503, including a later check after20seconds",
+      "message": "upstream connect error or disconnect/reset before headers; remote connection failure; immediate connect error: Invalid argument; envoy cloudflare_https_tunnel"
+    },
+    "environmentObservations": {
+      "connected": true,
+      "observationsCurrent": true,
+      "networkPolicyEnforced": true,
+      "githubAllowed": true,
+      "note": "Runtime readiness does not prove the specific remote operation; actual Git transport stillfails."
+    },
+    "localIntegrity": {
+      "integratorAndControlWorktreesCleanBeforeReceipt": true,
+      "historicalEvidenceFileHashes": 676,
+      "currentLfsFsck": "PASS",
+      "productSourceUnchanged": true
+    },
+    "remoteRefs": "NOT_VERIFIED_AFTER_FAILED_PUSH",
+    "freshRemoteLfsDownload": "NOT_RUN_BLOCKED_BY_TRANSPORT",
+    "mainMerge": false,
+    "forcePush": false,
+    "lfsHooksOrTlsVerificationBypassed": false,
+    "localLogs": "Captured outside repository; this receipt omits URL query/account metadata."
   },
-  "localIntegrity": {
-    "integratorAndControlWorktreesCleanBeforeReceipt": true,
-    "historicalEvidenceFileHashes": 676,
-    "currentLfsFsck": "PASS",
-    "productSourceUnchanged": true
-  },
-  "remoteRefs": "NOT_VERIFIED_AFTER_FAILED_PUSH",
-  "freshRemoteLfsDownload": "NOT_RUN_BLOCKED_BY_TRANSPORT",
   "mainMerge": false,
   "forcePush": false,
-  "lfsHooksOrTlsVerificationBypassed": false,
-  "localLogs": "Captured outside repository; this receipt omits URL query/account metadata."
+  "lfsHooksOrTlsVerificationBypassed": false
 }
