@@ -192,3 +192,7 @@ RealNoOp materialadoption businessRED5extravalidations→28focusedGREEN/differen
 ## Externer Reviewcheckpoint — 14.10.2026
 
 Owner fordert ausdrücklich Commit und Push der eigenen aktuellen Branches. Implementierungscode bleibt bei `9ebd8cad469651edb1d47023c8d58041d4f32672`; archivierte historische Evidence und Revieweinstieg sind in `7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e` gesichert. Kontrollmetadaten, zuvor lokaleGrants/Reviews und spätere Checkpoints werden separat committed. Source bleibt unverändert; keine Tests/CPU-Profile erneut ausgeführt, keine Rezept-/Save-/Terrain-/Physics-/Limitänderung. Originale PerformanceFAILs und W09/W10/W11-Blockaden bleiben sichtbar. Nach normalem Push werden beideRemote-SHAs und tatsächliche LFS-Payload-Verfügbarkeit geprüft. KeinMainmerge/Force-Push.
+
+### Pushtransport 2026-10-14T13:44:35.065258+02:00
+
+Atomarer normalerPush scheitert nachLFS97%(1090/1118,399MB) mitHTTP503. Kommando-lokal reduzierterUploadparallelismus2 konnte nichtbeginnen, weilauchGitHTTPS undanschließendeRead-only-Prüfung (nach20s) amCloudEnvoy/Cloudflare-Tunnel mit503fehlschlagen. Netzwerkpolicy ist enforced/Hosterlaubt; keinefehlendeAuth ausunsetVariablen abgeleitet. KeineTLS-/LFS-Hook-Umgehung, keinForce-Push. EigeneCommits/alle676Bytebindings/aktuelleLFS-Payloads lokalgesichert. ExterneBereitstellung bleibtBLOCKED; tatsächlicheRemoteSHA-/freshLFS-PrüfungNICHTdurchgeführt. KonkreterTransportbeleg: `docs/factory/fp06/external-review/2026-10-14/PUSH_STATUS.json`.
