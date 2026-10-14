@@ -1,0 +1,24 @@
+{
+  "createdAtUtc": "2026-10-12T15:13:04.708845+00:00",
+  "actor": "/root/play_integrator",
+  "buildReceipt": "08-v5-cable-original-build.command.json",
+  "buildBindingExact": true,
+  "historicalRED": "PLAY-02/20261012T133800Z-installed-models/19-private-owner-fields-business-red.command.json",
+  "greenNegativeFixture": "04-v5-source-private-receiver-green.command.json",
+  "currentV5Bootstrap": "06-v5-explicit-source-bootstrap-green.command.json",
+  "scope": "Private owner.ownerId and owner.transactionId exact staged-request comparisons plus separately authorized V5 profile; actual18 B07 route remains V4 data-only PASS",
+  "files": [
+    {
+      "sourcePath": "src/hvp/hvpBootstrap.ts",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/private-owner-closure-frozen/hvpBootstrap.ts.snapshot",
+      "bytes": 194510,
+      "sha256": "d415f7061bc915af0869292856389c727ab2b4c76ab2f36224c4b1a1f0b5b5d5"
+    },
+    {
+      "sourcePath": "tests/unit/hvp-bootstrap.test.ts",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/private-owner-closure-frozen/hvp-bootstrap.test.ts.snapshot",
+      "bytes": 106982,
+      "sha256": "2cbc323e7cd985b8faf4bec9269c07eaab458ed042cf2c0261529f11c0f98369"
+    }
+  ]
+}

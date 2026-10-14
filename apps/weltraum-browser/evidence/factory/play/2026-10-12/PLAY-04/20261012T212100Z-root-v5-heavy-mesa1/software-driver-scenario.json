@@ -1,0 +1,20 @@
+{
+  "recordedAtUtc": "2026-10-12T21:28:20.424410+00:00",
+  "scope": "Single explicit software-driver CPU scheduling comparison, same product/build/input action script and hardware. Not W11targetGPU or finalperformanceacceptance.",
+  "processEnvironment": {
+    "LP_NUM_THREADS": "1",
+    "LIBGL_ALWAYS_SOFTWARE": "1(wrapper)",
+    "EGL_PLATFORM": "surfaceless(wrapper)"
+  },
+  "unchanged": [
+    "NativePhysicsworkers2",
+    "60Hz/foursteps/backlogpolicy",
+    "AllSource/terrain/cargo/carrier/colliders/recipes/budgets/timeouts/queue/limits",
+    "DriverWASD/visibleUIactions/noWorldPosemutators/noVideo"
+  ],
+  "hardware": "AMD EPYC9V74 KVM,5visiblevCPU,cgroup400000/100000CPU,32GiB,softwarellvmpipeLLVM19.1.7",
+  "priorDefaultRun": "PLAY04/20261012T211600Z-root-v5-heavy-route/01-normal-v5-heavy-depot-exit-former.command.json",
+  "priorStatus": "FAIL_SimulationHold_after341kg_pickup_and_physicalmovement",
+  "hypothesis": "DefaultsoftwareMesa renderer maycontend forlimitedcloudCPU, producingepisodicNativeclockgaps; bound onlythisBrowserprocess Mesa workerthreadcount to1 andcompare. No World clock tolerancechange.",
+  "candidateStatus": "RUNNING_NO_VERDICT"
+}

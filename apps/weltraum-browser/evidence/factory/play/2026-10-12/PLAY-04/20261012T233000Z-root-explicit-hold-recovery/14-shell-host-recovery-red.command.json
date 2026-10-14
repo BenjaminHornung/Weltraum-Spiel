@@ -1,0 +1,80 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/factory/factoryShell.test.ts",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "-t",
+    "PLAY04 hold recovery|PLAY04 Host exposes"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "actor": "/root",
+  "startedAtUtc": "2026-10-13T00:01:51.257324+00:00",
+  "endedAtUtc": "2026-10-13T00:02:01.924338+00:00",
+  "elapsedSeconds": 10.666992143000243,
+  "exitCode": 1,
+  "rawBytes": 2190,
+  "rawSha256": "70921a9fe0452d32f308228a6d97070ba16c3844a21ffd63917f6252cb484ee9",
+  "head": "eb84b3e06b8e4f1b01cc4cca93b0fbafbc46e80a",
+  "node": "v22.23.3",
+  "npm": "11.9.0",
+  "nodeExecPath": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+  "sourceBindings": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 83058,
+      "sha256": "b7281ef250dd31c36bc81abcabbd137c1aa70f9db0b8a33bd75a8a83c6e546fd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 12513,
+      "sha256": "93d75a1cf1b8c30fb50789a057be3f32437469ba325c70a2cb0d66c44d9590df"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "bytes": 42680,
+      "sha256": "e8021c031892f9e048dc7f1abb558482c687bc0064c43da2e21b8ac0e9e6d9b9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 17822,
+      "sha256": "c401edd5b4f9e130caf01369ad5925c6013c8fa055cebfa0ebee13500af94a20"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 40143,
+      "sha256": "7bac925c8e76e4d6e3ba79f0bab8a7fa50f16d66570918e89ea944718aef43ac"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 58279,
+      "sha256": "d58c0587fdc448941cfa0f9fdb6303cc6af203b6f4d877679e6aa3b774de550d"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+      "bytes": 14340,
+      "sha256": "efc3092f13995f0fb09aba0cbf48c9090482678beecb348f8ea0c148cddd359a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 90437,
+      "sha256": "281ce7e6b273e8ceed71bf9c1bb88782828040e15cb2775d8efafac5b8180b71"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 109349,
+      "sha256": "f6a159dc9c31c8a6332886b9e386a8357ea24b3c89eb8660ccf43ea0055d66df"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+      "bytes": 12271,
+      "sha256": "a5238a79a582f414da703e89c4f31133d46c5f3ac0944dd43cfab50263fdbe2d"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "bytes": 43482,
+      "sha256": "bfe734be37d5da4b097e41d6b31cb76a6d14764f895bda55afb544004a4061e9"
+    }
+  ]
+}

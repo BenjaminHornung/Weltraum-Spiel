@@ -1,0 +1,3495 @@
+{
+  "startedAtUtc": "2026-10-12T21:52:12.435Z",
+  "endedAtUtc": "2026-10-12T21:52:46.692Z",
+  "entry": "http://127.0.0.1:5174/factory.html",
+  "browserVersion": "154.0.8037.57",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "backend": "Declared software Mesa wrapper; hardware acceptance NOT_RUN",
+  "recording": "Disabled for this bounded V5 Native UI/map/mouse calibration; no video or W11 claim",
+  "input": "normal visible UI and trusted CDP WASD; read-only diagnostics; no pose/world mutation",
+  "videoPath": null,
+  "events": [
+    {
+      "kind": "driver-ready",
+      "atUtc": "2026-10-12T21:52:24.550Z",
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 18.600000001490116,
+          "maxAdvanceMs": 0.19999999925494194,
+          "maxHandlerMs": 1504.699999999255,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 2,
+          "lastAckId": 2,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "camera": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": null,
+        "inputError": null
+      },
+      "nativeStatus": "Paused",
+      "nativeTicks": 0
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Neues Spiel"
+      },
+      "start": "2026-10-12T21:52:24.552Z",
+      "end": "2026-10-12T21:52:25.988Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "Schließen",
+            "disabled": false
+          },
+          {
+            "name": "Spielen",
+            "disabled": false
+          },
+          {
+            "name": "Speichern",
+            "disabled": true
+          },
+          {
+            "name": "Spielstand laden",
+            "disabled": true
+          },
+          {
+            "name": "Einstellungen öffnen",
+            "disabled": true
+          },
+          {
+            "name": "Zurück zum Menü",
+            "disabled": false
+          },
+          {
+            "name": "Werkstatt ansehen",
+            "disabled": false
+          },
+          {
+            "name": "Feldhandbuch öffnen",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 18.600000001490116,
+            "maxAdvanceMs": 0.19999999925494194,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Pause",
+            "lastHandlerMs": 0.3999999985098839,
+            "delayedCallbacks": [],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Werkstatt ansehen"
+      },
+      "start": "2026-10-12T21:52:25.990Z",
+      "end": "2026-10-12T21:52:27.618Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "Schließen",
+            "disabled": false
+          },
+          {
+            "name": "Fracht",
+            "disabled": false
+          },
+          {
+            "name": "Bauen",
+            "disabled": false
+          },
+          {
+            "name": "Maschinen",
+            "disabled": false
+          },
+          {
+            "name": "Energie",
+            "disabled": false
+          },
+          {
+            "name": "Technik",
+            "disabled": false
+          },
+          {
+            "name": "Karte",
+            "disabled": false
+          },
+          {
+            "name": "Fracht öffnen",
+            "disabled": false
+          },
+          {
+            "name": "Aufnehmen: Umform-Bausatz",
+            "disabled": true
+          },
+          {
+            "name": "Alle Einzelposten ansehen",
+            "disabled": false
+          },
+          {
+            "name": "Falt-Windanlage 6 kW2 Stück · 700 kg",
+            "disabled": true
+          },
+          {
+            "name": "PV-Faltarray 2 kWp4 Stück · 320 kg",
+            "disabled": true
+          },
+          {
+            "name": "Expeditionsakku 4 kWh1 Stück · 50 kg",
+            "disabled": true
+          },
+          {
+            "name": "40-kW-Verteiler1 Stück · 25 kg",
+            "disabled": true
+          },
+          {
+            "name": "Feldwerkbank1 Stück · 40 kg",
+            "disabled": true
+          },
+          {
+            "name": "Thermogeneratorkern1 Stück · 150 kg",
+            "disabled": true
+          },
+          {
+            "name": "Feldkabel40 m · 10 kg",
+            "disabled": true
+          },
+          {
+            "name": "Materialcontainer3 Stück · 180 kg",
+            "disabled": true
+          },
+          {
+            "name": "Fundamentschuh6 Stück · 72 kg",
+            "disabled": true
+          },
+          {
+            "name": "Geprüfter Schiffsstahl96 kg",
+            "disabled": true
+          },
+          {
+            "name": "Stahlprofile80 kg",
+            "disabled": true
+          },
+          {
+            "name": "Stahlblech60 kg",
+            "disabled": true
+          },
+          {
+            "name": "Rückgewinnungs-Elastomer16 kg",
+            "disabled": true
+          },
+          {
+            "name": "Passives 1-m-Bandmodul24 Stück · 120 kg",
+            "disabled": true
+          },
+          {
+            "name": "Maschinenantriebskern4 Stück · 8 kg",
+            "disabled": true
+          },
+          {
+            "name": "Maschinensteuerung5 Stück · 1 kg",
+            "disabled": true
+          },
+          {
+            "name": "Leitersatz8 Stück · 6,4 kg",
+            "disabled": true
+          },
+          {
+            "name": "Zuschnitt-Werkzeugkopf1 Stück · 3 kg",
+            "disabled": true
+          },
+          {
+            "name": "Umformwerkzeuge1 Stück · 4 kg",
+            "disabled": true
+          },
+          {
+            "name": "Brecherbacke1 Stück · 6 kg",
+            "disabled": true
+          },
+          {
+            "name": "Montage-Werkzeugsatz1 Stück · 3 kg",
+            "disabled": true
+          },
+          {
+            "name": "Kleinschürfer-Werkzeugkopf1 Stück · 5 kg",
+            "disabled": true
+          },
+          {
+            "name": "Dedizierter Bandantrieb4 Stück · 24 kg",
+            "disabled": true
+          },
+          {
+            "name": "Reservegenerator-/Lagerkern1 Stück · 35 kg",
+            "disabled": true
+          },
+          {
+            "name": "Rotor-/Naben-Bausatz1 Stück · 40 kg",
+            "disabled": true
+          },
+          {
+            "name": "Geborgenes Cutterchassis1 Stück · 180 kg",
+            "disabled": true
+          },
+          {
+            "name": "Geborgenes Formerchassis1 Stück · 300 kg",
+            "disabled": true
+          },
+          {
+            "name": "Geborgenes Brecherchassis1 Stück · 450 kg",
+            "disabled": true
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 18.600000001490116,
+            "maxAdvanceMs": 0.19999999925494194,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.8999999985098839,
+            "delayedCallbacks": [],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Fracht öffnen"
+      },
+      "start": "2026-10-12T21:52:27.619Z",
+      "end": "2026-10-12T21:52:29.283Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "Schließen",
+            "disabled": false
+          },
+          {
+            "name": "Fracht",
+            "disabled": false
+          },
+          {
+            "name": "Bauen",
+            "disabled": false
+          },
+          {
+            "name": "Maschinen",
+            "disabled": false
+          },
+          {
+            "name": "Energie",
+            "disabled": false
+          },
+          {
+            "name": "Technik",
+            "disabled": false
+          },
+          {
+            "name": "Karte",
+            "disabled": false
+          },
+          {
+            "name": "Aufnehmen: Umform-Bausatz",
+            "disabled": true
+          },
+          {
+            "name": "Einzelposten wählen",
+            "disabled": true
+          },
+          {
+            "name": "Alle Einzelposten ansehen",
+            "disabled": false
+          },
+          {
+            "name": "Falt-Windanlage 6 kW2 Stück · 700 kg",
+            "disabled": true
+          },
+          {
+            "name": "PV-Faltarray 2 kWp4 Stück · 320 kg",
+            "disabled": true
+          },
+          {
+            "name": "Expeditionsakku 4 kWh1 Stück · 50 kg",
+            "disabled": true
+          },
+          {
+            "name": "40-kW-Verteiler1 Stück · 25 kg",
+            "disabled": true
+          },
+          {
+            "name": "Feldwerkbank1 Stück · 40 kg",
+            "disabled": true
+          },
+          {
+            "name": "Thermogeneratorkern1 Stück · 150 kg",
+            "disabled": true
+          },
+          {
+            "name": "Feldkabel40 m · 10 kg",
+            "disabled": true
+          },
+          {
+            "name": "Materialcontainer3 Stück · 180 kg",
+            "disabled": true
+          },
+          {
+            "name": "Fundamentschuh6 Stück · 72 kg",
+            "disabled": true
+          },
+          {
+            "name": "Geprüfter Schiffsstahl96 kg",
+            "disabled": true
+          },
+          {
+            "name": "Stahlprofile80 kg",
+            "disabled": true
+          },
+          {
+            "name": "Stahlblech60 kg",
+            "disabled": true
+          },
+          {
+            "name": "Rückgewinnungs-Elastomer16 kg",
+            "disabled": true
+          },
+          {
+            "name": "Passives 1-m-Bandmodul24 Stück · 120 kg",
+            "disabled": true
+          },
+          {
+            "name": "Maschinenantriebskern4 Stück · 8 kg",
+            "disabled": true
+          },
+          {
+            "name": "Maschinensteuerung5 Stück · 1 kg",
+            "disabled": true
+          },
+          {
+            "name": "Leitersatz8 Stück · 6,4 kg",
+            "disabled": true
+          },
+          {
+            "name": "Zuschnitt-Werkzeugkopf1 Stück · 3 kg",
+            "disabled": true
+          },
+          {
+            "name": "Umformwerkzeuge1 Stück · 4 kg",
+            "disabled": true
+          },
+          {
+            "name": "Brecherbacke1 Stück · 6 kg",
+            "disabled": true
+          },
+          {
+            "name": "Montage-Werkzeugsatz1 Stück · 3 kg",
+            "disabled": true
+          },
+          {
+            "name": "Kleinschürfer-Werkzeugkopf1 Stück · 5 kg",
+            "disabled": true
+          },
+          {
+            "name": "Dedizierter Bandantrieb4 Stück · 24 kg",
+            "disabled": true
+          },
+          {
+            "name": "Reservegenerator-/Lagerkern1 Stück · 35 kg",
+            "disabled": true
+          },
+          {
+            "name": "Rotor-/Naben-Bausatz1 Stück · 40 kg",
+            "disabled": true
+          },
+          {
+            "name": "Geborgenes Cutterchassis1 Stück · 180 kg",
+            "disabled": true
+          },
+          {
+            "name": "Geborgenes Formerchassis1 Stück · 300 kg",
+            "disabled": true
+          },
+          {
+            "name": "Geborgenes Brecherchassis1 Stück · 450 kg",
+            "disabled": true
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 22.300000000745058,
+            "maxAdvanceMs": 0.19999999925494194,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.5,
+            "delayedCallbacks": [],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "capture",
+        "label": "01-v5-normal-open-cargo"
+      },
+      "start": "2026-10-12T21:52:29.284Z",
+      "end": "2026-10-12T21:52:31.878Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "Schließen",
+            "disabled": false
+          },
+          {
+            "name": "Fracht",
+            "disabled": false
+          },
+          {
+            "name": "Bauen",
+            "disabled": false
+          },
+          {
+            "name": "Maschinen",
+            "disabled": false
+          },
+          {
+            "name": "Energie",
+            "disabled": false
+          },
+          {
+            "name": "Technik",
+            "disabled": false
+          },
+          {
+            "name": "Karte",
+            "disabled": false
+          },
+          {
+            "name": "Aufnehmen: Umform-Bausatz",
+            "disabled": false
+          },
+          {
+            "name": "Einzelposten wählen",
+            "disabled": false
+          },
+          {
+            "name": "Alle Einzelposten ansehen",
+            "disabled": false
+          },
+          {
+            "name": "Falt-Windanlage 6 kW2 Stück · 700 kg",
+            "disabled": false
+          },
+          {
+            "name": "PV-Faltarray 2 kWp4 Stück · 320 kg",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsakku 4 kWh1 Stück · 50 kg",
+            "disabled": false
+          },
+          {
+            "name": "40-kW-Verteiler1 Stück · 25 kg",
+            "disabled": false
+          },
+          {
+            "name": "Feldwerkbank1 Stück · 40 kg",
+            "disabled": false
+          },
+          {
+            "name": "Thermogeneratorkern1 Stück · 150 kg",
+            "disabled": false
+          },
+          {
+            "name": "Feldkabel40 m · 10 kg",
+            "disabled": false
+          },
+          {
+            "name": "Materialcontainer3 Stück · 180 kg",
+            "disabled": false
+          },
+          {
+            "name": "Fundamentschuh6 Stück · 72 kg",
+            "disabled": false
+          },
+          {
+            "name": "Geprüfter Schiffsstahl96 kg",
+            "disabled": false
+          },
+          {
+            "name": "Stahlprofile80 kg",
+            "disabled": false
+          },
+          {
+            "name": "Stahlblech60 kg",
+            "disabled": false
+          },
+          {
+            "name": "Rückgewinnungs-Elastomer16 kg",
+            "disabled": false
+          },
+          {
+            "name": "Passives 1-m-Bandmodul24 Stück · 120 kg",
+            "disabled": false
+          },
+          {
+            "name": "Maschinenantriebskern4 Stück · 8 kg",
+            "disabled": false
+          },
+          {
+            "name": "Maschinensteuerung5 Stück · 1 kg",
+            "disabled": false
+          },
+          {
+            "name": "Leitersatz8 Stück · 6,4 kg",
+            "disabled": false
+          },
+          {
+            "name": "Zuschnitt-Werkzeugkopf1 Stück · 3 kg",
+            "disabled": false
+          },
+          {
+            "name": "Umformwerkzeuge1 Stück · 4 kg",
+            "disabled": false
+          },
+          {
+            "name": "Brecherbacke1 Stück · 6 kg",
+            "disabled": false
+          },
+          {
+            "name": "Montage-Werkzeugsatz1 Stück · 3 kg",
+            "disabled": false
+          },
+          {
+            "name": "Kleinschürfer-Werkzeugkopf1 Stück · 5 kg",
+            "disabled": false
+          },
+          {
+            "name": "Dedizierter Bandantrieb4 Stück · 24 kg",
+            "disabled": false
+          },
+          {
+            "name": "Reservegenerator-/Lagerkern1 Stück · 35 kg",
+            "disabled": false
+          },
+          {
+            "name": "Rotor-/Naben-Bausatz1 Stück · 40 kg",
+            "disabled": false
+          },
+          {
+            "name": "Geborgenes Cutterchassis1 Stück · 180 kg",
+            "disabled": false
+          },
+          {
+            "name": "Geborgenes Formerchassis1 Stück · 300 kg",
+            "disabled": false
+          },
+          {
+            "name": "Geborgenes Brecherchassis1 Stück · 450 kg",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 22.300000000745058,
+            "maxAdvanceMs": 0.19999999925494194,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.30000000074505806,
+            "delayedCallbacks": [],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Schließen"
+      },
+      "start": "2026-10-12T21:52:31.880Z",
+      "end": "2026-10-12T21:52:33.756Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "ERSTE WERKSTATTZuschnittstation und Umformwerk aufbauen",
+            "disabled": false
+          },
+          {
+            "name": "Pause",
+            "disabled": false
+          },
+          {
+            "name": "Spielen",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 22.300000000745058,
+            "maxAdvanceMs": 0.20000000298023224,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 1.0999999977648258,
+            "delayedCallbacks": [],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Inspection",
+            "locked": false,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 10,
+            "lastAckId": 10,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": false
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": null,
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": null,
+          "inputError": null
+        },
+        "nativeStatus": "Paused"
+      }
+    },
+    {
+      "command": {
+        "kind": "play"
+      },
+      "start": "2026-10-12T21:52:33.759Z",
+      "end": "2026-10-12T21:52:37.632Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.41003680229187,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "ERSTE WERKSTATTZuschnittstation und Umformwerk aufbauen",
+            "disabled": false
+          },
+          {
+            "name": "Pause",
+            "disabled": false
+          },
+          {
+            "name": "Fracht ansehen",
+            "disabled": false
+          }
+        ],
+        "testBridge": false,
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 46.79999999701977,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 2.300000000745058,
+            "delayedCallbacks": [],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 29,
+            "lastAckId": 29,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.5,
+              3.160153807279966,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.5,
+              2.410153807279966,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        },
+        "nativeStatus": "Running"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "d",
+      "requestedMs": 133,
+      "observedElapsedMs": 886,
+      "heldAtUtc": "2026-10-12T21:52:38.625Z",
+      "before": {
+        "ticks": 74,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.41003680229187,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 46.79999999701977,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 2.300000000745058,
+            "delayedCallbacks": [],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 29,
+            "lastAckId": 29,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.5,
+              3.160153807279966,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.5,
+              2.410153807279966,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 160,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.850001335144043,
+            "y": 2.400047540664673,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 62.900000002235174,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 1,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyD"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 34,
+            "lastAckId": 34,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": -1,
+              "z": -1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.812072382329458,
+              3.1511314312637664,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.812072382329458,
+              2.4011314312637664,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "d",
+      "ms": 133,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.41003680229187,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.700008392333984,
+          "y": 2.4000403881073,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "a",
+      "requestedMs": 75,
+      "observedElapsedMs": 293,
+      "heldAtUtc": "2026-10-12T21:52:39.402Z",
+      "before": {
+        "ticks": 197,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -7.700008392333984,
+            "y": 2.4000403881073,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 62.900000002235174,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.5,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 38,
+            "lastAckId": 38,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -7.586043648092056,
+              3.1500550208397815,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -7.586043648092056,
+              2.4000550208397815,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 221,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -8.10000991821289,
+            "y": 2.4000370502471924,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.5999999977648258,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyA"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 40,
+            "lastAckId": 40,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 1,
+              "z": 1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -8.044312409517165,
+              3.1500389976847876,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -8.044312409517165,
+              2.4000389976847876,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "a",
+      "ms": 75,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.700008392333984,
+          "y": 2.4000403881073,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.250006675720215,
+          "y": 2.400010108947754,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "a",
+      "requestedMs": 75,
+      "observedElapsedMs": 142,
+      "heldAtUtc": "2026-10-12T21:52:40.069Z",
+      "before": {
+        "ticks": 255,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -7.250006675720215,
+            "y": 2.400010108947754,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 1,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 42,
+            "lastAckId": 42,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -7.322140803321706,
+              3.150013051393101,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -7.322140803321706,
+              2.400013051393101,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 269,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -7.250006675720215,
+            "y": 2.400010108947754,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 1,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyA"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 45,
+            "lastAckId": 42,
+            "pendingIds": [
+              45
+            ],
+            "desiredLevel": {
+              "x": 1,
+              "z": 1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -7.257823708535224,
+              3.1500104278147396,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -7.257823708535224,
+              2.4000104278147396,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "a",
+      "ms": 75,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.250006675720215,
+          "y": 2.400010108947754,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.850005149841309,
+          "y": 2.4000349044799805,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "a",
+      "requestedMs": 75,
+      "observedElapsedMs": 220,
+      "heldAtUtc": "2026-10-12T21:52:40.869Z",
+      "before": {
+        "ticks": 299,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.850005149841309,
+            "y": 2.4000349044799805,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.3999999985098839,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 47,
+            "lastAckId": 47,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -6.8934443248155635,
+              3.150032221181824,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -6.8934443248155635,
+              2.400032221181824,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 314,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.850005149841309,
+            "y": 2.4000349044799805,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.4000000022351742,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyA"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 50,
+            "lastAckId": 47,
+            "pendingIds": [
+              50
+            ],
+            "desiredLevel": {
+              "x": 1,
+              "z": 1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -6.854712567363658,
+              3.1500346136962634,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -6.854712567363658,
+              2.4000346136962634,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "a",
+      "ms": 75,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.850005149841309,
+          "y": 2.4000349044799805,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.200002670288086,
+          "y": 2.400038003921509,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "a",
+      "requestedMs": 75,
+      "observedElapsedMs": 230,
+      "heldAtUtc": "2026-10-12T21:52:41.667Z",
+      "before": {
+        "ticks": 346,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.200002670288086,
+            "y": 2.400038003921509,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.30000000074505806,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 52,
+            "lastAckId": 52,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -6.260834959913205,
+              3.1500376646263013,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -6.260834959913205,
+              2.4000376646263013,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 361,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.200002670288086,
+            "y": 2.400038003921509,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.5,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyA"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 55,
+            "lastAckId": 52,
+            "pendingIds": [
+              55
+            ],
+            "desiredLevel": {
+              "x": 1,
+              "z": 1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -6.206594945262822,
+              3.150037967152758,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -6.206594945262822,
+              2.400037967152758,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "a",
+      "ms": 75,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.200002670288086,
+          "y": 2.400038003921509,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "d",
+      "requestedMs": 45,
+      "observedElapsedMs": 234,
+      "heldAtUtc": "2026-10-12T21:52:42.440Z",
+      "before": {
+        "ticks": 393,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4000368118286133,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.5999999977648258,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 57,
+            "lastAckId": 57,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.561441608353505,
+              3.1500373322114306,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.561441608353505,
+              2.4000373322114306,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 408,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4000368118286133,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.4000000022351742,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyD"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 60,
+            "lastAckId": 60,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": -1,
+              "z": -1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.506658305640843,
+              3.1500368682214703,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.506658305640843,
+              2.4000368682214703,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "d",
+      "ms": 45,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.200002670288086,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "a",
+      "requestedMs": 45,
+      "observedElapsedMs": 178,
+      "heldAtUtc": "2026-10-12T21:52:43.244Z",
+      "before": {
+        "ticks": 441,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.200002670288086,
+            "y": 2.4000368118286133,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 1,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 62,
+            "lastAckId": 62,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -6.143547909998055,
+              3.15003681249087,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -6.143547909998055,
+              2.40003681249087,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 456,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.200002670288086,
+            "y": 2.4000368118286133,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.30000000074505806,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyA"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 65,
+            "lastAckId": 62,
+            "pendingIds": [
+              65
+            ],
+            "desiredLevel": {
+              "x": 1,
+              "z": 1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -6.193884779513989,
+              3.1500368119003808,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -6.193884779513989,
+              2.4000368119003808,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "a",
+      "ms": 45,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.200002670288086,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.65000057220459,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "d",
+      "requestedMs": 45,
+      "observedElapsedMs": 412,
+      "heldAtUtc": "2026-10-12T21:52:44.252Z",
+      "before": {
+        "ticks": 488,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.65000057220459,
+            "y": 2.4000368118286133,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.5,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 67,
+            "lastAckId": 67,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.709531366105602,
+              3.150036811829456,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.709531366105602,
+              2.400036811829456,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 519,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.65000057220459,
+            "y": 2.4000368118286133,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.3999999985098839,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyD"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 71,
+            "lastAckId": 71,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": -1,
+              "z": -1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.6506996797299145,
+              3.150036811828623,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.6506996797299145,
+              2.400036811828623,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "d",
+      "ms": 45,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.65000057220459,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.9500017166137695,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "a",
+      "requestedMs": 45,
+      "observedElapsedMs": 307,
+      "heldAtUtc": "2026-10-12T21:52:45.123Z",
+      "before": {
+        "ticks": 550,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.450003623962402,
+            "y": 2.4000773429870605,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.30000000074505806,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 73,
+            "lastAckId": 73,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -6.39230451373826,
+              3.1500729507055407,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -6.39230451373826,
+              2.4000729507055407,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 566,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.450003623962402,
+            "y": 2.4000773429870605,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.29999999701976776,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyA"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 76,
+            "lastAckId": 76,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 1,
+              "z": 1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -6.44375088544575,
+              3.150076867004195,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -6.44375088544575,
+              2.400076867004195,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "a",
+      "ms": 45,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.450003623962402,
+          "y": 2.4000773429870605,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.550000190734863,
+          "y": 2.400040864944458,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "kind": "actual-held-input-exposure",
+      "key": "d",
+      "requestedMs": 45,
+      "observedElapsedMs": 137,
+      "heldAtUtc": "2026-10-12T21:52:45.883Z",
+      "before": {
+        "ticks": 601,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.550000190734863,
+            "y": 2.400040864944458,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 1,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": []
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 78,
+            "lastAckId": 78,
+            "pendingIds": [],
+            "desiredLevel": {
+              "x": 0,
+              "z": 0,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.6184709248413665,
+              3.1500412877392714,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.6184709248413665,
+              2.4000412877392714,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      },
+      "held": {
+        "ticks": 616,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.550000190734863,
+            "y": 2.400040864944458,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "diagnostics": {
+          "physicsClock": {
+            "maxTimerGapMs": 67.09999999776483,
+            "maxAdvanceMs": 28,
+            "maxHandlerMs": 1504.699999999255,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.6999999992549419,
+            "delayedCallbacks": [
+              {
+                "gapMs": 62.900000002235174,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 2.5
+              },
+              {
+                "gapMs": 67.09999999776483,
+                "previousCommand": "Read",
+                "handlerMs": 0.5,
+                "advanceMs": 1.1000000014901161
+              }
+            ],
+            "timers": 1
+          },
+          "input": {
+            "owner": "Player",
+            "locked": true,
+            "jumpEdges": 0,
+            "neutralizations": 2,
+            "pressedKeys": [
+              "KeyD"
+            ]
+          },
+          "transport": {
+            "enabled": true,
+            "lastSentId": 81,
+            "lastAckId": 78,
+            "pendingIds": [
+              81
+            ],
+            "desiredLevel": {
+              "x": -1,
+              "z": -1.2246467991473532e-16,
+              "sprint": false,
+              "jump": false
+            },
+            "commandDepth": 0,
+            "closing": false,
+            "canDispatch": true
+          },
+          "physicsWorkers": "2",
+          "ownedRender": null,
+          "camera": {
+            "position": [
+              -5.557420228838537,
+              3.1500409107618963,
+              11.875
+            ],
+            "orientation": [
+              0,
+              1,
+              0,
+              6.123233995736766e-17
+            ],
+            "visualBody": [
+              -5.557420228838537,
+              2.4000409107618963,
+              11.875
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "visibility": "visible",
+          "hasFocus": true,
+          "pointerLockElement": "debug-scene",
+          "inputError": null
+        }
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.9,
+      "key": "d",
+      "ms": 45,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.550000190734863,
+          "y": 2.400040864944458,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.550000190734863,
+          "y": 2.400040864944458,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      }
+    },
+    {
+      "command": {
+        "kind": "walk",
+        "axis": "x",
+        "target": -5.9
+      },
+      "start": "2026-10-12T21:52:37.634Z",
+      "end": "2026-10-12T21:52:46.282Z",
+      "status": "failed",
+      "error": "Error: Normal movement blocked: {\"player\":{\"ownerId\":\"hvp:player\",\"position\":{\"x\":-5.550000190734863,\"y\":2.400040864944458,\"z\":11.875},\"grounded\":true,\"velocityY\":0,\"jumpCount\":0,\"cameraFraction\":1,\"status\":\"Walking\"},\"carrier\":null,\"handling\":null,\"inventory\":[{\"id\":\"fp02_wreck_cargo\",\"role\":\"cargo\",\"massMg\":2984400000,\"stackCount\":79}],\"construction\":{\"state\":\"Ready\",\"installations\":[],\"revision\":0,\"massMg\":2984400000,\"ghost\":null},\"connections\":{\"power\":[],\"belts\":[]},\"deposits\":[],\"power\":{\"allocationConfirmed\":true,\"devices\":[],\"status\":\"UNCONNECTED\",\"generationWatts\":0,\"allocatedWatts\":0,\"batteryEnergyJ\":null,\"batteryCapacityJ\":null,\"reserveEnergyJ\":null,\"sourceQuality\":\"unsupported\",\"consumers\":[]},\"buttons\":null,\"testBridge\":false}"
+    }
+  ],
+  "errors": [
+    {
+      "time": "2026-10-12T21:52:19.006Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:5174/factory.html",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-GeJ96uLU.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/rolldown-runtime-DK3Fl9T5.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hash-_jyFVLd7.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpCoastSource-CRr-NT3R.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-C4Yv534t.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/cargoHandlingProfile-B4rvSIiF.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/fp02Catalog-HaLyuzpA.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/installationProfile-DGTT_aOo.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factoryAssets-COjuA3bO.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-K2JU4dkZ.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-TWAMBhUd.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/cargoSite-BIPRkkBb.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/physicsWorker-xVL078N9.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/playAssetLoader-MVIKo4x1.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factoryS1Assets-DbGcA2qS.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factoryPartCells-DP13Q6dU.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/factory/play-2026-10-12/wreck-cargo.glb",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "url": "http://127.0.0.1:5174/factory/play-2026-10-12/wreck-cargo-open.glb",
+      "status": 200,
+      "type": "fetch"
+    }
+  ]
+}

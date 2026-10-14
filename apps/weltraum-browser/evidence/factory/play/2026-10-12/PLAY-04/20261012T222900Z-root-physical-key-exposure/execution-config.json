@@ -1,0 +1,18 @@
+{
+  "actor": "/root",
+  "atUtc": "2026-10-12T22:28:55.939216+00:00",
+  "sourceHead": "4ca33091bc104f5098a2a4f2fce9f428b32d3c2a",
+  "localRuntimeOverrides": {
+    "LP_NUM_THREADS": "1",
+    "tasksetCpuList": "0,1,2"
+  },
+  "hypothesis": "PriorDriverdelayedkeyupwhilewaitingpublishedACK/fullheldJSON; newDriveronlytrustedkeydown\u2192wallhold\u2192trustedkeyup thenreleasedACK/neutral. SameproductNativeeventInput and exactV5routeactions. Actualordinaryinputs, noWorld/clock/posemutation.",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "recording": "No video",
+  "hardwareAcceptance": "NOT_RUN",
+  "cpuStatBefore": "usage_usec 3212087858\nuser_usec 2826577988\nsystem_usec 385509869\nnice_usec 158226\nnr_periods 74218\nnr_throttled 1795\nthrottled_usec 84274286\nnr_bursts 0\nburst_usec 0\n"
+}

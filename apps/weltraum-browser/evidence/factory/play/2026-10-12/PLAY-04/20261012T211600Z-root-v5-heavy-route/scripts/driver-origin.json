@@ -1,0 +1,10 @@
+{
+  "priorActualActions": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/scripts/normal-model-after-private-receipt-actions.ndjson",
+  "driver": "PLAY-04/20261012T204800Z-root-v5-input-camera/scripts/normal-v5-root-driver.mjs",
+  "onlyChanges": [
+    "ExpectedV5digest already0e2a0bcb",
+    "Actualphysicalwalk todepotx-7.25 insteadold-6.25 becausecurrentDefaultFormersameapproved1mwestlayout",
+    "FinishafteractualprivateNative/S1modelproof; camera showcase separate"
+  ],
+  "authority": "OnlyordinarytrustedWASD/visibleUI, noPose/World/Cargo/source/machine mutators. This is notcomplete16kg/Save/PerformancePASS."
+}

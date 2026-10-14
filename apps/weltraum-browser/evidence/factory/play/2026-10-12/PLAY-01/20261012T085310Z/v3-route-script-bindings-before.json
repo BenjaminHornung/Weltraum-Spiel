@@ -1,0 +1,21 @@
+{
+  "scripts": [
+    {
+      "path": "v3-normal-heavy-actions.jsonl",
+      "bytes": 1428,
+      "sha256": "114a9ed413e1fec7054ecb3908701973c0be8997aeed251a4013fa3841c42940"
+    },
+    {
+      "path": "normal-route-driver.mjs",
+      "bytes": 8660,
+      "sha256": "86d018473d634909f45ace4679b545acdd15af060a6cafe8458b55ec5763c4c4"
+    },
+    {
+      "path": "run-command.py",
+      "bytes": 2018,
+      "sha256": "60cc963d208f9d88792aee64352d55ae594a7e6139ec1347d7a4defe668b33cf"
+    }
+  ],
+  "routeDifference": "ordinary walk target x\u22128.125 vs previous\u22128.25 (125mm steering offset), no world/pose/material modification",
+  "hardware": "Chromium154.0.8037.57 softwareMesa"
+}

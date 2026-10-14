@@ -1,0 +1,109 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/hvp-player-input.test.ts",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "tests/unit/factory/factoryShell.test.ts",
+    "tests/unit/factory/localMap.test.ts",
+    "tests/unit/factory/onboarding.test.ts",
+    "tests/unit/factory/panels.test.ts",
+    "--maxWorkers",
+    "1"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "actor": "/root/play_integrator",
+  "startedAtUtc": "2026-10-12T10:05:27.080926+00:00",
+  "endedAtUtc": "2026-10-12T10:05:56.786045+00:00",
+  "elapsedSeconds": 29.705097131000002,
+  "exitCode": 0,
+  "rawBytes": 276,
+  "rawSha256": "05ee9f20ce8d53cf05695dede7871691da57cfef3d79ebcaef5df07a63bcb286",
+  "head": "9a2c9397af8efcb56d2e18bc578b2c30eab6875d",
+  "node": "v22.23.3",
+  "npm": "10.9.8",
+  "nodeExecPath": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+  "sourceBindings": [
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 16812,
+      "sha256": "1991c05c8026ef39c80623d1e182238d00f35810eeeb1c1a71aef5eff8931a75"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4163,
+      "sha256": "12631cc41ca51ca7255f47668d1e1cc86300fddfdf05fa48e88a67f945295945"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 5861,
+      "sha256": "b11cfc410341636bf044c3cbf21aeeabb938adb00e2665f0c1e336df1e549bf9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 66247,
+      "sha256": "2a0a46eb1d4b444258aac05ddc08a4e7d49e3993312a6ed068010e03fb914512"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 10824,
+      "sha256": "2cbb36d02e7fe34fa4776be0ebfc33b832fd76c53cc8fa975ffca12239435dea"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+      "bytes": 5123,
+      "sha256": "0de49c107d9742f1bbc0dc9217775a733461d6e29a74007edfc8a4e4c9287c7c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "bytes": 41700,
+      "sha256": "fd5ca0b6edc34275bf40684ac407c7e79335d441a32f8c281935c55bc2ede901"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "bytes": 14549,
+      "sha256": "ce9c73073918b5f1bdad790be737b1a9036ebd1e93ca914cdfca6492407d1fa9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 178802,
+      "sha256": "fc25f36dbbf8dc8c8ce6fe705ecaa82ab06f85617585006c437daa413ebf8ec1"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 39474,
+      "sha256": "c1f2f2742a36f09de3b049cd7b7d87c25443215a41843ccd7e53c54405529d9c"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "bytes": 4433,
+      "sha256": "3bbbaf9abec562a458b5a47ba5cade7a9de70f3f2c04e1f1ac0d87c6b9f7222f"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 63175,
+      "sha256": "84360cd233cf88ccae95d31f1c93cbcac50b3d02daa4e79895b9dc0c331212a3"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+      "bytes": 3294,
+      "sha256": "e4ebcdc631236d73e6cc2bdff1fd1dddd32eb7dd77f75ac863f0adf56fc8010e"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "bytes": 6854,
+      "sha256": "8f4358216f1e4a582076a457b8c00f7e1bea3ab0c1482065c8e6c7b20e3bfb1a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 94244,
+      "sha256": "1f0b02c577b025730c968a43025f88e2d5682d39f7f110fe0809f15c070b660e"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "bytes": 41971,
+      "sha256": "ff508546719ac1b77bada36ed0a0d8034995b1ba9741463cb769b76b4dd820a3"
+    }
+  ]
+}

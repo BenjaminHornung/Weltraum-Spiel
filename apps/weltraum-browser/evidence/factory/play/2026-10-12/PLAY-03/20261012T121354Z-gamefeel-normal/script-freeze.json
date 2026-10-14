@@ -1,0 +1,8 @@
+{
+  "frozenAtUtc": "2026-10-12T12:13:07.849260+00:00",
+  "actor": "/root/play_integrator",
+  "script": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/scripts/normal-gamefeel-ui-input.mjs",
+  "bytes": 11377,
+  "sha256": "8abf0f64e87501cb4ef32cf947c3811074b6bd959da9cfdd309d61f26733bae8",
+  "input": "Actual normal UI/native world trustedCDP only; responsive viewport and ordinary DOM scroll; no World/pose/clock/material mutations"
+}

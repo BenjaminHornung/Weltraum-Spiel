@@ -1,0 +1,60 @@
+{
+  "actor": "/root/play_integrator",
+  "scope": "Native-bound device enable controls + retained baseline/adopted production goals + exact current-source local map; static/correctness proof only. Old paid-band output-blockage default5000ms FAILED twice unchanged; no budget increase/profiling/runtime optimization. Full W09 normal flow remains NOT_RUN.",
+  "files": [
+    {
+      "path": "src/factory/session/dryFactorySlice.ts",
+      "bytes": 34219,
+      "sha256": "ebf698865a650931cde47d5e70ece7bd5e3c9a4abfd3eff35b605b78db24f07b",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__session__dryFactorySlice.ts.snapshot"
+    },
+    {
+      "path": "src/factory/session/factorySession.ts",
+      "bytes": 80147,
+      "sha256": "bfa5352092e33bfab1e17c003cd29c9527240fc6f0b44771631fd48a59af9d47",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__session__factorySession.ts.snapshot"
+    },
+    {
+      "path": "src/factory/session/hostPort.ts",
+      "bytes": 12315,
+      "sha256": "86703b5406be9110e8ea2560cb93f2f8029780ade9dd62a4190d6e79efc1c74d",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__session__hostPort.ts.snapshot"
+    },
+    {
+      "path": "src/factory/factoryEntry.ts",
+      "bytes": 17698,
+      "sha256": "2f73026b816125bcdf0efb54ffabe97086a9fa8691d140927fc0e6a17d5756b6",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__factoryEntry.ts.snapshot"
+    },
+    {
+      "path": "src/factory/ui/powerPanel.ts",
+      "bytes": 2129,
+      "sha256": "160cf898153c267e61e7cd5ac54910c228d43b2b490766f4fc40d6f57cc043f7",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__ui__powerPanel.ts.snapshot"
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "bytes": 194645,
+      "sha256": "6634eba4ada00b6314318dd8f51fc0ade9b3d76cf3676a0b2811ee80b19cefb4",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__hvp__hvpBootstrap.ts.snapshot"
+    },
+    {
+      "path": "tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 39314,
+      "sha256": "1e35b17c24d436e1c55b67f14ef5445b5812ff563e06d8002474d6775cb6fc73",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/tests__unit__factory__dryFactorySlice.test.ts.snapshot"
+    },
+    {
+      "path": "tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 77960,
+      "sha256": "e7b1e127eb27099132a841c2aec148d39a357ba23653e1ba6af7824a17f0b392",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/tests__unit__factory__hostLifecycle.test.ts.snapshot"
+    },
+    {
+      "path": "tests/unit/factory/panels.test.ts",
+      "bytes": 24228,
+      "sha256": "bf7a96a192dd36f8ed3b46e42e46260e39354a1d59e92df846e132a6374f539e",
+      "snapshotPath": "evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/tests__unit__factory__panels.test.ts.snapshot"
+    }
+  ]
+}

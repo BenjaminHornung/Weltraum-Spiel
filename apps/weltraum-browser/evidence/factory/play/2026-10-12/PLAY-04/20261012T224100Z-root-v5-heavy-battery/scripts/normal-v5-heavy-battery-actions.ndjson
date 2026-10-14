@@ -1,0 +1,64 @@
+{"kind": "click", "name": "Neues Spiel"}
+{"kind": "click", "name": "Werkstatt ansehen"}
+{"kind": "click", "name": "Fracht öffnen"}
+{"kind": "capture", "label": "01-v5-normal-open-cargo"}
+{"kind": "click", "name": "Schließen"}
+{"kind": "play"}
+{"kind": "walk", "axis": "x", "target": -5.9}
+{"kind": "pause"}
+{"kind": "click", "name": "Werkstatt ansehen"}
+{"kind": "click", "name": "Aufnehmen: Umform-Bausatz"}
+{"kind": "capture", "label": "02-paid-341kg-pickup"}
+{"kind": "click", "name": "Schließen"}
+{"kind": "play"}
+{"kind": "walk", "axis": "z", "target": 12.175}
+{"kind": "walk", "axis": "x", "target": -8.125}
+{"kind": "capture", "label": "03-v5-heavy-west-clearance"}
+{"kind": "walk", "axis": "z", "target": -1.5}
+{"kind": "walk", "axis": "x", "target": -6.25}
+{"kind": "pause"}
+{"kind": "click", "name": "Werkstatt ansehen"}
+{"kind": "click", "name": "Hier ablegen"}
+{"kind": "capture", "label": "04-heavy-ground-depot"}
+{"kind": "click", "name": "Schließen"}
+{"kind": "play"}
+{"kind": "walk", "axis": "x", "target": -4.25}
+{"kind": "pause"}
+{"kind": "click", "name": "Werkstatt ansehen"}
+{"kind": "click", "name": "Bauen"}
+{"kind": "click", "name": "Umformung vorschauen"}
+{"kind": "click", "name": "Bau bestätigen"}
+{"kind": "await-installed", "sourceId": "B07"}
+{"kind": "capture", "label": "05-paid-native-former"}
+{"kind": "assert-model", "sourceId": "B07"}
+{"kind": "click", "name": "Schließen"}
+{"kind": "play"}
+{"kind": "walk", "axis": "z", "target": 3}
+{"kind": "walk", "axis": "x", "target": -8.125}
+{"kind": "walk", "axis": "z", "target": 11.875}
+{"kind": "walk", "axis": "x", "target": -5.9}
+{"kind": "pause"}
+{"kind": "click", "name": "Werkstatt ansehen"}
+{"kind": "click", "name": "Aufnehmen: Batterie"}
+{"kind": "capture", "label": "06-paid-50kg-battery"}
+{"kind": "click", "name": "Schließen"}
+{"kind": "play"}
+{"kind": "walk", "axis": "z", "target": 12.175}
+{"kind": "walk", "axis": "x", "target": -8.125}
+{"kind": "walk", "axis": "z", "target": 3}
+{"kind": "walk", "axis": "x", "target": -2.25}
+{"kind": "capture", "label": "07-v5-battery-cross-connector"}
+{"kind": "pause"}
+{"kind": "click", "name": "Werkstatt ansehen"}
+{"kind": "click", "name": "Hier ablegen"}
+{"kind": "click", "name": "Schließen"}
+{"kind": "play"}
+{"kind": "walk", "axis": "x", "target": -4.25}
+{"kind": "pause"}
+{"kind": "click", "name": "Werkstatt ansehen"}
+{"kind": "click", "name": "Bauen"}
+{"kind": "click", "name": "Batterie vorschauen"}
+{"kind": "click", "name": "Bau bestätigen"}
+{"kind": "await-installed", "sourceId": "fp02.device.battery_4kwh"}
+{"kind": "capture", "label": "08-paid-native-battery"}
+{"kind": "close"}

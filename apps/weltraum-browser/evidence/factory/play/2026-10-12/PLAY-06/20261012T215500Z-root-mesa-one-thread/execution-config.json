@@ -1,0 +1,26 @@
+{
+  "atUtc": "2026-10-12T21:52:11.733751+00:00",
+  "scope": "One bounded actualnormalNative341kg route with source/build/pixels/inputs unchanged, explicitsoftwareCPUMesa configuration. No product/runtime parameter change.",
+  "baseline": "PLAY04/20261012T214600Z-root-v5-heavy-former/01-normal-v5-heavy-former.command.json",
+  "baselineResult": "FAILSimulationHold tick2564 gap81.2ms, NativeReadhandler.3ms/advance2.1ms;341kg retained",
+  "candidateEnvironment": {
+    "LP_NUM_THREADS": "1",
+    "LIBGL_ALWAYS_SOFTWARE": "1 viaexistingwrapper",
+    "EGL_PLATFORM": "surfaceless viaexistingwrapper"
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "recording": "disabled in bothruns",
+  "driverSha256": "29a20eeb5405f38a46250462f7fc5d882897bca6b91588d6bbf2e799d78b45dc",
+  "actionsSha256": "92f8e163ae77ca602c4a33dbcb11b61727e942391268be632b5258378cee3207",
+  "hardware": "CloudCPU AMD EPYC9V74/KVM, nproc5,cgroup4CPU; LLVM19.1.7 llvmpipe software, no GPU/targethardware acceptance",
+  "hypothesis": "Software-render CPU scheduling pressure may delay independentNativeWorker timer. Single renderthread reserves CPU capacity without changing solverstep/backlog/material/work policy.",
+  "constraints": [
+    "IdenticalSourceV5approved masks/cargo/colliders/budgets/rates/Nativeclock/routegestures/modelsource",
+    "No nativeposeinjection/teleport/rendererWorldauthority/timingqueueorcap increases",
+    "Report actualafter PASS/FAIL separately; one run does not prove performancecausality, targetGPU or W11acceptance"
+  ]
+}

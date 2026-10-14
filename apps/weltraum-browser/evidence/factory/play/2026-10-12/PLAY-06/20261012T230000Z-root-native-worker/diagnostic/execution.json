@@ -1,0 +1,93 @@
+{
+  "startedAtUtc": "2026-10-12T22:58:47.891Z",
+  "endedAtUtc": "2026-10-12T22:59:11.980Z",
+  "ownerPid": 32994,
+  "flags": [
+    "--headless",
+    "--remote-debugging-port=0",
+    "--remote-debugging-address=127.0.0.1",
+    "--user-data-dir=/tmp/hestia-native-cpu-vH5M9U",
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-background-timer-throttling",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-renderer-backgrounding",
+    "--disable-extensions",
+    "about:blank"
+  ],
+  "workerSession": "6F425CEB084F120A9A1B74D0DFED872F",
+  "targets": [
+    {
+      "targetId": "1E586245B3CB5F088CD16AE3D778E70D",
+      "type": "browser_ui",
+      "title": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "attached": true,
+      "canAccessOpener": false,
+      "browserContextId": "B5C0FC7D410AB3A031D4B688B0A062A5"
+    },
+    {
+      "targetId": "7EF79796FA92E45AE57B2A4B9ACA3B6D",
+      "type": "page",
+      "title": "about:blank",
+      "url": "about:blank",
+      "attached": true,
+      "canAccessOpener": false,
+      "browserContextId": "B5C0FC7D410AB3A031D4B688B0A062A5"
+    },
+    {
+      "targetId": "85B3194CEC1317076B68F5BC1533BC6D",
+      "type": "browser_ui",
+      "title": "chrome://omnibox-popup.top-chrome",
+      "url": "chrome://omnibox-popup.top-chrome/",
+      "attached": true,
+      "canAccessOpener": false,
+      "browserContextId": "B5C0FC7D410AB3A031D4B688B0A062A5"
+    },
+    {
+      "targetId": "BB0DCFAFF756DBC1C16F50B89856FD13",
+      "type": "page",
+      "title": "127.0.0.1:5174/factory.html?hvpMeasure=1",
+      "url": "http://127.0.0.1:5174/factory.html?hvpMeasure=1",
+      "attached": true,
+      "canAccessOpener": false,
+      "browserContextId": "B5C0FC7D410AB3A031D4B688B0A062A5"
+    },
+    {
+      "targetId": "FFCA13C5402B23993E715211DA2EA8D0",
+      "type": "worker",
+      "title": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "attached": false,
+      "parentId": "BB0DCFAFF756DBC1C16F50B89856FD13",
+      "canAccessOpener": false,
+      "parentFrameId": "BB0DCFAFF756DBC1C16F50B89856FD13",
+      "browserContextId": "B5C0FC7D410AB3A031D4B688B0A062A5"
+    },
+    {
+      "targetId": "4A3932BF9D01BDEFD5C982381D13DB12",
+      "type": "worker",
+      "title": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "attached": false,
+      "parentId": "BB0DCFAFF756DBC1C16F50B89856FD13",
+      "canAccessOpener": false,
+      "parentFrameId": "BB0DCFAFF756DBC1C16F50B89856FD13",
+      "browserContextId": "B5C0FC7D410AB3A031D4B688B0A062A5"
+    },
+    {
+      "targetId": "1F5470B8095813BD9AB0E0D2769251C8",
+      "type": "worker",
+      "title": "hvp-simulation-owner",
+      "url": "http://127.0.0.1:5174/assets/physicsWorker-xVL078N9.js",
+      "attached": true,
+      "parentId": "BB0DCFAFF756DBC1C16F50B89856FD13",
+      "canAccessOpener": false,
+      "parentFrameId": "BB0DCFAFF756DBC1C16F50B89856FD13",
+      "browserContextId": "B5C0FC7D410AB3A031D4B688B0A062A5"
+    }
+  ],
+  "errors": [
+    "TimeoutError: page.waitForFunction: Timeout 5000ms exceeded."
+  ]
+}

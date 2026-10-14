@@ -1,0 +1,98 @@
+{
+  "startedAtUtc": "2026-10-12T23:09:22.234Z",
+  "endedAtUtc": "2026-10-12T23:09:46.324Z",
+  "ownerPid": 34122,
+  "flags": [
+    "--headless",
+    "--no-first-run",
+    "--no-default-browser-check",
+    "--enable-automation",
+    "--remote-debugging-port=0",
+    "--remote-debugging-address=127.0.0.1",
+    "--user-data-dir=/tmp/hestia-native-cpu-HMu4va",
+    "--no-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-background-timer-throttling",
+    "--disable-backgrounding-occluded-windows",
+    "--disable-renderer-backgrounding",
+    "--disable-extensions",
+    "about:blank"
+  ],
+  "workerSession": "264BA44D228D798BDA2D77E071CCCFB8",
+  "profileStarted": true,
+  "profileSaved": true,
+  "targets": [
+    {
+      "targetId": "01195AB769CEFCBF294930C52C1FD716",
+      "type": "browser_ui",
+      "title": "Omnibox Popup",
+      "url": "chrome://omnibox-popup.top-chrome/",
+      "attached": true,
+      "canAccessOpener": false,
+      "browserContextId": "456D216E56F07A3FC2DF498C5049C42C"
+    },
+    {
+      "targetId": "10FF0241D8C88AB9600C8050E59A52AD",
+      "type": "browser_ui",
+      "title": "Omnibox Popup",
+      "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+      "attached": true,
+      "canAccessOpener": false,
+      "browserContextId": "456D216E56F07A3FC2DF498C5049C42C"
+    },
+    {
+      "targetId": "ADC91F39F122F0AA6B91F7565C1F4FC8",
+      "type": "page",
+      "title": "about:blank",
+      "url": "about:blank",
+      "attached": true,
+      "canAccessOpener": false,
+      "browserContextId": "456D216E56F07A3FC2DF498C5049C42C"
+    },
+    {
+      "targetId": "79C9710CA0D54581EDFBB7D3E22CD298",
+      "type": "page",
+      "title": "127.0.0.1:5174/factory.html?hvpMeasure=1",
+      "url": "http://127.0.0.1:5174/factory.html?hvpMeasure=1",
+      "attached": true,
+      "canAccessOpener": false,
+      "browserContextId": "456D216E56F07A3FC2DF498C5049C42C"
+    },
+    {
+      "targetId": "5087A299BE8C7F000CB6E515D110D7CA",
+      "type": "worker",
+      "title": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "attached": false,
+      "parentId": "79C9710CA0D54581EDFBB7D3E22CD298",
+      "canAccessOpener": false,
+      "parentFrameId": "79C9710CA0D54581EDFBB7D3E22CD298",
+      "browserContextId": "456D216E56F07A3FC2DF498C5049C42C"
+    },
+    {
+      "targetId": "29A3D50AD5B7A9E3B2F1EF373E220403",
+      "type": "worker",
+      "title": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "attached": false,
+      "parentId": "79C9710CA0D54581EDFBB7D3E22CD298",
+      "canAccessOpener": false,
+      "parentFrameId": "79C9710CA0D54581EDFBB7D3E22CD298",
+      "browserContextId": "456D216E56F07A3FC2DF498C5049C42C"
+    },
+    {
+      "targetId": "5EE93030EFDFB06F1C73E22A08600B07",
+      "type": "worker",
+      "title": "hvp-simulation-owner",
+      "url": "http://127.0.0.1:5174/assets/physicsWorker-xVL078N9.js",
+      "attached": true,
+      "parentId": "79C9710CA0D54581EDFBB7D3E22CD298",
+      "canAccessOpener": false,
+      "parentFrameId": "79C9710CA0D54581EDFBB7D3E22CD298",
+      "browserContextId": "456D216E56F07A3FC2DF498C5049C42C"
+    }
+  ],
+  "errors": [
+    "TimeoutError: page.waitForFunction: Timeout 5000ms exceeded."
+  ]
+}

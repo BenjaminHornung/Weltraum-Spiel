@@ -1,0 +1,62 @@
+{
+  "version": "hvp-factory-startsite-v5",
+  "sourceDigest": "0e2a0bcb",
+  "rawSlotsSha256": "106a3c5ba17e7bb8861d853e1889d71ebf42a686f3d0605d0cb8efabb20c7911",
+  "initializationReceipt": {
+    "maskCount": 23,
+    "columnCount": 5880,
+    "areaMm2": 91875000,
+    "materialCreditMg": 0,
+    "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING"
+  },
+  "v4Digest": "913c0c46",
+  "plannedCounts": [
+    97,
+    97
+  ],
+  "plannerBytesIdentical": true,
+  "invalid4": [
+    {
+      "id": "hvp:flora:bed-52-220",
+      "kind": "broadleaf",
+      "variant": 1,
+      "position": {
+        "x": -9.5,
+        "y": 2.5,
+        "z": 11.5
+      }
+    }
+  ],
+  "invalid5": [
+    {
+      "id": "hvp:flora:bed-52-220",
+      "kind": "broadleaf",
+      "variant": 1,
+      "position": {
+        "x": -9.5,
+        "y": 2.5,
+        "z": 11.5
+      }
+    }
+  ],
+  "validSourceCounts": [
+    96,
+    96
+  ],
+  "derivedSourceBytesIdentical": true,
+  "actualWoodOwners": [
+    {
+      "id": "hvp:flora:hero",
+      "digest": "912f6018",
+      "wood": true,
+      "decorationPhysics": "none"
+    },
+    {
+      "id": "hvp:flora:east-young",
+      "digest": "a2660ad9",
+      "wood": true,
+      "decorationPhysics": "none"
+    }
+  ],
+  "policy": "Pure initial Source/Header/Flora comparison, no World/Native/Material write or credit; final Owner review pending"
+}

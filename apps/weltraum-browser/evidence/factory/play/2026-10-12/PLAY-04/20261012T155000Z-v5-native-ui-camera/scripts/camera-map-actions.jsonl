@@ -1,0 +1,16 @@
+{"kind": "capture", "label": "01-start"}
+{"kind": "click", "name": "Neues Spiel"}
+{"kind": "play"}
+{"kind": "mouse", "dx": 0, "dy": 100}
+{"kind": "pause"}
+{"kind": "key", "key": "Escape"}
+{"kind": "capture", "label": "02-standing-closed-cargo"}
+{"kind": "click", "name": "Fracht"}
+{"kind": "click", "name": "Fracht \u00f6ffnen"}
+{"kind": "capture", "label": "03-open-cargo-ui"}
+{"kind": "key", "key": "Escape"}
+{"kind": "click", "name": "Karte"}
+{"kind": "capture", "label": "04-real-v5-local-map"}
+{"kind": "key", "key": "Escape"}
+{"kind": "capture", "label": "05-open-cargo-standing"}
+{"kind": "close"}

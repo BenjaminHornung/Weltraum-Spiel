@@ -1,0 +1,10 @@
+{
+  "sourceActions": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/scripts/normal-model-after-private-receipt-actions.ndjson",
+  "sourceSha256": "4a2bb820ef3d3c2903356fe67aae9d2c0aac536823e69138d38135193dbbc675",
+  "driver": "../20261012T204800Z-root-v5-input-camera/scripts/normal-v5-root-driver.mjs",
+  "changes": [
+    "Onlylabels V4\u2192V5",
+    "Lastordinarymouse gesture946/25 toward shifteddefaultFormer; no camera/pose injection"
+  ],
+  "scope": "Actual341kg custody/normalwalk/depot/playerexit/paidFormerSourceS1 model; no W09fullloop/save/visual/performanceacceptance"
+}

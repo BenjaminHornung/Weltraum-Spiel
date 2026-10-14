@@ -1,0 +1,127 @@
+{
+  "startedAtUtc": "2026-10-12T10:17:46.480Z",
+  "endedAtUtc": "2026-10-12T10:18:13.981Z",
+  "entry": "http://127.0.0.1:5174/factory.html",
+  "browserVersion": "154.0.8037.57",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "input": "normal visible controls and trusted CDP keys only; read-only diagnostics; no World/pose/clock/material mutations",
+  "scope": "Shell/Input ACK/focus milestone only; map/history/full W09/S1/Save/Owner acceptance pending",
+  "videoPath": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/video/page@bf322b6a8c3e75e563ac5ff4bc38b792.webm",
+  "events": [
+    {
+      "name": "normal production Entry and actual paused start menu",
+      "start": "2026-10-12T10:17:46.853Z",
+      "end": "2026-10-12T10:17:56.981Z",
+      "status": "completed"
+    },
+    {
+      "name": "real New Game and finite cargo open",
+      "start": "2026-10-12T10:17:59.053Z",
+      "end": "2026-10-12T10:18:00.680Z",
+      "status": "completed"
+    },
+    {
+      "name": "explicit real Play and ACK neutral level",
+      "start": "2026-10-12T10:18:02.418Z",
+      "end": "2026-10-12T10:18:03.937Z",
+      "status": "completed"
+    },
+    {
+      "name": "trusted released WASD movement",
+      "start": "2026-10-12T10:18:05.189Z",
+      "end": "2026-10-12T10:18:05.679Z",
+      "status": "completed"
+    },
+    {
+      "name": "actual modal pause, no gameplay while modal open and no automatic close resume",
+      "start": "2026-10-12T10:18:06.744Z",
+      "end": "2026-10-12T10:18:08.232Z",
+      "status": "completed"
+    },
+    {
+      "name": "held key across explicit Play remains neutral until release and fresh press",
+      "start": "2026-10-12T10:18:08.905Z",
+      "end": "2026-10-12T10:18:11.404Z",
+      "status": "completed"
+    },
+    {
+      "name": "confirmed final Pause preserves material and closed save admission",
+      "start": "2026-10-12T10:18:12.331Z",
+      "end": "2026-10-12T10:18:13.353Z",
+      "status": "completed"
+    }
+  ],
+  "errors": [
+    {
+      "atUtc": "2026-10-12T10:17:52.163Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:5174/factory.html",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-GeJ96uLU.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-5GTz7FBd.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hash-_jyFVLd7.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/installationProfile-CtRMpEGv.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factoryAssets-pUismKd9.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-D6OCkO_1.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-DJ5X1-Xb.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/cargoSite-tbLdi7eb.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/physicsWorker-D17RmkKp.js",
+      "status": 200,
+      "type": "script"
+    }
+  ]
+}

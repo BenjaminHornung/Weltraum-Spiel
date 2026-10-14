@@ -1,0 +1,21 @@
+{
+  "actor": "/root",
+  "atUtc": "2026-10-12T22:22:52.370976+00:00",
+  "sourceHead": "4ca33091bc104f5098a2a4f2fce9f428b32d3c2a",
+  "scope": "One bounded normal341kg/Depot/Exit/Former actualinput run after unchangedmaterial adoption; localbrowseraffinity only",
+  "localRuntimeOverrides": {
+    "LP_NUM_THREADS": "1",
+    "tasksetCpuList": "0,1,2"
+  },
+  "reason": "Host provides5vCPUs with4CPU cgroupquota. Bound this onebrowserprocess family to3vCPUs to test avoiding100ms quota-throttling without changing simulationrules. Capture cpu.stat deltas; nohostglobalsetting/timeout/tick/queue/budget/source/poses changed.",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "inputDriver": "Same existing normal-v5-ack-exposure-driver.mjs and exact existingV5heavyactions",
+  "recording": "No video",
+  "hardwareAcceptance": "NOT_RUN",
+  "cpuStatBefore": "usage_usec 3034160544\nuser_usec 2668710442\nsystem_usec 365450102\nnice_usec 135466\nnr_periods 72516\nnr_throttled 1765\nthrottled_usec 82328008\nnr_bursts 0\nburst_usec 0\n",
+  "cpuStatAfter": "usage_usec 3161321679\nuser_usec 2787139477\nsystem_usec 374182201\nnice_usec 158226\nnr_periods 73336\nnr_throttled 1765\nthrottled_usec 82328008\nnr_bursts 0\nburst_usec 0\n"
+}

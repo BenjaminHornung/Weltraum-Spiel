@@ -1,0 +1,95 @@
+{
+  "startedAtUtc": "2026-10-12T10:10:11.528Z",
+  "endedAtUtc": "2026-10-12T10:10:26.463Z",
+  "entry": "http://127.0.0.1:5174/factory.html",
+  "browserVersion": "154.0.8037.57",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "input": "normal visible controls and trusted CDP keys only; read-only diagnostics; no World/pose/clock/material mutations",
+  "scope": "Shell/Input ACK/focus milestone only; map/history/full W09/S1/Save/Owner acceptance pending",
+  "videoPath": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input/video/page@3f07ce432e66ceb825d2f6cab58923e9.webm",
+  "events": [
+    {
+      "name": "normal production Entry and actual paused start menu",
+      "start": "2026-10-12T10:10:11.886Z",
+      "end": "2026-10-12T10:10:21.849Z",
+      "status": "completed"
+    }
+  ],
+  "errors": [
+    {
+      "atUtc": "2026-10-12T10:10:17.042Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "atUtc": "2026-10-12T10:10:24.062Z",
+      "driverError": "Error: One normal Shell with hidden diagnostic HUD required"
+    }
+  ],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:5174/factory.html",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-GeJ96uLU.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-5GTz7FBd.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hash-_jyFVLd7.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/installationProfile-DcEWKO5m.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factoryAssets-CmGDxwrX.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-B0eQymEk.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-Bx9bSdoL.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/cargoSite-BhvuGA8s.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/physicsWorker-D17RmkKp.js",
+      "status": 200,
+      "type": "script"
+    }
+  ]
+}

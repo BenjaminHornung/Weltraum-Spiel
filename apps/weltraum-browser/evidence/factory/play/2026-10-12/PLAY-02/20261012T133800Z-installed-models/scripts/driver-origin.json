@@ -1,0 +1,6 @@
+{
+  "source": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/current-shell-route-exposed-input-driver.mjs",
+  "sourceSha256": "947c8ddf8ac5b47e9e787e9dc8043349312cc801ab0ed065d39453348c7c0116",
+  "changes": "Readonly admitted render diagnostics/actual Native S1 assertions and trusted CDP mouse, original exposed trusted CDP walk unchanged; normal visible UI labels updated",
+  "actionsSource": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/normal-route-actions.json"
+}

@@ -1,0 +1,1572 @@
+[
+  {
+    "kind": "driver-ready",
+    "atUtc": "2026-10-12T13:59:45.048Z",
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 21.5,
+        "maxAdvanceMs": 13,
+        "maxHandlerMs": 1219.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000022351742,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    },
+    "nativeStatus": "Paused",
+    "nativeTicks": 96
+  },
+  {
+    "command": {
+      "kind": "click",
+      "name": "Neues Spiel"
+    },
+    "start": "2026-10-12T13:59:45.066Z",
+    "end": "2026-10-12T13:59:46.066Z",
+    "status": "completed",
+    "result": {
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "carrier": null,
+      "handling": null,
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "role": "cargo",
+          "massMg": 2984400000,
+          "stackCount": 79
+        }
+      ],
+      "construction": {
+        "state": "Ready",
+        "installations": [],
+        "revision": 0,
+        "massMg": 2984400000,
+        "ghost": null
+      },
+      "connections": {
+        "power": [],
+        "belts": []
+      },
+      "deposits": [],
+      "power": {
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "buttons": [
+        {
+          "name": "Schließen",
+          "disabled": false
+        },
+        {
+          "name": "Spielen",
+          "disabled": false
+        },
+        {
+          "name": "Speichern",
+          "disabled": true
+        },
+        {
+          "name": "Spielstand laden",
+          "disabled": true
+        },
+        {
+          "name": "Einstellungen öffnen",
+          "disabled": true
+        },
+        {
+          "name": "Zurück zum Menü",
+          "disabled": false
+        },
+        {
+          "name": "Werkstatt ansehen",
+          "disabled": false
+        },
+        {
+          "name": "Feldhandbuch öffnen",
+          "disabled": false
+        }
+      ],
+      "testBridge": false,
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 26.399999998509884,
+          "maxAdvanceMs": 13,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.6999999992549419,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 10,
+          "lastAckId": 10,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": null,
+        "inputError": null
+      },
+      "nativeStatus": "Paused"
+    }
+  },
+  {
+    "command": {
+      "kind": "click",
+      "name": "Werkstatt ansehen"
+    },
+    "start": "2026-10-12T13:59:46.071Z",
+    "end": "2026-10-12T13:59:47.176Z",
+    "status": "completed",
+    "result": {
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "carrier": null,
+      "handling": null,
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "role": "cargo",
+          "massMg": 2984400000,
+          "stackCount": 79
+        }
+      ],
+      "construction": {
+        "state": "Ready",
+        "installations": [],
+        "revision": 0,
+        "massMg": 2984400000,
+        "ghost": null
+      },
+      "connections": {
+        "power": [],
+        "belts": []
+      },
+      "deposits": [],
+      "power": {
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "buttons": [
+        {
+          "name": "Schließen",
+          "disabled": false
+        },
+        {
+          "name": "Fracht",
+          "disabled": false
+        },
+        {
+          "name": "Bauen",
+          "disabled": false
+        },
+        {
+          "name": "Maschinen",
+          "disabled": false
+        },
+        {
+          "name": "Energie",
+          "disabled": false
+        },
+        {
+          "name": "Technik",
+          "disabled": false
+        },
+        {
+          "name": "Karte",
+          "disabled": false
+        },
+        {
+          "name": "Fracht öffnen",
+          "disabled": false
+        },
+        {
+          "name": "Aufnehmen: Umform-Bausatz",
+          "disabled": true
+        },
+        {
+          "name": "Alle Einzelposten ansehen",
+          "disabled": false
+        },
+        {
+          "name": "Falt-Windanlage 6 kW2 Stück · 700 kg",
+          "disabled": true
+        },
+        {
+          "name": "PV-Faltarray 2 kWp4 Stück · 320 kg",
+          "disabled": true
+        },
+        {
+          "name": "Expeditionsakku 4 kWh1 Stück · 50 kg",
+          "disabled": true
+        },
+        {
+          "name": "40-kW-Verteiler1 Stück · 25 kg",
+          "disabled": true
+        },
+        {
+          "name": "Feldwerkbank1 Stück · 40 kg",
+          "disabled": true
+        },
+        {
+          "name": "Thermogeneratorkern1 Stück · 150 kg",
+          "disabled": true
+        },
+        {
+          "name": "Feldkabel40 m · 10 kg",
+          "disabled": true
+        },
+        {
+          "name": "Materialcontainer3 Stück · 180 kg",
+          "disabled": true
+        },
+        {
+          "name": "Fundamentschuh6 Stück · 72 kg",
+          "disabled": true
+        },
+        {
+          "name": "Geprüfter Schiffsstahl96 kg",
+          "disabled": true
+        },
+        {
+          "name": "Stahlprofile80 kg",
+          "disabled": true
+        },
+        {
+          "name": "Stahlblech60 kg",
+          "disabled": true
+        },
+        {
+          "name": "Rückgewinnungs-Elastomer16 kg",
+          "disabled": true
+        },
+        {
+          "name": "Passives 1-m-Bandmodul24 Stück · 120 kg",
+          "disabled": true
+        },
+        {
+          "name": "Maschinenantriebskern4 Stück · 8 kg",
+          "disabled": true
+        },
+        {
+          "name": "Maschinensteuerung5 Stück · 1 kg",
+          "disabled": true
+        },
+        {
+          "name": "Leitersatz8 Stück · 6,4 kg",
+          "disabled": true
+        },
+        {
+          "name": "Zuschnitt-Werkzeugkopf1 Stück · 3 kg",
+          "disabled": true
+        },
+        {
+          "name": "Umformwerkzeuge1 Stück · 4 kg",
+          "disabled": true
+        },
+        {
+          "name": "Brecherbacke1 Stück · 6 kg",
+          "disabled": true
+        },
+        {
+          "name": "Montage-Werkzeugsatz1 Stück · 3 kg",
+          "disabled": true
+        },
+        {
+          "name": "Kleinschürfer-Werkzeugkopf1 Stück · 5 kg",
+          "disabled": true
+        },
+        {
+          "name": "Dedizierter Bandantrieb4 Stück · 24 kg",
+          "disabled": true
+        },
+        {
+          "name": "Reservegenerator-/Lagerkern1 Stück · 35 kg",
+          "disabled": true
+        },
+        {
+          "name": "Rotor-/Naben-Bausatz1 Stück · 40 kg",
+          "disabled": true
+        },
+        {
+          "name": "Geborgenes Cutterchassis1 Stück · 180 kg",
+          "disabled": true
+        },
+        {
+          "name": "Geborgenes Formerchassis1 Stück · 300 kg",
+          "disabled": true
+        },
+        {
+          "name": "Geborgenes Brecherchassis1 Stück · 450 kg",
+          "disabled": true
+        }
+      ],
+      "testBridge": false,
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 27.699999999254942,
+          "maxAdvanceMs": 13,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000000074505806,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 10,
+          "lastAckId": 10,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": null,
+        "inputError": null
+      },
+      "nativeStatus": "Paused"
+    }
+  },
+  {
+    "command": {
+      "kind": "click",
+      "name": "Fracht öffnen"
+    },
+    "start": "2026-10-12T13:59:47.178Z",
+    "end": "2026-10-12T13:59:48.396Z",
+    "status": "completed",
+    "result": {
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "carrier": null,
+      "handling": null,
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "role": "cargo",
+          "massMg": 2984400000,
+          "stackCount": 79
+        }
+      ],
+      "construction": {
+        "state": "Ready",
+        "installations": [],
+        "revision": 0,
+        "massMg": 2984400000,
+        "ghost": null
+      },
+      "connections": {
+        "power": [],
+        "belts": []
+      },
+      "deposits": [],
+      "power": {
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "buttons": [
+        {
+          "name": "Schließen",
+          "disabled": false
+        },
+        {
+          "name": "Fracht",
+          "disabled": false
+        },
+        {
+          "name": "Bauen",
+          "disabled": false
+        },
+        {
+          "name": "Maschinen",
+          "disabled": false
+        },
+        {
+          "name": "Energie",
+          "disabled": false
+        },
+        {
+          "name": "Technik",
+          "disabled": false
+        },
+        {
+          "name": "Karte",
+          "disabled": false
+        },
+        {
+          "name": "Aufnehmen: Umform-Bausatz",
+          "disabled": false
+        },
+        {
+          "name": "Einzelposten wählen",
+          "disabled": false
+        },
+        {
+          "name": "Alle Einzelposten ansehen",
+          "disabled": false
+        },
+        {
+          "name": "Falt-Windanlage 6 kW2 Stück · 700 kg",
+          "disabled": false
+        },
+        {
+          "name": "PV-Faltarray 2 kWp4 Stück · 320 kg",
+          "disabled": false
+        },
+        {
+          "name": "Expeditionsakku 4 kWh1 Stück · 50 kg",
+          "disabled": false
+        },
+        {
+          "name": "40-kW-Verteiler1 Stück · 25 kg",
+          "disabled": false
+        },
+        {
+          "name": "Feldwerkbank1 Stück · 40 kg",
+          "disabled": false
+        },
+        {
+          "name": "Thermogeneratorkern1 Stück · 150 kg",
+          "disabled": false
+        },
+        {
+          "name": "Feldkabel40 m · 10 kg",
+          "disabled": false
+        },
+        {
+          "name": "Materialcontainer3 Stück · 180 kg",
+          "disabled": false
+        },
+        {
+          "name": "Fundamentschuh6 Stück · 72 kg",
+          "disabled": false
+        },
+        {
+          "name": "Geprüfter Schiffsstahl96 kg",
+          "disabled": false
+        },
+        {
+          "name": "Stahlprofile80 kg",
+          "disabled": false
+        },
+        {
+          "name": "Stahlblech60 kg",
+          "disabled": false
+        },
+        {
+          "name": "Rückgewinnungs-Elastomer16 kg",
+          "disabled": false
+        },
+        {
+          "name": "Passives 1-m-Bandmodul24 Stück · 120 kg",
+          "disabled": false
+        },
+        {
+          "name": "Maschinenantriebskern4 Stück · 8 kg",
+          "disabled": false
+        },
+        {
+          "name": "Maschinensteuerung5 Stück · 1 kg",
+          "disabled": false
+        },
+        {
+          "name": "Leitersatz8 Stück · 6,4 kg",
+          "disabled": false
+        },
+        {
+          "name": "Zuschnitt-Werkzeugkopf1 Stück · 3 kg",
+          "disabled": false
+        },
+        {
+          "name": "Umformwerkzeuge1 Stück · 4 kg",
+          "disabled": false
+        },
+        {
+          "name": "Brecherbacke1 Stück · 6 kg",
+          "disabled": false
+        },
+        {
+          "name": "Montage-Werkzeugsatz1 Stück · 3 kg",
+          "disabled": false
+        },
+        {
+          "name": "Kleinschürfer-Werkzeugkopf1 Stück · 5 kg",
+          "disabled": false
+        },
+        {
+          "name": "Dedizierter Bandantrieb4 Stück · 24 kg",
+          "disabled": false
+        },
+        {
+          "name": "Reservegenerator-/Lagerkern1 Stück · 35 kg",
+          "disabled": false
+        },
+        {
+          "name": "Rotor-/Naben-Bausatz1 Stück · 40 kg",
+          "disabled": false
+        },
+        {
+          "name": "Geborgenes Cutterchassis1 Stück · 180 kg",
+          "disabled": false
+        },
+        {
+          "name": "Geborgenes Formerchassis1 Stück · 300 kg",
+          "disabled": false
+        },
+        {
+          "name": "Geborgenes Brecherchassis1 Stück · 450 kg",
+          "disabled": false
+        }
+      ],
+      "testBridge": false,
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 27.699999999254942,
+          "maxAdvanceMs": 13,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 10,
+          "lastAckId": 10,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": null,
+        "inputError": null
+      },
+      "nativeStatus": "Paused"
+    }
+  },
+  {
+    "command": {
+      "kind": "capture",
+      "label": "01-v4-normal-open-cargo"
+    },
+    "start": "2026-10-12T13:59:48.397Z",
+    "end": "2026-10-12T13:59:50.039Z",
+    "status": "completed",
+    "result": {
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "carrier": null,
+      "handling": null,
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "role": "cargo",
+          "massMg": 2984400000,
+          "stackCount": 79
+        }
+      ],
+      "construction": {
+        "state": "Ready",
+        "installations": [],
+        "revision": 0,
+        "massMg": 2984400000,
+        "ghost": null
+      },
+      "connections": {
+        "power": [],
+        "belts": []
+      },
+      "deposits": [],
+      "power": {
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "buttons": [
+        {
+          "name": "Schließen",
+          "disabled": false
+        },
+        {
+          "name": "Fracht",
+          "disabled": false
+        },
+        {
+          "name": "Bauen",
+          "disabled": false
+        },
+        {
+          "name": "Maschinen",
+          "disabled": false
+        },
+        {
+          "name": "Energie",
+          "disabled": false
+        },
+        {
+          "name": "Technik",
+          "disabled": false
+        },
+        {
+          "name": "Karte",
+          "disabled": false
+        },
+        {
+          "name": "Aufnehmen: Umform-Bausatz",
+          "disabled": false
+        },
+        {
+          "name": "Einzelposten wählen",
+          "disabled": false
+        },
+        {
+          "name": "Alle Einzelposten ansehen",
+          "disabled": false
+        },
+        {
+          "name": "Falt-Windanlage 6 kW2 Stück · 700 kg",
+          "disabled": false
+        },
+        {
+          "name": "PV-Faltarray 2 kWp4 Stück · 320 kg",
+          "disabled": false
+        },
+        {
+          "name": "Expeditionsakku 4 kWh1 Stück · 50 kg",
+          "disabled": false
+        },
+        {
+          "name": "40-kW-Verteiler1 Stück · 25 kg",
+          "disabled": false
+        },
+        {
+          "name": "Feldwerkbank1 Stück · 40 kg",
+          "disabled": false
+        },
+        {
+          "name": "Thermogeneratorkern1 Stück · 150 kg",
+          "disabled": false
+        },
+        {
+          "name": "Feldkabel40 m · 10 kg",
+          "disabled": false
+        },
+        {
+          "name": "Materialcontainer3 Stück · 180 kg",
+          "disabled": false
+        },
+        {
+          "name": "Fundamentschuh6 Stück · 72 kg",
+          "disabled": false
+        },
+        {
+          "name": "Geprüfter Schiffsstahl96 kg",
+          "disabled": false
+        },
+        {
+          "name": "Stahlprofile80 kg",
+          "disabled": false
+        },
+        {
+          "name": "Stahlblech60 kg",
+          "disabled": false
+        },
+        {
+          "name": "Rückgewinnungs-Elastomer16 kg",
+          "disabled": false
+        },
+        {
+          "name": "Passives 1-m-Bandmodul24 Stück · 120 kg",
+          "disabled": false
+        },
+        {
+          "name": "Maschinenantriebskern4 Stück · 8 kg",
+          "disabled": false
+        },
+        {
+          "name": "Maschinensteuerung5 Stück · 1 kg",
+          "disabled": false
+        },
+        {
+          "name": "Leitersatz8 Stück · 6,4 kg",
+          "disabled": false
+        },
+        {
+          "name": "Zuschnitt-Werkzeugkopf1 Stück · 3 kg",
+          "disabled": false
+        },
+        {
+          "name": "Umformwerkzeuge1 Stück · 4 kg",
+          "disabled": false
+        },
+        {
+          "name": "Brecherbacke1 Stück · 6 kg",
+          "disabled": false
+        },
+        {
+          "name": "Montage-Werkzeugsatz1 Stück · 3 kg",
+          "disabled": false
+        },
+        {
+          "name": "Kleinschürfer-Werkzeugkopf1 Stück · 5 kg",
+          "disabled": false
+        },
+        {
+          "name": "Dedizierter Bandantrieb4 Stück · 24 kg",
+          "disabled": false
+        },
+        {
+          "name": "Reservegenerator-/Lagerkern1 Stück · 35 kg",
+          "disabled": false
+        },
+        {
+          "name": "Rotor-/Naben-Bausatz1 Stück · 40 kg",
+          "disabled": false
+        },
+        {
+          "name": "Geborgenes Cutterchassis1 Stück · 180 kg",
+          "disabled": false
+        },
+        {
+          "name": "Geborgenes Formerchassis1 Stück · 300 kg",
+          "disabled": false
+        },
+        {
+          "name": "Geborgenes Brecherchassis1 Stück · 450 kg",
+          "disabled": false
+        }
+      ],
+      "testBridge": false,
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 37.30000000074506,
+          "maxAdvanceMs": 13,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000022351742,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 10,
+          "lastAckId": 10,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": null,
+        "inputError": null
+      },
+      "nativeStatus": "Paused"
+    }
+  },
+  {
+    "command": {
+      "kind": "click",
+      "name": "Schließen"
+    },
+    "start": "2026-10-12T13:59:50.041Z",
+    "end": "2026-10-12T13:59:51.077Z",
+    "status": "completed",
+    "result": {
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "carrier": null,
+      "handling": null,
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "role": "cargo",
+          "massMg": 2984400000,
+          "stackCount": 79
+        }
+      ],
+      "construction": {
+        "state": "Ready",
+        "installations": [],
+        "revision": 0,
+        "massMg": 2984400000,
+        "ghost": null
+      },
+      "connections": {
+        "power": [],
+        "belts": []
+      },
+      "deposits": [],
+      "power": {
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "buttons": [
+        {
+          "name": "ERSTE WERKSTATTZuschnittstation und Umformwerk aufbauen",
+          "disabled": false
+        },
+        {
+          "name": "Pause",
+          "disabled": false
+        },
+        {
+          "name": "Spielen",
+          "disabled": false
+        }
+      ],
+      "testBridge": false,
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 37.30000000074506,
+          "maxAdvanceMs": 13,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000000074505806,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 10,
+          "lastAckId": 10,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": null,
+        "inputError": null
+      },
+      "nativeStatus": "Paused"
+    }
+  },
+  {
+    "command": {
+      "kind": "play"
+    },
+    "start": "2026-10-12T13:59:51.088Z",
+    "end": "2026-10-12T13:59:52.605Z",
+    "status": "completed",
+    "result": {
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.410001039505005,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": null,
+      "handling": null,
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "role": "cargo",
+          "massMg": 2984400000,
+          "stackCount": 79
+        }
+      ],
+      "construction": {
+        "state": "Ready",
+        "installations": [],
+        "revision": 0,
+        "massMg": 2984400000,
+        "ghost": null
+      },
+      "connections": {
+        "power": [],
+        "belts": []
+      },
+      "deposits": [],
+      "power": {
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "buttons": [
+        {
+          "name": "ERSTE WERKSTATTZuschnittstation und Umformwerk aufbauen",
+          "disabled": false
+        },
+        {
+          "name": "Pause",
+          "disabled": false
+        },
+        {
+          "name": "Fracht ansehen",
+          "disabled": false
+        }
+      ],
+      "testBridge": false,
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 38.600000001490116,
+          "maxAdvanceMs": 13.799999997019768,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 40,
+          "lastAckId": 40,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": "debug-scene",
+        "inputError": null
+      },
+      "nativeStatus": "Running"
+    }
+  },
+  {
+    "kind": "actual-held-input-exposure",
+    "key": "d",
+    "requestedMs": 133,
+    "observedElapsedMs": 277,
+    "heldAtUtc": "2026-10-12T13:59:53.018Z",
+    "before": {
+      "ticks": 153,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.410001039505005,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 38.600000001490116,
+          "maxAdvanceMs": 13.799999997019768,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5999999977648258,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 40,
+          "lastAckId": 40,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": "debug-scene",
+        "inputError": null
+      }
+    },
+    "held": {
+      "ticks": 160,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.410001039505005,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 38.600000001490116,
+          "maxAdvanceMs": 13.799999997019768,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5999999977648258,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": [
+            "KeyD"
+          ]
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 49,
+          "lastAckId": 40,
+          "pendingIds": [
+            49
+          ],
+          "desiredLevel": {
+            "x": -1,
+            "z": -1.2246467991473532e-16,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": "debug-scene",
+        "inputError": null
+      }
+    }
+  },
+  {
+    "kind": "released-walk-gesture",
+    "axis": "x",
+    "target": -5.9,
+    "key": "d",
+    "ms": 133,
+    "before": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.410001039505005,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    "after": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -6.250002861022949,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    }
+  },
+  {
+    "kind": "actual-held-input-exposure",
+    "key": "a",
+    "requestedMs": 75,
+    "observedElapsedMs": 135,
+    "heldAtUtc": "2026-10-12T13:59:53.770Z",
+    "before": {
+      "ticks": 202,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.250002861022949,
+          "y": 2.400040864944458,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 38.600000001490116,
+          "maxAdvanceMs": 13.799999997019768,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 52,
+          "lastAckId": 52,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": "debug-scene",
+        "inputError": null
+      }
+    },
+    "held": {
+      "ticks": 208,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.250002861022949,
+          "y": 2.400040864944458,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 38.600000001490116,
+          "maxAdvanceMs": 13.799999997019768,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": [
+            "KeyA"
+          ]
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 58,
+          "lastAckId": 52,
+          "pendingIds": [
+            58
+          ],
+          "desiredLevel": {
+            "x": 1,
+            "z": 1.2246467991473532e-16,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": "debug-scene",
+        "inputError": null
+      }
+    }
+  },
+  {
+    "kind": "released-walk-gesture",
+    "axis": "x",
+    "target": -5.9,
+    "key": "a",
+    "ms": 75,
+    "before": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -6.250002861022949,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    "after": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.900001525878906,
+        "y": 2.4000394344329834,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    }
+  },
+  {
+    "command": {
+      "kind": "walk",
+      "axis": "x",
+      "target": -5.9
+    },
+    "start": "2026-10-12T13:59:52.607Z",
+    "end": "2026-10-12T13:59:55.145Z",
+    "status": "completed",
+    "result": {
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.900001525878906,
+          "y": 2.4000394344329834,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": null,
+      "handling": null,
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "role": "cargo",
+          "massMg": 2984400000,
+          "stackCount": 79
+        }
+      ],
+      "construction": {
+        "state": "Ready",
+        "installations": [],
+        "revision": 0,
+        "massMg": 2984400000,
+        "ghost": null
+      },
+      "connections": {
+        "power": [],
+        "belts": []
+      },
+      "deposits": [],
+      "power": {
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "buttons": [
+        {
+          "name": "ERSTE WERKSTATTZuschnittstation und Umformwerk aufbauen",
+          "disabled": false
+        },
+        {
+          "name": "Pause",
+          "disabled": false
+        },
+        {
+          "name": "Fracht ansehen",
+          "disabled": false
+        }
+      ],
+      "testBridge": false,
+      "diagnostics": {
+        "physicsClock": {
+          "maxTimerGapMs": 38.600000001490116,
+          "maxAdvanceMs": 13.799999997019768,
+          "maxHandlerMs": 1219.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 59,
+          "lastAckId": 59,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "physicsWorkers": "2",
+        "ownedRender": null,
+        "visibility": "visible",
+        "hasFocus": true,
+        "pointerLockElement": "debug-scene",
+        "inputError": null
+      },
+      "nativeStatus": "Running"
+    }
+  }
+]

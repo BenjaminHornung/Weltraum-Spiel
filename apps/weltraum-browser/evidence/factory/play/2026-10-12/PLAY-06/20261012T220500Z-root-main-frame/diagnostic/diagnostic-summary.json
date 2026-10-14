@@ -1,0 +1,228 @@
+{
+  "atUtc": "2026-10-12T22:04:01.020Z",
+  "source": "0e2a0bcb",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "browser": "154.0.8037.57",
+  "renderThreads": "1",
+  "status": "Running",
+  "ticks": 400,
+  "events": [
+    {
+      "atUtc": "2026-10-12T22:03:56.249Z",
+      "status": "Running",
+      "ticks": 104,
+      "clock": {
+        "maxTimerGapMs": 17.800000000745058,
+        "maxAdvanceMs": 17,
+        "maxHandlerMs": 1302.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.8999999985098839,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:03:56.872Z",
+      "status": "Running",
+      "ticks": 150,
+      "clock": {
+        "maxTimerGapMs": 17.800000000745058,
+        "maxAdvanceMs": 17,
+        "maxHandlerMs": 1302.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:03:57.622Z",
+      "status": "Running",
+      "ticks": 197,
+      "clock": {
+        "maxTimerGapMs": 22,
+        "maxAdvanceMs": 17,
+        "maxHandlerMs": 1302.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:03:58.197Z",
+      "status": "Running",
+      "ticks": 226,
+      "clock": {
+        "maxTimerGapMs": 22,
+        "maxAdvanceMs": 17,
+        "maxHandlerMs": 1302.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5999999977648258,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:03:58.797Z",
+      "status": "Running",
+      "ticks": 259,
+      "clock": {
+        "maxTimerGapMs": 22,
+        "maxAdvanceMs": 17,
+        "maxHandlerMs": 1302.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.6000000014901161,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:03:59.704Z",
+      "status": "Running",
+      "ticks": 322,
+      "clock": {
+        "maxTimerGapMs": 22,
+        "maxAdvanceMs": 17,
+        "maxHandlerMs": 1302.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.6000000014901161,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:04:00.276Z",
+      "status": "Running",
+      "ticks": 353,
+      "clock": {
+        "maxTimerGapMs": 22,
+        "maxAdvanceMs": 17,
+        "maxHandlerMs": 1302.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.3999999985098839,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:04:00.837Z",
+      "status": "Running",
+      "ticks": 385,
+      "clock": {
+        "maxTimerGapMs": 22,
+        "maxAdvanceMs": 17,
+        "maxHandlerMs": 1302.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.7000000029802322,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    }
+  ],
+  "summary": {
+    "hvp.startupRendererMs": {
+      "count": 1,
+      "p50": 596.6999999992549,
+      "p95": 596.6999999992549,
+      "max": 596.6999999992549
+    },
+    "hvp.startupSourceMs": {
+      "count": 1,
+      "p50": 1049.9000000022352,
+      "p95": 1049.9000000022352,
+      "max": 1049.9000000022352
+    },
+    "hvp.startupCoastMeshMs": {
+      "count": 1,
+      "p50": 3298.89999999851,
+      "p95": 3298.89999999851,
+      "max": 3298.89999999851
+    },
+    "hvp.startupVegetationMs": {
+      "count": 1,
+      "p50": 998.5,
+      "p95": 998.5,
+      "max": 998.5
+    },
+    "hvp.startupAdmissionMs": {
+      "count": 1,
+      "p50": 3.899999998509884,
+      "p95": 3.899999998509884,
+      "max": 3.899999998509884
+    },
+    "hvp.bootstrapReadyMs": {
+      "count": 1,
+      "p50": 9975.699999999255,
+      "p95": 9975.699999999255,
+      "max": 9975.699999999255
+    },
+    "hvp.startupPhysicsMs": {
+      "count": 1,
+      "p50": 2311.900000002235,
+      "p95": 2311.900000002235,
+      "max": 2311.900000002235
+    },
+    "hvp.startupPublishMs": {
+      "count": 1,
+      "p50": 1715.8999999985099,
+      "p95": 1715.8999999985099,
+      "max": 1715.8999999985099
+    },
+    "hvp.startupBackendUpsertMs": {
+      "count": 122,
+      "p50": 2.599999997764826,
+      "p95": 21.199999999254942,
+      "max": 164.39999999850988
+    },
+    "hvp.startupProjectionMs": {
+      "count": 1,
+      "p50": 9.599999997764826,
+      "p95": 9.599999997764826,
+      "max": 9.599999997764826
+    },
+    "hvp.navigationReadyMs": {
+      "count": 1,
+      "p50": 11269.400000002235,
+      "p95": 11269.400000002235,
+      "max": 11269.400000002235
+    },
+    "hvp.coldReadyMs": {
+      "count": 1,
+      "p50": 10942.60000000149,
+      "p95": 10942.60000000149,
+      "max": 10942.60000000149
+    },
+    "hvp.mainFrameCpuMs": {
+      "count": 29,
+      "p50": 115.30000000074506,
+      "p95": 267.1000000014901,
+      "max": 302
+    },
+    "hvp.frameIntervalMs": {
+      "count": 28,
+      "p50": 266.6000000000022,
+      "p95": 633.3000000000011,
+      "max": 816.6000000000004
+    },
+    "hvp.solverStepCpuMs": {
+      "count": 415,
+      "p50": 0.10000000149011612,
+      "p95": 0.4000000022351742,
+      "max": 12.400000002235174
+    },
+    "hvp.resources": {
+      "count": 1,
+      "p50": 0,
+      "p95": 0,
+      "max": 0
+    }
+  },
+  "errors": [],
+  "testBridge": false,
+  "scope": "One readonly mainThreadProfiler/UserTiming diagnostic, normalStart/Play/key gestures; profiler overhead. No performance/gameplay gate."
+}

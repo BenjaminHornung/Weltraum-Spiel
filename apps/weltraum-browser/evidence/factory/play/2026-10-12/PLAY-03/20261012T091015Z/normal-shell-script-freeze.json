@@ -1,0 +1,7 @@
+{
+  "atUtc": "2026-10-12T10:09:18.346085+00:00",
+  "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/scripts/normal-shell-input.mjs",
+  "bytes": 10047,
+  "sha256": "2de49551b2e7366ac9566c6bbcdab13f1d2b4b82c38a4009631c270f87fe9eac",
+  "input": "normal visible UI/trusted CDP; readonly native/client/DOM diagnostics; zero World writes"
+}

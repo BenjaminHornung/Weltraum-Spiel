@@ -1,0 +1,65 @@
+[
+  {
+    "function": "ge",
+    "line": 0,
+    "column": 6221,
+    "seconds": 0.633238,
+    "sourceCompiledExcerpt": "te,revision:r,contents:t},n.resources);return b(e.definition,i,n.resources)},ge=(e,t)=>{let n=new Set,r=new Set,i=new Set;for(let a of t){n.has(a.state.containerId)&&j(`DuplicateContainerId`),n.add(a.state.containerId);let t=d(a.definition),o=S(a.state,e.resources);(t.canonicalJs"
+  },
+  {
+    "function": "Wr",
+    "line": 0,
+    "column": 129966,
+    "seconds": 0.244142,
+    "sourceCompiledExcerpt": " e){let e=t(n);if(r.has(e))throw Error(`DuplicateSourceIdentity`);r.add(e)}},Wr=(n,i)=>{if(i.binding.sourceProfileDigest!==un.sourceObservationVersion)throw Error(`UnsupportedSourceProfile`);let a=g(JSON.parse(n.canonicalJson));if(a.catalogDigest!==n.catalogDigest||i.binding.cata"
+  },
+  {
+    "function": "Q",
+    "line": 0,
+    "column": 135171,
+    "seconds": 0.200334,
+    "sourceCompiledExcerpt": "Descriptors(e))){let e=n.value;e&&typeof e==`object`&&t(e)}}};return t(e),!0},Q=e=>{if(!e||typeof e!=`object`||!Yr(e))return t(e);let n=Gr.get(e);if(n!==void 0)return n;let r;if(Array.isArray(e)){for(let n=0;n<e.length;n++)if(!Object.hasOwn(e,n))return t(e);let n=[];for(let t=0;t"
+  },
+  {
+    "function": "Rt",
+    "line": 0,
+    "column": 67858,
+    "seconds": 0.180952,
+    "sourceCompiledExcerpt": "lues(e))It(t);Object.freeze(e)}return e},Lt=e=>h(e)?e:j(`InvalidMaterialId`),Rt=e=>t({catalog:e.catalog,revision:e.revision,containers:e.containers.map(e=>({definition:e.definition,state:e.state})),reservations:e.reservations,receipts:e.receipts}),zt=e=>e instanceof D?e.reason:`I"
+  },
+  {
+    "function": "",
+    "line": 0,
+    "column": 130509,
+    "seconds": 0.156316,
+    "sourceCompiledExcerpt": "resourceContainers,e=>e.containerId,128);let o=new Map(i.resourceContainers.map(e=>{let t=S(e,a.resources);if(t.canonicalJson!==e.canonicalJson||t.signature!==e.signature)throw Error(`ResourceBytesMismatch`);return[e.containerId,t]})),s=i.observation;if(s){if(s.version!==`fp01-fi"
+  },
+  {
+    "function": "kn",
+    "line": 0,
+    "column": 88193,
+    "seconds": 0.136298,
+    "sourceCompiledExcerpt": "w Map(e.sources),batteryPower:e.batteryPower,virtualStored:e.virtualStored}),kn=(e,n)=>{try{let i=n.supply;if(e.version!==`fp06-factory-power-v1`||i.version!==`fp06-power-supply-v1`)throw Error(`UnsupportedVersion`);for(let t of[e.binding,n.binding,i.binding])Sn(t.sessionId),Sn(t"
+  },
+  {
+    "function": "",
+    "line": 0,
+    "column": 201673,
+    "seconds": 0.018402,
+    "sourceCompiledExcerpt": "y,n).massMg,freshProduction:!!e.extensions[`factory.production`]}}),s=h.flatMap(t=>{let i=A(n,t);if(!i)return[];let o=[];for(let t of i.terms){let r=n.items.find(e=>e.sourceId===t.itemId),i=t.quantityUnits;for(let t of e.state.contents){if(t.resourceId!==r.resourceId||!i)continue"
+  },
+  {
+    "function": "Ce",
+    "line": 0,
+    "column": 224614,
+    "seconds": 0.002221,
+    "sourceCompiledExcerpt": "tLinesConnected:i?u(`B09`,`B06`)&&u(`B06`,`B07`):null,production:i?f:null})},Ce=(r=null)=>{let i=e.read(),a=e.handling?.read(),o=e.construction?.readFacts(),s=i.terrain,c={\"hvp-factory-startsite-v1\":`e62aea8a`,\"hvp-factory-startsite-v2\":`ec8ba9b1`,\"hvp-factory-startsite-v3\":`16db"
+  },
+  {
+    "function": "Dn",
+    "line": 0,
+    "column": 88041,
+    "seconds": 0.002194,
+    "sourceCompiledExcerpt": "ch,catalogDigest:e.catalogDigest,sourceProfileDigest:e.sourceProfileDigest}),Dn=t=>e(t),On=e=>({ports:new Map(e.ports),links:new Map(e.links),sources:new Map(e.sources),batteryPower:e.batteryPower,virtualStored:e.virtualStored}),kn=(e,n)=>{try{let i=n.supply;if(e.version!==`fp06-"
+  }
+]

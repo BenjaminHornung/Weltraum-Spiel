@@ -1,0 +1,1635 @@
+import * as THREE from "three";
+import { afterEach,beforeEach,describe, expect, it, vi } from "vitest";
+import {readFile} from "node:fs/promises";
+
+const actualFetch=globalThis.fetch;
+// Unit transport serves the actual reviewed files. The production loader's
+// byte/hash/format admission stays enabled; this creates no World or fake pose.
+beforeEach(()=>{vi.spyOn(globalThis,"fetch").mockImplementation(async(input,init)=>{
+ const url=typeof input==="string"?input:input instanceof URL?input.href:input.url;
+ if(url.startsWith("/factory/play-2026-10-12/")&&/^[-a-z0-9]+\.glb$/.test(url.split("/").at(-1)!)){
+  const payload=await readFile(new URL(`../../public${url}`,import.meta.url));
+  return new Response(new Uint8Array(payload),{status:200});
+ }
+ return actualFetch(input,init);
+});});
+afterEach(()=>vi.restoreAllMocks());
+import {HVP_BRANCH_CELLS,HVP_BRANCH_KEY} from "../../src/hestia-prototype/physics/profile";
+import { backendRevision, materialProfileId, renderCommandResult, type RenderCommand } from "../../src/presentation";
+import {
+  HVP_COAST_BLOCK_SIZE_METERS,
+  HVP_TERRAIN_MATERIAL_ID,
+  HVP_WATER_REPRESENTATION_KEY,
+  type HvpBlockMesh,
+  hvpBuildCoastBlockCells,
+  hvpMeshBlocks
+} from "../../src/hvp/hvpTerrain";
+import {
+  HVP_SLOT_LIMESTONE_DRY,
+  HVP_SLOT_LIMESTONE_WET,
+  HVP_SLOT_MOSS,
+  HVP_SLOT_SOIL,
+  materializeHvpCoastSource,
+  type HvpCoastSourceSnapshot
+} from "../../src/hvp/hvpCoastSource";
+import { meshHvpTestCells } from "../../src/hvp/hvpCoastMesher";
+import {
+  admitHvpResources,
+  buildHvpResourceLedger,
+  estimateHvpStageCpuBytes,
+  createHvpCompactLookTerrain,
+  createHvpLookTerrain,
+  HVP_RESOURCE_CAPS_DEFAULT,
+  startHvp,
+  startHvpRoute,
+  type HvpBootstrapHandle
+} from "../../src/hvp/hvpBootstrap";
+import { createHvpLookProfile } from "../../src/hestia-prototype/presentation/look";
+import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
+import { mountFactorySession, type FactorySessionHandle } from "../../src/factory/session/factorySession";
+import type { FactoryHostPort, FactoryHostView } from "../../src/factory/session/hostPort";
+import { ThreeRenderBackend } from "../../src/render/three/backend";
+import type { FactoryFacilityRequest } from "../../src/hestia-prototype/physics/factoryFacilitySession";
+import {canonicalSignature} from "../../src/resources/serialization";
+
+class FakeElement extends EventTarget {
+  id = "";
+  open = false;
+  textContent = "";
+  readonly dataset: Record<string, string> = {};
+  readonly children: FakeElement[] = [];
+  readonly attributes = new Map<string, string>();
+  get hidden():boolean { return this.attributes.has("hidden"); }
+  set hidden(value:boolean) { if(value)this.attributes.set("hidden","");else this.attributes.delete("hidden"); }
+  readonly style:Record<string,string>={};
+  parent: FakeElement | undefined;
+
+  constructor(readonly tagName: string) { super(); }
+
+  append(...children: FakeElement[]): void {
+    children.forEach((child) => { child.parent = this; });
+    this.children.push(...children);
+  }
+
+  setAttribute(name: string, value: string): void { this.attributes.set(name, value); }
+  getAttribute(name: string): string | null { return this.attributes.get(name) ?? null; }
+  hasAttribute(name: string): boolean { return this.attributes.has(name); }
+  removeAttribute(name: string): void { this.attributes.delete(name); }
+  remove(): void {
+    if (this.parent === undefined) return;
+    const index = this.parent.children.indexOf(this);
+    if (index >= 0) this.parent.children.splice(index, 1);
+    this.parent = undefined;
+  }
+
+  focus(): void {}
+  setPointerCapture(): void {}
+  releasePointerCapture(): void {}
+  showModal():void { this.open = true; }
+  close():void { this.open = false; }
+}
+
+class FakeWindow extends EventTarget {
+  innerWidth = 1920;
+  innerHeight = 1080;
+  devicePixelRatio = 1;
+  readonly animationFrames = new Map<number, FrameRequestCallback>();
+  readonly listenerTotals = new Map<string, number>();
+  #nextAnimationFrame = 1;
+
+  public override addEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | AddEventListenerOptions): void {
+    super.addEventListener(type, listener, options);
+    this.listenerTotals.set(type, (this.listenerTotals.get(type) ?? 0) + 1);
+  }
+
+  public override removeEventListener(type: string, listener: EventListenerOrEventListenerObject | null, options?: boolean | EventListenerOptions): void {
+    super.removeEventListener(type, listener, options);
+    this.listenerTotals.set(type, Math.max(0, (this.listenerTotals.get(type) ?? 0) - 1));
+  }
+
+  public requestAnimationFrame(callback: FrameRequestCallback): number {
+    const id = this.#nextAnimationFrame++;
+    this.animationFrames.set(id, callback);
+    return id;
+  }
+
+  public cancelAnimationFrame(id: number): void { this.animationFrames.delete(id); }
+}
+
+const descendants = (element: FakeElement): FakeElement[] =>
+  element.children.flatMap((child) => [child, ...descendants(child)]);
+
+const harness = () => {
+  const body = new FakeElement("body");
+  const host = new FakeElement("main");
+  host.id = "app";
+  const canvas = new FakeElement("canvas");
+  canvas.id = "debug-scene";
+  const reticle = new FakeElement("div");
+  reticle.setAttribute("class", "hud-center-safe-area");
+  host.append(reticle);
+  body.append(host, canvas);
+  const documentPort = {
+    addEventListener: () => {}, removeEventListener: () => {},
+    body,
+    querySelector: (selector: string) => {
+      if (selector === "#app") return host;
+      if (selector === "#debug-scene") return canvas;
+      if (selector === ".hud-center-safe-area") return reticle;
+      if (selector === "#hvp-hud") return descendants(body).find((element) => element.id === "hvp-hud") ?? null;
+      if (selector === "#flight-hud") return null;
+      return null;
+    },
+    createElement: (tagName: string) => new FakeElement(tagName)
+  };
+  const windowPort = new FakeWindow();
+  let backendConstructions = 0;
+  let backendDisposals = 0;
+  let renders = 0;
+  const dispatchedCommands: RenderCommand[] = [];
+  const scene = new THREE.Scene();
+  const representationRoot = new THREE.Group();
+  scene.add(representationRoot);
+  const backend = {
+    camera: new THREE.PerspectiveCamera(50, 16 / 9, 0.1, 1_000),
+    scene,
+    representationRoot,
+    dispatch: (command: RenderCommand) => {
+      dispatchedCommands.push(command);
+      if (command.kind === "DisposeBackend") backendDisposals += 1;
+      return renderCommandResult("Accepted");
+    },
+    renderFrame: () => { renders += 1; return renderCommandResult("Accepted"); },
+    getCapabilities: () => ({
+      supportedIndexWidths: [16, 32],
+      supportedMaterialKinds: ["Unlit", "BasicLit", "DebugWireframe"],
+      supportsPerspectiveProjection: true,
+      supportsEviction: true
+    }),
+    readDiagnostics: () => ({
+      acceptedArtifacts: 0,
+      rejectedArtifacts: 0,
+      activeRepresentations: 0,
+      activeFallbacks: 0,
+      geometryAllocations: 0,
+      geometryDisposals: 0,
+      materialAllocations: 0,
+      materialDisposals: 0,
+      estimatedGpuBytes: 0,
+      ownedCpuBytes: 0,
+      replacementCount: 0,
+      removeCount: 0,
+      staleRejectCount: 0,
+      resetCount: 0,
+      evictionCount: 0,
+      evictionRejectCount: 0,
+      rehydrationCount: 0,
+      renderTargetAllocations: 0,
+      renderTargetDisposals: 0,
+      activeRenderTargets: 0,
+      backendRevision: backendRevision(0),
+      backendState: "Available",
+      residentRepresentationKeys: [],
+      visibleRepresentationKeys: [],
+      pinnedFallbackRepresentationKeys: []
+    })
+  };
+  const createBackend = vi.fn(() => {
+    backendConstructions += 1;
+    return backend;
+  });
+  const overrides = (extra: Record<string, unknown> = {}) => ({
+    documentPort: documentPort as unknown as Document,
+    windowPort: windowPort as unknown as Window,
+    // Bootstrap lifecycle tests isolate transport; real Rapier/worker kernels
+    // are verified separately, without allocating a second World per UI test.
+    createPhysics: async (_sources: unknown, spawn: { x: number; y: number; z: number }) => ({
+      collisionBytes: 0, workerCount: 1, update: () => {}, command: async () => {}, dispose: async () => {},
+      setPlayerInput: () => {}, setCutAim:()=>{},impulse:async()=>{},
+      preparation: { jobs: 95, peakParallelJobs: 1, mainPrepareMaxMs: 0 },
+      read: () => ({ status: "Paused", ticks: 0, backlogSeconds: 0, discardedSeconds: 0,
+        gravity: 11.79, gravityProfile: "test-fixture", solver: "test-fixture", stepCpuMs: 0,
+        bodyCount: 3, colliderCount: 5, nativeBytes: "unsupported", player: null,
+        // Transport-only fixture: the real mass/solver contract has its own tests.
+        inertia: {ownerId:"hvp:physics:inertia",sourceDigest:"test-fixture",centerOfMass:{x:71/240,y:71/240,z:.125}},lastImpulse:null,
+        structural:{generation:0,sourceDigest:"test-fixture",state:"Idle",last:null,preview:null,aimPoint:spawn,
+          attachment:{id:"hvp:branch:foliage",ownerId:HVP_BRANCH_KEY,supportCell:{x:10,y:11,z:2}},
+          parts:[{ownerId:HVP_BRANCH_KEY,anchored:true,cells:HVP_BRANCH_CELLS,center:{x:.75,y:1,z:.25},position:spawn,orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},massKg:450,sleeping:true}]},
+        bodies: [{ ownerId: "hvp:physics:drop", position: spawn, orientation: { x: 0, y: 0, z: 0, w: 1 },
+          velocity: { x: 0, y: 0, z: 0 }, sleeping: true, massKg: 300 },
+          {ownerId:"hvp:physics:inertia",position:spawn,orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},sleeping:true,massKg:35.15625},
+          {ownerId:HVP_BRANCH_KEY,position:spawn,orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},sleeping:true,massKg:450}] })
+    }),
+    createBackend: createBackend as unknown as (
+      options: ConstructorParameters<typeof import("../../src/render/three/backend").ThreeRenderBackend>[0]
+    ) => import("../../src/render/three/backend").ThreeRenderBackend,
+    ...extra
+  } as unknown as Parameters<typeof startHvp>[0]);
+  return {
+    body,
+    host,
+    canvas,
+    documentPort,
+    windowPort,
+    createBackend,
+    overrides,
+    counts: () => ({ backendConstructions, backendDisposals, renders }),
+    commands: dispatchedCommands,
+    camera: backend.camera,
+    scene,
+    backend
+  };
+};
+
+/** Emulates the browser firing a pending frame: the fired callback leaves the queue. */
+const stepFrame = (windowPort: FakeWindow, timestamp: number): void => {
+  expect(windowPort.animationFrames.size).toBe(1);
+  const [id, callback] = [...windowPort.animationFrames.entries()][0]!;
+  windowPort.animationFrames.delete(id);
+  callback(timestamp);
+};
+
+/** Actual receiver/Host fault fixture; Native replies isolate transport, not physical admission. */
+const factoryCarrierHostFixture=async()=>{
+  const source=harness(),original=source.overrides()!,site=await import("../../src/factory/fixtures/startSite");
+  const {readCargoHandlingProfile}=await import("../../src/factory/construction/cargoHandlingProfile");
+  const profile=readCargoHandlingProfile(createFp02Fixture("cargo").catalog,"B07-BOM")!;
+  let port!:FactoryHostPort,carrier:import("../../src/hestia-prototype/physics/factoryFacilitySession").FactoryNativeCarrierRead|undefined;
+  let preparedPartObservation:import("../../src/hestia-prototype/physics/factoryFacilitySession").FactoryNativePartObservation|undefined;
+  let preparedRequest:FactoryFacilityRequest|undefined;
+  let privatePreparedRead:ReturnType<NonNullable<FactoryHostPort["handling"]>["read"]>|undefined;
+  let nativeTickDelta=0;
+  let collisionBytes=0,carrierUploads=0,carrierRemoves=0,retireAfter=0,failStage=false,failRetire=false,failProjection=false;
+  let lastCarrierVeto:import("../../src/hestia-prototype/physics/factoryFacilitySession").FactoryCarrierVeto|undefined;
+  const prepare=vi.fn(),rollback=vi.fn();
+  const backend=new ThreeRenderBackend({canvas:source.canvas as unknown as HTMLCanvasElement,rendererFactory:()=>({setPixelRatio(){},setSize(){},render(){},dispose(){}})});
+  const dispatch=backend.dispatch.bind(backend);
+  vi.spyOn(backend,"dispatch").mockImplementation(command=>{
+    if(command.kind==="UpsertMeshArtifact"&&command.artifact.representationKey.startsWith("factory-play:carrier:slot:")){
+      carrierUploads++;if(failStage&&carrierUploads===2)return renderCommandResult("RejectedContentConflict","NotApplicable","FaultStage");
+    }
+    if(command.kind==="RemoveRepresentation"&&command.representationKey.startsWith("factory-play:carrier:slot:")){carrierRemoves++;if(failRetire&&carrierRemoves>retireAfter)return renderCommandResult("RejectedContentConflict","NotApplicable","FaultRetire");}
+    if(failProjection&&command.kind==="ApplyFrameProjection"){failProjection=false;return renderCommandResult("RejectedContentConflict","NotApplicable","FaultProjection");}
+    return dispatch(command);
+  });
+  const request={transactionId:"render_carrier_pickup",ownerId:"factory_carrier",profileId:profile.profileId,profileDigest:profile.digest,expectedRevision:0,expectedTerrainRevision:0,sourceContainerId:"fp02_wreck_cargo",custodyContainerId:"custody_render_carrier_pickup",materialBinding:"finite-transport-reply-fixture"};
+  const handle=await startHvp(source.overrides({createBackend:()=>backend,createSourceSnapshot:site.materializeFactoryStartSite,
+    factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:site.readFactorySourceColumnWorld},
+    createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+      const native=await original.createPhysics!(...args),read=native.read,cargo=args[10]!;
+      const facilities=(held=false)=>({revision:0,state:held?"PreparedHeld" as const:"Idle" as const,transactionId:held?preparedRequest!.transactionId:null,owners:[],prepared:held?{...preparedRequest!,sourceDigest:preparedPartObservation!.sourceDigest,profileDigest:preparedPartObservation!.profileDigest,centerMm:[preparedRequest!.centerMm[0]!,preparedRequest!.centerMm[1]!,preparedRequest!.centerMm[2]!] as const,massMg:341000000,bodyHandle:20,colliderHandles:preparedPartObservation!.parts.flatMap(p=>p.colliderHandles),installationRevision:0}:null,...(held&&preparedPartObservation?{preparedPartObservation}:{}),...(carrier?{carrier}:{}),...(lastCarrierVeto?{lastCarrierVeto}:{}),cargo:{site:cargo,ownerId:cargo.ownerId,containerId:cargo.containerId,sourceDigest:cargo.sourceDigest,profileDigest:cargo.profileDigest,opened:true,positionMm:cargo.centerMm,accessBoundsMm:cargo.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}});
+      return {...native,command:async()=>{},prepareFactoryCarrier:async()=>{prepare();carrier={ownerId:request.ownerId,transactionId:request.transactionId,profileId:profile.profileId,profileDigest:profile.digest,phase:"Carrying",bodyHandle:6,colliderHandles:[7,8,9,10,11],massMg:profile.massMg,materialBinding:request.materialBinding,positionMm:[-6250,1500,-2500],containerId:request.custodyContainerId,accessible:true,nativeMassKg:341,localCom:{x:0,y:.5,z:0},principalInertia:{x:1,y:1,z:1}};return facilities();},commitFactoryCarrier:async()=>{},publishFactoryCarrier:()=>{},finalizeFactoryCarrier:async()=>{},rollbackFactoryCarrier:async()=>{rollback();carrier=undefined;},
+        // Transparent transport proof fixture; actual Rapier admission is
+        // covered separately by facilitySession.test.ts.
+        prepareFactoryFacility:async(request:FactoryFacilityRequest)=>{const {createFactoryInstallationProfile}=await import("../../src/factory/construction/installationProfile");const profile=createFactoryInstallationProfile(request.definitionRef.sourceId);
+          const core={instanceId:request.instanceId,definitionRef:profile.definitionRef,sourceDigest:profile.sourceDigest,profileDigest:profile.profileDigest,installationRevision:0,terrainRevision:0,facilityRevision:0,published:false,confirmed:true,complete:true,parts:profile.source.parts.map(part=>({partId:part.partId,status:"Present" as const,colliderHandles:profile.colliders.flatMap((box,index)=>box.partId===part.partId?[100+index]:[])}))};
+          preparedRequest=request;preparedPartObservation={...core,observationDigest:canonicalSignature(core)};privatePreparedRead=facilities(true);return privatePreparedRead;},commitFactoryFacility:async()=>{},publishFactoryFacility:()=>{},rollbackFactoryFacility:async()=>{preparedPartObservation=undefined;},finalizeFactoryFacility:async()=>{},
+        read:()=>({...read(),ticks:read().ticks+nativeTickDelta,collisionBytes,player:{...read().player!,position:{x:-6.25,y:2.4,z:-1.5}},factoryFacilities:facilities()})};
+    },factoryExtension:async(host:FactoryHostPort)=>{port=host;return{isQuiescent:()=>true,dispose:async()=>host.construction!.dispose()};}}));
+  return {port,request,backend,handle,prepare,rollback,source,
+    setCarrierPhase:(phase:"Carrying"|"Deposited")=>{if(carrier)carrier={...carrier,phase};},
+    clearCarrier:()=>{carrier=undefined;},
+    setCarrierVeto:(reason:string|undefined)=>{lastCarrierVeto=reason?{reason,targetMm:[-6250,1500,-2500]}:undefined;},
+    failStage:()=>{failStage=true;failRetire=true;},failReleaseRetire:()=>{failRetire=true;retireAfter=carrierRemoves+1;},failProjection:()=>{failProjection=true;},
+    readPrepared:()=>privatePreparedRead!,setNativeTickDelta:(delta:number)=>{nativeTickDelta=delta;},
+    setCollisionBytes:(bytes:number)=>{collisionBytes=bytes;},disableFaults:()=>{failStage=false;failRetire=false;failProjection=false;}};
+};
+
+describe("HVP T08 bootstrap lifecycle", () => {
+  // Full starts materialize and mesh the region; allow generous time per test
+  // instead of the 5 s default so slow environments report real failures.
+  vi.setConfig({ testTimeout: 120_000 });
+
+  it("PLAY03 Host modal owns neutral pause and releases before real Play ACK without a second stop",async()=>{
+    const source=harness(),original=source.overrides()!,events=new EventTarget();
+    const doc=Object.assign(source.documentPort,{hidden:false,pointerLockElement:null as FakeElement|null,
+      addEventListener:events.addEventListener.bind(events),removeEventListener:events.removeEventListener.bind(events),
+      exitPointerLock:()=>{doc.pointerLockElement=null;events.dispatchEvent(new Event("pointerlockchange"));}});
+    let gesture=false,status:FactoryHostView["physicsStatus"]="Paused",nativeTick=0,port!:FactoryHostPort;
+    const acks:(()=>void)[]=[],commands:string[]=[],intents:unknown[]=[];
+    Object.defineProperty(source.canvas,"requestPointerLock",{value:()=>{expect(gesture).toBe(true);doc.pointerLockElement=source.canvas;events.dispatchEvent(new Event("pointerlockchange"));return Promise.resolve();}});
+    const handle=await startHvp(source.overrides({createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+      const native=await original.createPhysics!(...args),read=native.read;
+      return {...native,setPlayerInput:(value:unknown)=>intents.push(value),command:(kind:string)=>{commands.push(kind);if(kind==="Pause"&&status==="Running")nativeTick++;status=kind==="Play"?"Running":"Paused";return kind==="Play"?new Promise<void>(resolve=>acks.push(resolve)):Promise.resolve();},read:()=>({...read(),status,ticks:nativeTick})};
+    },factoryExtension:async(host:FactoryHostPort)=>{port=host;return{isQuiescent:()=>true,dispose:async()=>{}};}}));
+    try{
+      const host=port as FactoryHostPort&{setSurface?:(surface:string|null,binding:{sessionId:string;epoch:number})=>void;play?:()=>Promise<FactoryHostView>};
+      expect(host.setSurface,"Host must own the single modal focus lifetime").toBeTypeOf("function");expect(host.play,"Host Play must await the actual input/native ACK").toBeTypeOf("function");
+      const binding=host.read();host.setSurface!("cargo",binding);await Promise.resolve();const pauses=commands.filter(value=>value==="Pause").length;
+      host.setPanelFocus!("power");host.setPanelFocus!(null);host.setSurface!("cargo",binding);
+      expect(commands.filter(value=>value==="Pause")).toHaveLength(pauses);
+      expect((host.read() as unknown as {input:{surface:string|null}}).input.surface).toBe("cargo");
+      let settled=false;gesture=true;const playing=host.play!().then(view=>{settled=true;return view;});gesture=false;
+      await Promise.resolve();expect(settled).toBe(false);expect(doc.pointerLockElement).toBe(source.canvas);expect(acks).toHaveLength(1);
+      acks[0]!();await playing;const beforeRelease=commands.length;
+      host.setPanelFocus!(null);host.setSurface!(null,binding);host.setSurface!(null,binding);
+      expect(commands).toHaveLength(beforeRelease);expect(host.read().physicsStatus).toBe("Running");
+      source.windowPort.dispatchEvent(Object.assign(new Event("keydown",{cancelable:true}),{code:"KeyD",repeat:false}));
+      // This declared Host transport uses Legacy deferred input, not the dedicated Factory Native event fixture.
+      stepFrame(source.windowPort,16);expect(JSON.parse(source.body.dataset.hestiaPrototypeInput!).pressedKeys).toEqual(["KeyD"]);
+      expect(descendants(source.body).find(element=>element.id==="hvp-hud")?.hidden,"Factory Shell must retain HUD ownership after the real legacy frame update").toBe(true);
+      host.setSurface!("map",binding);await Promise.resolve();expect(intents.at(-1)).toMatchObject({x:0,z:0,sprint:false,jump:false});expect(doc.pointerLockElement).toBe(null);expect(host.read().physicsStatus).toBe("Paused");
+      stepFrame(source.windowPort,32);
+      const pausedVisibility=source.commands.filter((command):command is Extract<RenderCommand,{kind:"ApplyVisibilityPlan"}>=>command.kind==="ApplyVisibilityPlan").at(-1)!;
+      expect(pausedVisibility.plan.visibleRepresentationKeys,"a paused Factory first-person camera must not render its own visor").not.toContain("hvp:player:avatar");
+      host.setSurface!(null,binding);expect(host.read().physicsStatus).toBe("Paused");expect(acks).toHaveLength(1);
+      host.setSurface!("cargo",{...binding,epoch:binding.epoch+1});expect((host.read() as unknown as {input:{surface:string|null}}).input.surface).toBe(null);
+      status="CoverageHold";await expect(host.play!()).rejects.toThrow(/unconfirmed|busy|hold/i);expect(acks).toHaveLength(1);
+      expect(descendants(source.body).find(element=>element.id==="hvp-player-pause")?.open).toBe(false);
+    }finally{await handle.dispose();}
+    const old=commands.length;(port as unknown as {setSurface:(surface:string|null,binding:unknown)=>void}).setSurface("cargo",{sessionId:"stale",epoch:0});expect(commands).toHaveLength(old);
+  });
+
+  it("PLAY01 V2 bootstrap admits only its explicitly matching Factory profile",async()=>{
+    const fixture=await import("../../src/factory/fixtures/startSite");
+    const extension=async()=>({isQuiescent:()=>true,dispose:async()=>{}});
+    const invalidPhysicalProfile={version:"hvp-factory-startsite-v2",readColumn:(x:number,z:number)=>x===8.0625&&z===7.0625?{topMeters:0,slot:0}:fixture.readFactorySourceColumnWorldV2(x,z)};
+    for(const [name,profile,factoryExtension,ready] of [
+      ["matching",{version:"hvp-factory-startsite-v2",readColumn:fixture.readFactorySourceColumnWorldV2},extension,true],
+      ["V1 mismatch",{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},extension,false],
+      ["missing",undefined,extension,false],
+      ["without Factory",{version:"hvp-factory-startsite-v2",readColumn:fixture.readFactorySourceColumnWorldV2},undefined,false],
+      ["unknown version",{version:"hvp-factory-startsite-v3",readColumn:fixture.readFactorySourceColumnWorldV2},extension,false],
+      ["additional invalid physical plant",invalidPhysicalProfile,extension,false]
+    ] as const){
+      const source=harness(),original=source.overrides()!;
+      const handle=await startHvp(source.overrides({createSourceSnapshot:fixture.materializeFactoryStartSiteV2,factorySourceProfile:profile,factoryExtension,
+        // Actual source binding with declared Native reply fixture; physical admission is tested in the normal browser.
+        createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+          const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
+          return {...native,read:()=>({...read(),factoryFacilities:{revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null,
+            cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened:false,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}}})};
+        }}));
+      try{
+        const alert=descendants(source.body).find(e=>e.textContent.startsWith("Technical initialization failure:"));
+        expect(source.body.dataset.hestiaPrototypeState,`${name}: ${alert?.textContent??""}`).toBe(ready?"Ready":"Error");
+        if(ready){expect(source.body.dataset.hestiaPrototypeSourceDigest).toBe("ec8ba9b1");expect(source.body.dataset.hestiaPrototypeVegetationCount).toBe("96");}
+        else{expect(source.counts().renders,name).toBe(0);expect(source.windowPort.animationFrames.size,name).toBe(0);}
+      }finally{await handle.dispose();}
+    }
+  });
+
+  it("PLAY01 V3 bootstrap binds its named generation and preserves the hard habitat/unknown-profile guards", async () => {
+    const fixture = await import("../../src/factory/fixtures/startSite");
+    const expectedDigest = fixture.materializeFactoryStartSiteV3().sourceDigest;
+    const extension = async () => ({ isQuiescent: () => true, dispose: async () => {} });
+    const invalidPhysicalProfile = { version: "hvp-factory-startsite-v3", readColumn: (x: number, z: number) =>
+      x === 8.0625 && z === 7.0625 ? { topMeters: 0, slot: 0 } : fixture.readFactorySourceColumnWorldV3(x, z) };
+    for (const [name, profile, factoryExtension, ready] of [
+      ["matching", { version: "hvp-factory-startsite-v3", readColumn: fixture.readFactorySourceColumnWorldV3 }, extension, true],
+      ["V2 mismatch", { version: "hvp-factory-startsite-v2", readColumn: fixture.readFactorySourceColumnWorldV2 }, extension, false],
+      ["missing", undefined, extension, false],
+      ["without Factory", { version: "hvp-factory-startsite-v3", readColumn: fixture.readFactorySourceColumnWorldV3 }, undefined, false],
+      ["unknown V4", { version: "hvp-factory-startsite-v4", readColumn: fixture.readFactorySourceColumnWorldV3 }, extension, false],
+      ["additional invalid physical plant", invalidPhysicalProfile, extension, false]
+    ] as const) {
+      const source = harness(), original = source.overrides()!;
+      const handle = await startHvp(source.overrides({ createSourceSnapshot: fixture.materializeFactoryStartSiteV3,
+        factorySourceProfile: profile, factoryExtension,
+        // Declared current transport response only; normal-game admission remains a separate proof.
+        createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+          const native = await original.createPhysics!(...args), read = native.read, site = args[10]!;
+          return { ...native, read: () => ({ ...read(), factoryFacilities: { revision: 0, state: "Idle" as const,
+            transactionId: null, owners: [], prepared: null, cargo: { site, ownerId: site.ownerId, containerId: site.containerId,
+              sourceDigest: site.sourceDigest, profileDigest: site.profileDigest, opened: false, positionMm: site.centerMm,
+              accessBoundsMm: site.accessBoundsMm, bodyHandle: 4, colliderHandles: [5], accessible: true, openReceipt: null } } }) };
+        } }));
+      try {
+        const alert = descendants(source.body).find(e => e.textContent.startsWith("Technical initialization failure:"));
+        expect(source.body.dataset.hestiaPrototypeState, `${name}: ${alert?.textContent ?? ""}`).toBe(ready ? "Ready" : "Error");
+        if (ready) {
+          expect(source.body.dataset.hestiaPrototypeSourceDigest).toBe(expectedDigest);
+          expect(source.body.dataset.hestiaPrototypeVegetationCount).toBe("96");
+        } else {
+          expect(source.counts().renders, name).toBe(0);
+          expect(source.windowPort.animationFrames.size, name).toBe(0);
+        }
+      } finally { await handle.dispose(); }
+    }
+  });
+
+  it("PLAY01 V4 bootstrap binds its named generation and preserves the hard habitat/unknown-profile guards", async () => {
+    const fixture = await import("../../src/factory/fixtures/startSite");
+    const expectedDigest = fixture.materializeFactoryStartSiteV4().sourceDigest;
+    const extension = async () => ({ isQuiescent: () => true, dispose: async () => {} });
+    const invalidPhysicalProfile = { version: "hvp-factory-startsite-v4", readColumn: (x: number, z: number) =>
+      x === 8.0625 && z === 7.0625 ? { topMeters: 0, slot: 0 } : fixture.readFactorySourceColumnWorldV4(x, z) };
+    for (const [name, profile, factoryExtension, ready] of [
+      ["matching", { version: "hvp-factory-startsite-v4", readColumn: fixture.readFactorySourceColumnWorldV4 }, extension, true],
+      ["V2 mismatch", { version: "hvp-factory-startsite-v2", readColumn: fixture.readFactorySourceColumnWorldV2 }, extension, false],
+      ["missing", undefined, extension, false],
+      ["without Factory", { version: "hvp-factory-startsite-v4", readColumn: fixture.readFactorySourceColumnWorldV4 }, undefined, false],
+      ["unknown V5", { version: "hvp-factory-startsite-v5", readColumn: fixture.readFactorySourceColumnWorldV4 }, extension, false],
+      ["additional invalid physical plant", invalidPhysicalProfile, extension, false]
+    ] as const) {
+      const source = harness(), original = source.overrides()!;
+      const handle = await startHvp(source.overrides({ createSourceSnapshot: fixture.materializeFactoryStartSiteV4,
+        factorySourceProfile: profile, factoryExtension,
+        // Declared current transport response only; normal-game admission remains a separate proof.
+        createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+          const native = await original.createPhysics!(...args), read = native.read, site = args[10]!;
+          return { ...native, read: () => ({ ...read(), factoryFacilities: { revision: 0, state: "Idle" as const,
+            transactionId: null, owners: [], prepared: null, cargo: { site, ownerId: site.ownerId, containerId: site.containerId,
+              sourceDigest: site.sourceDigest, profileDigest: site.profileDigest, opened: false, positionMm: site.centerMm,
+              accessBoundsMm: site.accessBoundsMm, bodyHandle: 4, colliderHandles: [5], accessible: true, openReceipt: null } } }) };
+        } }));
+      try {
+        const alert = descendants(source.body).find(e => e.textContent.startsWith("Technical initialization failure:"));
+        expect(source.body.dataset.hestiaPrototypeState, `${name}: ${alert?.textContent ?? ""}`).toBe(ready ? "Ready" : "Error");
+        if (ready) {
+          expect(source.body.dataset.hestiaPrototypeSourceDigest).toBe(expectedDigest);
+          expect(source.body.dataset.hestiaPrototypeVegetationCount).toBe("96");
+        } else {
+          expect(source.counts().renders, name).toBe(0);
+          expect(source.windowPort.animationFrames.size, name).toBe(0);
+        }
+      } finally { await handle.dispose(); }
+    }
+  });
+
+  it("W09 projects actual carrier mass, movement veto and deposit guidance into the normal HUD",async()=>{
+    // Actual Bootstrap/HUD path with declared Native transport reply fixture; no physical admission claim.
+    const f=await factoryCarrierHostFixture();const text=(id:string)=>descendants(f.source.body).find(e=>e.id===id)!.textContent;
+    try{
+      stepFrame(f.source.windowPort,performance.now());
+      expect(text("hvp-interaction-target")).toContain("Kein Treffer innerhalb von 4 m");
+      await f.port.handling!.prepare(f.request,"pickup");await f.port.handling!.commit(f.request.transactionId);f.port.handling!.publish(f.request.transactionId);await f.port.handling!.finalize(f.request.transactionId);
+      const before=JSON.stringify(f.port.read());stepFrame(f.source.windowPort,performance.now());
+      expect(text("hvp-interaction-target")).toContain("Transport: 341.0 kg");
+      expect(text("hvp-interaction-feedback")).toContain("WASD");
+      expect(text("hvp-cut-feedback")).toContain("Hier ablegen");
+      expect(descendants(f.source.body).find(e=>e.id==="hvp-interaction")!.children[3]!.textContent).not.toContain("Schneiden");
+      expect(JSON.stringify(f.port.read())).toBe(before);
+      f.setCarrierVeto("CarrierOverlap");stepFrame(f.source.windowPort,performance.now()+17);
+      expect(text("hvp-interaction-feedback")).toContain("Hindernis");
+      f.setCarrierPhase("Deposited");stepFrame(f.source.windowPort,performance.now()+34);
+      expect(text("hvp-interaction-target")).toContain("Depot: 341.0 kg");
+      expect(text("hvp-cut-feedback")).toContain("lokalen Anlage");
+      f.clearCarrier();stepFrame(f.source.windowPort,performance.now()+51);
+      expect(text("hvp-interaction-target")).toContain("Kein Treffer innerhalb von 4 m");
+      expect(text("hvp-interaction-feedback")).toContain("F stößt");
+      expect(descendants(f.source.body).find(e=>e.id==="hvp-interaction")!.children[3]!.textContent).toContain("Schneiden");
+    }finally{await f.handle.dispose();}
+  });
+
+  it("W09 enters RecoveryHold when a partially staged carrier cannot retire its actual receiver artifact",async()=>{
+    const f=await factoryCarrierHostFixture();try{
+      f.failStage();await expect(f.port.handling!.prepare(f.request,"pickup")).rejects.toThrow(/RecoveryHold/);
+      expect(f.rollback).toHaveBeenCalledTimes(1);
+      expect(f.backend.readDiagnostics().residentRepresentationKeys.some(key=>key.startsWith("factory-play:carrier:slot:"))).toBe(true);
+      f.disableFaults();expect(()=>f.port.construction!.dispose()).not.toThrow();
+      expect(f.backend.readDiagnostics().residentRepresentationKeys.some(key=>key.startsWith("factory-play:carrier:slot:"))).toBe(false);
+    }finally{f.disableFaults();await f.handle.dispose();}
+  });
+
+  it("W09 restores the consumed paid depot projection after actual held publication rejects",async()=>{
+    const f=await factoryCarrierHostFixture();try{
+      await f.port.handling!.prepare(f.request,"pickup");await f.port.handling!.commit(f.request.transactionId);f.port.handling!.publish(f.request.transactionId);await f.port.handling!.finalize(f.request.transactionId);
+      const before=f.backend.readDiagnostics().visibleRepresentationKeys.filter(key=>key.startsWith("factory-play:carrier:slot:"));expect(before).toHaveLength(5);
+      const {createFactoryInstallationProfile}=await import("../../src/factory/construction/installationProfile");const profile=createFactoryInstallationProfile("B07");
+      const request={transactionId:"render_consume_depot",instanceId:"render_former",definitionSourceId:"B07",centerMm:[-6250,1500,-2500],quarterTurns:1};
+      await f.port.construction!.prepareNative({...request,ownerId:request.instanceId,definitionRef:profile.definitionRef,profileDigest:profile.profileDigest,expectedRevision:0,expectedTerrainRevision:0,materialBinding:"finite-install-reply-fixture",consumedCustody:{containerId:f.request.custodyContainerId,emptyCanonicalJson:"empty-fixture"}});
+      const plan={request,installation:{instanceId:request.instanceId},profile} as unknown as Parameters<NonNullable<FactoryHostPort["construction"]>["stageProjection"]>[0];
+      await expect(f.port.construction!.stageProjection(plan),"actual prepared RPC receipt is separate from published physics.read()").resolves.toBeUndefined();await f.port.construction!.commitNative(request.transactionId);
+      f.failProjection();expect(()=>f.port.construction!.publishNative(request.transactionId)).toThrow(/FaultProjection/);
+      await f.port.construction!.rollbackNative(request.transactionId);f.port.construction!.rollbackProjection(request.transactionId);
+      expect(f.backend.readDiagnostics().visibleRepresentationKeys.filter(key=>key.startsWith("factory-play:carrier:slot:"))).toEqual(before);
+    }finally{f.disableFaults();await f.handle.dispose();}
+  });
+
+  it("PLAY02 private prepared geometry rejects stale headers, request/profile mismatches and contradictory parts before upload",async()=>{
+    const f=await factoryCarrierHostFixture();try{
+      const {createFactoryInstallationProfile}=await import("../../src/factory/construction/installationProfile"),profile=createFactoryInstallationProfile("B07");
+      const request={transactionId:"guard_prepared",instanceId:"guard_former",definitionSourceId:"B07",centerMm:[-6250,1500,-2500],quarterTurns:1};
+      await f.port.construction!.prepareNative({...request,ownerId:request.instanceId,definitionRef:profile.definitionRef,profileDigest:profile.profileDigest,expectedRevision:0,expectedTerrainRevision:0,materialBinding:"finite-receiver-fixture"});
+      const plan={request,installation:{instanceId:request.instanceId},profile} as unknown as Parameters<NonNullable<FactoryHostPort["construction"]>["stageProjection"]>[0];
+      const held=f.readPrepared(),copy=JSON.stringify(held),resident=[...f.backend.readDiagnostics().residentRepresentationKeys];
+      const restore=()=>Object.assign(held,JSON.parse(copy));
+      for(const mutate of [
+        ()=>Object.assign(held,{transactionId:"foreign"}),
+        ()=>Object.assign(held,{state:"CommittedHeld"}),
+        ()=>Object.assign(held.prepared!,{profileDigest:"foreign"}),
+        ()=>Object.assign(held.prepared!,{materialBinding:"substituted"}),
+        ()=>Object.assign(held.preparedPartObservation!,{terrainRevision:99}),
+        ()=>{const row=held.preparedPartObservation!;Object.assign(row,{parts:row.parts.map((p,i)=>i===0?{...p,status:"Unknown"}:p)});const {observationDigest:_digest,...core}=row;Object.assign(row,{observationDigest:canonicalSignature(core)});},
+        ()=>{const row=held.preparedPartObservation!;Object.assign(row,{parts:row.parts.map((p,i)=>i===0?{...p,colliderHandles:[999]}:p)});const {observationDigest:_digest,...core}=row;Object.assign(row,{observationDigest:canonicalSignature(core)});}
+      ]){restore();mutate();await expect(f.port.construction!.stageProjection(plan)).rejects.toThrow(/binding|geometry|observation/);expect(f.backend.readDiagnostics().residentRepresentationKeys).toEqual(resident);}
+      restore();f.setNativeTickDelta(1);await expect(f.port.construction!.stageProjection(plan)).rejects.toThrow(/binding/);f.setNativeTickDelta(0);
+      await expect(f.port.construction!.stageProjection({...plan,request:{...request,centerMm:[-6500,1500,-2500]}} as typeof plan)).rejects.toThrow(/binding/);
+      f.port.construction!.rollbackProjection(request.transactionId);
+    }finally{await f.handle.dispose();}
+  });
+
+  it("W09 release enters RecoveryHold after one actual carrier artifact retires and the next rejects",async()=>{
+    const f=await factoryCarrierHostFixture();try{
+      await f.port.handling!.prepare(f.request,"pickup");await f.port.handling!.commit(f.request.transactionId);f.port.handling!.publish(f.request.transactionId);await f.port.handling!.finalize(f.request.transactionId);
+      const release={...f.request,transactionId:"render_carrier_release"};await f.port.handling!.prepare(release,"release");await f.port.handling!.commit(release.transactionId);f.failReleaseRetire();
+      expect(()=>f.port.handling!.publish(release.transactionId)).toThrow(/RecoveryHold/);
+      expect(f.backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.startsWith("factory-play:carrier:slot:"))).toHaveLength(4);expect(f.rollback).not.toHaveBeenCalled();
+      f.disableFaults();expect(()=>f.port.construction!.dispose()).not.toThrow();
+      expect(f.backend.readDiagnostics().residentRepresentationKeys.some(key=>key.startsWith("factory-play:carrier:slot:"))).toBe(false);
+    }finally{f.disableFaults();await f.handle.dispose();}
+  });
+
+  it.each(["pickup","deposit","release"] as const)("W09 admits complete Native member capture cost before carrier %s allocation",async(operation)=>{
+    const f=await factoryCarrierHostFixture();try{
+      f.setCollisionBytes(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes);
+      await expect(f.port.handling!.prepare(f.request,operation)).rejects.toThrow(/CPU|budget|cap/i);expect(f.prepare).not.toHaveBeenCalled();
+    }finally{await f.handle.dispose();}
+  });
+  it("records measured cold Ready only after the first submitted scene frame",async()=>{
+    const source=harness();Object.defineProperty(source.windowPort,"location",{value:{search:"?hvpMeasure=1"}});
+    const measure=vi.spyOn(performance,"measure");let handle:Awaited<ReturnType<typeof startHvp>>|undefined;
+    try{
+      handle=await startHvp(source.overrides());
+      const startupProjection=source.commands.filter(c=>c.kind==="ApplyFrameProjection");
+      expect(startupProjection).toHaveLength(1);
+      expect(startupProjection[0]!.snapshot.representationTransforms).toHaveLength(source.commands.filter(c=>c.kind==="UpsertMeshArtifact").length);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(0);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.startupBackendUpsertMs")).toHaveLength(source.commands.filter(c=>c.kind==="UpsertMeshArtifact").length);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.startupProjectionMs")).toHaveLength(source.commands.filter(c=>c.kind==="ApplyFrameProjection").length);
+      stepFrame(source.windowPort,performance.now());expect(source.counts().renders).toBe(1);
+      expect(source.commands.filter(c=>c.kind==="ApplyFrameProjection").length).toBeGreaterThan(startupProjection.length);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(1);
+      stepFrame(source.windowPort,performance.now()+17);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(1);
+    }finally{await handle?.dispose();measure.mockRestore();}
+  });
+  it("binds the rendered daylight look scene instead of only publishing dataset claims", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+
+    try {
+      const presentation = source.scene.getObjectByName("hvp-readable-coast-presentation");
+      expect(presentation).toBeDefined();
+      expect(source.scene.background).toBeInstanceOf(THREE.Color);
+      expect((source.scene.background as THREE.Color).getHex()).toBe(0x87b5d9);
+      expect(source.scene.fog).toBeInstanceOf(THREE.Fog);
+      expect((source.scene.fog as THREE.Fog).near).toBe(48);
+      expect((source.scene.fog as THREE.Fog).far).toBe(170);
+      expect(source.scene.getObjectByName("hvp-ambient-fill")).toBeInstanceOf(THREE.HemisphereLight);
+      expect(source.scene.getObjectByName("hvp-sun-key")).toBeInstanceOf(THREE.DirectionalLight);
+      expect(source.scene.getObjectByName("hvp-cool-fill")).toBeInstanceOf(THREE.DirectionalLight);
+
+      expect(presentation?.userData.hvpRenderOnly).toBe(true);
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("fails closed when the backend cannot provide a rendered scene", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides({
+      createBackend: () => ({ ...source.backend, scene: undefined })
+    }));
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(1);
+    expect(descendants(source.body).find((element) => element.id === "hvp-error-detail")?.textContent)
+      .toContain("HVP-02 requires a rendered Three.js scene");
+    expect(source.body.dataset.hestiaPrototypeLook).toBeUndefined();
+    await handle.dispose();
+  });
+
+  it("proves the far field arrives bound through the pipeline as render-only data", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+
+    try {
+      const proxyGroup = source.scene.getObjectByName("hvp-distant-coast-proxy-noneditable");
+      expect(proxyGroup).toBeUndefined();
+      const farCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey === "hvp:far"
+      );
+      expect(farCommand).toBeDefined();
+      if (farCommand === undefined) return;
+      expect(farCommand.artifact.algorithmVersion).toBe("hvp-farfield-macro-v3");
+      expect(farCommand.artifact.indices.length).toBeGreaterThan(0);
+      expect(farCommand.artifact.indices.length / 3).toBeLessThanOrEqual(500_000);
+      const roleIds = farCommand.artifact.materialRanges.map((range) => range.materialProfileId);
+      expect(roleIds.length).toBeGreaterThan(0);
+      for (const id of roleIds) {
+        expect([
+          "hvp:look:limestone-dry",
+          "hvp:look:limestone-wet",
+          "hvp:look:soil",
+          "hvp:look:moss"
+        ]).toContain(id);
+      }
+      expect(farCommand.artifact.materialRanges.reduce((total, range) => total + range.indexCount, 0))
+        .toBe(farCommand.artifact.indices.length);
+      expect((handle as unknown as { readonly edit?: unknown }).edit).toBeUndefined();
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("keeps source-derived terrain geometry intact while grouping readable material ranges", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    try {
+      const terrainCommands = source.commands.filter((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey.startsWith("hvp:terrain:s")
+      );
+      expect(terrainCommands).toHaveLength(16);
+      expect(terrainCommands.map(c=>c.artifact.representationKey)).toEqual(Array.from({length:16},(_,i)=>`hvp:terrain:s${i}:r0`));
+      const allIndices=terrainCommands.reduce((n,c)=>n+c.artifact.indices.length,0);
+      expect(allIndices).toBeGreaterThan(6000);expect(allIndices/3).toBeLessThanOrEqual(500_000);
+      expect(new Set(terrainCommands.flatMap(c=>c.artifact.materialRanges.map(r=>r.materialProfileId))))
+        .toEqual(new Set(["hvp:look:limestone-dry","hvp:look:limestone-wet","hvp:look:soil","hvp:look:moss"]));
+      for(const terrainCommand of terrainCommands) {
+      expect(terrainCommand.artifact.algorithmVersion).toBe("hvp-terrain-sector-v1");
+      expect(terrainCommand.artifact.indices.length % 6).toBe(0);
+      expect(terrainCommand.artifact.materialRanges.reduce((total, range) => total + range.indexCount, 0))
+        .toBe(terrainCommand.artifact.indices.length);
+      terrainCommand.artifact.materialRanges.forEach((range) => {
+        expect(range.indexCount).toBeGreaterThan(0);
+      });
+      expect(terrainCommand.artifact.sourceRevision).toBe(0);
+      terrainCommand.artifact.materialRanges.forEach((range, index, ranges) => {
+        expect(range.startIndex).toBe(index === 0 ? 0 : ranges[index - 1]!.startIndex + ranges[index - 1]!.indexCount);
+      });
+      }
+      expect(source.body.dataset.hestiaPrototypeSeed).toBe("hestia-hvp-lagoon-001");
+      expect(source.body.dataset.hestiaPrototypeSourceRevision).toBe("hvp-authored-coast-v5");
+      expect(source.body.dataset.hestiaPrototypeSourceDigest).toMatch(/^[0-9a-f]{8}$/);
+      const resources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
+      const artifactTriangles = source.commands.reduce((count, command) =>
+        count + (command.kind === "UpsertMeshArtifact" ? command.artifact.indices.length / 3 : 0), 0);
+      // The presentation-only sky contributes 24 * 11 * 2 triangles, not a world artifact.
+      expect(resources.ledger.triangles).toBe(artifactTriangles + 528);
+      expect(resources.ledger.gpuBytes).toBe("unsupported");
+      expect(resources.ledger.totalCpuBytes).toBeLessThanOrEqual(resources.caps.maxCpuBytes);
+      expect(resources.ledger.retainedMeshBytes).toBeLessThanOrEqual(resources.caps.maxMeshBytes);
+
+      const waterCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey === HVP_WATER_REPRESENTATION_KEY
+      );
+      expect(waterCommand).toBeDefined();
+      if (waterCommand === undefined) return;
+      expect(waterCommand.artifact.algorithmVersion).toBe("hvp-water-mask-v2");
+      expect(new Set([...waterCommand.artifact.positions].filter((_value, index) => index % 3 === 1))).toEqual(new Set([0]));
+      expect(waterCommand.materialProfiles).toHaveLength(1);
+      expect([...waterCommand.artifact.normals].every((value, index) => value === (index % 3 === 1 ? 1 : 0))).toBe(true);
+      expect(waterCommand.materialProfiles[0]).toMatchObject({
+        id: "hvp:look:water",
+        depthWrite: false
+      });
+      let waterArea = 0;
+      const positions = waterCommand.artifact.positions;
+      const indices = waterCommand.artifact.indices;
+      for (let triangle = 0; triangle < indices.length; triangle += 3) {
+        const ax = positions[indices[triangle]! * 3]!;
+        const az = positions[indices[triangle]! * 3 + 2]!;
+        const bx = positions[indices[triangle + 1]! * 3]!;
+        const bz = positions[indices[triangle + 1]! * 3 + 2]!;
+        const cx = positions[indices[triangle + 2]! * 3]!;
+        const cz = positions[indices[triangle + 2]! * 3 + 2]!;
+        waterArea += Math.abs((bx - ax) * (cz - az) - (cx - ax) * (bz - az)) / 2;
+      }
+      expect(waterArea).toBeGreaterThan(40);
+      expect(waterArea).toBeLessThan(480 * 480);
+
+      const joinCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey === "hvp:join"
+      );
+      expect(joinCommand).toBeDefined();
+      if (joinCommand === undefined) return;
+      expect(joinCommand.artifact.algorithmVersion).toBe("hvp-coast-greedy-v3");
+      expect(joinCommand.artifact.indices.length).toBeGreaterThan(600);
+      expect(joinCommand.artifact.materialRanges).toHaveLength(4);
+      expect(joinCommand.artifact.materialRanges.map((range) => range.materialProfileId)).toEqual([
+        "hvp:look:limestone-dry",
+        "hvp:look:limestone-wet",
+        "hvp:look:soil",
+        "hvp:look:moss"
+      ]);
+
+      const waterButton = source.body.children
+        .flatMap((child) => [child, ...descendants(child)])
+        .find((element) => element.id === "hvp-water-toggle");
+      expect(waterButton).toBeDefined();
+      waterButton?.dispatchEvent(new Event("click"));
+      const visibilityPlans = source.commands.filter((command): command is Extract<RenderCommand, { kind: "ApplyVisibilityPlan" }> =>
+        command.kind === "ApplyVisibilityPlan"
+      );
+      const hiddenWaterPlan = visibilityPlans.at(-1)?.plan;
+      const publishedKeys = source.commands.flatMap((command) => command.kind === "UpsertMeshArtifact" ? [command.artifact.representationKey] : []).sort();
+      expect(publishedKeys.filter((key) => key.startsWith("hvp:flora:") && key.endsWith(":wood"))).toHaveLength(4);
+      expect(source.body.dataset.hestiaPrototypeVegetation).toBe("hvp-root-umbrella-v3");
+      // Key sets are canonical ASCII-sorted by the visibility contract.
+      expect(hiddenWaterPlan?.visibleRepresentationKeys).toEqual(publishedKeys.filter((key) => key !== HVP_WATER_REPRESENTATION_KEY));
+      expect(hiddenWaterPlan?.hiddenRepresentationKeys).toEqual(["hvp:water"]);
+      waterButton?.dispatchEvent(new Event("click"));
+      const restoredPlan = source.commands.filter((command): command is Extract<RenderCommand, { kind: "ApplyVisibilityPlan" }> =>
+        command.kind === "ApplyVisibilityPlan"
+      ).at(-1)?.plan;
+      expect(restoredPlan?.visibleRepresentationKeys).toEqual(publishedKeys);
+      expect(restoredPlan?.hiddenRepresentationKeys).toEqual([]);
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("fails closed when a look role is empty or its profile diverges from the role", () => {
+    const look = createHvpLookProfile("readable");
+    const sparseMesh: HvpBlockMesh = {
+      faceCount: 1,
+      outerFaceCount: 1,
+      cavityFaceCount: 0,
+      positions: new Float32Array([0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1]),
+      normals: new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]),
+      indices: new Uint16Array([0, 1, 2, 0, 2, 3]),
+      boundsMeters: { min: { x: 0, y: 1, z: 0 }, max: { x: 1, y: 1, z: 1 } },
+      materialProfileId: HVP_TERRAIN_MATERIAL_ID
+    };
+    expect(() => createHvpLookTerrain(sparseMesh, look)).toThrow(/empty|four/i);
+
+    const divergent = {
+      ...look,
+      materials: look.materials.map((material) => material.role === "moss"
+        ? {
+            ...material,
+            materialProfile: Object.freeze({
+              ...material.materialProfile,
+              id: materialProfileId("hvp:look:soil")
+            })
+          }
+        : material)
+    };
+    expect(() => createHvpLookTerrain(hvpMeshBlocks(
+      hvpBuildCoastBlockCells(HVP_COAST_BLOCK_SIZE_METERS),
+      HVP_COAST_BLOCK_SIZE_METERS,
+      HVP_TERRAIN_MATERIAL_ID
+    ), divergent)).toThrow(/diverg|profile/i);
+  });
+
+  it("W06 mounts one optional native-host extension, refuses legacy persistence, and closes it before the backend", async () => {
+    const source = harness();
+    let hostPort: import("../../src/factory/session/hostPort").FactoryHostPort | undefined;
+    let closed = 0;
+    const handle = await startHvp(source.overrides({ factoryExtension: async (host: import("../../src/factory/session/hostPort").FactoryHostPort) => {
+      hostPort = host;
+      return { isQuiescent: () => true, dispose: async () => {
+        expect(host.current()).toBe(false); expect(source.counts().backendDisposals).toBe(0); closed++;
+      } };
+    } }));
+    try {
+      expect(hostPort).toBeDefined();
+      expect(hostPort!.read()).toMatchObject({ nativeTick: 0, confirmed: true, terrain: { cellMeters: 0.125 } });
+      expect(hostPort!.readTerrainSlot(-1, 0, 0)).toBeUndefined();
+      const save = descendants(source.body).find(e => e.id === "hvp-save")!;
+      save.dispatchEvent(new Event("click")); await Promise.resolve();
+      expect(source.body.dataset.hestiaPrototypeSave).toContain("Factory");
+      expect(source.body.dataset.hestiaPrototypeSave).toContain("Rejected");
+    } finally { await handle.dispose(); }
+    expect(closed).toBe(1);
+  });
+
+  it("W06 holds the single host lease through late async extension cleanup and rejects stale pause", async () => {
+    const source = harness();
+    let entered!: () => void;
+    const mounting = new Promise<void>(resolve => { entered = resolve; });
+    let resolveExtension!: (value: import("../../src/factory/session/hostPort").FactoryHostExtensionHandle) => void;
+    const deferred = new Promise<import("../../src/factory/session/hostPort").FactoryHostExtensionHandle>(resolve => { resolveExtension = resolve; });
+    let oldHost!: import("../../src/factory/session/hostPort").FactoryHostPort;
+    let closed = 0;
+    const pending = startHvp(source.overrides({ factoryExtension: (host: typeof oldHost) => {
+      oldHost = host; entered(); return deferred;
+    } }));
+    await mounting;
+    source.windowPort.dispatchEvent(new Event("pagehide"));
+    await expect(startHvp(source.overrides())).rejects.toThrow(/already mounted/i);
+    resolveExtension({ isQuiescent: () => true, dispose: async () => { closed++; } });
+    const oldHandle = await pending; await oldHandle.dispose();
+    expect(closed).toBe(1); expect(source.windowPort.animationFrames.size).toBe(0);
+    const next = await startHvp(source.overrides());
+    try {
+      await expect(oldHost.pause()).rejects.toThrow(/disposed|superseded/i);
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+      expect(source.counts().backendConstructions).toBe(2);
+    } finally { await next.dispose(); }
+  });
+
+  it("W06 safe pause observes confirmed native counters and refuses busy resume", async () => {
+    const source = harness(); const original = source.overrides()!;
+    const confirm = vi.fn(() => true); Object.defineProperty(source.windowPort, "confirm", { value: confirm });
+    let tick = 17; let busy = false;
+    let port!: import("../../src/factory/session/hostPort").FactoryHostPort;
+    const views: number[] = [];
+    const handle = await startHvp(source.overrides({
+      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+        const native = await original.createPhysics!(...args); const read = native.read;
+        return { ...native, read: () => ({ ...read(), ticks: tick }), command: async () => { tick++; } };
+      },
+      factoryExtension: async (host: typeof port) => {
+        port = host; const unsubscribe = host.subscribeConfirmed(view => { views.push(view.nativeTick); });
+        return { isQuiescent: () => !busy, dispose: async () => { unsubscribe(); } };
+      }
+    }));
+    try {
+      stepFrame(source.windowPort, 16); stepFrame(source.windowPort, 32);
+      expect(views.every(value => value === 17)).toBe(true);
+      tick = 23; stepFrame(source.windowPort, 48); expect(views.at(-1)).toBe(23);
+      await port.pause(); expect(views.at(-1)).toBe(24);
+      busy = true; await expect(port.resume()).rejects.toThrow(/busy|unconfirmed/i);
+      expect(port.read().confirmed).toBe(false); expect(tick).toBe(24);
+      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
+      await Promise.resolve(); expect(confirm).not.toHaveBeenCalled();
+      expect(source.counts().backendDisposals).toBe(0);
+    } finally { await handle.dispose(); }
+  });
+
+  it("W07 actual Host Ghost move/rotate/cancel keeps one HVP frame, Cargo Open and disposal intact", async () => {
+    const source=harness(),original=source.overrides()!;
+    const fixture=await import("../../src/factory/fixtures/startSite");
+    let port!:FactoryHostPort,opened=false,revision=0;
+    const open=vi.fn(async()=>{opened=true;revision++;});
+    let rendererDisposals=0;const nativeCommands=vi.fn(async()=>{});
+    // Actual command receiver and ledger; only the WebGL driver is stubbed.
+    const backend=new ThreeRenderBackend({canvas:source.canvas as unknown as HTMLCanvasElement,rendererFactory:()=>({setPixelRatio(){},setSize(){},render(){},dispose(){rendererDisposals++;}})});
+    const dispatch=vi.spyOn(backend,"dispatch");
+    const handle=await startHvp(source.overrides({
+      createBackend:()=>backend,
+      createSourceSnapshot:fixture.materializeFactoryStartSite,
+      factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},
+      createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+        const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
+        // Transport fixture only: actual World/LOS/player/Cargo admission is independently exercised in Native and Browser tests.
+        return {...native,command:nativeCommands,openFactoryCargo:open,read:()=>({...read(),factoryFacilities:{revision,state:"Idle",transactionId:null,owners:[],prepared:null,
+          cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}}})};
+      },factoryExtension:async(host:FactoryHostPort)=>{
+        port=host;return {isQuiescent:()=>true,dispose:async()=>{host.construction!.dispose();}};
+      }
+    }));
+    try{
+      const request={transactionId:"frame_cycle_1",instanceId:"frame_cut_1",definitionSourceId:"B06",centerMm:[-6250,1500,5000],quarterTurns:1};
+      const initialDiagnostics=backend.readDiagnostics();
+      expect(()=>port.construction!.projectGhost(request)).not.toThrow();
+      const firstCommands=dispatch.mock.calls.map(([command])=>command);
+      const firstGhostUploads=firstCommands.filter((command):command is Extract<RenderCommand,{kind:"UpsertMeshArtifact"}>=>command.kind==="UpsertMeshArtifact"&&command.artifact.representationKey.startsWith("factory:ghost:slot_"));
+      const firstDiagnostics=backend.readDiagnostics(),poseStart=dispatch.mock.calls.length;
+      expect(()=>port.construction!.projectGhost({...request,centerMm:[-6000,1500,5000],quarterTurns:2})).not.toThrow();
+      const poseCommands=dispatch.mock.calls.slice(poseStart).map(([command])=>command);
+      expect(poseCommands.some(command=>command.kind==="UpsertMeshArtifact"||command.kind==="RemoveRepresentation")).toBe(false);
+      const movedProjection=poseCommands.filter((command):command is Extract<RenderCommand,{kind:"ApplyFrameProjection"}>=>command.kind==="ApplyFrameProjection").at(-1)!;
+      const movedTransforms=movedProjection.snapshot.representationTransforms.filter(value=>value.representationKey.startsWith("factory:ghost:slot_"));
+      expect(movedTransforms).toHaveLength(firstGhostUploads.length);
+      for(const transform of movedTransforms){expect(transform.positionRelative).toEqual({x:-6,y:1.5,z:5});expect(transform.orientation.y).toBe(1);expect(transform.orientation.w).toBeCloseTo(0);}
+      expect(backend.readDiagnostics()).toMatchObject({geometryAllocations:firstDiagnostics.geometryAllocations,geometryDisposals:firstDiagnostics.geometryDisposals,materialAllocations:firstDiagnostics.materialAllocations,materialDisposals:firstDiagnostics.materialDisposals});
+      expect(()=>port.construction!.projectGhost(null)).not.toThrow();
+      expect(()=>port.construction!.projectGhost(request)).not.toThrow();
+      expect(()=>port.construction!.projectGhost({...request,quarterTurns:3})).not.toThrow();
+      expect(()=>port.construction!.projectGhost(null)).not.toThrow();
+      for(let index=0;index<3;index++){
+        expect(()=>port.construction!.projectGhost({...request,instanceId:`new_paid_identity_${index}`})).not.toThrow();
+        expect(()=>port.construction!.projectGhost(null)).not.toThrow();
+      }
+      const commands=dispatch.mock.calls.map(([command])=>command);
+      const uploads=commands.filter((command):command is Extract<RenderCommand,{kind:"UpsertMeshArtifact"}>=>command.kind==="UpsertMeshArtifact"),frame=uploads[0]!.artifact.frameId;
+      const factoryUploads=uploads.filter(command=>command.artifact.representationKey.startsWith("factory:"));
+      expect(factoryUploads.length).toBeGreaterThan(1);expect(factoryUploads.every(command=>command.artifact.frameId===frame)).toBe(true);
+      const ghostUploads=factoryUploads.filter(command=>command.artifact.representationKey.startsWith("factory:ghost:slot_"));
+      expect(new Set(ghostUploads.map(command=>command.artifact.representationKey)).size).toBe(firstGhostUploads.length);
+      for(const first of firstGhostUploads){const lifecycle=ghostUploads.filter(command=>command.artifact.representationKey===first.artifact.representationKey);
+        expect(lifecycle.map(command=>command.artifact.artifactRevision)).toEqual([1,2,3,4,5]);
+        expect(lifecycle.every(command=>command.artifact.sourceRevision===first.artifact.sourceRevision&&command.artifact.contentHash===first.artifact.contentHash)).toBe(true);
+      }
+      expect(nativeCommands).not.toHaveBeenCalled();expect(open).not.toHaveBeenCalled();
+      expect(backend.readDiagnostics().visibleRepresentationKeys.some(key=>key.startsWith("factory:ghost:slot_"))).toBe(false);
+      expect(backend.readDiagnostics()).toMatchObject({activeRepresentations:initialDiagnostics.activeRepresentations,rejectedArtifacts:0,staleRejectCount:0});
+      await expect(port.construction!.openCargo()).resolves.toBeUndefined();expect(open).toHaveBeenCalledTimes(1);expect(port.read().confirmed).toBe(true);
+      stepFrame(source.windowPort,16);expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    }finally{await handle.dispose();}
+    expect(rendererDisposals).toBe(1);expect(backend.readDiagnostics().backendState).toBe("Disposed");expect(source.windowPort.animationFrames.size).toBe(0);
+  });
+
+  it("W09 actual UI Cargo Open passes its own command barrier while foreign native holds still refuse admission",async()=>{
+    const source=harness(),original=source.overrides()!,fixture=await import("../../src/factory/fixtures/startSite");
+    let session!:FactorySessionHandle,opened=false,revision=0,status:FactoryHostView["physicsStatus"]="Paused";
+    const open=vi.fn(async()=>{opened=true;revision++;});
+    const handle=await startHvp(source.overrides({createSourceSnapshot:fixture.materializeFactoryStartSite,
+      factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},
+      createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+        const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
+        return {...native,openFactoryCargo:open,read:()=>({...read(),status,factoryFacilities:{revision,state:"Idle",transactionId:null,owners:[],prepared:null,
+          cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}}})};
+      },factoryExtension:async(host:FactoryHostPort)=>{session=await mountFactorySession(host,createFp02Fixture("cargo").catalog);return session;}}));
+    const command=(id:string)=>({version:"fp06-ui-command-v1" as const,commandId:id,sessionId:session.ui.read().sessionId,epoch:session.ui.read().epoch,expected:session.ui.read().binding,kind:"open-cargo" as const});
+    try{
+      const result=await session.ui.submit(command("normal_ui_open"));
+      expect(result.status).toBe("Committed");expect(open).toHaveBeenCalledTimes(1);expect(session.ui.read().interaction.cargoOpened).toBe(true);
+      status="CoverageHold";stepFrame(source.windowPort,16);
+      const held=await session.ui.submit(command("held_ui_open"));expect(held.status).toBe("Rejected");expect(open).toHaveBeenCalledTimes(1);
+    }finally{await handle.dispose();}
+  });
+
+  it("W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0", async () => {
+    const source=harness(),original=source.overrides()!,fixture=await import("../../src/factory/fixtures/startSite");
+    const {isSaveSafeResourceId}=await import("../../src/resources/ids");
+    let port!:FactoryHostPort,session!:FactorySessionHandle,opened=false;
+    const backend=new ThreeRenderBackend({canvas:source.canvas as unknown as HTMLCanvasElement,rendererFactory:()=>({setPixelRatio(){},setSize(){},render(){},dispose(){}})});
+    const dispatch=vi.spyOn(backend,"dispatch"),prepare=vi.fn();
+    const handle=await startHvp(source.overrides({
+      createBackend:()=>backend,createSourceSnapshot:fixture.materializeFactoryStartSite,
+      factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},
+      createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+        const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
+        const facilities=()=>({revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null,
+          cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}});
+        // This transport fixture tests Host/Resources/actual receiver admission, not a second Native install proof.
+        return {...native,command:async()=>{},openFactoryCargo:async()=>{opened=true;return facilities();},
+          prepareFactoryFacility:async(request:FactoryFacilityRequest)=>{prepare(request);return facilities();},commitFactoryFacility:async()=>{},publishFactoryFacility:()=>{},rollbackFactoryFacility:async()=>{},finalizeFactoryFacility:async()=>{},
+          read:()=>({...read(),player:{...read().player!,position:{x:-6.35,y:2.4,z:9.075}},factoryFacilities:facilities()})};
+      },factoryExtension:async(host:FactoryHostPort)=>{port=host;session=await mountFactorySession(host,createFp02Fixture("cargo").catalog);return session;}
+    }));
+    try{
+      await port.construction!.openCargo();
+      const request={transactionId:"legal_slot_paid_1",instanceId:"ghost_slot_0",definitionSourceId:"B06",centerMm:[-6250,1500,5000],quarterTurns:1};
+      expect(isSaveSafeResourceId(request.instanceId)).toBe(true);
+      const before=session.construction!.read().material;
+      const plan=session.construction!.preview(request);expect(plan.status).toBe("Prepared");if(plan.status!=="Prepared")throw new Error(plan.reason);
+      port.construction!.projectGhost(request);
+      expect(session.construction!.read().material).toBe(before);expect(prepare).not.toHaveBeenCalled();
+      await expect(session.construction!.commit(plan)).resolves.toMatchObject({status:"Committed",reason:"INSTALLED"});
+      expect(prepare).toHaveBeenCalledTimes(1);expect(session.construction!.read().installations[0]!.instanceId).toBe(request.instanceId);
+      const artifacts=dispatch.mock.calls.flatMap(([command])=>command.kind==="UpsertMeshArtifact"?[command.artifact]:[]);
+      const paid=artifacts.filter(value=>value.representationKey.startsWith("factory:ghost_slot_0:"));
+      const ghosts=artifacts.filter(value=>value.representationKey.startsWith("factory:ghost:slot_"));
+      expect(paid.length).toBeGreaterThan(0);expect(ghosts.length).toBe(paid.length);
+      expect(paid.every(value=>!ghosts.some(ghost=>ghost.representationKey===value.representationKey))).toBe(true);
+      port.construction!.projectGhost(null);
+      expect(backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.startsWith("factory:ghost_slot_0:"))).toHaveLength(paid.length);
+      expect(backend.readDiagnostics()).toMatchObject({rejectedArtifacts:0,staleRejectCount:0});
+    }finally{await handle.dispose();}
+  });
+
+  it("W06 R1 publishes actual unconfirmed native holds without work and permits transient recovery", async () => {
+    const source = harness(), original = source.overrides()!;
+    let status: FactoryHostView["physicsStatus"] = "Paused", tick = 17;
+    let session!: FactorySessionHandle;
+    const observations: FactoryHostView[] = [];
+    const handle = await startHvp(source.overrides({
+      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+        const native = await original.createPhysics!(...args), read = native.read;
+        // Declared transport fixture for the current Host read contract, not Native facility admission.
+        return { ...native, read: () => ({ ...read(), ticks: tick, status,
+          factoryFacilities:{revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null} }) };
+      }, factoryExtension: async (host: FactoryHostPort) => {
+        session = await mountFactorySession(host, createFp02Fixture("cargo").catalog);
+        host.subscribeConfirmed(view => { observations.push(view); }); return session;
+      }
+    }));
+    try {
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+      status = "CoverageHold"; tick = 23; stepFrame(source.windowPort, 16);
+      expect(observations.at(-1)).toMatchObject({ physicsStatus: "CoverageHold", confirmed: false });
+      expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 17, steps: 0 });
+      expect(session.isQuiescent()).toBe(true); // Neighbor repair must remain admissible.
+      status = "SimulationHold"; stepFrame(source.windowPort, 32);
+      expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 17, steps: 0 });
+      status = "Paused"; stepFrame(source.windowPort, 48);
+      expect(session.read()).toMatchObject({ state: "Ready", nativeTick: 23, steps: 1 });
+      status = "RecoveryHold"; tick = 29; stepFrame(source.windowPort, 64);
+      expect(session.read()).toMatchObject({ state: "RecoveryHold", nativeTick: 23, steps: 1 });
+      expect(session.isQuiescent()).toBe(false);
+      status = "Running"; tick = 35; stepFrame(source.windowPort, 80);
+      expect(session.read()).toMatchObject({ state: "RecoveryHold", nativeTick: 23, steps: 1 });
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R1 refuses all actual Factory Resume and Play paths during native holds", async () => {
+    const source = harness(), original = source.overrides()!;
+    const requestPointerLock = vi.fn(); Object.defineProperty(source.canvas, "requestPointerLock", { value: requestPointerLock });
+    let status: FactoryHostView["physicsStatus"] = "Paused";
+    let port!: FactoryHostPort;
+    const commands: string[] = [];
+    const handle = await startHvp(source.overrides({
+      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+        const native = await original.createPhysics!(...args), read = native.read;
+        return { ...native, read: () => ({ ...read(), status }), command: async (kind: string) => { commands.push(kind); } };
+      }, factoryExtension: async (host: FactoryHostPort) => {
+        port = host; return { isQuiescent: () => true, dispose: async () => {} };
+      }
+    }));
+    try {
+      const baseline = commands.length;
+      for (const hold of ["CoverageHold", "SimulationHold", "RecoveryHold"] as const) {
+        status = hold;
+        expect(port.read().confirmed).toBe(false);
+        await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|hold/i);
+        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
+        descendants(source.body).find(e => e.id === "hvp-physics-pause")!.dispatchEvent(new Event("click"));
+        await Promise.resolve(); await Promise.resolve();
+        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
+        descendants(source.body).find(e => e.id === "hvp-play")!.dispatchEvent(new Event("click"));
+        await Promise.resolve(); await Promise.resolve();
+        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
+        expect.soft(requestPointerLock).not.toHaveBeenCalled(); requestPointerLock.mockClear();
+        descendants(source.body).find(e => e.textContent === "Spiel fortsetzen")!.dispatchEvent(new Event("click"));
+        expect.soft(requestPointerLock).not.toHaveBeenCalled(); requestPointerLock.mockClear();
+      }
+      status = "Paused"; await port.resume(); expect(commands.at(-1)).toBe("Resume");
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R1 keeps the actual post-disposal restart in the Factory profile", async () => {
+    const source = harness(), assign = vi.fn();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "", assign } });
+    Object.defineProperty(source.windowPort, "confirm", { value: () => true });
+    const handle = await startHvp(source.overrides({ factoryExtension: async () => ({ isQuiescent: () => true, dispose: async () => {} }) }));
+    try {
+      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
+      await vi.waitFor(() => { expect(descendants(source.body).find(e => e.id === "hvp-ended")).toBeDefined(); });
+      descendants(source.body).find(e => e.textContent === "Neu starten")!.dispatchEvent(new Event("click"));
+      expect(assign).toHaveBeenCalledWith("/factory.html");
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R1 permits awaited session disposal from terminal RecoveryHold without resuming", async () => {
+    const source = harness(), original = source.overrides()!;
+    Object.defineProperty(source.windowPort, "confirm", { value: () => true });
+    let tick = 0; const commands: string[] = [];
+    let session!: FactorySessionHandle;
+    const handle = await startHvp(source.overrides({
+      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+        const native = await original.createPhysics!(...args), read = native.read;
+        // Same declared empty facility fixture; real World/custody tests remain separate.
+        return { ...native, read: () => ({ ...read(), ticks: tick,
+          factoryFacilities:{revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null} }), command: async (kind: string) => { commands.push(kind); } };
+      }, factoryExtension: async (host: FactoryHostPort) => { session = await mountFactorySession(host, createFp02Fixture("cargo").catalog); return session; }
+    }));
+    try {
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+      tick = -1; stepFrame(source.windowPort, 16); expect(session.read().state).toBe("RecoveryHold");
+      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
+      await vi.waitFor(() => { expect(descendants(source.body).find(e => e.id === "hvp-ended")).toBeDefined(); });
+      expect(session.read().state).toBe("Disposed"); expect(source.counts().backendDisposals).toBe(1);
+      expect(commands).not.toContain("Resume");
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R2 Drop grants no native command during holds and preserves confirmed and legacy dispatch", async () => {
+    for (const factory of [true, false]) {
+      const source = harness(), original = source.overrides()!;
+      let status: FactoryHostView["physicsStatus"] = "Paused";
+      const commands: string[] = [];
+      const handle = await startHvp(source.overrides({
+        createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+          const native = await original.createPhysics!(...args), read = native.read;
+          return { ...native, read: () => ({ ...read(), status }), command: async (kind: string) => { commands.push(kind); } };
+        }, ...(factory ? { factoryExtension: async () => ({ isQuiescent: () => true, dispose: async () => {} }) } : {})
+      }));
+      try {
+        const drop = descendants(source.body).find(e => e.id === "hvp-physics-drop")!;
+        for (const hold of ["CoverageHold", "SimulationHold", "RecoveryHold"] as const) {
+          status = hold; commands.length = 0; drop.dispatchEvent(new Event("click"));
+          await Promise.resolve(); await Promise.resolve();
+          if (factory) expect.soft(commands, hold).toEqual([]);
+          else expect(commands, `unchanged legacy ${hold}`).toEqual(["Drop"]);
+        }
+        status = "Paused"; commands.length = 0; drop.dispatchEvent(new Event("click"));
+        await Promise.resolve(); await Promise.resolve(); expect(commands).toEqual(["Drop"]);
+      } finally { await handle.dispose(); }
+    }
+  });
+
+  it("reaches Ready with exactly one tick loop and disposes start/dispose exactly once", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+    expect(source.windowPort.animationFrames.size).toBe(1);
+
+    stepFrame(source.windowPort, 16);
+    expect(source.counts().renders).toBe(1);
+    expect(source.windowPort.animationFrames.size).toBe(1);
+    stepFrame(source.windowPort, 32);
+    expect(source.counts().renders).toBe(2);
+    expect(source.windowPort.animationFrames.size).toBe(1);
+
+    await handle.dispose();
+    await handle.dispose();
+    expect(source.windowPort.animationFrames.size).toBe(0);
+    expect(source.counts()).toEqual({ backendConstructions: 1, backendDisposals: 1, renders: 2 });
+    expect(source.windowPort.listenerTotals.get("pagehide")).toBe(0);
+  });
+
+  it("fails a double mount closed with no duplicate HUD and no second backend", async () => {
+    const source = harness();
+    const first = await startHvp(source.overrides());
+
+    await expect(startHvp(source.overrides())).rejects.toThrow(/already mounted/i);
+    expect(source.createBackend).toHaveBeenCalledTimes(1);
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+
+    await first.dispose();
+    const second = await startHvp(source.overrides());
+    expect(source.createBackend).toHaveBeenCalledTimes(2);
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await second.dispose();
+  });
+
+  it("fails a restart closed while dispose is pending and recovers after settle", async () => {
+    const source = harness();
+    const first = await startHvp(source.overrides());
+
+    const pending = first.dispose();
+    await expect(startHvp(source.overrides())).rejects.toThrow(/already mounted/i);
+    expect(source.createBackend).toHaveBeenCalledTimes(1);
+
+    await pending;
+    const second = await startHvp(source.overrides());
+    expect(source.createBackend).toHaveBeenCalledTimes(2);
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await second.dispose();
+  });
+
+  it("keeps the live session clean when the route entry fires twice", async () => {
+    const source = harness();
+    let handle: HvpBootstrapHandle | undefined;
+    const documentPort = source.documentPort as unknown as Parameters<typeof startHvpRoute>[0];
+    const loadHvp = async (): Promise<{ startHvp(): Promise<HvpBootstrapHandle> }> => ({
+      startHvp: async () => (handle = await startHvp(source.overrides()))
+    });
+
+    await startHvpRoute(documentPort, loadHvp);
+    await startHvpRoute(documentPort, loadHvp);
+
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(0);
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+
+    await handle!.dispose();
+  });
+
+  it("never installs failure UI into a torn-down or newer mount", async () => {
+    const source = harness();
+    let rejectSource!: (error: Error) => void;
+    const gate = new Promise<HvpCoastSourceSnapshot>((_resolve, reject) => {
+      rejectSource = reject;
+    });
+    const pending = startHvp(source.overrides({
+      createSourceSnapshot: () => gate
+    }));
+
+    source.windowPort.dispatchEvent(new Event("pagehide"));
+    rejectSource(new Error("late source failure"));
+    const handle = await pending;
+    await new Promise((resolve) => {
+      setTimeout(resolve, 25);
+    });
+
+    expect(source.body.dataset.hestiaPrototypeState).toBeUndefined();
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(0);
+    expect(source.counts().renders).toBe(0);
+    expect(source.windowPort.animationFrames.size).toBe(0);
+    await handle.dispose();
+
+    const retry = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await retry.dispose();
+  }, 120_000);
+
+  it("cancels a deferred source on pagehide without publishing products", async () => {
+    const source = harness();
+    const snapshot = materializeHvpCoastSource();
+    let resolveSource!: (value: HvpCoastSourceSnapshot) => void;
+    const gate = new Promise<HvpCoastSourceSnapshot>((resolve) => {
+      resolveSource = resolve;
+    });
+    const pending = startHvp(source.overrides({
+      createSourceSnapshot: () => gate
+    }));
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Loading");
+    source.windowPort.dispatchEvent(new Event("pagehide"));
+    resolveSource(snapshot);
+    const handle = await pending;
+    await new Promise((resolve) => {
+      setTimeout(resolve, 25);
+    });
+
+    expect(source.body.dataset.hestiaPrototypeState).toBeUndefined();
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(0);
+    expect(source.commands.filter((command) => command.kind === "UpsertMeshArtifact")).toHaveLength(0);
+    expect(source.counts().renders).toBe(0);
+    expect(source.windowPort.animationFrames.size).toBe(0);
+    await handle.dispose();
+
+    const retry = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await retry.dispose();
+  }, 120_000);
+
+  it("does not let a late failure teardown wipe a newer mount", async () => {
+    const source = harness();
+    let rejectFirst!: (error: Error) => void;
+    const gate = new Promise<HvpCoastSourceSnapshot>((_resolve, reject) => {
+      rejectFirst = reject;
+    });
+    const firstPending = startHvp(source.overrides({
+      createSourceSnapshot: () => gate
+    }));
+    source.windowPort.dispatchEvent(new Event("pagehide"));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 25);
+    });
+
+    const second = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+
+    rejectFirst(new Error("late source failure"));
+    const firstHandle = await firstPending;
+    await new Promise((resolve) => {
+      setTimeout(resolve, 25);
+    });
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(0);
+    await firstHandle.dispose();
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await second.dispose();
+  }, 180_000);
+
+  it("rejects over-cap scenes before attaching products or reaching Ready", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides({
+      resourceCaps: { maxTriangles: 100 }
+    }));
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    expect(source.commands.filter((command) => command.kind === "UpsertMeshArtifact")).toHaveLength(0);
+    expect(source.counts().renders).toBe(0);
+    expect(source.windowPort.animationFrames.size).toBe(0);
+    await handle.dispose();
+
+    const retry = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await retry.dispose();
+  }, 180_000);
+
+  it("rejects malformed look ranges instead of falling back to vertex zero", () => {
+    const look = createHvpLookProfile("readable");    const mesh = meshHvpTestCells(
+      [
+        { x: 0, y: 0, z: 0, slot: HVP_SLOT_LIMESTONE_DRY },
+        { x: 1, y: 0, z: 0, slot: HVP_SLOT_LIMESTONE_WET },
+        { x: 0, y: 0, z: 1, slot: HVP_SLOT_SOIL },
+        { x: 1, y: 0, z: 1, slot: HVP_SLOT_MOSS }
+      ],
+      1
+    );
+    const grouped = createHvpCompactLookTerrain(mesh, look);
+    expect(grouped.materialRanges).toHaveLength(4);
+    const corrupt = {
+      ...mesh,
+      materialRanges: [{ slot: 1, startIndex: 999_999_999, indexCount: 6 }]
+    };
+    expect(() => createHvpCompactLookTerrain(corrupt, look)).toThrow();
+  });
+
+  it("groups partial proxy roles in order while strict mode still rejects them", () => {
+    const look = createHvpLookProfile("readable");
+    const partial = meshHvpTestCells(
+      [
+        { x: 0, y: 0, z: 0, slot: HVP_SLOT_LIMESTONE_DRY },
+        { x: 1, y: 0, z: 0, slot: HVP_SLOT_LIMESTONE_WET }
+      ],
+      1
+    );
+    expect(() => createHvpCompactLookTerrain(partial, look)).toThrow(/empty/i);
+    const grouped = createHvpCompactLookTerrain(partial, look, { allowPartialRoles: true });
+    expect(grouped.materialRanges.map((range) => range.materialProfileId)).toEqual([
+      "hvp:look:limestone-dry",
+      "hvp:look:limestone-wet"
+    ]);
+    expect(grouped.materialRanges.reduce((total, range) => total + range.indexCount, 0))
+      .toBe(grouped.indices.length);
+    expect(grouped.materialProfiles.map((profile) => profile.id)).toEqual([
+      "hvp:look:limestone-dry",
+      "hvp:look:limestone-wet"
+    ]);
+  });
+
+  it("exposes a real Inspect-only AO toggle defaulting to on", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(source.body.dataset.hestiaPrototypeAo).toBe("on");
+      const elements = source.body.children.flatMap((child) => [child, ...descendants(child)]);
+      const aoButton = elements.find((element) => element.id === "hvp-ao-toggle");
+      expect(aoButton?.textContent).toBe("AO: on");
+      expect(aoButton?.getAttribute("aria-pressed")).toBe("true");
+      const commandsBefore = source.commands.length;
+      const terrainBefore = source.commands.filter((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact" && command.artifact.representationKey.startsWith("hvp:terrain:s")
+      );
+      expect(terrainBefore).toHaveLength(16);
+      const positionsBefore = terrainBefore.map(c=>[...c.artifact.positions]);
+      aoButton?.dispatchEvent(new Event("click"));
+      expect(aoButton?.textContent).toBe("AO: off");
+      expect(aoButton?.getAttribute("aria-pressed")).toBe("false");
+      expect(source.body.dataset.hestiaPrototypeAo).toBe("off");
+      aoButton?.dispatchEvent(new Event("click"));
+      expect(aoButton?.textContent).toBe("AO: on");
+      expect(source.body.dataset.hestiaPrototypeAo).toBe("on");
+      // Render-only toggle: no new scene products, geometry bytes untouched.
+      expect(source.commands.length).toBe(commandsBefore);
+      const terrainAfter = source.commands.filter((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact" && command.artifact.representationKey.startsWith("hvp:terrain:s")
+      );
+      expect(terrainAfter.map(c=>[...c.artifact.positions])).toEqual(positionsBefore);
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("swaps whole material arrays on toggle without mutating cached instances", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    try {
+      const root = source.backend.representationRoot;
+      const terrainNode = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial());
+      const terrain = source.commands.find((c):c is Extract<RenderCommand,{kind:"UpsertMeshArtifact"}>=>c.kind==="UpsertMeshArtifact"&&c.artifact.representationKey.startsWith("hvp:terrain:s"))!;
+      expect(terrain).toBeDefined();
+      terrainNode.name = `representation:${terrain.artifact.representationKey}`;
+      const originals = [...(Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material])];
+      root.add(terrainNode);
+      const woodNodes = source.commands.flatMap((command) => {
+        if (command.kind !== "UpsertMeshArtifact" || !command.artifact.representationKey.endsWith(":wood")) { return []; }
+        const material = new THREE.MeshBasicMaterial({vertexColors:true});
+        const node = new THREE.Mesh(new THREE.BufferGeometry(), material);
+        node.name = `representation:${command.artifact.representationKey}`;
+        root.add(node);
+        return [{node,material}];
+      });
+      expect(woodNodes).toHaveLength(4);
+      const elements = source.body.children.flatMap((child) => [child, ...descendants(child)]);
+      const aoButton = elements.find((element) => element.id === "hvp-ao-toggle");
+      aoButton?.dispatchEvent(new Event("click"));
+      const offMaterials = Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material];
+      expect(offMaterials).toHaveLength(terrain.materialProfiles.length);
+      expect(offMaterials).not.toEqual(originals);
+      for (const material of offMaterials) {
+        expect((material as { vertexColors?: boolean }).vertexColors).toBe(false);
+      }
+      for (const {node,material} of woodNodes) {
+        const uncolored = node.material as unknown as THREE.MeshBasicMaterial[];
+        expect(uncolored).toHaveLength(1);
+        expect(uncolored[0]!.vertexColors).toBe(false);
+        expect(uncolored[0]).not.toBe(material);
+      }
+      aoButton?.dispatchEvent(new Event("click"));
+      expect([...(Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material])]).toEqual(originals);
+      for (const {node,material} of woodNodes) {
+        expect(node.material).toEqual([material]);
+        root.remove(node);
+        node.geometry.dispose();
+        material.dispose();
+      }
+      root.remove(terrainNode);
+      terrainNode.geometry.dispose();
+      originals.forEach((material) => material.dispose());
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("separates retired initial-build scratch from live replacement working memory without raising caps",()=>{
+    const mib=1024*1024,before={totalCpuBytes:250*mib,tempEstimateBytes:150*mib},after={totalCpuBytes:251*mib,tempEstimateBytes:149*mib};
+    const totalCpuBytes=estimateHvpStageCpuBytes(before,after,2*mib,96*mib);
+    expect(totalCpuBytes).toBe(204*mib); // 102 retained + 6 old/new/index coexistence + 96 preparation.
+    expect(()=>admitHvpResources({totalCpuBytes,retainedMeshBytes:30*mib,triangles:400_000,drawCalls:200})).not.toThrow();
+    expect(()=>admitHvpResources({totalCpuBytes:estimateHvpStageCpuBytes(before,after,20*mib,96*mib),
+      retainedMeshBytes:30*mib,triangles:400_000,drawCalls:200})).toThrow(/BudgetExceeded/);
+    expect(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes).toBe(256*mib);
+  });
+
+  it("accounts exact ledger bytes from known inputs and rejects just below total", () => {
+    const ledger = buildHvpResourceLedger({
+      terrainMesh: {
+          faceCount: 2,
+          unitFaceCount: 2,
+          outerFaceCount: 2,
+          cavityFaceCount: 0,
+          positions: new Float32Array(24),
+          normals: new Float32Array(24),
+          indices: new Uint16Array(12),
+          colors: null,
+          materialRanges: [{ slot: 1, startIndex: 0, indexCount: 12 }],
+          boundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 1, z: 1 } },
+          sourceDigest: "00000000",
+          algorithmVersion: "test-ledger-v1",
+          tempEstimateBytes: 100
+        },
+        waterMesh: {
+          faceCount: 1,
+          unitFaceCount: 1,
+          outerFaceCount: 1,
+          cavityFaceCount: 0,
+          positions: new Float32Array(12),
+          normals: new Float32Array(12),
+          indices: new Uint16Array(6),
+          colors: null,
+          materialRanges: [{ slot: 1, startIndex: 0, indexCount: 6 }],
+          boundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 0, z: 1 } },
+          sourceDigest: "00000000",
+          algorithmVersion: "test-ledger-v1",
+          tempEstimateBytes: 50
+        },
+        joinMesh: {
+          faceCount: 0,
+          unitFaceCount: 0,
+          outerFaceCount: 0,
+          cavityFaceCount: 0,
+          positions: new Float32Array(0),
+          normals: new Float32Array(0),
+          indices: new Uint16Array(0),
+          colors: null,
+          materialRanges: [],
+          boundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
+          sourceDigest: "00000000",
+          algorithmVersion: "test-ledger-v1",
+          tempEstimateBytes: 0
+        },
+        farMesh: {
+          faceCount: 1,
+          unitFaceCount: 1,
+          outerFaceCount: 1,
+          cavityFaceCount: 0,
+          positions: new Float32Array(12),
+          normals: new Float32Array(12),
+          indices: new Uint16Array(6),
+          colors: null,
+          materialRanges: [{ slot: 1, startIndex: 0, indexCount: 6 }],
+          boundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 0, z: 1 } },
+          sourceDigest: "00000000",
+          algorithmVersion: "test-ledger-v1",
+          tempEstimateBytes: 0
+        },
+        groupedIndexBytes: 48,
+        drawCalls: 2
+      });
+      expect(ledger.meshBytes).toBe(
+        (96 + 96 + 24) + 2 * (48 + 48 + 12)
+      );
+      // Far is dispatched through UpsertMeshArtifact too, not wrapped directly.
+      expect(ledger.artifactCopyBytes).toBe((96 + 96 + 24) + 2 * (48 + 48 + 12));
+      expect(ledger.maskBytes).toBe(256 * 256 + 320 * 320 + 960 * 960);
+      expect(ledger.retainedMeshBytes).toBe(ledger.artifactCopyBytes);
+      expect(ledger.triangles).toBe(4 + 2 + 2);
+      expect(ledger.drawCalls).toBe(2);
+      expect(ledger.gpuBytes).toBe("unsupported");
+      expect(ledger.totalCpuBytes).toBe(
+        ledger.slotBytes + ledger.preparedCopyBytes + ledger.maskBytes + ledger.meshBytes
+        + ledger.groupedIndexBytes + ledger.artifactCopyBytes + ledger.tempEstimateBytes
+      );
+      expect(() => admitHvpResources(ledger, HVP_RESOURCE_CAPS_DEFAULT)).not.toThrow();
+      expect(() => admitHvpResources(ledger, {
+        ...HVP_RESOURCE_CAPS_DEFAULT,
+        maxCpuBytes: ledger.totalCpuBytes - 1
+      })).toThrow(/BudgetExceeded/);
+      expect(() => admitHvpResources(ledger, {
+        ...HVP_RESOURCE_CAPS_DEFAULT,
+        maxTriangles: ledger.triangles - 1
+      })).toThrow(/BudgetExceeded/);
+      expect(() => admitHvpResources(ledger, {
+        ...HVP_RESOURCE_CAPS_DEFAULT,
+        maxMeshBytes: ledger.retainedMeshBytes - 1
+      })).toThrow(/BudgetExceeded/);
+  });
+
+  it("rejects a World missing the planned inertia specimen before publishing meshes",async()=>{
+    const source=harness();const options=source.overrides()!;
+    const handle=await startHvp({...options,createPhysics:async(...args)=>{
+      const client=await options.createPhysics!(...args);
+      return {...client,read:()=>({...client.read(),inertia:null})};
+    }});
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(source.commands.some(c=>c.kind==="UpsertMeshArtifact")).toBe(false);
+    await handle.dispose();
+  });
+
+  it("never reaches Ready on an invalid source and stays fail-closed", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides({
+      createSourceSnapshot: async () => ({
+        version: "hvp-authored-coast-v999",
+        seedName: "invalid-seed",
+        registryDigest: "deadbeef",
+        sourceDigest: "deadbeef",
+        sizeX: 0,
+        sizeY: 0,
+        sizeZ: 0,
+        cellMeters: 0.125,
+        originMeters: { x: -16, y: -8, z: -16 },
+        readSlot: () => 0,
+        copySlots: () => new Uint8Array(0)
+      })
+    }));
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    const alert = descendants(source.body).find((element) => element.getAttribute("role") === "alert");
+    expect(alert?.id).toBe("hvp-failure");
+    expect(alert?.getAttribute("aria-live")).toBe("assertive");
+    expect(source.counts().renders).toBe(0);
+    expect(source.windowPort.animationFrames.size).toBe(0);
+
+    await handle.dispose();
+    const retry = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await retry.dispose();
+  });
+
+  it("hides the leftover flight reticle on entry and restores it on dispose", async () => {
+    const source = harness();
+    const reticle = source.documentPort.querySelector(".hud-center-safe-area") as unknown as FakeElement;
+    expect(reticle.getAttribute("style")).toBeNull();
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+      expect(reticle.getAttribute("style")).toContain("display:none");
+    } finally {
+      await handle.dispose();
+    }
+    expect(reticle.getAttribute("style")).toBeNull();
+  });
+
+  it("restores the flight reticle when the HVP start fails closed", async () => {
+    const source = harness();
+    const reticle = source.documentPort.querySelector(".hud-center-safe-area") as unknown as FakeElement;
+    const handle = await startHvp(source.overrides({
+      createBackend: () => ({ ...source.backend, scene: undefined })
+    }));
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(reticle.getAttribute("style")).toBeNull();
+    await handle.dispose();
+  });
+
+  it("exposes an accessible HUD hide control and a labeled camera inspection mode", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    try {
+      const elements = source.body.children.flatMap((child) => [child, ...descendants(child)]);
+      const hideButton = elements.find((element) => element.id === "hvp-hide-ui");
+      const inspectButton = elements.find((element) => element.id === "hvp-camera-inspect");
+      expect(hideButton?.textContent).toBe("Hide UI");
+      expect(hideButton?.getAttribute("aria-pressed")).toBe("false");
+      expect(inspectButton?.textContent).toBe("Inspect: off");
+      expect(inspectButton?.getAttribute("aria-pressed")).toBe("false");
+      const originalInspectStyle = inspectButton?.getAttribute("style");
+      expect(originalInspectStyle).toBe("margin:6px 6px 0 0;pointer-events:auto");
+
+      hideButton?.dispatchEvent(new Event("click"));
+      expect(hideButton?.textContent).toBe("Show UI");
+      expect(hideButton?.getAttribute("aria-pressed")).toBe("true");
+      const statePanel = elements.find((element) => element.id === "hvp-state");
+      expect(statePanel?.hasAttribute("hidden")).toBe(true);
+      expect(inspectButton?.hasAttribute("hidden")).toBe(true);
+      expect(inspectButton?.getAttribute("style")).toBe(originalInspectStyle);
+      expect(hideButton?.hasAttribute("hidden")).toBe(false);
+      hideButton?.dispatchEvent(new Event("click"));
+      expect(hideButton?.textContent).toBe("Hide UI");
+      expect(statePanel?.getAttribute("style")).toBeNull();
+      expect(statePanel?.hasAttribute("hidden")).toBe(false);
+      expect(inspectButton?.hasAttribute("hidden")).toBe(false);
+      expect(inspectButton?.getAttribute("style")).toBe(originalInspectStyle);
+
+      inspectButton?.dispatchEvent(new Event("click"));
+      expect(inspectButton?.textContent).toBe("Inspect: on");
+      expect(source.body.children.flatMap((child) => [child, ...descendants(child)])
+        .find((element) => element.id === "hvp-mode")?.textContent).toContain("(Fly)");
+      inspectButton?.dispatchEvent(new Event("click"));
+      expect(inspectButton?.textContent).toBe("Inspect: off");
+      expect(source.body.children.flatMap((child) => [child, ...descendants(child)])
+        .find((element) => element.id === "hvp-mode")?.textContent).toContain("(Orbit)");
+    } finally {
+      await handle.dispose();
+    }
+  });
+  it("publishes save busy and rejection immediately without waiting for a render frame",async()=>{
+    const source=harness(),handle=await startHvp(source.overrides());
+    try{
+      const save=source.body.children.flatMap(child=>[child,...descendants(child)]).find(e=>e.id==="hvp-save")!;
+      expect(save).toBeDefined();save.dispatchEvent(new Event("click"));
+      expect(JSON.parse(source.body.dataset.hestiaPrototypeSave!).state).toBe("Saving");
+      // Transport fixture deliberately has no checkpoint method: exercise the
+      // error boundary, not a fake successful persistence operation.
+      await vi.waitFor(()=>expect(JSON.parse(source.body.dataset.hestiaPrototypeSave!).state).toBe("Rejected"));
+      expect(source.counts().renders).toBe(0);
+    }finally{await handle.dispose();}
+  });
+});

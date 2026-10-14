@@ -1,0 +1,190 @@
+{
+  "CABLE4750": {
+    "version": "fp06-handling-s0-v1",
+    "profileId": "CABLE4750",
+    "catalogDigest": "fnv1a:f3a8c642",
+    "terms": [
+      {
+        "itemId": "fp02.comp.field_cable",
+        "quantityUnits": 4750
+      }
+    ],
+    "massMg": 1187500,
+    "capacityMm3": 14250000,
+    "sizeMm": [
+      500,
+      1000,
+      500
+    ],
+    "sourceRefs": [
+      "FP01:5:heavy-module-handling",
+      "FP02:6.2:C07",
+      "FP02:6.4",
+      "accepted:D11-native-handling-v1",
+      "fp06-technical-s0-closed-native-socket-cable-jobs-v1"
+    ],
+    "canonicalJson": "{\"capacityMm3\":14250000,\"catalogDigest\":\"fnv1a:f3a8c642\",\"massMg\":1187500,\"profileId\":\"CABLE4750\",\"sizeMm\":[500,1000,500],\"sourceRefs\":[\"FP01:5:heavy-module-handling\",\"FP02:6.2:C07\",\"FP02:6.4\",\"accepted:D11-native-handling-v1\",\"fp06-technical-s0-closed-native-socket-cable-jobs-v1\"],\"terms\":[{\"itemId\":\"fp02.comp.field_cable\",\"quantityUnits\":4750}],\"version\":\"fp06-handling-s0-v1\"}",
+    "digest": "96327771"
+  },
+  "CABLE6500": {
+    "version": "fp06-handling-s0-v1",
+    "profileId": "CABLE6500",
+    "catalogDigest": "fnv1a:f3a8c642",
+    "terms": [
+      {
+        "itemId": "fp02.comp.field_cable",
+        "quantityUnits": 6500
+      }
+    ],
+    "massMg": 1625000,
+    "capacityMm3": 19500000,
+    "sizeMm": [
+      500,
+      1000,
+      500
+    ],
+    "sourceRefs": [
+      "FP01:5:heavy-module-handling",
+      "FP02:6.2:C07",
+      "FP02:6.4",
+      "accepted:D11-native-handling-v1",
+      "fp06-technical-s0-closed-native-socket-cable-jobs-v1"
+    ],
+    "canonicalJson": "{\"capacityMm3\":19500000,\"catalogDigest\":\"fnv1a:f3a8c642\",\"massMg\":1625000,\"profileId\":\"CABLE6500\",\"sizeMm\":[500,1000,500],\"sourceRefs\":[\"FP01:5:heavy-module-handling\",\"FP02:6.2:C07\",\"FP02:6.4\",\"accepted:D11-native-handling-v1\",\"fp06-technical-s0-closed-native-socket-cable-jobs-v1\"],\"terms\":[{\"itemId\":\"fp02.comp.field_cable\",\"quantityUnits\":6500}],\"version\":\"fp06-handling-s0-v1\"}",
+    "digest": "60747036"
+  },
+  "CABLE8000": {
+    "version": "fp06-handling-s0-v1",
+    "profileId": "CABLE8000",
+    "catalogDigest": "fnv1a:f3a8c642",
+    "terms": [
+      {
+        "itemId": "fp02.comp.field_cable",
+        "quantityUnits": 8000
+      }
+    ],
+    "massMg": 2000000,
+    "capacityMm3": 24000000,
+    "sizeMm": [
+      500,
+      1000,
+      500
+    ],
+    "sourceRefs": [
+      "FP01:5:heavy-module-handling",
+      "FP02:6.2:C07",
+      "FP02:6.4",
+      "accepted:D11-native-handling-v1",
+      "fp06-technical-s0-closed-native-socket-cable-jobs-v1"
+    ],
+    "canonicalJson": "{\"capacityMm3\":24000000,\"catalogDigest\":\"fnv1a:f3a8c642\",\"massMg\":2000000,\"profileId\":\"CABLE8000\",\"sizeMm\":[500,1000,500],\"sourceRefs\":[\"FP01:5:heavy-module-handling\",\"FP02:6.2:C07\",\"FP02:6.4\",\"accepted:D11-native-handling-v1\",\"fp06-technical-s0-closed-native-socket-cable-jobs-v1\"],\"terms\":[{\"itemId\":\"fp02.comp.field_cable\",\"quantityUnits\":8000}],\"version\":\"fp06-handling-s0-v1\"}",
+    "digest": "cadd4897"
+  },
+  "CABLE7000": {
+    "version": "fp06-handling-s0-v1",
+    "profileId": "CABLE7000",
+    "catalogDigest": "fnv1a:f3a8c642",
+    "terms": [
+      {
+        "itemId": "fp02.comp.field_cable",
+        "quantityUnits": 7000
+      }
+    ],
+    "massMg": 1750000,
+    "capacityMm3": 21000000,
+    "sizeMm": [
+      500,
+      1000,
+      500
+    ],
+    "sourceRefs": [
+      "FP01:5:heavy-module-handling",
+      "FP02:6.2:C07",
+      "FP02:6.4",
+      "accepted:D11-native-handling-v1",
+      "fp06-technical-s0-closed-native-socket-cable-jobs-v2"
+    ],
+    "canonicalJson": "{\"capacityMm3\":21000000,\"catalogDigest\":\"fnv1a:f3a8c642\",\"massMg\":1750000,\"profileId\":\"CABLE7000\",\"sizeMm\":[500,1000,500],\"sourceRefs\":[\"FP01:5:heavy-module-handling\",\"FP02:6.2:C07\",\"FP02:6.4\",\"accepted:D11-native-handling-v1\",\"fp06-technical-s0-closed-native-socket-cable-jobs-v2\"],\"terms\":[{\"itemId\":\"fp02.comp.field_cable\",\"quantityUnits\":7000}],\"version\":\"fp06-handling-s0-v1\"}",
+    "digest": "844ff70e"
+  },
+  "CABLE5250": {
+    "version": "fp06-handling-s0-v1",
+    "profileId": "CABLE5250",
+    "catalogDigest": "fnv1a:f3a8c642",
+    "terms": [
+      {
+        "itemId": "fp02.comp.field_cable",
+        "quantityUnits": 5250
+      }
+    ],
+    "massMg": 1312500,
+    "capacityMm3": 15750000,
+    "sizeMm": [
+      500,
+      1000,
+      500
+    ],
+    "sourceRefs": [
+      "FP01:5:heavy-module-handling",
+      "FP02:6.2:C07",
+      "FP02:6.4",
+      "accepted:D11-native-handling-v1",
+      "fp06-technical-s0-closed-native-socket-cable-jobs-v2"
+    ],
+    "canonicalJson": "{\"capacityMm3\":15750000,\"catalogDigest\":\"fnv1a:f3a8c642\",\"massMg\":1312500,\"profileId\":\"CABLE5250\",\"sizeMm\":[500,1000,500],\"sourceRefs\":[\"FP01:5:heavy-module-handling\",\"FP02:6.2:C07\",\"FP02:6.4\",\"accepted:D11-native-handling-v1\",\"fp06-technical-s0-closed-native-socket-cable-jobs-v2\"],\"terms\":[{\"itemId\":\"fp02.comp.field_cable\",\"quantityUnits\":5250}],\"version\":\"fp06-handling-s0-v1\"}",
+    "digest": "2cd6f410"
+  },
+  "CABLE7500": {
+    "version": "fp06-handling-s0-v1",
+    "profileId": "CABLE7500",
+    "catalogDigest": "fnv1a:f3a8c642",
+    "terms": [
+      {
+        "itemId": "fp02.comp.field_cable",
+        "quantityUnits": 7500
+      }
+    ],
+    "massMg": 1875000,
+    "capacityMm3": 22500000,
+    "sizeMm": [
+      500,
+      1000,
+      500
+    ],
+    "sourceRefs": [
+      "FP01:5:heavy-module-handling",
+      "FP02:6.2:C07",
+      "FP02:6.4",
+      "accepted:D11-native-handling-v1",
+      "fp06-technical-s0-closed-native-socket-cable-jobs-v2"
+    ],
+    "canonicalJson": "{\"capacityMm3\":22500000,\"catalogDigest\":\"fnv1a:f3a8c642\",\"massMg\":1875000,\"profileId\":\"CABLE7500\",\"sizeMm\":[500,1000,500],\"sourceRefs\":[\"FP01:5:heavy-module-handling\",\"FP02:6.2:C07\",\"FP02:6.4\",\"accepted:D11-native-handling-v1\",\"fp06-technical-s0-closed-native-socket-cable-jobs-v2\"],\"terms\":[{\"itemId\":\"fp02.comp.field_cable\",\"quantityUnits\":7500}],\"version\":\"fp06-handling-s0-v1\"}",
+    "digest": "944a1b82"
+  },
+  "CABLE40": {
+    "version": "fp06-handling-s0-v1",
+    "profileId": "CABLE40",
+    "catalogDigest": "fnv1a:f3a8c642",
+    "terms": [
+      {
+        "itemId": "fp02.comp.field_cable",
+        "quantityUnits": 40000
+      }
+    ],
+    "massMg": 10000000,
+    "capacityMm3": 120000000,
+    "sizeMm": [
+      1000,
+      1000,
+      1000
+    ],
+    "sourceRefs": [
+      "FP01:5:heavy-module-handling",
+      "FP02:6.2:C07",
+      "FP02:6.4",
+      "accepted:D11-native-handling-v1"
+    ],
+    "canonicalJson": "{\"capacityMm3\":120000000,\"catalogDigest\":\"fnv1a:f3a8c642\",\"massMg\":10000000,\"profileId\":\"CABLE40\",\"sizeMm\":[1000,1000,1000],\"sourceRefs\":[\"FP01:5:heavy-module-handling\",\"FP02:6.2:C07\",\"FP02:6.4\",\"accepted:D11-native-handling-v1\"],\"terms\":[{\"itemId\":\"fp02.comp.field_cable\",\"quantityUnits\":40000}],\"version\":\"fp06-handling-s0-v1\"}",
+    "digest": "1790f5ff"
+  }
+}

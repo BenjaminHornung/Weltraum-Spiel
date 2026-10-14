@@ -1,0 +1,14 @@
+{"kind": "capture", "label": "01-current-v5-start"}
+{"kind": "click", "name": "Neues Spiel"}
+{"kind": "click", "name": "Werkstatt ansehen"}
+{"kind": "click", "name": "Fracht öffnen"}
+{"kind": "capture", "label": "02-current-v5-open-cargo"}
+{"kind": "click", "name": "Karte"}
+{"kind": "capture", "label": "03-current-v5-native-map"}
+{"kind": "click", "name": "Schließen"}
+{"kind": "play"}
+{"kind": "mouse", "dx": 0, "dy": 100}
+{"kind": "pause"}
+{"kind": "key", "key": "Escape"}
+{"kind": "capture", "label": "04-current-v5-standing-world"}
+{"kind": "close"}

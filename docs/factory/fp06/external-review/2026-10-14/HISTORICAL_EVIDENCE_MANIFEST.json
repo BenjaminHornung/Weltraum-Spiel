@@ -1,0 +1,3392 @@
+{
+  "schema": "hestia.fp06.external-review-evidence-archive/v1",
+  "recordedAt": "2026-10-14T13:32:25.580323+02:00",
+  "implementationSourceCheckpoint": "9ebd8cad469651edb1d47023c8d58041d4f32672",
+  "status": "PRESERVED_HISTORICAL_EVIDENCE_NOT_NEW_ACCEPTANCE",
+  "actor": "/root",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/01-v3-exact-business-red.command.json",
+      "bytes": 1367,
+      "sha256": "6b486bc233e6cd4e60fe1ccadfc67c6e83ddee6beb14d532cd4b4a3c72817dc6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/01-v3-exact-business-red.raw.log.gz",
+      "bytes": 975,
+      "sha256": "d7151763d30e5a0b03a8b0d0263234ad54770cb47f4220775034c485aa22a982"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/02-v3-source-cargo-v1-v2-regressions.command.json",
+      "bytes": 2695,
+      "sha256": "6d29f552ce9fe08a8735285cacb415b7bf3bc0dccfbc67b88f54b3ce074ff5a8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/02-v3-source-cargo-v1-v2-regressions.raw.log.gz",
+      "bytes": 261,
+      "sha256": "d70eb9c75433e74bedc9a940eefce6d9b83d01af4152a13e1d01464dbeb6fa6a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/03-v3-v2-bootstrap-profile-habitat-guards.command.json",
+      "bytes": 2489,
+      "sha256": "42a9f8b973fc7ee6a4eba1b1c4037b49c33030ae6277f9317e4bbf9af9ce949a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/03-v3-v2-bootstrap-profile-habitat-guards.raw.log.gz",
+      "bytes": 277,
+      "sha256": "4c616002f401de183827068c2cce2aea7436f6157da6173bb556849039b40ba5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/04-v3-original-build.command.json",
+      "bytes": 2355,
+      "sha256": "458b6bc50dc50a810e0c12d1a0b77325fe632ae8054eabaf697705ab0a6ec6b4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/04-v3-original-build.raw.log.gz",
+      "bytes": 899,
+      "sha256": "4d4356cd2f18da22ddbd4149cee7acfcd12202b70d2db3f573c911f7d7443a08"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/05-v3-normal-341kg-steering-route.command.json",
+      "bytes": 2542,
+      "sha256": "9d26c936c33d6a08e4ff9dda883eb08bbc7eaab539a699d733eee50364d51c2f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/05-v3-normal-341kg-steering-route.raw.log.gz",
+      "bytes": 1531,
+      "sha256": "7515291f8a44d65defe37369b87d0e000018e5bdbbbb11640770e8c7bb34f5b4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/scripts/normal-route-driver.mjs",
+      "bytes": 8660,
+      "sha256": "86d018473d634909f45ace4679b545acdd15af060a6cafe8458b55ec5763c4c4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/scripts/run-command.py",
+      "bytes": 2018,
+      "sha256": "60cc963d208f9d88792aee64352d55ae594a7e6139ec1347d7a4defe668b33cf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/scripts/v3-normal-heavy-actions.jsonl",
+      "bytes": 1428,
+      "sha256": "114a9ed413e1fec7054ecb3908701973c0be8997aeed251a4013fa3841c42940"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-normal-heavy-route/01-v3-normal-entry.json",
+      "bytes": 166226,
+      "sha256": "41dff753bb26201dd0a866ace126700fcf41f5b81758b957f76083a28d90761c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-normal-heavy-route/01-v3-normal-entry.png",
+      "bytes": 659939,
+      "sha256": "31b7d93f059a9a79a3911ae16bea37aa5933c0c19c86bb5d839965fe091e96c7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-normal-heavy-route/02-paid-341kg-pickup.json",
+      "bytes": 175065,
+      "sha256": "e2b98cda230844c18087b0414c808fa69feb25a96ca0be0236851fc2f12909f4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-normal-heavy-route/02-paid-341kg-pickup.png",
+      "bytes": 626389,
+      "sha256": "65c21ff9bd952e59b28b3998519a53926ba06b7065059d11ac814e7710d04a8b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-normal-heavy-route/normal-route-actions.json",
+      "bytes": 157544,
+      "sha256": "592f89150a3565d5b5c30092622aa1e6b1b1965abbf3f47378149ec9368fcf38"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-normal-heavy-route/normal-route-execution.json",
+      "bytes": 176415,
+      "sha256": "edfc9d59e85e45aa8929c21c50d1991b6e2b83406519bbe2676781ebae17c7fe"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-normal-heavy-route/normal-route-final.json",
+      "bytes": 302050,
+      "sha256": "ba1c48d891e89106dbd45cba48f34d031a74bfff6dae0e70138712f86493ac7d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-normal-heavy-route/video/page@ef4528cf3750bd9d6a1817e6e7457c2d.webm",
+      "bytes": 1905125,
+      "sha256": "cc1afc7f497e7e4774bc7255456d18cc84e40fe5f7c66c9158c283a6bddde70f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T085310Z/v3-route-script-bindings-before.json",
+      "bytes": 686,
+      "sha256": "1207cc851309438270826648497f14e13ca9c15e87f1af08d5414c8a469b4188"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/01-v4-exact-source-business-red.command.json",
+      "bytes": 3836,
+      "sha256": "bd301fdd7e40cf9212c02b5279e002eabad5369059674507f4b64fd736d0b7d7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/01-v4-exact-source-business-red.raw.log.gz",
+      "bytes": 1022,
+      "sha256": "89343bb7494415a64fc9bd9263363ca2cfb0208533f84b1d0fc7b9d864d6f594"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/02-v4-source-cargo-coast-v1-v2-v3-regression.command.json",
+      "bytes": 3851,
+      "sha256": "07f90984ca59332476d0a6f06b44ddacb4af03544e27ff9725074f8aa8489f22"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/02-v4-source-cargo-coast-v1-v2-v3-regression.raw.log.gz",
+      "bytes": 269,
+      "sha256": "4afc5f6cc97991cc672d7af42a0f42b4d4889307ce763c1f2afb892202568e3d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/03-v4-source-cargo-binding-green.command.json",
+      "bytes": 3852,
+      "sha256": "7552e6c3238edad29ace3de540426c5d06d3fe2463e821e83c8b94b1660a50e3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/03-v4-source-cargo-binding-green.raw.log.gz",
+      "bytes": 689,
+      "sha256": "df3b459ae6a5d38b4445cf49f75dc4b1303024190d74425fd2e60996a68340bc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/04-v4-source-cargo-actual-header-green.command.json",
+      "bytes": 3851,
+      "sha256": "aa5d2a249226de9414f261487a92786ec2174ef34014f51cb76b3b0cfd8b8089"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/04-v4-source-cargo-actual-header-green.raw.log.gz",
+      "bytes": 263,
+      "sha256": "20f7c6630d4802dc3ceed31767e1a04269f41ea486ea3cf6c8744b11ef05ff8e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/05-v4-bootstrap-profile-habitat-host-regressions.command.json",
+      "bytes": 3863,
+      "sha256": "08a3985b528df33349d385c071859b24e3dfa7d5321bf879833181cead6f4523"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/05-v4-bootstrap-profile-habitat-host-regressions.raw.log.gz",
+      "bytes": 285,
+      "sha256": "b4daa62bb92d66acc1cea1c149cceb7a56c4d5a628f38e4e41edd7e883409ec1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/06-v4-original-build.command.json",
+      "bytes": 3709,
+      "sha256": "05382e4a6a05dbf89f85db4b0f123867b6ae0e760075f2a83b126dd173027161"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/06-v4-original-build.raw.log.gz",
+      "bytes": 918,
+      "sha256": "56a509594e8cec9f792edabe658f3511e77a5104de93d2f4d17952db41e31642"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/07-v4-normal-heavy-battery-route.command.json",
+      "bytes": 4080,
+      "sha256": "f3fb48ea8d0cdb1368fb567a8e524bf56da95f492094a856d20c856ca37e0259"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/07-v4-normal-heavy-battery-route.raw.log.gz",
+      "bytes": 1280,
+      "sha256": "bfb9bd52555735147ec0aa1d09892d353351e333ee2a40bf4f78926e35590732"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/08-native-carrier-overlap-north-clearance-attribution.json",
+      "bytes": 260085,
+      "sha256": "eb59b9af573befc453f249213dfd249a70c540b94f05dbc56033661225d1cbf9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/08-v4-exposed-input-normal-heavy-battery-route.command.json",
+      "bytes": 4022,
+      "sha256": "b6754ac994244684c28999f8c331a133312999ca3be711bf961f13b58186e3e0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/08-v4-exposed-input-normal-heavy-battery-route.raw.log.gz",
+      "bytes": 1916,
+      "sha256": "a335b049b8a312837a6d5a77773080c7cd006bd35c65b932608fd31e37dd4ee1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/09-v4-named-header-pin-green.command.json",
+      "bytes": 3842,
+      "sha256": "36625f217480ea08f10e9c79b89a089a5dda208b5ca3250a687ded365375e0bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/09-v4-named-header-pin-green.raw.log.gz",
+      "bytes": 259,
+      "sha256": "6dd7fe2ed663572bdca868b04eb551549f4c34b5ec091e5d697e274c53b544e4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/10-native-read-hold-attribution.json",
+      "bytes": 216061,
+      "sha256": "1609f697a6cc47a46049175e0e4ff8a4855f1e37d38d42f63f45f7afa797c7de"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/10-v4-normal-north-clearance-heavy-battery-route.command.json",
+      "bytes": 4024,
+      "sha256": "85f418b92e1036f9efbaa8f581797e390881899a6e9bd922b4271f30cdb1e597"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/10-v4-normal-north-clearance-heavy-battery-route.raw.log.gz",
+      "bytes": 3299,
+      "sha256": "b9bc16bcd6280506c83156b257ea388e4d551a2832af2f149e7c0fbdd517aee5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-exposed-input-route/01-v4-normal-open-cargo.json",
+      "bytes": 166100,
+      "sha256": "8b9ef1e8972804e40ab5813faece79493813b70698f2939cb51e7c8d2bbf9314"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-exposed-input-route/01-v4-normal-open-cargo.png",
+      "bytes": 379940,
+      "sha256": "64f192993c989c2c14bda2fa7ec1d071ecd655845dbb3f304814dd58789ccf9d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-exposed-input-route/02-paid-341kg-pickup.json",
+      "bytes": 299477,
+      "sha256": "1942423a1ae050c587e1637ba6e254b280d1786fb78669a68c5e283cf929056f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-exposed-input-route/02-paid-341kg-pickup.png",
+      "bytes": 262426,
+      "sha256": "f16a47fe12c0ed0c2e806766e361be3e5baad8003fa563875ddb48f7b2590081"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-exposed-input-route/normal-route-actions.json",
+      "bytes": 90359,
+      "sha256": "9473e47753b37bcb61120edbd9b17544fbbfea5578c72b1844ae0b7b721f324e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-exposed-input-route/normal-route-execution.json",
+      "bytes": 111222,
+      "sha256": "12919ea14f1841b8eb59f7fc66c410627e44afc92673c03a39d28a13495cec94"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-exposed-input-route/normal-route-final.json",
+      "bytes": 292840,
+      "sha256": "72b4bc5ba672cbba7d1acbca378a8bd1eb19c38f25839ec3b5d1869252efec8a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-exposed-input-route/video/page@dd9fdf0ae2f6ded0595f9037095962ef.webm",
+      "bytes": 2457548,
+      "sha256": "b2e888a72beb71a509513cd822c7be965f9bc497e673650d0a4466058448f4ed"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/01-v4-normal-open-cargo.json",
+      "bytes": 166106,
+      "sha256": "53e86bae992fb2046b42e7a5e74a7008a10a4bcbea88a1665445e2d705a9a592"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/01-v4-normal-open-cargo.png",
+      "bytes": 379977,
+      "sha256": "d94a26e7772fade346845375f65dc056f96151f2a136d10525a97c37dd0f8e6a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/02-paid-341kg-pickup.json",
+      "bytes": 299455,
+      "sha256": "e36fced09498ab4c63631b456eb1a3acbd4501a2a1dc9a548143d4366caeb1ec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/02-paid-341kg-pickup.png",
+      "bytes": 262346,
+      "sha256": "8d1977247118b1b8bc7a698076d90a2b243b5013e7e2020080f98fa2d5a9c46a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/03-v4-heavy-west-clearance.json",
+      "bytes": 292636,
+      "sha256": "fee31635d6f7e45ac4fd6fca9970ca1fa6453eee8b5b5264b8e4ac27199ed0cf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/03-v4-heavy-west-clearance.png",
+      "bytes": 297842,
+      "sha256": "a9d86849ebec298a7d9c6d64533da2430b17dd34810494e524bce8e8df7be963"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/04-heavy-ground-depot.json",
+      "bytes": 296113,
+      "sha256": "479d51e7a20b74808934bceb62ac95d6919bec2939ce43dd0f94d51cdf6ff60e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/04-heavy-ground-depot.png",
+      "bytes": 294692,
+      "sha256": "31475be33404610be357d5e47724fffaaf263e385f63e4dc880d8819b9435ec7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/05-paid-native-former.json",
+      "bytes": 302968,
+      "sha256": "e05658d3085d7510173cbf172f2f08ec3cdcfa13256e9098840bafbedacd6844"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/05-paid-native-former.png",
+      "bytes": 180997,
+      "sha256": "1a338bcd21a0bd0f94a2392a3d0555d19741417bbbd2a304eb192d1dd7d0a4be"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/normal-route-actions.json",
+      "bytes": 366136,
+      "sha256": "575a78390e3ce8e3ae817603a7a141d427ccd140a52932be491021045018a15e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/normal-route-execution.json",
+      "bytes": 400662,
+      "sha256": "f3e4ef73706aff98cecd9ef7b27f90eefdd01c35401678d2369b820c2ad59cff"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/normal-route-final.json",
+      "bytes": 306597,
+      "sha256": "f28fe12c0599475af760dd681eeb05cafb8e9608387e3558e5ae1b77017e61fc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-north-clearance-route/video/page@5aded560d29868f0e95af079e87a1a1f.webm",
+      "bytes": 8870073,
+      "sha256": "d911cc0beb4b9638ba587da9f4a6a7969377d2915beec7e5e710e5308e6640ce"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-route/01-v4-normal-open-cargo.json",
+      "bytes": 166086,
+      "sha256": "26610b678ac5907471b870d651c97e95cc4c53a81ccc789a3bc491face85e781"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-route/01-v4-normal-open-cargo.png",
+      "bytes": 379956,
+      "sha256": "faccbd8e6d9608091b1e07103bafadca7028c1d23b805ead3228af1fe0e55475"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-route/normal-route-actions.json",
+      "bytes": 26278,
+      "sha256": "e02329c4a959542ba8a429c73359f0f5067016d219f82a43a1a39acc7e699b23"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-route/normal-route-execution.json",
+      "bytes": 33516,
+      "sha256": "8ccb63f7e9f1f12a7852a8692b7d7a025c4bc95917263697f9c484c2653ccf6e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-route/normal-route-final.json",
+      "bytes": 159111,
+      "sha256": "02e14fd7cb48c71790942d7ed4436905c3a699f00b46487ea37d9a2a7b864704"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/normal-heavy-battery-route/video/page@dce15195ddebc359870723c3cb49aa14.webm",
+      "bytes": 1071883,
+      "sha256": "f700f5c7a208dafaf33877f5e51986bbc3edddab0c36692001a434d80217b282"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/current-shell-route-driver.mjs",
+      "bytes": 10690,
+      "sha256": "0066a8ad6aad73008753bf53981232c2f98be706391073c4c7166d6cf13b4b3f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/current-shell-route-exposed-input-driver.mjs",
+      "bytes": 11355,
+      "sha256": "947c8ddf8ac5b47e9e787e9dc8043349312cc801ab0ed065d39453348c7c0116"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/v4-heavy-battery-actions.jsonl",
+      "bytes": 2438,
+      "sha256": "63574bf216f50324f49e8f5d4f3dfc78d764c62ed8b5ca003bc9266433cba543"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/v4-heavy-battery-north-clearance-actions.jsonl",
+      "bytes": 2478,
+      "sha256": "4b79e14784011488eca2892717316793bb1b4076bd70a8d7b8a17c1a9a953c4b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/v4-north-clearance-route-freeze.json",
+      "bytes": 717,
+      "sha256": "aace240049de709e97a342d49c690e6e242b8103b7523a5b83aee07940650150"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/v4-route-exposed-input-freeze.json",
+      "bytes": 981,
+      "sha256": "21d6d6b50879f3f8cea0f2cd7682eaf0d51e514daa660ca41e551a0478a0680b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/v4-route-script-freeze.json",
+      "bytes": 494,
+      "sha256": "3e8cd52b31ee36ab15adc8b20703ecaa35365b9de6c48417a4fcd80cea4164b9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/01-v5-source-business-red.command.json",
+      "bytes": 5040,
+      "sha256": "90ee7a2fd827ff25e7c7f40f844cdc863073a5198b1a89000c123834184aa003"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/01-v5-source-business-red.raw.log.gz",
+      "bytes": 1034,
+      "sha256": "ef6a5c12e3627cb2c93d508406ed0185a5a871d9aa6418425e67a11e24bde976"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/02-v5-source-cargo-coast-green.command.json",
+      "bytes": 5098,
+      "sha256": "01e03f4c653356ff2b2a43f55688986c35fa6e0650b353fc2c0c0b5b93ffefa7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/02-v5-source-cargo-coast-green.raw.log.gz",
+      "bytes": 725,
+      "sha256": "6645da0336d52ad01f51be92a7020f2487016f3ddb24cae4982b1e3e638d96ff"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/03-v5-header-flora-census.command.json",
+      "bytes": 5202,
+      "sha256": "27b065a0d4d031121734a14146170e7c18de3b077cae600d8bfdc43d72fc80d5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/03-v5-header-flora-census.raw.log.gz",
+      "bytes": 614,
+      "sha256": "9eff9326c53550ebaf9ebf90c2286928a75059ce0d004255814e3cb78172a6f0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/04-v5-source-private-receiver-green.command.json",
+      "bytes": 5109,
+      "sha256": "0dabc8f0b94b6c5a625b2cc4f2c6286b40c8ca8709b1071e81dd2cef307863df"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/04-v5-source-private-receiver-green.raw.log.gz",
+      "bytes": 272,
+      "sha256": "3e34d33cdbc6f75441f9d513f261c7e4d165cc365442eaa146c3efb31970558a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/05-v5-original-typecheck.command.json",
+      "bytes": 4966,
+      "sha256": "d77e979f62b610ff0cc28184d990a05c03ce3658e9008e0f7c65606bd02f959a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/05-v5-original-typecheck.raw.log.gz",
+      "bytes": 164,
+      "sha256": "f48542450d27c0de7d408517419d6d227dd16e41d5b62cc0ac3c6cc6815930ac"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/06-v5-explicit-source-bootstrap-green.command.json",
+      "bytes": 5481,
+      "sha256": "01069744fd55c943cb8ae1c8efc8bf9e6806fa07ecd72e9d9df4396002c55201"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/06-v5-explicit-source-bootstrap-green.raw.log.gz",
+      "bytes": 275,
+      "sha256": "dc4c24c23a81aac2bc3e0c0d5d9551a11017c940e7061815649a3508f7997f5c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/07-v5-cable-original-build.command.json",
+      "bytes": 5363,
+      "sha256": "f40b198d9cd146564ec18bf3f197aa47cade67c036a6d4502bd74a9eafd3b299"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/07-v5-cable-original-build.raw.log.gz",
+      "bytes": 429,
+      "sha256": "65f7fb06c92c55fa3ddc3f524551c46bcead8b14b3d3e4380075c40251b00f42"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/08-v5-cable-original-build.command.json",
+      "bytes": 5322,
+      "sha256": "fc728beab9a6b31b3b30ca46312a1ffd98b8244bc5c11d85da01435e9182443e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/08-v5-cable-original-build.raw.log.gz",
+      "bytes": 1292,
+      "sha256": "a4ce1bad55b33da3f3a73bd1eaff84f0b1b0fee89f28031bd0d2bddb9ea067b2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/header-flora.json",
+      "bytes": 1342,
+      "sha256": "8fe96aa8facc745ace4bb848e1918003f190e10ecc76ffaaa638da1599deca9a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/private-owner-closure-frozen/hvp-bootstrap.test.ts.snapshot",
+      "bytes": 106982,
+      "sha256": "2cbc323e7cd985b8faf4bec9269c07eaab458ed042cf2c0261529f11c0f98369"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/private-owner-closure-frozen/hvpBootstrap.ts.snapshot",
+      "bytes": 194510,
+      "sha256": "d415f7061bc915af0869292856389c727ab2b4c76ab2f36224c4b1a1f0b5b5d5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/private-owner-closure-frozen/manifest.json",
+      "bytes": 1304,
+      "sha256": "3da0b342184d208a1ad8af78faa57a0e6489b56a4850fb4333b43672e0c10b0b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T144500Z-v5-raw-band-floor/scripts/v5-header-flora-census.mjs",
+      "bytes": 2280,
+      "sha256": "c58e3e248fbe1dfcb5f8e01a4bdca74e8bdf00b8f1f458bcdbc85f5923d2fec1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/01-presentation-business-red.command.json",
+      "bytes": 4217,
+      "sha256": "3a1b69a72cde3bd856c3197bf80382f067e90281273173b7c0581cc6a760c606"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/01-presentation-business-red.raw.log.gz",
+      "bytes": 748,
+      "sha256": "5f78ba17f5600006de6492e3bffeeef423e6e0fdbf8467929fe3be05f844f38e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/02-frame-business-red.command.json",
+      "bytes": 4400,
+      "sha256": "af4df3d5d8919a75e87ef254164555da460516cdb61f65c08f23d21c7fe4794f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/02-frame-business-red.raw.log.gz",
+      "bytes": 878,
+      "sha256": "a0efc91212551e3c5eac1640fafdeaa445b2a9c14b9a8784c840f9663e5aa31f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/03-shared-focused-green.command.json",
+      "bytes": 4647,
+      "sha256": "e52782bc3baaa9aee20455ca6ce2df729fd19de2fdd5bc338cb4ea67c57a6645"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/03-shared-focused-green.raw.log.gz",
+      "bytes": 837,
+      "sha256": "b2ac658b7b983c12b381cb81f14bb1c0ea56635316e926e895317f1e15149a3a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/04-shared-typecheck.command.json",
+      "bytes": 4504,
+      "sha256": "a427b0982f5c1178f3e1698c9b4f94c84badc4f45d20b5e127ae6e438548ae7b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/04-shared-typecheck.raw.log.gz",
+      "bytes": 48,
+      "sha256": "b3916e7e4cff0418d7829547f7916e0db97789ceee212472f1f10cd00ac0a1d8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/05-shared-focused-green.command.json",
+      "bytes": 4645,
+      "sha256": "31aa1459f1b0bde55211cddce5b29acfd6a92c1a3020bfe97c845a50209bb817"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/05-shared-focused-green.raw.log.gz",
+      "bytes": 257,
+      "sha256": "cccadfead90124548ca89cd5ea48da412644697941db4d01e803c10334e80024"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/06-actual-pause-business-red.command.json",
+      "bytes": 4856,
+      "sha256": "406a116001df401365afc2299ea59118777426db4192625a8762b0c35f64d3d5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/06-actual-pause-business-red.raw.log.gz",
+      "bytes": 352,
+      "sha256": "6a29355fb7b4530418b36a1619ba4a881e044579ff0b808a4ece340dfa4d2a9c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/07-cargo-carrier-typecheck.command.json",
+      "bytes": 4505,
+      "sha256": "641ce2ff41244783517b19affb30835e740def8b5cf2ca64a32c5bcb5fdf0727"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/07-cargo-carrier-typecheck.raw.log.gz",
+      "bytes": 55,
+      "sha256": "0e715124ce8979478c2c54718c95ecff937f1eb9be9620818596f6fc5cf117f6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/08-original-play-cargo-build.command.json",
+      "bytes": 4504,
+      "sha256": "0b3e23e385bfc43fb2d6faf67475786c9788293e4568887abddc1c1d1c77f7e8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/08-original-play-cargo-build.raw.log.gz",
+      "bytes": 1050,
+      "sha256": "730cdcad942f099924366af2e598fcb4b0fe49bde748279e09deaf9e518f26e1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/09-actual-pause-glb-green.command.json",
+      "bytes": 4857,
+      "sha256": "d767ca83f68c83d37127b8be94d0435be42c02bd2ef9866ff6757c53bce3eee1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/09-actual-pause-glb-green.raw.log.gz",
+      "bytes": 89,
+      "sha256": "c5d8c4d268ac6d41e7b3070a30b4774fe43a9f3ceecbc637d0a81dbf44fbd22f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/10-host-frame-regression.command.json",
+      "bytes": 4622,
+      "sha256": "e1a9cc8b19d18613d682a46dcae17d6bdc997e5105a9abfae90e27c2b54b310b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/10-host-frame-regression.raw.log.gz",
+      "bytes": 251,
+      "sha256": "808aa91801e5afe56de63e66b45e5ca437d1122e4f3aff9694ae1cd0ef2f90b1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/11-avatar-pause-business-red.command.json",
+      "bytes": 4601,
+      "sha256": "42ddf4917f8a399ca5f36a6917fca25b98c40452aa6c22ee68d7de3eb6905647"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/11-avatar-pause-business-red.raw.log.gz",
+      "bytes": 262,
+      "sha256": "1f969db9be439fc9f2318af5f3f6746cab60675d355c7528d7efc72a49bac8ea"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/12-late-native-ack-avatar-red.command.json",
+      "bytes": 4602,
+      "sha256": "5b314b7f62b397e896ef93ad5b347c8acaf33dd53e068dce11560f2e69d90e0b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/12-late-native-ack-avatar-red.raw.log.gz",
+      "bytes": 772,
+      "sha256": "1bf1d3ee8ad7e6785c8f53476cf3dba3afe45e456295ba4ca77c2aa7d7081727"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/13-pause-avatar-cargo-host-green.command.json",
+      "bytes": 4627,
+      "sha256": "9704e0bd005b96c97a359b13ea3bcd72e273a5fe063a1231f917ae2b79ddc7d3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/13-pause-avatar-cargo-host-green.raw.log.gz",
+      "bytes": 266,
+      "sha256": "0b5e54de19da18bd6e036aeefa23632758eaf1849baa3f5dd27432400749a9e3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/14-pause-avatar-original-build.command.json",
+      "bytes": 4504,
+      "sha256": "946d2951a7c2a0be61293287f99d11f5b0205c6fe942ad9f486e568e742b7b41"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/14-pause-avatar-original-build.raw.log.gz",
+      "bytes": 1054,
+      "sha256": "90324cba0174ca351f27a8c3b996f91d8191a6ad509ccd263e27858eb5234c3a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/15-actual-pause-avatar-green.command.json",
+      "bytes": 4863,
+      "sha256": "b19c7d004118813dd23bd5fa38f320630b4fd320900aeed58f6e9f0402d90896"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/15-actual-pause-avatar-green.raw.log.gz",
+      "bytes": 92,
+      "sha256": "d7dc7d49024a8fcbbed67e338c8b599593ce49f1990769e5ebcebaa32820d657"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/avatar-pause-green/01-pause-help-actual.json",
+      "bytes": 160031,
+      "sha256": "b3b07ffe274a92f35c6d3d8033a14d1c175ed12832f583efbde6086201ccb220"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/avatar-pause-green/01-pause-help-actual.png",
+      "bytes": 282728,
+      "sha256": "fc156822afb558272aa0a5958ef16f60b672f998178e9b2729cde22fb0125fed"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/avatar-pause-green/execution.json",
+      "bytes": 636,
+      "sha256": "7d975c1b32c91e89d4f7fa05f885be0917b7eb1ab807ceaa798522466d6ba424"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/avatar-pause-green/overlay-dom.json",
+      "bytes": 1750,
+      "sha256": "d62ddb904e53402d02ca0c94e173a977f59569f767decdaec71cf26b261b5eb2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/avatar-pause-green/video/page@a31c5a9cbe6ba6a8bc51e9c84bfd9a3b.webm",
+      "bytes": 661865,
+      "sha256": "aab4b5ee77f6c5fbecf21b33a568018a3d09780f7d908a326eaf81136f0828f5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-green/01-pause-help-actual.json",
+      "bytes": 160048,
+      "sha256": "c6dfd655caa6dca5b4861392e5e07462fde7d7813bad4e69aff46fa2054fe653"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-green/01-pause-help-actual.png",
+      "bytes": 344622,
+      "sha256": "4c0d7b2ffbad44fb77b89cb947ede163af51ecc8ca713d9d68089310b4c04695"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-green/execution.json",
+      "bytes": 629,
+      "sha256": "d2fdfa4aae88279d20515c41e68278869a915fb4eb334a42eb61ba4190fdf348"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-green/overlay-dom.json",
+      "bytes": 1750,
+      "sha256": "d62ddb904e53402d02ca0c94e173a977f59569f767decdaec71cf26b261b5eb2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-green/video/page@0c6ebbb013836648943c4f56156455c8.webm",
+      "bytes": 649764,
+      "sha256": "704246c5b701a45e9b90788fc08654c4cb3ddd3bb55eec0603c73b4fbda05ce0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-red/01-pause-help-actual.json",
+      "bytes": 160079,
+      "sha256": "960dec64d984675e3f0d7bb572111cd3f60b6bcdd506f32dbb38d05228f8de45"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-red/01-pause-help-actual.png",
+      "bytes": 347834,
+      "sha256": "50faf90d05bcdfec5d5db4dfb5b70f4f027d28fecbf6abb1755122944f0518cd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-red/execution.json",
+      "bytes": 627,
+      "sha256": "b730f4d97a81ab767db560554f33d4bcd60c7a294cdfec8810ebbc8568e323c2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-red/overlay-dom.json",
+      "bytes": 1750,
+      "sha256": "d62ddb904e53402d02ca0c94e173a977f59569f767decdaec71cf26b261b5eb2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/pause-red/video/page@27bfe46f5c3352971be5c911589c5320.webm",
+      "bytes": 560904,
+      "sha256": "db34130496229c62783be77ccfaa84761f74a8e5ed725a8ce52ba174bdac93ec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T122337Z-shared-runtime/scripts/pause-ack-dom-driver.mjs",
+      "bytes": 6106,
+      "sha256": "24ba9fe57c37a1c1990b6bc855dcc6974529b8dd6b39d9e62a6a5774cf66eea3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/01-carrier-retirement-business-red.command.json",
+      "bytes": 5101,
+      "sha256": "a37eb738da88dc972f5236b27e902f831cdde7c84118b06cc799cf5a41a4c307"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/01-carrier-retirement-business-red.raw.log.gz",
+      "bytes": 455,
+      "sha256": "7d234916b829efacea2161c3f1d59c258ba68048fc334917bb33efd2ad2fa484"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/02-carrier-retirement-business-red.command.json",
+      "bytes": 5076,
+      "sha256": "abf4a35176c74207ac558383989d7004b58e763cccd726715357f012ff5d8389"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/02-carrier-retirement-business-red.raw.log.gz",
+      "bytes": 753,
+      "sha256": "6278e3ca696f3774cc2564924c68434196e206c090b54a0e33525ebb1d84812f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/03-carrier-retirement-green.command.json",
+      "bytes": 5136,
+      "sha256": "180ad778d38433a95fc1bc58bb82a0f39b7658f950429c2a18c0e65cfe8ec2f4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/03-carrier-retirement-green.raw.log.gz",
+      "bytes": 263,
+      "sha256": "fa2202603aa172312cab229eae5b456a0fcd79039b93a70576b12df0562b4475"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/04-original-typecheck.command.json",
+      "bytes": 4964,
+      "sha256": "13fa3174a6de067d1553a3df28652b792e44e62e39d38d98e070c439689add68"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/04-original-typecheck.raw.log.gz",
+      "bytes": 50,
+      "sha256": "8420472793cadf1c50b2741161046c0d429c9580f9299ebc53be6b9e3505d3e5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/05-native-host-s1-regression.command.json",
+      "bytes": 5161,
+      "sha256": "93e022b63ce094b217375ed353dcfdf3ec941b0ddd350ee72c67e0e1b436917c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/05-native-host-s1-regression.raw.log.gz",
+      "bytes": 257,
+      "sha256": "f3d030b0d49fa7e33f5034de9ef53158710201f5493fcaaff8eca5c2989cc6ef"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/06-original-typecheck.command.json",
+      "bytes": 4964,
+      "sha256": "f5a03d570cb4020d55c45129473ede254e880d6b1d69e3c9b940a7b3c4672bd3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/06-original-typecheck.raw.log.gz",
+      "bytes": 50,
+      "sha256": "a44005b1d989bfef0a401263e3f64378d4606209d43a8471f4c52c1dc88fd0f7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/07-original-build.command.json",
+      "bytes": 4919,
+      "sha256": "036e7ffdc766f918561ec5ccb3fc5a151d2dc032825d016590c14b0833e5c80f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/07-original-build.raw.log.gz",
+      "bytes": 1122,
+      "sha256": "a5502f4c7423de850e42ddc2c7ec4ff1782e6b2f96c7cedea5b5b30d27dc4dba"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/08-normal-S1-model-route.command.json",
+      "bytes": 5224,
+      "sha256": "aec093ed407e21f5ddee67aa8d9a97e1163a4f51e214088074ca11ddcd0c24ed"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/08-normal-S1-model-route.raw.log.gz",
+      "bytes": 1370,
+      "sha256": "fa37d3c855fe141da4a6407e4da2414d2db150f891e6483261245e3e9d794d75"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/09-normal-S1-model-no-recording.command.json",
+      "bytes": 5261,
+      "sha256": "f7ff530dfd7498ec450060ec1475df2d7663503761b72d0d3f90b291e7fa57a2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/09-normal-S1-model-no-recording.raw.log.gz",
+      "bytes": 2484,
+      "sha256": "f6e4ee1de57c1bf2bd1ef035293eb3e14f56eeac766bd12552df5ffa7f930032"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/10-private-prepare-receipt-business-red.command.json",
+      "bytes": 5057,
+      "sha256": "45f488a6a0cb0d9795061467ecbfc9559f82072c0e651704dc587c9c16f0d2d2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/10-private-prepare-receipt-business-red.raw.log.gz",
+      "bytes": 583,
+      "sha256": "2204ffae20089574c0498f9dc18bf5b07dff0cb894cb5caaa4b78cf6334a6ab5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/11-private-part-proof-business-red.command.json",
+      "bytes": 5058,
+      "sha256": "871b2699c73d3cc4d238f856a4d7c38a8200591ce60df95d3d4f8ded2f84fa18"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/11-private-part-proof-business-red.raw.log.gz",
+      "bytes": 574,
+      "sha256": "45a3c7177badcb03e088904ab65a7dbbd7882926609bde9c54c20bbe179fadd1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/12-private-prepare-receiver-green.command.json",
+      "bytes": 5091,
+      "sha256": "2baedb247d31de34fd96df06a4a9609f962b4e2aa50cbc93b67f57aad59359a2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/12-private-prepare-receiver-green.raw.log.gz",
+      "bytes": 268,
+      "sha256": "3e0e12ec3e475fb4ea0c8dd588f9f2280789f02a0f899380d3d15d0701bebe5d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/13-private-prepare-typecheck.command.json",
+      "bytes": 4967,
+      "sha256": "ec751825278a70c89d063b95cbcc16ec6a533e686a84bc5e76cc295b43d23245"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/13-private-prepare-typecheck.raw.log.gz",
+      "bytes": 426,
+      "sha256": "a4a85ec5159b29fa538040eb1e33f58a3c761d4353769b55873ef12bf991ec49"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/14-private-prepare-typecheck.command.json",
+      "bytes": 4966,
+      "sha256": "56d6fc91a9c73adef54bd6b5ad1a6b9cffb0b60e9ed80cabd6dbd37b5f1d7fca"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/14-private-prepare-typecheck.raw.log.gz",
+      "bytes": 461,
+      "sha256": "cf61c35830d5008e0caae0c59bb53804ebee0e8e55bad701a6428ede4fc9e5a9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/15-private-prepare-original-build.command.json",
+      "bytes": 4920,
+      "sha256": "59ab1dc6b0af90bb235bb84a21cb4a0c12b864f4ca56a5865564d0d1f50d53e9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/15-private-prepare-original-build.raw.log.gz",
+      "bytes": 513,
+      "sha256": "cdfde5d9bd099dcd6bc0ed3a651dc7a77cd936dc56da9c216d56ae4ae529266b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/16-private-prepare-final-focused.command.json",
+      "bytes": 5091,
+      "sha256": "2b57c4d015caaf499b08176b2efe7c3ad780ed24230498b92e36b41b022b46d8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/16-private-prepare-final-focused.raw.log.gz",
+      "bytes": 268,
+      "sha256": "46a121e60942c25fa0e372393dc36d77ea256d73e631614848eff83c629622a5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/17-private-prepare-final-build.command.json",
+      "bytes": 4919,
+      "sha256": "01eb7a686a5ef2fef640998f95c5af49db895fdfcc0ba9ea26e2757c7ff47be5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/17-private-prepare-final-build.raw.log.gz",
+      "bytes": 1140,
+      "sha256": "c86f061e4351afc51abe58bf38f8dd954c13c8eaa1472532ddb06384a816bd39"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/18-normal-model-after-private-receipt.command.json",
+      "bytes": 5271,
+      "sha256": "3be51d97f8ad8f14022596159f4a2ab4938e38b8e7f5fb6ba9b503c58efb7695"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/18-normal-model-after-private-receipt.raw.log.gz",
+      "bytes": 3106,
+      "sha256": "19d1bcdd7af0407d95611d1fc33e7c1c4513227a3061f9b58b02d3c95572311e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/19-private-owner-fields-business-red.command.json",
+      "bytes": 5060,
+      "sha256": "e3a2c69ac78a7c74abe298671b89cfeda953a8bb8d6d53a84a2bf04c93b486c8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/19-private-owner-fields-business-red.raw.log.gz",
+      "bytes": 580,
+      "sha256": "5a9acb58f914c33c65b55e13f62c8840c071943dba39bbd143c2811635ece8b8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/current-source-bindings.json",
+      "bytes": 1489,
+      "sha256": "c3325a46fbcbc2550a7014a9edbccb0ff5dc29b37967b5bf50454d192924b9b1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/01-v4-normal-open-cargo.json",
+      "bytes": 162427,
+      "sha256": "70b86ab7dcab3bd5a2d1e730814dcc3363ba49bc6b6166a83475aee194d9df72"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/01-v4-normal-open-cargo.png",
+      "bytes": 521408,
+      "sha256": "f26d39a792d86f35643e88a37488a5234b95543e50d7e499023b6e99fbd7950f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/02-paid-341kg-pickup.json",
+      "bytes": 298772,
+      "sha256": "dfbb0de797e4a67e3471a7ff216d485688b20f7487da37bd8fbf9ea51c0ee5e0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/02-paid-341kg-pickup.png",
+      "bytes": 247396,
+      "sha256": "f1c5ad06427e0542f21269cad23de78d418911ce5382d9bbc629fac5807d17a6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/03-v4-heavy-west-clearance.json",
+      "bytes": 297344,
+      "sha256": "7d6887ec51c20ce7ce91862905b62ea65ee4bca6f7130bb2e26f15a20d113103"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/04-heavy-ground-depot.json",
+      "bytes": 297845,
+      "sha256": "5abc8066a2a860c3ca9de17e9d1b621b6417cf12e00d67b2632c84d308700daa"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/04-heavy-ground-depot.png",
+      "bytes": 296701,
+      "sha256": "1861612fcf30d41f942c7aee2e8b5a24df1ff5c881ace116e013604d0754f8c0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/05-paid-native-former.json",
+      "bytes": 316845,
+      "sha256": "812581b4b19a257461a32a8cd846da45cf4ee190d8f7d28cdb651fae74130b86"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/05-paid-native-former.png",
+      "bytes": 252567,
+      "sha256": "9faaafee0b4d5ba77d405ae6fd4aed5440da36abd46623c74016d2087e9fcd02"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/06-current-paused-S1-former.json",
+      "bytes": 316742,
+      "sha256": "bc121798ef3adbdd626e91c6b72fc479ae7befeb93b15e0b65188d43582c31bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/06-current-paused-S1-former.png",
+      "bytes": 216397,
+      "sha256": "ee3bb6e388cc7a798dca1202a788b80a44b21ef2f8e68fde49a7e00408eecce5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/normal-route-actions.json",
+      "bytes": 518679,
+      "sha256": "05bc9923e75c26cf6616f2faeebf260ca01ca7b469196770d6cad7be6fd846ca"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/normal-route-execution.json",
+      "bytes": 564480,
+      "sha256": "edb2e0d57a6a85d65193357236568cd2d1bf9ed17d05285e8d81317ec383d0f9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-after-private-receipt/normal-route-final.json",
+      "bytes": 316742,
+      "sha256": "45c748460d4d91c6b187f78d4ef5f12c1c731d3a2ffffe7f244ea7d299408e6d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/01-v4-normal-open-cargo.json",
+      "bytes": 162270,
+      "sha256": "c42f089ee964c0bf54ce543ba634cba89b03f7570a636390aafb7c3cadf883e0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/01-v4-normal-open-cargo.png",
+      "bytes": 521344,
+      "sha256": "eb95dba9e7d4a3ed81549aeddf1b7bc2059acb8a052974ffd1daea6bdea86671"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/02-paid-341kg-pickup.json",
+      "bytes": 298515,
+      "sha256": "e5fd93c5f2339f0e37e05938220a2a2d80e4e75e15b997041a0833a254d2499f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/02-paid-341kg-pickup.png",
+      "bytes": 244323,
+      "sha256": "7d8627e771930058ae79bd6d51b6f3d9fc7c3a5c98dcd917cccce37c69619a62"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/03-v4-heavy-west-clearance.json",
+      "bytes": 297210,
+      "sha256": "8e3d6881da324dbddd650202d756fbee5d0f33b5fae7c0d7899c15a6dec02962"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/04-heavy-ground-depot.json",
+      "bytes": 297707,
+      "sha256": "a8cdade7f85aff5f19255e1ebd65e4ab4413e5672f15414de044534fc633b59a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/04-heavy-ground-depot.png",
+      "bytes": 294459,
+      "sha256": "39861204e5df8bd654a42f6b1a9afe2131e523e51ff72cd46a8ba92c7d7a768f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/normal-route-actions.json",
+      "bytes": 325362,
+      "sha256": "381aca7ebd31a2445344d663b9a5e40ed69e1b4405f63636fee5148db0f01dd9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/normal-route-execution.json",
+      "bytes": 355782,
+      "sha256": "8a2547371a1e0cbd1f6ef2db860611d6e6e1f2fa9f4989da669c624b4743abd4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-no-recording/normal-route-final.json",
+      "bytes": 296914,
+      "sha256": "4a0b3debfd2d0e27ba87fe1a8382c738ec90b786ce120b7f5e251f48c5b9aa46"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-route/01-v4-normal-open-cargo.json",
+      "bytes": 162252,
+      "sha256": "a2144c26181fb1370b337d1587b64b80dfbbe9e61c2b6d057b70549cdf06965c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-route/01-v4-normal-open-cargo.png",
+      "bytes": 521352,
+      "sha256": "3b704abb4eaafae6a5c368487889f05fa81dbd437fce4b62ef4f112b13f69211"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-route/normal-route-actions.json",
+      "bytes": 38235,
+      "sha256": "ea44253b99180cced006a32ed93518ed0ac13b0e422cd7c0b00ff04f0a0d7cc2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-route/normal-route-execution.json",
+      "bytes": 45225,
+      "sha256": "1e9a2124abce0c691089630d06219f723ee4af8102111a62b134d0338a9bd8b9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-route/normal-route-final.json",
+      "bytes": 164513,
+      "sha256": "2bbfba69cb6d5c2b0c8a7d542a316f51d7733c4e2ac14eed2e6f630ff87e5887"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/normal-model-route/video/page@7f0dd65fc1a660291c5dbb2340ef0354.webm",
+      "bytes": 1629678,
+      "sha256": "45a1985ac8c0f62f578e61656d9dbf0aaf28cf40793eeec906de8f603b65d896"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/private-receipt-closure-frozen/hvp-bootstrap.test.ts.snapshot",
+      "bytes": 104099,
+      "sha256": "c1f8e01c766e1faca9f8ec411faa5f64ce0a3c58fdc2574517d5db16013534d5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/private-receipt-closure-frozen/hvpBootstrap.ts.snapshot",
+      "bytes": 194221,
+      "sha256": "4f83be24c60d18ac8baf707360d9a1bbd8bf210b6f478a009afe2c0566c4c6d8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/private-receipt-closure-frozen/manifest.json",
+      "bytes": 1737,
+      "sha256": "070db5451ecac79c528359e09403935c2a0f9163b0ab303763c69756122c38ff"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/scripts/driver-origin.json",
+      "bytes": 583,
+      "sha256": "220c2104d3f71e949468bb99dea9a2b1ab4d194c779111c7a08199324394876e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/scripts/normal-model-actions.ndjson",
+      "bytes": 1478,
+      "sha256": "fdd88dda4fa135a2f7b58c57d61fa8b6e024f83cc508ca3c753ccf25951d9ee1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/scripts/normal-model-after-private-receipt-actions.ndjson",
+      "bytes": 1520,
+      "sha256": "4a2bb820ef3d3c2903356fe67aae9d2c0aac536823e69138d38135193dbbc675"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/scripts/normal-model-driver.mjs",
+      "bytes": 12268,
+      "sha256": "d779e10ec14a893af8a581922a00d7dee6e2c9ef6bdd6d39ebe4a7ec84f309fe"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/scripts/normal-model-no-recording-driver.mjs",
+      "bytes": 12550,
+      "sha256": "31fe8763191aa314a0c4808a4b782471afa64db43d67034bd2df7354a813f1ed"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/01-v5-normal-open-cargo.json",
+      "bytes": 164230,
+      "sha256": "31f8d4f883727c45bba2d8a240915bcbfe79388f93f2c7212866f3b9c7dd35b5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/02-paid-341kg-pickup.json",
+      "bytes": 300415,
+      "sha256": "74618017c496536c531e4e24209cd1a5e9d7b7952fd55f12afc131266e1895df"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/02-paid-341kg-pickup.png",
+      "bytes": 244338,
+      "sha256": "44efb8100f62a24793549ad566fc9dd65e4ddb5e37c67b96a892d5ca93ceb0bd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/03-v5-heavy-west-clearance.json",
+      "bytes": 299188,
+      "sha256": "0604e16da04e4d52a2802014ecb4173dddd0a1e88c141fd85c5d333d5ef05ad7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/04-heavy-ground-depot.json",
+      "bytes": 299708,
+      "sha256": "3ed909555c4cb53ac245dbc2d644af1ea674a6a01d56bb185729acd08446fd45"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/04-heavy-ground-depot.png",
+      "bytes": 294313,
+      "sha256": "189ffd09e80f7fb92e8a2cce99e30f9c30030210539dc24090b494981ef7ab2f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/05-paid-native-former.json",
+      "bytes": 318938,
+      "sha256": "dc89b4f29d55b61b51f610abfedc405bffb570fff82f8d0aee6482c52e7b2dae"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/05-paid-native-former.png",
+      "bytes": 314802,
+      "sha256": "1bb30c88c0654daac73c663c6e7a19a2f74ceec0146e45bc15d088cfcfe72059"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/normal-route-actions.json",
+      "bytes": 259464,
+      "sha256": "fc6bc4aa27339f272d3403f76e178c374ce24e3a3d067e40e4149ae07fecfdae"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/normal-route-execution.json",
+      "bytes": 285022,
+      "sha256": "57a29e977d1a29a87aaa547fe491cafa8d9529617ea9e7996fbfdef1eb453c89"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/normal/normal-route-final.json",
+      "bytes": 322072,
+      "sha256": "27c1e466374a362f03319c7c72dd281c416276625fc9c7dc8555a1ee2f170193"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T231500Z-root-surface-v2-integration/scripts/normal-v5-surface-v2-actions.ndjson",
+      "bytes": 1684,
+      "sha256": "56d620e095cb132d1687ed2f47df77ed78914365f9e32726dee8f0241e61ad78"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/01-session-focus-idempotent-red.command.json",
+      "bytes": 2694,
+      "sha256": "381ccbc8928e71082fa08ca6b9fa0d4a298c2eec283f3f21f9f57bb1fc5ee554"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/01-session-focus-idempotent-red.raw.log.gz",
+      "bytes": 668,
+      "sha256": "e7caf7a45bbabcf1d3c2a36afc980cd3c56aad3db33965d0f150a77ecb27eb61"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/02-session-focus-transitions-green.command.json",
+      "bytes": 2911,
+      "sha256": "8a228d37cce08269b6f35568cd7e8ce9433e7ae9cac9dc3b5f62b2b71e6214b7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/02-session-focus-transitions-green.raw.log.gz",
+      "bytes": 268,
+      "sha256": "43451b74268a6ac5042946ea4dfa628018906fd2cd40e40ef4a3566dcd5c6195"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/03-native-activation-late-ack-business-red.command.json",
+      "bytes": 3086,
+      "sha256": "6bef00aad35e20bea245db5f743bb3d47c8eba672a95f9445a562dcde2fb419b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/03-native-activation-late-ack-business-red.raw.log.gz",
+      "bytes": 1480,
+      "sha256": "057997b2c831424827899005d0cf545e48016fe9403c69208a0d344c98707a31"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/04-native-activation-ack-guards-green.command.json",
+      "bytes": 3280,
+      "sha256": "8b37e0491124355e80a2e6398c88b1743b269f80868f8e257958c37e3b15b554"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/04-native-activation-ack-guards-green.raw.log.gz",
+      "bytes": 911,
+      "sha256": "926e5a01390256a451e8f14df62801f207ae79c791e275ce15b4364a575ea77d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/05-native-activation-ack-and-dispose-green.command.json",
+      "bytes": 3278,
+      "sha256": "7c10db757c606005d71a50813df132ffa45ac8236f25c75073ffbee73de1be0c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/05-native-activation-ack-and-dispose-green.raw.log.gz",
+      "bytes": 276,
+      "sha256": "777148825d8580db80d820ce0ae206c87542ca13b18eef7c09e8fc9f967ad4b7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/06-native-input-and-host-regressions.command.json",
+      "bytes": 3279,
+      "sha256": "a43a52a87340e6a9a0f6c8d3ba3dbfcb45503bc832d8c585998e90b656e304c5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/06-native-input-and-host-regressions.raw.log.gz",
+      "bytes": 262,
+      "sha256": "f590d3f1dc842537333627909198629684824dc38dd0db1c38fe4411b748cd1f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/07-held-repeat-lock-loss-red.command.json",
+      "bytes": 3307,
+      "sha256": "7f96459bad6230bf3e6d2bd51e1f6fc6c83359b16a7568dd6b85de32db29b546"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/07-held-repeat-lock-loss-red.raw.log.gz",
+      "bytes": 952,
+      "sha256": "990a10ec1995054edc33131f860d94380046d41e67f6a4fd26faa74fd79cb8b6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/08-held-repeat-lock-loss-green.command.json",
+      "bytes": 3279,
+      "sha256": "426cb49bf287085a937aa50d8ca94eef34889d183951108b34c1912e0ef168ec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/08-held-repeat-lock-loss-green.raw.log.gz",
+      "bytes": 265,
+      "sha256": "37cc3644b831f113b5a7f320c80b43bda84dacaece4cbdd9d31f5b9c637caff2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/09-client-input-facts-red.command.json",
+      "bytes": 3279,
+      "sha256": "ff6c2e341cc6ffd12d932cfed5f562f018ddd52199bee9e85b61c37ba28fc703"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/09-client-input-facts-red.raw.log.gz",
+      "bytes": 966,
+      "sha256": "b5a0688984b959acbeeca9c7ad406751694a77520ee569bf6fd601012aea5055"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/10-client-input-facts-green.command.json",
+      "bytes": 3505,
+      "sha256": "3edc607b49f657ea2f5eff0bdcf7b2bf6fe340a052d61f0398a5458e4b1c4d98"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/10-client-input-facts-green.raw.log.gz",
+      "bytes": 1021,
+      "sha256": "1a32a9f90c030cffe44f1eb8040a47aba0d38ffe1eba9013395c96d8b21d5b5e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/11-client-input-facts-neutral-green.command.json",
+      "bytes": 3504,
+      "sha256": "46e533c7a88a5aa60c23e5b3ee9327837bd67c8efc2e21c5c1ee48e5d346c196"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/11-client-input-facts-neutral-green.raw.log.gz",
+      "bytes": 269,
+      "sha256": "9fbc3f96b628ac5329b869f0cc1515893ae2d35a4eeea1b2511e228a07b7dcd7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/12-input-client-typecheck.command.json",
+      "bytes": 3375,
+      "sha256": "9d2e134f653e61720b51833a374c830154f3bc4acefe64ac26363805ed3332bf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/12-input-client-typecheck.raw.log.gz",
+      "bytes": 54,
+      "sha256": "e0d5475dc1247ff3b6c7f14b7c777dd50a7383239781a7c09bffb84242847b62"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/13-input-client-host-regression.command.json",
+      "bytes": 3476,
+      "sha256": "bb1965e7d748f5e84b220fe4d3a96257403d9cd5921cf1921d60b2d2e2e55081"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/13-input-client-host-regression.raw.log.gz",
+      "bytes": 257,
+      "sha256": "b43e997daf4d1bee242445232eb36be76686de207f1bcff18f2ce901dbb263e8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/14-external-pause-surface-red.command.json",
+      "bytes": 3462,
+      "sha256": "c2b35c3cd10fbeb3d36160a875a601c92aa3074e9a3b589385ed4cefb41f9842"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/14-external-pause-surface-red.raw.log.gz",
+      "bytes": 715,
+      "sha256": "0f30c3681e7de79ebf98dc823f7068efa22eaf256f94ac9468b99b04874f9ccd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/15-host-modal-lifecycle-red.command.json",
+      "bytes": 3459,
+      "sha256": "274725ec15fee32f639fd2f69c6d05ff71a3bd8ba29e03ff831961db9c93541f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/15-host-modal-lifecycle-red.raw.log.gz",
+      "bytes": 710,
+      "sha256": "b581dfa053b8bf39c066945483e92362849d44e865a8ca37b88db7e4696c9658"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/16-external-pause-surface-green.command.json",
+      "bytes": 3505,
+      "sha256": "35d9d3625da8650894363807f7b328fe5b187f731ed555e9d8e03b95e4f7174a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/16-external-pause-surface-green.raw.log.gz",
+      "bytes": 266,
+      "sha256": "533e171c06a2fba5ee98df3931349b372351c0fd47e7c09057d35e2311b5c144"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/17-host-modal-lifecycle-green.command.json",
+      "bytes": 3460,
+      "sha256": "1649dab7b20594e64811610e7a9baa74eb3794ece3b60130c1d923090a56409e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/17-host-modal-lifecycle-green.raw.log.gz",
+      "bytes": 586,
+      "sha256": "4990acd756e8ad27219ed820d23c68383b294aea91d233a5f17dd6ebe0f1098c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/18-host-modal-typecheck.command.json",
+      "bytes": 3374,
+      "sha256": "d6b5cef0c40af9bc3b028f8e2b1ab959413e0bccc6d505d3b06ddaa8e3f2c203"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/18-host-modal-typecheck.raw.log.gz",
+      "bytes": 52,
+      "sha256": "4b4ba3e07b626dc795ada2bec2a3dfaa997055bf163d6b421ca082046d76b510"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/19-host-modal-lifecycle-producer-green.command.json",
+      "bytes": 3459,
+      "sha256": "19ca3c006db9cfbc18dcb2c6344507edbc3160f65336bcd78126b75d0c0ebc89"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/19-host-modal-lifecycle-producer-green.raw.log.gz",
+      "bytes": 274,
+      "sha256": "430d2eec1aa9ac355ba847dba6e30d31c4954ee5a7038948989603266618fed2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/20-shell-original-build.command.json",
+      "bytes": 3330,
+      "sha256": "4adab0cc6c2344f4a643e35d7936761f953fa784bd5b44280484956315b15bfa"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/20-shell-original-build.raw.log.gz",
+      "bytes": 919,
+      "sha256": "6517f256e75461f290cf3bb0556a284a5992e2b105275c7c64884b64bb79e839"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/21-onboarding-direct-battery-hint-red.command.json",
+      "bytes": 3664,
+      "sha256": "dcaff3b8f4084fee9bcb4b10e31075dc6bf1c2b15e8aa5ad793b076cd13168b0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/21-onboarding-direct-battery-hint-red.raw.log.gz",
+      "bytes": 686,
+      "sha256": "13e43cb0127938a7332fce08a97e0c36f580b0a9ba0727f8b5046b4bb5734355"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/22-shell-input-ui-regressions.command.json",
+      "bytes": 4031,
+      "sha256": "05f7e66cf9eb9ef7450943b24c0af0af505797f5f678ce1ca5c70f06639e3675"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/22-shell-input-ui-regressions.raw.log.gz",
+      "bytes": 257,
+      "sha256": "b4f253ba841f41da3446ee5c93d5c60cb9d9a902774871aaac001b6185475ca9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/23-shell-hint-original-build.command.json",
+      "bytes": 3709,
+      "sha256": "580edb263b6ff98d130a9e37a5238a14eff4c7b45769a1c5b40fc2e4e6580cb7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/23-shell-hint-original-build.raw.log.gz",
+      "bytes": 927,
+      "sha256": "622e585117b54bef53d0571f2b0bd8a88304f4c3aaf8bec73194a4f141c1af71"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/24-normal-shell-input-browser.command.json",
+      "bytes": 4038,
+      "sha256": "bb792c8ab4dfabc56fdbd25ff49d62d2b8e479107ea75f2292d9fce8285476a5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/24-normal-shell-input-browser.raw.log.gz",
+      "bytes": 328,
+      "sha256": "2568a8ae0fd80109674b4f52950a1ce65f34f3401b09b6b86d1550e32bc3b201"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/25-factory-hud-owner-red.command.json",
+      "bytes": 3839,
+      "sha256": "a53725e2f6d223f17984d40cae0bb9375bf10dc327200cb0b0fef0b9e5905755"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/25-factory-hud-owner-red.raw.log.gz",
+      "bytes": 569,
+      "sha256": "871c5bdbfcfa41976c0c57dd8eff3a0faa0389fcea940ac514a6e8cd551e9bbd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/26-factory-hud-owner-green.command.json",
+      "bytes": 3838,
+      "sha256": "88b7290059af8a63baf6dea754e022666230e30aae62fa840580dca8eb9d88d1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/26-factory-hud-owner-green.raw.log.gz",
+      "bytes": 260,
+      "sha256": "b7b1bedc456059262f496fcd4c79a3690cb9b98711153af121783bcd22163fc5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/27-hud-owner-original-build.command.json",
+      "bytes": 3709,
+      "sha256": "000a5ed5f2fe38d6658be25c2e7892f8a39f9bc7cc9bd4e6f048562390f248de"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/27-hud-owner-original-build.raw.log.gz",
+      "bytes": 925,
+      "sha256": "2e907b5a4ce6d2909b1d495ea98bf62bc89bd56ee769045b8cac15fe5ef3901d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/28-normal-shell-input-hud-fixed-browser.command.json",
+      "bytes": 4048,
+      "sha256": "b46524e424c0caf30a749a271aabf051fdeb63e2ffcce6136ae3fd0b689baf00"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/28-normal-shell-input-hud-fixed-browser.raw.log.gz",
+      "bytes": 490,
+      "sha256": "e971e72b76e7df8372b64c09f9b8ab3fae6ccc56e097affd6779838ae67fdf75"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/01-normal-start-menu.json",
+      "bytes": 160468,
+      "sha256": "505fdb12f7506f4aeb188ada8394587465142bcad7ca295134470a1fb67b8ba5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/01-normal-start-menu.png",
+      "bytes": 453319,
+      "sha256": "b8f11d6acb0043d2ba73b4d47a39a5b1c8273a006c990131db4bf969984ad61d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/02-opened-finite-cargo.json",
+      "bytes": 168460,
+      "sha256": "e99e83dd5537f53e9f11c0ca83d835ffaa5c51c5dd5d456a24f56cd7f4ce9317"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/02-opened-finite-cargo.png",
+      "bytes": 379956,
+      "sha256": "faccbd8e6d9608091b1e07103bafadca7028c1d23b805ead3228af1fe0e55475"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/03-playing-after-native-ack.json",
+      "bytes": 160056,
+      "sha256": "1d86e9ec812f430f1b5139c913e62ed149cd98b3101b990e79b6829418e7c0ef"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/03-playing-after-native-ack.png",
+      "bytes": 267860,
+      "sha256": "d408ca814c5ae2f45d65700f8ff4d7ea7cfa977149f4c954d40dbc125b3a520b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/04-released-normal-walk.json",
+      "bytes": 159955,
+      "sha256": "bf0c706aec9fb0fa66e5220892ebad3d718a7ebbcd07a740dd3c1ef84448eddb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/04-released-normal-walk.png",
+      "bytes": 276876,
+      "sha256": "fdae917c0ae26399a6d49f6dba10b56afdf160155661fccef7c173188dcfbb06"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/05-modal-pause-and-help.json",
+      "bytes": 161223,
+      "sha256": "c0e92f566165e8195648bc5892bdd49f3c3e1b82146d69ffc554a1e54f8409fa"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/05-modal-pause-and-help.png",
+      "bytes": 290744,
+      "sha256": "50011fe165075c914d5e025d2b3e23a2c30e2cd9c33d433fdd391679becb8db1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/06-held-repeat-after-new-native-ack.json",
+      "bytes": 159884,
+      "sha256": "0bd93c090966f8046fe215b3bc041adb76dca15e452ad7536a6c091c12fb2419"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/06-held-repeat-after-new-native-ack.png",
+      "bytes": 276848,
+      "sha256": "720abfef3156a716939ffd9179a0fd75cbc34b5ca12d25faa17bde010f357d19"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/07-fresh-press-after-neutral-release.json",
+      "bytes": 159886,
+      "sha256": "3e5e4f76961a8e76ac0684a61bbb2776d2f8d58576306776cb20881c9af9cf87"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/07-fresh-press-after-neutral-release.png",
+      "bytes": 269987,
+      "sha256": "97465eca00c6b53d9e65390b18ead805d0008523a883dc3f628efb40e2360d25"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/08-final-confirmed-pause.json",
+      "bytes": 160842,
+      "sha256": "d2fff74a3a1beedcbf7c4a88ce2a7adc8c7845c8c487211ec7cb5aaedbbe7327"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/08-final-confirmed-pause.png",
+      "bytes": 232251,
+      "sha256": "0543c23ea0b3c2b47a26463d24b341f0e989d152cc5420905f50703fba4fa903"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/execution.json",
+      "bytes": 3843,
+      "sha256": "e1ca02114b03254a4fbcbd036db1fd13f1b6bdcbd27e8b5c38639f4fe736100c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/final-read.json",
+      "bytes": 160842,
+      "sha256": "abdf9567ec0e364c127859318b925e9268aefd257a6b613c5f8695437596f50e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input-hud-fixed/video/page@bf322b6a8c3e75e563ac5ff4bc38b792.webm",
+      "bytes": 1967562,
+      "sha256": "ba37023a10c55a4f6cd7f4d92163b3e0f27291d911c5963aab7a65294aa28a49"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input/01-normal-start-menu.json",
+      "bytes": 163814,
+      "sha256": "c3baac60d12774fcad537b16228b3150e6687ef1aa85d09766d76d8efc08ad4b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input/01-normal-start-menu.png",
+      "bytes": 451556,
+      "sha256": "6cdd5537fcd8ad8a18e0053a8aa038f6bd589ccc8d84f4de9c73927c8859093c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input/execution.json",
+      "bytes": 2790,
+      "sha256": "a29810e4c401d60c77523cc7f7bfc982c874d648b19c3cd6052e6efb70f1b429"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input/failure-before-cleanup.json",
+      "bytes": 163828,
+      "sha256": "369267b7803f873d4efaa36fa6e426abe00dbb94efbc6e7f993d188d885ca7e5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input/failure-before-cleanup.png",
+      "bytes": 451556,
+      "sha256": "6cdd5537fcd8ad8a18e0053a8aa038f6bd589ccc8d84f4de9c73927c8859093c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input/final-read.json",
+      "bytes": 163829,
+      "sha256": "62eecff92fd2f8de0f9f945e5fa2292e4f54e59fe0d8dac8699ca255e43114be"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-input/video/page@3f07ce432e66ceb825d2f6cab58923e9.webm",
+      "bytes": 473518,
+      "sha256": "657c177b0544e931999c72ea8510b85cb40baf850cef10d6a24979024d577284"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/normal-shell-script-freeze.json",
+      "bytes": 375,
+      "sha256": "7ad81971cb8ad469519df613da271459b4909ba66650a147f92c4d3d3cd98f2d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T091015Z/scripts/normal-shell-input.mjs",
+      "bytes": 10047,
+      "sha256": "2de49551b2e7366ac9566c6bbcdab13f1d2b4b82c38a4009631c270f87fe9eac"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/01-actual-gamefeel-native-ui-input.command.json",
+      "bytes": 3981,
+      "sha256": "58d36f3fd2f20fa9d6eb5f4bc9023925e3d66d61d33d4244ff3ebf309925751a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/01-actual-gamefeel-native-ui-input.raw.log.gz",
+      "bytes": 520,
+      "sha256": "679b5df187177f2b52923a7e19fbc4fd754fcc9c4eaf3427724d248cea9938bf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/01-normal-start-menu.json",
+      "bytes": 159261,
+      "sha256": "be9401ebab893e637c425ba4e0b8c343698b8cd39995ed46569f86eda5612f59"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/01-normal-start-menu.png",
+      "bytes": 812478,
+      "sha256": "1d1d1a84463ec570b4c8dbd1b1233da8d957967ec1ce15bd6782b1e42346cbbd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/02-opened-finite-cargo.json",
+      "bytes": 164373,
+      "sha256": "82e9e1ea06b9a494ce606104cb3a3e8117f6c9c2effc9ddf96de9703b1e0d258"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/02-opened-finite-cargo.png",
+      "bytes": 521810,
+      "sha256": "61b57fe572e5b29bb928ce54edbc8c728547593a12e0556a4122682f9757d730"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/02b-intentional-material-selection.json",
+      "bytes": 164557,
+      "sha256": "e21ee495b2eaba0ef842692e0667dc6a795df3d3db9c9dd1805abc3d04b23794"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/02b-intentional-material-selection.png",
+      "bytes": 520099,
+      "sha256": "1fe8496030536208de1cd8d53800b34f1bc053221d112e7653a2ba28f58b74ee"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/02c-small800-material-actions.json",
+      "bytes": 164556,
+      "sha256": "4c698e0d97fd12a0f5cc0cbe641c15c9e72cfde171c23668febd56b9b0c7fdb0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/02c-small800-material-actions.png",
+      "bytes": 283954,
+      "sha256": "6235b638aab44e142dc689b4b94c7de120365e8e06d8fd84fd4cb951b2650c0c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/02d-wide1920-material-actions.json",
+      "bytes": 164558,
+      "sha256": "800962b84880a354b03f2392460ebe40b885ca6d8bc07bd49f7507bb07dcb312"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/02d-wide1920-material-actions.png",
+      "bytes": 1152082,
+      "sha256": "cf41747e0ac38733e097b628b9ae0666a6c830411f71a57d68abb33da267c553"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/03-playing-after-native-ack.json",
+      "bytes": 159591,
+      "sha256": "6118253b5a1b5dbbeaa39557398b965fbac6acaaef47b5c1a76a67fa2bbd88e0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/03-playing-after-native-ack.png",
+      "bytes": 261566,
+      "sha256": "c94129b2993b5d51f8621984595c2a6c091464e4600190f4eeee4db8a0e2e97f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/04-released-normal-walk.json",
+      "bytes": 159422,
+      "sha256": "6aeb616415e25917169bbd861ac51acc84e07f9050c372100c5bb0c9250d6166"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/04-released-normal-walk.png",
+      "bytes": 276372,
+      "sha256": "c509302b180a3027d37796bba2806b5dffa5bfbc87c1b0b5ac1affcfd2a3720d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/05-modal-pause-and-help.json",
+      "bytes": 160384,
+      "sha256": "23000a6d13a209f784efe8debe7622adbb1f7c7c61454f561608f9d078dc409b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/05-modal-pause-and-help.png",
+      "bytes": 342249,
+      "sha256": "07131d6ea35b6a2d01994f81d1050c8df3840f8cb77e1813586303885015c021"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/06-held-repeat-after-new-native-ack.json",
+      "bytes": 159440,
+      "sha256": "b30f2033bd2f3296e3c29e822dcd6b871c08ce862b0bf1b0ee25597db2a62f56"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/06-held-repeat-after-new-native-ack.png",
+      "bytes": 276389,
+      "sha256": "1a0d9ed7f8120352f163f982dd26b206e7421cf0dfab06e27b65cca409d53a2d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/07-fresh-press-after-neutral-release.json",
+      "bytes": 159427,
+      "sha256": "a70ad30b63af39d95ea5b052ee39cc4b8f6cd6b0703b7d748730b42f5d82289c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/07-fresh-press-after-neutral-release.png",
+      "bytes": 260998,
+      "sha256": "2612d913577bfc6a276d7775f2a435fc56302babd348268ae4f09d1dd9a9fad6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/08-final-confirmed-pause.json",
+      "bytes": 159937,
+      "sha256": "6be131c07fda99a77b2dbe4f327ad0bee34efcd6b6bc5c98819f20371a49e3c9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/08-final-confirmed-pause.png",
+      "bytes": 268238,
+      "sha256": "cbe1275b9fc0d4aa1ee8c167a64152694742b997adaa72a888ec1a3a5beef6ae"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/execution.json",
+      "bytes": 4108,
+      "sha256": "6d1f0d6d02314b4ebaa3a6b22aa6ce19281dde484d0f80e1b16a76c06fbfb75e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/final-read.json",
+      "bytes": 159937,
+      "sha256": "fe185e08b22a5798947eed36b391a402f886ed823e02e0e1173e0a93d019454f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/video/page@b9a57206a6955239f3f4ddefa7a859fe.webm",
+      "bytes": 2835847,
+      "sha256": "7bef38a6f0d08590ca7078f59978606dda90d590277e5a5b115aa079a66255bf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/script-freeze.json",
+      "bytes": 483,
+      "sha256": "708a38910b9023fda17d58b55f8f3083a90b59a1a3f09c2af85a4f90010a5f3d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/scripts/normal-gamefeel-ui-input.mjs",
+      "bytes": 11377,
+      "sha256": "8abf0f64e87501cb4ef32cf947c3811074b6bd959da9cfdd309d61f26733bae8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/01-native-solidport-business-red.command.json",
+      "bytes": 4804,
+      "sha256": "e2610e7bb8f7ecf174a0930291a452b7767b1c723b516d5df8b21b4a6a47b408"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/01-native-solidport-business-red.raw.log.gz",
+      "bytes": 922,
+      "sha256": "07335a2a84de4e09eeda6bbff9834c66cce645d948dce3483e91e7e3a4e60779"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/02-native-solidport-focused-green.command.json",
+      "bytes": 5033,
+      "sha256": "9b6dbfdc0616daaeb35bba46d0eff1444f06508d0c75e20408d8f8170171488c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/02-native-solidport-focused-green.raw.log.gz",
+      "bytes": 266,
+      "sha256": "ff181e3547851e5a85052ed7dc4078dfc6b8647fdfcda3e1cb030ff1afb26975"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/03-storage-session-business-red.command.json",
+      "bytes": 5013,
+      "sha256": "fe5e00440ed9d5cf59e883bcd9b027ee48e2644679b094dcb6924670a5393065"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/03-storage-session-business-red.raw.log.gz",
+      "bytes": 907,
+      "sha256": "437363c5a7dfb6b4be3d0937b9090711a25b52e224c506fb442afcc2337db3ea"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/04-storage-session-business-red.command.json",
+      "bytes": 5013,
+      "sha256": "5d355a36eeadeef29fe9f03d8ecce8f59ef2baf7eda29d503f672b4d4ec25051"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/04-storage-session-business-red.raw.log.gz",
+      "bytes": 985,
+      "sha256": "60e8b5692cbe3f531e0de5566eee1bba8a4eb6f50e57cbc6a83a3a7a1a137a2f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/05-storage-session-actual-business-red.command.json",
+      "bytes": 5014,
+      "sha256": "b00015eb3bbe4b938655998dd369335ac348e821923279a68f0ab587afbe6e28"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/05-storage-session-actual-business-red.raw.log.gz",
+      "bytes": 726,
+      "sha256": "3053123e69d048099da6dd2d09f082ff46ba6dde13ad76c6607b314aa512cac6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/06-storage-session-focused-green.command.json",
+      "bytes": 5036,
+      "sha256": "29c2362bdb2792dcf7b71002600683a456a9ddb0fee92b3b258a0749b9e4f697"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T130334Z-native-solidports/06-storage-session-focused-green.raw.log.gz",
+      "bytes": 264,
+      "sha256": "e8481a0c88f6dd10eaed5e406e37c3cd126b89110aa1826fa012f2ef500c33cb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151000Z-closed-cable-jobs/01-three-profiles-business-red.command.json",
+      "bytes": 5241,
+      "sha256": "7890d7cd182ed5225a34842102f6316f27aa43d8df63a45af1383bafbc6df993"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151000Z-closed-cable-jobs/01-three-profiles-business-red.raw.log.gz",
+      "bytes": 909,
+      "sha256": "b3a084990d19acec6f40c1b98b6b9de842d72630e6048efa9d1665c9ca03ad5c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151000Z-closed-cable-jobs/02-closed-cable-custody-regressions-green.command.json",
+      "bytes": 5418,
+      "sha256": "22798b161afbe6f94d18dcc378537b18dc16457b7f65434772a4f27626ccd7ff"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151000Z-closed-cable-jobs/02-closed-cable-custody-regressions-green.raw.log.gz",
+      "bytes": 266,
+      "sha256": "9be45635935b1306eacb7b6365c74d8e4d4ac84214958e1c1a8198059cc14de9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151000Z-closed-cable-jobs/before-grant-bindings.json",
+      "bytes": 176,
+      "sha256": "7931ee64982a5187f416faf531cd4f434305e6fda5178e9bdff6f1d2a02d8d4a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151000Z-closed-cable-jobs/before-historical-profiles.json",
+      "bytes": 7056,
+      "sha256": "84ec89ae96454d002450542ea74a925f658793f7f64137d65791acd7dc88a591"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/01-control-blackout-replay-business-red.command.json",
+      "bytes": 5955,
+      "sha256": "671356d9ee87260942d28294f5f2f3668bc2f5d11d017a624f7c3556f1c12c04"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/01-control-blackout-replay-business-red.raw.log.gz",
+      "bytes": 1529,
+      "sha256": "46ec3246c810bb1991f3c7bc489d0d7d665846d4bd0f8caa304e7f6874550504"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/02-control-blackout-replay-focused-green.command.json",
+      "bytes": 6335,
+      "sha256": "a43d7d672d9faa3b18825e0449181cd65379509cd43a022827d0383beb2bfa22"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/02-control-blackout-replay-focused-green.raw.log.gz",
+      "bytes": 746,
+      "sha256": "2ff6b092440f55ca239ab220ab44387118c57312d59db3554b73cb6e1aa6774d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/03-control-blackout-replay-focused-green.command.json",
+      "bytes": 6336,
+      "sha256": "e10d96f02bb77e1590949edcdca54144ed65090ee543b047d92807f2798017d5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/03-control-blackout-replay-focused-green.raw.log.gz",
+      "bytes": 680,
+      "sha256": "646457f0e6a5d2cd7c260cfbc06f3595e2a2cab18b8479432b9fe8416637ef40"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/04-control-lifetime-natural-phases-green.command.json",
+      "bytes": 6336,
+      "sha256": "34c328a6bca28fed5707f7b915282e3bd3d54dbb02302796f8b1ad0e7df09676"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/04-control-lifetime-natural-phases-green.raw.log.gz",
+      "bytes": 628,
+      "sha256": "a2074172ea3b6c4f73c7e1826d1810a26aae0a4950267e37fa15c6e3427df173"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/05-control-lifetime-natural-phases-green.command.json",
+      "bytes": 6335,
+      "sha256": "4b07b52760b86b750d1b5565be977240fea8fc06b36e537aa9386fc69c3ce015"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/05-control-lifetime-natural-phases-green.raw.log.gz",
+      "bytes": 276,
+      "sha256": "685800a38a78bc324cec7fec10419d6c8213370b4b35a91573f6ec8f53053e0f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/06-power-control-original-typecheck.command.json",
+      "bytes": 6139,
+      "sha256": "cf477100a1793fdd7a972639ae183d8c1035d1ee630e15f680107d2e80663d2c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/06-power-control-original-typecheck.raw.log.gz",
+      "bytes": 64,
+      "sha256": "5f5e0404c52354f29f3b7f1a540a4d0331d067d196db1543c8b74e50a1b473a5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/07-control-domain-host-panel-power-conveyor-regressions.command.json",
+      "bytes": 6365,
+      "sha256": "801b6f92544390b6ca48b94d0e1ba09098e34065d42b5d9d57116c3821465347"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/07-control-domain-host-panel-power-conveyor-regressions.raw.log.gz",
+      "bytes": 571,
+      "sha256": "080afbdc9e61537182c2fe813cdcb1180af47a4dc85d35f8503d233a8b0e8ccd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/08-output-blockage-isolated-regression.command.json",
+      "bytes": 6247,
+      "sha256": "8b37d0ace1d9ea364f744607110adb54ecd056f908485281fc96fe7846161588"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T151600Z-real-power-controls/08-output-blockage-isolated-regression.raw.log.gz",
+      "bytes": 549,
+      "sha256": "b7016c4e025cb319760954c8f71d50408899141eb2acc5138858a311a0ff0379"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/01-retained-goal-native-map-business-red.command.json",
+      "bytes": 6243,
+      "sha256": "a37be5f5523ab74074df27c575d08231b3619c515b543ae9e3cbfa194c13aab9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/01-retained-goal-native-map-business-red.raw.log.gz",
+      "bytes": 645,
+      "sha256": "582e49eced5b99f57203e55700db25fd802f6b4a6f88e6ece751f0113327809c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/02-retained-goal-native-map-focused-green.command.json",
+      "bytes": 6244,
+      "sha256": "c80c59d0bd7671ecafa790fba465da9a0137783a37f9562fd39390f520812a74"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/02-retained-goal-native-map-focused-green.raw.log.gz",
+      "bytes": 571,
+      "sha256": "cb08de6364530bcde3e13329559a745986d768163e8347c78cf16df5fbc39950"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/03-goal-map-original-typecheck.command.json",
+      "bytes": 6142,
+      "sha256": "f636cfc13a9efa9228ef039d00c6044306ee49cd74ab3bbc64df2c899febb953"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/03-goal-map-original-typecheck.raw.log.gz",
+      "bytes": 536,
+      "sha256": "2cb6340b2789b0029d85db52db40275d8fc65788b02b9073c90e4f5e79600ba2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/04-goal-map-current-source-frame-green.command.json",
+      "bytes": 6244,
+      "sha256": "c899fb4d2c7139045da204de518ff780cf93a8351924fce6fb23a9199e89cfd4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/04-goal-map-current-source-frame-green.raw.log.gz",
+      "bytes": 594,
+      "sha256": "bd5c6ca5bb07b65228a122c17c18c9692e7346cbf883f1daef3c6cc1debfc077"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/05-goal-map-current-source-frame-green.command.json",
+      "bytes": 6243,
+      "sha256": "ef6b0790fd2aaa4a90a87eafa2c6471403f81ff9c0178fc1a674de72c0a912a0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/05-goal-map-current-source-frame-green.raw.log.gz",
+      "bytes": 273,
+      "sha256": "8c06752b282cc929e23e2a9ab5a56bf5e0eb0e2b8fc9dbb64bf8bd3b37739711"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/06-goal-map-original-typecheck.command.json",
+      "bytes": 6139,
+      "sha256": "550da01861de8bad5f2178e4dde218bb90173ff0e08b80bf30bbd69a7c5bb425"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/06-goal-map-original-typecheck.raw.log.gz",
+      "bytes": 59,
+      "sha256": "a21d3b9b2ed5f5e67b03095985d59e649b19ce1b094200829d1fa5fb3ff96737"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/07-current-goal-map-power-original-build.command.json",
+      "bytes": 6094,
+      "sha256": "90d3781bdf33f64b49d8bbcffe7cff57126f5faca91c5f9497ccfe41bb91cb8b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/07-current-goal-map-power-original-build.raw.log.gz",
+      "bytes": 1159,
+      "sha256": "8b7c8eae4a161be89f9a829d1a4fa85c327c9b008b710a21d3b2607943d01523"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/08-current-goal-map-power-original-build.command.json",
+      "bytes": 6095,
+      "sha256": "617ae9d347e5657699fc1b1ce81f2197688e98a4983eaf38a6d174ce004a54c5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/08-current-goal-map-power-original-build.raw.log.gz",
+      "bytes": 1158,
+      "sha256": "4f61135f5e330515cb57780e83c6440b9bf96b770ef1420fd282b4f9751dec3f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/09-control-drift-map-viewport-business-red.command.json",
+      "bytes": 6224,
+      "sha256": "ff50308c9c4cd0bda7cef83ceedc966ce9b10ee9cf13c465d44d8e0e198af5e8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/09-control-drift-map-viewport-business-red.raw.log.gz",
+      "bytes": 1137,
+      "sha256": "2e86b3d5073c1b222e116a3e7769f4f4336bea2c150cc02df6384fcec3584f2f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/10-control-drift-map-viewport-focused-green.command.json",
+      "bytes": 6215,
+      "sha256": "6739f6a61bdac48deb8353af865583677dd825d25837f6a01fde222b0ce20236"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/10-control-drift-map-viewport-focused-green.raw.log.gz",
+      "bytes": 280,
+      "sha256": "edb02772dfe6778f7e5afca7e98c011667dd296dc1dd2d7d95a97f204e43b49b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/manifest.json",
+      "bytes": 3354,
+      "sha256": "595eff93fcc3cb6dbc32c2d28b9e1a34a9195319703230542f7ea5ba98c2d4da"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__factoryEntry.ts.snapshot",
+      "bytes": 17698,
+      "sha256": "2f73026b816125bcdf0efb54ffabe97086a9fa8691d140927fc0e6a17d5756b6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__session__dryFactorySlice.ts.snapshot",
+      "bytes": 34219,
+      "sha256": "ebf698865a650931cde47d5e70ece7bd5e3c9a4abfd3eff35b605b78db24f07b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__session__factorySession.ts.snapshot",
+      "bytes": 80147,
+      "sha256": "bfa5352092e33bfab1e17c003cd29c9527240fc6f0b44771631fd48a59af9d47"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__session__hostPort.ts.snapshot",
+      "bytes": 12315,
+      "sha256": "86703b5406be9110e8ea2560cb93f2f8029780ade9dd62a4190d6e79efc1c74d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__factory__ui__powerPanel.ts.snapshot",
+      "bytes": 2129,
+      "sha256": "160cf898153c267e61e7cd5ac54910c228d43b2b490766f4fc40d6f57cc043f7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/src__hvp__hvpBootstrap.ts.snapshot",
+      "bytes": 194645,
+      "sha256": "6634eba4ada00b6314318dd8f51fc0ade9b3d76cf3676a0b2811ee80b19cefb4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/tests__unit__factory__dryFactorySlice.test.ts.snapshot",
+      "bytes": 39314,
+      "sha256": "1e35b17c24d436e1c55b67f14ef5445b5812ff563e06d8002474d6775cb6fc73"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/tests__unit__factory__hostLifecycle.test.ts.snapshot",
+      "bytes": 77960,
+      "sha256": "e7b1e127eb27099132a841c2aec148d39a357ba23653e1ba6af7824a17f0b392"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T153000Z-confirmed-goal-map/review-frozen/tests__unit__factory__panels.test.ts.snapshot",
+      "bytes": 24228,
+      "sha256": "bf7a96a192dd36f8ed3b46e42e46260e39354a1d59e92df846e132a6374f539e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/01-normal-v5-ui-camera-map.command.json",
+      "bytes": 6325,
+      "sha256": "0f41a1aed67321d377e0a496163a282806290b9ce0b3a06594ee7b1ac287a1d2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/01-normal-v5-ui-camera-map.raw.log.gz",
+      "bytes": 1528,
+      "sha256": "5de0360b5d16a5030dc2a24f3a84623ff4bf59493f995c32a68f0dff75599d93"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/normal/01-start.json",
+      "bytes": 161724,
+      "sha256": "194cf8b7b39fe3fb8a44fd12192716f1ae1f76d6729f1f0b37a20db5c6533d9e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/normal/01-start.png",
+      "bytes": 811887,
+      "sha256": "6313a185d1f6785fa3556d6f272fee21c285780c880f1a3ebf6e0aa940cb6691"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/normal/02-standing-closed-cargo.json",
+      "bytes": 161790,
+      "sha256": "ab7c0b42d639d9ac94a54c67ff14064b23178642ac0e7afea4eeb07562ed5dc7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/normal/02-standing-closed-cargo.png",
+      "bytes": 277399,
+      "sha256": "a96434a037b34c559d0a1c2478ed6063fd86224d01459f013a09c892fa9f007a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/normal/normal-route-actions.json",
+      "bytes": 24697,
+      "sha256": "b54ea9291f596a81122b253f5293c74ded956296a410eebc2af6baf69e5b6f1d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/normal/normal-route-execution.json",
+      "bytes": 30630,
+      "sha256": "1ba5eb6bac102127bab74f11387198b35f216179e2928897c18f825479244944"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/normal/normal-route-final.json",
+      "bytes": 162264,
+      "sha256": "d4cf52d6cad644d78a5ac5fdccdfc5c6060784bdb75db2c6c83e6f81292461d5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/scripts/camera-map-actions.jsonl",
+      "bytes": 605,
+      "sha256": "9375fbecec2111b88a771e3fe0aa4aa3a4ec1a868bef9932165bb6093030d6cd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/scripts/normal-v5-ui-driver.mjs",
+      "bytes": 13236,
+      "sha256": "d6bd191639cea05b64431b39c473781acf18d603e73e3a3094c2e75132aa49c8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204300Z-root-preserved-gates/01-source-cargo-controls-ui.command.json",
+      "bytes": 5973,
+      "sha256": "dbea88ae2a0b8808094320d986b4e34a45a6de2a44949bb8cbb9441431e8400a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204300Z-root-preserved-gates/01-source-cargo-controls-ui.raw.log.gz",
+      "bytes": 253,
+      "sha256": "dc133c81785337d53a826936e4d26a242a05662329532641a76d660995613df5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204300Z-root-preserved-gates/02-native-host-input-affected.command.json",
+      "bytes": 5846,
+      "sha256": "4cf17d2a7ea6235c7970649e79fa66ab0a9b2f3faadbca1d853e90f41745fee3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204300Z-root-preserved-gates/02-native-host-input-affected.raw.log.gz",
+      "bytes": 1074,
+      "sha256": "b3e9b12c13e94282a737a35214eec1e7bd39758e7381e09d5fdec536efff240c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204300Z-root-preserved-gates/03-original-tsc-vite-build.command.json",
+      "bytes": 5679,
+      "sha256": "dcfdbc333df182d30d841039e8690b6107b312481d04c380396d6745521db5ed"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204300Z-root-preserved-gates/03-original-tsc-vite-build.raw.log.gz",
+      "bytes": 1394,
+      "sha256": "46d10c27d77213cbf028f43a6ba648c8a1f8d4caf956fae31d5a2c1e845cbb88"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/01-normal-v5-visible-map-camera.command.json",
+      "bytes": 5912,
+      "sha256": "f3072584988e70f883afce99c6d6479e3bc4b12fe705860ff844604bfa0f208a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/01-normal-v5-visible-map-camera.raw.log.gz",
+      "bytes": 1656,
+      "sha256": "e8548b56ebde66d1ea43d452a2effa3e61faed27402560852183b69c57f8cdf8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/01-current-v5-start.json",
+      "bytes": 161708,
+      "sha256": "4caf44c18deeeaef31fb5438f521ffba6105f06061a10a258059a40757fda774"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/01-current-v5-start.png",
+      "bytes": 811895,
+      "sha256": "93e9adab6caa58fd7ee6e03de5bcb6f1a0d049ca136503fc414b85109f75f13b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/02-current-v5-open-cargo.json",
+      "bytes": 164854,
+      "sha256": "6c4dc0e9e048944b55b3270de13e313a2d6722d43df3b2d87e2992e6f178c929"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/02-current-v5-open-cargo.png",
+      "bytes": 520949,
+      "sha256": "202288b33bfa7b73e10022cd957d04356e6bb5458b71a5a0bec57006a2cc26d2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/03-current-v5-native-map.json",
+      "bytes": 163629,
+      "sha256": "7b3376a32d00340cec3453c0de90417138ddb09ee425c095e2a0bfe814671093"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/03-current-v5-native-map.png",
+      "bytes": 455521,
+      "sha256": "af560d56e4ccf7af4b1a197fe5af1e8af63e61e942025e0c1178ee0710d20c99"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/normal-route-actions.json",
+      "bytes": 50549,
+      "sha256": "2ecc3985dd452fd4e7f0396f3f8206a35a5ac9d4633f41e24d49f49a6868511e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/normal-route-execution.json",
+      "bytes": 58286,
+      "sha256": "33f140e082a9d5b37a2c3edc4c37442e5ec46efc06ac6ef495e7ba6468ca5d65"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/normal/normal-route-final.json",
+      "bytes": 167556,
+      "sha256": "6b8013156847edf66807924e04c1d32c8d4efd242695d284d8d194caed2b5550"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/scripts/driver-origin.json",
+      "bytes": 661,
+      "sha256": "a9f97098a758575a78857a030b7fed00ab6e5d3f714ca7760a130ee5956af2b8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/scripts/normal-v5-root-driver.mjs",
+      "bytes": 13236,
+      "sha256": "29a20eeb5405f38a46250462f7fc5d882897bca6b91588d6bbf2e799d78b45dc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/scripts/v5-visible-camera-map-actions.ndjson",
+      "bytes": 558,
+      "sha256": "d0f74fc94857e2749c3767a35b05843445b1963d41d8e332b5baa29c3a38849c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/01-empty-private-domain-red.command.json",
+      "bytes": 5792,
+      "sha256": "5f919b3b2e45630121740a153bbb61b5764dd76db4f9de3b53ce5f0f00c518cf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/01-empty-private-domain-red.raw.log.gz",
+      "bytes": 1053,
+      "sha256": "cfb6d019b323a1c69f0099066ae93f074680206041655bc454de26696a7026fd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/02-empty-goal-retained-baseline-map-green.command.json",
+      "bytes": 5868,
+      "sha256": "e30e236637b6663589e95dcc5873a6b60d924b7b4a0d3aa26612c96a312ff4b3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/02-empty-goal-retained-baseline-map-green.raw.log.gz",
+      "bytes": 276,
+      "sha256": "8a78fd222b467a38380067734f4a2c51d0afdafadf4ee8507f75ff6f46492f34"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/03-original-tsc-vite-build.command.json",
+      "bytes": 5678,
+      "sha256": "d5147a2f5d2c0a3442f857f81b5038e8e8f06285640a82a0a3b5c3aa77e9c527"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/03-original-tsc-vite-build.raw.log.gz",
+      "bytes": 1246,
+      "sha256": "040b17c00351bd69ee82ea9cf2a53658651e6afc35d2f328849d9e84dc663d92"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/04-normal-v5-same-visible-map-camera.command.json",
+      "bytes": 5905,
+      "sha256": "a010fbf1f12fbdc06ad6d1d8c6cd501084e0117e6c529bf0af5545b9eb5a2c33"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/04-normal-v5-same-visible-map-camera.raw.log.gz",
+      "bytes": 140,
+      "sha256": "64ad437b96f462eccc3f82d39a8bd7bde7b658fcdfc8b049a0f3e015c70856ec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/normal/normal-route-execution.json",
+      "bytes": 3572,
+      "sha256": "69a79616d8f68aa201656c5601e1910e1d98b5213cc597cd57d9fbbd343cfa56"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T205500Z-root-empty-goal/normal/normal-route-final.json",
+      "bytes": 164559,
+      "sha256": "605861a1bad511179384f885de938207f8f73a6249297cc2257c65f4a669ffec"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T210000Z-root-source-cell-assertions/01-native-source-five-same-gates.command.json",
+      "bytes": 5797,
+      "sha256": "6b6b15b868d0448154f737f7dbaf174ecd098422f2cb6da1ec3f7ce5629ce254"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T210000Z-root-source-cell-assertions/01-native-source-five-same-gates.raw.log.gz",
+      "bytes": 267,
+      "sha256": "ba763148deb1723561367920fb5760fe99da26b623d5caeb2bf5dad46d4d44b0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T210500Z-root-dry-proxy/01-frozen-proxy-business-red.command.json",
+      "bytes": 5790,
+      "sha256": "68bafc49955c0bb6b6ba0fd5c3f82957e259b0af741a371fc6302a45fb12f4de"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T210500Z-root-dry-proxy/01-frozen-proxy-business-red.raw.log.gz",
+      "bytes": 1167,
+      "sha256": "9ac333eda4c173f4a8d02174aee21b95d643b1cc14af185780cb83d1ca18a617"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T210500Z-root-dry-proxy/02-proxy-canonical-tamper-replay-green.command.json",
+      "bytes": 5809,
+      "sha256": "727b9d0b4aad2240224f968c21eda6bd8cbfdb4577e8ea6e3c42755041e3f112"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T210500Z-root-dry-proxy/02-proxy-canonical-tamper-replay-green.raw.log.gz",
+      "bytes": 272,
+      "sha256": "fe63da3f7acff6d49899709316556d09b8cd658b938bfd54f945c2e5184cea33"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/01-actual-native-cold-cargo-red.command.json",
+      "bytes": 5784,
+      "sha256": "141a3dfe1c4caae7b0e8aec0b5b08942f4373b46d391ecffde0662bc33f0850b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/01-actual-native-cold-cargo-red.raw.log.gz",
+      "bytes": 819,
+      "sha256": "25f74b7f2be8ef4818d28765564672ce4afd1388a6ea0147e974e781920c86db"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/02-actual-native-cold-cargo-business-red.command.json",
+      "bytes": 5783,
+      "sha256": "6e97877a5cd701cbd665fede61c05d5435e66b0c0d12d95df796cffecd384585"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/02-actual-native-cold-cargo-business-red.raw.log.gz",
+      "bytes": 588,
+      "sha256": "f23d7a77447e748873c2120453fa231bd1ea2b791dd6e2b94ad0d32502f306d6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/03-actual-native-cold-cargo-business-red.command.json",
+      "bytes": 5784,
+      "sha256": "f416bab96d5f959df369c1a7e4e916218a9968ff3358f22e64994e33ad2922ef"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/03-actual-native-cold-cargo-business-red.raw.log.gz",
+      "bytes": 646,
+      "sha256": "1016c3d4e8dadfcffa3653ae4c947c95f74c2ecf74be46c92bcb6f0440ae400b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/04-cold-cargo-and-default-boundaries-green.command.json",
+      "bytes": 5980,
+      "sha256": "c06175ff54d18167f2a3e7392db0003d97594e29c79bcb29a2843d40a4ec252e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/04-cold-cargo-and-default-boundaries-green.raw.log.gz",
+      "bytes": 276,
+      "sha256": "89a36276b70f536875d3fb013b17950bd0cbde9f7bc059a1db86e2bf4b8ddb2d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/05-affected-native-physics-world-save.command.json",
+      "bytes": 6029,
+      "sha256": "2bc996abd44ed00762cdeea195457996ed363261d06aa634479c0c7462b7774f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/05-affected-native-physics-world-save.raw.log.gz",
+      "bytes": 265,
+      "sha256": "666a579f10a091459e5162bf6e8bf5562fc0acce0a7b0a888e3d57efd2adeb51"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/06-original-tsc-vite-build.command.json",
+      "bytes": 5876,
+      "sha256": "f3f47cef34f9276a928cee9d1df947c5ee413c0d978c31ba40e89635d20d31de"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/06-original-tsc-vite-build.raw.log.gz",
+      "bytes": 1400,
+      "sha256": "15b7fd0e36cfdd364f81af2e3699f4ca9c3345055766cb85e31b69d43eac8a1e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/07-normal-v5-start-play-map-camera.command.json",
+      "bytes": 6111,
+      "sha256": "8525f56941a96aaa8dfd5c7179d3b8bce62efbdc27d2a96d2432e56b429d528a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/07-normal-v5-start-play-map-camera.raw.log.gz",
+      "bytes": 1866,
+      "sha256": "bdccba83acc05b95c58a8a283ddb466cf71a8c7b24f9eb9c71cda751a3fa1437"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/01-current-v5-start.json",
+      "bytes": 161326,
+      "sha256": "cff790651deee5525a9d4cce0cd4d9ab6fca34b0354fd79be5214af288fa8ef4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/01-current-v5-start.png",
+      "bytes": 811609,
+      "sha256": "d8b86cecd2cc75d40602aff2d43812bf88810f05d0b60470f2e8bf9628ae18de"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/02-current-v5-open-cargo.json",
+      "bytes": 164281,
+      "sha256": "fb07e1025cd301fa720a5e79f17497a0a6940accf422e4aadb5f7a2b50f5ea1b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/02-current-v5-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/03-current-v5-native-map.json",
+      "bytes": 163238,
+      "sha256": "ec66e71ddd6c3085d23d52671e875939adacd63a6670cc35e5a90937544094cc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/03-current-v5-native-map.png",
+      "bytes": 455755,
+      "sha256": "a4b042b49e486217d9b072091be055dac3ba10fe0ce1d3df67bc2947d59c1861"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/04-current-v5-standing-world.json",
+      "bytes": 163605,
+      "sha256": "0966e6a5537fbfed6b7bb0130f6b79866222a33d619b7e40f7c3e3d167168ab4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/04-current-v5-standing-world.png",
+      "bytes": 256066,
+      "sha256": "db3b84e6aa1f6849c10693a43120047967936fb4ba3acaa4a23cd4eaa828edf1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/normal-route-actions.json",
+      "bytes": 70065,
+      "sha256": "0a21dceaa131d062229314a446ccd560f6e9f4a1dca204c0b9c7cc51cba2228b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/normal-route-execution.json",
+      "bytes": 79245,
+      "sha256": "60f6ded4fc72ab21ac99a907bdfd16455cec8c037d9f7d429e9191e18a1b579e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211000Z-root-native-cold-start/normal/normal-route-final.json",
+      "bytes": 163743,
+      "sha256": "78e03ba44d5d9cc7a645dc270bc6290ad00dff6d7840380b0f1df1af132df2e8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/01-normal-v5-heavy-depot-exit-former.command.json",
+      "bytes": 6108,
+      "sha256": "772b4414c0e05bea8bfdb92a4efd1668bdc10951cc69933077c31b66a2a82a04"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/01-normal-v5-heavy-depot-exit-former.raw.log.gz",
+      "bytes": 2225,
+      "sha256": "1642f65509a61c02eff1218a93aaaac4b46d4de3164ada944b94ef5e5408f23f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/normal/01-v5-normal-open-cargo.json",
+      "bytes": 163461,
+      "sha256": "10043d53f354f7c96dfce0f4444b9311729f52a58bc38e5040e47379a6d3ffa3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/normal/02-paid-341kg-pickup.json",
+      "bytes": 300773,
+      "sha256": "4573895d737df1659c8388d6f6149321b819e456d3770234e0ac272826c8f506"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/normal/02-paid-341kg-pickup.png",
+      "bytes": 240433,
+      "sha256": "de15f55a1505541578a93518b301f9e7fdcb745adcbf4fb9a13c66037c69fc85"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/normal/normal-route-actions.json",
+      "bytes": 241138,
+      "sha256": "b4aa232b6e1630484f29bfcb32c389df0cac4121479975853d3af4e9607402ee"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/normal/normal-route-execution.json",
+      "bytes": 313416,
+      "sha256": "786738b22d102c75687a62fd8722e6d380941148fe2b95dcb6d7e9cb5787a331"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/normal/normal-route-final.json",
+      "bytes": 302978,
+      "sha256": "b84db06bba98e74051fb8bf26791d343fa802b274389ca5db18a2876bbaede3b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/scripts/driver-origin.json",
+      "bytes": 735,
+      "sha256": "850c1b2eb6952dcc9f4547692dc46958e4f60aeca3254c25f1ac4b8a62916716"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T211600Z-root-v5-heavy-route/scripts/v5-heavy-visible-actions.ndjson",
+      "bytes": 1392,
+      "sha256": "09a4c7aa433746b14fecad18311771ab4b963bdc118c2750672c05f84e225ad5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T212100Z-root-v5-heavy-mesa1/01-normal-v5-heavy-depot-exit-former-mesa1.command.json",
+      "bytes": 6108,
+      "sha256": "b02077f2173fba2174f78323e1dc1ee8518dc74163b831281e77c2e22886c01b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T212100Z-root-v5-heavy-mesa1/01-normal-v5-heavy-depot-exit-former-mesa1.raw.log.gz",
+      "bytes": 1464,
+      "sha256": "ef54483fb4045a9c7f4d6b5497a0a74bc4bcc10c277b86c7bce67b7fea3a7398"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T212100Z-root-v5-heavy-mesa1/normal/01-v5-normal-open-cargo.json",
+      "bytes": 163444,
+      "sha256": "9d2249ed1db605300df3ed28b6613a6574f5388b8c2602a326151af7c03adce2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T212100Z-root-v5-heavy-mesa1/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T212100Z-root-v5-heavy-mesa1/normal/normal-route-actions.json",
+      "bytes": 28932,
+      "sha256": "2d44ded5e605a47543a4949e32c6c0990551c387e12b31bb3d85cc1dc6bb8b99"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T212100Z-root-v5-heavy-mesa1/normal/normal-route-execution.json",
+      "bytes": 46109,
+      "sha256": "1df41d349043a9dc181e14875eef28bb4545a2bc7ac66b9f27b91b2a2bd9c466"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T212100Z-root-v5-heavy-mesa1/normal/normal-route-final.json",
+      "bytes": 166253,
+      "sha256": "e31f0ce387a30bdba44e5b927615b7aa0c4b73efaaa680d1efcd0a6b43b80a60"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T212100Z-root-v5-heavy-mesa1/software-driver-scenario.json",
+      "bytes": 1168,
+      "sha256": "14fa25c99d54aa58e1b7870b1bb53fcc63c96feabd34c3d0b9aff7f1b889e56a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/01-normal-v5-heavy-former.command.json",
+      "bytes": 6108,
+      "sha256": "80d1f39237f03e856e10afe4c90c2e170156983f726d0b475236c65e695089bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/01-normal-v5-heavy-former.raw.log.gz",
+      "bytes": 2134,
+      "sha256": "bd2b83e387847592c5eaff526b7d32e51888906bdfec989da8c47fd0ff2ba6b9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/normal/01-v5-normal-open-cargo.json",
+      "bytes": 163460,
+      "sha256": "d972364e35de9628f1154abc63c4be7ce746806915400ba87b72b69eb37c381c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/normal/02-paid-341kg-pickup.json",
+      "bytes": 300576,
+      "sha256": "0d91e92ebda31539e003f382ffdfb5f47e70d00d1b073adbc54c3368c1460998"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/normal/02-paid-341kg-pickup.png",
+      "bytes": 240885,
+      "sha256": "930622173d6225b38c7328d355dde8e6895f94f63483abaf7397a49763de2b8b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/normal/03-v5-heavy-west-clearance.json",
+      "bytes": 299225,
+      "sha256": "e8289e4a07ba5b1037fcd4cb9082b9f7401b4f074e4490a67bc3a65e0dc9e18c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/normal/normal-route-actions.json",
+      "bytes": 214231,
+      "sha256": "d1d11bb1025771ed4d65d0e55ca12f012c0a99d61f642ed4e74f421ac648b884"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/normal/normal-route-execution.json",
+      "bytes": 265553,
+      "sha256": "36da2931a1cae2845bbdb17e2c92f9cb63afe671b9e98897a96eaaf76fae639d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/normal/normal-route-final.json",
+      "bytes": 302571,
+      "sha256": "a72d207c0e2d2b0c69900ac9421f907208d7517d027371672e78ca263a9864dd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/scripts/normal-v5-heavy-former-actions.ndjson",
+      "bytes": 1606,
+      "sha256": "92f8e163ae77ca602c4a33dbcb11b61727e942391268be632b5258378cee3207"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T214600Z-root-v5-heavy-former/scripts/origin.json",
+      "bytes": 698,
+      "sha256": "a077e0bd18eda179b7b2716ba7fef178487325b30332804781954e43a7ea6deb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/01-normal-v5-ack-held-heavy-former.command.json",
+      "bytes": 6123,
+      "sha256": "6fd0c431a83f43c98bb27bcdb5a0ece5ea3ba579e61695bbd6813d12ce24fb6b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/01-normal-v5-ack-held-heavy-former.raw.log.gz",
+      "bytes": 1529,
+      "sha256": "af34ec7e858641f4261abd0864f7eb2f2cdc2c8cb12adf49cb82e5e5418e5707"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/normal/01-v5-normal-open-cargo.json",
+      "bytes": 163472,
+      "sha256": "a9935c594bbeb008bb6e6855f582ca44a3d45a2821e25e56b4e61f8469fd9015"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/normal/normal-route-actions.json",
+      "bytes": 29108,
+      "sha256": "11c5e57c19b61b21c55a1a969b88fbd4be3cfc6b41e576062dc6d6bc9c9bf93f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/normal/normal-route-execution.json",
+      "bytes": 82221,
+      "sha256": "812c8c1765006e99bf232bc8f2f4808ab418727f4633d329911264329cf7fea2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/normal/normal-route-final.json",
+      "bytes": 166484,
+      "sha256": "349d541e25da182b5530a9b9ee200f58e1d7d3655cc79642863f5b679c237677"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/scripts/normal-v5-ack-exposure-driver.mjs",
+      "bytes": 13249,
+      "sha256": "1d82b09d602d104d2e069b5c0ab123674587b3f8c44efc8bfb5692737871aae6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/scripts/origin.json",
+      "bytes": 1278,
+      "sha256": "0f0467fc80c60e3bafc1da8e2226a0edde71cba588a8fc7e277d6441e4ba7ef9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/01-normal-v5-heavy-former.command.json",
+      "bytes": 6511,
+      "sha256": "b5f62790ad970592eb2737ade3d9b1d01724bb038c2498dae4e9e84f6b92dacb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/01-normal-v5-heavy-former.raw.log.gz",
+      "bytes": 1305,
+      "sha256": "92ad7d462e7590aa1aad86586ce64e90eb6eddea54fdd27cf7e31ba8654cdf05"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/execution-config.json",
+      "bytes": 822,
+      "sha256": "ee5b947873fa4444061c2db062d59c21f205f8fb6460b46362927c9a5e487a85"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/normal/01-v5-normal-open-cargo.json",
+      "bytes": 164230,
+      "sha256": "ff00a8b911dcaf61995175a1a519f1917c2835f4a4cf036d780e3181423298d8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/normal/normal-route-actions.json",
+      "bytes": 29122,
+      "sha256": "10ab56adca58a3e4d6d458096c06511cec7215e5cbc807bd04ba993e20ee8e42"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/normal/normal-route-execution.json",
+      "bytes": 68773,
+      "sha256": "58d047889da7e7292dbffd308bc03582a57381a1f8afe6056a085fdc23bc39bc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/normal/normal-route-final.json",
+      "bytes": 162074,
+      "sha256": "a948cab19a70e4c6bfb42dc0740aa9f4f55ad19ded8cb832183d178b2c37c21a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/scripts/normal-v5-physical-key-driver.mjs",
+      "bytes": 13071,
+      "sha256": "0f3078e27bb78d6994a0f6210d5f0f827a493970b61b02b4fdaa49e355cf9b30"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T222900Z-root-physical-key-exposure/scripts/origin.json",
+      "bytes": 553,
+      "sha256": "e3ee973260cd4963391a4eed7a374c8a957ece0f52242b2dd62b573dcbe0fdf7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/01-normal-v5-heavy-former.command.json",
+      "bytes": 6511,
+      "sha256": "1aab484db43c719cd5c5e58915855a586c0503bd375275ff2058775b2e3bd1e1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/01-normal-v5-heavy-former.raw.log.gz",
+      "bytes": 3686,
+      "sha256": "716fe4efb5d6695eb56d2739adfddd402904e9fe9ac34759e514108b1ace3f0b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/01-v5-normal-open-cargo.json",
+      "bytes": 163457,
+      "sha256": "34d2760e160682395de9c79c0d8eb61919c55e6cb47effdc2311938da5f825ac"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/02-paid-341kg-pickup.json",
+      "bytes": 300459,
+      "sha256": "81856c21c4869ee6dc3d4b1b7d754a968372979b90a9f6b75a8656a399b6257e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/02-paid-341kg-pickup.png",
+      "bytes": 247365,
+      "sha256": "19f6edab9440c48fb6af117d32f520c44c270ffd5db794eeb2d414fe24271401"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/03-v5-heavy-west-clearance.json",
+      "bytes": 299224,
+      "sha256": "f8e915930097ce0f61aa35feb40b424733bbe715a6bea026a01ab3e31e92eaa2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/04-heavy-ground-depot.json",
+      "bytes": 299743,
+      "sha256": "d886ee3c88d9574e1186e52f718471ecb86178cb858510e1e05e5086617b93ef"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/04-heavy-ground-depot.png",
+      "bytes": 287899,
+      "sha256": "9b1fbda21389e8ef955f8ad206dc4d41852ddcb5cb38adbb979b1a7ccff1ebf8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/05-paid-native-former.json",
+      "bytes": 318953,
+      "sha256": "156a6d1ccf7487dd32e323609abd46f53eba898c7a59120d1aac183c2a551c32"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/05-paid-native-former.png",
+      "bytes": 313931,
+      "sha256": "f2ad40bdfd36a6c442f6afb70719fb01f3a55017028d10d2fd83e1a42a753926"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/06-current-paused-S1-former.json",
+      "bytes": 319061,
+      "sha256": "2621bbd8b5bede4aff01519ba8ca009fe2fc70b007f29cfa3063a8652940c564"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/06-current-paused-S1-former.png",
+      "bytes": 99044,
+      "sha256": "89d7210d88e8090dd89616768346ef4dad79a8998acd73afc08d707172068cdf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/normal-route-actions.json",
+      "bytes": 274116,
+      "sha256": "b9ef8d0a3418de923107d6ba13eaa765fc4bab0f63c3f7ed04b72f0934e7216b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/normal-route-execution.json",
+      "bytes": 300733,
+      "sha256": "a2428e6ce27e9b31f6a6c0878dbcd396eb7fbaab4350456c0fd460590e1a69db"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/normal/normal-route-final.json",
+      "bytes": 319061,
+      "sha256": "eeff3a50fb8ddebcb3573f1dc32fd00628f5c8c799b2e86b4a400ef5f937c3a2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/scripts/normal-v5-fresh-release-driver.mjs",
+      "bytes": 14051,
+      "sha256": "fa6aa4256d5c7948e76dd2eff6d84d313159ccfce7d6c742fbabd0182516e508"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T223400Z-root-fresh-released-native/scripts/origin.json",
+      "bytes": 653,
+      "sha256": "da11eae7dd421390972e6d4d470b226bc8d564a0192e6486384bfc45b6ec34e1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T224100Z-root-v5-heavy-battery/01-normal-v5-heavy-battery.command.json",
+      "bytes": 6124,
+      "sha256": "674778f81ed6f4cd1c4923446a648ea4fde64dfe8322796a343dd20701962317"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T224100Z-root-v5-heavy-battery/01-normal-v5-heavy-battery.raw.log.gz",
+      "bytes": 1290,
+      "sha256": "a0e919ce21654157bad5e47e89d42d5ef211d122ee915ebb8e0430ebb7ca66d4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T224100Z-root-v5-heavy-battery/normal/01-v5-normal-open-cargo.json",
+      "bytes": 164229,
+      "sha256": "4e120bc3aab26f6fb40771cccdb8265828673d3abedf3c3739e86e309f97a68b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T224100Z-root-v5-heavy-battery/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T224100Z-root-v5-heavy-battery/normal/normal-route-actions.json",
+      "bytes": 28997,
+      "sha256": "0da6b293de720a522f4e2ad014536909f27a71bb5198fe5efb2acccad8e393d2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T224100Z-root-v5-heavy-battery/normal/normal-route-execution.json",
+      "bytes": 37319,
+      "sha256": "70520c865544e3b3eeb6258c51607ab527d2e386cae6cda1adc8f2557d0ac366"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T224100Z-root-v5-heavy-battery/normal/normal-route-final.json",
+      "bytes": 166302,
+      "sha256": "8b39d1247283bbc99fe7a3e35d1f16fb4495636b5f9bd3df68d9f9e29fff795a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T224100Z-root-v5-heavy-battery/scripts/normal-v5-heavy-battery-actions.ndjson",
+      "bytes": 2634,
+      "sha256": "83138de1441435387f87618b205b7585d077c2af7d98cb53aa9bccd23aa9b605"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/01-native-recovery-red.command.json",
+      "bytes": 952,
+      "sha256": "7b1d2b5be7569ab75736d64cea9c411a58e196359824959ee2e3c7e15111b6fe"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/01-native-recovery-red.raw.log.gz",
+      "bytes": 736,
+      "sha256": "d42c7b36eb0888fc6d0b825a7b34148ca23afdce85167a3fb800ae5d9e088a25"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/02-native-strict-recovery-red.command.json",
+      "bytes": 952,
+      "sha256": "dd8d67daed064d7a3e625eff5761181ab7f092ca5caef41391dd99056ae2bdfd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/02-native-strict-recovery-red.raw.log.gz",
+      "bytes": 960,
+      "sha256": "c0aef64aa94a9e129f54f57a8ae7aca9a6ec5ade6ef870ab15f9aabc498bd34b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/03-native-recovery-green.command.json",
+      "bytes": 1160,
+      "sha256": "784c107347555bbbd7a48400f28a4a248b90c7862aa44b3ff5ca1ef31614be73"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/03-native-recovery-green.raw.log.gz",
+      "bytes": 256,
+      "sha256": "a0b600dbe5f4e69d0d4019123745e51b354d8b91f9bec477ab419bb1610d091e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/04-worker-recovery-red.command.json",
+      "bytes": 1331,
+      "sha256": "53764cf4fd2a002806ce623ed0cfdf36fd6627b779e389792f1bb79df9caafeb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/04-worker-recovery-red.raw.log.gz",
+      "bytes": 780,
+      "sha256": "4fcbb1de91b363a8809a585c3c89673afff19420a8c2ad9b54a4fcf77b51b50c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/05-worker-recovery-green.command.json",
+      "bytes": 1495,
+      "sha256": "b2c6a389e043cd0d7a89bd65f680a24042dd44c3361c58decf18b8f20ac905c5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/05-worker-recovery-green.raw.log.gz",
+      "bytes": 248,
+      "sha256": "4c65a6643ec39ca47f63a6c3ec039336e6bfcbd549e20a54d00d256f7667b2f4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/06-client-recovery-red.command.json",
+      "bytes": 1730,
+      "sha256": "4ec7c3a2fcf3566ffd7a4aca2c773794afeaf687597132548e2ee6410078b26c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/06-client-recovery-red.raw.log.gz",
+      "bytes": 721,
+      "sha256": "751cfa2157c2588341ad70841a959cbe2db05ffa24a29da040062fa652057907"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/07-client-recovery-green.command.json",
+      "bytes": 1888,
+      "sha256": "301800973fe260041b86cb3116634bedc22588e54c21af5d08a57c694d23b0c1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/07-client-recovery-green.raw.log.gz",
+      "bytes": 250,
+      "sha256": "e82bcb789a0c17444ad99155efd0d9ae9d29c84c5cc6d51f6a9484cdf6014dcf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/08-domain-recovery-red.command.json",
+      "bytes": 2125,
+      "sha256": "0d334d5941dbc387228fbc27d28253043c3f3e3dfcb3594d32509e658f43c620"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/08-domain-recovery-red.raw.log.gz",
+      "bytes": 1121,
+      "sha256": "0467cf40781d36a6df2947021af722e68efddc45344d479a9ef6010a6eecd074"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/09-domain-recovery-green.command.json",
+      "bytes": 2508,
+      "sha256": "6dd5b49d854673b349fd24ba06c360c34a45a989bd6468cbdde4315d850cc6db"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/09-domain-recovery-green.raw.log.gz",
+      "bytes": 257,
+      "sha256": "96eb4f80a86e408d091fb88355be7f7e1a4f49ecbeffa5c09497140b094c59a8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/10-queue-wip-recovery-red.command.json",
+      "bytes": 2559,
+      "sha256": "7a8c095a794621fe93ef3dd8799e459aed0f69fb04fcea1e97fda8ae268cbd13"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/10-queue-wip-recovery-red.raw.log.gz",
+      "bytes": 690,
+      "sha256": "5e0b3e27e67c3df5085dfb856ad900efb0b3c2a50f26a0ba37c850dd3ac43f40"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/11-queue-strict-red-energy-fixture.command.json",
+      "bytes": 2559,
+      "sha256": "fad9b4161dadfcce5306cc217ea49bf65216a2b7ef95bd9a089e3507b29a7a67"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/11-queue-strict-red-energy-fixture.raw.log.gz",
+      "bytes": 581,
+      "sha256": "51913c93bab7ced773633cf116268801c047fc3ac999e148d23c6ed38da3c112"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/12-domain-queue-wip-green.command.json",
+      "bytes": 2509,
+      "sha256": "ef1a3495a8a844550448b6ae42c605220bbb584784baaf3af1f299d16ca00fd5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/12-domain-queue-wip-green.raw.log.gz",
+      "bytes": 1155,
+      "sha256": "38237479fc6d6946c6a627f97891c775bfbea94c3c992b8856edfe31c5b36dbe"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/13-queued-final-receipt-green.command.json",
+      "bytes": 2522,
+      "sha256": "66f2cbe995b68fa31f386b59dfabc0cb71db52626b8b981c85fe51c10feb3eb0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/13-queued-final-receipt-green.raw.log.gz",
+      "bytes": 260,
+      "sha256": "f919f09271987068923f220e6869c003190b89afcb871a92d8b21be8932ddf94"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/14-shell-host-recovery-red.command.json",
+      "bytes": 2962,
+      "sha256": "41a3bc7bab3fcd98d1c289700f044bd28e68224cee733db54d0631b2086da848"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/14-shell-host-recovery-red.raw.log.gz",
+      "bytes": 984,
+      "sha256": "02abcc4cf9a91dc473921342802cf6b6d92ce69f0cde728e3834f9ec34991b2e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/15-host-existing-scope-red.command.json",
+      "bytes": 2894,
+      "sha256": "589323627df11e4dcebbae95adbf456dd0cf728aa062971c7b32ea8e2547df5c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/15-host-existing-scope-red.raw.log.gz",
+      "bytes": 728,
+      "sha256": "89b0ffb965fd65ab2e6af46351efad5ac5721ce10802497e7423e933bacf60c5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/16-shell-recovery-green.command.json",
+      "bytes": 3418,
+      "sha256": "c99cb3a7863b20cca167916245d9d9d6067b975d2c0762f7393595597372db3b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/16-shell-recovery-green.raw.log.gz",
+      "bytes": 244,
+      "sha256": "95081d2ed115b9c862e53da6bae69b03647de72202a0787fd4053e35f4c5b1cf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/17-real-session-host-recursion-red.command.json",
+      "bytes": 3448,
+      "sha256": "ef9303f07e681c828db3f64d821a6e049c7e1f5b93664edf778aff1d0c0d9153"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/17-real-session-host-recursion-red.raw.log.gz",
+      "bytes": 696,
+      "sha256": "b946c71cd6c054b96622097ea3bbbf41ce95a2afff23f62cbedf617577981c22"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/18-real-session-host-green.command.json",
+      "bytes": 3467,
+      "sha256": "1f2353464a533303f5df8b02027e0a448b092ead83a304a8d5b69965dfed0d1a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T233000Z-root-explicit-hold-recovery/18-real-session-host-green.raw.log.gz",
+      "bytes": 745,
+      "sha256": "380cd2d1ee995051970e139ba26b74ae9f67e4d2585850f7eda02b4bb2f6380f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/07-normal-v4-heavy-battery-postfix.command.json",
+      "bytes": 4019,
+      "sha256": "4ce2e93ce6e27212fca14646a3e23ad491b8ab99e7700de0ede35c0853fd9b4d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/07-normal-v4-heavy-battery-postfix.raw.log.gz",
+      "bytes": 5130,
+      "sha256": "734bf1e6d529cfd48753188cce7fc0b5b7ca7b8009c191aa1a52b537233d1674"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/01-v4-normal-open-cargo.json",
+      "bytes": 166104,
+      "sha256": "30541d37eedf23ccc49f0ebf8d8b71a44d675cdb5928400d280575bfd85b08ea"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/01-v4-normal-open-cargo.png",
+      "bytes": 379956,
+      "sha256": "faccbd8e6d9608091b1e07103bafadca7028c1d23b805ead3228af1fe0e55475"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/02-paid-341kg-pickup.json",
+      "bytes": 299452,
+      "sha256": "388e7d5fc28eb494e6a3b09af047e868e273aaecaeac1a0888966cfc24cecb8e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/02-paid-341kg-pickup.png",
+      "bytes": 246390,
+      "sha256": "07f5ad443caff5ca084e031ceb16594d75ba52e94941efa839bb9788f8b893e2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/03-v4-heavy-west-clearance.json",
+      "bytes": 292622,
+      "sha256": "eb821d9f8d6b3729786773c7417bc4ccba17e9a691d3e01b60545a190ff1aedb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/03-v4-heavy-west-clearance.png",
+      "bytes": 297153,
+      "sha256": "157f561d646bb49da80ca278907bafe5f35b3c1d80780caf1282d032007ecc04"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/04-heavy-ground-depot.json",
+      "bytes": 296127,
+      "sha256": "a2be008ce47e354bf959b6b5a39062f45341ca78cfd02bb02ce7d6208c0d681d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/04-heavy-ground-depot.png",
+      "bytes": 302027,
+      "sha256": "53e746e11db00684e172113a08d865bd00275ef399f421c4dc6e2ca3fa9e2989"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/05-paid-native-former.json",
+      "bytes": 302952,
+      "sha256": "08659aa953fb98f05a6238e26a40ff83868771d3fced0c701e25db59953468f7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/05-paid-native-former.png",
+      "bytes": 176701,
+      "sha256": "272df7d97205de8b4aff42a2ffa8ff0a6183440c90ceb6140ae2c3b2e09d12af"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/06-paid-50kg-battery.json",
+      "bytes": 447470,
+      "sha256": "cf2d619d77b77363c3b4b563552274574f719b1eab5843be841b9e4a54b4c07b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/06-paid-50kg-battery.png",
+      "bytes": 265290,
+      "sha256": "9c243337911845414adc6c39f0bd5cf3b11919f3d3a92b42119ada3664031246"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/07-v4-battery-cross-connector.json",
+      "bytes": 440740,
+      "sha256": "517c9db5390c556c1ce9866da3308befe5c5373d927c998965694d43132e30d7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/07-v4-battery-cross-connector.png",
+      "bytes": 461956,
+      "sha256": "1c2453aed3fec7566579948413d9c8bb8bfb4ab9b0f16f4c0a009f0b1f75cf7b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/08-paid-native-battery.json",
+      "bytes": 445199,
+      "sha256": "47080a28dbc28fbe75df8b6f9c6c1aa3a95c1f4a8eda3cf6b696dd08698bd0c2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/08-paid-native-battery.png",
+      "bytes": 337588,
+      "sha256": "388ca40cb667de21384f73b97a06b32ce79b81e687b8b2b899453e8c01d8a3b3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/normal-route-actions.json",
+      "bytes": 1049539,
+      "sha256": "d0921a0601645c929dce03a4c678a9dc7b938fdb28a2b84355810d458f6ec05b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/normal-route-execution.json",
+      "bytes": 1136344,
+      "sha256": "dc93fcd2b207280e02b729dfeacd417c3a18e6e316d11824ead362d3ae7f6f4a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/normal-route-final.json",
+      "bytes": 445214,
+      "sha256": "81ba237bdeeb25ff08680f8aead2d0c6121f999ac39b29d0f43397ed037d1a7c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T111810Z-native-read/normal-v4-postfix-route/video/page@5cd24453f059126f591b12bbe6748513.webm",
+      "bytes": 25020044,
+      "sha256": "fb11e3aed06cdacd8cde5162f34d37536b41a4a5953e301822d1b544f01f83c9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/01-current-blocked-band-profile.command.json",
+      "bytes": 5912,
+      "sha256": "4410953d007a78e871236f6c4d08e4884769e6b09cd39684c26cc58805d4ba97"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/01-current-blocked-band-profile.raw.log.gz",
+      "bytes": 541,
+      "sha256": "2d26a46d5ffab7cd4d49cf6997e45c9c3de67529da8843986e466ac35c4e5cc2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/02-local-string-encoding-paid-pair.command.json",
+      "bytes": 5781,
+      "sha256": "07af28e0ae29c010a684162a388b2ac731f15f3c057bc94ec14c70c8bb617116"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/02-local-string-encoding-paid-pair.raw.log.gz",
+      "bytes": 552,
+      "sha256": "dafddd144d72eb6603bb139ff48fb0d2a3a87c5925d1c32e71d9eaa956dd6035"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/03-primitive-encoding-paid-pair.command.json",
+      "bytes": 5781,
+      "sha256": "bfe80884c4ebbee0b916c2a9cb04d1a7a4a62d0fe0ed025811656a911d9d9e3e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/03-primitive-encoding-paid-pair.raw.log.gz",
+      "bytes": 549,
+      "sha256": "64cd15138956fc0e10745816499baaafc4d1c6e5afadc5a7a7f1c0315e167c0e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/CPU.20261012.203739.18621.0.001.cpuprofile",
+      "bytes": 282419,
+      "sha256": "bc4471df431d142057502f70326a0e893b2267c0facb1cb30258901afe247f6f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/CPU.20261012.203740.18646.0.001.cpuprofile",
+      "bytes": 1141100,
+      "sha256": "0e243b5a4a662f61452e68d0676a32928624c10e2239611bc06a18daeeed599a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T203800Z-root-blocked-band/v8-profile-attribution.json",
+      "bytes": 17601,
+      "sha256": "e917ba376fae66d051b888ecf5abc4030349afdf277f228663cb4be9c290392b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T215500Z-root-mesa-one-thread/01-normal-v5-heavy-former-one-render-thread.command.json",
+      "bytes": 6109,
+      "sha256": "9e01b31a4e7977275e2dd3a584676334aaf51f827714b7204256f22944ab9182"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T215500Z-root-mesa-one-thread/01-normal-v5-heavy-former-one-render-thread.raw.log.gz",
+      "bytes": 1336,
+      "sha256": "89976e3d4fb974c8667003ef48655cbe094be46e91bae91eabde36b77fb304e0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T215500Z-root-mesa-one-thread/execution-config.json",
+      "bytes": 1553,
+      "sha256": "bbef472cc1950ccaf5619e857be3538bd5994dc56fa1994d9d04ef3cd5a1a3e9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T215500Z-root-mesa-one-thread/normal/01-v5-normal-open-cargo.json",
+      "bytes": 164214,
+      "sha256": "901ce0951e4376e8c496259c3762d6ee18766ad4ed198285cb29b05c7fb0e1b5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T215500Z-root-mesa-one-thread/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T215500Z-root-mesa-one-thread/normal/normal-route-actions.json",
+      "bytes": 29075,
+      "sha256": "68af69fdb90552680a311d17a6f6d6fd40745dd886b778b97693d89ba9f70cab"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T215500Z-root-mesa-one-thread/normal/normal-route-execution.json",
+      "bytes": 93355,
+      "sha256": "fa4618fc60c2e45c80a382f6615b978b02e689899756673193f6a163030e2ad8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T215500Z-root-mesa-one-thread/normal/normal-route-final.json",
+      "bytes": 162397,
+      "sha256": "9d4885523cd80863c67790d3730d4044937f67ec7167143a0324360d0534d790"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T220500Z-root-main-frame/01-bounded-main-frame-profiler.command.json",
+      "bytes": 6004,
+      "sha256": "12f4ae2a758dae2e3bb7042eec1b4f2aaf7b799ad2199f6dcc8e6af28e035d8c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T220500Z-root-main-frame/01-bounded-main-frame-profiler.raw.log.gz",
+      "bytes": 565,
+      "sha256": "250f767942eb1c4257cb4031ddea1d87f9b5a95a9d38f6371ce71d52b5e98afb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T220500Z-root-main-frame/diagnostic/actual-final.json",
+      "bytes": 232222,
+      "sha256": "444c1fe44ce04a70f6dec2a68ec21f551bd326e9dccf3b4d2672fcb07262065e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T220500Z-root-main-frame/diagnostic/canonical-nearest-factory-attribution.json",
+      "bytes": 3644,
+      "sha256": "2019bd03ed09dac2f3f126d16bc4af47b3d84e4252292c75e008d8e1b67f5980"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T220500Z-root-main-frame/diagnostic/diagnostic-summary.json",
+      "bytes": 5635,
+      "sha256": "f9a1c949cea3dc13f72ccd574374646545c40a264259402cfed6f94e98a7cf0d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T220500Z-root-main-frame/diagnostic/main-thread.cpuprofile",
+      "bytes": 190156,
+      "sha256": "f2b6491febb927f0207d1e9999e0432d396c0b65783693d27b0af974bc83136b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T220500Z-root-main-frame/diagnostic/top-self-compiled.json",
+      "bytes": 3891,
+      "sha256": "53d7c55ceb6ec1cd8613c2d0d05000688b0226791719bf21e814e449c7a89c5c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/01-unchanged-material-business-red.command.json",
+      "bytes": 5993,
+      "sha256": "396ac8c2b5740a2da0b6434af17533b106cd1ca8ef4edab0db392b182d9c0504"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/01-unchanged-material-business-red.raw.log.gz",
+      "bytes": 539,
+      "sha256": "8760ef48bf5e6da22559cfb32f596f4dcb455c00a75cfe59d06c1be00dba7ec0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/02-focused-noop-and-guards.command.json",
+      "bytes": 6024,
+      "sha256": "9e0ba23c63394e9235d1ca7044ec8d668083037995895ff51b1bec0ab5358115"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/02-focused-noop-and-guards.raw.log.gz",
+      "bytes": 261,
+      "sha256": "305350e8f5ff0197ed96033ed61f570342b6b01e7947b39e887592db4c00493d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/03-dry-host-regressions.command.json",
+      "bytes": 5998,
+      "sha256": "0118497f02c0246b4e3e465974352d05b80883d02a34c58e4d7068766a624c58"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/03-dry-host-regressions.raw.log.gz",
+      "bytes": 537,
+      "sha256": "fdfb52e046ee5da50b8b075b9dc0142651bb8bb88fbf38ce1669ba501a6bd5d3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/04-original-build.command.json",
+      "bytes": 5875,
+      "sha256": "de4d22151da8dbdaaefc14ff1ba0d7ec2d9b670a2b94b6b04094f6974ac2e09e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/04-original-build.raw.log.gz",
+      "bytes": 1240,
+      "sha256": "65f1be50bd6073e2d53630adc96ed48cbd47cd1a176a94a75ff736a49b19e470"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/05-paired-actual-main-frame.command.json",
+      "bytes": 6006,
+      "sha256": "e78b1750fa40dd94634cd00910616bd79a4a12adaa93535bc0ffd0ca14d1537b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/05-paired-actual-main-frame.raw.log.gz",
+      "bytes": 567,
+      "sha256": "3425c199110d6a550e4f54ef9bcac4d8423f0d22a8330847bac50b27f59d6a2a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/diagnostic/actual-final.json",
+      "bytes": 217712,
+      "sha256": "cc3ad500e6af5edebd102bf8166f14efd434011d2437afdb121d5c6123c1d413"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/diagnostic/diagnostic-summary.json",
+      "bytes": 5130,
+      "sha256": "c1f663d9b89eb924414f25be329caf168f2c4008298a4d45e6b53aed99ec755f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T221000Z-root-adoption-noop/diagnostic/main-thread.cpuprofile",
+      "bytes": 125105,
+      "sha256": "a141ada1b49a2ccadc9aa7f73ab3fe61029506f5eee076e499232c9e223f64ee"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/01-normal-heavy-former.command.json",
+      "bytes": 6127,
+      "sha256": "48873eaa18368594da49ee747923583f631cece659f731e184d0847e4f808512"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/01-normal-heavy-former.raw.log.gz",
+      "bytes": 1854,
+      "sha256": "3371cb305849bb6285f0ee25881a912a86a0298081d84d276915a5d953cca417"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/execution-config.json",
+      "bytes": 1251,
+      "sha256": "7526fccaee16a25b40c5adb4ea3c8402873600d089defa49ff86a4276d41dbe4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/normal/01-v5-normal-open-cargo.json",
+      "bytes": 164227,
+      "sha256": "ae5384ea2305b8e2b206d28b78b7c4e22602851b8c5c69d4da18a06506c9cafb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/normal/01-v5-normal-open-cargo.png",
+      "bytes": 521284,
+      "sha256": "767112f966273b9eafd6570e9f20e79367e69b4d65fe35c10332584a0d7791bb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/normal/02-paid-341kg-pickup.json",
+      "bytes": 300364,
+      "sha256": "4991cf0be212905515ab1cca27e51915a48bfd52063858a0f37a5251b71f4992"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/normal/02-paid-341kg-pickup.png",
+      "bytes": 241240,
+      "sha256": "863f6dd0ec9a15c86431311f9f4fdc91446e8567a74c51200362454638032eb2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/normal/normal-route-actions.json",
+      "bytes": 73813,
+      "sha256": "31ac2d8a032d0c758d010a01c997d8808cec9a21560bdaebd4375b3dab08f660"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/normal/normal-route-execution.json",
+      "bytes": 303670,
+      "sha256": "f8e763ecf3c3298021af9c49cb5bc8dc5e46908eb9f6dde034d50247b463e01a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T222400Z-root-browser-affinity-three/normal/normal-route-final.json",
+      "bytes": 302500,
+      "sha256": "21a3ed789073792ab3ab31a6d064c3bcefb0a1341c3620719aa3e6b83b089cf1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T230000Z-root-native-worker/01-bounded-actual-native-worker.command.json",
+      "bytes": 6008,
+      "sha256": "4e8415ce480137218e8cdcaffc0c0da5ee62502f6f078f3f16e5fbc2c76f2a18"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T230000Z-root-native-worker/01-bounded-actual-native-worker.raw.log.gz",
+      "bytes": 252,
+      "sha256": "07f46d436e5fc7cd7d839fa6d3ddc851a13e27e3afbb1a3d60019e719c61f63b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T230000Z-root-native-worker/diagnostic/execution.json",
+      "bytes": 3309,
+      "sha256": "2238993d8cc82837de8bde255267ef2e3d4138502ef37923edd6889211dd28d4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T230000Z-root-native-worker/diagnostic/fallback-final.json",
+      "bytes": 111162,
+      "sha256": "01de84b62ff41dff201c1f720720b08268cb9237452e23588c0eb8700d145ee2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T231100Z-root-native-preserved-profile/01-native-worker-preserved-profile.command.json",
+      "bytes": 6053,
+      "sha256": "86d0cdbfded6a7b7385728bf5b201db46e1882aaec07c3101102784ab15834b3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T231100Z-root-native-preserved-profile/01-native-worker-preserved-profile.raw.log.gz",
+      "bytes": 255,
+      "sha256": "4545b5c5fff00e05df421d016cc975a52e009a1f5076cc4b80baebb63576375a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T231100Z-root-native-preserved-profile/REPORT.md",
+      "bytes": 1909,
+      "sha256": "4dfc4ce693f460c56200faed817bf00f65a9662fb372d250ead657f8706ac812"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T231100Z-root-native-preserved-profile/normal/execution.json",
+      "bytes": 3379,
+      "sha256": "7c664bac62c61f6d0dc4f361c84ca3a94f5a31fbb6227a874a8dc563512f1021"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T231100Z-root-native-preserved-profile/normal/fallback-final.json",
+      "bytes": 110903,
+      "sha256": "e700a70e742bf8bd69e6541ce360c66008d4200e26e910d58d143dfbf3dac716"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T231100Z-root-native-preserved-profile/normal/native-worker-partial.cpuprofile",
+      "bytes": 49887,
+      "sha256": "fec5a0be69d1a2a3bac864d8d880a5a738903371226cef8ce8990327a8766dc6"
+    }
+  ],
+  "totalBytes": 117954667,
+  "newTestsOrProfilesExecuted": false,
+  "notes": "Pre-existing local evidence is preserved byte-identically for external reviewers. Raw failures, interrupted browser flows and profiles remain historical and confer no new PASS."
+}

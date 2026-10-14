@@ -1,0 +1,18 @@
+{
+  "frozenAtUtc": "2026-10-12T11:02:55.033513+00:00",
+  "actor": "/root/play_integrator",
+  "purpose": "One bounded normal V4 retry after actual trusted CDP keyDown delivery; readonly held intent/tick/RPC facts; no pose, time or world mutations",
+  "differenceFrom07": "Await actual keyDown delivery and observable held movement intent before release; minimum requested pulse 45ms (ordinary wall time); same route corridor tolerance 80mm",
+  "inputs": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/current-shell-route-exposed-input-driver.mjs",
+      "bytes": 11355,
+      "sha256": "947c8ddf8ac5b47e9e787e9dc8043349312cc801ab0ed065d39453348c7c0116"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/v4-heavy-battery-actions.jsonl",
+      "bytes": 2438,
+      "sha256": "63574bf216f50324f49e8f5d4f3dfc78d764c62ed8b5ca003bc9266433cba543"
+    }
+  ]
+}

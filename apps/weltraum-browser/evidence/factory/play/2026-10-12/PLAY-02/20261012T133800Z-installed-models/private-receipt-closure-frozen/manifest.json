@@ -1,0 +1,51 @@
+{
+  "scope": "Exact current PrivateReceiver16/17/18 source freeze before any V5 Bootstrap changes",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "snapshot": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/private-receipt-closure-frozen/hvpBootstrap.ts.snapshot",
+      "bytes": 194221,
+      "sha256": "4f83be24c60d18ac8baf707360d9a1bbd8bf210b6f478a009afe2c0566c4c6d8",
+      "checks": [
+        {
+          "receipt": "16-private-prepare-final-focused",
+          "bytesMatched": true,
+          "shaMatched": true
+        },
+        {
+          "receipt": "17-private-prepare-final-build",
+          "bytesMatched": true,
+          "shaMatched": true
+        },
+        {
+          "receipt": "18-normal-model-after-private-receipt",
+          "bytesMatched": true,
+          "shaMatched": true
+        }
+      ]
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "snapshot": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T133800Z-installed-models/private-receipt-closure-frozen/hvp-bootstrap.test.ts.snapshot",
+      "bytes": 104099,
+      "sha256": "c1f8e01c766e1faca9f8ec411faa5f64ce0a3c58fdc2574517d5db16013534d5",
+      "checks": [
+        {
+          "receipt": "16-private-prepare-final-focused",
+          "bytesMatched": true,
+          "shaMatched": true
+        },
+        {
+          "receipt": "17-private-prepare-final-build",
+          "bytesMatched": true,
+          "shaMatched": true
+        },
+        {
+          "receipt": "18-normal-model-after-private-receipt",
+          "bytesMatched": true,
+          "shaMatched": true
+        }
+      ]
+    }
+  ]
+}

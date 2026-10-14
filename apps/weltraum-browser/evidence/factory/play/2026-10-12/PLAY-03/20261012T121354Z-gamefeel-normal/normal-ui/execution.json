@@ -1,0 +1,133 @@
+{
+  "startedAtUtc": "2026-10-12T12:13:08.428Z",
+  "endedAtUtc": "2026-10-12T12:13:45.645Z",
+  "entry": "http://127.0.0.1:5174/factory.html",
+  "browserVersion": "154.0.8037.57",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "input": "normal visible controls and trusted CDP keys only; read-only diagnostics; no World/pose/clock/material mutations",
+  "scope": "Normal actual gamefeel Start/Cargo/Walk/responsive selection+scroll/Help/Input ACK; map/history/full W09/S1/Save/Owner acceptance pending",
+  "videoPath": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/20261012T121354Z-gamefeel-normal/normal-ui/video/page@b9a57206a6955239f3f4ddefa7a859fe.webm",
+  "events": [
+    {
+      "name": "normal production Entry and actual paused start menu",
+      "start": "2026-10-12T12:13:08.802Z",
+      "end": "2026-10-12T12:13:19.198Z",
+      "status": "completed"
+    },
+    {
+      "name": "real New Game and finite cargo open",
+      "start": "2026-10-12T12:13:21.521Z",
+      "end": "2026-10-12T12:13:23.353Z",
+      "status": "completed"
+    },
+    {
+      "name": "actual material selection and responsive small/wide reachable transfer controls",
+      "start": "2026-10-12T12:13:25.183Z",
+      "end": "2026-10-12T12:13:33.309Z",
+      "status": "completed"
+    },
+    {
+      "name": "explicit real Play and ACK neutral level",
+      "start": "2026-10-12T12:13:33.309Z",
+      "end": "2026-10-12T12:13:35.169Z",
+      "status": "completed"
+    },
+    {
+      "name": "trusted released WASD movement",
+      "start": "2026-10-12T12:13:36.681Z",
+      "end": "2026-10-12T12:13:37.201Z",
+      "status": "completed"
+    },
+    {
+      "name": "actual modal pause, no gameplay while modal open and no automatic close resume",
+      "start": "2026-10-12T12:13:38.278Z",
+      "end": "2026-10-12T12:13:39.729Z",
+      "status": "completed"
+    },
+    {
+      "name": "held key across explicit Play remains neutral until release and fresh press",
+      "start": "2026-10-12T12:13:40.571Z",
+      "end": "2026-10-12T12:13:43.026Z",
+      "status": "completed"
+    },
+    {
+      "name": "confirmed final Pause preserves material and closed save admission",
+      "start": "2026-10-12T12:13:43.965Z",
+      "end": "2026-10-12T12:13:44.917Z",
+      "status": "completed"
+    }
+  ],
+  "errors": [
+    {
+      "atUtc": "2026-10-12T12:13:14.349Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:5174/factory.html",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-C4Yv534t.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-GeJ96uLU.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hash-_jyFVLd7.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factoryAssets-DDOGGOif.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/installationProfile-DBLIsq2w.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-BHPQBVDl.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-FnOa82Io.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/cargoSite-BhYasoS7.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/physicsWorker-DtrD_gl0.js",
+      "status": 200,
+      "type": "script"
+    }
+  ]
+}

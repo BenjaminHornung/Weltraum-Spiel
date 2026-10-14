@@ -1,0 +1,13 @@
+{
+  "scope": "Separate actual-input harness timing correction, no product code/World/pose/clock/geometry/material edits.",
+  "source": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T204800Z-root-v5-input-camera/scripts/normal-v5-root-driver.mjs",
+  "sourceSha256": "29a20eeb5405f38a46250462f7fc5d882897bca6b91588d6bbf2e799d78b45dc",
+  "problem": "Olddriver deducted async DOM/read/dispatch latency from requestedheld interval; actualkeydown intent could be released before one Nativephysicsstep and a zero-displacement gesture was falselyclassified blocked. LP1run ended earlywithout hold/cargo; comparison inconclusive.",
+  "change": [
+    "Wait actual NativeFactoryInput ACK with nonzero level, then maintain normalkeydown through requestedreal interval",
+    "Release inexistingfinally; retainedoriginal1500ms/5000ms limits andneutralACK check",
+    "Preserve nestedAggregateError causes inactualfailurelog"
+  ],
+  "inputs": "Samevisible UI and normal trustedkeyboard gestures; waypoint-derived adjustments, neverpose orcamera injection",
+  "evidenceLimitation": "Newharness doesnotretroactivelychangeoldFAILs orprove terrain/physics absence; old vsnew timing notpureperfcomparison"
+}

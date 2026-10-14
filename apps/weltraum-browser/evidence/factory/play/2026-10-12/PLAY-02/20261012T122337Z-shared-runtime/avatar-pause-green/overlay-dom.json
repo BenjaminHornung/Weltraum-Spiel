@@ -1,0 +1,71 @@
+[
+  {
+    "tag": "MAIN",
+    "id": "app",
+    "cls": "",
+    "hidden": false,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 720
+    },
+    "display": "block",
+    "position": "static",
+    "background": "rgb(8, 11, 18)",
+    "zIndex": "auto",
+    "text": "Spielen anklicken und die Maus übernehmen, dann einen gelösten Körper anvisieren.F stößt in Blickrichtung; es greift oder zieht kein Objekt.Zelle · Linksklick: "
+  },
+  {
+    "tag": "CANVAS",
+    "id": "debug-scene",
+    "cls": "",
+    "hidden": false,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 720
+    },
+    "display": "block",
+    "position": "static",
+    "background": "rgba(0, 0, 0, 0)",
+    "zIndex": "auto",
+    "text": ""
+  },
+  {
+    "tag": "SECTION",
+    "id": "factory-shell",
+    "cls": "factory-shell",
+    "hidden": false,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 720
+    },
+    "display": "block",
+    "position": "fixed",
+    "background": "rgba(0, 0, 0, 0)",
+    "zIndex": "30",
+    "text": "ERSTE WERKSTATTWrackfracht öffnenPauseWRACKFRACHTFracht ansehenB  Bauen   ·   M  Karte   ·   Esc  MenüSitzung pausiertSpielenFeldhandbuchSchließenFrachtBauenMas"
+  },
+  {
+    "tag": "DIALOG",
+    "id": "hvp-player-pause",
+    "cls": "",
+    "hidden": false,
+    "open": false,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    },
+    "display": "none",
+    "position": "absolute",
+    "background": "rgb(255, 255, 255)",
+    "zIndex": "auto",
+    "text": "WASD: Gehen · Shift: Sprint · Space: Springen · V: Ego/3. Person · F kurz drücken: Stoß auf einen gelösten Körper (max. 4 m) · Escape: PauseSpiel fortsetzenZur "
+  }
+]

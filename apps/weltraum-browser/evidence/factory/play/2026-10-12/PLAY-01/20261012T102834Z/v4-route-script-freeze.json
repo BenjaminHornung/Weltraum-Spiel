@@ -1,0 +1,15 @@
+{
+  "input": "normal visible UI/trusted CDP; actual neutral RPC+ACK facts before next direction; zero pose/time/World mutation",
+  "files": [
+    {
+      "path": "scripts/v4-heavy-battery-actions.jsonl",
+      "bytes": 2438,
+      "sha256": "63574bf216f50324f49e8f5d4f3dfc78d764c62ed8b5ca003bc9266433cba543"
+    },
+    {
+      "path": "scripts/current-shell-route-driver.mjs",
+      "bytes": 10690,
+      "sha256": "0066a8ad6aad73008753bf53981232c2f98be706391073c4c7166d6cf13b4b3f"
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "atUtc": "2026-10-12T22:20:16.815Z",
+  "source": "0e2a0bcb",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "browser": "154.0.8037.57",
+  "renderThreads": "1",
+  "status": "SimulationHold",
+  "ticks": 345,
+  "events": [
+    {
+      "atUtc": "2026-10-12T22:20:13.662Z",
+      "status": "Running",
+      "ticks": 162,
+      "clock": {
+        "maxTimerGapMs": 50.20000000298023,
+        "maxAdvanceMs": 49.600000001490116,
+        "maxHandlerMs": 1861.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000022351742,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:20:14.399Z",
+      "status": "Running",
+      "ticks": 220,
+      "clock": {
+        "maxTimerGapMs": 50.20000000298023,
+        "maxAdvanceMs": 49.600000001490116,
+        "maxHandlerMs": 1861.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000022351742,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:20:15.213Z",
+      "status": "Running",
+      "ticks": 236,
+      "clock": {
+        "maxTimerGapMs": 50.20000000298023,
+        "maxAdvanceMs": 49.600000001490116,
+        "maxHandlerMs": 1861.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.3999999985098839,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:20:15.776Z",
+      "status": "Running",
+      "ticks": 308,
+      "clock": {
+        "maxTimerGapMs": 50.20000000298023,
+        "maxAdvanceMs": 49.600000001490116,
+        "maxHandlerMs": 1861.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      }
+    },
+    {
+      "atUtc": "2026-10-12T22:20:16.626Z",
+      "status": "SimulationHold",
+      "ticks": 345,
+      "clock": {
+        "maxTimerGapMs": 134.40000000223517,
+        "maxAdvanceMs": 49.600000001490116,
+        "maxHandlerMs": 1861.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000022351742,
+        "simulationHold": {
+          "gapMs": 134.40000000223517,
+          "previousCommand": "Read",
+          "handlerMs": 0.3999999985098839,
+          "advanceMs": 0.5999999977648258,
+          "backlogSeconds": 0.07310000000149033,
+          "ticks": 345
+        },
+        "delayedCallbacks": [
+          {
+            "gapMs": 134.40000000223517,
+            "previousCommand": "Read",
+            "handlerMs": 0.3999999985098839,
+            "advanceMs": 0.5999999977648258
+          }
+        ],
+        "timers": 1
+      }
+    }
+  ],
+  "summary": {
+    "hvp.startupRendererMs": {
+      "count": 1,
+      "p50": 689.8999999985099,
+      "p95": 689.8999999985099,
+      "max": 689.8999999985099
+    },
+    "hvp.startupSourceMs": {
+      "count": 1,
+      "p50": 1108.1000000014901,
+      "p95": 1108.1000000014901,
+      "max": 1108.1000000014901
+    },
+    "hvp.startupCoastMeshMs": {
+      "count": 1,
+      "p50": 3880.300000000745,
+      "p95": 3880.300000000745,
+      "max": 3880.300000000745
+    },
+    "hvp.startupVegetationMs": {
+      "count": 1,
+      "p50": 1602.199999999255,
+      "p95": 1602.199999999255,
+      "max": 1602.199999999255
+    },
+    "hvp.startupAdmissionMs": {
+      "count": 1,
+      "p50": 3.800000000745058,
+      "p95": 3.800000000745058,
+      "max": 3.800000000745058
+    },
+    "hvp.bootstrapReadyMs": {
+      "count": 1,
+      "p50": 12865.199999999255,
+      "p95": 12865.199999999255,
+      "max": 12865.199999999255
+    },
+    "hvp.startupPhysicsMs": {
+      "count": 1,
+      "p50": 3530.5,
+      "p95": 3530.5,
+      "max": 3530.5
+    },
+    "hvp.startupPublishMs": {
+      "count": 1,
+      "p50": 2050.39999999851,
+      "p95": 2050.39999999851,
+      "max": 2050.39999999851
+    },
+    "hvp.startupBackendUpsertMs": {
+      "count": 122,
+      "p50": 2.600000001490116,
+      "p95": 22.299999997019768,
+      "max": 275.19999999925494
+    },
+    "hvp.startupProjectionMs": {
+      "count": 1,
+      "p50": 10.599999997764826,
+      "p95": 10.599999997764826,
+      "max": 10.599999997764826
+    },
+    "hvp.navigationReadyMs": {
+      "count": 1,
+      "p50": 14481.300000000745,
+      "p95": 14481.300000000745,
+      "max": 14481.300000000745
+    },
+    "hvp.coldReadyMs": {
+      "count": 1,
+      "p50": 14139.60000000149,
+      "p95": 14139.60000000149,
+      "max": 14139.60000000149
+    },
+    "hvp.mainFrameCpuMs": {
+      "count": 19,
+      "p50": 74.19999999925494,
+      "p95": 456.5,
+      "max": 456.5
+    },
+    "hvp.frameIntervalMs": {
+      "count": 18,
+      "p50": 499.90000000000146,
+      "p95": 1699.8999999999978,
+      "max": 1699.8999999999978
+    },
+    "hvp.solverStepCpuMs": {
+      "count": 345,
+      "p50": 0.10000000149011612,
+      "p95": 1.0999999977648258,
+      "max": 49.100000001490116
+    },
+    "hvp.resources": {
+      "count": 1,
+      "p50": 0,
+      "p95": 0,
+      "max": 0
+    }
+  },
+  "errors": [],
+  "testBridge": false,
+  "scope": "One readonly mainThreadProfiler/UserTiming diagnostic, normalStart/Play/key gestures; profiler overhead. No performance/gameplay gate."
+}

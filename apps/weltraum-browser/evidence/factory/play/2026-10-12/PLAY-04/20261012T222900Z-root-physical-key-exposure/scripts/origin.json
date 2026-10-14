@@ -1,0 +1,6 @@
+{
+  "source": "evidence/factory/play/2026-10-12/PLAY-04/20261012T220000Z-root-input-ack-exposure/scripts/normal-v5-ack-exposure-driver.mjs",
+  "sourceSha256": "1d82b09d602d104d2e069b5c0ab123674587b3f8c44efc8bfb5692737871aae6",
+  "targetSha256": "0f3078e27bb78d6994a0f6210d5f0f827a493970b61b02b4fdaa49e355cf9b30",
+  "change": "Only press removes ACK-render wait and held full-read between processed trusted keydown and keyup. Full released Native ACK/neutrality check unchanged; world/pose/clockauthority absent; samevisibleactions; no product edits."
+}

@@ -1,0 +1,16 @@
+{
+  "frozenAtUtc": "2026-10-12T11:07:54.268485+00:00",
+  "inputs": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/v4-heavy-battery-north-clearance-actions.jsonl",
+      "bytes": 2478,
+      "sha256": "4b79e14784011488eca2892717316793bb1b4076bd70a8d7b8a17c1a9a953c4b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/scripts/current-shell-route-exposed-input-driver.mjs",
+      "bytes": 11355,
+      "sha256": "947c8ddf8ac5b47e9e787e9dc8043349312cc801ab0ed065d39453348c7c0116"
+    }
+  ],
+  "reason": "Correct ordinary ztarget to historical actual clearance corridor; source/physics unchanged"
+}

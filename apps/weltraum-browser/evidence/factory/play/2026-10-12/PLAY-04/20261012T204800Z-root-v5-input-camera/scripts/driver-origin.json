@@ -1,0 +1,9 @@
+{
+  "source": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-04/20261012T155000Z-v5-native-ui-camera/scripts/normal-v5-ui-driver.mjs",
+  "onlyChanges": [
+    "Read-only model assertion expects actual approvedV5 digest0e2a0bcb, not oldV4",
+    "Separate actual-visible commands open Pause\u2192Werkstatt ansehen\u2192Fracht \u00f6ffnen, then visible Karten-Tab; nohiddenFracht-tabclick",
+    "Actual trusted mouse look only; camera fields read-only; no pose/world/material/source writes"
+  ],
+  "scope": "NormalSourceV5start/cargo/map/camera path only, noW09complete/W11acceptance"
+}
