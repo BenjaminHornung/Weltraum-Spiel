@@ -4,11 +4,14 @@ import type { ThreeRendererPort } from "../../render/three/backend/threeRenderBa
 /** One sky draw, native tone mapping, one cached 1024² depth map; no fullscreen targets. */
 export const HVP_EFFECT_COST = Object.freeze({ triangles: 528, drawCalls: 1, meshBytes: 13568, cpuBytes: 16384 + 65536 });
 export const HVP_EFFECT_VERSION = "hvp-surface-light-v1";
+const factoryLightFloorProfiles: ReadonlySet<string> = new Set([
+  "fp06_vertex_color", "fp06_ex_struct", "fp06_ex_shell", "fp06_ex_function", "fp06_ex_hazard", "fp06_ex_pv"
+]);
 
-export const shadeHvpSurface = (material: THREE.Material, water: boolean): void => {
+export const shadeHvpSurface = (material: THREE.Material, water: boolean, factoryPlay = false): void => {
   // A single flat sheet has no front/back transparency ordering to resolve.
   if (water) { material.forceSinglePass = true; }
-  material.customProgramCacheKey = () => `${HVP_EFFECT_VERSION}:${water ? "water" : "opaque"}`;
+  material.customProgramCacheKey = () => `${HVP_EFFECT_VERSION}:${water ? "water" : factoryPlay ? "factory-light-floor" : "opaque"}`;
   material.onBeforeCompile = (shader) => {
     shader.vertexShader = `varying vec3 vHvpWorld;\n${shader.vertexShader}`.replace(
       "#include <worldpos_vertex>", "#include <worldpos_vertex>\nvHvpWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;"
@@ -29,6 +32,10 @@ export const shadeHvpSurface = (material: THREE.Material, water: boolean): void 
         outgoingLight = mix(outgoingLight,vec3(0.23,0.48,0.72),0.48*fresnel)+vec3(0.75,0.69,0.48)*glint;
         #include <opaque_fragment>
       `);
+    } else if (factoryPlay) {
+      shader.fragmentShader = shader.fragmentShader.replace("#include <opaque_fragment", `
+        outgoingLight = max(outgoingLight, diffuseColor.rgb * 0.35);
+        #include <opaque_fragment`);
     } else {
       shader.fragmentShader = shader.fragmentShader.replace("#include <color_fragment>", `
         #include <color_fragment>
@@ -98,7 +105,9 @@ export const createHvpVisualRenderer = (
   let frame = 0;
   const prepareMaterial = (material:THREE.Material,water:boolean):void => {
     if (!seenMaterials.has(material)) {
-      shadeHvpSurface(material,water);
+      const factoryPlay = factoryLightFloorProfiles.has(material.name);
+      const waterProfile = material.name === "hvp:look:water" || (material.name === "" && water);
+      shadeHvpSurface(material,waterProfile,factoryPlay);
       seenMaterials.add(material);
     }
   };
@@ -119,12 +128,13 @@ export const createHvpVisualRenderer = (
       scene.traverse((object) => {
         if (!(object instanceof THREE.Mesh) || object === sky) { return; }
         const water = object.name === "representation:hvp:water" || object.name.startsWith("representation:hvp:water:");
+        const cargoWreck = object.name.startsWith("representation:factory-play:fp02_wreck_owner:");
         // Near object shadows only: the coarse coast keeps baked voxel AO and
         // receives shadows, avoiding self-shadow acne and a second full coast pass.
         const coast = object.name === "representation:hvp:terrain" || object.name.startsWith("representation:hvp:terrain:s") || object.name.startsWith("representation:hvp:neighbor:") || object.name === "representation:hvp:join"
           || object.name === "representation:hvp:far";
         object.castShadow = !water && !coast && !object.name.startsWith("representation:hvp:tool:") && !object.name.startsWith("representation:hvp:salvage:");
-        object.receiveShadow = !water;
+        object.receiveShadow = !water && !cargoWreck;
         if (Array.isArray(object.material)) {
           for (const material of object.material) { prepareMaterial(material,water); }
         } else { prepareMaterial(object.material,water); }

@@ -1,0 +1,23 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+----------------------x---------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+ReferenceError: veto is not defined
+ ❯ Object.r.facilities.preparePlayerMove tests/unit/hvp-locomotion.test.ts:294:59
+
+ ❯ tests/unit/hvp-locomotion.test.ts:193:31
+ ❯ Object.step src/hestia-prototype/player/locomotion.ts:122:20
+ ❯ tests/unit/hvp-locomotion.test.ts:297:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 31 skipped (32)
+   Start at  12:02:34
+   Duration  870ms (transform 245ms, setup 0ms, import 322ms, tests 426ms, environment 0ms)
+

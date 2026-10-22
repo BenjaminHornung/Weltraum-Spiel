@@ -51,3 +51,21 @@ export const createFactoryInstallationProfile = (sourceId: string): FactoryInsta
   const freeze = <T>(v:T):T => { if (v && typeof v === "object" && !Object.isFrozen(v)) { Object.values(v).forEach(freeze); Object.freeze(v); } return v; };
   return freeze({ ...data, canonicalJson: bytes, profileDigest: canonicalSignature(data) });
 };
+
+/** Fixed memory admission for the ten closed runtime-only source profiles. */
+export const FACTORY_RUNTIME_INSTALLATION_PROFILE_CACHE_RESERVE_BYTES = 512 * 1024;
+const runtimeInstallationProfiles = new Map<string, FactoryInstallationProfile>();
+const runtimeInstallationProfileLimit = 10;
+
+/** Reuses only successful primitive IDs; public callers keep the fresh builder above. */
+export const readRuntimeFactoryInstallationProfile = (sourceId: string): FactoryInstallationProfile => {
+  if (typeof sourceId === "string") {
+    const cached = runtimeInstallationProfiles.get(sourceId);
+    if (cached) return cached;
+  }
+  const profile = createFactoryInstallationProfile(sourceId);
+  if (typeof sourceId === "string" && runtimeInstallationProfiles.size < runtimeInstallationProfileLimit) {
+    runtimeInstallationProfiles.set(sourceId, profile);
+  }
+  return profile;
+};

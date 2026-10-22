@@ -1,0 +1,566 @@
+{
+  "events": [
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 130,
+      "state": {
+        "tick": 25,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 4,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.897830151150526,
+            3.15008332489565,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.897830151150526,
+            2.40008332489565,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.799999997019768,
+          "maxAdvanceMs": 9.700000002980232,
+          "maxHandlerMs": 855,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999552965164,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pickup",
+      "state": {
+        "tick": 27,
+        "status": "Paused",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 8,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.898211863209737,
+            3.1500770342852293,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.898211863209737,
+            2.4000770342852293,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 21.600000001490116,
+          "maxAdvanceMs": 9.700000002980232,
+          "maxHandlerMs": 855,
+          "lastCommand": "FinalizeFactoryCarrier",
+          "lastHandlerMs": 1.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -5900.001525878906,
+            1500,
+            10875
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "w",
+      "ms": 100,
+      "state": {
+        "tick": 54,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.4000399112701416,
+          "z": 12.225001335144043
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.900001525878906,
+            3.150039969461906,
+            12.22264687656218
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.900001525878906,
+            2.400039969461906,
+            12.22264687656218
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 21.600000001490116,
+          "maxAdvanceMs": 9.700000002980232,
+          "maxHandlerMs": 855,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000149011612,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -5900.001525878906,
+            1500,
+            11225.001335144043
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 700,
+      "state": {
+        "tick": 110,
+        "status": "Running",
+        "player": {
+          "x": -8.092906951904297,
+          "y": 2.4100210666656494,
+          "z": 12.179585456848145
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.089738642995318,
+            3.1598909554259453,
+            12.180027181812758
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.089738642995318,
+            2.4098909554259453,
+            12.180027181812758
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 21.600000001490116,
+          "maxAdvanceMs": 9.700000002980232,
+          "maxHandlerMs": 855,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -8092.906951904297,
+            1499.9998807907104,
+            11179.585456848145
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "s",
+      "ms": 4500,
+      "state": {
+        "tick": 394,
+        "status": "Running",
+        "player": {
+          "x": -8.092906951904297,
+          "y": 2.4000513553619385,
+          "z": -1.3704407215118408
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.092906953272458,
+            3.1500529579741663,
+            -1.3680375737288135
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.092906953272458,
+            2.4000529579741663,
+            -1.3680375737288135
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 21.600000001490116,
+          "maxAdvanceMs": 9.700000002980232,
+          "maxHandlerMs": 855,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -8092.906951904297,
+            1500,
+            -2370.440721511841
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 550,
+      "state": {
+        "tick": 441,
+        "status": "Running",
+        "player": {
+          "x": -6.392900466918945,
+          "y": 2.400224208831787,
+          "z": -1.370450735092163
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -6.395876608053557,
+            3.1502213648184245,
+            -1.3704507349960604
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.395876608053557,
+            2.4002213648184245,
+            -1.3704507349960604
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 21.600000001490116,
+          "maxAdvanceMs": 9.700000002980232,
+          "maxHandlerMs": 855,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000149011612,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -6392.900466918945,
+            1499.9998807907104,
+            -2370.450735092163
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "depot",
+      "state": {
+        "tick": 443,
+        "status": "Paused",
+        "player": {
+          "x": -6.392900466918945,
+          "y": 2.400224208831787,
+          "z": -1.370450735092163
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 14,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -6.395071215300718,
+            3.1502221344552286,
+            -1.3704507350220674
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.395071215300718,
+            2.4002221344552286,
+            -1.3704507350220674
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 21.600000001490116,
+          "maxAdvanceMs": 9.700000002980232,
+          "maxHandlerMs": 855,
+          "lastCommand": "FinalizeFactoryCarrier",
+          "lastHandlerMs": 1.1999999955296516,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 341,
+          "position": [
+            -6500,
+            1499.9998807907104,
+            -2250
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 650,
+      "state": {
+        "tick": 501,
+        "status": "Running",
+        "player": {
+          "x": -4.442891597747803,
+          "y": 2.4000096321105957,
+          "z": -1.3704609870910645
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 16,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.444966458071861,
+            3.1500096798314936,
+            -1.3704609870884736
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.444966458071861,
+            2.4000096798314936,
+            -1.3704609870884736
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 21.600000001490116,
+          "maxAdvanceMs": 9.700000002980232,
+          "maxHandlerMs": 855,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 341,
+          "position": [
+            -6500,
+            1499.9998807907104,
+            -2250
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    }
+  ],
+  "error": null,
+  "final": {
+    "tick": 503,
+    "status": "Paused",
+    "player": {
+      "x": -4.442891597747803,
+      "y": 2.4000096321105957,
+      "z": -1.3704609870910645
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 21,
+      "pressedKeys": []
+    },
+    "camera": {
+      "position": [
+        -4.44422195749632,
+        3.1500096627082996,
+        -1.3704609870894033
+      ],
+      "orientation": [
+        0,
+        1,
+        0,
+        6.123233995736766e-17
+      ],
+      "visualBody": [
+        -4.44422195749632,
+        2.4000096627082996,
+        -1.3704609870894033
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "clock": {
+      "maxTimerGapMs": 36.600000001490116,
+      "maxAdvanceMs": 9.700000002980232,
+      "maxHandlerMs": 855,
+      "lastCommand": "Read",
+      "lastHandlerMs": 5.100000001490116,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "carrier": null,
+    "massMg": 2984400000,
+    "receipt": {
+      "status": "Committed",
+      "reason": null
+    },
+    "testBridge": false
+  },
+  "text": "Goal\nBuild a cutter and former\nN\n20.3 m area\n\nArrows Move · R Rotate · Esc Back\n\nBuild\nViews\nClose\nPreview cutter\nPreview former\nPreview raw storage\nPreview product storage\nPreview workbench\nPlace new brace\nPreview battery\nPreview distributor\n\n1 installed objects · 2984.4 kg total material\n\nSession paused"
+}

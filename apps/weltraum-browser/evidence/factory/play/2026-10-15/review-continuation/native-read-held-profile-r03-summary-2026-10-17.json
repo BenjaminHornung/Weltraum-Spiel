@@ -1,0 +1,18 @@
+{
+  "durationMs": 15077.893,
+  "samples": 10468,
+  "groups": {
+    "factoryRead": 11301.9,
+    "localSourceAccess": 8644.5,
+    "createFactoryInstallationProfile": 8358,
+    "productionObservation": 4921.8,
+    "canonicalJson": 7761.8,
+    "canonicalCloneAndFreeze": 4003.8,
+    "canonicalSerialize": 3347,
+    "GC": 153.7
+  },
+  "beforeStatus": "SimulationHold",
+  "afterStatus": "SimulationHold",
+  "ticks": 14034,
+  "interpretation": "Held read polling, CPU samples only. Inclusive groups overlap; not a measurement of original 98.2ms callback gap."
+}

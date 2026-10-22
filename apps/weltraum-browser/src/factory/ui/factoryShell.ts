@@ -25,6 +25,8 @@ export interface FactoryShellView extends FactoryShellBinding {
 }
 /** Integrator-owned lifecycle, focus, source and confirmed facts. No World handle. */
 export interface FactoryShellPort {
+  /** Safe owner-lifecycle probe; must not read from the host. */
+  isCurrent(): boolean;
   read(): FactoryShellView;
   subscribe(listener: (view: FactoryShellView) => void): () => void;
   dispatch(command: FactoryShellCommand): Promise<void>;
@@ -58,8 +60,8 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
   const doc = options.doc ?? document, port = options.port;
   let view = port.read(), disposed = false, surface: FactoryShellSurface | null = null, pending: FactoryShellCommandKind | null = null, navigationOpen = false;
   const binding: FactoryShellBinding = Object.freeze({ sessionId: view.sessionId, epoch: view.epoch });
-  const current = (): boolean => { const next = port.read(), ui = options.uiPort.read(); return !disposed &&
-    next.sessionId === binding.sessionId && next.epoch === binding.epoch && next.publicationRevision >= view.publicationRevision && ui.sessionId === binding.sessionId && ui.epoch === binding.epoch; };
+  const current = (): boolean => { if (disposed || !port.isCurrent()) return false; const next = port.read(), ui = options.uiPort.read();
+    return next.sessionId === binding.sessionId && next.epoch === binding.epoch && next.publicationRevision >= view.publicationRevision && ui.sessionId === binding.sessionId && ui.epoch === binding.epoch; };
   const uiPort: FactoryUiPort = { read: () => options.uiPort.read(), subscribe: listener => options.uiPort.subscribe(listener),
     submit: command => options.uiPort.submit(command), readReceipt: id => options.uiPort.readReceipt(id),
     setPanelFocus: panel => { if (current() && (panel !== null || surface === null)) options.uiPort.setPanelFocus(panel); } };
@@ -81,7 +83,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
   const handling = doc.createElement("div"); handling.className = "factory-shell-handling";
   const handlingMass = uiText(doc, "strong", ""); handling.append(factoryToolIcon(doc, "cargo"), handlingMass);
   const warning = uiText(doc, "p", ""); warning.className = "factory-shell-warning"; warning.setAttribute("role", "status");
-  const keyHints = uiText(doc, "p", "B  Build   ·   M  Map   ·   Esc  Menu"); keyHints.className = "factory-shell-key-hints";
+  const keyHints = uiText(doc, "p", "B  Build   ·   M  Map   ·   E  Cargo   ·   I  Inventory   ·   Esc  Menu"); keyHints.className = "factory-shell-key-hints";
   const modal = doc.createElement("section"); modal.className = "factory-shell-modal"; modal.tabIndex = -1;
   modal.setAttribute("role", "dialog"); modal.setAttribute("aria-modal", "true"); modal.setAttribute("aria-labelledby", "factory-shell-modal-title");
   const modalHeader = doc.createElement("header"); modalHeader.className = "factory-shell-modal-header";
@@ -114,7 +116,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     uiText(doc, "p", "Build preview: arrows move by 25 cm; R rotates by 90°. Confirm charges an admitted build. Cancel retains all material."),
     uiText(doc, "p", "Transport heavy chassis first. Set them down safely, step outside the machine footprint, then build."),
     uiText(doc, "h2", "Pause and focus"), uiText(doc, "p", "Closing a view does not resume play. Select Play after an interruption; held movement keys are cleared."),
-    uiText(doc, "p", "F pushes an existing detached body; 1/2/3 select tools. Q/E move the inspection camera. E is not an extra interaction key."),
+    uiText(doc, "p", "F pushes an existing detached body; 1/2/3 select tools. In the world, Q/E move the inspection camera. While playing, E instead opens Cargo for reachable wreck cargo or a carried load; I opens Cargo/transport."),
     uiText(doc, "small", "Factory prototype: the ship remains permanently grounded. Global exploration and cities are outside this workshop."));
   surfaces.set("help", help);
   const lifecycleButtons: { kind: FactoryShellCommandKind; row:HTMLElement; button: HTMLButtonElement; reason: HTMLElement; detail: HTMLElement }[] = [];
@@ -131,7 +133,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
   const pause = doc.createElement("section"); pause.className = "factory-shell-pause";
   const state = uiText(doc, "p", ""); state.setAttribute("role", "status"); pause.append(state);
   addCommand(pause,"recoverSimulation","Recover session");
-  addCommand(pause, "play", "Play"); addCommand(pause, "save", "Save"); addCommand(pause, "continue", "Load game"); addCommand(pause, "settings", "Open settings"); addCommand(pause, "endSession", "Back to menu");
+  addCommand(pause, "play", "Play"); addCommand(pause, "save", "Save"); addCommand(pause, "continue", "Load game"); addCommand(pause, "settings", "Open settings"); addCommand(pause, "endSession", "End session");
   pause.append(uiButton(doc, "Open workshop", () => openSurface("cargo")), uiButton(doc, "Open field guide", () => openSurface("help"))); surfaces.set("pause", pause);
   const settings = doc.createElement("section"); addCommand(settings, "settings", "Open available settings"); surfaces.set("settings", settings);
   const resume = doc.createElement("section"); resume.className = "factory-shell-resume";
@@ -146,7 +148,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     hud.hidden = view.phase === "start";
     utility.hidden = opened || view.phase === "start";
     keyHints.hidden = view.phase === "start";
-    keyHints.textContent = surface === "build" ? "Arrows  Move   ·   R  Rotate   ·   Esc  Back" : "B  Build   ·   M  Map   ·   Esc  Menu";
+    keyHints.textContent = surface === "build" ? "Arrows  Move   ·   R  Rotate   ·   Esc  Back" : "B  Build   ·   M  Map   ·   E  Cargo   ·   I  Inventory   ·   Esc  Menu";
     mini.element.hidden = view.phase === "start" || surface === "map";
     context.hidden = opened || view.phase !== "playing" || !(options.uiPort.read().interaction.cargoAccessible || options.uiPort.read().interaction.handling);
     handling.hidden = !inWorld || view.hud.carrierMassMg === null;
@@ -165,6 +167,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     modal.hidden = false; modalTitle.textContent = titles[next];
     for (const [name, button] of tabs) button.setAttribute("aria-pressed", String(name === next));
     presentation(); port.setSurface(next, binding); modal.focus({ preventScroll: true });
+    if (next === "pause") body.scrollTop = 0;
   }
   function closeSurface(): void {
     if (!current() || surface === null) return;
@@ -201,7 +204,7 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     if (oldPhase !== next.phase) {
       if (next.phase === "playing") closeSurface();
       else if (next.phase === "start") openSurface("start");
-      else if (next.phase === "paused" || next.phase === "hold") openSurface("pause");
+      else if (next.phase === "hold" || (next.phase === "paused" && (!surface || !workshopSurfaces.has(surface)))) openSurface("pause");
     }
     presentation();
   }
@@ -232,7 +235,14 @@ export const mountFactoryShell = (options: FactoryShellOptions) => {
     }
     const target = event.target as HTMLElement | null;
     if (target?.closest?.("input,select,textarea,[contenteditable=true]")) return;
-    if (event.key.toLowerCase() === "b" || event.key.toLowerCase() === "m") { event.preventDefault(); event.stopImmediatePropagation(); openSurface(event.key.toLowerCase() === "b" ? "build" : "map"); }
+    const key = event.key.toLowerCase();
+    if (key === "e") {
+      const ui = options.uiPort.read();
+      if (port.read().phase !== "playing" || !ui.host.confirmed || ui.state !== "Ready" || !(ui.interaction.cargoAccessible || ui.interaction.handling)) return;
+    }
+    if (key === "e" || key === "i" || key === "b" || key === "m") {
+      event.preventDefault(); event.stopImmediatePropagation(); openSurface(key === "b" ? "build" : key === "m" ? "map" : "cargo");
+    }
   };
   doc.addEventListener("keydown", onKey, true);
   const unsubscribe = port.subscribe(render); render(view);

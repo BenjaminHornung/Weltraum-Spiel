@@ -1,0 +1,3764 @@
+{
+  "schema": "hestia.fp06.normal-acceptance-r25/v1",
+  "createdAtUtc": "2026-10-18T15:09:48.612Z",
+  "source": "E:/DEV/Weltraum-Spiel/FP06-Clean-Acceptance-2026-10-18-r19",
+  "actualContinue": {
+    "state": {
+      "at": 12766.29999999702,
+      "tick": 160992,
+      "status": "Paused",
+      "player": {
+        "x": -8.683732986450195,
+        "y": 2.4000377655029297,
+        "z": 5.503622055053711
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": null,
+      "clock": {
+        "maxTimerGapMs": 28,
+        "maxAdvanceMs": 0.10000000149011612,
+        "maxHandlerMs": 805.7000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 3.300000000745058,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "factorySteps": 26832,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+        "revision": 15,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [
+          {
+            "id": "facility_fp02_device_battery_4kwh_1",
+            "revision": 8,
+            "name": "Expeditionsbatterie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_fp02_device_distribution_40kw_3",
+            "revision": 11,
+            "name": "Verteiler",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b07_5",
+            "revision": 26500,
+            "name": "Umformwerk",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b06_16",
+            "revision": 25360,
+            "name": "Zuschnittstation",
+            "enabled": true,
+            "capability": {
+              "enabled": true,
+              "reason": null
+            }
+          },
+          {
+            "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "revision": 31,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+            "revision": 37,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          }
+        ],
+        "status": "CONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 200,
+        "batteryEnergyJ": 12217684.210526315,
+        "batteryCapacityJ": 14400000,
+        "reserveEnergyJ": 3600000,
+        "sourceQuality": "unsupported",
+        "consumers": [
+          {
+            "id": "consumer_facility_b06_16",
+            "name": "facility_b06_16",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_facility_b07_5",
+            "name": "facility_b07_5",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+            "name": "fp02_cargo_c23_unit_2",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          },
+          {
+            "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "name": "fp02_cargo_c23_unit_1",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          }
+        ]
+      },
+      "testBridge": false
+    },
+    "slotUnchanged": true,
+    "url": "http://127.0.0.1:5197/factory.html?factoryLoad=primary",
+    "dialogs": [
+      {
+        "type": "confirm",
+        "message": "Continue from the saved Factory checkpoint? Unsaved changes will be discarded."
+      }
+    ]
+  },
+  "automationDialogDismissFailure": {
+    "url": "http://127.0.0.1:5197/factory.html?hvpMeasure=1",
+    "state": {
+      "at": 138931.19999999925,
+      "tick": 0,
+      "status": "Paused",
+      "player": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": null,
+      "clock": {
+        "maxTimerGapMs": 19.5,
+        "maxAdvanceMs": 0.3999999985098839,
+        "maxHandlerMs": 695,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000149011612,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 0,
+      "hostConfirmed": true,
+      "receipt": null,
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+        "revision": 15,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": false,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    },
+    "storedSlotUnchanged": true,
+    "text": "HESTIA\nEXPEDITION · CRASH SITE\n\nThe ship is grounded. Its cargo will supply your first workshop.\n\nNew game\nContinue\nSettings\nNot available here yet\nField guide\nFactory prototype · First structural brace\nSession paused · Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+    "errors": [],
+    "networkFailures": [],
+    "buttonDOM": "<button type=\"button\" aria-describedby=\"factory-shell-reason-continue-1\" title=\"Currently unavailable\">Continue</button>"
+  },
+  "automationCorrection": "First two clicks were dismissed by Playwright default confirm handler; explicit exact expected confirmation acceptance restored Save15. No product Continue failure or timeout increase.",
+  "beforePlayProof": {
+    "nativeExact": true,
+    "nativeFactoryExact": true,
+    "profilesExact": true,
+    "hostExact": true,
+    "factoryExceptPublicationExact": true,
+    "publicationBefore": 31164,
+    "publicationAfter": 31168,
+    "before": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 15,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 321984,
+      "payloadBytes": 13572168,
+      "contentHash": "sha256:47d7bbaa3af64edf1e92718a20af968428e7cb58017bc7340a76c694e59c601d",
+      "lastWriteReason": "ManualSave"
+    },
+    "after": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 16,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 321984,
+      "payloadBytes": 13572168,
+      "contentHash": "sha256:aa735a2b7f07889a19de76ba2085590614e006c2e684be19d41614330aad5b33",
+      "lastWriteReason": "ManualSave"
+    }
+  },
+  "hydratedSave": {
+    "state": {
+      "at": 29979.199999999255,
+      "tick": 160992,
+      "status": "Paused",
+      "player": {
+        "x": -8.683732986450195,
+        "y": 2.4000377655029297,
+        "z": 5.503622055053711
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": null,
+      "clock": {
+        "maxTimerGapMs": 750.3000000007451,
+        "maxAdvanceMs": 0.10000000149011612,
+        "maxHandlerMs": 857.8000000007451,
+        "lastCommand": "Read",
+        "lastHandlerMs": 4,
+        "delayedCallbacks": [
+          {
+            "gapMs": 750.3000000007451,
+            "previousCommand": "FactoryCheckpoint",
+            "handlerMs": 736.6000000014901,
+            "advanceMs": 0
+          }
+        ],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "factorySteps": 26832,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 16,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [
+          {
+            "id": "facility_fp02_device_battery_4kwh_1",
+            "revision": 8,
+            "name": "Expeditionsbatterie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_fp02_device_distribution_40kw_3",
+            "revision": 11,
+            "name": "Verteiler",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b07_5",
+            "revision": 26500,
+            "name": "Umformwerk",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b06_16",
+            "revision": 25360,
+            "name": "Zuschnittstation",
+            "enabled": true,
+            "capability": {
+              "enabled": true,
+              "reason": null
+            }
+          },
+          {
+            "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "revision": 31,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+            "revision": 37,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          }
+        ],
+        "status": "CONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 200,
+        "batteryEnergyJ": 12217684.210526315,
+        "batteryCapacityJ": 14400000,
+        "reserveEnergyJ": 3600000,
+        "sourceQuality": "unsupported",
+        "consumers": [
+          {
+            "id": "consumer_facility_b06_16",
+            "name": "facility_b06_16",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_facility_b07_5",
+            "name": "facility_b07_5",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+            "name": "fp02_cargo_c23_unit_2",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          },
+          {
+            "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "name": "fp02_cargo_c23_unit_1",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          }
+        ]
+      },
+      "testBridge": false
+    },
+    "slot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 16,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 321984,
+      "payloadBytes": 13572168,
+      "contentHash": "sha256:aa735a2b7f07889a19de76ba2085590614e006c2e684be19d41614330aad5b33",
+      "lastWriteReason": "ManualSave"
+    },
+    "admissions": [
+      {
+        "name": "hvp.factorySaveAdmission",
+        "startTime": 14410.89999999851,
+        "duration": 0,
+        "detail": {
+          "sampleId": "factorySaveAdmission:341",
+          "data": {
+            "phase": "early",
+            "R": 114981892,
+            "T": 16860394,
+            "U": 265632,
+            "K": 3106224,
+            "D": null,
+            "P": null,
+            "oldBound": 16777216,
+            "totalBytes": 237736862,
+            "nativeReserveBytes": 100663296
+          }
+        }
+      },
+      {
+        "name": "hvp.factorySaveAdmission",
+        "startTime": 21501.5,
+        "duration": 0,
+        "detail": {
+          "sampleId": "factorySaveAdmission:8437",
+          "data": {
+            "phase": "full",
+            "R": 114981892,
+            "T": 21135316,
+            "U": 2835760,
+            "K": 3106224,
+            "D": 39359936,
+            "P": 13572168,
+            "oldBound": 16777216,
+            "totalBytes": 262572808,
+            "workingBytes": 100663296
+          }
+        }
+      }
+    ]
+  },
+  "mapAcceptance": {
+    "before": {
+      "at": 53205.199999999255,
+      "tick": 161000,
+      "status": "Running",
+      "player": {
+        "x": -8.683732986450195,
+        "y": 2.4000377655029297,
+        "z": 5.503622055053711
+      },
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 4676,
+        "lastAckId": 4676,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "camera": {
+        "position": [
+          -8.683732986450195,
+          3.1500377655029297,
+          5.503622055053711
+        ],
+        "orientation": [
+          0,
+          1,
+          0,
+          6.123233995736766e-17
+        ],
+        "visualBody": [
+          -8.683732986450195,
+          2.4000377655029297,
+          5.503622055053711
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "clock": {
+        "maxTimerGapMs": 750.3000000007451,
+        "maxAdvanceMs": 11.5,
+        "maxHandlerMs": 857.8000000007451,
+        "lastCommand": "Read",
+        "lastHandlerMs": 3.699999999254942,
+        "delayedCallbacks": [
+          {
+            "gapMs": 750.3000000007451,
+            "previousCommand": "FactoryCheckpoint",
+            "handlerMs": 736.6000000014901,
+            "advanceMs": 0
+          }
+        ],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "factorySteps": 26833,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 16,
+        "saveAvailable": false,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [
+          {
+            "id": "facility_fp02_device_battery_4kwh_1",
+            "revision": 8,
+            "name": "Expeditionsbatterie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_fp02_device_distribution_40kw_3",
+            "revision": 11,
+            "name": "Verteiler",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b07_5",
+            "revision": 26501,
+            "name": "Umformwerk",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b06_16",
+            "revision": 25361,
+            "name": "Zuschnittstation",
+            "enabled": true,
+            "capability": {
+              "enabled": true,
+              "reason": null
+            }
+          },
+          {
+            "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "revision": 31,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+            "revision": 37,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          }
+        ],
+        "status": "CONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 200,
+        "batteryEnergyJ": 12217663.157894738,
+        "batteryCapacityJ": 14400000,
+        "reserveEnergyJ": 3600000,
+        "sourceQuality": "unsupported",
+        "consumers": [
+          {
+            "id": "consumer_facility_b06_16",
+            "name": "facility_b06_16",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_facility_b07_5",
+            "name": "facility_b07_5",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+            "name": "fp02_cargo_c23_unit_2",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          },
+          {
+            "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "name": "fp02_cargo_c23_unit_1",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          }
+        ]
+      },
+      "testBridge": false
+    },
+    "after": {
+      "at": 53506.5,
+      "tick": 161007,
+      "status": "Paused",
+      "player": {
+        "x": -8.683732986450195,
+        "y": 2.4000377655029297,
+        "z": 5.503622055053711
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 3,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 4685,
+        "lastAckId": 4685,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": {
+        "position": [
+          -8.683732986450195,
+          3.1500377655029297,
+          5.503622055053711
+        ],
+        "orientation": [
+          0,
+          1,
+          0,
+          6.123233995736766e-17
+        ],
+        "visualBody": [
+          -8.683732986450195,
+          2.4000377655029297,
+          5.503622055053711
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "clock": {
+        "maxTimerGapMs": 750.3000000007451,
+        "maxAdvanceMs": 11.5,
+        "maxHandlerMs": 857.8000000007451,
+        "lastCommand": "Read",
+        "lastHandlerMs": 3.699999999254942,
+        "delayedCallbacks": [
+          {
+            "gapMs": 750.3000000007451,
+            "previousCommand": "FactoryCheckpoint",
+            "handlerMs": 736.6000000014901,
+            "advanceMs": 0
+          }
+        ],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "factorySteps": 26834,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 16,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [
+          {
+            "id": "facility_fp02_device_battery_4kwh_1",
+            "revision": 8,
+            "name": "Expeditionsbatterie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_fp02_device_distribution_40kw_3",
+            "revision": 11,
+            "name": "Verteiler",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b07_5",
+            "revision": 26502,
+            "name": "Umformwerk",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b06_16",
+            "revision": 25362,
+            "name": "Zuschnittstation",
+            "enabled": true,
+            "capability": {
+              "enabled": true,
+              "reason": null
+            }
+          },
+          {
+            "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "revision": 31,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+            "revision": 37,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          }
+        ],
+        "status": "CONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 200,
+        "batteryEnergyJ": 12217642.105263159,
+        "batteryCapacityJ": 14400000,
+        "reserveEnergyJ": 3600000,
+        "sourceQuality": "unsupported",
+        "consumers": [
+          {
+            "id": "consumer_facility_b06_16",
+            "name": "facility_b06_16",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_facility_b07_5",
+            "name": "facility_b07_5",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+            "name": "fp02_cargo_c23_unit_2",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          },
+          {
+            "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "name": "fp02_cargo_c23_unit_1",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          }
+        ]
+      },
+      "testBridge": false
+    },
+    "file": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-15/review-continuation/r25-m-key-full-map-paused.png",
+    "fullMapVisible": true,
+    "text": "Goal\nFirst structural brace installed\n\nB Build · M Map · Esc Menu\n\nLocal map\nViews\nClose\nLocal map\n\nConfirmed starting terrain · location confirmed\n\nExpedition battery\nDistributor\nFormer\nMaterial container\nField workbench\nCutter\nBelt line\nMaterial container\nBelt line\nfp02.comp.small_brace\nWreck cargo\n\nN up · known ground · water · edge · dashed: planned build · unmarked: unknown\n\nZoom in\nZoom out\nPan west\nPan east\nPan north\nPan south\nMark map centre\nRemove waypoint\n\nWaypoints help orientation. The map does not approve heavy transport or control movement.\n\nSession paused · Combined Factory checkpoint saved locally",
+    "closed": {
+      "state": {
+        "at": 53631.89999999851,
+        "tick": 161007,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 3,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4685,
+          "lastAckId": 4685,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.1500377655029297,
+            5.503622055053711
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.4000377655029297,
+            5.503622055053711
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.900000002235174,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26834,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26502,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25362,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217642.105263159,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      },
+      "afterWait": {
+        "at": 54142.5,
+        "tick": 161007,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 3,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4685,
+          "lastAckId": 4685,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.1500377655029297,
+            5.503622055053711
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.4000377655029297,
+            5.503622055053711
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 4.100000001490116,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26834,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26502,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25362,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217642.105263159,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    }
+  },
+  "finalSave": {
+    "state": {
+      "at": 135587.09999999776,
+      "tick": 161064,
+      "status": "Paused",
+      "player": {
+        "x": -8.683732986450195,
+        "y": 2.4000000953674316,
+        "z": 6.25362491607666
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 6,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 4833,
+        "lastAckId": 4833,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": {
+        "position": [
+          -8.683732986450195,
+          3.1500000968572093,
+          6.252434518206775
+        ],
+        "orientation": [
+          0,
+          1,
+          0,
+          6.123233995736766e-17
+        ],
+        "visualBody": [
+          -8.683732986450195,
+          2.4000000968572093,
+          6.252434518206775
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "clock": {
+        "maxTimerGapMs": 750.3000000007451,
+        "maxAdvanceMs": 11.5,
+        "maxHandlerMs": 857.8000000007451,
+        "lastCommand": "Read",
+        "lastHandlerMs": 3.199999999254942,
+        "delayedCallbacks": [
+          {
+            "gapMs": 750.3000000007451,
+            "previousCommand": "FactoryCheckpoint",
+            "handlerMs": 736.6000000014901,
+            "advanceMs": 0
+          },
+          {
+            "gapMs": 735.6999999992549,
+            "previousCommand": "FactoryCheckpoint",
+            "handlerMs": 724.3000000007451,
+            "advanceMs": 0
+          }
+        ],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "factorySteps": 26844,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 17,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [
+          {
+            "id": "facility_fp02_device_battery_4kwh_1",
+            "revision": 8,
+            "name": "Expeditionsbatterie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_fp02_device_distribution_40kw_3",
+            "revision": 11,
+            "name": "Verteiler",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b07_5",
+            "revision": 26512,
+            "name": "Umformwerk",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b06_16",
+            "revision": 25372,
+            "name": "Zuschnittstation",
+            "enabled": true,
+            "capability": {
+              "enabled": true,
+              "reason": null
+            }
+          },
+          {
+            "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "revision": 31,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+            "revision": 37,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          }
+        ],
+        "status": "CONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 200,
+        "batteryEnergyJ": 12217431.578947369,
+        "batteryCapacityJ": 14400000,
+        "reserveEnergyJ": 3600000,
+        "sourceQuality": "unsupported",
+        "consumers": [
+          {
+            "id": "consumer_facility_b06_16",
+            "name": "facility_b06_16",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_facility_b07_5",
+            "name": "facility_b07_5",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+            "name": "fp02_cargo_c23_unit_2",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          },
+          {
+            "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "name": "fp02_cargo_c23_unit_1",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          }
+        ]
+      },
+      "testBridge": false
+    },
+    "slot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 17,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 322128,
+      "payloadBytes": 13572167,
+      "contentHash": "sha256:be1c8b88854dcd42bd94d2fe336e08e9db9eb7448f63061cd6b1b409e3f4ef19",
+      "lastWriteReason": "ManualSave"
+    },
+    "admissions": [
+      {
+        "name": "hvp.factorySaveAdmission",
+        "startTime": 123593.89999999851,
+        "duration": 0,
+        "detail": {
+          "sampleId": "factorySaveAdmission:131236",
+          "data": {
+            "phase": "early",
+            "R": 114981892,
+            "T": 16860394,
+            "U": 265632,
+            "K": 3541720,
+            "D": null,
+            "P": null,
+            "oldBound": 16777216,
+            "totalBytes": 238172358,
+            "nativeReserveBytes": 100663296
+          }
+        }
+      },
+      {
+        "name": "hvp.factorySaveAdmission",
+        "startTime": 129546.79999999702,
+        "duration": 0,
+        "detail": {
+          "sampleId": "factorySaveAdmission:138815",
+          "data": {
+            "phase": "full",
+            "R": 114981892,
+            "T": 21135316,
+            "U": 2835760,
+            "K": 3541720,
+            "D": 39359936,
+            "P": 13572167,
+            "oldBound": 16777216,
+            "totalBytes": 263008304,
+            "workingBytes": 100663296
+          }
+        }
+      }
+    ]
+  },
+  "finalState": {
+    "at": 136601,
+    "tick": 161064,
+    "status": "Paused",
+    "player": {
+      "x": -8.683732986450195,
+      "y": 2.4000000953674316,
+      "z": 6.25362491607666
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 6,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 4833,
+      "lastAckId": 4833,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "camera": {
+      "position": [
+        -8.683732986450195,
+        3.1500000968572093,
+        6.252434518206775
+      ],
+      "orientation": [
+        0,
+        1,
+        0,
+        6.123233995736766e-17
+      ],
+      "visualBody": [
+        -8.683732986450195,
+        2.4000000968572093,
+        6.252434518206775
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "clock": {
+      "maxTimerGapMs": 750.3000000007451,
+      "maxAdvanceMs": 11.5,
+      "maxHandlerMs": 857.8000000007451,
+      "lastCommand": "Read",
+      "lastHandlerMs": 3.199999999254942,
+      "delayedCallbacks": [
+        {
+          "gapMs": 750.3000000007451,
+          "previousCommand": "FactoryCheckpoint",
+          "handlerMs": 736.6000000014901,
+          "advanceMs": 0
+        },
+        {
+          "gapMs": 735.6999999992549,
+          "previousCommand": "FactoryCheckpoint",
+          "handlerMs": 724.3000000007451,
+          "advanceMs": 0
+        }
+      ],
+      "timers": 1
+    },
+    "carrier": null,
+    "facilityState": "Idle",
+    "facilityCount": 10,
+    "massMg": 2984400000,
+    "factorySteps": 26844,
+    "hostConfirmed": true,
+    "receipt": {
+      "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+      "status": "Committed",
+      "reason": null
+    },
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint saved locally",
+      "revision": 17,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "power": {
+      "allocationConfirmed": true,
+      "devices": [
+        {
+          "id": "facility_fp02_device_battery_4kwh_1",
+          "revision": 8,
+          "name": "Expeditionsbatterie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_fp02_device_distribution_40kw_3",
+          "revision": 11,
+          "name": "Verteiler",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b07_5",
+          "revision": 26512,
+          "name": "Umformwerk",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b06_16",
+          "revision": 25372,
+          "name": "Zuschnittstation",
+          "enabled": true,
+          "capability": {
+            "enabled": true,
+            "reason": null
+          }
+        },
+        {
+          "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+          "revision": 31,
+          "name": "Förderlinie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+          "revision": 37,
+          "name": "Förderlinie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        }
+      ],
+      "status": "CONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 200,
+      "batteryEnergyJ": 12217431.578947369,
+      "batteryCapacityJ": 14400000,
+      "reserveEnergyJ": 3600000,
+      "sourceQuality": "unsupported",
+      "consumers": [
+        {
+          "id": "consumer_facility_b06_16",
+          "name": "facility_b06_16",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_facility_b07_5",
+          "name": "facility_b07_5",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+          "name": "fp02_cargo_c23_unit_2",
+          "requestedWatts": 100,
+          "allocatedWatts": 100,
+          "reason": "Powered"
+        },
+        {
+          "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+          "name": "fp02_cargo_c23_unit_1",
+          "requestedWatts": 100,
+          "allocatedWatts": 100,
+          "reason": "Powered"
+        }
+      ]
+    },
+    "testBridge": false
+  },
+  "events": [
+    {
+      "kind": "r25-actual-continue-accepted-confirmation-before-play",
+      "state": {
+        "at": 12766.29999999702,
+        "tick": 160992,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 2,
+          "lastAckId": 2,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": null,
+        "clock": {
+          "maxTimerGapMs": 28,
+          "maxAdvanceMs": 0.10000000149011612,
+          "maxHandlerMs": 805.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.300000000745058,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26832,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 15,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26500,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25360,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217684.210526315,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "r25-recorded-same-slot-query-reload-before-play",
+      "state": {
+        "at": 14228.099999997765,
+        "tick": 160992,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 2,
+          "lastAckId": 2,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": null,
+        "clock": {
+          "maxTimerGapMs": 20.899999998509884,
+          "maxAdvanceMs": 0.10000000149011612,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 5.899999998509884,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26832,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 15,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26500,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25360,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217684.210526315,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pause",
+      "state": {
+        "at": 14265.099999997765,
+        "tick": 160992,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 2,
+          "lastAckId": 2,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": null,
+        "clock": {
+          "maxTimerGapMs": 20.899999998509884,
+          "maxAdvanceMs": 0.10000000149011612,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 5.399999998509884,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26832,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 15,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26500,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25360,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217684.210526315,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "r25-explicit-hydrated-save16-before-any-play",
+      "state": {
+        "at": 29979.199999999255,
+        "tick": 160992,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 2,
+          "lastAckId": 2,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": null,
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 0.10000000149011612,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 4,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26832,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26500,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25360,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217684.210526315,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 53177.199999999255,
+        "tick": 160998,
+        "status": "Running",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4676,
+          "lastAckId": 4676,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.1500377655029297,
+            5.503622055053711
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.4000377655029297,
+            5.503622055053711
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 4,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26833,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26501,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25361,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217663.157894738,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "r25-normal-m-fullmap-after-real-paused-ack",
+      "state": {
+        "at": 53506.5,
+        "tick": 161007,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 3,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4685,
+          "lastAckId": 4685,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.1500377655029297,
+            5.503622055053711
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.4000377655029297,
+            5.503622055053711
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.699999999254942,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26834,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26502,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25362,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217642.105263159,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 54477.89999999851,
+        "tick": 161012,
+        "status": "Running",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 3,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4812,
+          "lastAckId": 4812,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.1500377655029297,
+            5.503622055053711
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.4000377655029297,
+            5.503622055053711
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.699999999254942,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26835,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26503,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25363,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217621.05263158,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "w",
+      "milliseconds": 150,
+      "before": {
+        "tick": 161013,
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000377655029297,
+          "z": 5.503622055053711
+        }
+      },
+      "state": {
+        "at": 55047.79999999702,
+        "tick": 161042,
+        "status": "Running",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000000953674316,
+          "z": 6.25362491607666
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 3,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4823,
+          "lastAckId": 4823,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.150000154959093,
+            6.206008552033714
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.400000154959093,
+            6.206008552033714
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.099999997764826,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26840,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26508,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25368,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217515.789473685,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pause",
+      "state": {
+        "at": 55429.79999999702,
+        "tick": 161064,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000000953674316,
+          "z": 6.25362491607666
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4833,
+          "lastAckId": 4833,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.1500000968572093,
+            6.252434518206775
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.4000000968572093,
+            6.252434518206775
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.199999999254942,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26844,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26512,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25372,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217431.578947369,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pause",
+      "state": {
+        "at": 123481,
+        "tick": 161064,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000000953674316,
+          "z": 6.25362491607666
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4833,
+          "lastAckId": 4833,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.1500000968572093,
+            6.252434518206775
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.4000000968572093,
+            6.252434518206775
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.7999999970197678,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26844,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 16,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26512,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25372,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217431.578947369,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "r25-explicit-final-save17-after-real-map-and-walk",
+      "state": {
+        "at": 135587.09999999776,
+        "tick": 161064,
+        "status": "Paused",
+        "player": {
+          "x": -8.683732986450195,
+          "y": 2.4000000953674316,
+          "z": 6.25362491607666
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 4833,
+          "lastAckId": 4833,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -8.683732986450195,
+            3.1500000968572093,
+            6.252434518206775
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.683732986450195,
+            2.4000000968572093,
+            6.252434518206775
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 750.3000000007451,
+          "maxAdvanceMs": 11.5,
+          "maxHandlerMs": 857.8000000007451,
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.199999999254942,
+          "delayedCallbacks": [
+            {
+              "gapMs": 750.3000000007451,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 736.6000000014901,
+              "advanceMs": 0
+            },
+            {
+              "gapMs": 735.6999999992549,
+              "previousCommand": "FactoryCheckpoint",
+              "handlerMs": 724.3000000007451,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 10,
+        "massMg": 2984400000,
+        "factorySteps": 26844,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 17,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 8,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_3",
+              "revision": 11,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_5",
+              "revision": 26512,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_16",
+              "revision": 25372,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+              "revision": 37,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 200,
+          "batteryEnergyJ": 12217431.578947369,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_16",
+              "name": "facility_b06_16",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_facility_b07_5",
+              "name": "facility_b07_5",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "actual-context-close",
+      "atUtc": "2026-10-18T15:09:48.432Z"
+    }
+  ],
+  "errors": [],
+  "networkFailures": [],
+  "closed": {
+    "disconnected": true,
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-Browser-Acceptance-20261018-R11",
+    "videoPath": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\acceptance-r25-final-map-video\\page@d013e9ad33ebe0a4e7fa31e0021778ed.webm"
+  }
+}

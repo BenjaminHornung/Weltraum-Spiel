@@ -1,0 +1,140 @@
+{
+  "events": [
+    {
+      "kind": "initial",
+      "state": {
+        "tick": 715,
+        "status": "Paused",
+        "player": {
+          "x": -10.156039237976074,
+          "y": 2.650010824203491,
+          "z": 15.67363166809082
+        },
+        "clock": {
+          "maxTimerGapMs": 95.39999999850988,
+          "maxAdvanceMs": 10.100000001490116,
+          "maxHandlerMs": 1002.3000000044703,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999552965164,
+          "delayedCallbacks": [
+            {
+              "gapMs": 92.10000000149012,
+              "previousCommand": "Read",
+              "handlerMs": 0.09999999403953552,
+              "advanceMs": 0
+            },
+            {
+              "gapMs": 95.39999999850988,
+              "previousCommand": "OpenFactoryCargo",
+              "handlerMs": 0.20000000298023224,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 130,
+      "state": {
+        "tick": 715,
+        "status": "Paused",
+        "player": {
+          "x": -10.156039237976074,
+          "y": 2.650010824203491,
+          "z": 15.67363166809082
+        },
+        "clock": {
+          "maxTimerGapMs": 95.39999999850988,
+          "maxAdvanceMs": 10.100000001490116,
+          "maxHandlerMs": 1002.3000000044703,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000149011612,
+          "delayedCallbacks": [
+            {
+              "gapMs": 92.10000000149012,
+              "previousCommand": "Read",
+              "handlerMs": 0.09999999403953552,
+              "advanceMs": 0
+            },
+            {
+              "gapMs": 95.39999999850988,
+              "previousCommand": "OpenFactoryCargo",
+              "handlerMs": 0.20000000298023224,
+              "advanceMs": 0
+            }
+          ],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    }
+  ],
+  "error": "Error: Native stopped",
+  "final": {
+    "tick": 715,
+    "status": "Paused",
+    "player": {
+      "x": -10.156039237976074,
+      "y": 2.650010824203491,
+      "z": 15.67363166809082
+    },
+    "clock": {
+      "maxTimerGapMs": 95.39999999850988,
+      "maxAdvanceMs": 10.100000001490116,
+      "maxHandlerMs": 1002.3000000044703,
+      "lastCommand": "Read",
+      "lastHandlerMs": 0.10000000149011612,
+      "delayedCallbacks": [
+        {
+          "gapMs": 92.10000000149012,
+          "previousCommand": "Read",
+          "handlerMs": 0.09999999403953552,
+          "advanceMs": 0
+        },
+        {
+          "gapMs": 95.39999999850988,
+          "previousCommand": "OpenFactoryCargo",
+          "handlerMs": 0.20000000298023224,
+          "advanceMs": 0
+        }
+      ],
+      "timers": 1
+    },
+    "carrier": null,
+    "massMg": 2984400000,
+    "receipt": {
+      "status": "Committed",
+      "reason": null
+    },
+    "testBridge": false
+  },
+  "installation": {
+    "installations": [],
+    "scenes": [
+      {
+        "id": "fp02_wreck_owner:open",
+        "published": true,
+        "s1": false,
+        "error": null,
+        "visibleParts": 1
+      }
+    ],
+    "text": "Goal\nBuild a cutter and former\nN\n20.3 m area\n\nB Build · M Map · Esc Menu\n\nPause and session\nClose\n\nSession paused\n\nPlay\nSave\nSaving not available yet\nLoad game\nNo save yet\nOpen settings\nNot available here yet\nBack to menu\nOpen workshop\nOpen field guide\nSession paused"
+  }
+}

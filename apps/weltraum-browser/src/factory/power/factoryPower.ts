@@ -102,6 +102,34 @@ const unique=<T>(values:readonly T[],key:(entry:T)=>string,max:number):void=>{
 const order=(a:string,b:string):number=>a<b?-1:a>b?1:0;
 const bindingCore=(binding:FactoryPowerBinding):string=>canonicalJson({ sessionId:binding.sessionId,
   epoch:binding.epoch,catalogDigest:binding.catalogDigest,sourceProfileDigest:binding.sourceProfileDigest });
+const validatePowerBinding=(value:FactoryPowerBinding):void=>{
+  id(value.sessionId);id(value.catalogDigest);id(value.sourceProfileDigest);numberRevision(value.epoch);numberRevision(value.netRevision);
+};
+const validatePowerBattery=(battery:FactoryPowerState["battery"]):Q=>{
+  if(!battery)return zero;
+  const stored=restored(battery.storedEnergy);
+  if(compare(stored,q(14_400_000_000n))>0)throw new Error("BatteryCapacityExceeded");
+  if(battery.instanceId!=="fp02_cargo_c03_unit_1")throw new Error("UnknownBattery");
+  return stored;
+};
+const validatePowerConsumers=(consumers:readonly FactoryPowerConsumerState[]):void=>{
+  for(const consumer of consumers){
+    if(typeof consumer.waiting!=="boolean")throw new Error("InvalidWaitState");
+    if(typeof consumer.requestKey!=="string"||consumer.requestKey.length>2048||canonicalJson(JSON.parse(consumer.requestKey))!==consumer.requestKey)throw new Error("InvalidRequestBytes");
+    integer(consumer.stableSupplyUs,2_000_000n);
+  }
+};
+/** Validates the saved rational power owner without evaluating or advancing an interval. */
+export const validateFactoryPowerCheckpointState=(state:FactoryPowerState):void=>{
+  if(state.version!=="fp06-factory-power-v1"||Object.keys(state).sort().join(",")!=="battery,binding,consumers,revision,tickEndUs,version"
+    ||Object.keys(state.binding).sort().join(",")!=="catalogDigest,epoch,netRevision,sessionId,sourceProfileDigest"
+    ||!Array.isArray(state.consumers))throw new Error("UnsupportedVersion");
+  validatePowerBinding(state.binding);numberRevision(state.revision);integer(state.tickEndUs);unique(state.consumers,c=>c.consumerId,64);
+  for(const consumer of state.consumers)if(Object.keys(consumer).sort().join(",")!=="consumerId,requestKey,stableSupplyUs,waiting")throw new Error("InvalidWaitState");
+  if(state.battery!==null&&(Object.keys(state.battery).sort().join(",")!=="instanceId,storedEnergy"
+    ||Object.keys(state.battery.storedEnergy).sort().join(",")!=="d,n"))throw new Error("InvalidBatteryCheckpoint");
+  validatePowerBattery(state.battery);validatePowerConsumers(state.consumers);
+};
 const frozen=<T>(value:T):T=>canonicalizeJsonValue(value) as T;
 interface Budget { ports:Map<string,Q>; links:Map<string,Q>; sources:Map<string,Q>; batteryPower:Q; virtualStored:Q }
 interface Flow { source:Q; battery:Q }
@@ -113,7 +141,8 @@ export const stepFactoryPower=(state:FactoryPowerState,input:FactoryPowerInput):
   try {
     const supply=input.supply;
     if(state.version!=="fp06-factory-power-v1"||supply.version!=="fp06-power-supply-v1") throw new Error("UnsupportedVersion");
-    for(const binding of [state.binding,input.binding,supply.binding]) {
+    validatePowerBinding(state.binding);
+    for(const binding of [input.binding,supply.binding]) {
       id(binding.sessionId); id(binding.catalogDigest); id(binding.sourceProfileDigest);
       numberRevision(binding.epoch); numberRevision(binding.netRevision);
     }
@@ -134,9 +163,8 @@ export const stepFactoryPower=(state:FactoryPowerState,input:FactoryPowerInput):
     const time=q(dt,1_000_000n); // mW * microseconds /1e6 = exact mJ.
     const toEnergy=(power:Q):Q=>mul(power,time);
     const capacity=q(14_400_000_000n),eta=q(19n,20n);
-    const oldStored=state.battery?restored(state.battery.storedEnergy):zero;
+    const oldStored=validatePowerBattery(state.battery);
     if(compare(oldStored,capacity)>0) throw new Error("BatteryCapacityExceeded");
-    if(state.battery) { if(state.battery.instanceId!=="fp02_cargo_c03_unit_1") throw new Error("UnknownBattery"); }
     if((state.battery?.instanceId??null)!==(supply.battery?.instanceId??null)) throw new Error("BatteryAssetMismatch");
     if(supply.battery) {
       const p=ports.get(supply.battery.portId);
@@ -203,8 +231,7 @@ export const stepFactoryPower=(state:FactoryPowerState,input:FactoryPowerInput):
     let current=budget,sourceUsed=zero,discharge=zero,work=zero;
     const grants:FactoryPowerGrant[]=[],consumers:FactoryPowerConsumerState[]=[];
     const oldConsumers=new Map(state.consumers.map(c=>[c.consumerId,c]));
-    for(const c of state.consumers) { if(typeof c.waiting!=="boolean") throw new Error("InvalidWaitState"); if(typeof c.requestKey!=="string"||c.requestKey.length>2048||canonicalJson(JSON.parse(c.requestKey))!==c.requestKey) throw new Error("InvalidRequestBytes");
-      integer(c.stableSupplyUs,2_000_000n); }
+    validatePowerConsumers(state.consumers);
     const requests=[...input.requests].sort((a,b)=>order(a.priority,b.priority)||order(a.consumerId,b.consumerId));
     for(const r of requests) {
       id(r.jobId); id(r.portId); id(r.deviceInstanceId); if(!["P0","P1","P2","P3"].includes(r.priority)||typeof r.enabled!=="boolean"||!ports.has(r.portId)) throw new Error("InvalidRequest");

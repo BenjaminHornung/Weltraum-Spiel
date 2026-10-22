@@ -1,0 +1,25 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-21-v4/apps/weltraum-browser
+
+-----------------------------------x-----------------------------------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > keeps a captured sweep query around the actual Native support foot at the Float32 commit boundary
+AssertionError: expected 7.93800163269043 to be less than or equal to 7.9380011558532715
+ ❯ tests/unit/factory/facilitySession.test.ts:534:24
+    532|    const actualLower=Math.fround(point[axis]-half[axis]),actualUpper=M…
+    533|    const volumeLower=Math.fround(volume.center[axis]-volume.half[axis]…
+    534|    expect(volumeLower).toBeLessThanOrEqual(actualLower);expect(volumeU…
+       |                        ^
+    535|   }
+    536|  }finally{world.free();}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 70 skipped (71)
+   Start at  13:16:09
+   Duration  1.36s (transform 692ms, setup 0ms, import 885ms, tests 313ms, environment 0ms)
+

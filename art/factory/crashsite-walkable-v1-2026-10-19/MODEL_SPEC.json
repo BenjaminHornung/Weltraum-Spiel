@@ -1,0 +1,138 @@
+{
+  "assetId": "hestia_crashsite_walkable_v1",
+  "version": 1,
+  "baseAssetId": "hestia_crashsite_hybrid_v2",
+  "baseAssetSha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610",
+  "baseCommit": "e70e7dad76903d2a23ebf4319eb4a0ce72290221",
+  "reference": "art/factory/visual-reference/2026-10-13/crashsite/03-hybrid-revision.png",
+  "referenceSha256": "1fac13e62a049b137370c1705549342cb7087195a0c614ae6234e6717e7f208c",
+  "design": "Derived walkable hull candidate. The visible ramp and bay retain the original voxel ship, palette, main contour, bounds, equipment, two idle turrets and four empty storage casings, with a declared full-width corridor through the side aperture.",
+  "artGridMeters": 0.0625,
+  "bodyGridMeters": 0.125,
+  "paletteSrgbHex": {
+    "ceramic": "DCD4C2",
+    "worn": "968F7E",
+    "structure": "303B40",
+    "petrol": "397775",
+    "glass": "173342",
+    "amber": "D7A446"
+  },
+  "targetMainLengthM": 15,
+  "trianglesMax": 40000,
+  "materialsMax": 6,
+  "partsMax": 8,
+  "drawCallsMax": 48,
+  "textures": 0,
+  "exactTurretCount": 2,
+  "parts": [
+    "cargo_bay",
+    "cockpit",
+    "debris",
+    "hull",
+    "rear",
+    "spine",
+    "turret_aft",
+    "turret_fore"
+  ],
+  "originalBoundsYupM": {
+    "min": [-7.875, 0.0, -2.75],
+    "max": [7.25, 5.5, 5.375]
+  },
+  "flight": "PERMANENTLY_INOPERABLE",
+  "turretBehavior": "Idle art only. Future finite ammunition; no inventory or working defense granted.",
+  "worldAuthority": false,
+  "collisionPolicy": "None",
+  "gameplayAdmission": "NOT_ADMITTED",
+  "visualAcceptance": "OWNER_REVIEW_PENDING",
+  "license": "LicenseRef-PolyForm-Noncommercial-1.0.0",
+  "licenseFile": "LICENSE",
+  "requiredViews": [
+    "01-bay-and-turrets.png",
+    "02-rear-damage.png",
+    "03-plan-access.png",
+    "04-cargo-detail.png",
+    "05-cockpit-and-turret.png",
+    "06-broken-propulsion.png"
+  ],
+  "gameDevCli": "NOT_AVAILABLE; existing local Blender authoring, direct GLB byte inspection and detached Three.js import",
+  "scope": "New source and runtime export candidate only. No replacement of authoritative wreck, native access, collision, terrain or cargo.",
+  "walkableCorridor": {
+    "coordinateFrame": {
+      "authoringAxes": "Builder-local XYZ in metres; +Z is up; the ramp exits toward -Y.",
+      "glbAxes": "Existing Blender export maps builder-local (x,y,z) to glTF (x,z,-y).",
+      "worldAnchorMeters": [6.5, 1.5, 7.5],
+      "worldFromBuilderLocal": "[6.5 + x, 1.5 + z, 7.5 - y] metres; identity hull rotation and scale.",
+      "groundWorldY": 1.5,
+      "groundBuilderLocalZ": 0.0
+    },
+    "playerCapsule": {
+      "heightMeters": 1.8,
+      "radiusMeters": 0.3,
+      "maxStepMeters": 0.26
+    },
+    "minimumClearWidthMeters": 0.875,
+    "minimumHeadroomMeters": 2.125,
+    "clearXLocalMeters": [-0.375, 0.5],
+    "centerlineXLocalMeters": 0.0625,
+    "travelDirection": "+localY from the external ramp into the bay",
+    "externalTerrainSeam": {
+      "localY": [-5.5, -5.375],
+      "floorLocalZMeters": 0.0,
+      "firstRampTreadLocalZMeters": 0.125,
+      "maxStepMeters": 0.125,
+      "geometryEvidence": "The validator checks the exported first ramp tread; terrain contact is external to the GLB and is not claimed by the static asset validator."
+    },
+    "rampTreads": [
+      {"row": 23, "localY": [-5.375, -5.25], "floorLocalZMeters": 0.125},
+      {"row": 22, "localY": [-5.25, -5.125], "floorLocalZMeters": 0.125},
+      {"row": 21, "localY": [-5.125, -5.0], "floorLocalZMeters": 0.125},
+      {"row": 20, "localY": [-5.0, -4.875], "floorLocalZMeters": 0.25},
+      {"row": 19, "localY": [-4.875, -4.75], "floorLocalZMeters": 0.25},
+      {"row": 18, "localY": [-4.75, -4.625], "floorLocalZMeters": 0.25},
+      {"row": 17, "localY": [-4.625, -4.5], "floorLocalZMeters": 0.375},
+      {"row": 16, "localY": [-4.5, -4.375], "floorLocalZMeters": 0.375},
+      {"row": 15, "localY": [-4.375, -4.25], "floorLocalZMeters": 0.375},
+      {"row": 14, "localY": [-4.25, -4.125], "floorLocalZMeters": 0.5},
+      {"row": 13, "localY": [-4.125, -4.0], "floorLocalZMeters": 0.5},
+      {"row": 12, "localY": [-4.0, -3.875], "floorLocalZMeters": 0.5},
+      {"row": 11, "localY": [-3.875, -3.75], "floorLocalZMeters": 0.625},
+      {"row": 10, "localY": [-3.75, -3.625], "floorLocalZMeters": 0.625},
+      {"row": 9, "localY": [-3.625, -3.5], "floorLocalZMeters": 0.625},
+      {"row": 8, "localY": [-3.5, -3.375], "floorLocalZMeters": 0.75},
+      {"row": 7, "localY": [-3.375, -3.25], "floorLocalZMeters": 0.75},
+      {"row": 6, "localY": [-3.25, -3.125], "floorLocalZMeters": 0.75},
+      {"row": 5, "localY": [-3.125, -3.0], "floorLocalZMeters": 0.875},
+      {"row": 4, "localY": [-3.0, -2.875], "floorLocalZMeters": 0.875},
+      {"row": 3, "localY": [-2.875, -2.75], "floorLocalZMeters": 0.875},
+      {"row": 2, "localY": [-2.75, -2.625], "floorLocalZMeters": 1.0},
+      {"row": 1, "localY": [-2.625, -2.5], "floorLocalZMeters": 1.0},
+      {"row": 0, "localY": [-2.5, -2.375], "floorLocalZMeters": 1.0}
+    ],
+    "bayFloorSegments": [
+      {
+        "id": "bay-entry-deck",
+        "localY": [-2.375, -1.125],
+        "clearXLocalMeters": [-0.375, 0.5],
+        "floorLocalZMeters": 1.0,
+        "requiredCeilingLocalZMeters": 3.125
+      },
+      {
+        "id": "bay-raised-turn-pad",
+        "localY": [-1.125, 0.875],
+        "clearXLocalMeters": [-0.375, 0.5],
+        "floorLocalZMeters": 1.125,
+        "requiredCeilingLocalZMeters": 3.25,
+        "supportingApronXLocalMeters": [-0.5, 0.625]
+      }
+    ],
+    "maximumAdjacentFloorStepMeters": 0.125,
+    "clearanceDefinition": "For each ramp tread and bay floor segment, every 62.5 mm art-grid cell across the full clearX/localY floor area is sampled against upward-facing triangles in the exported GLB. The open clearance prism spans from floorLocalZ + 0.0001 m to floorLocalZ + minimumHeadroomMeters - 0.0001 m, with the same open-boundary tolerance on X/Y edges so allowed adjacent tread risers do not count as overhead intrusion. Adjacent floor segments must meet and their vertical differences must not exceed maximumAdjacentFloorStepMeters. Every exported triangle, including case handles and trim, is checked against every declared prism.",
+    "relocatedEmptyCaseFootprints": [
+      {"name": "case-1", "xMin": -1.625, "yMin": -0.75, "widthX": 0.875, "depthY": 0.625, "heightZ": 1.0},
+      {"name": "case-2", "xMin": -1.625, "yMin": 0.125, "widthX": 1.125, "depthY": 0.625, "heightZ": 0.75},
+      {"name": "case-3", "xMin": 0.625, "yMin": -0.75, "widthX": 0.875, "depthY": 0.625, "heightZ": 1.0},
+      {"name": "case-4", "xMin": 0.625, "yMin": 0.125, "widthX": 0.875, "depthY": 0.625, "heightZ": 0.5}
+    ],
+    "geometryProof": "The validator decodes positions and triangle indices from the actual exported GLB, transforms each triangle back into builder-local XYZ, samples the declared floor across its full width, and uses triangle-versus-AABB separation tests against every declared clearance prism. This is geometry evidence only; it does not assert Native collision, world-terrain contact or runtime admission."
+  }
+}

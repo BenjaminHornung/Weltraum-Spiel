@@ -1,6 +1,6 @@
 import type { MaterialPlan, MaterialRecipeRef, MaterialView } from "../material/reservations";
 import type { FactoryPowerBinding, FactoryPowerRequest, FactoryPowerSuccess } from "../power/factoryPower";
-import type { ProductionHostFacts, ProductionStart } from "./recipeAdmission";
+import type { ProductionHostFacts, ProductionInstallation, ProductionStart } from "./recipeAdmission";
 import { admitFactoryRecipe, isImmutableProductionData, productionContainer, productionId, productionMaterialCanonicalJson, productionOutputs, productionRevision } from "./recipeAdmission";
 import { commitFactoryMaterialStep, prepareFactoryMaterialStep } from "../material/reservations";
 import { canonicalJson, canonicalSignature } from "../../resources/serialization";
@@ -134,6 +134,55 @@ const commandReceipt = (input: ProductionStepInput, command: ProductionCommand, 
   commandId: command.commandId, jobId: command.jobId, commandCanonicalJson: canonicalJson(command), tickEndUs: input.tickEndUs, kind: command.kind, materialTransactionId
 });
 const checkedStates = new WeakSet<ProductionState>();
+const issuedDryRuntimeProductionProposals = new WeakMap<ProductionState, WeakMap<ProductionStepInput,
+  WeakMap<Extract<ProductionProposal, { status: "Prepared" }>, ProductionState>>>();
+const strictRuntimeProductionData = (value: unknown, parents = new WeakSet<object>()): boolean => {
+  if (value === null || value === undefined) return true;
+  if (typeof value === "string" || typeof value === "boolean") return true;
+  if (typeof value === "number") return Number.isFinite(value);
+  if (typeof value !== "object" || !Object.isFrozen(value) || parents.has(value)) return false;
+  const array = Array.isArray(value), prototype = Object.getPrototypeOf(value);
+  if (array ? prototype !== Array.prototype : prototype !== Object.prototype && prototype !== null) return false;
+  const descriptors = Object.getOwnPropertyDescriptors(value), keys = Reflect.ownKeys(descriptors);
+  if (keys.some(key => typeof key !== "string")) return false;
+  if (array && (keys.length !== value.length + 1 || keys.some(key => key !== "length"
+    && (!/^(0|[1-9][0-9]*)$/.test(key as string) || Number(key) >= value.length)))) return false;
+  if (keys.some(key => !(array && key === "length") && !descriptors[key as string]!.enumerable)
+    || !Object.values(descriptors).every(descriptor => "value" in descriptor)) return false;
+  parents.add(value);
+  const valid = Object.values(descriptors).every(descriptor => strictRuntimeProductionData(descriptor.value, parents));
+  parents.delete(value);
+  return valid;
+};
+const hasStrictRuntimeProductionInput = (input: ProductionStepInput): boolean => {
+  try {
+    if (!input || typeof input !== "object" || !Object.isFrozen(input) || Object.getPrototypeOf(input) !== Object.prototype
+      || typeof globalThis.structuredClone !== "function") return false;
+    const descriptors = Object.getOwnPropertyDescriptors(input), keys = Reflect.ownKeys(descriptors);
+    const expected = ["binding", "confirmed", "facts", "material", "power", "tickEndUs", "tickStartUs"];
+    if (Object.hasOwn(descriptors, "command")) expected.push("command");
+    if (keys.length !== expected.length || keys.some(key => typeof key !== "string" || !expected.includes(key))) return false;
+    for (const key of expected) {
+      const descriptor = descriptors[key]!;
+      if (!("value" in descriptor) || descriptor.enumerable !== (key !== "material")) return false;
+      if (key !== "material" && !strictRuntimeProductionData(descriptor.value)) return false;
+    }
+    // Dry hides the already-admitted MaterialView from this standard clone so
+    // cloneability proves the exact non-material input without copying inventory.
+    globalThis.structuredClone(input);
+    return true;
+  } catch { return false; }
+};
+const hasStrictCloneableRuntimeCore = (core: ProductionState): boolean => {
+  if (core.lastStep !== null || typeof globalThis.structuredClone !== "function") return false;
+  try { return strictRuntimeProductionData(core) && (globalThis.structuredClone(core), true); }
+  catch { return false; }
+};
+export const isIssuedDryRuntimeProductionProposal = (state: ProductionState, input: ProductionStepInput, proposal: ProductionProposal): boolean => {
+  if (proposal.status !== "Prepared") return false;
+  const issued = issuedDryRuntimeProductionProposals.get(state)?.get(input)?.get(proposal);
+  return issued !== undefined && issued === proposal.nextState;
+};
 const validateState = (state: ProductionState): void => {
   if (checkedStates.has(state)) return;
   if (state.version !== "fp06-production-state-v1") throw Error("ProductionStateVersionMismatch");
@@ -179,13 +228,16 @@ const validateInterval = (state: ProductionState, input: Omit<ProductionStepInpu
   const start = integer(input.tickStartUs), end = integer(input.tickEndUs);
   if (start !== integer(state.tickEndUs) || end - start !== 100_000n) throw Error("ProductionClockMismatch");
 };
-const validateJobMaterial = (job: ProductionJob, input: ProductionStepInput): void => {
-  const view = input.material, machine = input.facts.installation;
+const validateJobMaterial = (job: ProductionJob, view: MaterialView, machine: Pick<ProductionInstallation, "outputContainerId" | "offcutContainerId" | "wipContainerId">): void => {
   const reservation = view.reservations.find(r => r.reservationId === job.reservationId);
   const recipe = view.catalog.recipes.find(r => r.sourceId === job.recipeRef.sourceId)!;
   if (!reservation || reservation.ownerId !== job.start.ownerId || reservation.wipContainerId !== machine.wipContainerId
     || canonicalJson(reservation.recipeRef) !== canonicalJson(job.recipeRef) || reservation.recipeCanonicalJson !== job.recipeCanonicalJson
-    || canonicalJson(reservation.outputs) !== canonicalJson(productionOutputs(input.facts, job.start, recipe))
+    || canonicalJson(reservation.outputs) !== canonicalJson(recipe.outputs.map((term, i) => ({
+      ...term,
+      targetContainerId: term.itemId === "fp02.bulk.steel_offcut" ? machine.offcutContainerId : machine.outputContainerId,
+      stackId: `${job.start.jobId}_output_${i}`
+    })))
     || !view.receipts.some(r => canonicalJson(r) === job.beginReceiptCanonicalJson)) throw Error("ProductionWipBindingMismatch");
   const wip = productionContainer(view, machine.wipContainerId);
   const actual = wip.state.contents.map(s => ({ itemId: view.catalog.items.find(i => i.resourceId === s.resourceId)!.sourceId, quantityUnits: s.quantity }));
@@ -247,9 +299,41 @@ export const createFactoryProductionState = (machineInstanceId: string, binding:
     status: "IDLE", job: null, commandReceipts: [], lastStep: null };
   validateState(state); return freeze(state);
 };
+
+/** Validates persisted production history and its current reservation/WIP custody without advancing a tick. */
+export const validateFactoryProductionCheckpointState = (
+  state: ProductionState,
+  material: MaterialView,
+  installation: Pick<ProductionInstallation, "instanceId" | "outputContainerId" | "offcutContainerId" | "wipContainerId">
+): void => {
+  validateState(state);
+  if (state.machineInstanceId !== installation.instanceId) throw Error("ProductionCheckpointMachineMismatch");
+  const job = state.job;
+  if (!job) return;
+  const recipe = material.catalog.recipes.find(r => r.sourceId === job.recipeRef.sourceId);
+  const process = recipe?.processes.find(p => p.kind === job.start.processKind);
+  if (!recipe || recipe.version !== job.recipeRef.version || recipe.digest !== job.recipeRef.digest
+    || !process || job.recipeCanonicalJson !== canonicalJson(recipe) || job.processCanonicalJson !== canonicalJson(process)
+    || job.installationCanonicalJson.length === 0 || canonicalJson(JSON.parse(job.installationCanonicalJson)) !== job.installationCanonicalJson) {
+    throw Error("ProductionCheckpointDefinitionMismatch");
+  }
+  for (const receipt of state.commandReceipts) {
+    if (receipt.materialTransactionId !== null && !material.receipts.some(r => r.transactionId === receipt.materialTransactionId)) {
+      throw Error("ProductionCheckpointMaterialReceiptMissing");
+    }
+  }
+  const wip = productionContainer(material, installation.wipContainerId);
+  if (job.phase === "COMPLETED") {
+    if (material.reservations.some(r => r.reservationId === job.reservationId) || wip.state.contents.length !== 0) {
+      throw Error("ProductionCheckpointCompletedWipPresent");
+    }
+  } else {
+    validateJobMaterial(job, material, installation);
+  }
+};
 /** Pure proposed pair. Only the common Host may atomically adopt Material,
  * Production and the actual W03 interval receipt at its World CAS boundary. */
-export const stepFactoryProduction = (state: ProductionState, input: ProductionStepInput): ProductionProposal => {
+const stepFactoryProductionCore = (state: ProductionState, input: ProductionStepInput, dryRuntime: boolean): ProductionProposal => {
   try {
     validateInterval(state, input);
     // lastStep is a derived replay record, excluded from the complete authority
@@ -280,13 +364,13 @@ export const stepFactoryProduction = (state: ProductionState, input: ProductionS
     // Walking away is not a failed world clock and cannot perform montage.
     // Existing native WIP/recipe bindings remain checked; fresh interaction,
     // service and tool admission is required on each active manual command.
-    if (passiveManual) { validateJobMaterial(job!, input); if (actualWork !== 0n) throw Error("ProductionManualPowerMismatch"); }
+    if (passiveManual) { validateJobMaterial(job!, input.material, input.facts.installation); if (actualWork !== 0n) throw Error("ProductionManualPowerMismatch"); }
     if (admission && !admission.ok) status = admission.reason as ProductionStatus;
     else if (selected && admission?.ok) {
       if (job && job.phase !== "COMPLETED") {
         if (job.installationCanonicalJson !== canonicalJson(input.facts.installation) || job.recipeCanonicalJson !== canonicalJson(admission.recipe)
           || job.processCanonicalJson !== canonicalJson(admission.process)) throw Error("ProductionActiveBindingMismatch");
-        validateJobMaterial(job, input);
+        validateJobMaterial(job, input.material, input.facts.installation);
       } else if (admission.process.kind === "electric" && actualWork === 0n) status = "WAIT_POWER";
       else {
         const reserveId = `${selected.jobId}_reserve`, outputs = productionOutputs(input.facts, selected, admission.recipe);
@@ -339,15 +423,31 @@ export const stepFactoryProduction = (state: ProductionState, input: ProductionS
     }
     const core: ProductionState = { ...state, binding: input.binding, revision: state.revision + 1, tickEndUs: input.tickEndUs, status, job, commandReceipts, lastStep: null };
     productionRevision(core.revision);
+    const materialDescriptor = dryRuntime ? Object.getOwnPropertyDescriptor(input, "material") : undefined;
+    const runtimeCandidate = dryRuntime && materialPlans.length === 0 && !!materialDescriptor
+      && "value" in materialDescriptor && material === materialDescriptor.value;
     const prepared = { status: "Prepared" as const, baseStateCanonicalJson, inputBinding: initialInputBytes, nextState: core, material, materialPlans, workMilliJoule: String(work) };
     const payload = proposalBytes(prepared);
     const nextState = freeze({ ...core, lastStep: { inputBinding: initialInputBytes, resultCoreCanonicalJson: stateCore(core), adoptedPayload: payload } });
     validateState(nextState);
     const result = freeze({ ...prepared, nextState });
-    if (isImmutableProductionData(result)) checkedProposals.set(result, payload);
+    if (runtimeCandidate) Object.freeze(core);
+    if (runtimeCandidate && hasStrictCloneableRuntimeCore(core)) {
+      let byInput = issuedDryRuntimeProductionProposals.get(state);
+      if (!byInput) { byInput = new WeakMap<ProductionStepInput, WeakMap<Extract<ProductionProposal, { status: "Prepared" }>, ProductionState>>();
+        issuedDryRuntimeProductionProposals.set(state, byInput); }
+      let byProposal = byInput.get(input);
+      if (!byProposal) { byProposal = new WeakMap<Extract<ProductionProposal, { status: "Prepared" }>, ProductionState>(); byInput.set(input, byProposal); }
+      byProposal.set(result, nextState);
+    } else if (isImmutableProductionData(result)) checkedProposals.set(result, payload);
     return result;
   } catch (error) { return { status: "Rejected", reason: reason(error) }; }
 };
+export const stepFactoryProduction = (state: ProductionState, input: ProductionStepInput): ProductionProposal =>
+  stepFactoryProductionCore(state, input, false);
+/** Private compact-Dry entry; the public producer keeps its original full-data proof path. */
+export const stepFactoryProductionForDryRuntime = (state: ProductionState, input: ProductionStepInput): ProductionProposal =>
+  stepFactoryProductionCore(state, input, hasStrictRuntimeProductionInput(input));
 const checkedProposals = new WeakMap<Extract<ProductionProposal, { status: "Prepared" }>, ProductionAdoptedPayload>();
 const proposalBytes = (proposal: Extract<ProductionProposal, { status: "Prepared" }>): ProductionAdoptedPayload => {
   const cached = checkedProposals.get(proposal); if (cached) return cached;

@@ -1,0 +1,36 @@
+{
+  "display": {
+    "observedAtUtc": "2026-10-19T13:43:59.872Z",
+    "source": "chrome://gpu actual shadow DOM",
+    "title": "GPU Internals",
+    "refreshHz": 32,
+    "webglHardware": true,
+    "compositingHardware": true,
+    "renderer": "ANGLE (AMD, AMD Radeon RX 7900 XTX (0x0000744C) Direct3D11 vs_5_0 ps_5_0, D3D11-32.0.32015.2008)",
+    "screen": {
+      "width": 2560,
+      "height": 1440,
+      "colorDepth": 24
+    },
+    "gpuProcessCrashCount": 0
+  },
+  "blankControl": {
+    "samples": 90,
+    "meanMs": 32.49777777777778,
+    "p50Ms": 32.5,
+    "p95Ms": 33,
+    "maxMs": 33.400000000000034,
+    "fps": 30.77133479212254,
+    "visible": "visible",
+    "kind": "empty page in the same actual Chrome; no game code"
+  },
+  "actualUserActive": {
+    "samples": 120,
+    "meanMs": 31.25,
+    "fps": 32,
+    "p95Ms": 31.6
+  },
+  "limits": "Ordinary RAF/Chrome diagnostics only; no CPU/GPU profile or fourth optimization candidate. Same-browser empty-page cadence and reported32Hz are consistent; origin of the Windows/display32Hz configuration is not established. No OS/display configuration was changed.",
+  "userQuestion": "Windows Advanced display refresh rate readback pending",
+  "userReadback": "User confirms Windows Remote connection to this PC and cannot inspect the local display frequency now. The measured32Hz/cadence is the Remote session; local physical monitor Hz remains NOT RUN. No OS/display change."
+}

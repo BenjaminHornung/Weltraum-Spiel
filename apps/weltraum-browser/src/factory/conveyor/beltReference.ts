@@ -103,6 +103,14 @@ const isCloneableSnapshotData = (value: object): boolean => {
     return true;
   } catch { return false; }
 };
+const cloneableMaterialData = new WeakSet<object>();
+const isImmutableMaterialData = (material: MaterialView): boolean => {
+  if (!isImmutableSnapshotData(material)) return false;
+  if (cloneableMaterialData.has(material)) return true;
+  if (!isCloneableSnapshotData(material)) return false;
+  cloneableMaterialData.add(material);
+  return true;
+};
 const assertBeltMaterialSnapshots = (material: MaterialView): void => {
   // Read caller accessors once: only the very same pair checked by W02 may enter.
   const { catalog, containers } = material;
@@ -125,6 +133,105 @@ const materialData = (material: MaterialView) => ({ ...material, containers: mat
   return depletion === undefined ? data : { ...data, depletion };
 }) });
 const inputBytes = (input: BeltStepInput): string => canonicalJson({ ...input, material: materialData(input.material) });
+const beltMaterialFragmentLimitBytes = 2 * 1024 * 1024;
+const beltMaterialFragmentSlotBytes = 1024;
+type RuntimeBeltMaterialFragmentReader = Readonly<{
+  read(material: MaterialView): string | undefined;
+  digest(prefixBytes: string, suffixBytes: string): string | undefined;
+  retainedBytes(): number;
+}>;
+const runtimeBeltMaterialFragmentReaders = new WeakMap<FactoryBeltMaterialFragmentContext, RuntimeBeltMaterialFragmentReader>();
+const issuedRuntimeNoMaterialBeltProposals = new WeakMap<object, WeakMap<object, BeltState>>();
+const runtimeBeltInputKeys = ["actorId", "binding", "confirmed", "installation", "material", "power", "sourceLot", "tickEndUs", "tickStartUs"] as const;
+const fnv1aUnit = (hash: number, unit: number): number => Math.imul(hash ^ unit, 0x01000193);
+const fnv1aJsonStringPart = (initial: number, value: string, openingQuote: boolean): number => {
+  let hash = initial;
+  if (openingQuote) hash = fnv1aUnit(hash, 0x22);
+  const encoded = JSON.stringify(value);
+  for (let index = 1; index < encoded.length - 1; index++) hash = fnv1aUnit(hash, encoded.charCodeAt(index));
+  return hash;
+};
+const jsonStringDigest = (hash: number): string => {
+  const complete = fnv1aUnit(hash, 0x22) >>> 0;
+  return complete.toString(16).padStart(8, "0");
+};
+export interface FactoryBeltMaterialFragmentContext {
+  readBytes(): number;
+  clear(): void;
+  dispose(): void;
+}
+/** One exact-current material fragment; the context itself is the private capability. */
+export const createFactoryBeltMaterialFragmentContext = (readCurrent: () => MaterialView): FactoryBeltMaterialFragmentContext => {
+  let cachedMaterial: MaterialView | undefined, fragment: string | undefined, disposed = false;
+  const prefixes = new Map<string, number>();
+  const retainedBytes = () => disposed ? 0 : beltMaterialFragmentSlotBytes + (fragment?.length ?? 0) * 2
+    + [...prefixes.keys()].reduce((sum, prefix) => sum + prefix.length * 2, 0);
+  const clear = () => { cachedMaterial = undefined; fragment = undefined; prefixes.clear(); };
+  const read = (material: MaterialView): string | undefined => {
+    if (disposed) return undefined;
+    let current: MaterialView;
+    try { current = readCurrent(); } catch { return undefined; }
+    if (material !== current) { if (cachedMaterial && cachedMaterial !== current) clear(); return undefined; }
+    if (cachedMaterial === material && fragment !== undefined) return fragment;
+    clear();
+    try {
+      if (!isImmutableMaterialData(material)) return undefined;
+      const encoded = canonicalJson(materialData(material));
+      if (encoded.length * 2 + beltMaterialFragmentSlotBytes > beltMaterialFragmentLimitBytes) return undefined;
+      cachedMaterial = material; fragment = encoded; return encoded;
+    } catch { return undefined; }
+  };
+  const digest = (prefixBytes: string, suffixBytes: string): string | undefined => {
+    if (disposed || fragment === undefined) return undefined;
+    let hash = prefixes.get(prefixBytes);
+    if (hash !== undefined) {
+      prefixes.delete(prefixBytes); prefixes.set(prefixBytes, hash);
+    } else {
+      hash = fnv1aJsonStringPart(0x811c9dc5, prefixBytes, true);
+      hash = fnv1aJsonStringPart(hash, fragment, false);
+      while (prefixes.size >= 2) prefixes.delete(prefixes.keys().next().value!);
+      while (prefixes.size && retainedBytes() + prefixBytes.length * 2 > beltMaterialFragmentLimitBytes) prefixes.delete(prefixes.keys().next().value!);
+      if (retainedBytes() + prefixBytes.length * 2 <= beltMaterialFragmentLimitBytes) prefixes.set(prefixBytes, hash);
+    }
+    return jsonStringDigest(fnv1aJsonStringPart(hash, suffixBytes, false));
+  };
+  const context = Object.freeze({ readBytes: retainedBytes, clear,
+    dispose: () => { disposed = true; clear(); } });
+  runtimeBeltMaterialFragmentReaders.set(context, Object.freeze({ read, digest, retainedBytes }));
+  return context;
+};
+type RuntimeBeltInputBytes = Readonly<{ bytes: string; digest: string }>;
+const runtimeInputBytes = (input: BeltStepInput, context: FactoryBeltMaterialFragmentContext): RuntimeBeltInputBytes | undefined => {
+  const reader = runtimeBeltMaterialFragmentReaders.get(context);
+  if (!reader) return undefined;
+  try {
+    if (!input || typeof input !== "object" || Object.getPrototypeOf(input) !== Object.prototype) return undefined;
+    const descriptors = Object.getOwnPropertyDescriptors(input), keys = Reflect.ownKeys(descriptors);
+    if (keys.length !== runtimeBeltInputKeys.length || keys.some(key => typeof key !== "string" || !runtimeBeltInputKeys.includes(key as typeof runtimeBeltInputKeys[number]))) return undefined;
+    const values = new Map<string, unknown>();
+    for (const key of runtimeBeltInputKeys) {
+      const descriptor = descriptors[key];
+      if (!descriptor || descriptor.enumerable !== (key !== "material") || !("value" in descriptor)) return undefined;
+      values.set(key, descriptor.value);
+    }
+    const material = values.get("material");
+    if (!material || typeof material !== "object") return undefined;
+    for (const key of runtimeBeltInputKeys) if (key !== "material" && !isImmutableSnapshotData(values.get(key))) return undefined;
+    if (typeof globalThis.structuredClone !== "function") return undefined;
+    try { globalThis.structuredClone(input); } catch { return undefined; }
+    const fragment = reader.read(material as MaterialView);
+    if (fragment === undefined) return undefined;
+    const prefixBytes = `{"actorId":${canonicalJson(values.get("actorId"))},"binding":${canonicalJson(values.get("binding"))},"confirmed":${canonicalJson(values.get("confirmed"))},"installation":${canonicalJson(values.get("installation"))},"material":`;
+    const suffixBytes = `,"power":${canonicalJson(values.get("power"))},"sourceLot":${canonicalJson(values.get("sourceLot"))},"tickEndUs":${canonicalJson(values.get("tickEndUs"))},"tickStartUs":${canonicalJson(values.get("tickStartUs"))}}`;
+    const digest = reader.digest(prefixBytes, suffixBytes);
+    if (digest === undefined) return undefined;
+    return { bytes: `${prefixBytes}${fragment}${suffixBytes}`, digest };
+  } catch { return undefined; }
+};
+export const isIssuedFactoryBeltNoMaterialProposal = (line: BeltState, input: BeltStepInput, proposal: BeltStepProposal): boolean => {
+  const issued = issuedRuntimeNoMaterialBeltProposals.get(input)?.get(proposal);
+  return issued !== undefined && issued === line;
+};
 const proposalBytes = (proposal: Extract<BeltStepProposal, { status: "Prepared" }>): string => canonicalJson({ ...proposal,
   materialPlan: proposal.materialPlan ? { ...proposal.materialPlan, candidate: materialData(proposal.materialPlan.candidate) } : null });
 const capacityBlocked = (reason: string): boolean => ["TargetMassExceeded", "TargetVolumeExceeded", "TargetStackLimitExceeded"].includes(reason);
@@ -200,7 +307,7 @@ const powered = (line: BeltState, input: BeltStepInput): boolean => {
   return grant.status === "Powered" && declared === required && allocated === required;
 };
 
-export function advanceFactoryBelt(line: BeltState, input: BeltStepInput): BeltStepProposal {
+const advanceFactoryBeltCore = (line: BeltState, input: BeltStepInput, context?: FactoryBeltMaterialFragmentContext): BeltStepProposal => {
   try {
     assertFactoryBeltState(line, input.material);
     require(input.confirmed === true && canonicalJson(input.binding) === canonicalJson(line.binding)
@@ -208,7 +315,8 @@ export function advanceFactoryBelt(line: BeltState, input: BeltStepInput): BeltS
     require(isSaveSafeResourceId(input.actorId), "InvalidBeltActor");
     require(input.tickStartUs === line.tickEndUs && integer(input.tickEndUs) - integer(input.tickStartUs) === 100_000n, "InvalidConfirmedBeltStep");
     const revision = safeBigIntNumber(BigInt(line.revision) + 1n, "BeltRevision");
-    const requestBytes = inputBytes(input);
+    const runtimeRequest = context ? runtimeInputBytes(input, context) : undefined;
+    const requestBytes = runtimeRequest?.bytes ?? inputBytes(input);
     let outcome: Extract<BeltStepProposal, { status: "Prepared" }>["outcome"] = "WAIT_POWER";
     let packet = line.packet, packetCursor = line.packetCursor, creditMg = line.creditMg;
     let materialPlan: MaterialPlan | null = null;
@@ -274,10 +382,23 @@ export function advanceFactoryBelt(line: BeltState, input: BeltStepInput): BeltS
     }
     // Accrue -> one admission/debit OR existing-packet motion. Newly admitted packets remain at s=0.
     const nextLine: BeltState = { ...line, revision, tickEndUs: input.tickEndUs, creditMg, packetCursor, packet,
-      lastStep: { tickEndUs: input.tickEndUs, requestDigest: canonicalSignature(requestBytes), outcome } };
+      lastStep: { tickEndUs: input.tickEndUs, requestDigest: runtimeRequest?.digest ?? canonicalSignature(requestBytes), outcome } };
     assertFactoryBeltState(nextLine, materialPlan?.candidate ?? input.material);
-    return freeze({ status: "Prepared", baseLineCanonicalJson: canonicalJson(line), inputCanonicalJson: requestBytes, nextLine, materialPlan, outcome });
+    const proposal = freeze({ status: "Prepared" as const, baseLineCanonicalJson: canonicalJson(line), inputCanonicalJson: requestBytes, nextLine, materialPlan, outcome });
+    if (runtimeRequest && materialPlan === null && isImmutableSnapshotData(nextLine) && isCloneableSnapshotData(nextLine)) {
+      let byProposal = issuedRuntimeNoMaterialBeltProposals.get(input);
+      if (!byProposal) { byProposal = new WeakMap<object, BeltState>(); issuedRuntimeNoMaterialBeltProposals.set(input, byProposal); }
+      byProposal.set(proposal, line);
+    }
+    return proposal;
   } catch (error) { return { status: "Rejected", reason: error instanceof Error ? error.message : "InvalidBeltStep" }; }
+};
+export function advanceFactoryBelt(line: BeltState, input: BeltStepInput): BeltStepProposal {
+  return advanceFactoryBeltCore(line, input);
+}
+/** Internal compact-owner path; all public callers continue through the unchanged serializer. */
+export function advanceFactoryBeltWithMaterialAuthority(line: BeltState, input: BeltStepInput, context: FactoryBeltMaterialFragmentContext): BeltStepProposal {
+  return advanceFactoryBeltCore(line, input, context);
 }
 /** Returns an atomic pair for the sole Host to adopt at its combined World CAS. */
 export function commitFactoryBeltStep(line: BeltState, input: BeltStepInput, proposal: BeltStepProposal): BeltStepResult {

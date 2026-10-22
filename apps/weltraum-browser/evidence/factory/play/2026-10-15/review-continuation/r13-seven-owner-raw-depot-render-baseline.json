@@ -1,0 +1,1458 @@
+{
+  "state": {
+    "at": 9421,
+    "tick": 12614,
+    "status": "Paused",
+    "player": {
+      "x": -6.241317272186279,
+      "y": 2.40028977394104,
+      "z": 9.99932861328125
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 1,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 2,
+      "lastAckId": 2,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "camera": null,
+    "clock": {
+      "maxTimerGapMs": 17.600000000558794,
+      "maxAdvanceMs": 0.10000000055879354,
+      "maxHandlerMs": 812.7000000001863,
+      "lastCommand": "Read",
+      "lastHandlerMs": 5.1000000005587935,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "carrier": {
+      "phase": "Deposited",
+      "profileId": "BIN-PACK",
+      "positionMm": [
+        -7250,
+        1499.9998807907104,
+        9750
+      ]
+    },
+    "facilityState": "Idle",
+    "facilityCount": 7,
+    "massMg": 2984400000,
+    "factorySteps": 2102,
+    "hostConfirmed": true,
+    "receipt": {
+      "commandId": "ui_cargo_47ab64cf2bf748959c986028cbeb08e2",
+      "status": "Committed",
+      "reason": null
+    },
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+      "revision": 4,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "power": {
+      "allocationConfirmed": true,
+      "devices": [
+        {
+          "id": "facility_fp02_device_battery_4kwh_1",
+          "revision": 4,
+          "name": "Expeditionsbatterie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_fp02_device_distribution_40kw_3",
+          "revision": 7,
+          "name": "Verteiler",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b07_5",
+          "revision": 1765,
+          "name": "Umformwerk",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b06_16",
+          "revision": 626,
+          "name": "Zuschnittstation",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+          "revision": 27,
+          "name": "Förderlinie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        }
+      ],
+      "status": "CONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 0,
+      "batteryEnergyJ": 12960000,
+      "batteryCapacityJ": 14400000,
+      "reserveEnergyJ": 3600000,
+      "sourceQuality": "unsupported",
+      "consumers": [
+        {
+          "id": "consumer_facility_b06_16",
+          "name": "facility_b06_16",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_facility_b07_5",
+          "name": "facility_b07_5",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+          "name": "fp02_cargo_c23_unit_1",
+          "requestedWatts": 100,
+          "allocatedWatts": 0,
+          "reason": "NET_DISCONNECTED"
+        }
+      ]
+    },
+    "testBridge": false
+  },
+  "projection": {
+    "sessionId": "hvp-session-1",
+    "epoch": 1,
+    "nativeTick": 12614,
+    "scenes": [
+      {
+        "instanceId": "facility_fp02_device_battery_4kwh_1",
+        "published": true,
+        "assetId": "play_battery_v1",
+        "glbSha256": "eab84e1fd9742059f14675fe546006ba1f0321fb84ae18aaa628f32ef7f3caa8",
+        "sourceFileSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "s1": false,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:facility_fp02_device_battery_4kwh_1:play_battery_v1:battery_feet",
+          "factory-play:facility_fp02_device_battery_4kwh_1:play_battery_v1:battery_frame",
+          "factory-play:facility_fp02_device_battery_4kwh_1:play_battery_v1:battery_shell",
+          "factory-play:facility_fp02_device_battery_4kwh_1:play_battery_v1:battery_panel"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:facility_fp02_device_battery_4kwh_1:play_battery_v1:battery_feet",
+            "positionRelative": {
+              "x": -2.25,
+              "y": 1.5,
+              "z": 2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_fp02_device_battery_4kwh_1:play_battery_v1:battery_frame",
+            "positionRelative": {
+              "x": -2.25,
+              "y": 1.5,
+              "z": 2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_fp02_device_battery_4kwh_1:play_battery_v1:battery_shell",
+            "positionRelative": {
+              "x": -2.25,
+              "y": 1.5,
+              "z": 2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_fp02_device_battery_4kwh_1:play_battery_v1:battery_panel",
+            "positionRelative": {
+              "x": -2.25,
+              "y": 1.5,
+              "z": 2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      },
+      {
+        "instanceId": "facility_fp02_device_distribution_40kw_3",
+        "published": true,
+        "assetId": "play_distribution_v1",
+        "glbSha256": "985f4c5627cc884c549dbe8aed9683798ef7a2d44c2f8340a3c2ef5fd9238b51",
+        "sourceFileSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "s1": false,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:facility_fp02_device_distribution_40kw_3:play_distribution_v1:distribution_feet",
+          "factory-play:facility_fp02_device_distribution_40kw_3:play_distribution_v1:distribution_frame",
+          "factory-play:facility_fp02_device_distribution_40kw_3:play_distribution_v1:distribution_shell",
+          "factory-play:facility_fp02_device_distribution_40kw_3:play_distribution_v1:distribution_panel"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:facility_fp02_device_distribution_40kw_3:play_distribution_v1:distribution_feet",
+            "positionRelative": {
+              "x": -4.75,
+              "y": 1.5,
+              "z": 5.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_fp02_device_distribution_40kw_3:play_distribution_v1:distribution_frame",
+            "positionRelative": {
+              "x": -4.75,
+              "y": 1.5,
+              "z": 5.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_fp02_device_distribution_40kw_3:play_distribution_v1:distribution_shell",
+            "positionRelative": {
+              "x": -4.75,
+              "y": 1.5,
+              "z": 5.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_fp02_device_distribution_40kw_3:play_distribution_v1:distribution_panel",
+            "positionRelative": {
+              "x": -4.75,
+              "y": 1.5,
+              "z": 5.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      },
+      {
+        "instanceId": "facility_b07_5",
+        "published": true,
+        "assetId": "play_former_v2",
+        "glbSha256": "2ea1dca9b5f1915ce984762cefded3b00063c6675ae4b62f02b51d63f308ba81",
+        "sourceFileSha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+        "s1": true,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:facility_b07_5:play_former_v2:former_feet",
+          "factory-play:facility_b07_5:play_former_v2:former_frame",
+          "factory-play:facility_b07_5:play_former_v2:former_infeed",
+          "factory-play:facility_b07_5:play_former_v2:former_bed",
+          "factory-play:facility_b07_5:play_former_v2:former_tool",
+          "factory-play:facility_b07_5:play_former_v2:former_actuators",
+          "factory-play:facility_b07_5:play_former_v2:former_outfeed",
+          "factory-play:facility_b07_5:play_former_v2:former_service",
+          "factory-play:facility_b07_5:play_former_v2:former_power",
+          "factory-play:facility_b07_5:play_former_v2:former_offcut",
+          "factory-play:facility_b07_5:play_former_v2:former_clamp",
+          "factory-play:facility_b07_5:play_former_v2:former_infeed_carriage",
+          "factory-play:facility_b07_5:play_former_v2:former_outfeed_carriage"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_feet",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_frame",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_infeed",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_bed",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_tool",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_actuators",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_outfeed",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_service",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_power",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_offcut",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_clamp",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_infeed_carriage",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b07_5:play_former_v2:former_outfeed_carriage",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -2.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      },
+      {
+        "instanceId": "facility_b09_12",
+        "published": true,
+        "assetId": "play_storage_v1",
+        "glbSha256": "e7ddc40fd2be52f8886b8acd42561fcc5fb403b1630d674bd7be5e28190e1e03",
+        "sourceFileSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "s1": false,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:facility_b09_12:play_storage_v1:body",
+          "factory-play:facility_b09_12:play_storage_v1:support_0",
+          "factory-play:facility_b09_12:play_storage_v1:support_1",
+          "factory-play:facility_b09_12:play_storage_v1:support_2",
+          "factory-play:facility_b09_12:play_storage_v1:support_3"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:facility_b09_12:play_storage_v1:body",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b09_12:play_storage_v1:support_0",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b09_12:play_storage_v1:support_1",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b09_12:play_storage_v1:support_2",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b09_12:play_storage_v1:support_3",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": -5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      },
+      {
+        "instanceId": "facility_b05_14",
+        "published": true,
+        "assetId": "play_workbench_v1",
+        "glbSha256": "c957db9f660663be30c882b74c3df6f53fa27c8277823cb2d79a4e3499c1cfb0",
+        "sourceFileSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "s1": false,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:facility_b05_14:play_workbench_v1:body",
+          "factory-play:facility_b05_14:play_workbench_v1:support_0",
+          "factory-play:facility_b05_14:play_workbench_v1:support_1",
+          "factory-play:facility_b05_14:play_workbench_v1:support_2",
+          "factory-play:facility_b05_14:play_workbench_v1:support_3"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:facility_b05_14:play_workbench_v1:body",
+            "positionRelative": {
+              "x": -10.25,
+              "y": 1.5,
+              "z": 5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b05_14:play_workbench_v1:support_0",
+            "positionRelative": {
+              "x": -10.25,
+              "y": 1.5,
+              "z": 5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b05_14:play_workbench_v1:support_1",
+            "positionRelative": {
+              "x": -10.25,
+              "y": 1.5,
+              "z": 5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b05_14:play_workbench_v1:support_2",
+            "positionRelative": {
+              "x": -10.25,
+              "y": 1.5,
+              "z": 5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b05_14:play_workbench_v1:support_3",
+            "positionRelative": {
+              "x": -10.25,
+              "y": 1.5,
+              "z": 5.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      },
+      {
+        "instanceId": "facility_b06_16",
+        "published": true,
+        "assetId": "play_cutter_v2",
+        "glbSha256": "4f0885139b19835cc985ab9e4fb2b9c5c8d4d430a21011f0e0c03805d6821eb4",
+        "sourceFileSha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+        "s1": true,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_feet",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_frame",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_infeed",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_chamber",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_clamp",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_tool",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_outfeed",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_service",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_power",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_offcut",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_infeed_carriage",
+          "factory-play:facility_b06_16:play_cutter_v2:cutter_outfeed_carriage"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_feet",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_frame",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_infeed",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_chamber",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_clamp",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_tool",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_outfeed",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_service",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_power",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_offcut",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_infeed_carriage",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:facility_b06_16:play_cutter_v2:cutter_outfeed_carriage",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      },
+      {
+        "instanceId": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+        "published": true,
+        "assetId": "play_belt_v1",
+        "glbSha256": "412b734ea5ae0f14b5dbeb2449b4098c2b360c0257624b3348896dc673cb0c49",
+        "sourceFileSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "s1": false,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:segment_0",
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:segment_1",
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:segment_2",
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:segment_3",
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:drive",
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:support_0_0",
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:support_0_1",
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:support_1_0",
+          "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:support_1_1"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:segment_0",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:segment_1",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:segment_2",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:segment_3",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:drive",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:support_0_0",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:support_0_1",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:support_1_0",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:line_ui_power_eaaa69871aab4921ae39292cb526db68:play_belt_v1:support_1_1",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      },
+      {
+        "instanceId": "carrier:slot",
+        "published": true,
+        "assetId": "play_carrier_medium_v1",
+        "glbSha256": "7f8b0643689b660ed9e974fb8c4756f65706d211f7d82ccb8df4c8c7ea419efc",
+        "sourceFileSha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "s1": false,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:carrier:slot:1:play_carrier_medium_v1:payload",
+          "factory-play:carrier:slot:1:play_carrier_medium_v1:support_0_0",
+          "factory-play:carrier:slot:1:play_carrier_medium_v1:support_0_1",
+          "factory-play:carrier:slot:1:play_carrier_medium_v1:support_1_0",
+          "factory-play:carrier:slot:1:play_carrier_medium_v1:support_1_1"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:carrier:slot:1:play_carrier_medium_v1:payload",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.4999998807907104,
+              "z": 9.75
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:carrier:slot:1:play_carrier_medium_v1:support_0_0",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.4999998807907104,
+              "z": 9.75
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:carrier:slot:1:play_carrier_medium_v1:support_0_1",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.4999998807907104,
+              "z": 9.75
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:carrier:slot:1:play_carrier_medium_v1:support_1_0",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.4999998807907104,
+              "z": 9.75
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          },
+          {
+            "representationKey": "factory-play:carrier:slot:1:play_carrier_medium_v1:support_1_1",
+            "positionRelative": {
+              "x": -7.25,
+              "y": 1.4999998807907104,
+              "z": 9.75
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0.7071067811865475,
+              "z": 0,
+              "w": 0.7071067811865476
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      },
+      {
+        "instanceId": "fp02_wreck_owner:open",
+        "published": true,
+        "assetId": "play_wreck_cargo_open_v1",
+        "glbSha256": "304daec645c51a27e1735db2dc0b173cbbd01a8276d5b1862b54049af991c03a",
+        "sourceFileSha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "s1": false,
+        "modelError": null,
+        "visibleKeys": [
+          "factory-play:fp02_wreck_owner:open:play_wreck_cargo_open_v1:cargo_access"
+        ],
+        "transforms": [
+          {
+            "representationKey": "factory-play:fp02_wreck_owner:open:play_wreck_cargo_open_v1:cargo_access",
+            "positionRelative": {
+              "x": -5.5,
+              "y": 1.25,
+              "z": 13.125
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      }
+    ],
+    "cost": {
+      "cpu": 16602604,
+      "mesh": 427680,
+      "triangles": 3960,
+      "draws": 119
+    }
+  },
+  "slot": {
+    "slotId": "factory-primary",
+    "displayName": "factory-primary",
+    "recordRevision": 4,
+    "saveSchemaVersion": 1,
+    "gameVersion": "hestia-factory-play-v1",
+    "universeTick": 25228,
+    "payloadBytes": 10957316,
+    "contentHash": "sha256:9f6c3fa1e9cad6feb4c50cbf9dcc009624825ec0f9acdbf14db406a8c2d8b923",
+    "lastWriteReason": "ManualSave"
+  },
+  "errors": []
+}

@@ -1,0 +1,130 @@
+{
+  "actions": [
+    {
+      "key": "s",
+      "ms": 4500,
+      "result": {
+        "tick": 1012,
+        "status": "Running",
+        "player": {
+          "x": -8.050008773803711,
+          "y": 2.400040864944458,
+          "z": -1.4250373840332031
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -8050.008773803711,
+            1500,
+            -2425.037384033203
+          ]
+        },
+        "clock": {
+          "maxTimerGapMs": 30.700000000186265,
+          "maxAdvanceMs": 11.200000000186265,
+          "maxHandlerMs": 800.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000018626451,
+          "delayedCallbacks": [],
+          "timers": 1
+        }
+      }
+    },
+    {
+      "key": "a",
+      "ms": 600,
+      "result": {
+        "tick": 1065,
+        "status": "Running",
+        "player": {
+          "x": -6.100001335144043,
+          "y": 2.4000632762908936,
+          "z": -1.4250373840332031
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -6100.001335144043,
+            1500.0001192092896,
+            -2425.037384033203
+          ]
+        },
+        "clock": {
+          "maxTimerGapMs": 30.700000000186265,
+          "maxAdvanceMs": 11.200000000186265,
+          "maxHandlerMs": 800.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000009313226,
+          "delayedCallbacks": [],
+          "timers": 1
+        }
+      }
+    }
+  ],
+  "after": {
+    "tick": 1068,
+    "status": "Paused",
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -6.100001335144043,
+        "y": 2.4000632762908936,
+        "z": -1.4250373840332031
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "carrier": {
+      "phase": "Deposited",
+      "mass": 341,
+      "position": [
+        -6000,
+        1500.0001192092896,
+        -2500
+      ]
+    },
+    "handling": {
+      "id": "factory_carrier",
+      "revision": 3,
+      "profileId": "B07-BOM",
+      "phase": "Deposited",
+      "massMg": 341000000
+    },
+    "receipt": {
+      "status": "Committed",
+      "reason": null
+    },
+    "massMg": 2984400000,
+    "buttons": [
+      {
+        "text": "GoalBuild a cutter and former",
+        "disabled": false
+      },
+      {
+        "text": "Views",
+        "disabled": false
+      },
+      {
+        "text": "Close",
+        "disabled": false
+      },
+      {
+        "text": "Set down here",
+        "disabled": true
+      },
+      {
+        "text": "Return to cargo",
+        "disabled": true
+      },
+      {
+        "text": "View materials",
+        "disabled": false
+      }
+    ]
+  }
+}

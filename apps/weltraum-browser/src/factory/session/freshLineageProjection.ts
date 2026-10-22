@@ -182,10 +182,9 @@ export const projectFactoryProductionGoals=(input:FactoryProductionGoalInput):Fa
    const braces=finished.filter(j=>j.recipe.sourceId==="REC-05-BRACE"&&profile&&sheet&&parent(j,"REC-02-PROFILE")===profile&&parent(j,"REC-03-SHEET")===sheet);
    if(braces.length>1)continue;const brace=braces[0];candidates.push({pair,profile,sheet,brace,score:brace?3:profile&&sheet?2:profile||sheet?1:0});
   }
-  const score=Math.max(...candidates.map(c=>c.score)),selected=candidates.filter(c=>c.score===score);requireFact(selected.length===1);
-  const {pair,profile,sheet,brace}=selected[0]!;
-  let paid=false;
-  if(brace)for(const installation of input.installations.filter(i=>i.definitionSourceId==="fp02.comp.small_brace")){
+  const paidRevision=(brace:Job|undefined):number|null=>{
+   if(!brace)return null;let earliest:number|null=null;
+   for(const installation of input.installations.filter(i=>i.definitionSourceId==="fp02.comp.small_brace")){
    const owner=owners.get(installation.instanceId),source=createFactoryInstallationProfile(installation.definitionSourceId);
    if(!owner||owner.ownerId!==installation.instanceId||!same(owner.definitionRef,source.definitionRef)||owner.sourceDigest!==source.sourceDigest||owner.profileDigest!==source.profileDigest||owner.massMg!==source.massMg
     ||installation.sourceDigest!==source.sourceDigest||installation.profileDigest!==source.profileDigest||installation.massMg!==source.massMg||installation.materialContainerId!==`installed_${installation.instanceId}`
@@ -198,8 +197,25 @@ export const projectFactoryProductionGoals=(input:FactoryProductionGoalInput):Fa
    const bound=parse<{catalogBytes:string;revision:number;receipts:MaterialView["receipts"];containers:readonly {stateBytes:string}[]}>(owner.materialBinding);
    if(!receipt||bound.catalogBytes!==catalog.canonicalJson||bound.revision!==receipt.revisionAfter||!same(bound.receipts,material.receipts.slice(0,receipt.revisionAfter)))continue;
    const states=bound.containers.map(c=>parse<{containerId:string;contents:readonly ResourceStack[]}>(c.stateBytes));
-   if(states.some(s=>s.containerId===installation.materialContainerId&&s.contents.length===1&&same(s.contents[0],lot.stack)))paid=true;
+   if(states.some(s=>s.containerId===installation.materialContainerId&&s.contents.length===1&&same(s.contents[0],lot.stack)))
+    earliest=earliest===null?receipt.revisionAfter:Math.min(earliest,receipt.revisionAfter);
+   }
+   return earliest;
+  };
+  const score=Math.max(...candidates.map(c=>c.score)),selected=candidates.filter(c=>c.score===score);requireFact(selected.length>0);
+  const evaluated=selected.map(candidate=>({candidate,paidRevision:paidRevision(candidate.brace)}));
+  let chosen=evaluated[0]!;
+  if(evaluated.length>1){
+   const candidateJobIds=(candidate:typeof selected[number])=>[
+    ...candidate.pair.map(job=>job.start.jobId),...(candidate.profile?[candidate.profile.start.jobId]:[]),
+    ...(candidate.sheet?[candidate.sheet.start.jobId]:[]),...(candidate.brace?[candidate.brace.start.jobId]:[])];
+   for(let i=0;i<selected.length;i++)for(let j=i+1;j<selected.length;j++){
+    const first=new Set(candidateJobIds(selected[i]!));requireFact(!candidateJobIds(selected[j]!).some(jobId=>first.has(jobId)));
+   }
+   const paid=evaluated.filter(value=>value.paidRevision!==null);requireFact(paid.length>0);
+   paid.sort((a,b)=>a.paidRevision!-b.paidRevision!);chosen=paid[0]!;
   }
+  const {pair,profile,sheet,brace}=chosen.candidate,paid=chosen.paidRevision!==null;
   const outputMass=(job:Job|undefined,itemId:string)=>job?job.recipe.outputs.filter(t=>t.itemId===itemId).reduce((n,t)=>n+validateFactoryAmount(t.itemId,t.quantityUnits,catalog).massMg,0):0;
   return Object.freeze({lineageId:canonicalSignature({origin:pair[0]!.inputs[0]!.origin,jobs:pair.map(j=>j.start.jobId).sort()}),inputSteelMg:pair.reduce((n,j)=>n+j.recipe.inputs.reduce((m,t)=>m+validateFactoryAmount(t.itemId,t.quantityUnits,catalog).massMg,0),0),cutBatches:pair.length,
    cutOutputMg:pair.reduce((n,j)=>n+outputMass(j,"fp02.bulk.steel_semi"),0),cutOffcutMg:pair.reduce((n,j)=>n+outputMass(j,"fp02.bulk.steel_offcut"),0),profileOutputMg:outputMass(profile,"fp02.bulk.steel_profile"),sheetOutputMg:outputMass(sheet,"fp02.bulk.steel_sheet"),formerOffcutMg:outputMass(profile,"fp02.bulk.steel_offcut")+outputMass(sheet,"fp02.bulk.steel_offcut"),

@@ -1,0 +1,56 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+······················x········x··········································stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one full support proof for coherent production and power in each facility snapshot
+NATIVE_READ_SCENARIO {"case":"facility-snapshot","elapsedMs":1.3421999999991385,"probeCount":256,"singleProofBudget":256,"revision":1,"profileDigest":"288390f5"}
+
+stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one facility snapshot in the actual public native session read
+NATIVE_READ_SCENARIO {"case":"public-session-snapshot","elapsedMs":1.2620999999999185,"probeCount":256,"singleProofBudget":256,"ticks":0,"status":"Paused"}
+
+····························
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+AssertionError: expected -6.500278949737549 to be close to -6.500002861022949, received difference is 0.0002760887145996094, but expected 5e-7
+ ❯ tests/unit/hvp-locomotion.test.ts:273:23
+    271|       r.world.step();
+    272|       const after=r.player.read().position,carrierAfter=carrier.transl…
+    273|       expect(after.x).toBeCloseTo(before.x,6);expect(after.z).toBeLess…
+       |                       ^
+    274|       expect(carrierAfter.x).toBeCloseTo(carrierBefore.x,6);expect(car…
+    275|       expect(carrierAfter.z).toBeCloseTo(after.z-1,4);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > Factory paired-prefix rollback > holds when Rapier projects a covered intent into an uncovered Avatar corner
+AssertionError: expected { x: 0.03535449504852295, …(2) } to deeply equal { x: +0, y: 0.9099999666213989, z: +0 }
+
+- Expected
++ Received
+
+  {
+-   "x": 0,
+-   "y": 0.9099999666213989,
+-   "z": 0,
++   "x": 0.03535449504852295,
++   "y": 0.9072737693786621,
++   "z": 0.01682373881340027,
+  }
+
+ ❯ tests/unit/hvp-locomotion.test.ts:422:32
+    420|         player.setEnabled(true);const before=player.read();player.setI…
+    421|         const after=player.read();
+    422|         expect(after.position).toEqual(before.position);expect(after.s…
+       |                                ^
+    423|         expect(after.grounded).toBe(before.grounded);expect(after.velo…
+    424|         expect(guardCalls).toBe(limited?1:0);expect(limiterCalls).toBe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 100 passed (102)
+   Start at  11:52:10
+   Duration  13.10s (transform 738ms, setup 0ms, import 1000ms, tests 11.85s, environment 0ms)
+

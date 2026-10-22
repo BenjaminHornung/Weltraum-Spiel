@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   createDefinitionResolutionFixture,
   createSaveGameEnvelopeV1Fixture
@@ -87,6 +87,38 @@ describe("memory save repository", () => {
     expect(firstRead.payloadBytes).not.toEqual(secondRead.payloadBytes);
     expect(Object.isFrozen(secondRead.envelope)).toBe(true);
     expect(Object.isFrozen(secondRead.metadata)).toBe(true);
+  });
+
+  it("runs the optional commit witness after encoding and aborts without replacing the slot", async () => {
+    const repository = createMemorySaveRepository(createDefinitionResolutionFixture());
+    await repository.initialize();
+    const envelope = createSaveGameEnvelopeV1Fixture();
+    await repository.writeSlot({ slotId: "guarded-slot", expectedRevision: null, envelope, lastWriteReason: "UnitTest" });
+    const prior = await repository.readSlot("guarded-slot");
+    const witness = vi.fn(() => { throw new Error("checkpoint became stale"); });
+
+    const pending = repository.writeSlot({
+      slotId: "guarded-slot", expectedRevision: prior.metadata.recordRevision, envelope,
+      lastWriteReason: "UnitTest", beforeCommit: witness
+    });
+    expect(witness).not.toHaveBeenCalled();
+    await expect(pending).rejects.toThrow("checkpoint became stale");
+    expect(witness).toHaveBeenCalledOnce();
+    expect((await repository.readSlot("guarded-slot")).metadata).toEqual(prior.metadata);
+  });
+
+  it("rejects accessor-based commit witnesses without invoking them", async () => {
+    const repository = createMemorySaveRepository(createDefinitionResolutionFixture());
+    await repository.initialize();
+    const getter = vi.fn(() => () => undefined);
+    const request = Object.defineProperties({
+      slotId: "guard-accessor", expectedRevision: null,
+      envelope: createSaveGameEnvelopeV1Fixture(), lastWriteReason: "UnitTest"
+    }, { beforeCommit: { get: getter, enumerable: true } });
+
+    expect(await rejectionCode(repository.writeSlot(request))).toBe("InvalidEnvelope");
+    expect(getter).not.toHaveBeenCalled();
+    expect(await repository.listSlots()).toEqual({ slots: [] });
   });
 
   it.each([

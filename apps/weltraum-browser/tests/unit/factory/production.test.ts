@@ -7,7 +7,7 @@ import { readMaterialMassMg } from "../../../src/factory/material/resourcesAdapt
 import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
 import { canonicalJson, canonicalSignature } from "../../../src/resources/serialization";
 import { stepFactoryPower, type FactoryPowerBinding, type FactoryPowerState, type FactoryPowerSupply } from "../../../src/factory/power/factoryPower";
-import { createFactoryProductionState, stepFactoryProduction, commitFactoryProductionStep, readFactoryProductionRequest,
+import { createFactoryProductionState, stepFactoryProduction, stepFactoryProductionForDryRuntime, isIssuedDryRuntimeProductionProposal, commitFactoryProductionStep, readFactoryProductionRequest,
   type ProductionCommand, type ProductionProposal, type ProductionStepInput } from "../../../src/factory/production/productionStep";
 import type { ProductionHostFacts, ProductionStart } from "../../../src/factory/production/recipeAdmission";
 
@@ -93,6 +93,48 @@ const advance = (pair: Pair, powered = true, command?: ProductionCommand, includ
   return { ...pair, state: result.state, material: result.material, powerState: request.power!.nextState, lastInput: request, lastProposal: proposal };
 };
 const ticks = (pair: Pair, count: number, powered = true) => { for (let i = 0; i < count; i++) pair = advance(pair, powered); return pair; };
+const runtimeInput = (source: ProductionStepInput): ProductionStepInput => {
+  const value = { ...source };
+  Object.defineProperty(value, "material", { enumerable: false });
+  const freezeData = <T>(node: T): T => {
+    if (node && typeof node === "object" && !Object.isFrozen(node)) { Object.values(node).forEach(freezeData); Object.freeze(node); }
+    return node;
+  };
+  return freezeData(value);
+};
+
+it("issues runtime production provenance only for the exact no-plan same-material result",()=>{
+  const pair=initial(),request=input(pair,false),privateRequest=runtimeInput(request),publicResult=stepFactoryProduction(pair.state,request),runtime=stepFactoryProductionForDryRuntime(pair.state,privateRequest);
+  expect(runtime).toEqual(publicResult);expect(runtime.status).toBe("Prepared");if(runtime.status!=="Prepared")return;
+  expect(runtime.material).toBe(pair.material);expect(runtime.materialPlans).toHaveLength(0);
+  expect(isIssuedDryRuntimeProductionProposal(pair.state,privateRequest,runtime)).toBe(true);
+  expect(isIssuedDryRuntimeProductionProposal({...pair.state},privateRequest,runtime)).toBe(false);
+  expect(isIssuedDryRuntimeProductionProposal(pair.state,runtimeInput(request),runtime)).toBe(false);
+  expect(isIssuedDryRuntimeProductionProposal(pair.state,privateRequest,structuredClone(runtime) as typeof runtime)).toBe(false);
+  expect(isIssuedDryRuntimeProductionProposal(pair.state,privateRequest,{status:"Prepared",nextState:undefined} as unknown as ProductionProposal)).toBe(false);
+});
+
+it("keeps material-changing and nested-proxy production results off the runtime fast path",()=>{
+  const pair=initial(),startRequest=runtimeInput(input(pair,true,pair.command)),start=stepFactoryProductionForDryRuntime(pair.state,startRequest);
+  expect(start.status).toBe("Prepared");if(start.status!=="Prepared")return;
+  expect(start.materialPlans.length).toBeGreaterThan(0);expect(start.material).not.toBe(pair.material);
+  expect(isIssuedDryRuntimeProductionProposal(pair.state,startRequest,start)).toBe(false);
+
+  const proxyLots=new Proxy(Object.freeze(pair.command.sourceLots),{get(target,key,receiver){return Reflect.get(target,key,receiver);}});
+  const proxiedCommand={...pair.command,sourceLots:proxyLots},proxiedRequest=runtimeInput(input(pair,true,proxiedCommand));
+  const proxied=stepFactoryProductionForDryRuntime(pair.state,proxiedRequest);
+  if(proxied.status==="Prepared")expect(isIssuedDryRuntimeProductionProposal(pair.state,proxiedRequest,proxied)).toBe(false);
+
+  const accessorBase=input(pair,false),accessorFacts={...accessorBase.facts};let getterCalls=0;
+  Object.defineProperty(accessorFacts,"length",{enumerable:false,value:1});
+  Object.defineProperty(accessorFacts,"hiddenAccessor",{enumerable:false,get(){getterCalls++;return 1;}});
+  const freezeAccessors=(node:unknown):void=>{if(node&&typeof node==="object"&&!Object.isFrozen(node)){for(const descriptor of Object.values(Object.getOwnPropertyDescriptors(node)))if("value" in descriptor)freezeAccessors(descriptor.value);Object.freeze(node);}};
+  freezeAccessors(accessorFacts);
+  const accessorRequest={...accessorBase,facts:accessorFacts};Object.defineProperty(accessorRequest,"material",{enumerable:false});Object.freeze(accessorRequest);
+  const accessorResult=stepFactoryProductionForDryRuntime(pair.state,accessorRequest);
+  expect(accessorResult.status).toBe("Prepared");if(accessorResult.status==="Prepared")expect(isIssuedDryRuntimeProductionProposal(pair.state,accessorRequest,accessorResult)).toBe(false);
+  expect(getterCalls).toBe(0);
+});
 
 describe("FP06 W04 exact paid process steps over native Resources", () => {
   it("FP06-T017 has no CUT product at299 paid steps and atomically yields7.5+.5kg at300/36000J", () => {

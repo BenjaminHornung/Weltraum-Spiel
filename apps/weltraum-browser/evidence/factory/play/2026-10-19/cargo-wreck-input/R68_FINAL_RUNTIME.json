@@ -1,0 +1,711 @@
+{
+  "render": {
+    "closed": {
+      "status": "Paused",
+      "ticks": 1634,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4000000953674316,
+          "z": 10.924996376037598
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "cargo",
+        "error": null
+      },
+      "locked": false,
+      "transport": {
+        "enabled": true,
+        "lastSentId": 864,
+        "lastAckId": 864,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "cargo": {
+        "opened": false,
+        "accessible": true,
+        "bounds": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        }
+      },
+      "mass": 2984400000,
+      "camera": {
+        "position": [
+          -5.5,
+          3.150007957003388,
+          10.958650890539806
+        ],
+        "orientation": [
+          -1.4674013434855348e-17,
+          0.97086062724081,
+          0.2396448256766272,
+          5.944806797843248e-17
+        ],
+        "visualBody": [
+          -5.5,
+          2.400007957003388,
+          10.958650890539806
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "scenes": [
+        {
+          "id": "play_wreck_cargo_v2",
+          "sha": "2f213fae020ff7a245367939a24c2a8ceecd08809b7616858b241a57917b86ac",
+          "error": null,
+          "visible": 1
+        }
+      ],
+      "cost": {
+        "cpu": 4448928,
+        "mesh": 52416,
+        "triangles": 336,
+        "draws": 2
+      }
+    },
+    "opened": {
+      "status": "Paused",
+      "ticks": 1634,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4000000953674316,
+          "z": 10.924996376037598
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "cargo",
+        "error": null
+      },
+      "locked": false,
+      "transport": {
+        "enabled": true,
+        "lastSentId": 876,
+        "lastAckId": 876,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "bounds": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        }
+      },
+      "mass": 2984400000,
+      "camera": {
+        "position": [
+          -5.5,
+          3.150007957003388,
+          10.958650890539806
+        ],
+        "orientation": [
+          -1.4674013434855348e-17,
+          0.97086062724081,
+          0.2396448256766272,
+          5.944806797843248e-17
+        ],
+        "visualBody": [
+          -5.5,
+          2.400007957003388,
+          10.958650890539806
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "scenes": [
+        {
+          "id": "play_wreck_cargo_open_v2",
+          "sha": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+          "error": null,
+          "visible": 1
+        }
+      ],
+      "cost": {
+        "cpu": 4448928,
+        "mesh": 52416,
+        "triangles": 336,
+        "draws": 2
+      }
+    },
+    "errors": [],
+    "network": []
+  },
+  "newSave": {
+    "saved": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 1,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 3268,
+        "payloadBytes": 1586626,
+        "contentHash": "sha256:01c7042e267d10fb7561b4105ba5db1c745e6c68a34cdfa37f1814980d0e4db5",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "01c7042e267d10fb7561b4105ba5db1c745e6c68a34cdfa37f1814980d0e4db5",
+      "version": "fp06-combined-checkpoint-v2",
+      "signature": "fnv1a32:c942efa0",
+      "host": {
+        "epoch": 1,
+        "nativeTick": 1634,
+        "remainderTicks": 2,
+        "sessionId": "hvp-session-1",
+        "steps": 272
+      },
+      "publicationRevision": 856,
+      "hashes": {
+        "native": "5ed146faa9567c927d479e2bfa453f36d881a09784f8feda588dabca683ecb74",
+        "nativeFactory": "ff8b445fbfcd5dda35fc7364dfdfba5dd009c984e3f28ddbcc6fb55fb4a91e80",
+        "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+        "host": "ddf9b52b2d71cb6e937f4ea26171f1c73e47e354279fd1fe4e6fc6d626352d41",
+        "factoryAll": "d4a95ad0ecb21fc43966253d65c5c4e49c6dc88e5e7794edfc398992c7ad8c1f",
+        "factoryExceptPublication": "90fe963ba565024aa5196a097c6a2ef34cd21f6b503dca252a9388c9417521e7"
+      },
+      "installations": [],
+      "machines": [],
+      "belts": []
+    },
+    "state": {
+      "status": "Paused",
+      "tick": 1634,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4000000953674316,
+          "z": 10.924996376037598
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 1,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "locked": false,
+      "transport": {
+        "enabled": true,
+        "lastSentId": 3466,
+        "lastAckId": 3466,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": {
+        "position": [
+          -5.5,
+          3.150007957003388,
+          10.958650890539806
+        ],
+        "orientation": [
+          -1.4674013434855348e-17,
+          0.97086062724081,
+          0.2396448256766272,
+          5.944806797843248e-17
+        ],
+        "visualBody": [
+          -5.5,
+          2.400007957003388,
+          10.958650890539806
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      }
+    },
+    "errors": [],
+    "network": []
+  },
+  "restart": {
+    "actualClose": {
+      "closedAtUtc": "2026-10-19T14:14:41.350Z",
+      "closed": true,
+      "browserConnected": false
+    },
+    "slotUnchanged": true,
+    "slot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 1,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 3268,
+      "payloadBytes": 1586626,
+      "contentHash": "sha256:01c7042e267d10fb7561b4105ba5db1c745e6c68a34cdfa37f1814980d0e4db5",
+      "lastWriteReason": "ManualSave"
+    },
+    "dialog": "Continue from the saved Factory checkpoint? Unsaved changes will be discarded.",
+    "live": {
+      "status": "Paused",
+      "tick": 1634,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4000000953674316,
+          "z": 10.924996376037598
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "cargoOpened": true,
+      "locked": false,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "pause",
+        "error": null
+      },
+      "mass": 2984400000,
+      "cargoModel": "play_wreck_cargo_open_v2",
+      "sha": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f"
+    },
+    "errors": []
+  },
+  "saveParity": {
+    "before": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 1,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 3268,
+      "payloadBytes": 1586626,
+      "contentHash": "sha256:01c7042e267d10fb7561b4105ba5db1c745e6c68a34cdfa37f1814980d0e4db5",
+      "lastWriteReason": "ManualSave"
+    },
+    "after": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 2,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 3268,
+      "payloadBytes": 1586626,
+      "contentHash": "sha256:254316faf5b5d075136368d0c980d2f55ef7610f7e584966b80766354a1b3098",
+      "lastWriteReason": "ManualSave"
+    },
+    "parity": {
+      "native": true,
+      "nativeFactory": true,
+      "profiles": true,
+      "host": true,
+      "factoryExceptPublication": true
+    },
+    "beforeHashes": {
+      "native": "5ed146faa9567c927d479e2bfa453f36d881a09784f8feda588dabca683ecb74",
+      "nativeFactory": "ff8b445fbfcd5dda35fc7364dfdfba5dd009c984e3f28ddbcc6fb55fb4a91e80",
+      "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+      "host": "ddf9b52b2d71cb6e937f4ea26171f1c73e47e354279fd1fe4e6fc6d626352d41",
+      "factoryAll": "d4a95ad0ecb21fc43966253d65c5c4e49c6dc88e5e7794edfc398992c7ad8c1f",
+      "factoryExceptPublication": "90fe963ba565024aa5196a097c6a2ef34cd21f6b503dca252a9388c9417521e7"
+    },
+    "afterHashes": {
+      "native": "5ed146faa9567c927d479e2bfa453f36d881a09784f8feda588dabca683ecb74",
+      "nativeFactory": "ff8b445fbfcd5dda35fc7364dfdfba5dd009c984e3f28ddbcc6fb55fb4a91e80",
+      "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+      "host": "ddf9b52b2d71cb6e937f4ea26171f1c73e47e354279fd1fe4e6fc6d626352d41",
+      "factoryAll": "b2357f4f3b33750af10bde28308ba9d7aa8484f06b744a4527bc0798a6012c06",
+      "factoryExceptPublication": "90fe963ba565024aa5196a097c6a2ef34cd21f6b503dca252a9388c9417521e7"
+    },
+    "revisionChangedOnlyByExplicitSave": true,
+    "errors": []
+  },
+  "finalSave": {
+    "slot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 3,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 3268,
+      "payloadBytes": 1586626,
+      "contentHash": "sha256:a039108cdd6af3a6f270fd9e078f327fb30f77901de9e806c86f9ad718127407",
+      "lastWriteReason": "ManualSave"
+    },
+    "hashes": {
+      "native": "5ed146faa9567c927d479e2bfa453f36d881a09784f8feda588dabca683ecb74",
+      "nativeFactory": "ff8b445fbfcd5dda35fc7364dfdfba5dd009c984e3f28ddbcc6fb55fb4a91e80",
+      "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+      "host": "ddf9b52b2d71cb6e937f4ea26171f1c73e47e354279fd1fe4e6fc6d626352d41",
+      "factoryAll": "3d99233a7264b7395fb470e6a653e21b528e30e1e080f1fef4b589a631a74083",
+      "factoryExceptPublication": "90fe963ba565024aa5196a097c6a2ef34cd21f6b503dca252a9388c9417521e7"
+    },
+    "allFiveEqual": {
+      "native": true,
+      "nativeFactory": true,
+      "profiles": true,
+      "host": true,
+      "factoryExceptPublication": true
+    },
+    "status": {
+      "status": "Paused",
+      "tick": 1634,
+      "locked": false
+    },
+    "errors": []
+  },
+  "finalProfileClose": {
+    "closedAtUtc": "2026-10-19T14:25:27.401Z",
+    "browserConnected": false
+  },
+  "shadowBaseline": {
+    "clean": "Ready-v8",
+    "slot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 2,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 3268,
+      "payloadBytes": 1586626,
+      "contentHash": "sha256:254316faf5b5d075136368d0c980d2f55ef7610f7e584966b80766354a1b3098",
+      "lastWriteReason": "ManualSave"
+    },
+    "hashes": {
+      "native": "5ed146faa9567c927d479e2bfa453f36d881a09784f8feda588dabca683ecb74",
+      "nativeFactory": "ff8b445fbfcd5dda35fc7364dfdfba5dd009c984e3f28ddbcc6fb55fb4a91e80",
+      "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+      "host": "ddf9b52b2d71cb6e937f4ea26171f1c73e47e354279fd1fe4e6fc6d626352d41",
+      "factoryAll": "b2357f4f3b33750af10bde28308ba9d7aa8484f06b744a4527bc0798a6012c06",
+      "factoryExceptPublication": "90fe963ba565024aa5196a097c6a2ef34cd21f6b503dca252a9388c9417521e7"
+    },
+    "view": {
+      "status": "Paused",
+      "tick": 1634,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4000000953674316,
+          "z": 10.924996376037598
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "locked": false,
+      "view": "FirstPerson",
+      "viewport": {
+        "width": 1249,
+        "height": 1221,
+        "dpr": 1
+      },
+      "scenes": [
+        {
+          "id": "play_wreck_cargo_open_v2",
+          "sha": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+          "error": null,
+          "transforms": [
+            {
+              "representationKey": "factory-play:fp02_wreck_owner:open:play_wreck_cargo_open_v2:cargo_access",
+              "positionRelative": {
+                "x": -5.5,
+                "y": 1.25,
+                "z": 13.125
+              },
+              "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+              },
+              "scale": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+              }
+            }
+          ]
+        }
+      ],
+      "cost": {
+        "cpu": 4448928,
+        "mesh": 52416,
+        "triangles": 336,
+        "draws": 2
+      }
+    },
+    "errors": [],
+    "noPlay": true,
+    "noSave": true
+  },
+  "shadowCandidate": {
+    "clean": "Ready-v9",
+    "slot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 2,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 3268,
+      "payloadBytes": 1586626,
+      "contentHash": "sha256:254316faf5b5d075136368d0c980d2f55ef7610f7e584966b80766354a1b3098",
+      "lastWriteReason": "ManualSave"
+    },
+    "hashes": {
+      "native": "5ed146faa9567c927d479e2bfa453f36d881a09784f8feda588dabca683ecb74",
+      "nativeFactory": "ff8b445fbfcd5dda35fc7364dfdfba5dd009c984e3f28ddbcc6fb55fb4a91e80",
+      "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+      "host": "ddf9b52b2d71cb6e937f4ea26171f1c73e47e354279fd1fe4e6fc6d626352d41",
+      "factoryAll": "b2357f4f3b33750af10bde28308ba9d7aa8484f06b744a4527bc0798a6012c06",
+      "factoryExceptPublication": "90fe963ba565024aa5196a097c6a2ef34cd21f6b503dca252a9388c9417521e7"
+    },
+    "view": {
+      "status": "Paused",
+      "tick": 1634,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4000000953674316,
+          "z": 10.924996376037598
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "locked": false,
+      "view": "FirstPerson",
+      "viewport": {
+        "width": 1249,
+        "height": 1221,
+        "dpr": 1
+      },
+      "scenes": [
+        {
+          "id": "play_wreck_cargo_open_v2",
+          "sha": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+          "error": null,
+          "transforms": [
+            {
+              "representationKey": "factory-play:fp02_wreck_owner:open:play_wreck_cargo_open_v2:cargo_access",
+              "positionRelative": {
+                "x": -5.5,
+                "y": 1.25,
+                "z": 13.125
+              },
+              "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+              },
+              "scale": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+              }
+            }
+          ]
+        }
+      ],
+      "cost": {
+        "cpu": 4448928,
+        "mesh": 52416,
+        "triangles": 336,
+        "draws": 2
+      }
+    },
+    "same": {
+      "slot": true,
+      "view": true,
+      "hashes": true
+    },
+    "errors": [],
+    "noPlay": true,
+    "noSave": true
+  },
+  "save25": {
+    "clean": "Ready-v9",
+    "live": {
+      "status": "Paused",
+      "tick": 227986,
+      "owners": 11,
+      "locked": false,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "pause",
+        "error": null
+      },
+      "cargo": [
+        {
+          "id": "play_wreck_cargo_open_v2",
+          "sha": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+          "error": null
+        }
+      ],
+      "goal": "Goal\nFirst structural brace installed\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc M",
+      "cost": {
+        "cpu": 23637936,
+        "mesh": 756288,
+        "triangles": 4848,
+        "draws": 74
+      }
+    },
+    "slot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 25,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 455972,
+      "payloadBytes": 15121771,
+      "contentHash": "sha256:15cd3e9d4b878b444ec9be84483183e8516bddfa2744a1884fc0baf9ced3ba82",
+      "lastWriteReason": "ManualSave"
+    },
+    "sha": "15cd3e9d4b878b444ec9be84483183e8516bddfa2744a1884fc0baf9ced3ba82",
+    "unchanged": true,
+    "errors": [],
+    "noPlay": true,
+    "noSave": true,
+    "closedAtUtc": "2026-10-19T14:26:32.590Z",
+    "browserConnectedAfterClose": false
+  },
+  "demo": {
+    "url": "http://127.0.0.1:5197/factory.html#cargo-input-fixed",
+    "data": {
+      "status": "Paused",
+      "tick": 0,
+      "locked": false,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "pause",
+        "error": null
+      },
+      "closed": true,
+      "models": [
+        {
+          "asset": "play_wreck_cargo_v2",
+          "sha": "2f213fae020ff7a245367939a24c2a8ceecd08809b7616858b241a57917b86ac",
+          "error": null
+        }
+      ],
+      "continueAvailable": true,
+      "cost": {
+        "cpu": 4448928,
+        "mesh": 52416,
+        "triangles": 336,
+        "draws": 2
+      }
+    },
+    "original": {
+      "status": "Paused",
+      "tick": 1802
+    },
+    "errors": [],
+    "ready": "Ready-v9",
+    "actualFinal": {
+      "status": "Paused",
+      "ticks": 0,
+      "locked": false,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": null,
+        "error": null
+      },
+      "continueAvailable": true
+    },
+    "oldFatalTabClosedAfterEvidence": true
+  },
+  "userSave12": {
+    "revision": 12,
+    "sha": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+    "unchanged": true
+  }
+}
+

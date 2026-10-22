@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+stdout | tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+SLIDE_CONTACT_WITNESS {"player":{"x":-6.500476837158203,"y":2.1503467559814453,"z":11.12452220916748},"carrier":{"x":-6.500476837158203,"y":1.25,"z":10.12452220916748},"lastCarrierVeto":{"reason":"CarrierSweep","colliderHandle":4e-323,"colliderShapeType":1,"timeOfImpact":0.032014813274145126},"nearbyColliders":[{"handle":5e-324,"shapeType":2,"position":{"x":-6.500476837158203,"y":2.1503467559814453,"z":11.12452220916748},"owner":"player"},{"handle":1e-323,"shapeType":1,"position":{"x":-5.5,"y":2,"z":13.125},"owner":"other-body","halfExtents":{"x":0.75,"y":0.75,"z":0.5}},{"handle":1.5e-323,"shapeType":1,"position":{"x":-6.500476837158203,"y":2,"z":10.12452220916748},"owner":"carrier","halfExtents":{"x":0.5,"y":0.5,"z":0.75}},{"handle":2e-323,"shapeType":1,"position":{"x":-6.750476837158203,"y":1.375,"z":10.37452220916748},"owner":"carrier","halfExtents":{"x":0.0625,"y":0.125,"z":0.0625}},{"handle":2.5e-323,"shapeType":1,"position":{"x":-6.250476837158203,"y":1.375,"z":10.37452220916748},"owner":"carrier","halfExtents":{"x":0.0625,"y":0.125,"z":0.0625}},{"handle":3e-323,"shapeType":1,"position":{"x":-6.750476837158203,"y":1.375,"z":9.87452220916748},"owner":"carrier","halfExtents":{"x":0.0625,"y":0.125,"z":0.0625}},{"handle":3.5e-323,"shapeType":1,"position":{"x":-6.250476837158203,"y":1.375,"z":9.87452220916748},"owner":"carrier","halfExtents":{"x":0.0625,"y":0.125,"z":0.0625}},{"handle":4e-323,"shapeType":1,"position":{"x":-7.269999980926514,"y":2,"z":10.875},"owner":"static","halfExtents":{"x":0.019999999552965164,"y":0.5,"z":3}}],"pairedZProbes":[{"delta":0.035355,"accepted":true,"reason":"CarrierSweep","colliderHandle":4e-323,"colliderShapeType":1},{"delta":-0.035355,"accepted":true,"reason":"CarrierSweep","colliderHandle":4e-323,"colliderShapeType":1}]}
+
+----------------------x---------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+AssertionError: expected 11.12452220916748 to be less than 10
+ ❯ tests/unit/hvp-locomotion.test.ts:280:61
+    278|           colliderShapeType:vetoBefore.colliderShapeType??null,timeOfI…
+    279|         nearbyColliders,pairedZProbes}));
+    280|       expect(before.x).toBeLessThan(-6.45);expect(before.z).toBeLessTh…
+       |                                                             ^
+    281|       r.player.step();
+    282|       expect(r.player.read().position).toEqual(before);expect(carrier.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 31 skipped (32)
+   Start at  11:59:00
+   Duration  906ms (transform 240ms, setup 0ms, import 318ms, tests 463ms, environment 0ms)
+

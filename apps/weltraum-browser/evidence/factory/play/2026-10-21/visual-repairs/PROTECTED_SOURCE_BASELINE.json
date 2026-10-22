@@ -1,0 +1,272 @@
+{
+  "atUtc": "2026-10-21T16:19:46.1423827+00:00",
+  "protectedCount": 53,
+  "protected": [
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+      "bytes": 7216,
+      "sha256": "16815c0fb9c90e6e032903caf4627fb291154f473eae30d49b583146bdc8c770"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+      "bytes": 5055,
+      "sha256": "c178ea871ea603843218eccc1d6c38a3a88215c37b8d95a6872e67e6b55794d7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "bytes": 6441,
+      "sha256": "cf9a34b390578ec15a2943fb35c0d4874d6859b3fb5110fcd77da28af945ec26"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/placement.ts",
+      "bytes": 12277,
+      "sha256": "9b75688f1ad743246559d0e46c2c423cfd29c584932fdbae7b64c740f9ad75a3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+      "bytes": 7259,
+      "sha256": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "bytes": 31375,
+      "sha256": "884dacfe391c01b36ea570478d16f28ea397ae203e10d11bf033264f284891d6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 5361,
+      "sha256": "cddb649662481868d9e1e6518eb3a79bd380da2a802c5a80d1e435b82ddf8e34"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 9338,
+      "sha256": "ccf5ecd952f866bf242fd6f14e3aee9a44dbf1b5d5080317d699d131c7694868"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSiteV6.ts",
+      "bytes": 3035,
+      "sha256": "ac1e2c645bcd29aa8b30b455895aea7484fe1235b658d521a840b15308d7770a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/quantity.ts",
+      "bytes": 3472,
+      "sha256": "ba29fc004b20d9bb0cd6e41f39f2b28acf036e0e395f50421f42ccf5d8721328"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+      "bytes": 22673,
+      "sha256": "e60714376959a4ad24fb258cf47b70d254745dc08c826bfbc6db7bc18770016f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+      "bytes": 5790,
+      "sha256": "00fb33b5774fd96980e02e8c1bb92a178d5aedb18b612499cde21a3b0ab1c509"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+      "bytes": 21569,
+      "sha256": "cc4ba20c8a5f07001c406561ca3c7ee0ca63cb79c1475e369efdac8d34ec98e5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+      "bytes": 1752,
+      "sha256": "0921116600c4a50ba0b6bdcf8f46a2368d9d3ac0717e9cfcb6cd564d298d727a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+      "bytes": 9207,
+      "sha256": "a88c027d0ac4729b30534cbde1801ccd5d8144ed8627b0340a9fe15c7585612d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "bytes": 36009,
+      "sha256": "6fdb367f604bc768831aec655747a567d8e97cafa3e1dc2a2c0619c7cef27a74"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+      "bytes": 14610,
+      "sha256": "c555d356261a0f4e23139ee5e8077e87d84f29a44b882e571433f9bd523ef209"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/bodyCheckpoint.ts",
+      "bytes": 4326,
+      "sha256": "5551c4d4e3e509541248db69cb8ef23987eeb52620bc2009e83e728f1f010edf"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts",
+      "bytes": 20969,
+      "sha256": "706435ff04bdedd07abccf9a2963dbfb2b397364f1cd95f8156faf92282e7528"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+      "bytes": 12487,
+      "sha256": "71335a3b25493145e7abb12f02fe6a31f46f7861d9da65b3d741ffef4dde990f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/gridCheckpoint.ts",
+      "bytes": 3936,
+      "sha256": "9d301a76c351b263d40280b1cf6b3897376ac00b4a785fd8537817e9890d861c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/plantCheckpoint.ts",
+      "bytes": 6683,
+      "sha256": "78df5a1d7329b0fe7ab2c3709ee4e89da1ce04695486891b00410c41b424806e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/receiptCheckpoint.ts",
+      "bytes": 3532,
+      "sha256": "7f98d5b1c0bc8a339ddb9247dd4927ed6e6b750bd13f6cd2cedf67aeb25ffc43"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/saveStore.ts",
+      "bytes": 3273,
+      "sha256": "3bc2e7c043b21f491b53082929652f7da3940dfe64003b92182c9435806094c7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/sceneReplacement.ts",
+      "bytes": 2110,
+      "sha256": "91ffd8be5c64dd090f9761f3a656681c170ce7b4d9ac7a918e05d00f0759518b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/worldCheckpoint.ts",
+      "bytes": 11632,
+      "sha256": "7c066fa278c124d2080acfff6a5316ec6434c08c446f44946192bce9f58f0664"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/bodyCut.ts",
+      "bytes": 6098,
+      "sha256": "ccd159e11454762bf0a9e489ae32d84ae7d656abce17db13b32488741d41694b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/bodyCutPlan.ts",
+      "bytes": 2793,
+      "sha256": "0cfd5a4506877b3622cbfc54cc73eea1d1bf343b6fd297025b40372c73fa867b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/bodyCutSession.ts",
+      "bytes": 7644,
+      "sha256": "b7c68b53ea779b60413ac0e9634a022839615a0e630af1c84b95a35123ed0dd5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/bodyResidency.ts",
+      "bytes": 5609,
+      "sha256": "4574d59829de7318027b575c5db89f7d664804c91456b7e8c0c81645a2d26748"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/branchSession.ts",
+      "bytes": 10801,
+      "sha256": "bc63da558737f7f769b18f656d3d95e0eb2686f083ec1140f8918df3a52a3f11"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "bytes": 58071,
+      "sha256": "93793b960a9245f83ce326583602e71e85a0ef54a097397b40b2c50fffb03d1f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 86530,
+      "sha256": "8b7bdad3da34d6e1f804869a800912f43377615c08809ad0d5fdfc2ca2380dfd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/neighborRegion.ts",
+      "bytes": 8282,
+      "sha256": "c7bc8adc578f6c60e9895f7a037d9420bdb849073d14432e45e7fb8acc8451cf"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 21814,
+      "sha256": "09bf987ed7be9f2c954e5ca2f3063067b15168564da9295a758da0b2d4bffec6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/principalAxes.ts",
+      "bytes": 3603,
+      "sha256": "1bb86622963aa903302f00de4c8bfc17b63a315698c18535d7f76c98c0dd4710"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/profile.ts",
+      "bytes": 3301,
+      "sha256": "128820a0ef2554ea72fd6bd1d4d417a507d83c90f40e8e28f0a1cf8088f3fa1c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/rapierPort.ts",
+      "bytes": 3520,
+      "sha256": "01249a406183d783e0d1b9e97a842a8c5444af72e17121ecd17f5d64780f049e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/restoreBody.ts",
+      "bytes": 1717,
+      "sha256": "952c12dd32e325e0de3a7855012efae6a62db3a4c100e04079462ee5dd20e44d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/rigidBody.ts",
+      "bytes": 3018,
+      "sha256": "e0ee72e6f96a0175d0a88241cf2bf82db9c3c9a4bbc8abb0fc56acb810408c7e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/rigidRecipe.ts",
+      "bytes": 2118,
+      "sha256": "abaa0b73cd1a208a56179bd03412f6a8d94cde77fc331dcbf2da38ef6cbbbb94"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 43168,
+      "sha256": "7d1f356c25457acf798ec911add03adc06f99caf413f0793c43eda0a8dea251a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/structuralBreak.ts",
+      "bytes": 6091,
+      "sha256": "dbe340e839929ccd84b5081a78b8e5c85b4fcaadfcfe5aae08fcd248ed689e34"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/structuralPlan.ts",
+      "bytes": 5992,
+      "sha256": "abff84d422aa518bf2e96957bf5e3fead935f7a86f25ebbde45aeed6610c2900"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/terrainColliders.ts",
+      "bytes": 4064,
+      "sha256": "6aca34326bb8e93002b6d8863bbb13b14679911d812660f774a79c6725252e58"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/terrainFragment.ts",
+      "bytes": 1662,
+      "sha256": "b9c66b216f13178689e14335e9b9cccc365c0ebb9b621f168ff7b9ea4ec2c14e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/tick.ts",
+      "bytes": 1929,
+      "sha256": "5dfb07ec90136f55ee771d941d97837fc53caa4c17bb7c7047263cf5d55e83b2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/worldReplacement.ts",
+      "bytes": 3341,
+      "sha256": "334d33a970b7b200ebdadffeaae4843fce4d83d0beb31728b7b70f4a3a5c7a47"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "bytes": 16616,
+      "sha256": "4cc5d01e849f76a80851c1a4b1887006e2448b8c3fc9b360a70620ca545159dd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "bytes": 15532,
+      "sha256": "364c16933a664eccca60199ab2f2b5491951b34adf6debe0c311a17342ce723e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/presentation.ts",
+      "bytes": 3441,
+      "sha256": "dc26489be8d6139d2ed97d5b284d54d4aae46db8a44d8dc510158ea929f254f2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 41241,
+      "sha256": "46941c7f1bbd86a199116355f8541c37a3a9fabc9633e4a9e5cea990ff33d8a2"
+    },
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/cargoSite-v1.native-owner-source.blob",
+      "bytes": 4071,
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c"
+    }
+  ],
+  "userGrant": "allfiveVisualFixesOnly; allColliderAndSavedSourceContractsUnchanged"
+}

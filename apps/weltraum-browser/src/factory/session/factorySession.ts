@@ -2,42 +2,71 @@ import { createFp02Fixture } from "../catalog/fp02Catalog";
 import { createResourceContainerDefinition, createResourceContainerSnapshot,createResourceContainerState } from "../../resources/containers";
 import { createFactoryMaterialView,prepareFactoryMaterialStep,commitFactoryMaterialStep } from "../material/reservations";
 import { createFactoryConstruction, type FactoryConstruction } from "../construction/buildStep";
-import { bindFactoryDomainSession,readDryFactoryEnabled,setDryFactoryEnabled,createFactoryMaterialAuthority,createFactoryCommandHistory,reconcileDryFactoryInstallations,readDryFactorySupply,readDryFactoryBeltPort,adoptDryFactoryBelt,prepareDryFactoryStep,commitDryFactoryStep,type DryFactoryState } from "./dryFactorySlice";
+import { bindFactoryDomainSession,readDryFactoryEnabled,setDryFactoryEnabled,setDryFactoryOwnerEnabled,createFactoryMaterialAuthority,createRuntimeFactoryMaterialAuthority,createFactoryCommandHistory,reconcileDryFactoryInstallations,reconcileDryFactoryOwnerInstallations,readDryFactorySupply,readDryFactoryBeltPort,adoptDryFactoryBelt,adoptDryFactoryOwnerBelt,prepareDryFactoryStep,commitDryFactoryStep,prepareFactoryDryOwnerStepWithAuthority,commitFactoryDryOwnerStep,importDryFactoryStateV1,readDryFactoryCheckpointCacheBytes,readDryFactoryCheckpointCacheBreakdown,readDryFactoryMaterialCacheTextBytes,type DryFactoryOwnerState,type DryFactoryRuntimeState,type DryFactoryState } from "./dryFactorySlice";
 import type {BeltInstalledPort} from "../conveyor/beltPorts";
 import type {FactoryPowerLink,FactoryPowerSuccess} from "../power/factoryPower";
-import {admitFactoryRecipe,type ProductionHostFacts,type ProductionStart} from "../production/recipeAdmission";
+import {admitFactoryRecipe,readProductionFactoryCheckpointCacheBytes,readProductionFactoryMaterialCacheTextBytes,readProductionFactoryCatalogCheckpointBytes,type ProductionHostFacts} from "../production/recipeAdmission";
 import type {ProductionCommand} from "../production/productionStep";
 import { createFactoryHandling } from "./cargoHandling";
 import { readCargoHandlingProfile,FACTORY_CLOSED_CABLE_JOBS } from "../construction/cargoHandlingProfile";
 import { factoryMaterialBytes, type FactoryPlacementRequest } from "../construction/placement";
-import { createFactoryInstallationProfile, transformFactoryBounds } from "../construction/installationProfile";
+import { readRuntimeFactoryInstallationProfile, transformFactoryBounds, type FactoryVector } from "../construction/installationProfile";
 import { validateFactoryAmount } from "../material/quantity";
 import { canonicalJson,canonicalSignature } from "../../resources/serialization";
+import { canonicalizePersistenceValue } from "../../persistence";
 import type {FactoryFacilityRead} from "../../hestia-prototype/physics/factoryFacilitySession";
 import { projectFactoryProductionGoals } from "./freshLineageProjection";
 import type { FactoryOnboardingFacts } from "../ui/onboarding";
 import type { FactoryMapSnapshot, FactoryMapWorldPoint } from "../ui/localMap";
 import {FACTORY_START_SITE_MASKS,FACTORY_START_SITE_V2_ADDITIONS,FACTORY_START_SITE_V3_ADDITIONS,FACTORY_START_SITE_V4_CONNECTORS,FACTORY_START_SITE_V5_RAW_BAND_FLOORS} from "../fixtures/startSite";
+import { FACTORY_START_SITE_V6_ADDITIONS } from "../fixtures/startSiteV6";
 import { isSaveSafeResourceId } from "../../resources/ids";
-import type { FactoryUiPort,FactoryUiReadModel,FactoryUiCommand,FactoryUiReceipt,FactoryUiPanel,FactoryUiInventory,FactoryUiBinding } from "./hostPort";
+import type { FactoryUiPort,FactoryUiReadModel,FactoryUiCommand,FactoryUiReceipt,FactoryUiPanel,FactoryUiInventory,FactoryUiBinding,FactoryCheckpointMemoryRead,FactoryCheckpointMemoryReadV1,FactoryCheckpointCacheBreakdown,FactoryCheckpointRawAdmission,FactoryCheckpointRawAdmissionV1 } from "./hostPort";
 import type { FactoryCatalog } from "../contracts";
 import type { FactoryHostPort, FactoryHostExtensionHandle, FactoryHostView,FactoryPresentationRead } from "./hostPort";
+import {createHvpMeasurements} from "../../hestia-prototype/runtime/measurements";
+import { inspectFactoryCheckpointMemoryTree, inspectFactoryCheckpointTree, type FactoryDecodedCheckpoint, type FactoryDecodedCheckpointV1, type FactorySessionCheckpointV1, type FactorySessionCheckpointV2 } from "../persistence/factoryCheckpoint";
+import { isFactoryHostNeutral, readFactoryRestoreSeed, readFactoryCompactRestoreSeed, type FactoryCheckpointCapture, type FactoryCheckpointCaptureV2, type FactoryCheckpointCaptureUnion, type FactoryRestoreSeedV1, type FactoryRestoreSeedV2 } from "../persistence/restoreFactorySession";
 
 export interface FactorySessionView {
   readonly sessionId: string; readonly epoch: number; readonly catalogDigest: string;
   readonly nativeTick: number; readonly remainderTicks: number; readonly steps: number;
   readonly elapsedMs: number; readonly state: "Ready" | "WaitingForHost" | "RecoveryHold" | "Disposed";
 }
-export interface FactorySessionHandle extends FactoryHostExtensionHandle {
+/** Historical public handle stays V1; compact Entry uses its explicit V2 counterpart. */
+export interface FactorySessionHandle extends Omit<FactoryHostExtensionHandle,"beginFactoryCheckpoint"|"readFactoryCheckpointMemory"> {
   readonly construction?:FactoryConstruction;
   readonly ui:FactoryUiPort;
   readonly domainSession:ReturnType<typeof bindFactoryDomainSession>;
+  canBeginFactoryCheckpoint():boolean;
+  beginFactoryCheckpoint(admit?:FactoryCheckpointRawAdmissionV1):FactoryCheckpointCapture;
+  readFactoryCheckpointMemory():FactoryCheckpointMemoryReadV1;
   read(): FactorySessionView;
   readPresentation(hostView?:FactoryHostView):FactoryPresentationRead;
   readOnboarding(hostView?:FactoryHostView):FactoryOnboardingFacts;
   readLocalMap(ghost?:FactoryPlacementRequest|null):FactoryMapSnapshot|null;
   subscribe(listener: (view: FactorySessionView) => void): () => void;
 }
+export type FactorySessionV1Handle = FactorySessionHandle;
+export interface FactoryCompactSessionHandle extends Omit<FactorySessionHandle,"beginFactoryCheckpoint"|"readFactoryCheckpointMemory"> {
+  beginFactoryCheckpoint(admit?:FactoryCheckpointRawAdmission):FactoryCheckpointCaptureV2;
+  readFactoryCheckpointMemory():FactoryCheckpointMemoryRead;
+}
+interface FactorySessionInternalHandle extends Omit<FactoryHostExtensionHandle,"beginFactoryCheckpoint"|"readFactoryCheckpointMemory"> {
+  readonly construction?:FactoryConstruction;
+  readonly ui:FactoryUiPort;
+  readonly domainSession:ReturnType<typeof bindFactoryDomainSession>;
+  canBeginFactoryCheckpoint():boolean;
+  beginFactoryCheckpoint(admit?:FactoryCheckpointRawAdmission):FactoryCheckpointCaptureUnion;
+  readFactoryCheckpointMemory():FactoryCheckpointMemoryRead;
+  read():FactorySessionView;
+  readPresentation(hostView?:FactoryHostView):FactoryPresentationRead;
+  readOnboarding(hostView?:FactoryHostView):FactoryOnboardingFacts;
+  readLocalMap(ghost?:FactoryPlacementRequest|null):FactoryMapSnapshot|null;
+  subscribe(listener:(view:FactorySessionView)=>void):()=>void;
+}
+type FactorySessionPowerLink=FactoryPowerLink&Readonly<{version:"fp06-paid-native-cable-v1";lengthMm:number;containerId:string;
+  routeMm:readonly FactoryVector[];sourceProfileDigest:string;targetProfileDigest:string}>;
 const mountedHosts = new WeakSet<FactoryHostPort>();
 
 /** Read-only target directory. Source plans do not grant construction, jobs or World ownership. */
@@ -148,28 +177,49 @@ const readFactoryTechnologies = (catalog:FactoryCatalog):FactoryUiReadModel["tec
   return Object.freeze(rows.map(([id,name,requirements,source])=>Object.freeze({id,name,status:available.has(id)?"AVAILABLE" as const:"PLANNED" as const,requirements:Object.freeze([requirements,available.has(id)?"Im Prototyp als technische S0-/Prozessfähigkeit unterstützt; Material, Aufbau und Betrieb werden separat geprüft":"Implementierung fehlt im FP06-Prototyp; Planungsdefinition und weitere Betriebsfreigaben ersetzen keinen baubaren Weltzustand",`Quelle: ${source}`]),reason:available.has(id)?null:"Geplantes Ziel; kein freigegebener Bau- oder Betriebscommand"})));
 };
 
-
 /** D05: six confirmed native 60-Hz ticks, never browser time or offline time. */
-export const mountFactorySession = async (host: FactoryHostPort, catalog: FactoryCatalog): Promise<FactorySessionHandle> => {
+const mountFactorySessionInternal = async (host: FactoryHostPort, catalog: FactoryCatalog, restore?:FactoryDecodedCheckpoint,
+  compactOwner?:FactorySessionCheckpointV2,compactMode=false): Promise<FactorySessionInternalHandle> => {
   if (!host.current()) throw new Error("Factory requires a current, undisposed host");
   if (mountedHosts.has(host)) throw new Error("Factory already mounted on this host");
   const initial = host.read();
+  const uiMeasurement=createHvpMeasurements(typeof window!=="undefined"&&new URLSearchParams(window.location.search).get("hvpMeasure")==="1");
+  let restoreSeed:FactoryRestoreSeedV1|FactoryRestoreSeedV2|undefined;
+  if(restore){
+    if(compactMode){if(!compactOwner)throw new Error("Compact Factory restore owner missing");restoreSeed=readFactoryCompactRestoreSeed(host,catalog,restore,compactOwner,initial);}
+    else restoreSeed=readFactoryRestoreSeed(host,catalog,restore as FactoryDecodedCheckpointV1,initial);
+  }
   if (!initial.confirmed || !["Running", "Paused"].includes(initial.physicsStatus) || !Number.isSafeInteger(initial.nativeTick) || initial.nativeTick < 0) {
     throw new Error("Factory requires a confirmed native tick baseline");
   }
   const fixture=createFp02Fixture("cargo");
-  if(fixture.catalog.canonicalJson!==catalog.canonicalJson)throw new Error("Factory initial Cargo catalog binding mismatch");
+  if(fixture.catalog.canonicalJson!==catalog.canonicalJson||(restoreSeed&&restoreSeed.material.catalog.canonicalJson!==catalog.canonicalJson))throw new Error("Factory initial Cargo catalog binding mismatch");
   const technologies=readFactoryTechnologies(catalog);
   const initialMaterial=createFactoryMaterialView(catalog,[createResourceContainerSnapshot(createResourceContainerDefinition({containerId:fixture.resourceState.containerId,kind:"ShipCargo",maxMassKg:4000,maxVolumeM3:30,maxStackCount:200}),fixture.resourceState,catalog.resources)]);
-  const materialAuthority=createFactoryMaterialAuthority(initialMaterial),domainSession=bindFactoryDomainSession(initial.sessionId),history=createFactoryCommandHistory();
-  let construction:FactoryConstruction|undefined,commandBusy=false,recoveryBusy=false,focusedPanel:FactoryUiPanel|null=null,publicationRevision=0,lastReceipt:FactoryUiReceipt|null=null;
-  const binding={sessionId:domainSession.domainSessionId,epoch:initial.epoch,netRevision:0,catalogDigest:catalog.catalogDigest,sourceProfileDigest:"fp01-fixed-net-observation-v1"};
-  let domain:DryFactoryState={binding,revision:0,tickEndUs:"0",power:{version:"fp06-factory-power-v1",binding,revision:0,tickEndUs:"0",battery:null,consumers:[]},machines:[],belts:[],lastStep:null};
-  const links:(FactoryPowerLink&Readonly<{version:"fp06-paid-native-cable-v1";lengthMm:number;containerId:string;routeMm:readonly(readonly number[])[];sourceProfileDigest:string;targetProfileDigest:string}>)[]=[];let lastPower:FactoryPowerSuccess|undefined;
-  const selectedRecipes=new Map<string,import("./hostPort").FactoryUiRecipeRef>(),selectionRevisions=new Map<string,number>(),waitingStarts=new Map<string,ProductionStart>();
+  const runtimeMaterialAuthority=compactMode?createRuntimeFactoryMaterialAuthority(restoreSeed?.material??initialMaterial):undefined;
+  const materialAuthority=runtimeMaterialAuthority??createFactoryMaterialAuthority(restoreSeed?.material??initialMaterial),domainSession=restoreSeed?.domainSession??bindFactoryDomainSession(initial.sessionId),history=createFactoryCommandHistory(restoreSeed?.factory.commandReceipts);
+  let construction:FactoryConstruction|undefined,commandBusy=false,recoveryBusy=false,focusedPanel:FactoryUiPanel|null=null,publicationRevision=restoreSeed?.factory.publicationRevision??0,lastReceipt:FactoryUiReceipt|null=restoreSeed?.factory.lastReceipt??null;
+  let captureBarrier:object|undefined;
+  const binding=restoreSeed?.factory.domain.binding??{sessionId:domainSession.domainSessionId,epoch:initial.epoch,netRevision:0,catalogDigest:catalog.catalogDigest,sourceProfileDigest:"fp01-fixed-net-observation-v1"};
+  const emptyDomain:DryFactoryState={binding,revision:0,tickEndUs:"0",power:{version:"fp06-factory-power-v1",binding,revision:0,tickEndUs:"0",battery:null,consumers:[]},machines:[],belts:[],lastStep:null};
+  const emptyCompactDomain=compactMode&&!restoreSeed?importDryFactoryStateV1(emptyDomain,initialMaterial,[],null,
+    (host.handling?.read().owners??[]).map(owner=>({instanceId:owner.instanceId,installationRevision:owner.installationRevision})),()=>{}):undefined;
+  let domain:DryFactoryRuntimeState=restoreSeed?.factory.domain??emptyCompactDomain??emptyDomain;
+  const links:FactorySessionPowerLink[]=[...(restoreSeed?.factory.links??[])];let lastPower:FactoryPowerSuccess|undefined=restoreSeed?.factory.lastPower??undefined;
+  const savedSelections=restoreSeed?.factory.recipeSelections??[];
+  const selectedRecipes=new Map(savedSelections.map(value=>[value.instanceId,value.recipe] as const)),selectionRevisions=new Map(savedSelections.map(value=>[value.instanceId,value.revision] as const)),waitingStarts=new Map((restoreSeed?.factory.waitingStarts??[]).map(value=>[value.instanceId,value.command] as const));
   let pendingDomain:Readonly<{uiCommand:FactoryUiCommand;instanceId:string;command:ProductionCommand;result:Promise<import("./hostPort").FactoryUiResult>;resolve:(status:FactoryUiReceipt["status"],reason:string|null)=>void}>|undefined;
   let pendingBelt:Readonly<{id:string;source:BeltInstalledPort;target:BeltInstalledPort}>|undefined;
   const installed=()=>construction?.read().installations??[];
+  const reconcileDomain=(state:DryFactoryRuntimeState,material:ReturnType<typeof materialAuthority.read>,installations:readonly import("../construction/placement").FactoryInstallation[],netRevision=state.binding.netRevision)=>compactMode
+    ?reconcileDryFactoryOwnerInstallations(state as DryFactoryOwnerState,material,installations,netRevision)
+    :reconcileDryFactoryInstallations(state as DryFactoryState,material,installations,netRevision);
+  const adoptDomainBelt=(state:DryFactoryRuntimeState,material:ReturnType<typeof materialAuthority.read>,owner:import("../construction/placement").FactoryInstallation,source:BeltInstalledPort,target:BeltInstalledPort)=>compactMode
+    ?adoptDryFactoryOwnerBelt(state as DryFactoryOwnerState,material,owner,source,target)
+    :adoptDryFactoryBelt(state as DryFactoryState,material,owner,source,target);
+  const setDomainEnabled=(state:DryFactoryRuntimeState,material:ReturnType<typeof materialAuthority.read>,owner:import("../construction/placement").FactoryInstallation,enabled:boolean,commandId:string)=>compactMode
+    ?setDryFactoryOwnerEnabled(state as DryFactoryOwnerState,material,owner,enabled,commandId)
+    :setDryFactoryEnabled(state as DryFactoryState,material,owner,enabled,commandId);
   const nativeSolidEndpoint=(owner:import("../construction/placement").FactoryInstallation,sourceId:string,native:FactoryFacilityRead,header:FactoryHostView)=>{
     const definition=catalog.devices.find(d=>d.sourceId===owner.definitionSourceId),catalogPort=definition?.ports.find(p=>p.sourceId===sourceId);
     const physical=native.owners.find(p=>p.instanceId===owner.instanceId),proof=native.solidPorts?.find(p=>p.instanceId===owner.instanceId&&p.sourcePortId===sourceId),parts=native.partObservations?.find(p=>p.instanceId===owner.instanceId);
@@ -190,18 +240,21 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
   const selectedRecipe=(instanceId:string)=>{const selected=selectedRecipes.get(instanceId),first=recipesFor(instanceId)[0];return selected??(first?{sourceId:first.sourceId,version:first.version,digest:first.digest}:null);};
   const machineUiRevision=(instanceId:string)=>{const revision=(domain.machines.find(m=>m.machineInstanceId===instanceId)?.revision??0)+(selectionRevisions.get(instanceId)??0)+(domain.enabledControls?.revision??0);if(!Number.isSafeInteger(revision))throw Error("MachineUiRevisionExhausted");return revision;};
   const reconcile=()=>{
-    if(recoveryBusy)return;
-    if(construction?.read().state!=="Ready"||host.handling?.read().state!=="Idle")return;
-    const logical=installed(),native=host.handling!.read();
-    if(logical.some(i=>!native.owners.some(n=>n.instanceId===i.instanceId&&n.profileDigest===i.profileDigest&&n.definitionRef.sourceId===i.definitionSourceId)))throw Error("FactoryNativeInstallationMismatch");
-    const old=materialAuthority.read(),next=reconcileDryFactoryInstallations(domain,old,logical);
-    if(next.material!==old&&!materialAuthority.adopt(old,next.material))throw Error("FactoryBufferAdoptionMismatch");domain=next.state;
+    const started=uiMeasurement.enabled?performance.now():0;
+    try{
+      if(recoveryBusy)return;
+      if(construction?.read().state!=="Ready"||host.handling?.read().state!=="Idle")return;
+      const logical=installed(),native=host.handling!.read();
+      if(logical.some(i=>!native.owners.some(n=>n.instanceId===i.instanceId&&n.profileDigest===i.profileDigest&&n.definitionRef.sourceId===i.definitionSourceId)))throw Error("FactoryNativeInstallationMismatch");
+      const old=materialAuthority.read(),next=reconcileDomain(domain,old,logical);
+      if(next.material!==old&&!materialAuthority.adopt(old,next.material))throw Error("FactoryBufferAdoptionMismatch");domain=next.state;
+    }finally{if(uiMeasurement.enabled)uiMeasurement.record("factoryReconcile",started,performance.now()-started,{machines:domain.machines.length});}
   };
-  const factsFor=(instanceId:string,end:string):ProductionHostFacts=>{
+  const factsFor=(instanceId:string,end:string,hostView:FactoryHostView=host.read()):ProductionHostFacts=>{
     const i=installed().find(i=>i.instanceId===instanceId)!,definition=catalog.devices.find(d=>d.sourceId===i.definitionSourceId)!,native=host.handling!.read(),paid=materialAuthority.read().containers.find(c=>c.state.containerId===i.materialContainerId)!;
     const toolId=definition.sourceId==="B06"?"fp02.tool.cutter_head":definition.sourceId==="B07"?"fp02.tool.forming_die":"fp02.device.field_workbench";
     const tool=paid.state.contents.find(s=>s.resourceId===catalog.items.find(item=>item.sourceId===toolId)!.resourceId)!;
-    const proof=native.production?.find(o=>o.instanceId===instanceId),hostView=host.read();
+    const proof=native.production?.find(o=>o.instanceId===instanceId);
     const bound=!!proof&&proof.profileDigest===i.profileDigest&&proof.sourceDigest===i.sourceDigest&&proof.terrainRevision===hostView.terrain.revision&&proof.facilityRevision===native.revision;
     return {version:"fp06-production-host-facts-v1",binding:domain.binding,confirmed:hostView.confirmed,tickEndUs:end,installation:{instanceId,definitionRef:{sourceId:definition.sourceId,version:definition.version,digest:definition.digest},installationRevision:bound?proof.installationRevision:0,confirmed:bound&&proof.confirmed,supported:bound&&proof.supported,serviceClear:bound&&proof.serviceClear&&proof.sweepClear,installedContainerId:i.materialContainerId,inputContainerId:`input_${instanceId}`,outputContainerId:`output_${instanceId}`,offcutContainerId:`offcut_${instanceId}`,wipContainerId:`wip_${instanceId}`,powerConsumerId:`consumer_${instanceId}`,powerPortId:`power_${instanceId}`,tool:{partId:tool.stackId,sourceItemId:toolId,revision:paid.state.revision,condition:tool.condition===undefined||tool.condition===1?"OK":"damaged"}},interaction:{actorId:"hvp_player",actorRevision:hostView.nativeTick,confirmed:hostView.confirmed,serviceReachable:bound&&proof.accessible,accessibleContainers:(native.sources??[]).filter(s=>s.accessible).flatMap(s=>{const c=materialAuthority.read().containers.find(c=>c.state.containerId===s.containerId);return c?[{containerId:s.containerId,revision:c.state.revision}]:[]})}};
   };
@@ -217,8 +270,20 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
     if(queued&&canonicalJson(queued.uiCommand.expected)!==canonicalJson(uiBinding())){pendingDomain=undefined;queued.resolve("Rejected","StaleQueuedDomainCommand");}
     const activePending=pendingDomain;
     const input={confirmed:true,binding:domain.binding,tickStartUs:domain.tickEndUs,tickEndUs:end,material:old,supply,machines:domain.machines.map(machine=>{const command=activePending?.instanceId===machine.machineInstanceId?activePending.command:waitingStarts.get(machine.machineInstanceId);return {instanceId:machine.machineInstanceId,facts:factsFor(machine.machineInstanceId,end),...(command?{command}:{})};}),belts:domain.belts.map(line=>{const source=old.containers.find(c=>c.state.containerId===line.installation.source.containerId),stack=source?.state.contents[0],item=catalog.items.find(i=>i.resourceId===stack?.resourceId);return {lineId:line.lineId,actorId:"hvp_player",enabled:readDryFactoryEnabled(domain,line.lineId),sourceLot:stack&&item?{stackId:stack.stackId,itemId:item.sourceId}:null};})};
-    const proposal=prepareDryFactoryStep(domain,input),committed=commitDryFactoryStep(domain,input,proposal);if(committed.status!=="Committed"||proposal.status!=="Prepared")throw Error(committed.status==="Rejected"?committed.reason:"FactoryUnexpectedReplay");
-    if(!materialAuthority.adopt(old,committed.material))throw Error("FactoryDomainMaterialCAS");domain=committed.state;lastPower=proposal.power;
+    let nextDomain:DryFactoryRuntimeState,nextMaterial:typeof old,nextPower:FactoryPowerSuccess;
+    if(compactMode){
+      const owner=domain as DryFactoryOwnerState;if(!runtimeMaterialAuthority)throw Error("Compact Factory material authority missing");
+      const proposal=prepareFactoryDryOwnerStepWithAuthority(owner,input,runtimeMaterialAuthority);
+      if(proposal.status!=="Prepared")throw Error(proposal.reason);
+      const committed=commitFactoryDryOwnerStep(owner,input,proposal);if(committed.status!=="Committed")throw Error(committed.status==="Rejected"?committed.reason:"FactoryUnexpectedReplay");
+      nextDomain=committed.state;nextMaterial=committed.material;nextPower=proposal.power;
+    }else{
+      const legacy=domain as DryFactoryState,proposal=prepareDryFactoryStep(legacy,input);
+      if(proposal.status!=="Prepared")throw Error(proposal.reason);
+      const committed=commitDryFactoryStep(legacy,input,proposal);if(committed.status!=="Committed")throw Error(committed.status==="Rejected"?committed.reason:"FactoryUnexpectedReplay");
+      nextDomain=committed.state;nextMaterial=committed.material;nextPower=proposal.power;
+    }
+    if(!materialAuthority.adopt(old,nextMaterial))throw Error("FactoryDomainMaterialCAS");domain=nextDomain;lastPower=nextPower;
     if(activePending?.command.kind==="start")waitingStarts.set(activePending.instanceId,activePending.command);
     for(const machine of domain.machines)if(machine.job)waitingStarts.delete(machine.machineInstanceId);
     if(activePending){pendingDomain=undefined;activePending.resolve("Committed",null);}
@@ -226,28 +291,28 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
   let workHoldReason:string|null=null;
   let notifyUi=()=>{};
   if(host.construction){const native=host.construction;
-    construction=createFactoryConstruction({...native,materialAuthority,readPlacementView:()=>({...native.readFacts(),material:materialAuthority.read(),installations:[]}),pause:async()=>{await host.pause();},notify:()=>notifyUi(),prepareAdoption:plan=>{
+    construction=createFactoryConstruction({...native,materialAuthority,canCommit:()=>!captureBarrier,readPlacementView:()=>({...native.readFacts(),material:materialAuthority.read(),installations:[]}),pause:async()=>{await host.pause();},notify:()=>notifyUi(),prepareAdoption:plan=>{
       if(plan.request.transactionId!==pendingBelt?.id)return undefined;
-      const oldDomain=domain,oldPower=lastPower,paired=reconcileDryFactoryInstallations(domain,plan.materialCandidate,[...installed(),plan.installation],domain.binding.netRevision+1),next=adoptDryFactoryBelt(paired.state,paired.material,plan.installation,pendingBelt.source,pendingBelt.target);
+      const oldDomain=domain,oldPower=lastPower,paired=reconcileDomain(domain,plan.materialCandidate,[...installed(),plan.installation],domain.binding.netRevision+1),next=adoptDomainBelt(paired.state,paired.material,plan.installation,pendingBelt.source,pendingBelt.target);
       return {material:next.material,publish:()=>{domain=next.state;lastPower=undefined;},rollback:()=>{domain=oldDomain;lastPower=oldPower;}};
-    }},initialMaterial);
+    }},initialMaterial,restoreSeed?.factory.installations);
   }
   const handling=host.handling?createFactoryHandling({native:host.handling,materialAuthority,current:()=>host.current(),pause:async()=>{await host.pause();}}):undefined;
   // Failed catalog/Resources initialization has not acquired this Host's Factory mount.
   mountedHosts.add(host);
   let disposed = false;
   let view: FactorySessionView = Object.freeze({ sessionId: initial.sessionId, epoch: initial.epoch,
-    catalogDigest: catalog.catalogDigest, nativeTick: initial.nativeTick, remainderTicks: 0,
-    steps: 0, elapsedMs: 0, state: "Ready" });
+    catalogDigest: catalog.catalogDigest, nativeTick: restoreSeed?.host.nativeTick??initial.nativeTick, remainderTicks: restoreSeed?.host.remainderTicks??0,
+    steps: restoreSeed?.host.steps??0, elapsedMs: (restoreSeed?.host.steps??0)*100, state: "Ready" });
   const listeners = new Set<(view: FactorySessionView) => void>();
-  let observedHostHeader=JSON.stringify(initial);
+  let observedHostHeader:string|undefined=JSON.stringify(initial);
   const publish = (next: FactorySessionView) => {
     view = Object.freeze(next);
     for (const listener of listeners) listener(view);
     notifyUi();
   };
   const observe = (confirmed: FactoryHostView) => {
-    if (disposed || recoveryBusy || !host.current() || view.state === "RecoveryHold") return;
+    if (disposed || captureBarrier || recoveryBusy || !host.current() || view.state === "RecoveryHold") return;
     // A same-tick Pause ACK changes input/capability projection, not work.
     // Retain only this trusted Host header; unchanged frame reads emit no UI.
     const header=JSON.stringify(confirmed),hostChanged=header!==observedHostHeader;observedHostHeader=header;
@@ -288,11 +353,14 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
     if (!Number.isSafeInteger(ticks) || !Number.isSafeInteger(steps * 100)) {
       publish({ ...view, state: "RecoveryHold" }); return;
     }
-    try{for(let step=view.steps;step<steps;step++)advanceDomain();}catch(error){const pending=pendingDomain;pendingDomain=undefined;pending?.resolve("RecoveryHold",String(error));publish({...view,state:"RecoveryHold"});return;}
+    const advanceStarted=uiMeasurement.enabled?performance.now():0;
+    try{for(let step=view.steps;step<steps;step++)advanceDomain();}
+    catch(error){const pending=pendingDomain;pendingDomain=undefined;pending?.resolve("RecoveryHold",String(error));publish({...view,state:"RecoveryHold"});return;}
+    finally{if(uiMeasurement.enabled)uiMeasurement.record("factoryAdvanceDomain",advanceStarted,performance.now()-advanceStarted,{steps:steps-view.steps});}
     publish({ ...view, state: "Ready", nativeTick: confirmed.nativeTick, remainderTicks: ticks % 6, steps, elapsedMs: steps * 100 });
   };
   const uiListeners=new Set<(snapshot:FactoryUiReadModel)=>void>();
-  const uiBinding=():FactoryUiBinding=>{const native=host.read(),facilities=host.handling?.read();return {catalogDigest:catalog.catalogDigest,terrainSourceDigest:native.terrain.sourceDigest,powerSourceProfileDigest:"fp01-fixed-net-observation-v1",terrainRevision:native.terrain.revision,facilityRevision:facilities?.revision??host.construction?.readFacts().binding.facilityRevision??0,materialRevision:materialAuthority.read().revision,netRevision:domain.binding.netRevision,handlingRevision:facilities?.revision??0};};
+  const uiBinding=(native:FactoryHostView=host.read()):FactoryUiBinding=>{const facilities=host.handling?.read();return {catalogDigest:catalog.catalogDigest,terrainSourceDigest:native.terrain.sourceDigest,powerSourceProfileDigest:"fp01-fixed-net-observation-v1",terrainRevision:native.terrain.revision,facilityRevision:facilities?.revision??host.construction?.readFacts().binding.facilityRevision??0,materialRevision:materialAuthority.read().revision,netRevision:domain.binding.netRevision,handlingRevision:facilities?.revision??0};};
   const deviceName=(sourceId:string)=>({B06:"Zuschnittstation",B07:"Umformwerk",B05:"Feldwerkbank",B09:"Materialcontainer","fp06.line.belt_4m":"Förderlinie","fp02.device.battery_4kwh":"Expeditionsbatterie","fp02.device.distribution_40kw":"Verteiler","fp02.device.wind_pack_6kw":"Windanlage","fp02.device.pv_pack_2kwp":"Solararray"}[sourceId]??sourceId);
   const controlOwner=(id:string,native:FactoryHostView,facilities:FactoryFacilityRead|undefined)=>{
     const logical=installed().find(i=>i.instanceId===id),owner=facilities?.owners.find(o=>o.instanceId===id),socket=facilities?.powerPorts?.find(p=>p.instanceId===id);
@@ -300,22 +368,25 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
       ||socket.profileDigest!==logical.profileDigest||socket.sourceDigest!==logical.sourceDigest||socket.installationRevision!==owner.installationRevision
       ||socket.terrainRevision!==native.terrain.revision||socket.facilityRevision!==facilities.revision||owner.profileDigest!==logical.profileDigest||owner.sourceDigest!==logical.sourceDigest
       ||canonicalJson(owner.centerMm)!==canonicalJson(logical.centerMm)||owner.quarterTurns!==logical.quarterTurns)return null;
-    const profile=createFactoryInstallationProfile(logical.definitionSourceId);
+    const profile=readRuntimeFactoryInstallationProfile(logical.definitionSourceId);
     if(canonicalJson(owner.definitionRef)!==canonicalJson(profile.definitionRef)||!profile.source.ports.some(p=>p.role.startsWith("Power")))return null;
     return logical;
   };
   const controlRevision=(id:string,facilities:FactoryFacilityRead|undefined)=>domain.machines.some(m=>m.machineInstanceId===id)?machineUiRevision(id):(facilities?.owners.find(o=>o.instanceId===id)?.installationRevision??0)+(domain.enabledControls?.revision??0);
   const readUi=():FactoryUiReadModel=>{
+    const started=uiMeasurement.enabled?performance.now():0;
+    try{
     const native=host.read(),facilities=host.handling?.read(),material=materialAuthority.read(),binding=uiBinding();
     const access=(id:string)=>id===facilities?.cargo?.containerId?facilities.cargo.accessible&&facilities.cargo.opened:id===facilities?.carrier?.containerId?facilities.carrier.phase==="Carrying"||facilities.carrier.accessible===true:facilities?.sources?.some(s=>s.containerId===id&&s.accessible)===true;
-    const available=(view.state==="Ready"||workHoldReason!==null)&&native.confirmed&&!commandBusy&&!recoveryBusy&&!pendingDomain&&!construction?.busy&&!handling?.busy;
+    const available=(view.state==="Ready"||workHoldReason!==null)&&native.confirmed&&!captureBarrier&&!commandBusy&&!recoveryBusy&&!pendingDomain&&!construction?.busy&&!handling?.busy;
     const profiles=["C26-PACK","C27-PACK","B06-BOM","B07-BOM","BATTERY-PACK","DISTRIBUTOR-PACK","BENCH-PACK","BIN-PACK","BELT4","CABLE40",...Object.keys(FACTORY_CLOSED_CABLE_JOBS),"RAW8","MONTAGE","BRACE"];
+    const handlingProfiles=profiles.flatMap(profileId=>{const profile=readCargoHandlingProfile(catalog,profileId);return profile?[profile]:[];});
     const inventory:FactoryUiInventory[]=material.containers.map(c=>{
       const id=c.state.containerId,accessible=access(id),role=id===facilities?.cargo?.containerId?"cargo":id===facilities?.carrier?.containerId?(facilities.carrier.phase==="Deposited"?"depot":"carrier"):id.startsWith("installed_")?"installed":id.startsWith("input_")?"input":id.startsWith("output_")?"output":id.startsWith("offcut_")?"offcut":id.startsWith("wip_")?"wip":id.startsWith("belt_")?"belt":"depot";
       const contents=c.state.contents.map(stack=>{const item=catalog.items.find(i=>i.resourceId===stack.resourceId)!;return {stackId:stack.stackId,itemId:item.sourceId,name:item.displayName,quantityUnits:stack.quantity,quantityBasis:item.quantityBasis,massMg:validateFactoryAmount(item.sourceId,stack.quantity,catalog).massMg,freshProduction:Boolean(stack.extensions["factory.production"])};});
-      const pickupProfiles=profiles.flatMap(id=>{const profile=readCargoHandlingProfile(catalog,id);if(!profile)return [];const lots:import("./hostPort").FactoryUiLotRef[]=[];
+      const pickupProfiles=handlingProfiles.flatMap(profile=>{const lots:import("./hostPort").FactoryUiLotRef[]=[];
         for(const term of profile.terms){const item=catalog.items.find(i=>i.sourceId===term.itemId)!;let left=term.quantityUnits;for(const stack of c.state.contents){if(stack.resourceId!==item.resourceId||!left)continue;const quantityUnits=Math.min(left,stack.quantity);lots.push({containerId:c.state.containerId,containerRevision:c.state.revision,stackId:stack.stackId,quantityUnits});left-=quantityUnits;}if(left)return [];}
-        return [{profileId:id,name:id,sourceLots:lots,capability:{enabled:available&&accessible&&!facilities?.carrier&&Boolean(handling),reason:available&&accessible&&!facilities?.carrier?null:"Quelle nicht erreichbar oder Transport belegt"}}];});
+        return [{profileId:profile.profileId,name:profile.profileId,sourceLots:lots,capability:{enabled:available&&accessible&&!facilities?.carrier&&Boolean(handling),reason:available&&accessible&&!facilities?.carrier?null:"Quelle nicht erreichbar oder Transport belegt"}}];});
       return {id,revision:c.state.revision,ownerId:c.state.ownerId??null,role,accessible,massMg:contents.reduce((n,s)=>n+s.massMg,0),capacityMassMg:Math.round(c.definition.maxMassKg*1000000),capacityVolumeMm3:Math.round(c.definition.maxVolumeM3*1000000000),contents,pickupProfiles};
     });
     const currentTechnologies=Object.freeze(technologies.map(technology=>{
@@ -356,10 +427,12 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
       const depot=carrier?.phase==="Deposited"&&carrier.profileId==="BELT4"?inventory.find(c=>c.id===carrier.containerId&&c.accessible):undefined,enabled=available&&source.accessible&&target.accessible&&!!depot;
       (connections.belts as Array<NonNullable<FactoryUiReadModel["connections"]>["belts"][number]>).push({id:`${source.port.nativePortId}_${target.port.nativePortId}`,sourcePortId:source.port.nativePortId,targetPortId:target.port.nativePortId,sourceLots:depot?.contents.map(l=>({containerId:depot.id,containerRevision:depot.revision,stackId:l.stackId,quantityUnits:l.quantityUnits}))??[],capability:{enabled,reason:enabled?null:!source.accessible||!target.accessible?"Beide Materialanschlüsse müssen erreichbar sein":"Vier Bandmodule und einen Antrieb als Depot hier ablegen"}});
     }
-    return Object.freeze<FactoryUiReadModel>({version:"fp06-ui-read-v1",sessionId:initial.sessionId,epoch:initial.epoch,publicationRevision,binding,host:native,factorySteps:view.steps,elapsedMs:view.elapsedMs,state:disposed?"Disposed":view.state==="RecoveryHold"||handling?.recovery?"RecoveryHold":view.state==="Ready"?"Ready":"Waiting",reason:workHoldReason,focusedPanel,inventory,connections,machines:domain.machines.map(machine=>{const i=installed().find(i=>i.instanceId===machine.machineInstanceId)!,device=catalog.devices.find(d=>d.sourceId===i.definitionSourceId)!,recipes=catalog.recipes.filter(recipe=>recipe.processes.some(p=>p.availability==="first-dry-loop"&&device.capabilities.includes(p.capability))),job=machine.job;return {id:i.instanceId,revision:machineUiRevision(i.instanceId),definitionId:device.sourceId,name:deviceName(device.sourceId),installed:true,status:workHoldReason&&job?.phase!=="COMPLETED"?workHoldReason:machine.status,reason:workHoldReason,selectedRecipe:selectedRecipe(i.instanceId),recipes:recipes.map(recipe=>{const process=recipe.processes.find(p=>p.availability==="first-dry-loop"&&device.capabilities.includes(p.capability))!;return {ref:{sourceId:recipe.sourceId,version:recipe.version,digest:recipe.digest},name:recipe.sourceId,durationMs:process.durationMs,powerWatts:process.powerWatts};}),jobId:job?.phase!=="COMPLETED"?job?.start.jobId??null:null,confirmedWorkMs:job?.start.processKind==="electric"?Number(BigInt(job.workMilliJoule)/BigInt(catalog.recipes.find(r=>r.sourceId===job.recipeRef.sourceId)!.processes.find(p=>p.kind==="electric")!.powerWatts)):0,requiredWorkMs:job?catalog.recipes.find(r=>r.sourceId===job.recipeRef.sourceId)!.processes.find(p=>p.kind===job.start.processKind)!.durationMs:null,allocatedWatts:Number(lastPower?.grants.find(g=>g.deviceInstanceId===i.instanceId)?.allocatedMilliWatt??"0")/1000,inputContainerId:`input_${i.instanceId}`,outputContainerId:`output_${i.instanceId}`,offcutContainerId:`offcut_${i.instanceId}`,wipContainerId:`wip_${i.instanceId}`,installedContainerId:i.materialContainerId,ports:device.ports.map(p=>({id:p.role==="PowerConsumer"?`power_${i.instanceId}`:`port_${i.instanceId}_${p.runtimeId}`,role:p.role,connected:links.some(l=>l.fromPortId===`power_${i.instanceId}`||l.toPortId===`power_${i.instanceId}`)})),actions:{start:{enabled:available&&!waitingStarts.has(i.instanceId)&&(!job||job.phase==="COMPLETED")&&facilities?.production?.some(p=>p.instanceId===i.instanceId&&p.confirmed&&p.supported&&p.serviceClear&&p.sweepClear)===true,reason:waitingStarts.has(i.instanceId)?"Auftrag wartet auf Versorgung":null},manualWork:{enabled:available&&job?.phase==="LAID_OUT",reason:null},manualFinish:{enabled:available&&job?.phase==="ASSEMBLED",reason:null},toggle:{enabled:false,reason:null}}};}),power:{allocationConfirmed:lastPower!==undefined,devices:installed().filter(i=>["B06","B07","fp06.line.belt_4m","fp02.device.battery_4kwh","fp02.device.distribution_40kw","fp02.device.wind_pack_6kw","fp02.device.pv_pack_2kwp"].includes(i.definitionSourceId)).map(i=>({id:i.instanceId,revision:controlRevision(i.instanceId,facilities),name:deviceName(i.definitionSourceId),enabled:readDryFactoryEnabled(domain,i.instanceId),capability:{enabled:available&&Boolean(controlOwner(i.instanceId,native,facilities)),reason:controlOwner(i.instanceId,native,facilities)?null:"Anlage oder Stromanschluss nicht erreichbar"}})),status:links.length?"CONNECTED":"UNCONNECTED",generationWatts:lastPower?Number(BigInt(lastPower.balance.sourceActual.n)/BigInt(lastPower.balance.sourceActual.d))/100:0,allocatedWatts:(lastPower?.grants??[]).reduce((n,g)=>n+Number(g.allocatedMilliWatt)/1000,0),batteryEnergyJ:domain.power.battery?Number(BigInt(domain.power.battery.storedEnergy.n))/Number(BigInt(domain.power.battery.storedEnergy.d))/1000:null,batteryCapacityJ:domain.power.battery?14400000:null,reserveEnergyJ:domain.power.battery?3600000:null,sourceQuality:"unsupported",consumers:(lastPower?.grants??[]).map(g=>({id:g.consumerId,name:g.deviceInstanceId,requestedWatts:Number(g.requiredMilliWatt)/1000,allocatedWatts:Number(g.allocatedMilliWatt)/1000,reason:g.status}))},technologies:currentTechnologies,interaction:{localDeposits,cargoOpened:facilities?.cargo?.opened??false,cargoAccessible:facilities?.cargo?.accessible??false,handling:validCarrier,openCargo:{enabled:available&&Boolean(facilities?.cargo?.accessible),reason:facilities?.cargo?.accessible?null:"Wrackfracht nicht erreichbar"},deposit:{enabled:available&&carrier?.phase==="Carrying",reason:carrier?.phase==="Carrying"?null:"Kein aktiver Transport"},returnCargo:{enabled:available&&Boolean(validCarrier)&&Boolean(facilities?.cargo?.accessible),reason:facilities?.cargo?.accessible?null:"Wrackfracht nicht erreichbar"}},lastReceipt});
+    const readModel=Object.freeze<FactoryUiReadModel>({version:"fp06-ui-read-v1",sessionId:initial.sessionId,epoch:initial.epoch,publicationRevision,binding,host:native,factorySteps:view.steps,elapsedMs:view.elapsedMs,state:disposed?"Disposed":view.state==="RecoveryHold"||handling?.recovery?"RecoveryHold":view.state==="Ready"?"Ready":"Waiting",reason:workHoldReason,focusedPanel,inventory,connections,machines:domain.machines.map(machine=>{const i=installed().find(i=>i.instanceId===machine.machineInstanceId)!,device=catalog.devices.find(d=>d.sourceId===i.definitionSourceId)!,recipes=catalog.recipes.filter(recipe=>recipe.processes.some(p=>p.availability==="first-dry-loop"&&device.capabilities.includes(p.capability))),job=machine.job;return {id:i.instanceId,revision:machineUiRevision(i.instanceId),definitionId:device.sourceId,name:deviceName(device.sourceId),installed:true,status:workHoldReason&&job?.phase!=="COMPLETED"?workHoldReason:machine.status,reason:workHoldReason,selectedRecipe:selectedRecipe(i.instanceId),recipes:recipes.map(recipe=>{const process=recipe.processes.find(p=>p.availability==="first-dry-loop"&&device.capabilities.includes(p.capability))!;return {ref:{sourceId:recipe.sourceId,version:recipe.version,digest:recipe.digest},name:recipe.sourceId,durationMs:process.durationMs,powerWatts:process.powerWatts};}),jobId:job?.phase!=="COMPLETED"?job?.start.jobId??null:null,confirmedWorkMs:job?.start.processKind==="electric"?Number(BigInt(job.workMilliJoule)/BigInt(catalog.recipes.find(r=>r.sourceId===job.recipeRef.sourceId)!.processes.find(p=>p.kind==="electric")!.powerWatts)):0,requiredWorkMs:job?catalog.recipes.find(r=>r.sourceId===job.recipeRef.sourceId)!.processes.find(p=>p.kind===job.start.processKind)!.durationMs:null,allocatedWatts:Number(lastPower?.grants.find(g=>g.deviceInstanceId===i.instanceId)?.allocatedMilliWatt??"0")/1000,inputContainerId:`input_${i.instanceId}`,outputContainerId:`output_${i.instanceId}`,offcutContainerId:`offcut_${i.instanceId}`,wipContainerId:`wip_${i.instanceId}`,installedContainerId:i.materialContainerId,ports:device.ports.map(p=>{const id=p.role==="PowerConsumer"?`power_${i.instanceId}`:`port_${i.instanceId}_${p.runtimeId}`,powerPortId=`power_${i.instanceId}`;const connected=p.role.startsWith("Power")?links.some(l=>l.fromPortId===powerPortId||l.toPortId===powerPortId):p.role==="SolidBatchIn"?domain.belts.some(l=>l.installation.target.nativePortId===id):p.role==="SolidBatchOut"?domain.belts.some(l=>l.installation.source.nativePortId===id):false;return {id,role:p.role,connected};}),actions:{start:{enabled:available&&!waitingStarts.has(i.instanceId)&&(!job||job.phase==="COMPLETED")&&facilities?.production?.some(p=>p.instanceId===i.instanceId&&p.confirmed&&p.supported&&p.serviceClear&&p.sweepClear)===true,reason:waitingStarts.has(i.instanceId)?"Auftrag wartet auf Versorgung":null},manualWork:{enabled:available&&job?.phase==="LAID_OUT",reason:null},manualFinish:{enabled:available&&job?.phase==="ASSEMBLED",reason:null},toggle:{enabled:false,reason:null}}};}),power:{allocationConfirmed:lastPower!==undefined,devices:installed().filter(i=>["B06","B07","fp06.line.belt_4m","fp02.device.battery_4kwh","fp02.device.distribution_40kw","fp02.device.wind_pack_6kw","fp02.device.pv_pack_2kwp"].includes(i.definitionSourceId)).map(i=>({id:i.instanceId,revision:controlRevision(i.instanceId,facilities),name:deviceName(i.definitionSourceId),enabled:readDryFactoryEnabled(domain,i.instanceId),capability:{enabled:available&&Boolean(controlOwner(i.instanceId,native,facilities)),reason:controlOwner(i.instanceId,native,facilities)?null:"Anlage oder Stromanschluss nicht erreichbar"}})),status:links.length?"CONNECTED":"UNCONNECTED",generationWatts:lastPower?Number(BigInt(lastPower.balance.sourceActual.n)/BigInt(lastPower.balance.sourceActual.d))/100:0,allocatedWatts:(lastPower?.grants??[]).reduce((n,g)=>n+Number(g.allocatedMilliWatt)/1000,0),batteryEnergyJ:domain.power.battery?Number(BigInt(domain.power.battery.storedEnergy.n))/Number(BigInt(domain.power.battery.storedEnergy.d))/1000:null,batteryCapacityJ:domain.power.battery?14400000:null,reserveEnergyJ:domain.power.battery?3600000:null,sourceQuality:"unsupported",consumers:(lastPower?.grants??[]).map(g=>({id:g.consumerId,name:g.deviceInstanceId,requestedWatts:Number(g.requiredMilliWatt)/1000,allocatedWatts:Number(g.allocatedMilliWatt)/1000,reason:g.status}))},technologies:currentTechnologies,interaction:{localDeposits,cargoOpened:facilities?.cargo?.opened??false,cargoAccessible:facilities?.cargo?.accessible??false,handling:validCarrier,openCargo:{enabled:available&&Boolean(facilities?.cargo?.accessible),reason:facilities?.cargo?.accessible?null:"Wrackfracht nicht erreichbar"},deposit:{enabled:available&&carrier?.phase==="Carrying",reason:carrier?.phase==="Carrying"?null:"Kein aktiver Transport"},returnCargo:{enabled:available&&Boolean(validCarrier)&&Boolean(facilities?.cargo?.accessible),reason:facilities?.cargo?.accessible?null:"Wrackfracht nicht erreichbar"}},lastReceipt});
+    return readModel;
+    }finally{if(uiMeasurement.enabled)uiMeasurement.record("factoryReadUi",started,performance.now()-started,{calls:1});}
   };
-  notifyUi=()=>{if(disposed||!host.current())return;try{reconcile();}catch{view=Object.freeze({...view,state:"RecoveryHold"});}publicationRevision++;if(uiListeners.size){const snapshot=readUi();for(const listener of uiListeners)listener(snapshot);}};
-  const ui:FactoryUiPort=Object.freeze({read:readUi,subscribe:(listener:(snapshot:FactoryUiReadModel)=>void)=>{if(disposed)throw Error("Factory session disposed");uiListeners.add(listener);return ()=>uiListeners.delete(listener);},readReceipt:history.readReceipt,setPanelFocus:(panel:FactoryUiPanel|null)=>{if(disposed||!host.current()||focusedPanel===panel)return;focusedPanel=panel;host.setPanelFocus?.(panel);notifyUi();},submit:async(incoming:FactoryUiCommand):Promise<import("./hostPort").FactoryUiResult>=>{
+  notifyUi=()=>{if(disposed||captureBarrier||!host.current())return;try{reconcile();}catch{view=Object.freeze({...view,state:"RecoveryHold"});}publicationRevision++;if(uiListeners.size){const snapshot=readUi(),listeners=uiListeners.size,started=uiMeasurement.enabled?performance.now():0;try{for(const listener of uiListeners)listener(snapshot);}finally{if(uiMeasurement.enabled)uiMeasurement.record("factoryUiListenerFanout",started,performance.now()-started,{listeners});}}};
+  const ui:FactoryUiPort=Object.freeze({read:readUi,subscribe:(listener:(snapshot:FactoryUiReadModel)=>void)=>{if(disposed)throw Error("Factory session disposed");uiListeners.add(listener);return ()=>uiListeners.delete(listener);},readReceipt:history.readReceipt,setPanelFocus:(panel:FactoryUiPanel|null)=>{if(disposed||captureBarrier||!host.current()||focusedPanel===panel)return;focusedPanel=panel;host.setPanelFocus?.(panel);notifyUi();},submit:async(incoming:FactoryUiCommand):Promise<import("./hostPort").FactoryUiResult>=>{
     const command:FactoryUiCommand=JSON.parse(canonicalJson(incoming));
     const old=history.replay(command);if(old)return old;
     if(pendingDomain?.uiCommand.commandId===command.commandId){
@@ -367,9 +440,11 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
       return {status:"Rejected",receipt:{commandId:command.commandId,requestCanonicalJson:canonicalJson(command),status:"Rejected",reason:"IdempotencyConflict",publicationRevision,binding:uiBinding()}};
     }
     const finish=(status:FactoryUiReceipt["status"],reason:string|null)=>{const receipt:FactoryUiReceipt={commandId:command.commandId,requestCanonicalJson:canonicalJson(command),status,reason,publicationRevision:publicationRevision+1,binding:uiBinding()};history.accept(command,receipt);lastReceipt=receipt;notifyUi();return {status,receipt};};
+    if(captureBarrier)return {status:"Rejected",receipt:{commandId:command.commandId,requestCanonicalJson:canonicalJson(command),status:"Rejected",reason:"CheckpointCaptureActive",publicationRevision,binding:uiBinding()}};
     if(disposed||!host.current()||!isSaveSafeResourceId(command.commandId)||command.sessionId!==initial.sessionId||command.epoch!==initial.epoch||command.version!=="fp06-ui-command-v1")return finish("Rejected","InvalidCommandBinding");
     if(view.state==="RecoveryHold")return finish("RecoveryHold","FactorySessionRecoveryHold");
-    if(commandBusy||recoveryBusy||pendingDomain||construction?.busy||handling?.busy||canonicalJson(command.expected)!==canonicalJson(uiBinding())||!host.read().confirmed)return finish("Rejected","StaleOrBusyCommand");
+    if(commandBusy||recoveryBusy||pendingDomain||construction?.busy||handling?.busy||canonicalJson(command.expected)!==canonicalJson(uiBinding()))return finish("Rejected","StaleOrBusyCommand");
+    const admittedHeader=host.read();if(!admittedHeader.confirmed)return finish("Rejected","StaleOrBusyCommand");
     commandBusy=true;
     try{
       if(command.kind==="open-cargo"){if(!host.construction)throw Error("NativeCargoUnavailable");await host.construction.openCargo();return finish("Committed",null);}
@@ -379,7 +454,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
         const endpoint=(portId:string,role:string)=>{
           for(const owner of installed())for(const port of catalog.devices.find(d=>d.sourceId===owner.definitionSourceId)?.ports??[]){
             if(port.role!==role||`port_${owner.instanceId}_${port.runtimeId}`!==portId)continue;
-            const bound=nativeSolidEndpoint(owner,port.sourceId,native,host.read());
+            const bound=nativeSolidEndpoint(owner,port.sourceId,native,admittedHeader);
             if(!bound?.accessible)throw Error("NativeBeltEndpointUnavailable");
             return bound.port;
           }throw Error("NativeBeltPortMissing");
@@ -395,11 +470,18 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
         pendingBelt={id:command.commandId,source,target};try{const result=await construction.commit(plan);return finish(result.status,result.status==="Committed"?null:result.reason);}finally{pendingBelt=undefined;}
       }
       if(command.kind==="set-enabled"){
-        await host.pause();reconcile();
-        const native=host.read(),facilities=host.handling?.read(),owner=controlOwner(command.machine.id,native,facilities);
-        if(command.sessionId!==native.sessionId||command.epoch!==native.epoch||canonicalJson(command.expected)!==canonicalJson(uiBinding()))throw Error("StaleDeviceControlBinding");
+        await host.pause();
+        let native:FactoryHostView;
+        // Host.read is synchronous and side-effect-free, so this clears only the command's own busy gate.
+        commandBusy=false;
+        try{native=host.read();}finally{commandBusy=true;}
+        if(!host.current()||command.sessionId!==native.sessionId||command.epoch!==native.epoch||native.physicsStatus!=="Paused")throw Error("StaleDeviceControlBinding");
+        if(!native.confirmed)throw Error("NativeDeviceControlUnavailable");
+        reconcile();
+        const facilities=host.handling?.read(),owner=controlOwner(command.machine.id,native,facilities);
+        if(canonicalJson(command.expected)!==canonicalJson(uiBinding(native)))throw Error("StaleDeviceControlBinding");
         if(!owner||command.machine.revision!==controlRevision(owner.instanceId,facilities))throw Error("NativeDeviceControlUnavailable");
-        domain=setDryFactoryEnabled(domain,materialAuthority.read(),owner,command.enabled,command.commandId);lastPower=undefined;
+        domain=setDomainEnabled(domain,materialAuthority.read(),owner,command.enabled,command.commandId);lastPower=undefined;
         return finish("Committed",null);
       }
       if(command.kind==="connect-power"){
@@ -424,8 +506,9 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
         const plan=prepareFactoryMaterialStep(augmented,{kind:"transfer",transactionId:command.commandId,ownerId:container.state.ownerId!,actorId:"hvp_player",moves:[{sourceContainerId:container.state.containerId,sourceStackId:stack!.stackId,targetContainerId:containerId,targetStackId:`cable_${command.commandId}`,itemId:cable.sourceId,quantityUnits:lengthMm}]});if(plan.status!=="Prepared")throw Error(plan.reason);
         const material=commitFactoryMaterialStep(augmented,plan);if(material.status!=="Committed")throw Error(material.status==="Rejected"?material.reason:"UnexpectedCableReplay");
         const end=String(BigInt(domain.tickEndUs)+100000n),supply=readDryFactorySupply(domain,old,installed(),links,end),from=supply.ports.find(p=>p.portId===source!.portId),to=supply.ports.find(p=>p.portId===target!.portId);if(!from||!to)throw Error("PowerSupplyPortMissing");
-        const next=reconcileDryFactoryInstallations(domain,material.view,installed(),domain.binding.netRevision+1);
-        const link={version:"fp06-paid-native-cable-v1" as const,linkId:`link_${command.commandId}`,fromPortId:source!.portId,toPortId:target!.portId,active:true,maxMilliWatt:String(BigInt(from.maxMilliWatt)<BigInt(to.maxMilliWatt)?BigInt(from.maxMilliWatt):BigInt(to.maxMilliWatt)),lengthMm,containerId,routeMm:[a,[b[0],a[1],a[2]],[b[0],a[1],b[2]],b],sourceProfileDigest:source!.profileDigest,targetProfileDigest:target!.profileDigest};
+        const next=reconcileDomain(domain,material.view,installed(),domain.binding.netRevision+1);
+        const routeMm:readonly [FactoryVector,FactoryVector,FactoryVector,FactoryVector]=[a,[b[0],a[1],a[2]],[b[0],a[1],b[2]],b];
+        const link:FactorySessionPowerLink={version:"fp06-paid-native-cable-v1",linkId:`link_${command.commandId}`,fromPortId:source!.portId,toPortId:target!.portId,active:true,maxMilliWatt:String(BigInt(from.maxMilliWatt)<BigInt(to.maxMilliWatt)?BigInt(from.maxMilliWatt):BigInt(to.maxMilliWatt)),lengthMm,containerId,routeMm,sourceProfileDigest:source!.profileDigest,targetProfileDigest:target!.profileDigest};
         const oldDomain=domain,oldPower=lastPower;let prepared=false,adopted=false,published=false;
         try{
           if(custody){const empty=next.material.containers.find(c=>c.state.containerId===custody.containerId)!;
@@ -452,7 +535,7 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
           const recipe=recipesFor(id).find(r=>canonicalJson({sourceId:r.sourceId,version:r.version,digest:r.digest})===canonicalJson(command.recipe));if(!recipe)throw Error("RecipeUnavailable");
           selectedRecipes.set(id,command.recipe);selectionRevisions.set(id,(selectionRevisions.get(id)??0)+1);return finish("Committed",null);
         }
-        const end=String(BigInt(domain.tickEndUs)+100000n),facts=factsFor(id,end);
+        const end=String(BigInt(domain.tickEndUs)+100000n),facts=factsFor(id,end,admittedHeader);
         if(!facts.installation.confirmed||!facts.installation.supported||!facts.installation.serviceClear)throw Error("NativeMachineUnavailable");
         let production:ProductionCommand;
         if(command.kind==="start"){
@@ -482,9 +565,38 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
     const confirmed=!disposed&&!recoveryBusy&&host.current()&&view.state==="Ready"&&nativeView.confirmed
       &&nativeView.sessionId===initial.sessionId&&nativeView.epoch===initial.epoch&&nativeView.nativeTick===view.nativeTick
       &&["Running","Paused"].includes(nativeView.physicsStatus);
+    const copyVector=(point:FactoryVector):FactoryVector=>{
+      const copy:FactoryVector=[point[0],point[1],point[2]];return Object.freeze(copy);
+    };
+    const sameVector=(a:readonly number[],b:readonly number[]):boolean=>a.length===3&&b.length===3&&a.every((value,index)=>value===b[index]);
+    const powerLinks=Object.freeze(links.map(link=>{
+      if(link.routeMm.length!==4)throw Error("Factory presentation paid power route invalid");
+      const routePoints:readonly [FactoryVector,FactoryVector,FactoryVector,FactoryVector]=[
+        copyVector(link.routeMm[0]!),copyVector(link.routeMm[1]!),copyVector(link.routeMm[2]!),copyVector(link.routeMm[3]!)];
+      const routeMm=Object.freeze(routePoints);
+      return Object.freeze({linkId:link.linkId,fromPortId:link.fromPortId,toPortId:link.toPortId,sourceProfileDigest:link.sourceProfileDigest,
+        targetProfileDigest:link.targetProfileDigest,containerId:link.containerId,lengthMm:link.lengthMm,routeMm,active:link.active});
+    }));
+    const endpointConfirmed=(endpoint:BeltInstalledPort):boolean=>{
+      const owner=logical.find(value=>value.instanceId===endpoint.instanceId&&value.definitionSourceId===endpoint.deviceId),proof=facilities?.solidPorts?.find(value=>value.portId===endpoint.nativePortId);
+      return Boolean(confirmed&&owner&&proof&&proof.instanceId===endpoint.instanceId&&proof.sourcePortId===endpoint.portSourceId
+        &&proof.definitionRef.sourceId===endpoint.deviceId&&proof.definitionRef.digest===endpoint.deviceDigest
+        &&proof.installationRevision===endpoint.installRevision&&proof.sourceDigest===owner.sourceDigest&&proof.profileDigest===owner.profileDigest
+        &&proof.terrainRevision===nativeView.terrain.revision&&proof.facilityRevision===facilities?.revision
+        &&proof.confirmed&&proof.supported&&proof.serviceClear&&proof.sweepClear
+        &&sameVector(proof.positionMm,endpoint.centerMm)&&sameVector(proof.outwardNormal,endpoint.outwardNormal));
+    };
+    const copyEndpoint=(endpoint:BeltInstalledPort)=>Object.freeze({instanceId:endpoint.instanceId,installRevision:endpoint.installRevision,
+      deviceId:endpoint.deviceId,deviceDigest:endpoint.deviceDigest,portSourceId:endpoint.portSourceId,containerId:endpoint.containerId,
+      nativePortId:endpoint.nativePortId,placementCenterMm:copyVector(endpoint.placementCenterMm),quarterTurns:endpoint.quarterTurns,
+      centerMm:copyVector(endpoint.centerMm),outwardNormal:copyVector(endpoint.outwardNormal),confirmed:endpointConfirmed(endpoint)});
+    const belts=Object.freeze(domain.belts.map(line=>Object.freeze({lineId:line.lineId,driveInstanceId:line.installation.driveInstanceId,
+      source:copyEndpoint(line.installation.source),target:copyEndpoint(line.installation.target),lengthMm:line.installation.lengthMm,
+      bandContainerId:line.installation.bandContainerId,packet:line.packet===null?null:Object.freeze({packetId:line.packet.packetId,stackId:line.packet.stackId,
+        itemId:line.packet.itemId,itemVersion:line.packet.itemVersion,itemDigest:line.packet.itemDigest,positionMm:line.packet.positionMm})})));
     return Object.freeze({sessionId:initial.sessionId,epoch:initial.epoch,publicationRevision,nativeTick:nativeView.nativeTick,
       catalogDigest:catalog.catalogDigest,terrainRevision:nativeView.terrain.revision,facilityRevision:facilities?.revision??0,
-      confirmed,phase:nativeView.physicsStatus,material:materialAuthority.read(),installations:Object.freeze([...logical]),
+      confirmed,phase:nativeView.physicsStatus,material:materialAuthority.read(),installations:Object.freeze([...logical]),powerLinks,belts,
       machines:Object.freeze(domain.machines.map(machine=>{
         const installation=logical.find(i=>i.instanceId===machine.machineInstanceId)!;
         const definition=catalog.devices.find(d=>d.sourceId===installation.definitionSourceId)!;
@@ -507,6 +619,76 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
   const currentOwners=(facilities:FactoryFacilityRead|undefined)=>installed().filter(logical=>facilities?.owners.some(owner=>
     owner.instanceId===logical.instanceId&&owner.sourceDigest===logical.sourceDigest&&owner.profileDigest===logical.profileDigest
     &&owner.definitionRef.sourceId===logical.definitionSourceId&&canonicalJson(owner.centerMm)===canonicalJson(logical.centerMm)&&owner.quarterTurns===logical.quarterTurns));
+  type GoalMemoPrimitive=string|number|boolean|null|undefined;
+  type GoalMachineWitness=Readonly<{instanceId:string;receiptCount:number}>;
+  type GoalReceipt=(typeof domain.machines)[number]["commandReceipts"][number];
+  type GoalMemo=Readonly<{installations:ReturnType<typeof installed>;machineWitnesses:readonly GoalMachineWitness[];receiptRefs:readonly GoalReceipt[];
+    nativeProofKey:readonly GoalMemoPrimitive[];facts:ReturnType<typeof projectFactoryProductionGoals>}>;
+  let goalMemoByMaterial=new WeakMap<ReturnType<typeof materialAuthority.read>,GoalMemo>(),goalProjectionMemoBytes=0;
+  const goalMemoMeasure=(action:"retained"|"cleared"|"declined",bytes:number):void=>{
+    if(uiMeasurement.enabled)uiMeasurement.record("factoryGoalMemo",performance.now(),0,{action,bytes});
+  };
+  const clearGoalMemo=():void=>{
+    const bytes=goalProjectionMemoBytes;goalMemoByMaterial=new WeakMap();goalProjectionMemoBytes=0;
+    if(bytes>0)goalMemoMeasure("cleared",bytes);
+  };
+  const sameGoalProof=(left:readonly GoalMemoPrimitive[],right:readonly GoalMemoPrimitive[]):boolean=>left.length===right.length&&left.every((value,index)=>value===right[index]);
+  const sameGoalReceipts=(memo:GoalMemo,machines:typeof domain.machines):boolean=>{
+    if(memo.machineWitnesses.length!==machines.length)return false;
+    let receiptIndex=0;
+    for(let i=0;i<machines.length;i++){
+      const machine=machines[i]!,witness=memo.machineWitnesses[i]!;
+      if(witness.instanceId!==machine.machineInstanceId||witness.receiptCount!==machine.commandReceipts.length)return false;
+      for(const receipt of machine.commandReceipts)if(memo.receiptRefs[receiptIndex++]!==receipt)return false;
+    }
+    return receiptIndex===memo.receiptRefs.length;
+  };
+  const readProjectedProductionGoals=(nativeView:FactoryHostView,facilities:FactoryFacilityRead):ReturnType<typeof projectFactoryProductionGoals>=>{
+    const material=materialAuthority.read(),installations=installed(),machines=domain.machines;
+    const binding={catalogDigest:catalog.catalogDigest,terrainRevision:nativeView.terrain.revision,facilityRevision:facilities.revision,confirmed:true};
+    const input={initialMaterial,material,machines,installations,native:facilities,binding};
+    if(captureBarrier){clearGoalMemo();return projectFactoryProductionGoals(input);}
+    if(facilities.state!=="Idle"||facilities.transactionId!==null||facilities.prepared!==null){clearGoalMemo();return projectFactoryProductionGoals(input);}
+    let nativeProofKey:GoalMemoPrimitive[]=[];
+    try{
+      const pushPrimitive=(...values:unknown[])=>{for(const value of values){
+        if(value===undefined){nativeProofKey.push("undefined",null);continue;}
+        if(value===null){nativeProofKey.push("null",null);continue;}
+        if(typeof value==="string"||typeof value==="number"||typeof value==="boolean"){nativeProofKey.push(typeof value,value);continue;}
+        throw Error("Invalid Goal Native proof primitive");
+      }};
+      pushPrimitive("fp06-goal-native-proof-v1",binding.catalogDigest,binding.terrainRevision,binding.facilityRevision,binding.confirmed,facilities.state,
+        facilities.transactionId,facilities.prepared,facilities.revision,facilities.owners.length);
+      for(const owner of facilities.owners){
+        const logicalBrace=installations.some(value=>value.instanceId===owner.instanceId&&value.definitionSourceId==="fp02.comp.small_brace");
+        pushPrimitive(owner.instanceId,owner.ownerId,canonicalJson(owner.definitionRef),owner.sourceDigest,owner.profileDigest,owner.massMg,
+          canonicalJson(owner.centerMm),owner.quarterTurns,owner.installationRevision,owner.transactionId,logicalBrace?owner.materialBinding:undefined);
+      }
+      const production=facilities.production??[];pushPrimitive(production.length);
+      for(const row of production)pushPrimitive(row.instanceId,row.terrainRevision,row.facilityRevision,row.installationRevision,row.profileDigest,row.sourceDigest,row.confirmed);
+    }catch{
+      clearGoalMemo();return projectFactoryProductionGoals(input);
+    }
+    try{
+      const previous=goalMemoByMaterial.get(material);
+      if(previous&&previous.installations===installations&&sameGoalProof(previous.nativeProofKey,nativeProofKey)&&sameGoalReceipts(previous,machines))return previous.facts;
+    }catch{
+      clearGoalMemo();return projectFactoryProductionGoals(input);
+    }
+    clearGoalMemo();
+    const facts=projectFactoryProductionGoals(input);
+    try{
+      const machineWitnesses=Object.freeze(machines.map(machine=>Object.freeze({instanceId:machine.machineInstanceId,receiptCount:machine.commandReceipts.length})));
+      const receiptRefs=Object.freeze(machines.flatMap(machine=>machine.commandReceipts));
+      const accountingShape={installations:installations.map(()=>null),machineWitnesses,receiptRefs:receiptRefs.map(()=>null),nativeProofKey,facts};
+      const tree=inspectFactoryCheckpointMemoryTree(accountingShape),bytes=tree.utf16Bytes+64*(tree.objectCount+tree.arrayCount)+16*Math.max(0,tree.nodeCount-1);
+      if(!Number.isSafeInteger(bytes)||bytes<0)throw Error("Invalid Goal memo memory estimate");
+      if(bytes>1_048_576){goalMemoMeasure("declined",bytes);return facts;}
+      const memo:GoalMemo=Object.freeze({installations,machineWitnesses,receiptRefs,nativeProofKey:Object.freeze(nativeProofKey),facts});
+      goalMemoByMaterial=new WeakMap();goalMemoByMaterial.set(material,memo);goalProjectionMemoBytes=bytes;goalMemoMeasure("retained",bytes);
+    }catch{/* Cache accounting failure cannot change strict public projection behavior. */}
+    return facts;
+  };
   const readOnboarding=(native:FactoryHostView=host.read()):FactoryOnboardingFacts=>{
     // Both synchronous reads belong to the same private published Host lifetime. No asynchronous UI input supplies these owners.
     const facilities=host.handling?.read(),confirmed=confirmedProjection(native,facilities),owners=currentOwners(facilities);
@@ -517,40 +699,133 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
       &&(sourceId!=="B06"||b.installation.source.instanceId===cut?.instanceId)&&(targetId!=="B06"||b.installation.target.instanceId===cut?.instanceId)
       &&(targetId!=="B07"||b.installation.target.instanceId===former?.instanceId));
     const linked=(id:string)=>links.some(l=>l.active&&(l.fromPortId===`power_${id}`||l.toPortId===`power_${id}`));
+    if(!confirmed||domain.machines.length===0)clearGoalMemo();
     // Machines retain their adopted histories. With none, there can be no
     // completed CUT pair; walking the full Cargo genealogy adds no goal proof.
-    const production=confirmed&&facilities&&domain.machines.length>0?projectFactoryProductionGoals({initialMaterial,material:materialAuthority.read(),machines:domain.machines,
-      installations:installed(),native:facilities,binding:{catalogDigest:catalog.catalogDigest,terrainRevision:native.terrain.revision,facilityRevision:facilities.revision,confirmed}}):null;
+    const production=confirmed&&facilities&&domain.machines.length>0?readProjectedProductionGoals(native,facilities):null;
     return Object.freeze({confirmed,cargoOpened:facilities?.cargo?.opened===true,installedSourceIds:Object.freeze(owners.map(i=>i.definitionSourceId)),
       powerConnected:confirmed?Boolean(cut&&former&&linked(cut.instanceId)&&linked(former.instanceId)):null,
       twoBeltLinesConnected:confirmed?line("B09","B06")&&line("B06","B07"):null,production:confirmed?production:null});
   };
   const readLocalMap=(ghost:FactoryPlacementRequest|null=null):FactoryMapSnapshot|null=>{
     const native=host.read(),facilities=host.handling?.read(),facts=host.construction?.readFacts(),t=native.terrain;
-    const digests:Record<string,string>={"hvp-factory-startsite-v1":"e62aea8a","hvp-factory-startsite-v2":"ec8ba9b1","hvp-factory-startsite-v3":"16dbaa28","hvp-factory-startsite-v4":"913c0c46","hvp-factory-startsite-v5":"0e2a0bcb"};
+    const digests:Record<string,string>={"hvp-factory-startsite-v1":"e62aea8a","hvp-factory-startsite-v2":"ec8ba9b1","hvp-factory-startsite-v3":"16dbaa28","hvp-factory-startsite-v4":"913c0c46","hvp-factory-startsite-v5":"0e2a0bcb","hvp-factory-startsite-v6":"360b00fa"};
     const version=t.profileVersion,digest=version?digests[version]:undefined;
     if(!confirmedProjection(native,facilities)||!version||!digest||t.sourceDigest!==digest||t.baseDigest!==digest||t.cellMeters!==.125
       ||t.sizeX!==256||t.sizeY!==128||t.sizeZ!==256||canonicalJson(t.originMeters)!==canonicalJson({x:-16,y:-8,z:-16})
       ||!facts||facts.binding.sessionId!==native.sessionId||facts.binding.epoch!==native.epoch||facts.binding.terrainRevision!==t.revision||facts.binding.sourceDigest!==t.sourceDigest
       ||!facts.actor.positionMm.every(Number.isFinite))return null;
-    const v=Number(version.slice(-1)),masks=[...FACTORY_START_SITE_MASKS,...(v===2?FACTORY_START_SITE_V2_ADDITIONS:v>=3?FACTORY_START_SITE_V3_ADDITIONS:[]),...(v>=4?FACTORY_START_SITE_V4_CONNECTORS:[]),...(v>=5?FACTORY_START_SITE_V5_RAW_BAND_FLOORS:[])];
+    const v=Number(version.slice(-1)),masks=[...FACTORY_START_SITE_MASKS,...(v===2?FACTORY_START_SITE_V2_ADDITIONS:v>=3?FACTORY_START_SITE_V3_ADDITIONS:[]),...(v>=4?FACTORY_START_SITE_V4_CONNECTORS:[]),...(v>=5?FACTORY_START_SITE_V5_RAW_BAND_FLOORS:[]),
+      ...(v>=6?FACTORY_START_SITE_V6_ADDITIONS.map(([minX,maxX,minZ,maxZ])=>[12.5-maxZ!,12.5-minZ!,minX!+12.25,maxX!+12.25]):[])];
     const outline=(bounds:Readonly<{min:readonly number[];max:readonly number[]}>):readonly FactoryMapWorldPoint[]=>Object.freeze([
       {x:bounds.min[0]!/1000,z:bounds.min[2]!/1000},{x:bounds.max[0]!/1000,z:bounds.min[2]!/1000},
       {x:bounds.max[0]!/1000,z:bounds.max[2]!/1000},{x:bounds.min[0]!/1000,z:bounds.max[2]!/1000}].map(value=>Object.freeze(value)));
     const objects:FactoryMapSnapshot["objects"][number][]=currentOwners(facilities).map(i=>({id:i.instanceId,label:deviceName(i.definitionSourceId),kind:"installed",outline:outline(i.boundsMm)}));
     if(facilities?.cargo?.site)objects.push({id:facilities.cargo.ownerId,label:"Wrackfracht",kind:"wreck",outline:outline(facilities.cargo.site.boundsMm)});
     if(facilities?.carrier){const c=facilities.carrier,p=readCargoHandlingProfile(catalog,c.profileId);if(p){const half=p.sizeMm.map(n=>n/2);objects.push({id:c.ownerId,label:"Transport",kind:"cargo",outline:outline({min:c.positionMm.map((n,i)=>n-half[i]!),max:c.positionMm.map((n,i)=>n+half[i]!)})});}}
-    if(ghost){try{const p=createFactoryInstallationProfile(ghost.definitionSourceId);objects.push({id:ghost.instanceId,label:"Bauvorschau",kind:"planned",outline:outline(transformFactoryBounds(p.boundsMm,ghost.centerMm,ghost.quarterTurns))});}catch{/* Unknown definitions grant no map geometry. */}}
+    if(ghost){try{const p=readRuntimeFactoryInstallationProfile(ghost.definitionSourceId);objects.push({id:ghost.instanceId,label:"Bauvorschau",kind:"planned",outline:outline(transformFactoryBounds(p.boundsMm,ghost.centerMm,ghost.quarterTurns))});}catch{/* Unknown definitions grant no map geometry. */}}
     return Object.freeze({sessionId:native.sessionId,epoch:native.epoch,terrainRevision:t.revision,facilityRevision:facilities!.revision,
-      frame:Object.freeze({id:"factory-start-local-v1",profileVersion:version,sourceDigest:digest}),bounds:Object.freeze({minEast:-1.25,maxEast:19,minNorth:1.5,maxNorth:10.5}),
+      frame:Object.freeze({id:"factory-start-local-v1",profileVersion:version,sourceDigest:digest}),bounds:Object.freeze({minEast:-1.25,maxEast:19,minNorth:1.5,maxNorth:v>=6?27:10.5}),
       knownAreas:Object.freeze(masks.map(([e0,e1,n0,n1],i)=>({id:`source_pad_${i}`,kind:"ground" as const,outline:Object.freeze([{x:n0!-12.25,z:12.5-e0!},{x:n1!-12.25,z:12.5-e0!},{x:n1!-12.25,z:12.5-e1!},{x:n0!-12.25,z:12.5-e1!}].map(value=>Object.freeze(value)))}))),
       objects:Object.freeze(objects.map(value=>Object.freeze(value))),player:Object.freeze({position:Object.freeze({x:facts.actor.positionMm[0]/1000,z:facts.actor.positionMm[2]/1000}),heading:null})});
   };
+  const readCheckpointAdmission=()=>{
+    const header=host.read(),native=host.handling?.read(),build=construction?.read();
+    return {header,native,eligible:!disposed&&!captureBarrier&&host.current()&&header.confirmed&&header.physicsStatus==="Paused"&&isFactoryHostNeutral(header)
+      &&header.sessionId===initial.sessionId&&header.epoch===initial.epoch&&header.nativeTick===view.nativeTick&&view.state==="Ready"
+      &&!recoveryBusy&&!commandBusy&&!pendingDomain&&!pendingBelt&&!construction?.busy&&build?.state==="Ready"
+      &&!handling?.busy&&!handling?.recovery&&native?.state==="Idle"&&native.transactionId===null&&native.prepared===null};
+  };
+  const canBeginFactoryCheckpoint=()=>readCheckpointAdmission().eligible;
+  const makeFactoryMaterialCheckpoint=(material:ReturnType<typeof materialAuthority.read>)=>({version:"fp06-material-owner-v1" as const,catalogDigest:material.catalog.catalogDigest,
+    revision:material.revision,containers:material.containers.map(value=>({definition:value.definition,state:value.state})),
+    reservations:material.reservations,receipts:material.receipts});
+  const makeRawFactoryCheckpoint=(material:ReturnType<typeof materialAuthority.read>,installations:ReturnType<typeof installed>,
+    capturedDomain:DryFactoryRuntimeState,capturedPower:FactoryPowerSuccess|undefined,capturedPublicationRevision:number):FactorySessionCheckpointV1|FactorySessionCheckpointV2=>{
+    const common={installations,material:makeFactoryMaterialCheckpoint(material),lastPower:capturedPower??null,links:[...links],
+      recipeSelections:[...selectedRecipes].map(([instanceId,recipe])=>({instanceId,recipe,revision:selectionRevisions.get(instanceId)!})),
+      waitingStarts:[...waitingStarts].map(([instanceId,command])=>({instanceId,command})),commandReceipts:history.readAll(),lastReceipt,
+      publicationRevision:capturedPublicationRevision};
+    return compactMode?{version:"fp06-factory-session-owner-v2",...common,domain:capturedDomain as DryFactoryOwnerState}
+      :{version:"fp06-factory-session-owner-v1",...common,domain:capturedDomain as DryFactoryState};
+  };
+  const checkpointMaterialMemoryBytes=(material:ReturnType<typeof materialAuthority.read>)=>{
+    const tree=inspectFactoryCheckpointMemoryTree(makeFactoryMaterialCheckpoint(material));
+    return tree.utf16Bytes+64*(tree.objectCount+tree.arrayCount)+16*Math.max(0,tree.nodeCount-1);
+  };
+  const checkpointCacheBytes=(state:DryFactoryRuntimeState,material:ReturnType<typeof materialAuthority.read>)=>{
+    let bytes=readDryFactoryCheckpointCacheBytes(state,material)+readProductionFactoryCheckpointCacheBytes(material,initialMaterial===material?[]:[initialMaterial.catalog])+goalProjectionMemoBytes;
+    if(initialMaterial!==material){
+      bytes+=readDryFactoryMaterialCacheTextBytes(initialMaterial)+readProductionFactoryMaterialCacheTextBytes(initialMaterial)
+        +checkpointMaterialMemoryBytes(initialMaterial);
+    }
+    return bytes+(runtimeMaterialAuthority?.readBeltMaterialFragmentBytes()??0);
+  };
+  const checkpointCacheBreakdown=(state:DryFactoryRuntimeState,material:ReturnType<typeof materialAuthority.read>):FactoryCheckpointCacheBreakdown=>{
+    const dry=readDryFactoryCheckpointCacheBreakdown(state,material),initialIncluded=initialMaterial!==material;
+    return Object.freeze({cachedDomainCanonicalDescendantsBytes:dry.cachedDomainCanonicalDescendantsBytes,
+      dryFactoryStateBytes:dry.dryFactoryStateBytes,dryFactoryStateBytesMatchesLastStepNextState:dry.dryFactoryStateBytesMatchesLastStepNextState,
+      currentExactMaterialBindingsBytes:dry.currentExactMaterialBindingsBytes,currentProductionMaterialBytes:readProductionFactoryMaterialCacheTextBytes(material),
+      beltMaterialFragmentBytes:runtimeMaterialAuthority?.readBeltMaterialFragmentBytes()??0,
+      catalogTreeBytes:readProductionFactoryCatalogCheckpointBytes(material.catalog,...(initialIncluded?[initialMaterial.catalog]:[])),goalProjectionMemoBytes,
+      initialMaterial:Object.freeze({included:initialIncluded,checkpointDtoBytes:initialIncluded?checkpointMaterialMemoryBytes(initialMaterial):0,
+        exactMaterialBindingsBytes:initialIncluded?readDryFactoryMaterialCacheTextBytes(initialMaterial):0,
+        productionMaterialBytes:initialIncluded?readProductionFactoryMaterialCacheTextBytes(initialMaterial):0})});
+  };
+  const readFactoryCheckpointMemory=():FactoryCheckpointMemoryRead=>{
+    if(disposed||!host.current())throw Error("Factory checkpoint memory unavailable");
+    const material=materialAuthority.read(),factory=makeRawFactoryCheckpoint(material,installed(),domain,lastPower,publicationRevision);
+    return Object.freeze({factory,cacheBytes:checkpointCacheBytes(domain,material),treeMetrics:inspectFactoryCheckpointMemoryTree(factory),cacheBreakdown:checkpointCacheBreakdown(domain,material)});
+  };
+  const beginFactoryCheckpoint=(admit?:FactoryCheckpointRawAdmission):FactoryCheckpointCaptureUnion=>{
+    const admission=readCheckpointAdmission();
+    if(!admission.eligible||!admission.native)throw Error("Factory checkpoint capture unavailable");
+    const token={};captureBarrier=token;
+    runtimeMaterialAuthority?.clearBeltMaterialFragment();
+    try{
+      clearGoalMemo();
+      const capturedView=view,material=materialAuthority.read(),installations=installed(),capturedDomain=domain,capturedPower=lastPower,
+        capturedPublicationRevision=publicationRevision;
+      const rawFactory=makeRawFactoryCheckpoint(material,installations,capturedDomain,capturedPower,capturedPublicationRevision);
+      admit?.(rawFactory,checkpointCacheBytes(capturedDomain,material),inspectFactoryCheckpointTree(rawFactory));
+      const linkBytes=canonicalJson(links),selectionBytes=canonicalJson([...selectedRecipes]),selectionRevisionBytes=canonicalJson([...selectionRevisions]);
+      const waitingBytes=canonicalJson([...waitingStarts]),receiptBytes=canonicalJson(history.readAll()),lastReceiptBytes=canonicalJson(lastReceipt);
+      const nativeBytes=(value:FactoryFacilityRead)=>JSON.stringify({revision:value.revision,state:value.state,transactionId:value.transactionId,prepared:value.prepared,
+        owners:value.owners,cargo:value.cargo??null,carrier:value.carrier??null});
+      const capturedNativeBytes=nativeBytes(admission.native),capturedTerrainBytes=JSON.stringify(admission.header.terrain);
+      const factory=compactMode?canonicalizePersistenceValue(rawFactory) as FactorySessionCheckpointV2
+        :canonicalizePersistenceValue(rawFactory) as FactorySessionCheckpointV1;
+      const hostCursor=Object.freeze({sessionId:admission.header.sessionId,epoch:admission.header.epoch,nativeTick:admission.header.nativeTick,
+        remainderTicks:capturedView.remainderTicks,steps:capturedView.steps});
+      const assertCurrent=()=>{
+        const current=host.read(),native=host.handling?.read(),build=construction?.read();
+        if(captureBarrier!==token||disposed||!host.current()||current.sessionId!==hostCursor.sessionId||current.epoch!==hostCursor.epoch
+          ||current.nativeTick!==hostCursor.nativeTick||current.physicsStatus!=="Paused"||!isFactoryHostNeutral(current)
+          ||JSON.stringify(current.terrain)!==capturedTerrainBytes||!native||nativeBytes(native)!==capturedNativeBytes
+          ||build?.state!=="Ready"||build.installations!==installations||view!==capturedView||materialAuthority.read()!==material
+          ||domain!==capturedDomain||lastPower!==capturedPower||canonicalJson(links)!==linkBytes
+          ||canonicalJson([...selectedRecipes])!==selectionBytes||canonicalJson([...selectionRevisions])!==selectionRevisionBytes
+          ||canonicalJson([...waitingStarts])!==waitingBytes||canonicalJson(history.readAll())!==receiptBytes
+          ||canonicalJson(lastReceipt)!==lastReceiptBytes||publicationRevision!==capturedPublicationRevision
+          ||commandBusy||recoveryBusy||pendingDomain||pendingBelt||handling?.busy)throw Error("Factory checkpoint capture witness changed");
+      };
+      let released=false;
+      const release=()=>{if(released)return;released=true;if(captureBarrier===token){captureBarrier=undefined;observedHostHeader=undefined;notifyUi();}};
+      return Object.freeze({host:hostCursor,factory,assertCurrent,release}) as FactoryCheckpointCaptureUnion;
+    }catch(error){if(captureBarrier===token)captureBarrier=undefined;throw error;}
+  };
   let unsubscribe: () => void;
   try { unsubscribe = host.subscribeConfirmed(observe); }
-  catch (error) { mountedHosts.delete(host); throw error; }
+  catch (error) {
+    const cleanupErrors:unknown[]=[];
+    try { host.construction?.dispose(); } catch (cleanupError) { cleanupErrors.push(cleanupError); }
+    try { host.setPanelFocus?.(null); } catch (cleanupError) { cleanupErrors.push(cleanupError); }
+    finally { mountedHosts.delete(host); }
+    if(cleanupErrors.length)throw new Error(`Factory mount failed: ${String(error)}; cleanup failed: ${cleanupErrors.map(String).join("; ")}`);
+    throw error;
+  }
   const canRecoverSimulationHold=()=>{
-    if(disposed||recoveryBusy||!["Ready","WaitingForHost"].includes(view.state)||!host.current()||commandBusy||construction?.busy||handling?.busy)return false;
+    if(disposed||captureBarrier||recoveryBusy||!["Ready","WaitingForHost"].includes(view.state)||!host.current()||commandBusy||construction?.busy||handling?.busy)return false;
     const native=host.read(),facilities=host.handling?.read();
     return native.sessionId===initial.sessionId&&native.epoch===initial.epoch&&native.physicsStatus==="SimulationHold"
       &&Number.isSafeInteger(native.nativeTick)&&native.nativeTick>=view.nativeTick&&(!facilities||facilities.state==="Idle");
@@ -586,15 +861,26 @@ export const mountFactorySession = async (host: FactoryHostPort, catalog: Factor
     subscribe: (listener: (view: FactorySessionView) => void) => {
       if (disposed) throw new Error("Factory session disposed");
       listeners.add(listener); return () => { listeners.delete(listener); };
-    }, canRecoverSimulationHold,recoverSimulationHold, isQuiescent: () => !disposed && !recoveryBusy && view.state !== "RecoveryHold" && !construction?.busy&&!commandBusy&&!handling?.busy,
+    }, canRecoverSimulationHold,recoverSimulationHold,canBeginFactoryCheckpoint,beginFactoryCheckpoint,readFactoryCheckpointMemory,isQuiescent: () => !disposed && !captureBarrier && !recoveryBusy && view.state !== "RecoveryHold" && !construction?.busy&&!commandBusy&&!handling?.busy,
     // Safe teardown is allowed in terminal recovery; pending publication must finish first.
-    canEndSession: () => !disposed && !recoveryBusy && !commandBusy&&(!handling?.busy||handling.recovery)&&(!construction?.busy || construction.read().state==="RecoveryHold"),
+    canEndSession: () => !disposed && !captureBarrier && !recoveryBusy && !commandBusy&&(!handling?.busy||handling.recovery)&&(!construction?.busy || construction.read().state==="RecoveryHold"),
     dispose: async () => {
       if (disposed) return;
       if(recoveryBusy||commandBusy||(handling?.busy&&!handling.recovery)||(construction?.busy&&construction.read().state!=="RecoveryHold"))throw new Error("Factory installation is still pending");
       const pending=pendingDomain;pendingDomain=undefined;pending?.resolve("Rejected","SessionDisposedBeforeAdoption");
-      disposed = true;host.construction?.dispose();
+      runtimeMaterialAuthority?.disposeBeltMaterialFragment();clearGoalMemo();captureBarrier=undefined;disposed = true;host.construction?.dispose();
       unsubscribe(); listeners.clear();uiListeners.clear();host.setPanelFocus?.(null); mountedHosts.delete(host);
       view = Object.freeze({ ...view, state: "Disposed" });
     } });
+};
+
+/** Historical API: default callers continue to mount and capture V1. */
+export const mountFactorySession = async (host:FactoryHostPort,catalog:FactoryCatalog,restore?:FactoryDecodedCheckpointV1):Promise<FactorySessionHandle> =>
+  await mountFactorySessionInternal(host,catalog,restore,undefined,false) as FactorySessionV1Handle;
+
+/** Production Entry: fresh sessions and validated restores explicitly capture compact V2. */
+export const mountCompactFactorySession = async (host:FactoryHostPort,catalog:FactoryCatalog,restore?:FactoryDecodedCheckpoint,
+  owner?:FactorySessionCheckpointV2):Promise<FactoryCompactSessionHandle> => {
+  if(Boolean(restore)!==Boolean(owner))throw new Error("Compact Factory restore requires its issued Owner");
+  return await mountFactorySessionInternal(host,catalog,restore,owner,true) as FactoryCompactSessionHandle;
 };

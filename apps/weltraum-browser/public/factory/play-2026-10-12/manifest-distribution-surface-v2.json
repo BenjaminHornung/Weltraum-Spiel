@@ -1,0 +1,153 @@
+{
+  "schema": "hestia.factory.play-assets/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "assets": [
+    {
+      "family": "power-kit",
+      "definitionRef": {
+        "sourceId": "fp02.device.distribution_40kw",
+        "version": 1,
+        "digest": "fnv1a:006549f4"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp01/power-kit/source.scene.json",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/power-kit/distribution/native-owner-source.blob",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/power-kit/distribution/native-source.json",
+        "sha256": "bb7f354d637878e6303573088d24a9019ee01f6a430885ca34154161ad41abc5",
+        "bytes": 4575
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "distribution_feet",
+        "distribution_frame",
+        "distribution_shell",
+        "distribution_panel"
+      ],
+      "parentPartIds": {
+        "distribution_feet": null,
+        "distribution_frame": null,
+        "distribution_shell": null,
+        "distribution_panel": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.0,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          1.0,
+          2.0,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/power-kit/distribution/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/power-kit/distribution/distribution.blend",
+        "sha256": "11419661fafa1d86e3d2bc41d22c2fbabbcc80a6e06c7db617eed0196b7ab922",
+        "bytes": 579824
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution.hestia-authoring-report.json",
+        "sha256": "bd5f8d3da3175b57c133e50b94769cf367914f63b602753634fb7dafe4ce3e61",
+        "bytes": 5483
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "assetId": "play_distribution_v2",
+      "slug": "distribution-v2",
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution-v2.glb",
+        "sha256": "039ad9807642a4e91130e83f265cdbb5521aa619a4ec661017a177d0923c82ee",
+        "bytes": 20788,
+        "url": "/factory/play-2026-10-12/distribution-v2.glb"
+      },
+      "sourceRuntimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution.glb",
+        "sha256": "985f4c5627cc884c549dbe8aed9683798ef7a2d44c2f8340a3c2ef5fd9238b51",
+        "bytes": 20764
+      },
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+      "visualRepair": {
+        "version": 1,
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "originalAssetId": "play_distribution_v1",
+        "nativeAuthority": "unchanged original source only",
+        "frontPlaneFromM": 0.5,
+        "frontPlaneToMByRole": {
+          "EX-SHELL": 0.498046875,
+          "EX-FUNCTION": 0.4990234375
+        },
+        "frontRecessMByRole": {
+          "EX-SHELL": 0.001953125,
+          "EX-FUNCTION": 0.0009765625
+        },
+        "frontChangedVertexCountByRole": {
+          "EX-SHELL": 24,
+          "EX-FUNCTION": 48
+        },
+        "changedVertexCount": 72,
+        "topology": "same indexed triangles, materials, nodes, primitives and Native bindings",
+        "meshCensus": {
+          "vertices": 480,
+          "indices": 720,
+          "primitives": 7
+        },
+        "nativeBoundsM": {
+          "min": [
+            -1.0,
+            0.0,
+            -0.5
+          ],
+          "max": [
+            1.0,
+            2.0,
+            0.5
+          ]
+        }
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-distribution-surface-v2-2026-10-21/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "provenance": {
+        "path": "art/factory/play-distribution-surface-v2-2026-10-21/distribution-v2.provenance.json",
+        "sha256": "4bf3afef6d4a70437e434cb7f4e94736b7be5be11bcf4b8f9d8394a197f3d266",
+        "bytes": 4334
+      }
+    }
+  ],
+  "palette": {
+    "EX-STRUCT": "30383D",
+    "EX-SHELL": "B6BDB8",
+    "EX-FUNCTION": "407A79",
+    "EX-HAZARD": "D8A94E",
+    "EX-PV": "1D2E3C"
+  },
+  "authority": "render-only Distributor derivative; original Native source and collision remain authoritative",
+  "knownGaps": [
+    "runtime adoption and rendered owner inspection remain integrator scope"
+  ]
+}

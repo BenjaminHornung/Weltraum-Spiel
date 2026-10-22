@@ -1,0 +1,30 @@
+{
+  "schema": "hestia.asset.provenance/v1",
+  "assetId": "hestia_crashsite_walkable_v1",
+  "author": "Bounded Hestia FP06 derivative authoring",
+  "source": "Derived from the existing deterministic Blender voxel field; the source asset is read-only and identified by its exact GLB digest.",
+  "sourceAssetId": "hestia_crashsite_hybrid_v2",
+  "sourceGlb": "../crashsite-hybrid-v2/crashsite-hybrid-v2.glb",
+  "sourceGlbSha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610",
+  "nativeTool": "Blender 5.2.2 LTS",
+  "referenceSha256": "1fac13e62a049b137370c1705549342cb7087195a0c614ae6234e6717e7f208c",
+  "license": "LicenseRef-PolyForm-Noncommercial-1.0.0",
+  "licenseFile": "LICENSE",
+  "externalModelOrTexture": false,
+  "paidProvider": false,
+  "gameDevCLI": "NOT_AVAILABLE",
+  "worldAuthority": false,
+  "collisionPolicy": "None",
+  "gameplayAdmission": "NOT_ADMITTED",
+  "visualAcceptance": "OWNER_REVIEW_PENDING",
+  "changes": [
+    "Declared a contiguous ramp, bay deck and raised turn-pad corridor in MODEL_SPEC.json before editing builder geometry.",
+    "Raised the visible side-bay opening and moved its overhead bridge/markers and one transverse conduit clear of the declared swept volume.",
+    "Added a visible raised deck strip and relocated the same four empty storage casings to side shelves."
+  ],
+  "exportStatus": "PASS_STATIC_GLB_AND_CORRIDOR_R02_2026-10-21",
+  "exportGlbSha256": "91d27929383cf3d3edfee3a2e44ab6d722de026837336e5dd6313c51bca7a2ed",
+  "exportEvidence": ["AUTHORING_REPORT.json", "WALKABILITY_VALIDATION.json", "RUNTIME_CENSUS.json"],
+  "historicalFailure": "VALIDATE_R01.log: obsolete uncompressed Blender-header assumption; unchanged GLB geometry passed R02 after bounded authentic Zstandard-header validation",
+  "runtimeAdmission": "NOT_ADMITTED"
+}

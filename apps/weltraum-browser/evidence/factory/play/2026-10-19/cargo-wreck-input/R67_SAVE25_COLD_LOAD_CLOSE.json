@@ -1,0 +1,38 @@
+{
+  "closedAtUtc": "2026-10-19T14:06:29.146Z",
+  "contextCloseEvent": true,
+  "browserConnectedAfter": false,
+  "slotUnchanged": true,
+  "sha": "15cd3e9d4b878b444ec9be84483183e8516bddfa2744a1884fc0baf9ced3ba82",
+  "revision": 25,
+  "errors": [],
+  "live": {
+    "status": "Paused",
+    "ticks": 227986,
+    "owners": 11,
+    "locked": false,
+    "input": {
+      "active": false,
+      "activationPending": false,
+      "pointerLocked": false,
+      "pausePending": false,
+      "focusedPanel": null,
+      "surface": "pause",
+      "error": null
+    },
+    "cargo": [
+      {
+        "id": "play_wreck_cargo_open_v2",
+        "sha": "c0ca4cbba813e60b2fea8482947071c801292c376623420902e4bcef749f1400",
+        "error": null
+      }
+    ],
+    "goal": "Goal\nFirst structural brace installed\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nPause and session\nClose\n\nSession pa",
+    "cost": {
+      "cpu": 23598208,
+      "mesh": 756288,
+      "triangles": 4848,
+      "draws": 74
+    }
+  }
+}

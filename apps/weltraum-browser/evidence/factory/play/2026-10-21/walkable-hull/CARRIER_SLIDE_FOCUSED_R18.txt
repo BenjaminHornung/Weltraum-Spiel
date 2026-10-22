@@ -1,0 +1,51 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+························xx···
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > keeps support-coverage rejection hard instead of bisecting it
+AssertionError: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ tests/unit/hvp-locomotion.test.ts:290:104
+    288|       r.player.setInput({x:-1,z:0,sprint:false,jump:false});r.ticks(1);
+    289|       expect(r.player.read().position).toEqual(before);expect(carrier.…
+    290|       expect(r.facilities.read().lastCarrierVeto?.reason).toBe("Carrie…
+       |                                                                                                        ^
+    291|     }finally{r.dispose();}
+    292|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > keeps a real carrier-support loss hard instead of bisecting it
+AssertionError: expected 2 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 2
+
+ ❯ tests/unit/hvp-locomotion.test.ts:307:103
+    305|       r.player.setInput({x:-1,z:0,sprint:false,jump:false});r.ticks(1);
+    306|       expect(r.player.read().position).toEqual(before);expect(carrier.…
+    307|       expect(r.facilities.read().lastCarrierVeto?.reason).toBe("Carrie…
+       |                                                                                                       ^
+    308|     }finally{r.dispose();}
+    309|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 27 passed (29)
+   Start at  11:38:01
+   Duration  2.99s (transform 247ms, setup 0ms, import 328ms, tests 2.54s, environment 0ms)
+

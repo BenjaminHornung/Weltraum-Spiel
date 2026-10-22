@@ -6,7 +6,8 @@ import { createFactoryPanel, factoryReason, formatQuantity, formatSeconds, uiBut
 
 // Immutable terms select finite intents; the Host rechecks custody and admission.
 const catalog = loadFactoryCatalog(createFp02CatalogInput());
-const selectSourceLots = (view: FactoryUiReadModel, machine: FactoryUiMachine): FactoryUiLotRef[] | null => {
+type FactoryRecipeLotSelection = Readonly<{ sourceLots: readonly FactoryUiLotRef[] | null; requiresTransfer: boolean }>;
+const selectSourceLots = (view: FactoryUiReadModel, machine: FactoryUiMachine): FactoryRecipeLotSelection | null => {
   if (view.binding.catalogDigest !== catalog.catalogDigest || !machine.selectedRecipe) return null;
   const selected = machine.selectedRecipe;
   const recipe = catalog.recipes.find(r => r.sourceId === selected.sourceId && r.version === selected.version && r.digest === selected.digest);
@@ -14,17 +15,25 @@ const selectSourceLots = (view: FactoryUiReadModel, machine: FactoryUiMachine): 
   const manual = recipe.processes.some(p => p.kind === "manual" && p.availability === "first-dry-loop");
   const containers = view.inventory.filter(c => c.accessible && (manual ? ["input", "output", "depot"].includes(c.role) : c.id === machine.inputContainerId));
   const lots: FactoryUiLotRef[] = [];
+  let requiresTransfer = false;
   for (const term of recipe.inputs) {
-    let needed = term.quantityUnits;
-    for (const container of containers) for (const stack of container.contents) {
-      if (!needed || stack.itemId !== term.itemId || (manual && !stack.freshProduction)) continue;
-      const quantityUnits = Math.min(needed, stack.quantityUnits);
-      if (quantityUnits > 0) lots.push({ containerId: container.id, containerRevision: container.revision, stackId: stack.stackId, quantityUnits });
-      needed -= quantityUnits;
+    const item = catalog.items.find(i => i.sourceId === term.itemId);
+    if (!item) return null;
+    const eligible = containers.flatMap(container => container.contents
+      .filter(stack => stack.itemId === term.itemId && (!manual || stack.freshProduction))
+      .map(stack => ({ container, stack })));
+    const complete = eligible.find(({ stack }) => stack.quantityUnits >= term.quantityUnits);
+    if (complete) {
+      lots.push({ containerId: complete.container.id, containerRevision: complete.container.revision, stackId: complete.stack.stackId, quantityUnits: term.quantityUnits });
+      continue;
     }
-    if (needed) return null;
+    if (item.quantityBasis !== "mg") return null;
+    const aggregate = eligible.reduce((total, { stack }) => Number.isSafeInteger(stack.quantityUnits) && stack.quantityUnits > 0
+      ? total + BigInt(stack.quantityUnits) : total, 0n);
+    if (aggregate < BigInt(term.quantityUnits)) return null;
+    requiresTransfer = true;
   }
-  return lots;
+  return { sourceLots: requiresTransfer ? null : lots, requiresTransfer };
 };
 
 export const mountFactoryMachinePanel = (port: FactoryUiPort, doc: Document = document): FactoryPanel => {
@@ -35,7 +44,7 @@ export const mountFactoryMachinePanel = (port: FactoryUiPort, doc: Document = do
   let selected: string | null = null;
   const choices = new Map<string, HTMLButtonElement>();
   const cards = new Map<string, { element: HTMLElement; status: HTMLElement; workText: HTMLElement; progress: HTMLElement; progressFill: HTMLElement;
-    buffers: HTMLElement; flow: HTMLElement; metrics: HTMLElement; recipes: HTMLSelectElement; start: HTMLButtonElement; work: HTMLButtonElement; finish: HTMLButtonElement }>();
+    buffers: HTMLElement; flow: HTMLElement; metrics: HTMLElement; recipes: HTMLSelectElement; start: HTMLButtonElement; mergeHint: HTMLElement; work: HTMLButtonElement; finish: HTMLButtonElement }>();
   const select = () => {
     for (const [id, card] of cards) card.element.hidden = id !== selected;
     for (const [id, choice] of choices) choice.setAttribute("aria-pressed", String(id === selected));
@@ -54,6 +63,8 @@ export const mountFactoryMachinePanel = (port: FactoryUiPort, doc: Document = do
         status.className = "factory-machine-state"; workText.className = "factory-machine-work";
         progress.className = "factory-machine-progress"; progress.setAttribute("role", "progressbar"); progress.setAttribute("aria-label", "Confirmed recipe work"); progress.append(progressFill);
         const buffers = doc.createElement("div"), flow = doc.createElement("div"), metrics = doc.createElement("div"), recipes = doc.createElement("select"), actions = doc.createElement("div");
+        const mergeHint = uiText(doc, "p", "Falls kompatibel: Schüttgut über Fracht → Übertragen durch einen anderen erreichbaren Behälter zusammenführen und anschließend hierher zurückbringen.");
+        mergeHint.className = "factory-machine-work"; mergeHint.hidden = true; mergeHint.setAttribute("role", "status");
         metrics.className = "factory-machine-metrics";
         buffers.className = "factory-machine-buffers"; flow.className = "factory-machine-recipe"; actions.className = "factory-machine-actions";
         recipes.setAttribute("aria-label", `Recipe for ${englishFactoryText(machine.name)}`);
@@ -62,8 +73,8 @@ export const mountFactoryMachinePanel = (port: FactoryUiPort, doc: Document = do
           if (current?.installed && !current.jobId && selected) panel.submit({ kind: "select-recipe", machine: { id: current.id, revision: current.revision }, recipe: { ...selected.ref } });
         });
         const start = uiButton(doc, "Start job", () => {
-          const current = panel.view.machines.find(m => m.id === machine.id), sourceLots = current && selectSourceLots(panel.view, current);
-          if (current?.actions.start.enabled && sourceLots) panel.submit({ kind: "start", machine: { id: current.id, revision: current.revision }, sourceLots });
+          const current = panel.view.machines.find(m => m.id === machine.id), selection = current && selectSourceLots(panel.view, current);
+          if (current?.actions.start.enabled && selection?.sourceLots) panel.submit({ kind: "start", machine: { id: current.id, revision: current.revision }, sourceLots: [...selection.sourceLots] });
         });
         const work = uiButton(doc, "Assemble by hand", () => {
           const current = panel.view.machines.find(m => m.id === machine.id);
@@ -74,8 +85,8 @@ export const mountFactoryMachinePanel = (port: FactoryUiPort, doc: Document = do
           if (current?.jobId && current.actions.manualFinish.enabled) panel.submit({ kind: "manual-finish", machine: { id: current.id, revision: current.revision }, jobId: current.jobId });
         });
         actions.append(recipes, start, work, finish);
-        element.append(uiText(doc, "h3", machine.name), status, flow, metrics, progress, workText, actions, buffers); content.append(element);
-        card = { element, status, workText, progress, progressFill, buffers, flow, metrics, recipes, start, work, finish }; cards.set(machine.id, card);
+        element.append(uiText(doc, "h3", machine.name), status, flow, metrics, progress, workText, actions, mergeHint, buffers); content.append(element);
+        card = { element, status, workText, progress, progressFill, buffers, flow, metrics, recipes, start, mergeHint, work, finish }; cards.set(machine.id, card);
       }
       card.status.textContent = factoryReason(machine.reason ?? machine.status);
       const required = machine.requiredWorkMs, progressKnown = required !== null && Number.isFinite(required) && required > 0 && Number.isFinite(machine.confirmedWorkMs);
@@ -95,8 +106,12 @@ export const mountFactoryMachinePanel = (port: FactoryUiPort, doc: Document = do
       }
       card.recipes.value = machine.selectedRecipe?.sourceId ?? "";
       card.recipes.disabled = panel.busy || !machine.installed || machine.jobId !== null || !machine.recipes.length;
-      card.start.disabled = panel.busy || !machine.actions.start.enabled || selectSourceLots(view, machine) === null;
+      const selection = selectSourceLots(view, machine);
+      const mergeHintVisible = !panel.busy && view.host.confirmed && machine.installed && machine.jobId === null
+        && machine.actions.start.enabled && selection?.requiresTransfer === true;
+      card.start.disabled = panel.busy || !machine.actions.start.enabled || !selection?.sourceLots;
       card.start.title = factoryReason(machine.actions.start.reason);
+      card.mergeHint.hidden = !mergeHintVisible;
       card.work.disabled = panel.busy || !machine.actions.manualWork.enabled || machine.jobId === null;
       card.finish.disabled = panel.busy || !machine.actions.manualFinish.enabled || machine.jobId === null;
       card.work.hidden = !machine.actions.manualWork.enabled; card.finish.hidden = !machine.actions.manualFinish.enabled;

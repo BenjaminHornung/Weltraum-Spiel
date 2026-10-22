@@ -1,0 +1,23 @@
+{
+  "timestampUtc": "2026-10-17T17:42:27.087Z",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "command": "node node_modules/vitest/vitest.mjs run tests/unit/factory/factoryCheckpoint.test.ts --reporter=dot",
+  "exitCode": 1,
+  "result": {
+    "passed": 12,
+    "failed": 1,
+    "testSeconds": 38.8,
+    "totalSeconds": 40.2
+  },
+  "failure": "restoreHostFixture at factoryCheckpoint.test.ts:402: grid.size[0] undefined; fixture uses GridReader fields on SourceSnapshot",
+  "counts": {
+    "payloadUtf8Bytes": 15477185,
+    "objects": 811,
+    "arrays": 285,
+    "scalars": 68042,
+    "entries": 69137,
+    "stringUtf16Bytes": 20799108,
+    "nativeDecodeWorkingBytes": 33702912
+  },
+  "acceptance": "FAIL retained; no fresh full play or browser restart claimed"
+}

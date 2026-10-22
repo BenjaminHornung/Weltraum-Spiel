@@ -1,6 +1,32 @@
 import type { FactoryPlacementView, FactoryPlacementPlan, FactoryPlacementRequest } from "../construction/placement";
+import type { FactoryVector } from "../construction/installationProfile";
+import type { BeltInstalledPort } from "../conveyor/beltPorts";
+import type { BeltPacket } from "../conveyor/beltReference";
 import type { FactoryFacilityRead,FactoryCarrierRequest, FactoryFacilityRequest } from "../../hestia-prototype/physics/factoryFacilitySession";
-import type { HvpSourceColumn } from "../../hvp/hvpCoastSource";
+import type { HvpFactorySourceVersion, HvpSourceColumn } from "../../hvp/hvpCoastSource";
+import type { FactoryCheckpointPreflight, FactoryDecodedCheckpoint, FactorySessionCheckpointV1, FactorySessionCheckpointV2 } from "../persistence/factoryCheckpoint";
+import type { FactoryCheckpointCaptureUnion } from "../persistence/restoreFactorySession";
+export type FactoryCheckpointRawAdmission = (rawFactory: FactorySessionCheckpointV1 | FactorySessionCheckpointV2, cacheBytes: number, treeMetrics: FactoryCheckpointPreflight) => void;
+export type FactoryCheckpointRawAdmissionV1 = (rawFactory: FactorySessionCheckpointV1, cacheBytes: number, treeMetrics: FactoryCheckpointPreflight) => void;
+export type FactoryCheckpointCacheBreakdown = Readonly<{
+  cachedDomainCanonicalDescendantsBytes: number;
+  dryFactoryStateBytes: number;
+  dryFactoryStateBytesMatchesLastStepNextState: boolean;
+  currentExactMaterialBindingsBytes: number;
+  currentProductionMaterialBytes: number;
+  beltMaterialFragmentBytes: number;
+  catalogTreeBytes: number;
+  goalProjectionMemoBytes: number;
+  initialMaterial: Readonly<{
+    included: boolean;
+    checkpointDtoBytes: number;
+    exactMaterialBindingsBytes: number;
+    productionMaterialBytes: number;
+  }>;
+}>;
+export type FactoryCheckpointMemoryRead = Readonly<{ factory: FactorySessionCheckpointV1 | FactorySessionCheckpointV2; cacheBytes: number; treeMetrics: FactoryCheckpointPreflight;
+  cacheBreakdown?: FactoryCheckpointCacheBreakdown }>;
+export type FactoryCheckpointMemoryReadV1 = Omit<FactoryCheckpointMemoryRead,"factory"> & Readonly<{factory:FactorySessionCheckpointV1}>;
 export interface FactoryNativeConstructionPort {
   openCargo():Promise<void>;
   readFacts(): Omit<FactoryPlacementView,"material"|"installations">;
@@ -25,13 +51,15 @@ export interface FactoryNativeHandlingPort {
   rollback(id:string):Promise<void>;
   finalize(id:string):Promise<void>;
 }
-export interface FactorySourceProfile { readonly version:"hvp-factory-startsite-v1"|"hvp-factory-startsite-v2"|"hvp-factory-startsite-v3"|"hvp-factory-startsite-v4"|"hvp-factory-startsite-v5"; readColumn(x:number,z:number):HvpSourceColumn }
+export interface FactorySourceProfile { readonly version:HvpFactorySourceVersion; readColumn(x:number,z:number):HvpSourceColumn }
 export type FactoryHostSurface = "cargo"|"machine"|"power"|"technology"|"build"|"map"|"help"|"pause"|"start"|"settings";
 /** Read-only capability of the existing HVP host, never another World owner. */
 export interface FactoryHostView {
   readonly sessionId: string;
   readonly epoch: number;
   readonly nativeTick: number;
+  readonly persistence?: Readonly<{ state: "Idle" | "Saving" | "Saved" | "Rejected" | "RecoveryHold"; message: string;
+    revision: number | null; saveAvailable: boolean; continueAvailable: boolean }>;
   readonly physicsStatus: "Running" | "Paused" | "SimulationHold" | "CoverageHold" | "RecoveryHold" | "Disposed";
   readonly confirmed: boolean;
   readonly simulationRecoveryAvailable?:boolean;
@@ -54,6 +82,8 @@ export interface FactoryHostPort {
   /** Separate explicit acknowledgement, returns paused; ordinary Play/Resume remain guarded. */
   recoverSimulationHold?():Promise<FactoryHostView>;
   endSession?():Promise<void>;
+  save?():Promise<void>;
+  continueSession?():void;
   current(): boolean;
   read(): FactoryHostView;
   readTerrainSlot(x: number, y: number, z: number): number | undefined;
@@ -66,6 +96,9 @@ export interface FactoryHostPort {
 export interface FactoryHostExtensionHandle {
   dispose(): Promise<void>;
   isQuiescent(): boolean;
+  canBeginFactoryCheckpoint?(): boolean;
+  beginFactoryCheckpoint?(admit?: FactoryCheckpointRawAdmission): FactoryCheckpointCaptureUnion;
+  readFactoryCheckpointMemory?(): FactoryCheckpointMemoryRead;
   /** Private Host-only clock recovery. Callback must use the existing Native owner. */
   canRecoverSimulationHold?():boolean;
   recoverSimulationHold?(resetNative:()=>Promise<void>):Promise<void>;
@@ -85,10 +118,24 @@ export interface FactoryPresentationRead {
  readonly catalogDigest:string;readonly terrainRevision:number;readonly facilityRevision:number;readonly confirmed:boolean;
  readonly phase:FactoryHostView["physicsStatus"];
  readonly machines:readonly FactoryPresentationMachine[];
+  readonly powerLinks:readonly FactoryPresentationPowerLink[];
+  readonly belts:readonly FactoryPresentationBelt[];
  readonly material:import("../material/reservations").MaterialView;
  readonly installations:readonly import("../construction/placement").FactoryInstallation[];
 }
-export type FactoryHostExtension = (host: FactoryHostPort) => Promise<FactoryHostExtensionHandle>;
+export interface FactoryPresentationPowerLink {
+ readonly linkId:string;readonly fromPortId:string;readonly toPortId:string;
+ readonly sourceProfileDigest:string;readonly targetProfileDigest:string;readonly containerId:string;
+ readonly lengthMm:number;readonly routeMm:readonly [FactoryVector,FactoryVector,FactoryVector,FactoryVector];readonly active:boolean;
+}
+export type FactoryPresentationBeltEndpoint=BeltInstalledPort&Readonly<{confirmed:boolean}>;
+export type FactoryPresentationBeltPacket=Pick<BeltPacket,"packetId"|"stackId"|"itemId"|"itemVersion"|"itemDigest"|"positionMm">;
+export interface FactoryPresentationBelt {
+ readonly lineId:string;readonly driveInstanceId:string;readonly source:FactoryPresentationBeltEndpoint;readonly target:FactoryPresentationBeltEndpoint;
+ readonly lengthMm:number;readonly bandContainerId:string;readonly packet:FactoryPresentationBeltPacket|null;
+}
+export type FactoryHostExtension = (host: FactoryHostPort, restore?: FactoryDecodedCheckpoint,
+  owner?:FactorySessionCheckpointV2) => Promise<FactoryHostExtensionHandle>;
 
 /** Frozen W09 player protocol. Implementations resolve all facts through this Host; panels own no domain state. */
 export type FactoryUiPanel = "cargo" | "machine" | "power" | "technology";

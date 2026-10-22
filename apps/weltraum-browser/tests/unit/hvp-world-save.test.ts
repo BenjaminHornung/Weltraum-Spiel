@@ -1,9 +1,15 @@
-import {expect,it} from "vitest";
+import {expect,it,vi} from "vitest";
+import {R} from "../../src/hestia-prototype/physics/rapierPort";
 import {createHvpPhysicsSession} from "../../src/hestia-prototype/physics/session";
 import {collisionSectors} from "../../src/hestia-prototype/physics/terrainColliders";
 import {encodeHvpGrid,decodeHvpGrid} from "../../src/hestia-prototype/persistence/gridCheckpoint";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
 import {prepareHvpLocalBodyCut} from "../../src/hestia-prototype/physics/bodyCutPlan";
+import {createFactoryCargoSite} from "../../src/factory/fixtures/cargoSite";
+import {materializeFactoryStartSite} from "../../src/factory/fixtures/startSite";
+import {canonicalJson} from "../../src/resources/serialization";
+import type {HvpWorldCheckpoint} from "../../src/hestia-prototype/persistence/worldCheckpoint";
+import type {FactoryNativeWorldPartsV1,FactoryPhysicsCheckpoint} from "../../src/hestia-prototype/persistence/factoryWorldParts";
 
 const floor={sizeX:64,sizeY:8,sizeZ:64,cellMeters:.125,originMeters:{x:-4,y:-.125,z:-4},readSlot:(_x:number,y:number,_z:number)=>y===0?1:0};
 const drop={x:-2,y:3,z:-2},player={spawn:{x:.75,y:.92,z:-1},coverage:[{minX:-4,maxX:4,minZ:-4,maxZ:4}]};
@@ -37,6 +43,61 @@ it("rejects running checkpoints and foreign collision/profile or incomplete owne
 it("never invents collision for missing checkpoint coverage",()=>{
   expect(()=>[...collisionSectors({...floor,readSlot:()=>undefined})]).toThrow(/Unknown/);
 });
+
+it("captures Core plus Native Factory in one paused checkpoint, keeps legacy refusal and hydrates into the same sole World",async()=>{
+  const cargo=createFactoryCargoSite(materializeFactoryStartSite());
+  const ground={vertices:new Float32Array([-16,1.25,-16,-16,1.25,16,16,1.25,16,16,1.25,-16]),indices:new Uint32Array([0,1,2,0,2,3])};
+  const open=(worldCheckpoint?:HvpWorldCheckpoint,factoryParts?:FactoryNativeWorldPartsV1)=>createHvpPhysicsSession([ground],{x:10,y:4,z:10},9.81,undefined,undefined,undefined,
+    "factory-checkpoint-roundtrip",worldCheckpoint,"branch",true,cargo,factoryParts);
+  const source=await open();let saved:FactoryPhysicsCheckpoint|undefined,counts:{bodies:number;colliders:number}|undefined;
+  try{
+    expect(source.read().status).toBe("Paused");
+    expect(()=>source.checkpoint()).toThrow(/combined checkpoint/);
+    saved=structuredClone(source.checkpointFactory());
+    counts={bodies:source.read().bodyCount,colliders:source.read().colliderCount};
+    const native=source.read().factoryFacilities!;
+    const nativeColliders=(native.cargo?.colliderHandles.length??0)+native.owners.reduce((n,owner)=>n+owner.colliderHandles.length,0)+(native.carrier?.colliderHandles.length??0);
+    const coreBytes=new TextEncoder().encode(JSON.stringify(saved.world)).byteLength;
+    const factoryBytes=new TextEncoder().encode(JSON.stringify(saved.facilities)).byteLength;
+    console.info(JSON.stringify({factoryCheckpointBytes:{core:coreBytes,native:factoryBytes,combined:coreBytes+factoryBytes},
+      nativeOwners:saved.facilities.owners.length,nativeColliders}));
+  }finally{source.dispose();}
+  const badParts={...saved!.facilities,cargo:{...saved!.facilities.cargo,sourceDigest:"00000000"}};
+  await expect(open(saved!.world,badParts)).rejects.toThrow(/Native cargo site mismatch/);
+  const restored=await open(saved!.world,saved!.facilities);
+  try{
+    const current=restored.read();
+    expect(current.status).toBe("Paused");expect(current.ticks).toBe(saved.world.tick.ticks);
+    expect(current.terrainGeneration).toBe(saved.world.terrainGeneration);
+    expect(current.bodyCount).toBe(counts!.bodies);expect(current.colliderCount).toBe(counts!.colliders);
+    expect(current.factoryFacilities).toMatchObject({state:"Idle",revision:saved.facilities.revision,cargo:{opened:false,openReceipt:null,sourceDigest:cargo.sourceDigest}});
+    expect(()=>restored.checkpoint()).toThrow(/combined checkpoint/);
+    expect(canonicalJson(restored.checkpointFactory())).toBe(canonicalJson(saved));
+  }finally{restored.dispose();}
+},120_000);
+
+it("failed Factory hydration removes the created CharacterController before freeing its candidate World once",async()=>{
+  const cargo=createFactoryCargoSite(materializeFactoryStartSite());
+  const ground={vertices:new Float32Array([-16,1.25,-16,-16,1.25,16,16,1.25,16,16,1.25,-16]),indices:new Uint32Array([0,1,2,0,2,3])};
+  const player={spawn:{x:0,y:2.17,z:0},coverage:[{minX:-16,maxX:16,minZ:-16,maxZ:16}]};
+  const source=await createHvpPhysicsSession([ground],{x:10,y:4,z:10},9.81,player,undefined,undefined,"factory-cleanup-roundtrip",undefined,"branch",true,cargo);
+  let saved:FactoryPhysicsCheckpoint;
+  try{saved=structuredClone(source.checkpointFactory());}finally{source.dispose();}
+  const originalCreate=R.World.prototype.createCollider;
+  let colliderCalls=0;
+  const createCollider=vi.spyOn(R.World.prototype,"createCollider").mockImplementation(function(this:R.World,...args:Parameters<R.World["createCollider"]>){
+    colliderCalls+=1;if(colliderCalls===4)throw new Error("Injected restored Cargo collider failure");
+    return originalCreate.apply(this,args);
+  });
+  const removeController=vi.spyOn(R.World.prototype,"removeCharacterController");
+  const free=vi.spyOn(R.World.prototype,"free");
+  try{
+    await expect(createHvpPhysicsSession([ground],{x:10,y:4,z:10},9.81,undefined,undefined,undefined,"factory-cleanup-roundtrip",saved.world,"branch",true,cargo,saved.facilities))
+      .rejects.toThrow("Injected restored Cargo collider failure");
+    expect(colliderCalls).toBe(4);expect(removeController).toHaveBeenCalledTimes(1);expect(free).toHaveBeenCalledTimes(1);
+  }finally{createCollider.mockRestore();removeController.mockRestore();free.mockRestore();}
+},120_000);
+
 it("restores current recut timber and terrain fragments, not the original parent generators",async()=>{
   const source=await create();let saved:ReturnType<typeof source.checkpoint>,before:ReturnType<typeof source.read>;
   const sectors=[...collisionSectors(floor)];

@@ -1,0 +1,88 @@
+{
+  "events": [
+    {
+      "kind": "walk",
+      "axis": "z",
+      "target": 2,
+      "state": {
+        "tick": 604,
+        "status": "Running",
+        "player": {
+          "x": -4.345317840576172,
+          "y": 2.4000184535980225,
+          "z": 2.0036869049072266
+        },
+        "clock": {
+          "maxTimerGapMs": 37.600000001490116,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 4.300000004470348,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        }
+      }
+    },
+    {
+      "kind": "walk",
+      "axis": "x",
+      "target": -8.125,
+      "state": {
+        "tick": 712,
+        "status": "Running",
+        "player": {
+          "x": -8.095332145690918,
+          "y": 2.4000000953674316,
+          "z": 2.003697156906128
+        },
+        "clock": {
+          "maxTimerGapMs": 37.600000001490116,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 4.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        }
+      }
+    }
+  ],
+  "error": "Error: Native stopped {\"tick\":1218,\"status\":\"Paused\",\"player\":{\"x\":10.498616218566895,\"y\":2.391071081161499,\"z\":-0.07928717881441116},\"clock\":{\"maxTimerGapMs\":37.600000001490116,\"maxAdvanceMs\":9.399999998509884,\"maxHandlerMs\":937.3999999985099,\"lastCommand\":\"Read\",\"lastHandlerMs\":5.399999998509884,\"delayedCallbacks\":[],\"timers\":1},\"carrier\":null,\"massMg\":2984400000,\"receipt\":{\"status\":\"Committed\",\"reason\":null}}",
+  "final": {
+    "tick": 1218,
+    "status": "Paused",
+    "player": {
+      "x": 10.498616218566895,
+      "y": 2.391071081161499,
+      "z": -0.07928717881441116
+    },
+    "clock": {
+      "maxTimerGapMs": 37.600000001490116,
+      "maxAdvanceMs": 9.399999998509884,
+      "maxHandlerMs": 937.3999999985099,
+      "lastCommand": "Read",
+      "lastHandlerMs": 5.700000002980232,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "carrier": null,
+    "massMg": 2984400000,
+    "receipt": {
+      "status": "Committed",
+      "reason": null
+    }
+  },
+  "text": "Goal\nConfirming workshop state\nPause\nN\n\nNo confirmed map source available.\n\nB Build · M Map · Esc Menu\n\nSession paused\n\nPlay\nSimulation must be visible, confirmed and available"
+}

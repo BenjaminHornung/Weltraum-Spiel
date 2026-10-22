@@ -1,0 +1,89 @@
+diff --git a/apps/weltraum-browser/src/resources/serialization.ts b/apps/weltraum-browser/src/resources/serialization.ts
+index 651a3b8..3b94239 100644
+--- a/apps/weltraum-browser/src/resources/serialization.ts
++++ b/apps/weltraum-browser/src/resources/serialization.ts
+@@ -53,7 +53,7 @@ const defineCanonicalProperty = (
+   });
+ };
+ 
+-const canonicalize = (value: unknown, parents: WeakSet<object>): CanonicalJsonValue => {
++const canonicalize = (value: unknown, parents: WeakSet<object>, freezeResult: boolean): CanonicalJsonValue => {
+   if (value === null || typeof value === "string" || typeof value === "boolean") {
+     return value;
+   }
+@@ -75,10 +75,10 @@ const canonicalize = (value: unknown, parents: WeakSet<object>): CanonicalJsonVa
+     parents.add(value);
+     const result: CanonicalJsonValue[] = [];
+     for (const entry of value) {
+-      result.push(canonicalize(entry, parents));
++      result.push(canonicalize(entry, parents, freezeResult));
+     }
+     parents.delete(value);
+-    return Object.freeze(result);
++    return freezeResult ? Object.freeze(result) : result;
+   }
+ 
+   if (!isPlainRecord(value)) {
+@@ -92,14 +92,19 @@ const canonicalize = (value: unknown, parents: WeakSet<object>): CanonicalJsonVa
+   parents.add(value);
+   const result = createCanonicalRecord();
+   for (const key of Object.keys(value).sort(codeUnitCompare)) {
+-    defineCanonicalProperty(result, key, canonicalize(value[key], parents));
++    const child = canonicalize(value[key], parents, freezeResult);
++    if (freezeResult) {
++      defineCanonicalProperty(result, key, child);
++    } else {
++      result[key] = child;
++    }
+   }
+   parents.delete(value);
+-  return Object.freeze(result);
++  return freezeResult ? Object.freeze(result) : result;
+ };
+ 
+ /** Recursively sorts object keys while intentionally preserving array order. */
+-export const canonicalizeJsonValue = (value: unknown): CanonicalJsonValue => canonicalize(value, new WeakSet<object>());
++export const canonicalizeJsonValue = (value: unknown): CanonicalJsonValue => canonicalize(value, new WeakSet<object>(), true);
+ 
+ const serializeCanonicalJson = (value: CanonicalJsonValue): string => {
+   if (value === null) {
+@@ -121,7 +126,7 @@ const serializeCanonicalJson = (value: CanonicalJsonValue): string => {
+ };
+ 
+ /** Byte-stable JSON for persistent resource data; unlike planner hashing, numeric precision is never rounded. */
+-export const canonicalJson = (value: unknown): string => serializeCanonicalJson(canonicalizeJsonValue(value));
++export const canonicalJson = (value: unknown): string => serializeCanonicalJson(canonicalize(value, new WeakSet<object>(), false));
+ 
+ /** Deterministic synchronous signature over canonical JSON with no clock, random, or global registry state. */
+ export const canonicalSignature = (value: unknown): string => fnv1aHash(canonicalJson(value));
+diff --git a/apps/weltraum-browser/tests/unit/resourceCanonicalBytes.test.ts b/apps/weltraum-browser/tests/unit/resourceCanonicalBytes.test.ts
+index c495e50..46845e6 100644
+--- a/apps/weltraum-browser/tests/unit/resourceCanonicalBytes.test.ts
++++ b/apps/weltraum-browser/tests/unit/resourceCanonicalBytes.test.ts
+@@ -1,4 +1,4 @@
+-import { describe, expect, it } from "vitest";
++import { describe, expect, it, vi } from "vitest";
+ import { canonicalJson, canonicalSignature, canonicalizeJsonValue, CanonicalSerializationError } from "../../src/resources/serialization";
+ 
+ describe("persistent canonical byte contract", () => {
+@@ -17,6 +17,20 @@ describe("persistent canonical byte contract", () => {
+     expect(reads).toEqual(["a", "x", "z"]);
+   });
+ 
++  it("finishes capturing caller getters before encoding", () => {
++    const stringify = vi.spyOn(JSON, "stringify");
++    const input = {
++      get a() { return 1; },
++      get z(): never { throw new Error("getter failed"); }
++    };
++    try {
++      expect(() => canonicalJson(input)).toThrow("getter failed");
++      expect(stringify).not.toHaveBeenCalled();
++    } finally {
++      stringify.mockRestore();
++    }
++  });
++
+   it("allows shared children while rejecting an actual parent cycle", () => {
+     const child = {value: 1};
+     expect(canonicalJson({b: child, a: child})).toBe('{"a":{"value":1},"b":{"value":1}}');

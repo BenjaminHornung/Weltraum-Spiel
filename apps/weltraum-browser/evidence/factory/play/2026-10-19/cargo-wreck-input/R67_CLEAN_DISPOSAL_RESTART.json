@@ -1,0 +1,54 @@
+{
+  "ended": {
+    "body": "Hestia session ended\n\nRestart",
+    "disposal": {
+      "state": "Disposed",
+      "errors": [],
+      "scope": "HVP-owned registrations, worker timers, backend/cache objects; not process or GPU byte usage",
+      "disposed": {
+        "geometries": 0,
+        "materials": 0,
+        "textures": 0,
+        "workers": 0,
+        "listeners": 0,
+        "timers": 0,
+        "pendingJobs": 0,
+        "bodies": 0,
+        "colliders": 0,
+        "ownedBytes": 0
+      },
+      "cacheBytes": 0,
+      "visual": {
+        "geometries": 0,
+        "textures": 0
+      },
+      "native": {
+        "status": "Disposed",
+        "bodies": 0,
+        "colliders": 0
+      },
+      "measurementHealth": {
+        "enabled": false,
+        "samples": 0,
+        "errors": 0,
+        "dropped": 0
+      }
+    },
+    "hostInput": null,
+    "shellCount": 0
+  },
+  "explicitRestart": true,
+  "menu": {
+    "body": "HESTIA\nEXPEDITION · CRASH SITE\n\nThe ship is grounded. Its cargo will supply your first workshop.\n\nNew game\nContinue\nNo Factory checkpoint saved; Save checks memory before writing\nSettings\nNot available here yet\nField guide\nFactory prototype · First structural brace\nSession paused",
+    "shells": 1
+  },
+  "fresh": {
+    "status": "Paused",
+    "ticks": 0,
+    "opened": false,
+    "locked": false,
+    "shells": 1
+  },
+  "errors": [],
+  "network": []
+}

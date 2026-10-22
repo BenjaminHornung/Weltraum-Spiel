@@ -1,0 +1,31 @@
+{
+  "kind": "PURE_PROPOSED_MASK_PREFLIGHT_NO_V6_SNAPSHOT_OR_WORLD_CREATED",
+  "legacySourceVersion": "hvp-factory-startsite-v5",
+  "legacySourceDigest": "0e2a0bcb",
+  "legacySourceBytes": 8388608,
+  "proposedSourceBytes": 8388608,
+  "masksWorldXZ": [
+    [
+      -2,
+      14.5,
+      3.5,
+      13.75
+    ],
+    [
+      -5.25,
+      -1.75,
+      10.5,
+      12.5
+    ]
+  ],
+  "topY": 1.5,
+  "maskColumns": 11240,
+  "maskAreaM2": 175.625,
+  "changedColumns": 11145,
+  "changedSlots": 124974,
+  "priorPlateauOverlap": 95,
+  "witnessSamples": 3159,
+  "witnessDifferences": 0,
+  "resourceCreditMg": 0,
+  "caveat": "Sample equality is not whole-route/native gameplay or terrain-render acceptance; no V6 version/digest has been minted."
+}

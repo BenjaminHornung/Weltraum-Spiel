@@ -1,0 +1,147 @@
+{
+  "schema": "hestia.play-distribution-surface-derivative/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "sourceManifest": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+    "sha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+    "bytes": 83735
+  },
+  "generator": {
+    "path": "art/factory/play-distribution-surface-v2-2026-10-21/build_distribution_surface_v2.py",
+    "sha256": "a31099de74a93cbf98f931de9e7ccbc2d0df9ecc99a037ec989401170d1dc156",
+    "bytes": 16850
+  },
+  "binaryHelper": {
+    "path": "art/factory/play-cargo-surface-v2-2026-10-19/build_cargo_surface_v2.py",
+    "sha256": "7f68693c9bbd8eb4299f56b0573b793ed908b5215c45783a3f2ba06ae4fdf96c",
+    "bytes": 17844
+  },
+  "asset": {
+    "schema": "hestia.play-distribution-surface-provenance/v1",
+    "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+    "assetId": "play_distribution_v2",
+    "originalAssetId": "play_distribution_v1",
+    "sourceRuntimeGlb": {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution.glb",
+      "sha256": "985f4c5627cc884c549dbe8aed9683798ef7a2d44c2f8340a3c2ef5fd9238b51",
+      "bytes": 20764
+    },
+    "sourceFile": {
+      "path": "art/factory/fp01/power-kit/source.scene.json",
+      "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "bytes": 27070
+    },
+    "sourceBlob": {
+      "path": "art/factory/play-2026-10-12/power-kit/distribution/native-owner-source.blob",
+      "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "bytes": 27070
+    },
+    "archivedSourceBlob": {
+      "path": "art/factory/play-distribution-surface-v2-2026-10-21/distribution-v1.native-owner-source.blob",
+      "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "bytes": 27070,
+      "checkoutNormalization": "CRLF-to-LF checkout normalization only",
+      "recordedV1SourceBlob": {
+        "path": "art/factory/play-2026-10-12/power-kit/distribution/native-owner-source.blob",
+        "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+        "bytes": 27070
+      }
+    },
+    "sourceSnapshot": {
+      "path": "art/factory/play-2026-10-12/power-kit/distribution/native-source.json",
+      "sha256": "bb7f354d637878e6303573088d24a9019ee01f6a430885ca34154161ad41abc5",
+      "bytes": 4575
+    },
+    "nativeBoundsM": {
+      "min": [
+        -1.0,
+        0.0,
+        -0.5
+      ],
+      "max": [
+        1.0,
+        2.0,
+        0.5
+      ]
+    },
+    "generator": {
+      "path": "art/factory/play-distribution-surface-v2-2026-10-21/build_distribution_surface_v2.py",
+      "sha256": "a31099de74a93cbf98f931de9e7ccbc2d0df9ecc99a037ec989401170d1dc156",
+      "bytes": 16850
+    },
+    "binaryHelper": {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/build_cargo_surface_v2.py",
+      "sha256": "7f68693c9bbd8eb4299f56b0573b793ed908b5215c45783a3f2ba06ae4fdf96c",
+      "bytes": 17844
+    },
+    "outputAuthoringGlb": {
+      "path": "art/factory/play-distribution-surface-v2-2026-10-21/distribution-v2.glb",
+      "sha256": "039ad9807642a4e91130e83f265cdbb5521aa619a4ec661017a177d0923c82ee",
+      "bytes": 20788
+    },
+    "outputPublicGlb": {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/distribution-v2.glb",
+      "sha256": "039ad9807642a4e91130e83f265cdbb5521aa619a4ec661017a177d0923c82ee",
+      "bytes": 20788,
+      "url": "/factory/play-2026-10-12/distribution-v2.glb"
+    },
+    "visualRepair": {
+      "version": 1,
+      "kind": "bounded-render-surface-coplanarity-repair",
+      "originalAssetId": "play_distribution_v1",
+      "nativeAuthority": "unchanged original source only",
+      "frontPlaneFromM": 0.5,
+      "frontPlaneToMByRole": {
+        "EX-SHELL": 0.498046875,
+        "EX-FUNCTION": 0.4990234375
+      },
+      "frontRecessMByRole": {
+        "EX-SHELL": 0.001953125,
+        "EX-FUNCTION": 0.0009765625
+      },
+      "frontChangedVertexCountByRole": {
+        "EX-SHELL": 24,
+        "EX-FUNCTION": 48
+      },
+      "changedVertexCount": 72,
+      "topology": "same indexed triangles, materials, nodes, primitives and Native bindings",
+      "meshCensus": {
+        "vertices": 480,
+        "indices": 720,
+        "primitives": 7
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.0,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          1.0,
+          2.0,
+          0.5
+        ]
+      }
+    },
+    "license": {
+      "id": "LicenseRef-Hestia-Project-Original",
+      "path": "art/factory/play-distribution-surface-v2-2026-10-21/LICENSE.txt",
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "bytes": 326
+    },
+    "historicalLicense": {
+      "id": "LicenseRef-Hestia-Project-Original",
+      "path": "art/factory/play-2026-10-12/LICENSE.txt",
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "bytes": 326
+    },
+    "licenseNormalization": "CRLF-to-LF checkout normalization only",
+    "authority": "render-only Distributor surface; original Native source, profile, collision, and save authority remain unchanged"
+  },
+  "publicManifest": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest-distribution-surface-v2.json",
+    "sha256": "e8bc24fa80459d28547f3494d18db6a5d2695b5c37aae38c7c845f28c94cdd8d",
+    "bytes": 5520
+  },
+  "authority": "render-only Distributor surface correction; Native authority is unchanged"
+}

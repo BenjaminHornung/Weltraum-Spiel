@@ -113,9 +113,11 @@ export class ThreeMaterialFactory {
       depthWrite: profile.depthWrite,
       vertexColors
     };
-    return profile.kind === "BasicLit"
+    const material = profile.kind === "BasicLit"
       ? new THREE.MeshLambertMaterial(parameters)
       : new THREE.MeshBasicMaterial(parameters);
+    material.name = profile.id;
+    return material;
   }
 
   private releaseEntries(entries: readonly CachedMaterial[]): number {

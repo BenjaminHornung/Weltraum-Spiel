@@ -16,7 +16,7 @@ class ElementDouble extends EventTarget {
   readonly attributes = new Map<string, string>();
   readonly dataset: Record<string, string> = {};
   readonly style = { cssText: "" };
-  id = ""; value = ""; disabled = false; hidden = false; type = "";
+  id = ""; value = ""; disabled = false; hidden = false; type = ""; title = "";
   open = false; selected = false; tabIndex = 0;
   private content = "";
   constructor(readonly tagName: string) { super(); }
@@ -65,9 +65,9 @@ const harness = () => {
     submit: command => { commands.push(command); return new Promise((r, j) => { resolve = r; reject = j; }); }
   };
   const publish = (v: FactoryUiReadModel) => { view = freeze(v); for (const listener of listeners) listener(view); };
-  const complete = (status: FactoryUiResult["status"] = "Committed") => {
+  const complete = (status: FactoryUiResult["status"] = "Committed", reason: string | null = null) => {
     const command = commands.at(-1)!;
-    const receipt: FactoryUiReceipt = freeze({ commandId: command.commandId, requestCanonicalJson: JSON.stringify(command), status: status === "NoOp" ? "Committed" : status, reason: null, publicationRevision: view.publicationRevision, binding: view.binding });
+    const receipt: FactoryUiReceipt = freeze({ commandId: command.commandId, requestCanonicalJson: JSON.stringify(command), status: status === "NoOp" ? "Committed" : status, reason, publicationRevision: view.publicationRevision, binding: view.binding });
     receipts.set(command.commandId, receipt); resolve!({ status, receipt });
   };
   return { port, commands, focuses, publish, complete, failTransport: () => reject!(new Error("Lost reply")), receipts, get view() { return view; }, get subscribers() { return listeners.size; } };
@@ -88,12 +88,17 @@ describe("W09 frozen panel projection and finite player intents", () => {
     const firstLot = elements.find(e => e.tagName === "P" && e.textContent.startsWith("Stahllos 0:"))!;
     expect(firstLot).toBeDefined();
     const inventory = firstLot.parent!.parent!.parent!, content = inventory.parent!;
+    const actionBar = button(panel.element, "Open cargo")!.parent!;
     const deposit = button(panel.element, "Set down here")!, back = button(panel.element, "Return to cargo")!, transfer = button(panel.element, "Transfer")!;
+    expect(actionBar.hidden).toBe(true);
     expect(deposit.hidden).toBe(false); expect(deposit.disabled).toBe(false);
     expect(back.hidden).toBe(false); expect(back.disabled).toBe(false);
     expect(content.children.indexOf(deposit.parent!)).toBeLessThan(content.children.indexOf(inventory));
     expect(content.children.indexOf(transfer.parent!)).toBeLessThan(content.children.indexOf(inventory));
     for (let i = 0; i < 79; i++) expect(inventory.textContent).toContain(`Stahllos ${i}:`);
+    h.publish({ ...h.view, publicationRevision: 2, interaction: { ...h.view.interaction, handling: null, deposit: cap(false), returnCargo: cap(false) } });
+    expect(actionBar.hidden).toBe(false);
+    expect(button(panel.element, "Pick up: 8 kg Stahl")!.hidden).toBe(false);
     expect(h.commands).toHaveLength(0); panel.dispose();
   });
   it("bounds the independently scrollable full inventory without replacing focused transfer controls", () => {
@@ -167,6 +172,52 @@ describe("W09 frozen panel projection and finite player intents", () => {
     machine.dispose(); panel.dispose();
     expect(h.subscribers).toBe(0);
   });
+  it("distinguishes reachable closed Cargo, explicit opening and genuinely unreachable sources", async () => {
+    const h = harness(), cargo = h.view.inventory[0]!;
+    h.publish({ ...h.view, inventory: [{ ...cargo, accessible: false, pickupProfiles: cargo.pickupProfiles.map(p => ({ ...p, capability: cap(false, "Quelle nicht erreichbar oder Transport belegt") })) }],
+      interaction: { ...h.view.interaction, cargoOpened: false, cargoAccessible: true, openCargo: cap() } });
+    const panel = mountFactoryCargoPanel(h.port, documentDouble()), pickup = button(panel.element, "Pick up: 8 kg Stahl")!, open = button(panel.element, "Open cargo")!;
+    expect(panel.element.textContent).toContain("Closed · open cargo first");
+    expect(open.parent).toBe(pickup.parent);
+    expect(open.hidden).toBe(false);
+    expect(pickup.hidden).toBe(true);
+    expect(pickup.disabled).toBe(true); expect(pickup.title).toBe("Open cargo first");
+    expect(open.disabled).toBe(false); expect(h.commands).toHaveLength(0);
+
+    open.click(); expect(h.commands).toHaveLength(1); expect(h.commands[0]).toMatchObject({ kind: "open-cargo" });
+    expect(panel.element.textContent).toContain("Response pending");
+    h.complete(); await flush();
+    const openedCargo = { ...h.view.inventory[0]!, accessible: true, pickupProfiles: h.view.inventory[0]!.pickupProfiles.map(p => ({ ...p, capability: cap() })) };
+    h.publish({ ...h.view, publicationRevision: 2, inventory: [openedCargo], interaction: { ...h.view.interaction, cargoOpened: true, cargoAccessible: true, openCargo: cap(false) } });
+    expect(open.hidden).toBe(true); expect(pickup.hidden).toBe(false); expect(pickup.disabled).toBe(false);
+    expect(panel.element.textContent).toContain("available"); expect(panel.element.textContent).not.toContain("Closed · open cargo first");
+
+    const unreachableCargo = { ...openedCargo, accessible: false, pickupProfiles: openedCargo.pickupProfiles.map(p => ({ ...p, capability: cap(false, "Quelle nicht erreichbar oder Transport belegt") })) };
+    const unreachableDepot = { ...openedCargo, id: "store", ownerId: "store_owner", role: "depot" as const, accessible: false,
+      pickupProfiles: [{ profileId: "store4", name: "4 kg Stahl", sourceLots: [{ containerId: "store", containerRevision: 0, stackId: "steel", quantityUnits: 4_000_000 }], capability: cap(false, "Quelle nicht erreichbar") }] };
+    h.publish({ ...h.view, publicationRevision: 3, inventory: [unreachableCargo, unreachableDepot], interaction: { ...h.view.interaction,
+      cargoOpened: false, cargoAccessible: false, openCargo: cap(false, "Wrackfracht nicht erreichbar") } });
+    const storageRow = descendants(panel.element as unknown as ElementDouble).find(e => e.tagName === "H3" && e.textContent === "Storage 1")!.parent!;
+    expect(panel.element.textContent).toContain("Closed · out of reach");
+    expect(storageRow.textContent).toContain("Out of reach"); expect(storageRow.textContent).not.toContain("Closed");
+    const packageSelect = descendants(panel.element as unknown as ElementDouble).find(e => e.tagName === "SELECT" && e.getAttribute("aria-label") === "Transport package")!;
+    packageSelect.value = JSON.stringify(["store", "store4"]); packageSelect.dispatchEvent(new Event("change"));
+    const storagePickup = button(panel.element, "Pick up: 4 kg Stahl")!;
+    expect(storagePickup.hidden).toBe(false); expect(storagePickup.disabled).toBe(true);
+    expect(h.commands).toHaveLength(1); panel.dispose();
+  });
+  it("explains the normal recovery after exact carrier support rejections", async () => {
+    const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
+    const pickup = button(panel.element, "Pick up: 8 kg Stahl")!;
+    const hint = "Load needs solid, level ground. Close Cargo, select Play, step onto clear level ground nearby, reopen Cargo, and retry.";
+    pickup.click(); h.complete("Rejected", "FactoryFacilityRejected:CarrierSupport"); await flush();
+    expect(panel.element.textContent).toContain(hint);
+    expect(h.receipts.get(h.commands[0]!.commandId)?.reason).toBe("FactoryFacilityRejected:CarrierSupport");
+    pickup.click(); h.complete("Rejected", "CarrierSupport"); await flush();
+    expect(panel.element.textContent).toContain(hint);
+    expect(h.receipts.get(h.commands[1]!.commandId)?.reason).toBe("CarrierSupport");
+    panel.dispose();
+  });
   it("preserves a focused pickup control across unrelated confirmed publications", () => {
     const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
     const pickup = button(panel.element, "Pick up: 8 kg Stahl")!;
@@ -236,7 +287,9 @@ describe("W09 frozen panel projection and finite player intents", () => {
     const h = harness(), recipe = catalog.recipes.find(r => r.sourceId === "REC-01-CUT")!;
     const ref = { sourceId: recipe.sourceId, version: recipe.version, digest: recipe.digest };
     const machine = { ...h.view.machines[0]!, jobId: null, selectedRecipe: ref, recipes: [{ ref, name: "Zuschnitt", durationMs: 30000, powerWatts: 1200 }], actions: { ...h.view.machines[0]!.actions, start: cap() } };
-    h.publish({ ...h.view, machines: [machine], inventory: [{ ...h.view.inventory[0]!, id: "cut_in", role: "input", revision: 3, pickupProfiles: [] }] });
+    const source = h.view.inventory[0]!, steel = source.contents[0]!;
+    h.publish({ ...h.view, machines: [machine], inventory: [{ ...source, id: "cut_in", role: "input", revision: 3, massMg: 8_000_000,
+      contents: [{ ...steel, quantityUnits: 8_000_000, massMg: 8_000_000 }], pickupProfiles: [] }] });
     const panel = mountFactoryMachinePanel(h.port, documentDouble());
     button(panel.element, "Start job")!.click();
     expect(h.commands[0]).toMatchObject({ kind: "start", machine: { id: "cutter", revision: 1 }, sourceLots: [{ containerId: "cut_in", containerRevision: 3, stackId: "steel", quantityUnits: 8_000_000 }] });
@@ -245,6 +298,80 @@ describe("W09 frozen panel projection and finite player intents", () => {
     const rejected = mountFactoryMachinePanel(wrong.port, documentDouble());
     expect(button(rejected.element, "Start job")!.disabled).toBe(true);
     button(rejected.element, "Start job")!.click(); expect(wrong.commands).toHaveLength(0); rejected.dispose();
+  });
+  it("blocks split-only recipe stock and shows the existing compatible-transfer route", () => {
+    const h = harness(), recipe = catalog.recipes.find(r => r.sourceId === "REC-01-CUT")!, ref = { sourceId: recipe.sourceId, version: recipe.version, digest: recipe.digest };
+    const source = h.view.inventory[0]!, steel = source.contents[0]!, machine = { ...h.view.machines[0]!, jobId: null, selectedRecipe: ref,
+      recipes: [{ ref, name: "Zuschnitt", durationMs: 30000, powerWatts: 1200 }], actions: { ...h.view.machines[0]!.actions, start: cap() } };
+    const input = { ...source, id: "cut_in", role: "input" as const, revision: 3, massMg: 8_000_000, pickupProfiles: [], contents: [
+      { ...steel, stackId: "steel_half_a", quantityUnits: 4_000_000, massMg: 4_000_000 },
+      { ...steel, stackId: "steel_half_b", quantityUnits: 4_000_000, massMg: 4_000_000 }
+    ] };
+    h.publish({ ...h.view, machines: [machine], inventory: [...h.view.inventory, input] });
+    const panel = mountFactoryMachinePanel(h.port, documentDouble()), start = button(panel.element, "Start job")!;
+    const hint = descendants(panel.element as unknown as ElementDouble).find(e => e.tagName === "P" && e.textContent.includes("Cargo → Transfer"))!;
+    expect(start.disabled).toBe(true); expect(hint.hidden).toBe(false); start.click(); expect(h.commands).toHaveLength(0); panel.dispose();
+
+    const blocked = harness(), blockedMachine = { ...machine, actions: { ...machine.actions, start: cap(false, "WAIT_POWER") } };
+    blocked.publish({ ...blocked.view, machines: [blockedMachine], inventory: [...blocked.view.inventory, input] });
+    const blockedPanel = mountFactoryMachinePanel(blocked.port, documentDouble());
+    expect(button(blockedPanel.element, "Start job")!.disabled).toBe(true);
+    expect(descendants(blockedPanel.element as unknown as ElementDouble).find(e => e.tagName === "P" && e.textContent.includes("Cargo → Transfer"))!.hidden).toBe(true);
+    blockedPanel.dispose();
+
+    const activeJob = harness(), activeMachine = { ...machine, jobId: "active_job" };
+    activeJob.publish({ ...activeJob.view, machines: [activeMachine], inventory: [...activeJob.view.inventory, input] });
+    const activeJobPanel = mountFactoryMachinePanel(activeJob.port, documentDouble());
+    expect(descendants(activeJobPanel.element as unknown as ElementDouble).find(e => e.tagName === "P" && e.textContent.includes("Cargo → Transfer"))!.hidden).toBe(true);
+    activeJobPanel.dispose();
+
+    const unconfirmed = harness();
+    unconfirmed.publish({ ...unconfirmed.view, host: { ...unconfirmed.view.host, confirmed: false }, machines: [machine], inventory: [...unconfirmed.view.inventory, input] });
+    const unconfirmedPanel = mountFactoryMachinePanel(unconfirmed.port, documentDouble());
+    expect(descendants(unconfirmedPanel.element as unknown as ElementDouble).find(e => e.tagName === "P" && e.textContent.includes("Cargo → Transfer"))!.hidden).toBe(true);
+    unconfirmedPanel.dispose();
+
+    const recovery = harness();
+    recovery.publish({ ...recovery.view, state: "RecoveryHold", machines: [machine], inventory: [...recovery.view.inventory, input] });
+    const recoveryPanel = mountFactoryMachinePanel(recovery.port, documentDouble());
+    expect(descendants(recoveryPanel.element as unknown as ElementDouble).find(e => e.tagName === "P" && e.textContent.includes("Cargo → Transfer"))!.hidden).toBe(true);
+    recoveryPanel.dispose();
+  });
+  it("skips smaller stacks when a later single stack covers the recipe", () => {
+    const h = harness(), recipe = catalog.recipes.find(r => r.sourceId === "REC-01-CUT")!, ref = { sourceId: recipe.sourceId, version: recipe.version, digest: recipe.digest };
+    const source = h.view.inventory[0]!, steel = source.contents[0]!, machine = { ...h.view.machines[0]!, jobId: null, selectedRecipe: ref,
+      recipes: [{ ref, name: "Zuschnitt", durationMs: 30000, powerWatts: 1200 }], actions: { ...h.view.machines[0]!.actions, start: cap() } };
+    const input = { ...source, id: "cut_in", role: "input" as const, revision: 3, massMg: 16_000_000, pickupProfiles: [], contents: [
+      { ...steel, stackId: "steel_half_a", quantityUnits: 4_000_000, massMg: 4_000_000 },
+      { ...steel, stackId: "steel_half_b", quantityUnits: 4_000_000, massMg: 4_000_000 },
+      { ...steel, stackId: "steel_full", quantityUnits: 8_000_000, massMg: 8_000_000 }
+    ] };
+    h.publish({ ...h.view, machines: [machine], inventory: [...h.view.inventory, input] });
+    const panel = mountFactoryMachinePanel(h.port, documentDouble());
+    expect(button(panel.element, "Start job")!.disabled).toBe(false);
+    expect(descendants(panel.element as unknown as ElementDouble).find(e => e.tagName === "P" && e.textContent.includes("Cargo → Transfer"))!.hidden).toBe(true);
+    button(panel.element, "Start job")!.click();
+    expect(h.commands[0]).toMatchObject({ kind: "start", sourceLots: [{ containerId: "cut_in", containerRevision: 3, stackId: "steel_full", quantityUnits: 8_000_000 }] });
+    panel.dispose();
+  });
+  it("keeps one fresh full source per ingredient for manual recipes", () => {
+    const h = harness(), recipe = catalog.recipes.find(r => r.sourceId === "REC-05-BRACE")!;
+    const ref = { sourceId: recipe.sourceId, version: recipe.version, digest: recipe.digest };
+    const machine = { ...h.view.machines[0]!, id: "bench", definitionId: "B05", name: "Werkbank", inputContainerId: "bench_in", jobId: null,
+      selectedRecipe: ref, recipes: [{ ref, name: "Montage", durationMs: null, powerWatts: 0 }], actions: { ...h.view.machines[0]!.actions, start: cap() } };
+    const source = h.view.inventory[0]!, input = { ...source, id: "bench_in", role: "input" as const, revision: 3, massMg: 10_000_000, pickupProfiles: [], contents: [
+      { stackId: "stale_profile", itemId: "fp02.bulk.steel_profile", name: "Stahlprofil", quantityUnits: 4_000_000, quantityBasis: "mg" as const, massMg: 4_000_000, freshProduction: false },
+      { stackId: "fresh_profile", itemId: "fp02.bulk.steel_profile", name: "Stahlprofil", quantityUnits: 4_000_000, quantityBasis: "mg" as const, massMg: 4_000_000, freshProduction: true },
+      { stackId: "fresh_sheet", itemId: "fp02.bulk.steel_sheet", name: "Stahlblech", quantityUnits: 2_000_000, quantityBasis: "mg" as const, massMg: 2_000_000, freshProduction: true }
+    ] };
+    h.publish({ ...h.view, machines: [machine], inventory: [...h.view.inventory, input] });
+    const panel = mountFactoryMachinePanel(h.port, documentDouble());
+    expect(button(panel.element, "Start job")!.disabled).toBe(false); button(panel.element, "Start job")!.click();
+    expect(h.commands[0]).toMatchObject({ kind: "start", sourceLots: [
+      { containerId: "bench_in", containerRevision: 3, stackId: "fresh_profile", quantityUnits: 4_000_000 },
+      { containerId: "bench_in", containerRevision: 3, stackId: "fresh_sheet", quantityUnits: 2_000_000 }
+    ] });
+    panel.dispose();
   });
   it("rejects zero, over-lot, nonfinite and sub-mg transfer amounts", () => {
     const h = harness(); h.publish({ ...h.view, inventory: [...h.view.inventory, { ...h.view.inventory[0]!, id: "cut_in", role: "input", contents: [], pickupProfiles: [], massMg: 0 }] });
@@ -290,5 +417,22 @@ it("PLAY04 power panel submits one current installed-device control and waits fo
   expect(h.commands).toHaveLength(1);expect(h.commands[0]).toMatchObject({kind:"set-enabled",machine:{id:"battery",revision:4},enabled:false});
   expect(button(panel.element,"Expedition battery disable")!.disabled).toBe(true);h.complete("Rejected");await flush();
   expect(panel.element.textContent).not.toContain("Expedition battery: disabled");
+ }finally{panel.dispose();}
+});
+
+it("shows distinct Belt line power consumers and translates the disabled reach reason without enabling commands",()=>{
+ const h=harness(),unreachable="Anlage oder Stromanschluss nicht erreichbar";
+ h.publish({...h.view,power:{...h.view.power,
+  consumers:[
+   {id:"consumer_fp02_cargo_c23_unit_1",name:"fp02_cargo_c23_unit_1",requestedWatts:100,allocatedWatts:100,reason:null},
+   {id:"consumer_fp02_cargo_c23_unit_2",name:"fp02_cargo_c23_unit_2",requestedWatts:100,allocatedWatts:100,reason:null}
+  ],devices:[{id:"distributor",revision:4,name:"Verteiler",enabled:true,capability:cap(false,unreachable)}]
+ } as FactoryUiReadModel["power"]});
+ const panel=mountFactoryPowerPanel(h.port,documentDouble());
+ try{
+  expect(panel.element.textContent).toContain("Belt line · 1");expect(panel.element.textContent).toContain("Belt line · 2");
+  expect(panel.element.textContent).not.toContain("fp02_cargo_c23_unit_");
+  expect(panel.element.textContent).toContain("Facility or power connection is out of reach");expect(panel.element.textContent).not.toContain(unreachable);
+  const toggle=button(panel.element,"Distributor disable")!;expect(toggle.disabled).toBe(true);toggle.click();expect(h.commands).toHaveLength(0);
  }finally{panel.dispose();}
 });

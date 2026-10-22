@@ -1,0 +1,279 @@
+{
+  "schema": "hestia.play-cargo-surface-derivatives/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "sourceManifest": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+    "sha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+    "bytes": 83735
+  },
+  "generator": {
+    "path": "art/factory/play-cargo-surface-v2-2026-10-19/build_cargo_surface_v2.py",
+    "sha256": "7f68693c9bbd8eb4299f56b0573b793ed908b5215c45783a3f2ba06ae4fdf96c",
+    "bytes": 17844
+  },
+  "assets": [
+    {
+      "schema": "hestia.play-cargo-surface-provenance/v1",
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "assetId": "play_wreck_cargo_v2",
+      "originalAssetId": "play_wreck_cargo_v1",
+      "sourceRuntimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo.glb",
+        "sha256": "4b16d587014cba2587b8cf7ca34f674f3352c77c25aecfac3dca2073bd17a639",
+        "bytes": 15108
+      },
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-owner-source.blob",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "archivedSourceBlob": {
+        "path": "art/factory/play-cargo-surface-v2-2026-10-19/cargoSite-v1.native-owner-source.blob",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071,
+        "checkoutNormalization": "CRLF-to-LF checkout normalization only",
+        "recordedV1SourceBlob": {
+          "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-owner-source.blob",
+          "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+          "bytes": 4071
+        }
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-source.json",
+        "sha256": "8ae8a479af6e4311d2123c1e2f7e4cbafbbe340b1c107cb54966a6bddc8aa40a",
+        "bytes": 636
+      },
+      "sourceSnapshotBoundsMm": {
+        "min": [
+          -6250,
+          1250,
+          12625
+        ],
+        "max": [
+          -4750,
+          2750,
+          13625
+        ]
+      },
+      "generator": {
+        "path": "art/factory/play-cargo-surface-v2-2026-10-19/build_cargo_surface_v2.py",
+        "sha256": "7f68693c9bbd8eb4299f56b0573b793ed908b5215c45783a3f2ba06ae4fdf96c",
+        "bytes": 17844
+      },
+      "outputAuthoringGlb": {
+        "path": "art/factory/play-cargo-surface-v2-2026-10-19/wreck-cargo-v2.glb",
+        "sha256": "2f213fae020ff7a245367939a24c2a8ceecd08809b7616858b241a57917b86ac",
+        "bytes": 15136
+      },
+      "outputPublicGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-v2.glb",
+        "sha256": "2f213fae020ff7a245367939a24c2a8ceecd08809b7616858b241a57917b86ac",
+        "bytes": 15136,
+        "url": "/factory/play-2026-10-12/wreck-cargo-v2.glb"
+      },
+      "visualRepair": {
+        "version": 2,
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "originalAssetId": "play_wreck_cargo_v1",
+        "nativeAuthority": "unchanged original source only",
+        "frontPlaneFromM": -0.5,
+        "frontPlaneToMByRole": {
+          "EX-STRUCT": -0.4990234375,
+          "EX-SHELL": -0.498046875
+        },
+        "frontRecessMByRole": {
+          "EX-STRUCT": 0.0009765625,
+          "EX-SHELL": 0.001953125
+        },
+        "rearPlaneFromM": 0.5,
+        "rearPlaneToMByRole": {
+          "EX-SHELL": 0.498046875
+        },
+        "rearRecessMByRole": {
+          "EX-SHELL": 0.001953125
+        },
+        "frontChangedVertexCountByRole": {
+          "EX-STRUCT": 48,
+          "EX-SHELL": 24
+        },
+        "rearChangedVertexCountByRole": {
+          "EX-SHELL": 12
+        },
+        "changedVertexCountByRole": {
+          "EX-STRUCT": 48,
+          "EX-SHELL": 36
+        },
+        "changedVertexCount": 84,
+        "maxVertexDisplacementM": 0.001953125,
+        "topology": "same indexed triangles, materials, nodes and primitives",
+        "meshCensus": {
+          "vertices": 360,
+          "indices": 540,
+          "primitives": 4
+        },
+        "nativeBoundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        }
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "authority": "render-only Cargo display; no Native, collision, quantity, mass, access, visibility or save authority"
+    },
+    {
+      "schema": "hestia.play-cargo-surface-provenance/v1",
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "assetId": "play_wreck_cargo_open_v2",
+      "originalAssetId": "play_wreck_cargo_open_v1",
+      "sourceRuntimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-open.glb",
+        "sha256": "304daec645c51a27e1735db2dc0b173cbbd01a8276d5b1862b54049af991c03a",
+        "bytes": 13648
+      },
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-owner-source.blob",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "archivedSourceBlob": {
+        "path": "art/factory/play-cargo-surface-v2-2026-10-19/cargoSite-v1.native-owner-source.blob",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071,
+        "checkoutNormalization": "CRLF-to-LF checkout normalization only",
+        "recordedV1SourceBlob": {
+          "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-owner-source.blob",
+          "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+          "bytes": 4071
+        }
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-source.json",
+        "sha256": "55cfe6ebf268c87c386286aefbfc7da8df55a7d97d761f1cd5135b9c09897203",
+        "bytes": 646
+      },
+      "sourceSnapshotBoundsMm": {
+        "min": [
+          -6250,
+          1250,
+          12625
+        ],
+        "max": [
+          -4750,
+          2750,
+          13625
+        ]
+      },
+      "generator": {
+        "path": "art/factory/play-cargo-surface-v2-2026-10-19/build_cargo_surface_v2.py",
+        "sha256": "7f68693c9bbd8eb4299f56b0573b793ed908b5215c45783a3f2ba06ae4fdf96c",
+        "bytes": 17844
+      },
+      "outputAuthoringGlb": {
+        "path": "art/factory/play-cargo-surface-v2-2026-10-19/wreck-cargo-open-v2.glb",
+        "sha256": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+        "bytes": 13676
+      },
+      "outputPublicGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-open-v2.glb",
+        "sha256": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+        "bytes": 13676,
+        "url": "/factory/play-2026-10-12/wreck-cargo-open-v2.glb"
+      },
+      "visualRepair": {
+        "version": 2,
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "originalAssetId": "play_wreck_cargo_open_v1",
+        "nativeAuthority": "unchanged original source only",
+        "frontPlaneFromM": -0.5,
+        "frontPlaneToMByRole": {
+          "EX-STRUCT": -0.4990234375,
+          "EX-SHELL": -0.498046875
+        },
+        "frontRecessMByRole": {
+          "EX-STRUCT": 0.0009765625,
+          "EX-SHELL": 0.001953125
+        },
+        "rearPlaneFromM": 0.5,
+        "rearPlaneToMByRole": {
+          "EX-SHELL": 0.498046875
+        },
+        "rearRecessMByRole": {
+          "EX-SHELL": 0.001953125
+        },
+        "frontChangedVertexCountByRole": {
+          "EX-STRUCT": 48,
+          "EX-SHELL": 24
+        },
+        "rearChangedVertexCountByRole": {
+          "EX-SHELL": 12
+        },
+        "changedVertexCountByRole": {
+          "EX-STRUCT": 48,
+          "EX-SHELL": 36
+        },
+        "changedVertexCount": 84,
+        "maxVertexDisplacementM": 0.001953125,
+        "topology": "same indexed triangles, materials, nodes and primitives",
+        "meshCensus": {
+          "vertices": 312,
+          "indices": 468,
+          "primitives": 4
+        },
+        "nativeBoundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        }
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "authority": "render-only Cargo display; no Native, collision, quantity, mass, access, visibility or save authority"
+    }
+  ],
+  "publicManifest": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest-cargo-surface-v2.json",
+    "sha256": "c64d731756c04aa8ea79bc0a77b2ea587331a7e4c93c50399a4696c0c2ab7e52",
+    "bytes": 10782
+  },
+  "palette": {
+    "EX-STRUCT": "30383D",
+    "EX-SHELL": "B6BDB8",
+    "EX-FUNCTION": "407A79",
+    "EX-HAZARD": "D8A94E",
+    "EX-PV": "1D2E3C"
+  },
+  "authority": "Render-only Cargo correction; no source/native/physics/save authority"
+}

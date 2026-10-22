@@ -112,6 +112,41 @@ export const productionMaterialCanonicalJson = (material: MaterialView): string 
   return bytes;
 };
 
+/** Reads an existing material serialization cache without populating it. */
+export const readProductionFactoryMaterialCacheTextBytes = (material: MaterialView): number =>
+  (materialBytes.get(material)?.length ?? 0) * 2;
+
+/** Estimates retained catalog data and checked-catalog caches without validating or serializing them. */
+export const readProductionFactoryCatalogCheckpointBytes = (...catalogs: readonly FactoryCatalog[]): number => {
+  let objectCount = 0, arrayCount = 0, entries = 0, utf16Bytes = 0;
+  const visited = new WeakSet<object>();
+  const visit = (value: unknown): void => {
+    if (typeof value === "string") { utf16Bytes += value.length * 2; return; }
+    if (!value || typeof value !== "object" || visited.has(value)) return;
+    visited.add(value);
+    if (Array.isArray(value)) {
+      arrayCount++; entries += value.length;
+      for (const child of value) visit(child);
+      return;
+    }
+    objectCount++;
+    for (const key in value) if (Object.hasOwn(value, key)) {
+      entries++; utf16Bytes += key.length * 2;
+      visit((value as Record<string, unknown>)[key]);
+    }
+  };
+  for (const catalog of catalogs) {
+    visit(catalog);
+    const checked = checkedCatalogs.get(catalog);
+    if (checked) visit(checked);
+  }
+  return utf16Bytes + 64 * (objectCount + arrayCount) + 16 * entries;
+};
+
+/** Estimates the current recipe-admission cache owners without validating or serializing them. */
+export const readProductionFactoryCheckpointCacheBytes = (material: MaterialView, retainedCatalogs: readonly FactoryCatalog[] = []): number =>
+  readProductionFactoryMaterialCacheTextBytes(material) + readProductionFactoryCatalogCheckpointBytes(material.catalog, ...retainedCatalogs);
+
 /** Validate current native material and source-bound machine facts. These are
  * admission calculations only. The Host owns provenance of the native facts. */
 export const admitFactoryRecipe = (material: MaterialView, facts: ProductionHostFacts, start: ProductionStart, active = false): ProductionRecipeAdmission => {

@@ -1,0 +1,745 @@
+{
+  "state": {
+    "at": 1022242.700000003,
+    "tick": 28461,
+    "status": "Paused",
+    "player": {
+      "x": -8.739991188049316,
+      "y": 2.4001142978668213,
+      "z": 8.489983558654785
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 179,
+      "pressedKeys": []
+    },
+    "camera": {
+      "position": [
+        -8.739991188049316,
+        3.1501142978668213,
+        8.489983558654785
+      ],
+      "orientation": [
+        4.180647832353079e-18,
+        0.9996620190402377,
+        0.025997070765676544,
+        -1.6075791348400833e-16
+      ],
+      "visualBody": [
+        -8.739991188049316,
+        2.4001142978668213,
+        8.489983558654785
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "clock": {
+      "maxTimerGapMs": 54.79999999701977,
+      "maxAdvanceMs": 9.600000008940697,
+      "maxHandlerMs": 761.2999999970198,
+      "lastCommand": "Read",
+      "lastHandlerMs": 3.2999999970197678,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "carrier": {
+      "phase": "Carrying",
+      "mass": 25.999998092651367,
+      "position": [
+        -8739.991188049316,
+        1499.9998807907104,
+        7489.983558654785
+      ]
+    },
+    "massMg": 2984400000,
+    "factorySteps": 4743,
+    "hostConfirmed": true,
+    "receipt": {
+      "status": "Committed",
+      "reason": null
+    },
+    "testBridge": false
+  },
+  "diagnostic": {
+    "veto": {
+      "reason": "CarrierOverlap",
+      "targetMm": [
+        -8789.991188794374,
+        2400.0435227208072,
+        8489.983558654785
+      ]
+    },
+    "powerPorts": [
+      {
+        "id": "facility_fp02_device_battery_4kwh_1",
+        "positionMm": [
+          -1750,
+          2500,
+          2500
+        ]
+      },
+      {
+        "id": "facility_fp02_device_distribution_40kw_3",
+        "positionMm": [
+          -4250,
+          2500,
+          5250
+        ]
+      },
+      {
+        "id": "facility_b07_5",
+        "positionMm": [
+          -5875,
+          2625,
+          -1750
+        ]
+      },
+      {
+        "id": "facility_b06_16",
+        "positionMm": [
+          -6375,
+          2625,
+          5750
+        ]
+      }
+    ],
+    "installations": [
+      {
+        "id": "facility_fp02_device_battery_4kwh_1",
+        "definition": "fp02.device.battery_4kwh",
+        "centerMm": [
+          -2250,
+          1500,
+          2500
+        ],
+        "boundsMm": {
+          "min": [
+            -2750,
+            1500,
+            1500
+          ],
+          "max": [
+            -1750,
+            3000,
+            3500
+          ]
+        },
+        "serviceBoundsMm": {
+          "min": [
+            -1500,
+            1500,
+            1500
+          ],
+          "max": [
+            -500,
+            2500,
+            3500
+          ]
+        }
+      },
+      {
+        "id": "facility_fp02_device_distribution_40kw_3",
+        "definition": "fp02.device.distribution_40kw",
+        "centerMm": [
+          -4750,
+          1500,
+          5250
+        ],
+        "boundsMm": {
+          "min": [
+            -5250,
+            1500,
+            4250
+          ],
+          "max": [
+            -4250,
+            3500,
+            6250
+          ]
+        },
+        "serviceBoundsMm": {
+          "min": [
+            -3750,
+            1500,
+            4250
+          ],
+          "max": [
+            -2750,
+            2500,
+            6250
+          ]
+        }
+      },
+      {
+        "id": "facility_b07_5",
+        "definition": "B07",
+        "centerMm": [
+          -7250,
+          1500,
+          -2500
+        ],
+        "boundsMm": {
+          "min": [
+            -8750,
+            1500,
+            -4500
+          ],
+          "max": [
+            -5750,
+            4500,
+            -500
+          ]
+        },
+        "serviceBoundsMm": {
+          "min": [
+            -5750,
+            1500,
+            -4500
+          ],
+          "max": [
+            -4750,
+            4500,
+            -500
+          ]
+        }
+      },
+      {
+        "id": "facility_b09_12",
+        "definition": "B09",
+        "centerMm": [
+          -7250,
+          1500,
+          -5500
+        ],
+        "boundsMm": {
+          "min": [
+            -8250,
+            1500,
+            -6500
+          ],
+          "max": [
+            -6250,
+            3000,
+            -4500
+          ]
+        },
+        "serviceBoundsMm": {
+          "min": [
+            -6250,
+            1500,
+            -6500
+          ],
+          "max": [
+            -5250,
+            3000,
+            -4500
+          ]
+        }
+      },
+      {
+        "id": "facility_b05_14",
+        "definition": "B05",
+        "centerMm": [
+          -10250,
+          1500,
+          5500
+        ],
+        "boundsMm": {
+          "min": [
+            -10750,
+            1500,
+            4500
+          ],
+          "max": [
+            -9750,
+            2600,
+            6500
+          ]
+        },
+        "serviceBoundsMm": {
+          "min": [
+            -9750,
+            1500,
+            4500
+          ],
+          "max": [
+            -8750,
+            2600,
+            6500
+          ]
+        }
+      },
+      {
+        "id": "facility_b06_16",
+        "definition": "B06",
+        "centerMm": [
+          -7250,
+          1500,
+          5000
+        ],
+        "boundsMm": {
+          "min": [
+            -8250,
+            1500,
+            3500
+          ],
+          "max": [
+            -6250,
+            4000,
+            6500
+          ]
+        },
+        "serviceBoundsMm": {
+          "min": [
+            -6250,
+            1500,
+            3500
+          ],
+          "max": [
+            -5250,
+            3500,
+            6500
+          ]
+        }
+      }
+    ]
+  },
+  "samples": [
+    {
+      "key": "w",
+      "ms": 1000,
+      "tick": 11607,
+      "handlerMs": 4.799999997019768,
+      "carrier": null
+    },
+    {
+      "key": "w",
+      "ms": 895,
+      "tick": 11758,
+      "handlerMs": 3.5,
+      "carrier": null
+    },
+    {
+      "key": "s",
+      "ms": 147,
+      "tick": 11857,
+      "handlerMs": 2.8999999910593033,
+      "carrier": null
+    },
+    {
+      "key": "w",
+      "ms": 237,
+      "tick": 11964,
+      "handlerMs": 3.5,
+      "carrier": null
+    },
+    {
+      "key": "s",
+      "ms": 113,
+      "tick": 12048,
+      "handlerMs": 2.7999999970197678,
+      "carrier": null
+    },
+    {
+      "key": "w",
+      "ms": 70,
+      "tick": 12138,
+      "handlerMs": 3,
+      "carrier": null
+    },
+    {
+      "key": "s",
+      "ms": 113,
+      "tick": 12239,
+      "handlerMs": 3.5,
+      "carrier": null
+    },
+    {
+      "key": "d",
+      "ms": 80,
+      "tick": 12332,
+      "handlerMs": 3.8999999910593033,
+      "carrier": null
+    },
+    {
+      "key": "a",
+      "ms": 87,
+      "tick": 12424,
+      "handlerMs": 2.3999999910593033,
+      "carrier": null
+    },
+    {
+      "key": "d",
+      "ms": 47,
+      "tick": 12514,
+      "handlerMs": 2.2000000029802322,
+      "carrier": null
+    },
+    {
+      "key": "a",
+      "ms": 53,
+      "tick": 12600,
+      "handlerMs": 2.6000000089406967,
+      "carrier": null
+    },
+    {
+      "key": "d",
+      "ms": 63,
+      "tick": 12688,
+      "handlerMs": 3,
+      "carrier": null
+    },
+    {
+      "key": "a",
+      "ms": 120,
+      "tick": 12785,
+      "handlerMs": 3.7999999970197678,
+      "carrier": null
+    },
+    {
+      "key": "d",
+      "ms": 47,
+      "tick": 12882,
+      "handlerMs": 2.5,
+      "carrier": null
+    },
+    {
+      "key": "a",
+      "ms": 120,
+      "tick": 12977,
+      "handlerMs": 2.5,
+      "carrier": null
+    },
+    {
+      "key": "d",
+      "ms": 63,
+      "tick": 13061,
+      "handlerMs": 2.7999999970197678,
+      "carrier": null
+    },
+    {
+      "key": "a",
+      "ms": 53,
+      "tick": 13144,
+      "handlerMs": 3.2999999970197678,
+      "carrier": null
+    },
+    {
+      "key": "d",
+      "ms": 197,
+      "tick": 13251,
+      "handlerMs": 4.300000011920929,
+      "carrier": null
+    },
+    {
+      "key": "a",
+      "ms": 120,
+      "tick": 13363,
+      "handlerMs": 4.299999997019768,
+      "carrier": null
+    },
+    {
+      "key": "w",
+      "ms": 120,
+      "tick": 13497,
+      "handlerMs": 2.4000000059604645,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 13580,
+      "handlerMs": 2.2999999970197678,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 103,
+      "tick": 13667,
+      "handlerMs": 2.7000000029802322,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 34,
+      "tick": 13771,
+      "handlerMs": 2.9000000059604645,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 120,
+      "tick": 13874,
+      "handlerMs": 2.2999999970197678,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 13995,
+      "handlerMs": 2.699999988079071,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 120,
+      "tick": 14095,
+      "handlerMs": 3.2000000029802322,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 14214,
+      "handlerMs": 4.0999999940395355,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 120,
+      "tick": 14332,
+      "handlerMs": 2.7999999970197678,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 34,
+      "tick": 14440,
+      "handlerMs": 2.3999999910593033,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 120,
+      "tick": 14540,
+      "handlerMs": 3.5999999940395355,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 722,
+      "tick": 14699,
+      "handlerMs": 2.5999999940395355,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "a",
+      "ms": 44,
+      "tick": 14809,
+      "handlerMs": 3.699999988079071,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 73,
+      "tick": 14909,
+      "handlerMs": 3.800000011920929,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "a",
+      "ms": 105,
+      "tick": 15015,
+      "handlerMs": 3.7000000029802322,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 128,
+      "tick": 15121,
+      "handlerMs": 4,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "a",
+      "ms": 55,
+      "tick": 15238,
+      "handlerMs": 3.1000000089406967,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 228,
+      "tick": 15372,
+      "handlerMs": 3.4000000059604645,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 225,
+      "tick": 15501,
+      "handlerMs": 2.4000000059604645,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 175,
+      "tick": 15618,
+      "handlerMs": 3.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 209,
+      "tick": 15730,
+      "handlerMs": 2.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 258,
+      "tick": 15849,
+      "handlerMs": 2.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 192,
+      "tick": 15972,
+      "handlerMs": 3.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 208,
+      "tick": 16090,
+      "handlerMs": 2.3999999910593033,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 230,
+      "tick": 16207,
+      "handlerMs": 3.1000000089406967,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 237,
+      "tick": 16347,
+      "handlerMs": 4.100000008940697,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 37,
+      "tick": 16443,
+      "handlerMs": 3.800000011920929,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 37,
+      "tick": 16524,
+      "handlerMs": 2.3999999910593033,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 980,
+      "tick": 18187,
+      "handlerMs": 2.7000000029802322,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 153,
+      "tick": 18370,
+      "handlerMs": 2.5999999940395355,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 18544,
+      "handlerMs": 3,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 153,
+      "tick": 18726,
+      "handlerMs": 3.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 147,
+      "tick": 18891,
+      "handlerMs": 3.199999988079071,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 153,
+      "tick": 19048,
+      "handlerMs": 3.2999999970197678,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 97,
+      "tick": 19202,
+      "handlerMs": 3.2999999970197678,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 153,
+      "tick": 19361,
+      "handlerMs": 3.1000000089406967,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 19497,
+      "handlerMs": 2.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 137,
+      "tick": 19641,
+      "handlerMs": 3.7000000029802322,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 63,
+      "tick": 19786,
+      "handlerMs": 2.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 153,
+      "tick": 19939,
+      "handlerMs": 3.5999999940395355,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 34,
+      "tick": 20069,
+      "handlerMs": 3.7000000029802322,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 37,
+      "tick": 20188,
+      "handlerMs": 2.9000000059604645,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 37,
+      "tick": 20301,
+      "handlerMs": 2.5,
+      "carrier": "Carrying"
+    }
+  ]
+}

@@ -88,3 +88,17 @@ art/factory/crashsite-hybrid-v1/*.glb lfs
 apps/weltraum-browser/public/factory/crashsite-hybrid-v1/*.glb lfs
 art/factory/crashsite-hybrid-v2/*.glb lfs
 apps/weltraum-browser/public/factory/crashsite-hybrid-v2/*.glb lfs
+
+# Published Play GLBs are runtime payloads and must clone from Git LFS.
+apps/weltraum-browser/public/factory/play-2026-10-12/*.glb lfs
+
+# Byte-pinned derivative and walkability receipts must not be line-ending normalized.
+apps/weltraum-browser/public/factory/play-2026-10-12/manifest-cargo-surface-v2.json -text
+apps/weltraum-browser/public/factory/play-2026-10-12/manifest-distribution-surface-v2.json -text
+art/factory/crashsite-walkable-v1-2026-10-19/AUTHORING_REPORT.json -text
+art/factory/crashsite-walkable-v1-2026-10-19/WALKABILITY_VALIDATION.json -text
+art/factory/play-cargo-surface-v2-2026-10-19/manifest.json -text
+art/factory/play-cargo-surface-v2-2026-10-19/wreck_cargo_open_v2.provenance.json -text
+art/factory/play-cargo-surface-v2-2026-10-19/wreck_cargo_v2.provenance.json -text
+art/factory/play-distribution-surface-v2-2026-10-21/distribution-v2.provenance.json -text
+art/factory/play-distribution-surface-v2-2026-10-21/manifest.json -text

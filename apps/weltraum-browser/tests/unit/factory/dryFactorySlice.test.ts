@@ -3,13 +3,13 @@ import { describe, expect, it, vi } from "vitest";
 import * as materialSteps from "../../../src/factory/material/reservations";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
 import { createFactoryMaterialView, prepareFactoryMaterialStep, commitFactoryMaterialStep } from "../../../src/factory/material/reservations";
-import { bindFactoryDomainSession, createFactoryMaterialAuthority, createFactoryCommandHistory } from "../../../src/factory/session/dryFactorySlice";
+import { bindFactoryDomainSession, createFactoryMaterialAuthority, createRuntimeFactoryMaterialAuthority, createFactoryCommandHistory, prepareFactoryDryOwnerStep, prepareFactoryDryOwnerStepWithAuthority, commitFactoryDryOwnerStep, importDryFactoryStateV1, materializeDryFactoryStateV1, validateDryFactoryOwnerCheckpointState, reconcileDryFactoryOwnerInstallations, type DryFactoryOwnerState, type DryFactoryRuntimeState } from "../../../src/factory/session/dryFactorySlice";
 import type { FactoryUiCommand, FactoryUiReceipt } from "../../../src/factory/session/hostPort";
 import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
 import { canonicalJson } from "../../../src/resources/serialization";
 import { createFactoryConstruction } from "../../../src/factory/construction/buildStep";
 import {factoryMaterialBytes} from "../../../src/factory/construction/placement";
-import { prepareDryFactoryStep, commitDryFactoryStep,reconcileDryFactoryInstallations,readDryFactorySupply, type DryFactoryState } from "../../../src/factory/session/dryFactorySlice";
+import { prepareDryFactoryStep, commitDryFactoryStep,reconcileDryFactoryInstallations,readDryFactorySupply,readDryFactoryCheckpointCacheBytes,readDryFactoryCheckpointCacheBreakdown, type DryFactoryState } from "../../../src/factory/session/dryFactorySlice";
 import {createFactoryInstallationProfile} from "../../../src/factory/construction/installationProfile";
 import { canonicalSignature } from "../../../src/resources/serialization";
 import { createFactoryProductionState } from "../../../src/factory/production/productionStep";
@@ -30,12 +30,84 @@ const binding = { catalogDigest: fixture.catalog.catalogDigest, terrainSourceDig
 const emptyDryFixture=()=>{
  const b={sessionId:"guard_native_session",epoch:0,netRevision:0,catalogDigest:fixture.catalog.catalogDigest,sourceProfileDigest:"fp01-fixed-net-observation-v1"};
  const state:DryFactoryState={binding:b,revision:0,tickEndUs:"0",power:{version:"fp06-factory-power-v1",binding:b,revision:0,tickEndUs:"0",battery:null,consumers:[]},machines:[],belts:[],lastStep:null};
- const inputFor=(current:DryFactoryState,material:ReturnType<typeof initial>)=>{
+ const inputFor=(current:DryFactoryRuntimeState,material:ReturnType<typeof initial>)=>{
   const end=String(BigInt(current.tickEndUs)+100000n),body={version:"fp06-power-supply-v1" as const,binding:current.binding,tickStartUs:current.tickEndUs,tickEndUs:end,offers:[],ports:[],links:[],battery:null,authorityBytes:canonicalJson({fixture:"explicit-empty-guard-unit-net"})};
   return {confirmed:true,binding:current.binding,tickStartUs:current.tickEndUs,tickEndUs:end,material,supply:{...body,canonicalJson:canonicalJson(body),digest:canonicalSignature(body)},machines:[],belts:[]};
  };
  return {state,inputFor,material:initial()};
 };
+describe("FP06 compact dry-owner replay",()=>{
+ const admitOwner=()=>{};
+ const freezeData=<T>(value:T):T=>{if(value&&typeof value==="object"){Object.values(value).forEach(freezeData);Object.freeze(value);}return value;};
+ it("materializes the exact V1 receipt bytes from one compact owner transition",()=>{
+  const f=emptyDryFixture(),input=f.inputFor(f.state,f.material),owner=importDryFactoryStateV1(f.state,f.material,[],null,[],admitOwner);
+  const legacy=prepareDryFactoryStep(f.state,input),compact=prepareFactoryDryOwnerStep(owner,input);
+  expect(legacy.status).toBe("Prepared");expect(compact.status).toBe("Prepared");if(legacy.status!=="Prepared"||compact.status!=="Prepared")return;
+  const legacyCommit=commitDryFactoryStep(f.state,input,legacy),compactCommit=commitFactoryDryOwnerStep(owner,input,compact);
+  expect(legacyCommit.status).toBe("Committed");expect(compactCommit.status).toBe("Committed");if(legacyCommit.status!=="Committed"||compactCommit.status!=="Committed")return;
+  expect(materializeDryFactoryStateV1(compactCommit.state,admitOwner)).toEqual(legacyCommit.state);
+  expect(compactCommit.state.lastStep).toMatchObject({version:"fp06-dry-replay-segments-v2",facts:expect.any(Object),inputMaterialBytes:expect.any(String),materialBytes:expect.any(String)});
+  expect(validateDryFactoryOwnerCheckpointState(compactCommit.state,compactCommit.material,[],compactCommit.state.lastStep!.materialBytes,[])).toBeUndefined();
+ });
+ it("proves a copied cold V2 replay before rejecting stale input or recomputing",()=>{
+  const f=emptyDryFixture(),input=f.inputFor(f.state,f.material),owner=importDryFactoryStateV1(f.state,f.material,[],null,[],admitOwner);
+  const prepared=prepareFactoryDryOwnerStep(owner,input);expect(prepared.status).toBe("Prepared");if(prepared.status!=="Prepared")return;
+  const committed=commitFactoryDryOwnerStep(owner,input,prepared);expect(committed.status).toBe("Committed");if(committed.status!=="Committed")return;
+  const coldState=freezeData(structuredClone(committed.state)) as DryFactoryOwnerState;
+  const coldProposal=freezeData(structuredClone(prepared));
+  expect(commitFactoryDryOwnerStep(coldState,input,coldProposal)).toMatchObject({status:"NoOp"});
+  const changedFacts=freezeData({...coldProposal,state:{...coldProposal.state,lastStep:{...coldProposal.state.lastStep!,facts:{...coldProposal.state.lastStep!.facts,tickEndUs:"200000"}}}});
+  expect(commitFactoryDryOwnerStep(coldState,input,changedFacts)).toMatchObject({status:"Rejected"});
+ });
+ it.each(["facts","core","input material","result material"] as const)("rejects tampered V2 owner %s segments",part=>{
+  const f=emptyDryFixture(),input=f.inputFor(f.state,f.material),owner=importDryFactoryStateV1(f.state,f.material,[],null,[],admitOwner);
+  const prepared=prepareFactoryDryOwnerStep(owner,input);expect(prepared.status).toBe("Prepared");if(prepared.status!=="Prepared")return;
+  const committed=commitFactoryDryOwnerStep(owner,input,prepared);expect(committed.status).toBe("Committed");if(committed.status!=="Committed")return;
+  const original=committed.state,step=original.lastStep!;
+  const changed:DryFactoryOwnerState=part==="facts"?{...original,lastStep:{...step,facts:{...step.facts,tickEndUs:"200000"}}}
+   :part==="core"?{...original,tickEndUs:"200000"}
+   :part==="input material"?{...original,lastStep:{...step,inputMaterialBytes:`${step.inputMaterialBytes} `}}
+   :{...original,lastStep:{...step,materialBytes:"{}"}};
+  expect(()=>validateDryFactoryOwnerCheckpointState(changed,committed.material,[],step.materialBytes,[])).toThrow();
+ });
+ it("rejects nested mutable or proxied facts instead of adopting caller-owned replay data",()=>{
+  const f=emptyDryFixture(),owner=importDryFactoryStateV1(f.state,f.material,[],null,[],admitOwner),input=f.inputFor(f.state,f.material);
+  const prepared=prepareFactoryDryOwnerStep(owner,input);expect(prepared.status).toBe("Prepared");if(prepared.status!=="Prepared")return;
+  const savedOffers=prepared.state.lastStep!.facts.supply.offers;
+  (input.supply.offers as unknown[]).push({untrusted:true});
+  expect(prepared.state.lastStep!.facts.supply.offers).toEqual(savedOffers);
+  expect(commitFactoryDryOwnerStep(owner,input,prepared)).toMatchObject({status:"Rejected"});
+  const proxy=new Proxy(Object.freeze([]),{get(target,key,receiver){return key===Symbol.iterator?()=>[{}][Symbol.iterator]():Reflect.get(target,key,receiver);}});
+  const proxyInput={...f.inputFor(f.state,f.material),supply:{...f.inputFor(f.state,f.material).supply,offers:proxy as never}};
+  expect(prepareFactoryDryOwnerStep(owner,proxyInput)).toMatchObject({status:"Rejected"});
+ });
+ it("runs mandatory null-replay import admission before creating a compact Owner",()=>{
+  const f=emptyDryFixture(),callback=vi.fn(()=>{throw new Error("owner admission stop");});
+  expect(()=>importDryFactoryStateV1(f.state,f.material,[],null,[],callback)).toThrow("owner admission stop");
+  expect(callback).toHaveBeenCalledWith(expect.objectContaining({replay:null}));
+ });
+ it("does not trust a mutable cold Owner after validation or adopt a proposal from its changed base",()=>{
+  const f=emptyDryFixture(),admitted=importDryFactoryStateV1(f.state,f.material,[],null,[],admitOwner);
+  const cold=structuredClone(admitted),input=f.inputFor(cold,f.material);
+  expect(validateDryFactoryOwnerCheckpointState(cold,f.material,[],null,[])).toBeUndefined();
+  const proposal=prepareFactoryDryOwnerStep(cold,input);expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+  (cold as unknown as {revision:number}).revision++;
+  expect(commitFactoryDryOwnerStep(cold,input,proposal)).toMatchObject({status:"Rejected"});
+ });
+ it("does not trust a V1 import that retains a frozen ArrayProxy",()=>{
+  const f=emptyDryFixture();let changed=false;
+  const belts=new Proxy(Object.freeze([]) as never[],{get(target,key,receiver){
+   if(key===Symbol.iterator)return ()=> (changed?[{lineId:"untrusted_after_import"}]:[])[Symbol.iterator]();
+   return Reflect.get(target,key,receiver);
+  }});
+  const source=freezeData({...f.state,belts}) as DryFactoryState;
+  expect(()=>structuredClone(source)).toThrow();
+  const owner=importDryFactoryStateV1(source,f.material,[],null,[],admitOwner),input=f.inputFor(owner,f.material);
+  const proposal=prepareFactoryDryOwnerStep(owner,input);expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+  changed=true;
+  expect(commitFactoryDryOwnerStep(owner,input,proposal)).toMatchObject({status:"Rejected"});
+ });
+});
 describe("W09 complete private proposal byte guards",()=>{
  const freezeData=<T>(value:T):T=>{if(value&&typeof value==="object"){Object.values(value).forEach(freezeData);Object.freeze(value);}return value;};
  const copyMaterial=(material:ReturnType<typeof initial>)=>({...material,containers:material.containers.map(c=>({...c,definition:JSON.parse(canonicalJson(c.definition)) as typeof c.definition,state:JSON.parse(canonicalJson(c.state)) as typeof c.state}))});
@@ -71,6 +143,42 @@ describe("W09 complete private proposal byte guards",()=>{
   const clone=copyMaterial(f.material);expect(prepareDryFactoryStep(base,f.inputFor(base,clone)).status).toBe("Prepared");
   const changed={...clone,containers:clone.containers.map(c=>({...c,state:{...c.state,contents:c.state.contents.map(s=>s.resourceId!=="fp02_bulk_steel_known"?s:{...s,quantity:s.quantity+1})}}))};
   expect(prepareDryFactoryStep(base,f.inputFor(base,changed))).toMatchObject({status:"Rejected"});expect(prepareDryFactoryStep(base,input)).toMatchObject({status:"Prepared",materialBaseBytes:expected});
+ });
+ it("reuses owned next core bytes as the following base and retains replay and mutable-copy guards",()=>{
+  const f=emptyDryFixture(),base=freezeData(f.state),firstInput=f.inputFor(base,f.material),first=prepareDryFactoryStep(base,firstInput);
+  expect(first.status).toBe("Prepared");if(first.status!=="Prepared")return;
+  const firstCommit=commitDryFactoryStep(base,firstInput,first);
+  expect(firstCommit.status).toBe("Committed");if(firstCommit.status!=="Committed")return;
+  const ownedBreakdown=readDryFactoryCheckpointCacheBreakdown(firstCommit.state,firstCommit.material);
+  expect(ownedBreakdown.dryFactoryStateBytesMatchesLastStepNextState).toBe(true);expect(ownedBreakdown.dryFactoryStateBytes).toBe(0);
+  expect(readDryFactoryCheckpointCacheBytes(firstCommit.state,firstCommit.material)).toBe(ownedBreakdown.cachedDomainCanonicalDescendantsBytes+ownedBreakdown.dryFactoryStateBytes+ownedBreakdown.currentExactMaterialBindingsBytes);
+  const coldState=freezeData(JSON.parse(canonicalJson(firstCommit.state)) as DryFactoryState);
+  expect(coldState.lastStep?.nextStateBytes).toBe(firstCommit.state.lastStep?.nextStateBytes);
+  expect(prepareDryFactoryStep(coldState,f.inputFor(coldState,firstCommit.material)).status).toBe("Prepared");
+  const coldBreakdown=readDryFactoryCheckpointCacheBreakdown(coldState,firstCommit.material);
+  expect(coldBreakdown.dryFactoryStateBytesMatchesLastStepNextState).toBe(false);expect(coldBreakdown.dryFactoryStateBytes).toBeGreaterThan(0);
+  expect(readDryFactoryCheckpointCacheBytes(coldState,firstCommit.material)).toBe(coldBreakdown.cachedDomainCanonicalDescendantsBytes+coldBreakdown.dryFactoryStateBytes+coldBreakdown.currentExactMaterialBindingsBytes);
+  const nextInput=f.inputFor(firstCommit.state,firstCommit.material),second=prepareDryFactoryStep(firstCommit.state,nextInput);
+  expect(second.status).toBe("Prepared");if(second.status!=="Prepared")return;
+  expect(second.baseStateBytes).toBe(first.state.lastStep?.nextStateBytes);
+  const secondCommit=commitDryFactoryStep(firstCommit.state,nextInput,second);
+  expect(secondCommit.status).toBe("Committed");if(secondCommit.status!=="Committed")return;
+  const cacheBeforeReplay=readDryFactoryCheckpointCacheBytes(secondCommit.state,secondCommit.material);
+  expect(commitDryFactoryStep(secondCommit.state,nextInput,second)).toMatchObject({status:"NoOp"});
+  expect(readDryFactoryCheckpointCacheBytes(secondCommit.state,secondCommit.material)).toBeGreaterThan(cacheBeforeReplay);
+  const mutableCopy={...second,state:{...second.state,revision:second.state.revision+1}};
+  expect(commitDryFactoryStep(firstCommit.state,nextInput,mutableCopy)).toMatchObject({status:"Rejected"});
+ });
+ it("keeps oversized canonical bytes equivalent without retaining the oversized descendant memo",()=>{
+  const f=emptyDryFixture(),largeText="x".repeat(600_000),base=freezeData({...f.state,extra:{largeText}}) as DryFactoryState;
+  const proposal=prepareDryFactoryStep(base,f.inputFor(base,f.material));
+  expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+  const {lastStep:_baseLastStep,...baseCore}=base,{lastStep:_nextLastStep,...nextCore}=proposal.state;
+  expect(proposal.baseStateBytes).toBe(canonicalJson(baseCore));
+  expect(proposal.state.lastStep?.nextStateBytes).toBe(canonicalJson(nextCore));
+  expect(proposal.state.lastStep!.nextStateBytes.length*2).toBeGreaterThan(1_048_576);
+  const cache=readDryFactoryCheckpointCacheBreakdown(proposal.state,proposal.material);
+  expect(cache.cachedDomainCanonicalDescendantsBytes).toBeLessThan(largeText.length*2);
  });
  it.each([null,()=>{throw Error("Caller array map must not execute");}])("preserves canonical array contents with an own map property %s",map=>{
   const f=emptyDryFixture(),belts=[] as any;Object.defineProperty(belts,"map",{value:map,enumerable:true});Object.freeze(belts);
@@ -194,16 +302,61 @@ it("adopts only the fully paid installed Cutter with finite native buffers and p
 
 /** Isolated composition fixture: finite synthetic semi stock, real paid C03
  * and a synthetic cable route. NOT production completion, Native placement or D07. */
-const poweredBandFixture=():{owners:import("../../../src/factory/construction/placement").FactoryInstallation[];state:DryFactoryState;material:import("../../../src/factory/material/reservations").MaterialView}=>{
+const poweredBandFixture=(occupied=true):{owners:import("../../../src/factory/construction/placement").FactoryInstallation[];state:DryFactoryState;material:import("../../../src/factory/material/reservations").MaterialView}=>{
  const {adopted,owners}=paidBeltFixture(),line=adopted.state.belts[0]!,source=adopted.material.containers.find(c=>c.state.containerId===line.installation.source.containerId)!,semi=fixture.catalog.items.find(i=>i.sourceId==="fp02.bulk.steel_semi")!;
- const state=createResourceContainerState({containerId:source.state.containerId,ownerId:source.state.ownerId,contents:[{stackId:"synthetic_semi",resourceId:semi.resourceId,quantity:100000,ownerId:source.state.ownerId,extensions:{"factory.fixture":"isolated-finite-band-stock-v1"}}]},fixture.catalog.resources);
+ const state=createResourceContainerState({containerId:source.state.containerId,ownerId:source.state.ownerId,contents:occupied?[{stackId:"synthetic_semi",resourceId:semi.resourceId,quantity:100000,ownerId:source.state.ownerId,extensions:{"factory.fixture":"isolated-finite-band-stock-v1"}}]:[]},fixture.catalog.resources);
  return {owners,state:adopted.state,material:{...adopted.material,containers:adopted.material.containers.map(c=>c===source?createResourceContainerSnapshot(c.definition,state,fixture.catalog.resources):c)}};
 };
 const bandInput=(pair:ReturnType<typeof poweredBandFixture>,powered=true)=>{
  const line=pair.state.belts[0]!,end=String(BigInt(pair.state.tickEndUs)+100000n),supply=readDryFactorySupply(pair.state,pair.material,pair.owners,[{linkId:"synthetic_band_cable",fromPortId:"power_actual_battery",toPortId:line.installation.powerPortId,active:powered,maxMilliWatt:"600000"}],end);
- return {confirmed:true,binding:pair.state.binding,tickStartUs:pair.state.tickEndUs,tickEndUs:end,material:pair.material,supply,machines:pair.state.machines.map(machine=>{const owner=pair.owners.find(o=>o.instanceId===machine.machineInstanceId)!,definition=fixture.catalog.devices.find(d=>d.sourceId===owner.definitionSourceId)!,toolId=definition.sourceId==="B06"?"fp02.tool.cutter_head":"fp02.tool.forming_die",paid=pair.material.containers.find(c=>c.state.containerId===owner.materialContainerId)!,tool=paid.state.contents.find(s=>s.resourceId===fixture.catalog.items.find(i=>i.sourceId===toolId)!.resourceId)!;return {instanceId:owner.instanceId,facts:{version:"fp06-production-host-facts-v1" as const,binding:pair.state.binding,confirmed:true,tickEndUs:end,installation:{instanceId:owner.instanceId,definitionRef:{sourceId:definition.sourceId,version:definition.version,digest:definition.digest},installationRevision:1,confirmed:true,supported:true,serviceClear:true,installedContainerId:owner.materialContainerId,inputContainerId:`input_${owner.instanceId}`,outputContainerId:`output_${owner.instanceId}`,offcutContainerId:`offcut_${owner.instanceId}`,wipContainerId:`wip_${owner.instanceId}`,powerConsumerId:`consumer_${owner.instanceId}`,powerPortId:`power_${owner.instanceId}`,tool:{partId:tool.stackId,sourceItemId:toolId,revision:paid.state.revision,condition:"OK" as const}},interaction:null}};}),belts:[{lineId:line.lineId,actorId:"hvp_player",enabled:true,sourceLot:pair.material.containers.find(c=>c.state.containerId===line.installation.source.containerId)?.state.contents[0]?{stackId:"synthetic_semi",itemId:"fp02.bulk.steel_semi"}:null}]};
+ return {confirmed:true,binding:pair.state.binding,tickStartUs:pair.state.tickEndUs,tickEndUs:end,material:pair.material,supply,machines:pair.state.machines.map(machine=>{const owner=pair.owners.find(o=>o.instanceId===machine.machineInstanceId)!,definition=fixture.catalog.devices.find(d=>d.sourceId===owner.definitionSourceId)!,toolId=definition.sourceId==="B06"?"fp02.tool.cutter_head":"fp02.tool.forming_die",paid=pair.material.containers.find(c=>c.state.containerId===owner.materialContainerId)!,tool=paid.state.contents.find(s=>s.resourceId===fixture.catalog.items.find(i=>i.sourceId===toolId)!.resourceId)!,installationRevision=pair.owners.findIndex(installed=>installed.instanceId===owner.instanceId)+1;return {instanceId:owner.instanceId,facts:{version:"fp06-production-host-facts-v1" as const,binding:pair.state.binding,confirmed:true,tickEndUs:end,installation:{instanceId:owner.instanceId,definitionRef:{sourceId:definition.sourceId,version:definition.version,digest:definition.digest},installationRevision,confirmed:true,supported:true,serviceClear:true,installedContainerId:owner.materialContainerId,inputContainerId:`input_${owner.instanceId}`,outputContainerId:`output_${owner.instanceId}`,offcutContainerId:`offcut_${owner.instanceId}`,wipContainerId:`wip_${owner.instanceId}`,powerConsumerId:`consumer_${owner.instanceId}`,powerPortId:`power_${owner.instanceId}`,tool:{partId:tool.stackId,sourceItemId:toolId,revision:paid.state.revision,condition:"OK" as const}},interaction:null}};}),belts:[{lineId:line.lineId,actorId:"hvp_player",enabled:true,sourceLot:pair.material.containers.find(c=>c.state.containerId===line.installation.source.containerId)?.state.contents[0]?{stackId:"synthetic_semi",itemId:"fp02.bulk.steel_semi"}:null}]};
 };
 const advanceBand=(pair:ReturnType<typeof poweredBandFixture>,powered=true)=>{const input=bandInput(pair,powered),proposal=prepareDryFactoryStep(pair.state,input);expect(proposal.status,proposal.status==="Rejected"?proposal.reason:undefined).toBe("Prepared");const result=commitDryFactoryStep(pair.state,input,proposal);if(result.status!=="Committed")throw Error(result.status==="Rejected"?result.reason:"UnexpectedReplay");return {...pair,state:result.state,material:result.material};};
+it("keeps the exact W09 V1 receipt bytes through a real M0-to-M1 band custody transition and compact replay",()=>{
+ const pair=poweredBandFixture(),input=bandInput(pair),nativeOwners=pair.owners.map((owner,index)=>({instanceId:owner.instanceId,installationRevision:index+1}));
+ const owner=importDryFactoryStateV1(pair.state,pair.material,pair.owners,null,nativeOwners,()=>{});
+ const reconciled=reconcileDryFactoryOwnerInstallations(owner,pair.material,pair.owners);
+ expect(reconciled.state).toBe(owner);expect(reconciled.material).toBe(pair.material);
+ const legacyProposal=prepareDryFactoryStep(pair.state,input),compactProposal=prepareFactoryDryOwnerStep(owner,input);
+ expect(legacyProposal.status).toBe("Prepared");expect(compactProposal.status).toBe("Prepared");
+ if(legacyProposal.status!=="Prepared"||compactProposal.status!=="Prepared")return;
+ const legacy=commitDryFactoryStep(pair.state,input,legacyProposal),compact=commitFactoryDryOwnerStep(owner,input,compactProposal);
+ expect(legacy.status).toBe("Committed");expect(compact.status).toBe("Committed");
+ if(legacy.status!=="Committed"||compact.status!=="Committed")return;
+ expect(factoryMaterialBytes(pair.material)).not.toBe(factoryMaterialBytes(compact.material));
+ expect(factoryMaterialBytes(compact.material)).toBe(compact.state.lastStep!.materialBytes);
+ const imported=importDryFactoryStateV1(legacy.state,legacy.material,pair.owners,legacy.state.lastStep!.materialBytes,nativeOwners,()=>{});
+ expect(materializeDryFactoryStateV1(imported,()=>{})).toEqual(legacy.state);
+ expect(materializeDryFactoryStateV1(compact.state,()=>{})).toEqual(legacy.state);
+ const replayInput={...input,material:compact.material};
+ expect(commitFactoryDryOwnerStep(compact.state,replayInput,compactProposal)).toMatchObject({status:"NoOp",material:compact.material});
+ expect(commitFactoryDryOwnerStep(compact.state,replayInput,structuredClone(compactProposal) as typeof compactProposal)).toMatchObject({status:"NoOp",material:compact.material});
+ expect(commitFactoryDryOwnerStep(compact.state,input,structuredClone(compactProposal) as typeof compactProposal)).toMatchObject({status:"Rejected"});
+});
+it("compact owner runtime evaluation requires the minted material authority and preserves public proposal bytes",()=>{
+ const pair=poweredBandFixture(),nativeOwners=pair.owners.map((owner,index)=>({instanceId:owner.instanceId,installationRevision:index+1}));
+ const owner=importDryFactoryStateV1(pair.state,pair.material,pair.owners,pair.state.lastStep?.materialBytes??null,nativeOwners,()=>{});
+ const authority=createRuntimeFactoryMaterialAuthority(pair.material),input=bandInput(pair),legacy=prepareFactoryDryOwnerStep(owner,input);
+ expect(authority.readBeltMaterialFragmentBytes()).toBe(1024);
+ const runtime=prepareFactoryDryOwnerStepWithAuthority(owner,input,authority);
+ expect(legacy.status).toBe("Prepared");expect(runtime.status).toBe("Prepared");
+ if(legacy.status!=="Prepared"||runtime.status!=="Prepared")return;
+ expect(runtime).toEqual(legacy);
+ expect(authority.readBeltMaterialFragmentBytes()).toBeGreaterThan(1024);
+ expect(authority.adopt(pair.material,pair.material)).toBe(true);
+ expect(authority.readBeltMaterialFragmentBytes()).toBeGreaterThan(1024);
+ authority.clearBeltMaterialFragment();expect(authority.readBeltMaterialFragmentBytes()).toBe(1024);
+ expect(prepareFactoryDryOwnerStepWithAuthority(owner,input,authority)).toEqual(legacy);
+ expect(authority.readBeltMaterialFragmentBytes()).toBeGreaterThan(1024);
+ const copiedAuthority={...authority} as typeof authority;
+ expect(prepareFactoryDryOwnerStepWithAuthority(owner,input,copiedAuthority)).toMatchObject({status:"Rejected"});
+ expect(runtime.material).not.toBe(pair.material);
+ expect(authority.adopt(pair.material,runtime.material)).toBe(true);
+ expect(authority.readBeltMaterialFragmentBytes()).toBe(1024);
+ expect(authority.adopt(pair.material,runtime.material)).toBe(false);
+ expect(authority.readBeltMaterialFragmentBytes()).toBe(1024);
+ authority.disposeBeltMaterialFragment();expect(authority.readBeltMaterialFragmentBytes()).toBe(0);
+});
 it("W09 paid-band joint adoption preserves real custody and credit across blackout and a later graph revision",()=>{
  let pair=poweredBandFixture();const mass=pair.material.containers.reduce((n,c)=>n+c.currentMassKg,0);pair=advanceBand(pair);expect(pair.state.belts[0]).toMatchObject({creditMg:0,packetCursor:1,packet:{positionMm:0}});const packet=pair.state.belts[0]!.packet;
  pair=advanceBand(pair,false);expect(pair.state.belts[0]).toMatchObject({creditMg:0,packet});expect(pair.material.containers.find(c=>c.state.containerId===pair.state.belts[0]!.installation.bandContainerId)?.state.contents[0]?.quantity).toBe(100000);
@@ -258,6 +411,16 @@ describe("W09 one Host material authority and complete command receipts", () => 
    const history = createFactoryCommandHistory(); history.accept(command, receipt);
    expect(history.replay(JSON.parse(canonicalJson(command)))).toEqual({ status: "NoOp", receipt });
    expect(history.readReceipt(command.commandId)).toEqual(receipt);
+ });
+ it("seeds ordered receipt bytes and leaves saved history unchanged on replay or conflict", () => {
+   const secondCommand={...command,commandId:"history_second"},secondReceipt={...receipt,commandId:secondCommand.commandId,
+     requestCanonicalJson:canonicalJson(secondCommand),publicationRevision:receipt.publicationRevision+1};
+   const history=createFactoryCommandHistory([receipt,secondReceipt]),before=history.readAll();
+   expect(before).toEqual([receipt,secondReceipt]);expect(before[0]!.requestCanonicalJson).toBe(receipt.requestCanonicalJson);
+   expect(history.replay(JSON.parse(canonicalJson(command)))).toEqual({status:"NoOp",receipt});
+   const conflict=JSON.parse(canonicalJson(command));conflict.sourceLots[0].quantityUnits++;
+   expect(history.replay(conflict)).toMatchObject({status:"Rejected",receipt:{reason:"IdempotencyConflict"}});
+   expect(history.readAll()).toEqual(before);
  });
  it.each(["revision", "lot"])("rejects changed %s bytes under an accepted handling ID even after the carrier slot is reused", change => {
    const history = createFactoryCommandHistory(); history.accept(command, receipt);
@@ -316,6 +479,47 @@ it("PLAY04 control replay preserves the same disabled state and rejects changed 
  expect(()=>controlCandidate(state,adopted.material,owners[3]!,true,"control_replay")).toThrow(/Idempotency/);
 });
 import * as dryControls from "../../../src/factory/session/dryFactorySlice";
+
+it.each([["empty",false],["occupied",true]] as const)("W09 machine, source and Belt controls preserve the %s line cursor and next-step binding",(kind,occupied)=>{
+ let pair=advanceBand(poweredBandFixture(occupied));
+ const line=pair.state.belts[0]!;expect(line.revision).toBeGreaterThan(0);expect(line.lastStep?.tickEndUs).toBe(pair.state.tickEndUs);
+ if(occupied)expect(line.packet).not.toBeNull();else expect(line.packet).toBeNull();
+ const totalMass=(material:typeof pair.material)=>material.containers.reduce((sum,container)=>sum+container.currentMassKg,0);
+ const mass=totalMass(pair.material),battery=pair.state.power.battery,staleInput=bandInput(pair),stale=prepareDryFactoryStep(pair.state,staleInput);
+ expect(stale.status).toBe("Prepared");if(stale.status!=="Prepared")return;
+ const nativeOwners=pair.owners.map((owner,index)=>({instanceId:owner.instanceId,installationRevision:index+1}));
+ let compact=importDryFactoryStateV1(pair.state,pair.material,pair.owners,pair.state.lastStep?.materialBytes??null,nativeOwners,()=>{});
+ const staleCompact=prepareFactoryDryOwnerStep(compact,staleInput);expect(staleCompact.status).toBe("Prepared");if(staleCompact.status!=="Prepared")return;
+ let state=pair.state,checkedFirstStep=false;
+ for(const [control,ownerIndex] of [["machine",0],["source",3],["belt",2]] as const){
+  for(const enabled of [false,true]){
+   const before=state,owner=pair.owners[ownerIndex]!,commandId=`cursor_${kind}_${control}_${enabled?"on":"off"}`;
+   const next=controlCandidate(before,pair.material,owner,enabled,commandId);
+   if(!checkedFirstStep){const first=prepareDryFactoryStep(next,bandInput({...pair,state:next}));expect(first.status,first.status==="Rejected"?first.reason:undefined).toBe("Prepared");checkedFirstStep=true;}
+   const compactNext=dryControls.setDryFactoryOwnerEnabled(compact,pair.material,owner,enabled,commandId);
+   expect(next.belts[0]).toEqual({...before.belts[0],binding:next.binding});
+   expect(next.belts[0]?.lastStep).toEqual(before.belts[0]?.lastStep);expect(next.belts[0]?.tickEndUs).toBe(before.belts[0]?.tickEndUs);
+   expect(next.belts[0]?.creditMg).toBe(before.belts[0]?.creditMg);expect(next.belts[0]?.packetCursor).toBe(before.belts[0]?.packetCursor);
+   expect(next.belts[0]?.packet).toEqual(before.belts[0]?.packet);expect(next.tickEndUs).toBe(before.tickEndUs);
+   expect(next.power.battery).toEqual(battery);expect(totalMass(pair.material)).toBe(mass);
+   expect(next.lastStep).toBeNull();expect(next.machines.every(machine=>machine.lastStep===null)).toBe(true);
+   expect(materializeDryFactoryStateV1(compactNext,()=>{})).toEqual(next);
+   state=next;compact=compactNext;
+  }
+ }
+ expect(commitDryFactoryStep(state,bandInput({...pair,state}),stale)).toMatchObject({status:"Rejected"});
+ expect(commitFactoryDryOwnerStep(compact,bandInput({...pair,state}),staleCompact)).toMatchObject({status:"Rejected"});
+ const roundTrip=importDryFactoryStateV1(state,pair.material,pair.owners,state.lastStep?.materialBytes??null,nativeOwners,()=>{});
+ expect(materializeDryFactoryStateV1(roundTrip,()=>{})).toEqual(state);
+ pair={...pair,state};const nextLegacy=advanceBand(pair),nextInput=bandInput(pair),nextCompact=prepareFactoryDryOwnerStep(compact,nextInput);
+ expect(nextCompact.status).toBe("Prepared");if(nextCompact.status!=="Prepared")return;
+ const compactCommit=commitFactoryDryOwnerStep(compact,nextInput,nextCompact);
+ expect(compactCommit.status).toBe("Committed");if(compactCommit.status!=="Committed")return;
+ expect(nextLegacy.state.tickEndUs).toBe(String(BigInt(state.tickEndUs)+100000n));
+ expect(nextLegacy.state.belts[0]?.binding).toEqual(state.binding);
+ expect(nextLegacy.state.belts[0]?.lastStep?.tickEndUs).toBe(nextLegacy.state.tickEndUs);
+ expect(materializeDryFactoryStateV1(compactCommit.state,()=>{})).toEqual(nextLegacy.state);
+});
 
 it("owned-data baseline bytes: Dry cold, copied, joint material and replay", () => {
  const bytesOf=(value:unknown)=>canonicalJson(JSON.parse(JSON.stringify(value)));

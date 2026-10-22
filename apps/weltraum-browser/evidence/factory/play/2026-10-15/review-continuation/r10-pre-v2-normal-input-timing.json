@@ -1,0 +1,239 @@
+{
+  "profile": "E:/DEV/Weltraum-Spiel/FP06-Browser-Acceptance-20261017-R10",
+  "baselineCleanCopy": "E:/DEV/Weltraum-Spiel/FP06-Clean-Acceptance-2026-10-17-r06",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "observations": [
+    {
+      "kind": "bounded-normal-input-timing-observation",
+      "requestedWaitMs": 200,
+      "driverTimes": [
+        {
+          "kind": "down-sent",
+          "key": "d",
+          "at": 1792268746103
+        },
+        {
+          "kind": "down-ack",
+          "key": "d",
+          "at": 1792268746451
+        },
+        {
+          "kind": "up-sent",
+          "key": "d",
+          "at": 1792268746751
+        },
+        {
+          "kind": "up-ack",
+          "key": "d",
+          "at": 1792268747180
+        }
+      ],
+      "domEvents": [
+        {
+          "type": "keydown",
+          "key": "d",
+          "repeat": false,
+          "at": 1424407.700000003
+        },
+        {
+          "type": "keydown",
+          "key": " ",
+          "repeat": false,
+          "at": 1424491.600000009
+        },
+        {
+          "type": "keyup",
+          "key": " ",
+          "repeat": false,
+          "at": 1424507.900000006
+        },
+        {
+          "type": "keyup",
+          "key": "d",
+          "repeat": false,
+          "at": 1425136.900000006
+        },
+        {
+          "type": "keyup",
+          "key": "Escape",
+          "repeat": false,
+          "at": 1426367.700000003
+        }
+      ],
+      "before": {
+        "tick": 24439,
+        "player": {
+          "x": -5.324617385864258,
+          "y": 1.8513656854629517,
+          "z": 9.595059394836426
+        }
+      },
+      "after": {
+        "tick": 24595,
+        "player": {
+          "x": -7.125128269195557,
+          "y": 2.400038003921509,
+          "z": 9.595069885253906
+        }
+      },
+      "policy": "Passive event timestamps only; normal keys, no state injection, no CPU profile"
+    }
+  ],
+  "current": {
+    "at": 1791909,
+    "tick": 24595,
+    "status": "Paused",
+    "player": {
+      "x": -7.125128269195557,
+      "y": 2.400038003921509,
+      "z": 9.595069885253906
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 2,
+      "neutralizations": 140,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 112060,
+      "lastAckId": 112060,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "camera": {
+      "position": [
+        -7.106413518454153,
+        3.1478769047727653,
+        9.59506976205834
+      ],
+      "orientation": [
+        0,
+        1,
+        0,
+        6.123233995736766e-17
+      ],
+      "visualBody": [
+        -7.106413518454153,
+        2.3978769047727653,
+        9.59506976205834
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "clock": {
+      "maxTimerGapMs": 33.599999994039536,
+      "maxAdvanceMs": 11,
+      "maxHandlerMs": 854.3999999910593,
+      "lastCommand": "Read",
+      "lastHandlerMs": 3.3999999910593033,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "carrier": {
+      "phase": "Deposited",
+      "profileId": "BELT4",
+      "positionMm": [
+        -7000,
+        1499.9998807907104,
+        8500
+      ]
+    },
+    "facilityState": "Idle",
+    "facilityCount": 7,
+    "massMg": 2984400000,
+    "factorySteps": 4099,
+    "hostConfirmed": true,
+    "receipt": {
+      "commandId": "ui_cargo_fe72387ee1344c85be656dab7cbf193b",
+      "status": "Committed",
+      "reason": null
+    },
+    "persistence": {
+      "state": "Idle",
+      "message": "No Factory checkpoint saved; Save checks memory before writing",
+      "revision": null,
+      "saveAvailable": true,
+      "continueAvailable": false
+    },
+    "power": {
+      "allocationConfirmed": true,
+      "devices": [
+        {
+          "id": "facility_fp02_device_battery_4kwh_1",
+          "revision": 4,
+          "name": "Expeditionsbatterie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_fp02_device_distribution_40kw_3",
+          "revision": 7,
+          "name": "Verteiler",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b07_5",
+          "revision": 3754,
+          "name": "Umformwerk",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b06_16",
+          "revision": 2479,
+          "name": "Zuschnittstation",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        }
+      ],
+      "status": "CONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 0,
+      "batteryEnergyJ": 12960000,
+      "batteryCapacityJ": 14400000,
+      "reserveEnergyJ": 3600000,
+      "sourceQuality": "unsupported",
+      "consumers": [
+        {
+          "id": "consumer_facility_b06_16",
+          "name": "facility_b06_16",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_facility_b07_5",
+          "name": "facility_b07_5",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        }
+      ]
+    },
+    "testBridge": false
+  },
+  "interpretation": "Measured driver roundtrips and passive DOM event interval only; no CPU profile or app-versus-driver causal attribution. Normal key actions only, no state injection."
+}

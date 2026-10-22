@@ -1,0 +1,5 @@
+Root command: node node_modules/typescript/bin/tsc --noEmit
+Working directory: E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+Exit:1
+tests/unit/hvp-bootstrap.test.ts(595,41): error TS2339: Property 'startsWith' does not exist on type 'never'.
+Independent review traced the fixture's residentRepresentationKeys to an always-empty array, so the proposed absence check was also vacuous. Root did not approve a type cast. The existing test now observes actual UpsertMeshArtifact commands, requires positive non-Hero flora uploads and rejects Hero uploads. Product unchanged by this test correction. Original failed R12 and R10 evidence remain retained.

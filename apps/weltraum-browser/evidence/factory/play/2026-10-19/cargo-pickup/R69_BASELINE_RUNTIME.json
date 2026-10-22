@@ -1,0 +1,937 @@
+{
+  "initial": {
+    "physics": {
+      "status": "Paused",
+      "ticks": 0,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "bodyCount": 5,
+      "colliderCount": 81
+    },
+    "cargo": {
+      "opened": false,
+      "accessible": true,
+      "positionMm": [
+        -5500,
+        2000,
+        13125
+      ]
+    },
+    "facilities": {
+      "revision": 0,
+      "state": "Idle",
+      "transactionId": null
+    },
+    "ui": {
+      "state": "Ready",
+      "host": {
+        "nativeTick": 0,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": "start",
+          "error": null
+        }
+      },
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": false,
+        "cargoAccessible": true,
+        "handling": null,
+        "openCargo": {
+          "enabled": true,
+          "reason": null
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": false,
+          "reason": null
+        }
+      },
+      "receipt": null,
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "massMg": 2984400000,
+          "accessible": false
+        }
+      ]
+    }
+  },
+  "closed": {
+    "state": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 0,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 5,
+        "colliderCount": 81
+      },
+      "cargo": {
+        "opened": false,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "facilities": {
+        "revision": 0,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "ui": {
+        "state": "Ready",
+        "host": {
+          "nativeTick": 0,
+          "physicsStatus": "Paused",
+          "confirmed": true,
+          "input": {
+            "active": false,
+            "activationPending": false,
+            "pointerLocked": false,
+            "pausePending": false,
+            "focusedPanel": null,
+            "surface": "cargo",
+            "error": null
+          }
+        },
+        "interaction": {
+          "localDeposits": [],
+          "cargoOpened": false,
+          "cargoAccessible": true,
+          "handling": null,
+          "openCargo": {
+            "enabled": true,
+            "reason": null
+          },
+          "deposit": {
+            "enabled": false,
+            "reason": "Kein aktiver Transport"
+          },
+          "returnCargo": {
+            "enabled": false,
+            "reason": null
+          }
+        },
+        "receipt": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "massMg": 2984400000,
+            "accessible": false
+          }
+        ]
+      }
+    },
+    "body": "Goal\nOpen wreck cargo\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nCargo & transport\nViews\nClose\nOpen cargo\n\nWreck cargo 1 · 2984.4 kg out of reach\n\nFormer kit\n341 kg\nCutter kit\n208 kg\nBattery\n50 kg\nCable pack · 40 m\n10 kg\nFormer kit\n\n341 kg · Wreck cargo 1\n\nPick up: Former kit\nMore transport packages\nView materials\nSession paused"
+  },
+  "opened": {
+    "physics": {
+      "status": "Paused",
+      "ticks": 0,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "bodyCount": 5,
+      "colliderCount": 81
+    },
+    "cargo": {
+      "opened": true,
+      "accessible": true,
+      "positionMm": [
+        -5500,
+        2000,
+        13125
+      ]
+    },
+    "facilities": {
+      "revision": 1,
+      "state": "Idle",
+      "transactionId": null
+    },
+    "ui": {
+      "state": "Ready",
+      "host": {
+        "nativeTick": 0,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": "cargo",
+          "surface": "cargo",
+          "error": null
+        }
+      },
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": true,
+        "cargoAccessible": true,
+        "handling": null,
+        "openCargo": {
+          "enabled": true,
+          "reason": null
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": false,
+          "reason": null
+        }
+      },
+      "receipt": {
+        "status": "Committed",
+        "reason": null,
+        "requestCanonicalJson": "{\"commandId\":\"ui_cargo_13ef18b66fc14ec89a18f41f62625a99\",\"epoch\":1,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":0,\"handlingRevision\":0,\"materialRevision\":0,\"netRevision\":0,\"powerSourceProfileDigest\":\"fp01-fixed-net-observation-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"0e2a0bcb\"},\"kind\":\"open-cargo\",\"sessionId\":\"hvp-session-1\",\"version\":\"fp06-ui-command-v1\"}"
+      },
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "massMg": 2984400000,
+          "accessible": true
+        }
+      ]
+    }
+  },
+  "rejectedAtSpawn": {
+    "state": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 0,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 5,
+        "colliderCount": 81
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "facilities": {
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "ui": {
+        "state": "Ready",
+        "host": {
+          "nativeTick": 0,
+          "physicsStatus": "Paused",
+          "confirmed": true,
+          "input": {
+            "active": false,
+            "activationPending": false,
+            "pointerLocked": false,
+            "pausePending": false,
+            "focusedPanel": "cargo",
+            "surface": "cargo",
+            "error": null
+          }
+        },
+        "interaction": {
+          "localDeposits": [],
+          "cargoOpened": true,
+          "cargoAccessible": true,
+          "handling": null,
+          "openCargo": {
+            "enabled": true,
+            "reason": null
+          },
+          "deposit": {
+            "enabled": false,
+            "reason": "Kein aktiver Transport"
+          },
+          "returnCargo": {
+            "enabled": false,
+            "reason": null
+          }
+        },
+        "receipt": {
+          "status": "Rejected",
+          "reason": "FactoryFacilityRejected:CarrierSupport",
+          "requestCanonicalJson": "{\"commandId\":\"ui_cargo_de43ca435309467885eb7f0584a71ccd\",\"epoch\":1,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":1,\"handlingRevision\":1,\"materialRevision\":0,\"netRevision\":0,\"powerSourceProfileDigest\":\"fp01-fixed-net-observation-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"0e2a0bcb\"},\"kind\":\"pickup\",\"profileId\":\"B07-BOM\",\"sessionId\":\"hvp-session-1\",\"sourceLots\":[{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c27_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":20000000,\"stackId\":\"fp02_cargo_c11_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":14000000,\"stackId\":\"fp02_cargo_c12_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c15_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c16_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c17_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c19_unit_1\"}],\"version\":\"fp06-ui-command-v1\"}"
+        },
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "massMg": 2984400000,
+            "accessible": true
+          }
+        ]
+      }
+    },
+    "body": "Goal\nBuild a cutter and former\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nCargo & transport\nViews\nClose\n\nWreck cargo 1 · 2984.4 kg available\n\nFormer kit\n341 kg\nCutter kit\n208 kg\nBattery\n50 kg\nCable pack · 40 m\n10 kg\nFormer kit\n\n341 kg · Wreck cargo 1\n\nPick up: Former kit\nMore transport packages\nView materials\n\nAction rejected. Action currently unavailable\n\nSession paused"
+  },
+  "rejectedAfterGrounding": {
+    "state": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 881,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.41003680229187,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 5,
+        "colliderCount": 81
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "facilities": {
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "ui": {
+        "state": "Ready",
+        "host": {
+          "nativeTick": 881,
+          "physicsStatus": "Paused",
+          "confirmed": true,
+          "input": {
+            "active": false,
+            "activationPending": false,
+            "pointerLocked": false,
+            "pausePending": false,
+            "focusedPanel": "cargo",
+            "surface": "cargo",
+            "error": null
+          }
+        },
+        "interaction": {
+          "localDeposits": [],
+          "cargoOpened": true,
+          "cargoAccessible": true,
+          "handling": null,
+          "openCargo": {
+            "enabled": true,
+            "reason": null
+          },
+          "deposit": {
+            "enabled": false,
+            "reason": "Kein aktiver Transport"
+          },
+          "returnCargo": {
+            "enabled": false,
+            "reason": null
+          }
+        },
+        "receipt": {
+          "status": "Rejected",
+          "reason": "FactoryFacilityRejected:CarrierSupport",
+          "requestCanonicalJson": "{\"commandId\":\"ui_cargo_1ce5ba56ef0748d5a2eb9405e2ed8866\",\"epoch\":1,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":1,\"handlingRevision\":1,\"materialRevision\":0,\"netRevision\":0,\"powerSourceProfileDigest\":\"fp01-fixed-net-observation-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"0e2a0bcb\"},\"kind\":\"pickup\",\"profileId\":\"B07-BOM\",\"sessionId\":\"hvp-session-1\",\"sourceLots\":[{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c27_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":20000000,\"stackId\":\"fp02_cargo_c11_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":14000000,\"stackId\":\"fp02_cargo_c12_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c15_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c16_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c17_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c19_unit_1\"}],\"version\":\"fp06-ui-command-v1\"}"
+        },
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "massMg": 2984400000,
+            "accessible": true
+          }
+        ]
+      }
+    },
+    "body": "Goal\nBuild a cutter and former\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nCargo & transport\nViews\nClose\n\nWreck cargo 1 · 2984.4 kg available\n\nFormer kit\n341 kg\nCutter kit\n208 kg\nBattery\n50 kg\nCable pack · 40 m\n10 kg\nFormer kit\n\n341 kg · Wreck cargo 1\n\nPick up: Former kit\nMore transport packages\nView materials\n\nAction rejected. Action currently unavailable\n\nSession paused"
+  },
+  "supportedBefore": {
+    "physics": {
+      "status": "Running",
+      "ticks": 891,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.9500017166137695,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "bodyCount": 5,
+      "colliderCount": 81
+    },
+    "cargo": {
+      "opened": true,
+      "accessible": true,
+      "positionMm": [
+        -5500,
+        2000,
+        13125
+      ]
+    },
+    "facilities": {
+      "revision": 1,
+      "state": "Idle",
+      "transactionId": null
+    },
+    "ui": {
+      "state": "Ready",
+      "host": {
+        "nativeTick": 891,
+        "physicsStatus": "Running",
+        "confirmed": true,
+        "input": {
+          "active": true,
+          "activationPending": false,
+          "pointerLocked": true,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": null,
+          "error": null
+        }
+      },
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": true,
+        "cargoAccessible": true,
+        "handling": null,
+        "openCargo": {
+          "enabled": true,
+          "reason": null
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": false,
+          "reason": null
+        }
+      },
+      "receipt": {
+        "status": "Rejected",
+        "reason": "FactoryFacilityRejected:CarrierSupport",
+        "requestCanonicalJson": "{\"commandId\":\"ui_cargo_1ce5ba56ef0748d5a2eb9405e2ed8866\",\"epoch\":1,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":1,\"handlingRevision\":1,\"materialRevision\":0,\"netRevision\":0,\"powerSourceProfileDigest\":\"fp01-fixed-net-observation-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"0e2a0bcb\"},\"kind\":\"pickup\",\"profileId\":\"B07-BOM\",\"sessionId\":\"hvp-session-1\",\"sourceLots\":[{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c27_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":20000000,\"stackId\":\"fp02_cargo_c11_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":14000000,\"stackId\":\"fp02_cargo_c12_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c15_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c16_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c17_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c19_unit_1\"}],\"version\":\"fp06-ui-command-v1\"}"
+      },
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "massMg": 2984400000,
+          "accessible": true
+        }
+      ]
+    }
+  },
+  "supportedAfter": {
+    "state": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 893,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.050002098083496,
+            "y": 2.400047540664673,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 6,
+        "colliderCount": 86
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "carrier": {
+        "profileId": "B07-BOM",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "positionMm": [
+          -6050.002098083496,
+          1500,
+          10875
+        ],
+        "colliderCount": 5
+      },
+      "facilities": {
+        "revision": 2,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "ui": {
+        "state": "Ready",
+        "host": {
+          "nativeTick": 893,
+          "physicsStatus": "Paused",
+          "confirmed": true,
+          "input": {
+            "active": false,
+            "activationPending": false,
+            "pointerLocked": false,
+            "pausePending": false,
+            "focusedPanel": "cargo",
+            "surface": "cargo",
+            "error": null
+          }
+        },
+        "interaction": {
+          "localDeposits": [],
+          "cargoOpened": true,
+          "cargoAccessible": true,
+          "handling": {
+            "id": "factory_carrier",
+            "revision": 2,
+            "profileId": "B07-BOM",
+            "phase": "Carrying",
+            "massMg": 341000000
+          },
+          "openCargo": {
+            "enabled": true,
+            "reason": null
+          },
+          "deposit": {
+            "enabled": true,
+            "reason": null
+          },
+          "returnCargo": {
+            "enabled": true,
+            "reason": null
+          }
+        },
+        "receipt": {
+          "status": "Committed",
+          "reason": null,
+          "requestCanonicalJson": "{\"commandId\":\"ui_cargo_620c665b36fc4198800ca3d7dfda6c83\",\"epoch\":1,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":1,\"handlingRevision\":1,\"materialRevision\":0,\"netRevision\":0,\"powerSourceProfileDigest\":\"fp01-fixed-net-observation-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"0e2a0bcb\"},\"kind\":\"pickup\",\"profileId\":\"B07-BOM\",\"sessionId\":\"hvp-session-1\",\"sourceLots\":[{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c27_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":20000000,\"stackId\":\"fp02_cargo_c11_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":14000000,\"stackId\":\"fp02_cargo_c12_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c15_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c16_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c17_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c19_unit_1\"}],\"version\":\"fp06-ui-command-v1\"}"
+        },
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "massMg": 2643400000,
+            "accessible": true
+          },
+          {
+            "id": "carrier_ui_cargo_620c665b36fc4198800ca3d7dfda6c83",
+            "massMg": 341000000,
+            "accessible": true
+          }
+        ]
+      }
+    },
+    "body": "Goal\nBuild a cutter and former\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nCargo & transport\nViews\nClose\n\nCargo load: 341 kg\n\nSet down here\nReturn to cargo\nView materials\n\nAction confirmed\n\nSession paused"
+  },
+  "carryMove": {
+    "before": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 893,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.050002098083496,
+            "y": 2.400047540664673,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 6,
+        "colliderCount": 86
+      },
+      "carrier": {
+        "ownerId": "factory_carrier",
+        "transactionId": "ui_cargo_620c665b36fc4198800ca3d7dfda6c83",
+        "profileId": "B07-BOM",
+        "phase": "Carrying",
+        "containerId": "carrier_ui_cargo_620c665b36fc4198800ca3d7dfda6c83",
+        "massMg": 341000000,
+        "positionMm": [
+          -6050.002098083496,
+          1500,
+          10875
+        ],
+        "nativeMassKg": 341,
+        "colliderCount": 5,
+        "accessible": true
+      }
+    },
+    "after": {
+      "physics": {
+        "status": "Running",
+        "ticks": 901,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.400003433227539,
+            "y": 2.400095224380493,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "bodyCount": 6,
+        "colliderCount": 86
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "carrier": {
+        "profileId": "B07-BOM",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "positionMm": [
+          -6400.003433227539,
+          1500.0001192092896,
+          10875
+        ],
+        "colliderCount": 5
+      },
+      "facilities": {
+        "revision": 2,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "ui": {
+        "state": "Ready",
+        "host": {
+          "nativeTick": 901,
+          "physicsStatus": "Running",
+          "confirmed": true,
+          "input": {
+            "active": true,
+            "activationPending": false,
+            "pointerLocked": true,
+            "pausePending": false,
+            "focusedPanel": null,
+            "surface": null,
+            "error": null
+          }
+        },
+        "interaction": {
+          "localDeposits": [],
+          "cargoOpened": true,
+          "cargoAccessible": true,
+          "handling": {
+            "id": "factory_carrier",
+            "revision": 2,
+            "profileId": "B07-BOM",
+            "phase": "Carrying",
+            "massMg": 341000000
+          },
+          "openCargo": {
+            "enabled": true,
+            "reason": null
+          },
+          "deposit": {
+            "enabled": true,
+            "reason": null
+          },
+          "returnCargo": {
+            "enabled": true,
+            "reason": null
+          }
+        },
+        "receipt": {
+          "status": "Committed",
+          "reason": null,
+          "requestCanonicalJson": "{\"commandId\":\"ui_cargo_620c665b36fc4198800ca3d7dfda6c83\",\"epoch\":1,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":1,\"handlingRevision\":1,\"materialRevision\":0,\"netRevision\":0,\"powerSourceProfileDigest\":\"fp01-fixed-net-observation-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"0e2a0bcb\"},\"kind\":\"pickup\",\"profileId\":\"B07-BOM\",\"sessionId\":\"hvp-session-1\",\"sourceLots\":[{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c27_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":20000000,\"stackId\":\"fp02_cargo_c11_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":14000000,\"stackId\":\"fp02_cargo_c12_lot_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c15_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c16_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c17_unit_1\"},{\"containerId\":\"fp02_wreck_cargo\",\"containerRevision\":0,\"quantityUnits\":1,\"stackId\":\"fp02_cargo_c19_unit_1\"}],\"version\":\"fp06-ui-command-v1\"}"
+        },
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "massMg": 2643400000,
+            "accessible": true
+          },
+          {
+            "id": "carrier_ui_cargo_620c665b36fc4198800ca3d7dfda6c83",
+            "massMg": 341000000,
+            "accessible": true
+          }
+        ]
+      }
+    }
+  },
+  "deposit": {
+    "physics": {
+      "status": "Paused",
+      "ticks": 904,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.550004005432129,
+          "y": 2.400010108947754,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "bodyCount": 6,
+      "colliderCount": 86
+    },
+    "cargo": {
+      "opened": true,
+      "accessible": true,
+      "positionMm": [
+        -5500,
+        2000,
+        13125
+      ]
+    },
+    "carrier": {
+      "profileId": "B07-BOM",
+      "phase": "Deposited",
+      "massMg": 341000000,
+      "positionMm": [
+        -6500,
+        1500.0001192092896,
+        11000
+      ],
+      "colliderCount": 5
+    },
+    "facilities": {
+      "revision": 3,
+      "state": "Idle",
+      "transactionId": null
+    },
+    "ui": {
+      "state": "Ready",
+      "host": {
+        "nativeTick": 904,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": "cargo",
+          "surface": "cargo",
+          "error": null
+        }
+      },
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": true,
+        "cargoAccessible": true,
+        "handling": {
+          "id": "factory_carrier",
+          "revision": 3,
+          "profileId": "B07-BOM",
+          "phase": "Deposited",
+          "massMg": 341000000
+        },
+        "openCargo": {
+          "enabled": true,
+          "reason": null
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": true,
+          "reason": null
+        }
+      },
+      "receipt": {
+        "status": "Committed",
+        "reason": null,
+        "requestCanonicalJson": "{\"commandId\":\"ui_cargo_19f0f6e837624444a3b5c9275713763c\",\"epoch\":1,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":2,\"handlingRevision\":2,\"materialRevision\":1,\"netRevision\":0,\"powerSourceProfileDigest\":\"fp01-fixed-net-observation-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"0e2a0bcb\"},\"handling\":{\"id\":\"factory_carrier\",\"revision\":2},\"kind\":\"deposit\",\"sessionId\":\"hvp-session-1\",\"target\":{\"kind\":\"ground\"},\"version\":\"fp06-ui-command-v1\"}"
+      },
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "massMg": 2643400000,
+          "accessible": true
+        },
+        {
+          "id": "carrier_ui_cargo_620c665b36fc4198800ca3d7dfda6c83",
+          "massMg": 341000000,
+          "accessible": true
+        }
+      ]
+    }
+  },
+  "returnFinal": {
+    "physics": {
+      "status": "Paused",
+      "ticks": 904,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -6.550004005432129,
+          "y": 2.400010108947754,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "bodyCount": 5,
+      "colliderCount": 81
+    },
+    "cargo": {
+      "opened": true,
+      "accessible": true,
+      "positionMm": [
+        -5500,
+        2000,
+        13125
+      ]
+    },
+    "facilities": {
+      "revision": 4,
+      "state": "Idle",
+      "transactionId": null
+    },
+    "ui": {
+      "state": "Ready",
+      "host": {
+        "nativeTick": 904,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": "cargo",
+          "surface": "cargo",
+          "error": null
+        }
+      },
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": true,
+        "cargoAccessible": true,
+        "handling": null,
+        "openCargo": {
+          "enabled": true,
+          "reason": null
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": false,
+          "reason": null
+        }
+      },
+      "receipt": {
+        "status": "Committed",
+        "reason": null,
+        "requestCanonicalJson": "{\"commandId\":\"ui_cargo_b223ca3b559f4f64af5b03c1f4a2f3bb\",\"epoch\":1,\"expected\":{\"catalogDigest\":\"fnv1a:f3a8c642\",\"facilityRevision\":3,\"handlingRevision\":3,\"materialRevision\":1,\"netRevision\":0,\"powerSourceProfileDigest\":\"fp01-fixed-net-observation-v1\",\"terrainRevision\":0,\"terrainSourceDigest\":\"0e2a0bcb\"},\"handling\":{\"id\":\"factory_carrier\",\"revision\":3},\"kind\":\"return\",\"sessionId\":\"hvp-session-1\",\"target\":{\"id\":\"fp02_wreck_cargo\",\"revision\":7},\"version\":\"fp06-ui-command-v1\"}"
+      },
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "massMg": 2984400000,
+          "accessible": true
+        },
+        {
+          "id": "carrier_ui_cargo_620c665b36fc4198800ca3d7dfda6c83",
+          "massMg": 0,
+          "accessible": false
+        }
+      ]
+    }
+  },
+  "errors": []
+}

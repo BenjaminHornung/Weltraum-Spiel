@@ -16,11 +16,13 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const listeners=createHvpListeners();
   const keys = new Set<string>();
   const movementKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ShiftLeft", "ShiftRight", "Space"]);
+  type PendingActivation = { readonly promise: Promise<HvpPlayerActivationResult>;
+    readonly resolve: (result: HvpPlayerActivationResult) => void; playRequested: boolean;
+    pointerLockRequest: "none" | "requesting" | "promise" | "legacy"; pointerLockErrorSeen: boolean; fallbackUsed: boolean };
   let active = false;
   let activating = false;
   let disposed = false;
-  let activation: { readonly promise: Promise<HvpPlayerActivationResult>;
-    readonly resolve: (result: HvpPlayerActivationResult) => void; playRequested: boolean } | undefined;
+  let activation: PendingActivation | undefined;
   let yaw = Math.PI;
   let pitch = 0;
   let jump = false;
@@ -129,12 +131,19 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
     if (!active || isBlocked() || doc.pointerLockElement !== canvas) { return; }
     yaw -= event.movementX * 0.002;
     pitch = Math.max(-1.4, Math.min(1.4, pitch - event.movementY * 0.002));
-    publishEventIntent();
   };
   const visibility = (): void => { if (doc.hidden) { stop(); } };
-  const pointerError = (): void => {
+  const rejectLegacyPointerError = (pending: PendingActivation): void => {
+    if (disposed || activation !== pending) return;
     const reason = "Pointer lock unavailable – select Play again.";
     error(reason); finishActivation("Rejected", reason); stop();
+  };
+  const pointerError = (): void => {
+    const pending = activation;
+    if (!pending) return;
+    // This event can precede the request return; wait to learn whether its Promise owns the failure.
+    if (pending.pointerLockRequest === "requesting") { pending.pointerLockErrorSeen = true; return; }
+    if (pending.pointerLockRequest === "legacy") rejectLegacyPointerError(pending);
   };
   const confirm = (event:MouseEvent):void => {
     if(active&&!isBlocked()&&!activating&&doc.pointerLockElement===canvas&&event.button===0) { event.preventDefault();tool.confirm(); }
@@ -148,7 +157,8 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
     }
     let resolve!: (result: HvpPlayerActivationResult) => void;
     const promise = new Promise<HvpPlayerActivationResult>(done => { resolve = done; });
-    const pending = { promise, resolve, playRequested: false }; activation = pending;
+    const pending: PendingActivation = { promise, resolve, playRequested: false, pointerLockRequest: "none", pointerLockErrorSeen: false, fallbackUsed: false };
+    activation = pending;
     delete doc.body.dataset.hestiaPrototypeInputError;
     if (dialog.open) { dialog.close(); }
     // Stay within the real click's user activation; never auto-relock on focus.
@@ -157,7 +167,34 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
       const reason = value instanceof Error ? value.message : String(value);
       error(value); finishActivation("Rejected", reason); stop();
     };
-    try { void canvas.requestPointerLock()?.catch(rejectLock); } catch (value) { rejectLock(value); }
+    const canRetry = (): boolean => !disposed && activation === pending && !doc.hidden && !isBlocked()
+      && !pending.playRequested && doc.pointerLockElement !== canvas;
+    const requestPointerLock = (raw: boolean): void => {
+      if (disposed || activation !== pending) return;
+      pending.pointerLockRequest = "requesting"; pending.pointerLockErrorSeen = false;
+      let request: Promise<void> | void;
+      try {
+        request = (raw ? canvas.requestPointerLock({unadjustedMovement:true}) : canvas.requestPointerLock()) as Promise<void> | void;
+      } catch (value) {
+        if (raw && !pending.fallbackUsed && value instanceof DOMException && value.name === "NotSupportedError" && canRetry()) {
+          pending.fallbackUsed = true; requestPointerLock(false);
+        } else rejectLock(value);
+        return;
+      }
+      if (request && typeof request.then === "function") {
+        pending.pointerLockRequest = "promise"; pending.pointerLockErrorSeen = false;
+        void request.catch(value => {
+          if (disposed || activation !== pending) return;
+          if (raw && !pending.fallbackUsed && value instanceof DOMException && value.name === "NotSupportedError" && canRetry()) {
+            pending.fallbackUsed = true; requestPointerLock(false);
+          } else rejectLock(value);
+        });
+        return;
+      }
+      pending.pointerLockRequest = "legacy";
+      if (pending.pointerLockErrorSeen) rejectLegacyPointerError(pending);
+    };
+    requestPointerLock(true);
     return promise;
   };
   listeners.add(resumeButton,"click",start);

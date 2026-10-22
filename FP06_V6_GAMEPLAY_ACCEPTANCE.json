@@ -1,0 +1,212 @@
+{
+  "schema": "hestia.fp06.v6-gameplay-acceptance/v1",
+  "atUtc": "2026-10-21T11:59:10.719Z",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "branch": "feature/hestia-fp06-review-continuation-2026-10-15",
+  "status": "FUNCTIONAL_PASS_PERFORMANCE_LIMIT_RETAINED",
+  "delivery": "E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-21-v4",
+  "deliveryManifest": "DELIVERY_MANIFEST.json",
+  "url": "http://127.0.0.1:5197/factory.html",
+  "browserProfile": "E:/DEV/Weltraum-Spiel/FP06-V6-FullFlow-20261021-R78",
+  "integrator": "/root",
+  "writers": "ALL_QUIESCENT",
+  "newGameProfile": "hvp-factory-startsite-v6",
+  "sourceHashes": {
+    "factoryFacilitySession": "8B7BDAD3DA34D6E1F804869A800912F43377615C08809AD0D5FDFC2CA2380DFD",
+    "locomotion": "364C16933A664ECCCA60199AB2F2B5491951B34ADF6DEBE0C311A17342CE723E"
+  },
+  "checks": {
+    "cleanSourceFiles": 936,
+    "cleanTscAndViteBuild": "PASS_R44",
+    "sourceReviews": "Native canonical and locomotion PASS; existing authorized Pi/DeepSeek source review no concrete defect, Root adjudicated filter and bound questions",
+    "independentFunctionalReview": "PASS, including retained R78/R79 NewGame and paid Battery/Former, R80 committed first8.5m cable/five owners, R81 six owners, same-profile R85 Save12 continuation and R87 final cold. Report owner-count wording corrected",
+    "affectedUnits": "104/104_R42",
+    "finalFocusedBoundary": "1/1_R43",
+    "finalTypeScript": "PASS_R43",
+    "boundaryRed": "R41 exact Native foot undercoverage",
+    "cornerRedGreen": "R38 retained old corner fails; R39 final corner passes",
+    "legacyGoldens": "NO_EDIT",
+    "packagesAndLock": "NO_EDIT"
+  },
+  "functional": {
+    "paidInstallationCount": 10,
+    "paidBelts": 2,
+    "paidCables": 5,
+    "paidCableLengthMm": 29500,
+    "totalMassMg": 2984400000,
+    "freshMassBalanceMg": {
+      "installedBraceMg": 5800000,
+      "profileRemainderMg": 3000000,
+      "sheetRemainderMg": 5000000,
+      "offcutsMg": 2200000
+    },
+    "jobIds": {
+      "cut1": "job_ui_machine_525c53f9427448f88b3c3047f6fe56e8",
+      "cut2": "job_ui_machine_a331430de4564444b5262ca5626bc72c",
+      "profile": "job_ui_machine_fbb95ae9b3f94c45aa22c84ffd9059cb",
+      "sheet": "job_ui_machine_f52894eaf3da4627a5ddb2f8e574e26c",
+      "brace": "job_ui_machine_417306804a3e4e51b13c095d24f42987"
+    },
+    "braceInstallation": {
+      "instanceId": "facility_fp02_comp_small_brace_59",
+      "definitionSourceId": "fp02.comp.small_brace",
+      "profileDigest": "fd2561ec",
+      "sourceDigest": "17bbdd8c",
+      "massMg": 5800000,
+      "materialContainerId": "installed_facility_fp02_comp_small_brace_59",
+      "centerMm": [
+        -8750,
+        1500,
+        7500
+      ],
+      "quarterTurns": 2,
+      "boundsMm": {
+        "min": [
+          -9250,
+          1500,
+          7375
+        ],
+        "max": [
+          -8250,
+          1750,
+          7625
+        ]
+      },
+      "serviceBoundsMm": {
+        "min": [
+          -9250,
+          1500,
+          6375
+        ],
+        "max": [
+          -8250,
+          2500,
+          7375
+        ]
+      }
+    },
+    "noSimulationHoldObserved": true,
+    "pageAndNetworkErrors": [],
+    "normalHullRamp": {
+      "jumpCountBefore": 2,
+      "jumpCountAfter": 2,
+      "position": {
+        "x": 6.582930088043213,
+        "y": 3.525001287460327,
+        "z": 8.5822114944458
+      }
+    },
+    "wipRestart": {
+      "workMs": 8100,
+      "requiredMs": 30000,
+      "actualBrowserDisconnect": true,
+      "continuedAndCompletedOnce": true,
+      "parity": {
+        "storedSlotUnchanged": true,
+        "pausedTickStable": true,
+        "workMs": 8100,
+        "jobId": "job_ui_machine_525c53f9427448f88b3c3047f6fe56e8",
+        "authorities": {
+          "native": true,
+          "nativeFactory": true,
+          "profiles": true,
+          "host": true,
+          "factory": false,
+          "factoryExceptPublication": true
+        },
+        "beforeHost": {
+          "epoch": 1,
+          "nativeTick": 34254,
+          "remainderTicks": 0,
+          "sessionId": "hvp-session-1",
+          "steps": 5709
+        },
+        "afterHost": {
+          "epoch": 1,
+          "nativeTick": 34254,
+          "remainderTicks": 0,
+          "sessionId": "hvp-session-1",
+          "steps": 5709
+        }
+      }
+    },
+    "finalRestart": {
+      "savedRevision": 18,
+      "actualBrowserDisconnect": true,
+      "loadedPayloadUnchanged": true,
+      "explicitPostRestoreRevision": 19,
+      "payloadBytes": 13199495,
+      "payloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+      "host": {
+        "epoch": 1,
+        "nativeTick": 48547,
+        "remainderTicks": 1,
+        "sessionId": "hvp-session-1",
+        "steps": 8091
+      },
+      "parity": {
+        "storedSlotUnchanged": true,
+        "pausedTickStable": true,
+        "insidePositionExact": true,
+        "braceInstallationCanonicalExact": true,
+        "firstOrderSensitiveAssertion": "FAILED_ONLY_OBJECT_KEY_ORDER; retained separate audit; no product or Golden change",
+        "goal": "GoalFirst structural brace installed",
+        "authorities": {
+          "native": true,
+          "nativeFactory": true,
+          "profiles": true,
+          "host": true,
+          "factory": false,
+          "factoryExceptPublication": true
+        },
+        "beforeHost": {
+          "epoch": 1,
+          "nativeTick": 48547,
+          "remainderTicks": 1,
+          "sessionId": "hvp-session-1",
+          "steps": 8091
+        },
+        "afterHost": {
+          "epoch": 1,
+          "nativeTick": 48547,
+          "remainderTicks": 1,
+          "sessionId": "hvp-session-1",
+          "steps": 8091
+        }
+      }
+    },
+    "currentBrowserState": "OPEN_PAUSED; explicit Play required"
+  },
+  "limits": {
+    "physicalCollidersAndMargin": "UNCHANGED",
+    "clockAndRuntimeCaps": "UNCHANGED",
+    "internalRepresentation": "private temporary outward-F32 full sweep Cuboid, exact pinned-q1 Native local-center arithmetic; decision document explains it; nothing persisted",
+    "worstContactWork": "34 preparations/6 CCT; loose3968 explicit World queries plus CCT internals, not measured milliseconds",
+    "performanceWindow": "PROFILE1/1 and CANDIDATES3/3 CLOSED",
+    "lastSelectedActiveComparison": {
+      "run": "R46",
+      "meanFps": 29.4179,
+      "p95FrameMs": 33.2,
+      "holdCount": 0,
+      "target": "MEAN_MISS"
+    },
+    "hardwareAndFun": "NOT_QUALIFIED; user was connected through Windows Remote",
+    "compositionCost": "Known exclusive/lower-bound and overlapping inclusive boundaries documented; pure internal transformation/all validation/matcher totals NOT MEASURED",
+    "browserHarnessFailures": "Retained R38 query-count fixture error, R40 non-discriminating boundary fixture, R42 test-only TypeScript narrowing, R87 order-sensitive object comparison; final canonical authority comparisons pass; no product or old Golden change"
+  },
+  "evidence": {
+    "normalNewGameAndFirstPaidBuild": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R78_R79_RETAINED_NORMAL_NEW_GAME_AND_FIRST_PAID_BUILD.json",
+    "firstPaidCableAndFiveOwners": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R80_PARTIAL_NORMAL_5_OWNERS_INPUT_AND_CLEARANCE.json",
+    "distributorAndSixOwners": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R81_DEPOT_RECOVERY_AND_BELT_INPUT_DIAGNOSIS.json",
+    "sameWorldSixOwnersCold": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R82_HEADED_COLD_SIX_OWNERS_SAVE8_TO9_PASS.json",
+    "quietInput": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R83_HUMAN_CONFIRMED_60S_QUIET_INPUT.json",
+    "sameWorldSave12": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R84_CONTACT_FAIL_RETICLE_AND_SAVE12.json",
+    "fullFlow": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R85_R86_FULL_FRESH_CYCLE_FINAL_SAVE.json",
+    "finalCold": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R87_FINAL_ACTUAL_COLD_INSIDE_HULL_PASS.json",
+    "comparisonAudit": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/R87_FIRST_FINAL_ASSERTION_AUDIT.json",
+    "finalPausedReadback": "apps/weltraum-browser/evidence/factory/play/2026-10-21/walkable-hull/FINAL_DELIVERY_PAUSED_READBACK.json",
+    "results": "docs/factory/fp06/play/2026-10-19/walkable-hull/RESULTS_20261021.md",
+    "decision": "docs/factory/fp06/play/2026-10-19/walkable-hull/CARRIER_SWEEP_ENCLOSURE_DECISION_20261021.md",
+    "composition": "docs/factory/fp06/play/2026-10-15/review-continuation/COMPOSITION_RESULTS.md"
+  }
+}

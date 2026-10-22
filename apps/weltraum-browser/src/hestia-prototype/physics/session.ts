@@ -18,6 +18,7 @@ import {createHvpNeighborCollision} from "./neighborRegion";
 import {createHvpBodyResidency} from "./bodyResidency";
 import type { FactoryCargoSite } from "../../factory/fixtures/cargoSite";
 import type { createFactoryFacilitySession, FactoryFacilityRequest,FactoryCargoOpenIntent,FactoryCarrierRequest } from "./factoryFacilitySession";
+import type { FactoryNativeWorldPartsV1, FactoryPhysicsCheckpoint } from "../persistence/factoryWorldParts";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 
 export type HvpPhysicsSession = Awaited<ReturnType<typeof createHvpPhysicsSession>>;
@@ -39,7 +40,8 @@ export const createHvpPhysicsSession = async (
     checkpoint?:unknown,
     branchKind:"branch"|"salvage"="branch",
     factoryEnabled=false,
-    initialFactoryCargo?:FactoryCargoSite
+    initialFactoryCargo?:FactoryCargoSite,
+    initialFactoryParts?:FactoryNativeWorldPartsV1
 ) => {
   if (!Number.isFinite(gravity) || gravity <= 0 || ![spawn.x, spawn.y, spawn.z].every(Number.isFinite) || sectors.length > 4094) {
     throw new RangeError("Invalid HVP physics admission");
@@ -51,6 +53,12 @@ export const createHvpPhysicsSession = async (
     if(header.collisionDigest!==collisionDigest){throw new Error("Saved collision does not match candidate sources");}
   }
   const restored=checkpoint===undefined?undefined:decodeHvpWorld(checkpoint),saved=restored?.checkpoint;
+  let validatedFactoryParts:FactoryNativeWorldPartsV1|undefined;
+  if(initialFactoryParts!==undefined){
+    if(!factoryEnabled||checkpoint===undefined||!initialFactoryCargo||!saved)throw new Error("Factory Native restore requires its capability, Core checkpoint and Cargo site");
+    const persistence=await import("../persistence/factoryWorldParts");
+    validatedFactoryParts=persistence.inspectFactoryNativeWorldParts(initialFactoryParts,initialFactoryCargo);
+  }
   const parkedIds=new Set(saved?.parked??[]);
   const baseSectorCount=saved?.neighbor?.baseSectorCount??sectors.length;
   if(sectors.length!==baseSectorCount+(saved?.neighbor?.resident?64:0)){throw new Error("Saved neighbour collision membership mismatch");}
@@ -61,9 +69,28 @@ export const createHvpPhysicsSession = async (
     inertiaSpawn!==undefined?prepareHvpRigidBody(ingestHvpStructuralCells("hvp-inertia-l",HVP_INERTIA_CELLS,
     [{materialId:1,densityKgPerCubicMeter:600,structuralClass:"wood",destructible:true,tags:null}])):null;
   const bodyColliderCount=restored?restored.bodies.filter(b=>!parkedIds.has(b.checkpoint.ownerId)).reduce((n,b)=>n+b.recipe.colliders.length,0):1+(inertiaRecipe?.colliders.length??0)+(branchSpawn?2:0);
-  if(sectors.filter(s=>s.indices.length>0).length+bodyColliderCount+(player===undefined?0:1)>4096) { throw new Error("Physics collider BudgetExceeded"); }
+  let factoryColliderCount=0;
+  if(validatedFactoryParts){
+    const [profiles,handling,catalogModule]=await Promise.all([
+      import("../../factory/construction/installationProfile"),import("../../factory/construction/cargoHandlingProfile"),import("../../factory/catalog/fp02Catalog")]);
+    const catalog=catalogModule.createFp02Fixture("cargo").catalog;
+    factoryColliderCount=1;
+    for(const owner of validatedFactoryParts.owners)factoryColliderCount+=profiles.createFactoryInstallationProfile(owner.definitionRef.sourceId).colliders.length;
+    if(validatedFactoryParts.carrier){
+      const carrierProfile=handling.readCargoHandlingProfile(catalog,validatedFactoryParts.carrier.profileId);
+      if(!carrierProfile||carrierProfile.digest!==validatedFactoryParts.carrier.profileDigest||carrierProfile.massMg!==validatedFactoryParts.carrier.massMg){
+        throw new Error("Invalid Native carrier collider profile");
+      }
+      factoryColliderCount+=5;
+    }
+    const factoryBodyCount=1+validatedFactoryParts.owners.length+(validatedFactoryParts.carrier?1:0);
+    const totalCoreBodies=restored?.bodies.length??0;
+    if(factoryBodyCount>16||totalCoreBodies+(player===undefined?0:1)+factoryBodyCount>64){throw new Error("Physics body BudgetExceeded");}
+  }
+  if(sectors.filter(s=>s.indices.length>0).length+bodyColliderCount+(player===undefined?0:1)+factoryColliderCount>4096) { throw new Error("Physics collider BudgetExceeded"); }
   const world = new R.World({ x: 0, y: -gravity, z: 0 });
   let disposed = false;
+  let disposeInitializationResources:(()=>void)|undefined;
   try {
     world.timestep = HVP_PHYSICS_DT;
     const collision = new Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>();
@@ -106,7 +133,11 @@ export const createHvpPhysicsSession = async (
     const primaryCoverage=(player?.coverage??[]).filter(s=>s.maxX<=16);
     let coverage:readonly HvpCollisionCoverage[]=player?.coverage??[];
     const character = player === undefined ? undefined : createHvpLocomotion(world, player.spawn, gravity,
-      (x, z) => coverage.some(s => x >= s.minX && x < s.maxX && z >= s.minZ && z < s.maxZ),saved?.player??undefined, factoryEnabled ? (from, to) => facilities?.preparePlayerMove(from, to) ?? (() => {}) : undefined);
+      (x, z) => coverage.some(s => x >= s.minX && x < s.maxX && z >= s.minZ && z < s.maxZ),saved?.player??undefined,
+      factoryEnabled ? (from, to) => facilities?.preparePlayerMove(from, to) ?? (() => {}) : undefined,
+      factoryEnabled ? (from, to) => facilities?.limitPlayerMove(from, to) ?? 0 : undefined,
+      factoryEnabled ? (from, to) => facilities?.canSlidePlayerMove(from, to) ?? false : undefined);
+    disposeInitializationResources=()=>character?.dispose();
     let stepCpuMs = 0;
     let stepTimings:[number,number][]|undefined;
     const tick = createHvpTick(() => {
@@ -117,6 +148,7 @@ export const createHvpPhysicsSession = async (
       const end=performance.now();stepCpuMs = end - start;
       stepTimings?.push([solverStart,end-solverStart]);
     },saved?.tick);
+    disposeInitializationResources=()=>{tick.dispose();character?.dispose();};
     // A cold Factory menu owns no elapsed simulation time. Pause before the
     // worker starts its timer; ordinary HVP and restored clocks keep their policy.
     if(factoryEnabled&&initialFactoryCargo!==undefined&&checkpoint===undefined)tick.pause();
@@ -143,7 +175,7 @@ export const createHvpPhysicsSession = async (
     const neighborMeshes=()=>neighbor?.meshes()??[];
     const allCollision=()=>[...[...collision.values()].map(c=>c.mesh),...neighborMeshes()];
     const collisionBytes = () => allCollision().reduce((n,s)=>n+s.vertices.byteLength+s.indices.byteLength,0);
-    if(factoryEnabled){const module=await import("./factoryFacilitySession");facilities=module.createFactoryFacilitySession(world,()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!neighbor?.busy&&!residency!.held&&!coverageHeld&&!bodyResidencyWork&&tick.read().status==="Paused",residentExtras,()=>terrainGeneration,initialFactoryCargo,()=>character?.read().position,()=>character?.readonlyBodyHandle,(x,z)=>coverage.some(s=>x>=s.minX&&x<s.maxX&&z>=s.minZ&&z<s.maxZ));}
+    if(factoryEnabled){const module=await import("./factoryFacilitySession");facilities=module.createFactoryFacilitySession(world,()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!neighbor?.busy&&!residency!.held&&!coverageHeld&&!bodyResidencyWork&&tick.read().status==="Paused",residentExtras,()=>terrainGeneration,initialFactoryCargo,()=>character?.read().position,()=>character?.readonlyBodyHandle,(x,z)=>coverage.some(s=>x>=s.minX&&x<s.maxX&&z>=s.minZ&&z<s.maxZ),validatedFactoryParts);}
     const extraHeld=()=>facilities?.busy||neighbor?.busy||residency!.held||coverageHeld||bodyResidencyWork!==undefined;
     let impulseTarget:HvpImpulseTarget=noImpulseTarget;
     const queryImpulse=(direction?:Readonly<{x:number;y:number;z:number}>):{
@@ -230,6 +262,27 @@ export const createHvpPhysicsSession = async (
         ...(structural?.parts??[]).filter(p=>!bodies.has(p.ownerId)).map(p=>({ownerId:p.ownerId,position:p.position,orientation:p.orientation,velocity:p.velocity,sleeping:p.sleeping,massKg:p.massKg}))] });};
     const playerEye=()=>{const avatar=character?.read();if(avatar?.status!=="Walking"){throw new Error("Player is not walking");}
       return {x:avatar.position.x,y:avatar.position.y+HVP_PLAYER_PROFILE.eyeHeight-HVP_PLAYER_PROFILE.height/2,z:avatar.position.z};};
+    const requireCheckpointable=()=>{
+      if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){
+        throw new Error("World checkpoint requires a confirmed paused generation");
+      }
+    };
+    const captureCore=():HvpWorldCheckpoint=>{
+      const dropRecipe=restored?.bodies.find(b=>b.checkpoint.family==="drop")?.recipe??prepareHvpRigidBody(ingestHvpStructuralCells("hvp-drop",
+        Array.from({length:64},(_,i)=>({x:i%4,y:Math.floor(i/4)%4,z:Math.floor(i/16),materialId:1})),
+        [{materialId:1,densityKgPerCubicMeter:2400,structuralClass:"limestone",destructible:true,tags:null}]));
+      const result=[encodeHvpBody(id,"drop",dropRecipe,body)];
+      if(inertiaRecipe&&inertiaBody){result.push(encodeHvpBody(HVP_INERTIA_KEY,"inertia",inertiaRecipe,inertiaBody));}
+      for(const b of movingBodies.values()){result.push(encodeHvpBody(b.ownerId,b.family??"terrain",b.recipe,b.body));}
+      for(const b of branch?.fixedOwners()??[]){result.push(encodeHvpBody(b.ownerId,"branch",b.recipe,b.body));}
+      result.push(...residency!.checkpoint());
+      return Object.freeze({version:"hvp-world-checkpoint-v1",solver:"rapier-0.12.0",sessionId,gravity,terrainGeneration,
+        tick:tick.read(),collisionDigest:hvpCollisionDigest(allCollision()),dropSpawn:Object.freeze({...spawn}),
+        player:character?.checkpoint()??null,coverage:Object.freeze(coverage.map(c=>Object.freeze({...c}))),
+        bodies:Object.freeze(result),branch:branch?.checkpoint()??null,moving:moving.checkpoint(),impulses,
+        neighbor:neighbor?.read().checkpoint??null,parked:Object.freeze(residency!.read().map(p=>p.ownerId)),
+        lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,lastImpulse});
+    };
     return {
       read,
       openFactoryCargo(intent:FactoryCargoOpenIntent){if(disposed||extraHeld()||staged||terrainHeld||branch?.busy||moving.busy||!["Running","Paused"].includes(tick.read().status))throw new Error("FactoryFacilityRejected:CargoHostUnavailable");return facilities!.openCargo(intent);},
@@ -247,23 +300,16 @@ export const createHvpPhysicsSession = async (
       checkpoint():HvpWorldCheckpoint {
         if(disposed){throw new Error("World checkpoint requires a confirmed paused generation");}
         if((facilities?.read().owners.length??0)>0||facilities?.read().cargo!==undefined){throw new Error("Installed Factory facilities require a combined checkpoint");}
-        if(terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){
-          throw new Error("World checkpoint requires a confirmed paused generation");
-        }
-        const dropRecipe=restored?.bodies.find(b=>b.checkpoint.family==="drop")?.recipe??prepareHvpRigidBody(ingestHvpStructuralCells("hvp-drop",
-          Array.from({length:64},(_,i)=>({x:i%4,y:Math.floor(i/4)%4,z:Math.floor(i/16),materialId:1})),
-          [{materialId:1,densityKgPerCubicMeter:2400,structuralClass:"limestone",destructible:true,tags:null}]));
-        const result=[encodeHvpBody(id,"drop",dropRecipe,body)];
-        if(inertiaRecipe&&inertiaBody){result.push(encodeHvpBody(HVP_INERTIA_KEY,"inertia",inertiaRecipe,inertiaBody));}
-        for(const b of movingBodies.values()){result.push(encodeHvpBody(b.ownerId,b.family??"terrain",b.recipe,b.body));}
-        for(const b of branch?.fixedOwners()??[]){result.push(encodeHvpBody(b.ownerId,"branch",b.recipe,b.body));}
-        result.push(...residency!.checkpoint());
-        return Object.freeze({version:"hvp-world-checkpoint-v1",solver:"rapier-0.12.0",sessionId,gravity,terrainGeneration,
-          tick:tick.read(),collisionDigest:hvpCollisionDigest(allCollision()),dropSpawn:Object.freeze({...spawn}),
-          player:character?.checkpoint()??null,coverage:Object.freeze(coverage.map(c=>Object.freeze({...c}))),
-          bodies:Object.freeze(result),branch:branch?.checkpoint()??null,moving:moving.checkpoint(),impulses,
-          neighbor:neighbor?.read().checkpoint??null,parked:Object.freeze(residency!.read().map(p=>p.ownerId)),
-          lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,lastImpulse});
+        requireCheckpointable();
+        return captureCore();
+      },
+      checkpointFactory():FactoryPhysicsCheckpoint{
+        if(!factoryEnabled||!facilities)throw new Error("Factory checkpoint capability unavailable");
+        requireCheckpointable();
+        if(facilities.read().state!=="Idle")throw new Error("Factory checkpoint requires idle Native state");
+        const factoryCheckpoint=facilities.checkpointNative();
+        const worldCheckpoint=captureCore();
+        return Object.freeze({world:worldCheckpoint,facilities:factoryCheckpoint});
       },
       copyCollision():readonly HvpCollisionSector[]{
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){throw new Error("Collision checkpoint requires an idle paused World");}
@@ -484,5 +530,5 @@ export const createHvpPhysicsSession = async (
          disposed = true; tick.dispose(); character?.dispose(); bodies.clear();movingBodies.clear();world.free();
       }
     };
-  } catch (error) { world.free(); throw error; }
+  } catch (error) { try{disposeInitializationResources?.();}finally{world.free();} throw error; }
 };

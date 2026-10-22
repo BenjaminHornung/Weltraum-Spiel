@@ -1,0 +1,1442 @@
+{
+  "visibleCompleted": true,
+  "visibleGoal": true,
+  "machines": [
+    {
+      "name": "Feldwerkbank",
+      "status": "COMPLETED",
+      "confirmedWorkMs": 0,
+      "jobId": null
+    },
+    {
+      "name": "Zuschnittstation",
+      "status": "COMPLETED",
+      "confirmedWorkMs": 30000,
+      "jobId": null
+    },
+    {
+      "name": "Umformwerk",
+      "status": "COMPLETED",
+      "confirmedWorkMs": 40000,
+      "jobId": null
+    }
+  ],
+  "proof": {
+    "source": "Actual final Save11 Chrome Continue; explicit hydrated Save12 before any Play",
+    "actualContinue": {
+      "at": 12203.199999999255,
+      "tick": 48038,
+      "status": "Paused",
+      "player": {
+        "x": -8.683712005615234,
+        "y": 2.4000000953674316,
+        "z": 6.850339889526367
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": null,
+      "clock": {
+        "maxTimerGapMs": 20.699999999254942,
+        "maxAdvanceMs": 0.10000000149011612,
+        "maxHandlerMs": 741.0999999996275,
+        "lastCommand": "Read",
+        "lastHandlerMs": 4.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "factorySteps": 8006,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+        "revision": 11,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [
+          {
+            "id": "facility_fp02_device_battery_4kwh_1",
+            "revision": 8,
+            "name": "Expeditionsbatterie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_fp02_device_distribution_40kw_3",
+            "revision": 11,
+            "name": "Verteiler",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b07_5",
+            "revision": 7674,
+            "name": "Umformwerk",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b06_16",
+            "revision": 6534,
+            "name": "Zuschnittstation",
+            "enabled": true,
+            "capability": {
+              "enabled": true,
+              "reason": null
+            }
+          },
+          {
+            "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "revision": 31,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+            "revision": 37,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          }
+        ],
+        "status": "CONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 200,
+        "batteryEnergyJ": 12614021.05263158,
+        "batteryCapacityJ": 14400000,
+        "reserveEnergyJ": 3600000,
+        "sourceQuality": "unsupported",
+        "consumers": [
+          {
+            "id": "consumer_facility_b06_16",
+            "name": "facility_b06_16",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_facility_b07_5",
+            "name": "facility_b07_5",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+            "name": "fp02_cargo_c23_unit_2",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          },
+          {
+            "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "name": "fp02_cargo_c23_unit_1",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          }
+        ]
+      },
+      "testBridge": false
+    },
+    "storedRecordUnchangedBeforeExplicitSave12": true,
+    "beforeSlot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 11,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 96076,
+      "payloadBytes": 13535070,
+      "contentHash": "sha256:01d41d286e21f463e536d2d3e61e24a0ad200f0204f4e2f48c12ef45a3e4576a",
+      "lastWriteReason": "ManualSave"
+    },
+    "afterSlot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 12,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 96076,
+      "payloadBytes": 13535070,
+      "contentHash": "sha256:221a807c4b5b364d31c2528ada8a3abda81c3eed0ccce2b63d69cf8f21b7d2c6",
+      "lastWriteReason": "ManualSave"
+    },
+    "nativeExact": true,
+    "nativeFields": {
+      "neighbor": true,
+      "plants": true,
+      "profiles": true,
+      "progress": true,
+      "receipts": true,
+      "terrain": true,
+      "version": true,
+      "view": true,
+      "world": true
+    },
+    "nativeFactoryExact": true,
+    "profilesExact": true,
+    "hostExact": true,
+    "factoryFields": {
+      "commandReceipts": true,
+      "domain": true,
+      "installations": true,
+      "lastPower": true,
+      "lastReceipt": true,
+      "links": true,
+      "material": true,
+      "publicationRevision": false,
+      "recipeSelections": true,
+      "version": true,
+      "waitingStarts": true
+    },
+    "publicationBefore": 8376,
+    "publicationAfter": 8379,
+    "state": {
+      "at": 48240.40000000037,
+      "tick": 48038,
+      "status": "Paused",
+      "player": {
+        "x": -8.683712005615234,
+        "y": 2.4000000953674316,
+        "z": 6.850339889526367
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": null,
+      "clock": {
+        "maxTimerGapMs": 758.4000000003725,
+        "maxAdvanceMs": 0.19999999925494194,
+        "maxHandlerMs": 871.4000000003725,
+        "lastCommand": "Read",
+        "lastHandlerMs": 2.799999998882413,
+        "delayedCallbacks": [
+          {
+            "gapMs": 758.4000000003725,
+            "previousCommand": "FactoryCheckpoint",
+            "handlerMs": 754.5,
+            "advanceMs": 0
+          }
+        ],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "factorySteps": 8006,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_16d0b300619e4b14b595c46536ee6599",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 12,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [
+          {
+            "id": "facility_fp02_device_battery_4kwh_1",
+            "revision": 8,
+            "name": "Expeditionsbatterie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_fp02_device_distribution_40kw_3",
+            "revision": 11,
+            "name": "Verteiler",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b07_5",
+            "revision": 7674,
+            "name": "Umformwerk",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b06_16",
+            "revision": 6534,
+            "name": "Zuschnittstation",
+            "enabled": true,
+            "capability": {
+              "enabled": true,
+              "reason": null
+            }
+          },
+          {
+            "id": "line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "revision": 31,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_7a380a75a3a647859de973bc834287be",
+            "revision": 37,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          }
+        ],
+        "status": "CONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 200,
+        "batteryEnergyJ": 12614021.05263158,
+        "batteryCapacityJ": 14400000,
+        "reserveEnergyJ": 3600000,
+        "sourceQuality": "unsupported",
+        "consumers": [
+          {
+            "id": "consumer_facility_b06_16",
+            "name": "facility_b06_16",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_facility_b07_5",
+            "name": "facility_b07_5",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_line_ui_power_7a380a75a3a647859de973bc834287be",
+            "name": "fp02_cargo_c23_unit_2",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          },
+          {
+            "id": "consumer_line_ui_power_eaaa69871aab4921ae39292cb526db68",
+            "name": "fp02_cargo_c23_unit_1",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          }
+        ]
+      },
+      "testBridge": false
+    },
+    "admissions": [
+      {
+        "name": "hvp.factorySaveAdmission",
+        "startTime": 35739.699999999255,
+        "duration": 0,
+        "detail": {
+          "sampleId": "factorySaveAdmission:3578",
+          "data": {
+            "phase": "early",
+            "R": 114981892,
+            "T": 16800572,
+            "U": 264624,
+            "K": 2657384,
+            "D": null,
+            "P": null,
+            "oldBound": 16777216,
+            "totalBytes": 237220136,
+            "nativeReserveBytes": 100663296
+          }
+        }
+      },
+      {
+        "name": "hvp.factorySaveAdmission",
+        "startTime": 41091.40000000037,
+        "duration": 0,
+        "detail": {
+          "sampleId": "factorySaveAdmission:5311",
+          "data": {
+            "phase": "full",
+            "R": 114981892,
+            "T": 21075490,
+            "U": 2834752,
+            "K": 2657384,
+            "D": 39359936,
+            "P": 13535070,
+            "oldBound": 16777216,
+            "totalBytes": 262056078,
+            "workingBytes": 100663296
+          }
+        }
+      }
+    ],
+    "coldLifecycle": [
+      {
+        "name": "hvp.startupRendererMs",
+        "duration": 21.90000000037253,
+        "detail": {
+          "sampleId": "startupRendererMs:0"
+        }
+      },
+      {
+        "name": "hvp.factoryColdAdmission",
+        "duration": 0,
+        "detail": {
+          "sampleId": "factoryColdAdmission:1",
+          "data": {
+            "R": 0,
+            "T": 21074842,
+            "U": 2833296,
+            "K": 1359352,
+            "D": 39359936,
+            "P": 13535070,
+            "oldBound": 16777216,
+            "totalBytes": 156848866,
+            "ownerImportBytes": 0,
+            "decodedSourceBytes": 14140864,
+            "baseBytes": 8388608,
+            "preparedBaseBytes": 8388608,
+            "nativeReserveBytes": 100663296
+          }
+        }
+      },
+      {
+        "name": "hvp.startupSourceMs",
+        "duration": 4935.4000000003725,
+        "detail": {
+          "sampleId": "startupSourceMs:2"
+        }
+      },
+      {
+        "name": "hvp.startupCoastMeshMs",
+        "duration": 2126,
+        "detail": {
+          "sampleId": "startupCoastMeshMs:3"
+        }
+      },
+      {
+        "name": "hvp.startupVegetationMs",
+        "duration": 388.3999999985099,
+        "detail": {
+          "sampleId": "startupVegetationMs:4"
+        }
+      },
+      {
+        "name": "hvp.startupAdmissionMs",
+        "duration": 3.400000000372529,
+        "detail": {
+          "sampleId": "startupAdmissionMs:6"
+        }
+      },
+      {
+        "name": "hvp.factoryColdPlantAdoption",
+        "duration": 0,
+        "detail": {
+          "sampleId": "factoryColdPlantAdoption:5",
+          "data": {
+            "phase": "scene",
+            "plantGenerationMatchesNative": true,
+            "plantSourceBytes": 5227968,
+            "checkpointSourceBytesBefore": 39408354,
+            "checkpointSourceBytesAfter": 34180386,
+            "sceneTotalBefore": 270168482,
+            "sceneTotalAfter": 264940514,
+            "mesherScratchBytes": 149595480,
+            "nativeReserveBytes": 100663296,
+            "capBytes": 268435456
+          }
+        }
+      },
+      {
+        "name": "hvp.startupPhysicsMs",
+        "duration": 1337.0999999996275,
+        "detail": {
+          "sampleId": "startupPhysicsMs:7"
+        }
+      },
+      {
+        "name": "hvp.startupPublishMs",
+        "duration": 1028.4000000003725,
+        "detail": {
+          "sampleId": "startupPublishMs:133"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 5.599999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:8"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 12.200000001117587,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:9"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 6.800000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:10"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 4,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:11"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 13.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:12"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 10.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:13"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 8.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:14"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 4.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:15"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 4.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:16"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 9.600000001490116,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:17"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 13.300000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:18"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 13,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:19"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 7.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:20"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 10.599999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:21"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 10.700000001117587,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:22"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 3,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:23"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:24"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 42.69999999925494,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:25"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 99.80000000074506,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:26"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 17.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:27"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 22.300000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:28"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 11.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:29"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 11.199999999254942,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:30"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:31"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:32"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:33"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.800000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:34"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.599999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:35"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.1000000014901161,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:36"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.700000001117587,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:37"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:38"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.200000001117587,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:39"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.8000000007450581,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:40"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.6999999992549419,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:41"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.300000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:42"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.300000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:43"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:44"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:45"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.7999999988824129,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:46"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.8000000007450581,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:47"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.799999998882413,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:48"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:49"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.800000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:50"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.299999998882413,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:51"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:52"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:53"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:54"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:55"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:56"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:57"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.299999998882413,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:58"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.8000000007450581,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:59"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:60"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.1000000014901161,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:61"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.599999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:62"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.699999999254942,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:63"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.300000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:64"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.7999999988824129,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:65"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.100000001490116,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:66"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.199999999254942,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:67"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:68"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:69"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:70"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:71"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:72"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:73"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.200000001117587,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:74"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.699999999254942,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:75"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:76"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.300000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:77"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.199999999254942,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:78"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:79"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.7999999988824129,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:80"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:81"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:82"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.300000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:83"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:84"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.6999999992549419,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:85"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:86"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:87"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.199999999254942,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:88"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.599999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:89"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.700000001117587,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:90"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:91"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.299999998882413,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:92"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:93"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.6999999992549419,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:94"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.7999999988824129,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:95"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:96"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.200000001117587,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:97"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.299999998882413,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:98"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:99"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.7999999988824129,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:100"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.8000000007450581,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:101"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:102"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:103"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.300000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:104"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.700000001117587,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:105"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.800000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:106"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:107"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.7000000011175871,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:108"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:109"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:110"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.7999999988824129,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:111"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:112"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 2.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:113"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.099999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:114"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.5,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:115"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.599999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:116"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 3.699999999254942,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:117"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:118"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:119"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:120"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.900000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:121"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.599999999627471,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:122"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.800000000745058,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:123"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 1.400000000372529,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:124"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.40000000037252903,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:125"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.2000000011175871,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:126"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.30000000074505806,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:127"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.19999999925494194,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:128"
+        }
+      },
+      {
+        "name": "hvp.startupBackendUpsertMs",
+        "duration": 0.2999999988824129,
+        "detail": {
+          "sampleId": "startupBackendUpsertMs:129"
+        }
+      },
+      {
+        "name": "hvp.startupProjectionMs",
+        "duration": 5.5,
+        "detail": {
+          "sampleId": "startupProjectionMs:130"
+        }
+      },
+      {
+        "name": "hvp.startupProjectionMs",
+        "duration": 4.899999998509884,
+        "detail": {
+          "sampleId": "startupProjectionMs:131"
+        }
+      },
+      {
+        "name": "hvp.startupProjectionMs",
+        "duration": 3.699999999254942,
+        "detail": {
+          "sampleId": "startupProjectionMs:132"
+        }
+      },
+      {
+        "name": "hvp.factoryColdPlantAdoption",
+        "duration": 0,
+        "detail": {
+          "sampleId": "factoryColdPlantAdoption:140",
+          "data": {
+            "phase": "residual",
+            "plantAdoptedBytes": 5227968,
+            "decodedSourceBytes": 14140864,
+            "neighborAdoptedBytes": 0,
+            "retainedDecodedBytes": 8912896,
+            "checkpointSourceBytesBefore": 34180386,
+            "checkpointSourceBytesAfter": 15754080,
+            "residualTotalBytes": 246561008,
+            "mesherScratchBytes": 149625864,
+            "nativeReserveBytes": 100663296,
+            "capBytes": 268435456
+          }
+        }
+      }
+    ]
+  }
+}

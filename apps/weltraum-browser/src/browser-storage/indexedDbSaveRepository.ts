@@ -104,7 +104,7 @@ const databaseIdFrom = (value: unknown): string => {
   return value;
 };
 
-const plainRecord = (value: unknown, operation: string, slotId: SaveSlotId): StoredSaveRecord => {
+const plainRecord = (value: unknown, operation: string, slotId: SaveSlotId, copyPayload = true): StoredSaveRecord => {
   if (
     value === null ||
     typeof value !== "object" ||
@@ -190,7 +190,7 @@ const plainRecord = (value: unknown, operation: string, slotId: SaveSlotId): Sto
   }
   return {
     metadata: { ...storedMetadata, slotId: storedSlotId, recordRevision: revision } as unknown as SaveSlotMetadata,
-    payloadBytes: new Uint8Array(object.payloadBytes)
+    payloadBytes: copyPayload ? new Uint8Array(object.payloadBytes) : object.payloadBytes
   };
 };
 
@@ -226,7 +226,7 @@ const metadataForWrite = (
 const writeResultFrom = (metadata: SaveSlotMetadata, encoded: EncodedSavePayload): SaveWriteResult => Object.freeze({
   metadata: copySaveSlotMetadata(metadata),
   envelope: encoded.envelope,
-  payloadBytes: new Uint8Array(encoded.payloadBytes)
+  payloadBytes: encoded.payloadBytes
 });
 
 export class IndexedDbSaveRepository implements SaveRepository {
@@ -338,7 +338,9 @@ export class IndexedDbSaveRepository implements SaveRepository {
       slotId = parsed.slotId;
       const encoded = await this.#codec.encode(parsed.envelope);
       return await this.#writeTransaction(database, slotId, "writeSlot", (currentValue, store) => {
-        const current = currentValue === undefined ? undefined : plainRecord(currentValue, "writeSlot", slotId!);
+        // The CAS branch reads only metadata and the validated byte length; keep the
+        // transaction-owned old payload in place instead of making an unused copy.
+        const current = currentValue === undefined ? undefined : plainRecord(currentValue, "writeSlot", slotId!, false);
         let revision: SaveRecordRevision;
         if (current === undefined) {
           if (parsed.expectedRevision !== null && parsed.expectedRevision !== 0) {
@@ -367,6 +369,7 @@ export class IndexedDbSaveRepository implements SaveRepository {
           parsed.lastWriteReason
         );
         const stored = createStoredSaveRecord(metadata, encoded.payloadBytes);
+        parsed.beforeCommit?.();
         store.put(stored, slotId!);
         return writeResultFrom(metadata, encoded);
       });

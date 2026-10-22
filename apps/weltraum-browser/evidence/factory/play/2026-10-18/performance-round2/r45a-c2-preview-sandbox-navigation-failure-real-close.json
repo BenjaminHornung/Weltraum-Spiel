@@ -1,0 +1,32 @@
+{
+  "schema": "hestia.fp06.c2-preview-sandbox-navigation-failure/v1",
+  "atUtc": "2026-10-19T07:42:53.446Z",
+  "url": "chrome-error://chromewebdata/",
+  "networkFailures": [
+    {
+      "url": "http://127.0.0.1:5197/factory.html",
+      "error": "net::ERR_CONNECTION_TIMED_OUT"
+    },
+    {
+      "url": "http://127.0.0.1:5197/factory.html",
+      "error": "net::ERR_CONNECTION_TIMED_OUT"
+    },
+    {
+      "url": "http://127.0.0.1:5197/factory.html",
+      "error": "net::ERR_CONNECTION_TIMED_OUT"
+    },
+    {
+      "url": "http://127.0.0.1:5197/factory.html",
+      "error": "net::ERR_CONNECTION_TIMED_OUT"
+    }
+  ],
+  "errors": [],
+  "gameActionAttempted": false,
+  "reason": "Sandboxed preview was not reachable; owned server restarted outside sandbox, now HTTP200",
+  "http": 200,
+  "closed": {
+    "disconnected": true,
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-Browser-Acceptance-20261018-R11"
+  },
+  "video": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\acceptance-r45-round2-c2-standing-video\\page@42a47c36ecfd3015a1c1255a80842389.webm"
+}

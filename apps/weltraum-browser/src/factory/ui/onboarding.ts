@@ -52,11 +52,11 @@ export const projectFactoryOnboarding = (facts: FactoryOnboardingFacts | null): 
     return task("complete", "First structural brace installed", "16 kg of steel has been processed and the paid 5.8 kg brace installed.", null);
   if (!facts.cargoOpened) return task("cargo", "Open wreck cargo", "The ship cannot fly. Its finite cargo supplies your first workshop.", "cargo");
   if (!facts.installedSourceIds.includes("B06") || !facts.installedSourceIds.includes("B07"))
-    return task("machines", "Build a cutter and former", "Transport heavy chassis first; keep the depot and player clear of the installation footprint.", "build");
+    return task("machines", "Build a cutter and former", "Move heavy chassis first. Build the distributor before the Cutter–Former belt. Keep the load and yourself clear of the build area.", "build");
   if (facts.powerConnected === null) return waiting();
   if (!facts.powerConnected) return task("power", "Supply power to the machines", "Connect the battery and existing cable through the visible ports.", "power");
   if (facts.twoBeltLinesConnected === null) return waiting();
-  if (!facts.twoBeltLinesConnected) return task("transport", "Connect storage and two short belt lines", "Ports show admitted connections; each line requires existing material.", "power");
+  if (!facts.twoBeltLinesConnected) return task("transport", "Connect storage and two short belt lines", "Run the Cutter–Former belt through the west passage before placing raw storage, then connect storage to both belt lines.", "power");
   if (!p || !cutComplete(p)) return task("cut", "Cut 16 kg of steel in two batches", "Supply 8 kg of known steel per job. Together they produce 15 kg of stock and 1 kg of offcuts.", "machine");
   if (!formComplete(p)) return task("form", "Produce fresh profiles and sheet", "One profile job and one sheet job each yield 7 kg. Recipe changes wait until work in progress clears.", "machine");
   if (!facts.installedSourceIds.includes("B05")) return task("bench", "Build a workbench", "The workbench needs an admitted reachable location and existing components.", "build");

@@ -1,0 +1,325 @@
+{
+  "schema": "hestia.factory.play-assets/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "assets": [
+    {
+      "family": "wreck-cargo",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-cargo",
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "worldCenterMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "nativeBoundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        },
+        "quantityAuthority": "existing finite cargo readview",
+        "opened": false
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-owner-source.blob",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-source.json",
+        "sha256": "8ae8a479af6e4311d2123c1e2f7e4cbafbbe340b1c107cb54966a6bddc8aa40a",
+        "bytes": 636
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "cargo_access"
+      ],
+      "parentPartIds": {
+        "cargo_access": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.75,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.75,
+          1.5,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "assetId": "play_wreck_cargo_v2",
+      "slug": "wreck-cargo-v2",
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-v2.glb",
+        "sha256": "2f213fae020ff7a245367939a24c2a8ceecd08809b7616858b241a57917b86ac",
+        "bytes": 15136,
+        "url": "/factory/play-2026-10-12/wreck-cargo-v2.glb"
+      },
+      "sourceRuntimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo.glb",
+        "sha256": "4b16d587014cba2587b8cf7ca34f674f3352c77c25aecfac3dca2073bd17a639",
+        "bytes": 15108
+      },
+      "provenance": {
+        "path": "art/factory/play-cargo-surface-v2-2026-10-19/wreck_cargo_v2.provenance.json",
+        "sha256": "d93eae1571c60ed25b762d03bcab989cdb9b6c1334b287d55f487d7b4708e516",
+        "bytes": 4110
+      },
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+      "visualRepair": {
+        "version": 2,
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "originalAssetId": "play_wreck_cargo_v1",
+        "nativeAuthority": "unchanged original source only",
+        "frontPlaneFromM": -0.5,
+        "frontPlaneToMByRole": {
+          "EX-STRUCT": -0.4990234375,
+          "EX-SHELL": -0.498046875
+        },
+        "frontRecessMByRole": {
+          "EX-STRUCT": 0.0009765625,
+          "EX-SHELL": 0.001953125
+        },
+        "rearPlaneFromM": 0.5,
+        "rearPlaneToMByRole": {
+          "EX-SHELL": 0.498046875
+        },
+        "rearRecessMByRole": {
+          "EX-SHELL": 0.001953125
+        },
+        "frontChangedVertexCountByRole": {
+          "EX-STRUCT": 48,
+          "EX-SHELL": 24
+        },
+        "rearChangedVertexCountByRole": {
+          "EX-SHELL": 12
+        },
+        "changedVertexCountByRole": {
+          "EX-STRUCT": 48,
+          "EX-SHELL": 36
+        },
+        "changedVertexCount": 84,
+        "maxVertexDisplacementM": 0.001953125,
+        "topology": "same indexed triangles, materials, nodes and primitives",
+        "meshCensus": {
+          "vertices": 360,
+          "indices": 540,
+          "primitives": 4
+        },
+        "nativeBoundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        }
+      }
+    },
+    {
+      "family": "wreck-cargo",
+      "definitionRef": null,
+      "visualOnlyAnchor": {
+        "kind": "visual-only-cargo",
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "worldCenterMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "nativeBoundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        },
+        "quantityAuthority": "existing finite cargo readview",
+        "opened": true
+      },
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-owner-source.blob",
+        "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+        "bytes": 4071
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-source.json",
+        "sha256": "55cfe6ebf268c87c386286aefbfc7da8df55a7d97d761f1cd5135b9c09897203",
+        "bytes": 646
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "cargo_access"
+      ],
+      "parentPartIds": {
+        "cargo_access": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -0.75,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.75,
+          1.5,
+          0.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "assetId": "play_wreck_cargo_open_v2",
+      "slug": "wreck-cargo-open-v2",
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-open-v2.glb",
+        "sha256": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+        "bytes": 13676,
+        "url": "/factory/play-2026-10-12/wreck-cargo-open-v2.glb"
+      },
+      "sourceRuntimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/wreck-cargo-open.glb",
+        "sha256": "304daec645c51a27e1735db2dc0b173cbbd01a8276d5b1862b54049af991c03a",
+        "bytes": 13648
+      },
+      "provenance": {
+        "path": "art/factory/play-cargo-surface-v2-2026-10-19/wreck_cargo_open_v2.provenance.json",
+        "sha256": "83eebf25a2e925b43201920a7825e63b8dc28e601c8ec019bcd8cacb30952f23",
+        "bytes": 4160
+      },
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+      "visualRepair": {
+        "version": 2,
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "originalAssetId": "play_wreck_cargo_open_v1",
+        "nativeAuthority": "unchanged original source only",
+        "frontPlaneFromM": -0.5,
+        "frontPlaneToMByRole": {
+          "EX-STRUCT": -0.4990234375,
+          "EX-SHELL": -0.498046875
+        },
+        "frontRecessMByRole": {
+          "EX-STRUCT": 0.0009765625,
+          "EX-SHELL": 0.001953125
+        },
+        "rearPlaneFromM": 0.5,
+        "rearPlaneToMByRole": {
+          "EX-SHELL": 0.498046875
+        },
+        "rearRecessMByRole": {
+          "EX-SHELL": 0.001953125
+        },
+        "frontChangedVertexCountByRole": {
+          "EX-STRUCT": 48,
+          "EX-SHELL": 24
+        },
+        "rearChangedVertexCountByRole": {
+          "EX-SHELL": 12
+        },
+        "changedVertexCountByRole": {
+          "EX-STRUCT": 48,
+          "EX-SHELL": 36
+        },
+        "changedVertexCount": 84,
+        "maxVertexDisplacementM": 0.001953125,
+        "topology": "same indexed triangles, materials, nodes and primitives",
+        "meshCensus": {
+          "vertices": 312,
+          "indices": 468,
+          "primitives": 4
+        },
+        "nativeBoundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        }
+      }
+    }
+  ],
+  "palette": {
+    "EX-STRUCT": "30383D",
+    "EX-SHELL": "B6BDB8",
+    "EX-FUNCTION": "407A79",
+    "EX-HAZARD": "D8A94E",
+    "EX-PV": "1D2E3C"
+  },
+  "authority": "derived Cargo render meshes only; original Native Cargo source and S0 witness remain authoritative",
+  "knownGaps": [
+    "runtime adoption and actual rendered owner inspection remain Integrator scope"
+  ]
+}

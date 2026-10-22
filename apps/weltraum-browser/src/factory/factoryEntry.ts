@@ -1,5 +1,5 @@
 import { englishFactoryText } from "./ui/english";
-import { materializeFactoryStartSiteV5,readFactorySourceColumnWorldV5 } from "./fixtures/startSite";
+import { materializeFactoryStartSiteV6,readFactorySourceColumnWorldV6 } from "./fixtures/startSiteV6";
 import { createFactoryBuildTool } from "./ui/buildTool";
 import { readMaterialMassMg } from "./material/resourcesAdapter";
 import {createFactoryPanel, uiText} from "./ui/cargoPanel";
@@ -7,20 +7,38 @@ import {factoryItemIcon} from "./ui/itemVisuals";
 import {mountFactoryShell,type FactoryShellPort,type FactoryShellView} from "./ui/factoryShell";
 import "../style.css";
 import { startHvp, type HvpBootstrapHandle } from "../hvp/hvpBootstrap";
+import { createHvpMeasurements } from "../hestia-prototype/runtime/measurements";
 import { createFp02CatalogInput, loadFactoryCatalog } from "./catalog/fp02Catalog";
-import { mountFactorySession, type FactorySessionView } from "./session/factorySession";
+import { mountCompactFactorySession, type FactorySessionView } from "./session/factorySession";
 import type { FactoryHostExtension } from "./session/hostPort";
 
-const extension: FactoryHostExtension = async host => {
+const extension: FactoryHostExtension = async (host,restore,owner) => {
   // Initialize exactly one finite source-bound Cargo view; objects remain uninstalled until the player confirms a paid build.
   const catalog = loadFactoryCatalog(createFp02CatalogInput());
-  const session = await mountFactorySession(host, catalog);
+  const session = await mountCompactFactorySession(host, catalog,restore,owner);
+  const onboardingMeasurement=createHvpMeasurements(new URLSearchParams(window.location.search).get("hvpMeasure")==="1");
+  const sessionBinding=session.read();
+  let disposed = false;
+  const cleanupStack:Array<()=>void|Promise<void>>=[()=>session.dispose()];
+  const disposeExtension=async()=>{
+    if(disposed)return;disposed=true;const failures:unknown[]=[];
+    for(const cleanup of cleanupStack.reverse())try{await cleanup();}catch(error){failures.push(error);}
+    if(failures.length)throw new Error(`Factory extension cleanup failed: ${failures.map(String).join("; ")}`);
+  };
+  cleanupStack.push(()=>{
+    const owns=(value:string|undefined)=>{if(!value)return false;try{const projection=JSON.parse(value);return projection.sessionId===sessionBinding.sessionId&&projection.epoch===sessionBinding.epoch;}catch{return false;}};
+    if(owns(document.body.dataset.hestiaFactoryClock)||owns(document.body.dataset.hestiaFactoryUi)){
+      delete document.body.dataset.hestiaFactory;delete document.body.dataset.hestiaFactoryClock;
+      delete document.body.dataset.hestiaFactoryConstruction;delete document.body.dataset.hestiaFactoryUi;
+    }
+  });
+  try {
   const panel = document.createElement("section");
+  cleanupStack.push(()=>panel.remove());
   panel.id = "factory-panel"; panel.setAttribute("aria-label", "Workshop");
   const title = document.createElement("strong"); title.textContent = "Build";
   const status = document.createElement("p"); status.id = "factory-status"; status.setAttribute("role", "status");
   const note = document.createElement("p"); note.textContent = "Choose a build preview. Arrow keys move it by 25 cm; R rotates it. Transport heavy chassis first, set them down safely and step outside the machine footprint. Confirming a build uses accessible finite cargo.";
-  let disposed = false;
   let lastBuildProjection="", browseBuild = false;
   const buildDirectory = document.createElement("div"); buildDirectory.className = "factory-build-directory";
   const buildPreview = document.createElement("section"); buildPreview.className = "factory-build-preview";
@@ -57,10 +75,10 @@ const extension: FactoryHostExtension = async host => {
   const choose=async(sourceId:string,centerMm:readonly number[],turns:number)=>{browseBuild=false;try{await host.pause();if(disposed)return;tool?.select({transactionId:`build_${sourceId.toLowerCase().replaceAll(".","_")}_${construction!.read().material.revision}`,instanceId:`facility_${sourceId.toLowerCase().replaceAll(".","_")}_${construction!.read().material.revision}`,definitionSourceId:sourceId,centerMm,quarterTurns:turns});projectGhost();}catch(error){buildStatus.textContent=`Build on hold · ${String(error)}`;}};
   const cutter=button("Preview cutter","factory-build-cutter",()=>{void choose("B06",[-7250,1500,5000],1);});
   const battery=button("Preview battery","factory-build-battery",()=>{void choose("fp02.device.battery_4kwh",[-2250,1500,2500],1);});
-  const distributor=button("Preview distributor","factory-build-distributor",()=>{void choose("fp02.device.distribution_40kw",[-2250,1500,2000],1);});
+  const distributor=button("Preview distributor","factory-build-distributor",()=>{void choose("fp02.device.distribution_40kw",[-4750,1500,5250],1);});
   const former=button("Preview former","factory-build-former",()=>{void choose("B07",[-7250,1500,-2500],1);});
   const rawStorage=button("Preview raw storage","factory-build-raw-storage",()=>{void choose("B09",[-7250,1500,11500],1);});
-  const productStorage=button("Preview product storage","factory-build-product-storage",()=>{void choose("B09",[-6250,1500,-5500],1);});
+  const productStorage=button("Preview product storage","factory-build-product-storage",()=>{void choose("B09",[-7250,1500,-5500],1);});
   const bench=button("Preview workbench","factory-build-bench",()=>{void choose("B05",[-10250,1500,5500],1);});
   const brace=button("Place new brace","factory-build-brace",()=>{void choose("fp02.comp.small_brace",[-8750,1500,5500],1);});
   const rotate=button("Rotate preview","factory-build-rotate",()=>{tool?.rotate();projectGhost();});
@@ -68,6 +86,7 @@ const extension: FactoryHostExtension = async host => {
   const confirm=button("Confirm build","factory-build-confirm",()=>{void (async()=>{const result=await tool?.confirm();projectGhost();if(result?.status!=="Committed")buildStatus.textContent=`Build on hold · ${result?.reason}`;})();});
   const onBuildKey=(event:KeyboardEvent)=>{const target=event.target as HTMLElement|null,surface=host.read().input?.surface;if((surface&&surface!=="build")||(!surface&&session.ui.read().focusedPanel)||target?.closest?.("input,select,textarea,[contenteditable=true]"))return;if(!tool?.read()||construction?.busy)return;if(event.key==="Escape"){event.preventDefault();tool.cancel();}else if(event.key.toLowerCase()==="r"){event.preventDefault();tool.rotate();}else if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(event.key)){event.preventDefault();tool.move(event.key==="ArrowLeft"?-1:event.key==="ArrowRight"?1:0,event.key==="ArrowUp"?-1:event.key==="ArrowDown"?1:0);}else return;projectGhost();};
   document.addEventListener("keydown",onBuildKey);
+  cleanupStack.push(()=>document.removeEventListener("keydown",onBuildKey));
   if(!tool)buildButtons.forEach(value=>{value.disabled=true;});
   const project = (view: FactorySessionView) => {
     if (disposed || !host.current()) return;
@@ -87,6 +106,7 @@ const extension: FactoryHostExtension = async host => {
   // Reuse the admitted canonical pending/receipt/session/focus lifetime for
   // all Entry actions; unknown replies retain the same request until resolved.
   const actions=createFactoryPanel(session.ui,document,"power","Facility connections and local deliveries");
+  cleanupStack.push(()=>actions.dispose());
   const connections=actions.element;connections.id="factory-connections";panel.append(connections);
   const connectionButtons=new Map<string,HTMLButtonElement>();
   actions.start(snapshot=>{
@@ -113,30 +133,40 @@ const extension: FactoryHostExtension = async host => {
       value.textContent=kind==="connect-power"&&"lengthMm" in choice?`Power: ${portLabel(choice.sourcePortId)} → ${portLabel(choice.targetPortId)} · ${choice.lengthMm/1000} m`:kind==="connect-belt"&&"sourcePortId" in choice?`Belt: ${portLabel(choice.sourcePortId)} → ${portLabel(choice.targetPortId)} · 4 m`:`Deposit entire load · ${"target" in choice?targetLabel(choice.target.id):"Storage"}`;
     }
   });
-  let started=false,shellRevision=0,uiView=session.ui.read(),lastShellKey="";
+  let started=Boolean(restore),shellRevision=0,uiView=session.ui.read(),lastShellKey="";
   const shellListeners=new Set<(view:FactoryShellView)=>void>();
   const readShell=():FactoryShellView=>{
     const native=host.read(),input=native.input,facilities=host.handling?.read();
     const hold=uiView.state==="RecoveryHold"||!["Running","Paused"].includes(native.physicsStatus);
     const playing=Boolean(input?.active&&input.pointerLocked&&!input.activationPending&&native.confirmed);
     const available=native.confirmed&&session.isQuiescent()&&!input?.activationPending;
+    const persistence=native.persistence;
+    const saveAvailable=persistence?.saveAvailable===true&&session.canBeginFactoryCheckpoint();
+    const continueAvailable=persistence?.continueAvailable===true&&Boolean(host.continueSession);
+    const saveReason=persistence?.saveAvailable===true?"Pause with neutral input and wait for Factory operations to finish":persistence?.message??"Combined Factory save is not connected yet";
+    const continueReason=persistence?.continueAvailable===true&&!host.continueSession?"Continue is not connected yet":persistence?.message??"No confirmed combined factory save is available yet";
     const cap=(enabled:boolean,reason:string)=>Object.freeze({enabled,reason:enabled?null:reason});
     const veto=facilities?.lastCarrierVeto?.reason??null;
     const reasons:Record<string,string>={CarrierSupport:"Cargo needs full support on level ground",CarrierOverlap:"Obstacle in transport path",CarrierSweep:"Obstacle in transport path",CarrierCoverage:"Transport ground not confirmed yet",CarrierGroundHeight:"Transport needs level ground"};
-    const interaction=uiView.interaction.handling?"WASD: move cargo · Escape: pause · Cargo: set down or deliver locally":uiView.interaction.cargoAccessible?"Wreck cargo accessible · Open cargo":playing?"WASD: walk · B: build · M: map · Escape: pause":"Select Play to capture the mouse and enable movement";
+    const interaction=uiView.interaction.handling?"WASD: move cargo · E: Cargo/transport while playing · I: inventory · Escape: pause · Cargo: set down or deliver locally":uiView.interaction.cargoAccessible?"Wreck cargo accessible · E: Cargo while playing · I: inventory · Open cargo":playing?"WASD: walk · B: build · M: map · E: Cargo when reachable · I: inventory · Escape: pause":"Select Play to capture the mouse and enable movement · I: inventory";
+    const lifecycleStatus=input?.error??(hold?(native.physicsStatus==="SimulationHold"?"Session interrupted. Confirmed work and cargo are retained. Recover, then select Play.":`Session on hold · ${native.physicsStatus}`):input?.pausePending?"Pause confirmation pending":input?.activationPending?"Play confirmation pending":playing?"Playing":native.physicsStatus==="Paused"?"Session paused":"Input blocked · confirming pause");
+    const statusText=persistence&&persistence.state!=="Idle"?`${lifecycleStatus} · ${persistence.message}`:lifecycleStatus;
+    const onboardingStarted=onboardingMeasurement.enabled?performance.now():0;
+    const onboarding=session.readOnboarding(native);
+    if(onboardingMeasurement.enabled)onboardingMeasurement.record("factoryReadOnboarding",onboardingStarted,performance.now()-onboardingStarted,{calls:1});
     return Object.freeze({sessionId:native.sessionId,epoch:native.epoch,publicationRevision:shellRevision,
       phase:!started?"start":hold?"hold":playing?"playing":"paused",
-      statusText:input?.error??(hold?(native.physicsStatus==="SimulationHold"?"Session interrupted. Confirmed work and cargo are retained. Recover, then select Play.":`Session on hold · ${native.physicsStatus}`):input?.pausePending?"Pause confirmation pending":input?.activationPending?"Play confirmation pending":playing?"Playing":native.physicsStatus==="Paused"?"Session paused":"Input blocked · confirming pause"),
-      capabilities:{recoverSimulation:cap(started&&native.simulationRecoveryAvailable===true&&Boolean(host.recoverSimulationHold),"Session must be ready for recovery"),newSession:cap(!started&&available,"Return to the menu before starting a new session"),continue:cap(false,"No confirmed combined factory save is available yet"),play:cap(started&&available&&Boolean(host.play),!started?"Select New game first":"Simulation must be visible, confirmed and available"),pause:cap(started&&!hold&&!input?.pausePending,"Pause is pending or simulation is on hold"),save:cap(false,"Combined factory save is not connected yet"),endSession:cap(Boolean(host.endSession)&&session.canEndSession?.()===true,"Wait for the current operation before leaving"),settings:cap(false,"Settings are not connected yet")},
+      statusText,
+      capabilities:{recoverSimulation:cap(started&&native.simulationRecoveryAvailable===true&&Boolean(host.recoverSimulationHold),"Session must be ready for recovery"),newSession:cap(!started&&available,"Return to the menu before starting a new session"),continue:cap(continueAvailable,continueReason),play:cap(started&&available&&Boolean(host.play),!started?"Select New game first":"Simulation must be visible, confirmed and available"),pause:cap(started&&!hold&&!input?.pausePending,"Pause is pending or simulation is on hold"),save:cap(saveAvailable,saveReason),endSession:cap(Boolean(host.endSession)&&session.canEndSession?.()===true,"Wait for the current operation before leaving"),settings:cap(false,"Settings are not connected yet")},
       hud:{interactionText:interaction,carrierMassMg:uiView.interaction.handling?.massMg??null,blockReason:veto?reasons[veto]??veto:null,warnings:[]},
-      onboarding:session.readOnboarding(native),map:session.readLocalMap(tool?.read()?.request??null)});
+      onboarding,map:session.readLocalMap(tool?.read()?.request??null)});
   };
   refreshShell=()=>{
     if(disposed||!host.current())return;
     const view=readShell(),key=JSON.stringify({...view,publicationRevision:0});if(key===lastShellKey)return;lastShellKey=key;shellRevision++;
     const next=Object.freeze({...view,publicationRevision:shellRevision});for(const listener of shellListeners)listener(next);
   };
-  const shellPort:FactoryShellPort={read:readShell,subscribe:listener=>{shellListeners.add(listener);return()=>shellListeners.delete(listener);},
+  const shellPort:FactoryShellPort={isCurrent:host.current,read:readShell,subscribe:listener=>{shellListeners.add(listener);return()=>shellListeners.delete(listener);},
     setSurface:(surface,binding)=>{if(disposed||!host.current())return;host.setSurface?.(surface,binding);refreshShell();},
     dispatch:async command=>{
       const native=host.read();
@@ -151,32 +181,34 @@ const extension: FactoryHostExtension = async host => {
       else if(command.kind==="play"){const activation=host.play!();refreshShell();await activation;}
       else if(command.kind==="pause")await host.pause();
       else if(command.kind==="newSession"){await host.pause();started=true;}
+      else if(command.kind==="save")await host.save!();
+      else if(command.kind==="continue")host.continueSession!();
       else if(command.kind==="endSession")await host.endSession!();
       else throw Error("Factory lifecycle capability unavailable");
       if(!disposed&&host.current())refreshShell();
     }};
   const shell=mountFactoryShell({port:shellPort,uiPort:session.ui,buildPanel:panel,connectionsPanel:connections,
     cancelBuildPreview:()=>{if(!tool?.read()||construction?.busy)return false;tool.cancel();projectGhost();return true;}});
+  cleanupStack.push(()=>shell.dispose());
   document.querySelector("#app")!.append(shell.element);
   const uiUnsubscribe=session.ui.subscribe(snapshot=>{uiView=snapshot;document.body.dataset.hestiaFactoryUi=JSON.stringify(snapshot);refreshShell();});
+  cleanupStack.push(uiUnsubscribe);
   document.body.dataset.hestiaFactoryUi=JSON.stringify(uiView);
   const unsubscribe = session.subscribe(project);
+  cleanupStack.push(unsubscribe);
   const unsubscribeHost = host.subscribeConfirmed(() => { project(session.read()); });
+  cleanupStack.push(unsubscribeHost);
   project(session.read());
-  return Object.freeze({ isQuiescent: session.isQuiescent, canRecoverSimulationHold:session.canRecoverSimulationHold,recoverSimulationHold:session.recoverSimulationHold, canEndSession: session.canEndSession, readFactoryPresentation:session.readPresentation, dispose: async () => {
-    if (disposed) return;
-    disposed = true;document.removeEventListener("keydown",onBuildKey); unsubscribe(); unsubscribeHost();shell.dispose();shellListeners.clear();
-    actions.dispose();uiUnsubscribe();await session.dispose(); panel.remove();
-    // A stale close may not remove a replacement session's projection.
-    const current = document.body.dataset.hestiaFactoryClock;
-    if (current && JSON.parse(current).epoch === session.read().epoch) {
-      delete document.body.dataset.hestiaFactory; delete document.body.dataset.hestiaFactoryClock;delete document.body.dataset.hestiaFactoryConstruction;delete document.body.dataset.hestiaFactoryUi;
-    }
-  } });
+  cleanupStack.push(()=>shellListeners.clear());
+  return Object.freeze({ isQuiescent: session.isQuiescent,canBeginFactoryCheckpoint:session.canBeginFactoryCheckpoint,beginFactoryCheckpoint:session.beginFactoryCheckpoint,readFactoryCheckpointMemory:session.readFactoryCheckpointMemory, canRecoverSimulationHold:session.canRecoverSimulationHold,recoverSimulationHold:session.recoverSimulationHold, canEndSession: session.canEndSession, readFactoryPresentation:session.readPresentation, dispose: disposeExtension });
+  } catch(error) {
+    try{await disposeExtension();}catch(cleanupError){throw new Error(`Factory extension setup failed: ${String(error)}; cleanup failed: ${String(cleanupError)}`);}
+    throw error;
+  }
 };
 
 /** The real HVP mount guard owns exclusivity; there is no parallel renderer/World. */
-export const startFactoryEntry = (): Promise<HvpBootstrapHandle> => startHvp({ factoryExtension: extension,createSourceSnapshot:materializeFactoryStartSiteV5,factorySourceProfile:{version:"hvp-factory-startsite-v5",readColumn:readFactorySourceColumnWorldV5} });
+export const startFactoryEntry = (): Promise<HvpBootstrapHandle> => startHvp({ factoryExtension: extension,createSourceSnapshot:materializeFactoryStartSiteV6,factorySourceProfile:{version:"hvp-factory-startsite-v6",readColumn:readFactorySourceColumnWorldV6} });
 void startFactoryEntry().catch(error => {
   const status = document.createElement("p"); status.setAttribute("role", "alert");
   status.textContent = `Workshop could not start: ${String(error)}`; document.body.append(status);

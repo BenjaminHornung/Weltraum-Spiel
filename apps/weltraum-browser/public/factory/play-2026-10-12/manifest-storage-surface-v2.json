@@ -1,0 +1,419 @@
+{
+  "schema": "hestia.factory.play-assets/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "assets": [
+    {
+      "family": "storage",
+      "definitionRef": {
+        "sourceId": "B09",
+        "version": 1,
+        "digest": "fnv1a:b4a9402f"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/storage/storage/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/storage/storage/native-source.json",
+        "sha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+        "bytes": 3866
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "body",
+        "support_0",
+        "support_1",
+        "support_2",
+        "support_3"
+      ],
+      "parentPartIds": {
+        "body": null,
+        "support_0": null,
+        "support_1": null,
+        "support_2": null,
+        "support_3": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.0,
+          0.0,
+          -1.0
+        ],
+        "max": [
+          1.0,
+          1.5,
+          1.0
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/storage/storage/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/storage/storage/storage.blend",
+        "sha256": "05ee52ad8c3da3ee77b50de2affd3f1df4991d00b88ee1d32388de5d0d2050ef",
+        "bytes": 587472
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage.hestia-authoring-report.json",
+        "sha256": "b96fedc75ee66af35c707180cf70ab9abb8b2bfe97ffff24470bff0d95b5136a",
+        "bytes": 5708
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "assetId": "play_storage_v2",
+      "slug": "storage-v2",
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-v2.glb",
+        "sha256": "0c8ece323ac5e15d344829043573ef76b7a6bf9d99bc2eb345f9fb49bc6b3836",
+        "bytes": 24168,
+        "url": "/factory/play-2026-10-12/storage-v2.glb"
+      },
+      "sourceRuntimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage.glb",
+        "sha256": "e7ddc40fd2be52f8886b8acd42561fcc5fb403b1630d674bd7be5e28190e1e03",
+        "bytes": 24160
+      },
+      "provenance": {
+        "path": "art/factory/play-storage-surface-v2-2026-10-21/storage-v2.provenance.json",
+        "sha256": "0a5030231b359c02ab8c1dc97d60145becbc1f2cf947a4e6e69dd32bc559450d",
+        "bytes": 5737
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-storage-surface-v2-2026-10-21/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+      "visualRepair": {
+        "version": 1,
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "originalAssetId": "play_storage_v1",
+        "nativeAuthority": "unchanged original B09 source only",
+        "surfaceGapM": 0.0009765625,
+        "positionAccessorAxisMapping": {
+          "X": "Native/runtime X",
+          "Y": "Native/runtime Y",
+          "Z": "Native/runtime Z"
+        },
+        "nativeBodyBoundsM": {
+          "min": [
+            -1.0,
+            0.25,
+            -1.0
+          ],
+          "max": [
+            1.0,
+            1.5,
+            1.0
+          ]
+        },
+        "planes": [
+          {
+            "positionAccessorAxis": "X",
+            "positionPlaneFromM": -1.0,
+            "positionPlaneToM": -0.9990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 30,
+            "changedVertexCount": 24
+          },
+          {
+            "positionAccessorAxis": "X",
+            "positionPlaneFromM": 1.0,
+            "positionPlaneToM": 0.9990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 30,
+            "changedVertexCount": 24
+          },
+          {
+            "positionAccessorAxis": "Y",
+            "positionPlaneFromM": 0.25,
+            "positionPlaneToM": 0.2509765625,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 16,
+            "changedVertexCount": 4
+          },
+          {
+            "positionAccessorAxis": "Y",
+            "positionPlaneFromM": 1.5,
+            "positionPlaneToM": 1.4990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 8,
+            "changedVertexCount": 4
+          },
+          {
+            "positionAccessorAxis": "Z",
+            "positionPlaneFromM": -1.0,
+            "positionPlaneToM": -0.9990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 20,
+            "changedVertexCount": 12
+          },
+          {
+            "positionAccessorAxis": "Z",
+            "positionPlaneFromM": 1.0,
+            "positionPlaneToM": 0.9990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 14,
+            "changedVertexCount": 8
+          }
+        ],
+        "changedCoordinateCountByAxis": {
+          "positionX": 48,
+          "positionY": 8,
+          "positionZ": 20
+        },
+        "changedCoordinateCount": 76,
+        "topology": "same indexed triangles, normals, materials, nodes and Native bindings",
+        "meshCensus": {
+          "vertices": 600,
+          "indices": 900,
+          "primitives": 7
+        },
+        "nativeBoundsM": {
+          "min": [
+            -1.0,
+            0.0,
+            -1.0
+          ],
+          "max": [
+            1.0,
+            1.5,
+            1.0
+          ]
+        }
+      }
+    },
+    {
+      "family": "storage",
+      "definitionRef": {
+        "sourceId": "B09",
+        "version": 1,
+        "digest": "fnv1a:b4a9402f"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+        "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+        "bytes": 14061
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+        "sha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+        "bytes": 3866
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "body",
+        "support_0",
+        "support_1",
+        "support_2",
+        "support_3"
+      ],
+      "parentPartIds": {
+        "body": null,
+        "support_0": null,
+        "support_1": null,
+        "support_2": null,
+        "support_3": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.0,
+          0.0,
+          -1.0
+        ],
+        "max": [
+          1.0,
+          1.5,
+          1.0
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-2026-10-12/storage/storage-open/storage-open.blend",
+        "sha256": "e5ace75bd20e8f3888efeb8708cc6b3c374f610191c205c77c25ce00b9beec4a",
+        "bytes": 587660
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.hestia-authoring-report.json",
+        "sha256": "94ec756ef3773588dd754b0d96e8fd67c7a05c853f989752cc24232ba1ccb649",
+        "bytes": 5729
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "assetId": "play_storage_inspection_open_v2",
+      "slug": "storage-open-v2",
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open-v2.glb",
+        "sha256": "a9704c57ea973c00cde66fc216a4bd9c410bb1dec8804843790b685ff835deed",
+        "bytes": 24388,
+        "url": "/factory/play-2026-10-12/storage-open-v2.glb"
+      },
+      "sourceRuntimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.glb",
+        "sha256": "569557420499f023373f1f5fd7fc1ac0f7d72c9cd89f9b91277c8787dd7054d4",
+        "bytes": 24380
+      },
+      "provenance": {
+        "path": "art/factory/play-storage-surface-v2-2026-10-21/storage-open-v2.provenance.json",
+        "sha256": "70ffab357eb47a04e7263f916bffb7c6691e5d90269f3cbab101085feac6ddb6",
+        "bytes": 5820
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-storage-surface-v2-2026-10-21/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+      "visualRepair": {
+        "version": 1,
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "originalAssetId": "play_storage_inspection_open_v1",
+        "nativeAuthority": "unchanged original B09 source only",
+        "surfaceGapM": 0.0009765625,
+        "positionAccessorAxisMapping": {
+          "X": "Native/runtime X",
+          "Y": "Native/runtime Y",
+          "Z": "Native/runtime Z"
+        },
+        "nativeBodyBoundsM": {
+          "min": [
+            -1.0,
+            0.25,
+            -1.0
+          ],
+          "max": [
+            1.0,
+            1.5,
+            1.0
+          ]
+        },
+        "planes": [
+          {
+            "positionAccessorAxis": "X",
+            "positionPlaneFromM": -1.0,
+            "positionPlaneToM": -0.9990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 30,
+            "changedVertexCount": 24
+          },
+          {
+            "positionAccessorAxis": "X",
+            "positionPlaneFromM": 1.0,
+            "positionPlaneToM": 0.9990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 30,
+            "changedVertexCount": 24
+          },
+          {
+            "positionAccessorAxis": "Y",
+            "positionPlaneFromM": 0.25,
+            "positionPlaneToM": 0.2509765625,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 16,
+            "changedVertexCount": 4
+          },
+          {
+            "positionAccessorAxis": "Y",
+            "positionPlaneFromM": 1.5,
+            "positionPlaneToM": 1.4990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 8,
+            "changedVertexCount": 4
+          },
+          {
+            "positionAccessorAxis": "Z",
+            "positionPlaneFromM": -1.0,
+            "positionPlaneToM": -0.9990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 20,
+            "changedVertexCount": 12
+          },
+          {
+            "positionAccessorAxis": "Z",
+            "positionPlaneFromM": 1.0,
+            "positionPlaneToM": 0.9990234375,
+            "inwardOffsetM": 0.0009765625,
+            "overlappingTrianglePairs": 14,
+            "changedVertexCount": 8
+          }
+        ],
+        "changedCoordinateCountByAxis": {
+          "positionX": 48,
+          "positionY": 8,
+          "positionZ": 20
+        },
+        "changedCoordinateCount": 76,
+        "topology": "same indexed triangles, normals, materials, nodes and Native bindings",
+        "meshCensus": {
+          "vertices": 600,
+          "indices": 900,
+          "primitives": 7
+        },
+        "nativeBoundsM": {
+          "min": [
+            -1.0,
+            0.0,
+            -1.0
+          ],
+          "max": [
+            1.0,
+            1.5,
+            1.0
+          ]
+        }
+      },
+      "visualVariant": {
+        "baseAssetId": "play_storage_v2",
+        "kind": "confirmed-local-inventory-inspection",
+        "pose": "access-open",
+        "requiresConfirmedLocalAccess": true
+      }
+    }
+  ],
+  "palette": {
+    "EX-STRUCT": "30383D",
+    "EX-SHELL": "B6BDB8",
+    "EX-FUNCTION": "407A79",
+    "EX-HAZARD": "D8A94E",
+    "EX-PV": "1D2E3C"
+  },
+  "authority": "derived B09 render meshes only; original Native source, collision, custody and save authority remain unchanged",
+  "knownGaps": [
+    "runtime adoption and actual rendered B09 inspection remain Integrator scope"
+  ]
+}

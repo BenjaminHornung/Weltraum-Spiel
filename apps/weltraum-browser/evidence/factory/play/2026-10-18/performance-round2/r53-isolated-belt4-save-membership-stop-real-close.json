@@ -1,0 +1,2651 @@
+{
+  "state": {
+    "at": 10137.400000000373,
+    "tick": 98,
+    "status": "RecoveryHold",
+    "player": {
+      "x": -6.200002670288086,
+      "y": 2.4000000953674316,
+      "z": 10.474994659423828
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 9,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 129,
+      "lastAckId": 129,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "camera": {
+      "position": [
+        -6.200002705481825,
+        3.1501191881924533,
+        10.592981568795956
+      ],
+      "orientation": [
+        0,
+        1,
+        0,
+        6.123233995736766e-17
+      ],
+      "visualBody": [
+        -6.200002705481825,
+        2.4001191881924533,
+        10.592981568795956
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "clock": {
+      "maxTimerGapMs": 18.40000000037253,
+      "maxAdvanceMs": 10.5,
+      "maxHandlerMs": 898.1999999992549,
+      "lastCommand": "FactoryCheckpoint",
+      "lastHandlerMs": 1.200000001117587,
+      "delayedCallbacks": [],
+      "timers": 1,
+      "readWindow": {
+        "count": 0,
+        "buildMs": 0,
+        "postMs": 0,
+        "carrierBindingChars": 0,
+        "ownerBindingChars": 0,
+        "firstReadId": null,
+        "lastReadId": null,
+        "firstTick": null,
+        "lastTick": null,
+        "priorAdvanceMs": null
+      },
+      "lastReadPost": {
+        "readId": 134,
+        "tick": 98,
+        "postMs": 0.19999999925494194,
+        "reportedByReplyId": 135
+      }
+    },
+    "carrier": {
+      "phase": "Carrying",
+      "profileId": "BELT4",
+      "massKg": 25.999998092651367,
+      "positionMm": [
+        -6200.002670288086,
+        1500,
+        9474.994659423828
+      ]
+    },
+    "facilityState": "RecoveryHold",
+    "facilityCount": 0,
+    "massMg": 2984400000,
+    "factorySteps": 16,
+    "hostConfirmed": false,
+    "receipt": {
+      "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+      "status": "Committed",
+      "reason": null
+    },
+    "persistence": {
+      "state": "RecoveryHold",
+      "message": "Error: RecoveryHold: Factory checkpoint could not prove Native state: Error: FactoryFacilityRecoveryHold:MembershipNotProven",
+      "revision": null,
+      "saveAvailable": false,
+      "continueAvailable": false
+    },
+    "power": {
+      "allocationConfirmed": true,
+      "devices": [],
+      "status": "UNCONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 0,
+      "batteryEnergyJ": null,
+      "batteryCapacityJ": null,
+      "reserveEnergyJ": null,
+      "sourceQuality": "unsupported",
+      "consumers": []
+    },
+    "testBridge": false
+  },
+  "slot": null,
+  "slotError": "Error: page.evaluate: Error: Expected existing combined Save\n    at eval (eval at evaluate (:311:30), <anonymous>:4:59)\n    at async <anonymous>:337:30",
+  "facts": {
+    "state": "RecoveryHold",
+    "carrier": {
+      "profileId": "BELT4",
+      "positionMm": [
+        -6200.002670288086,
+        1500,
+        9474.994659423828
+      ],
+      "bodyHandle": 2.5e-323,
+      "colliderHandles": [
+        4e-322,
+        4.05e-322,
+        4.1e-322,
+        4.15e-322,
+        4.2e-322
+      ]
+    }
+  },
+  "events": [
+    {
+      "kind": "play",
+      "state": {
+        "at": 7456.0999999996275,
+        "tick": 0,
+        "status": "Running",
+        "player": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 21,
+          "lastAckId": 21,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -5.5,
+            3.1700000762939453,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.5,
+            2.4200000762939453,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 0.10000000149011612,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Play",
+          "lastHandlerMs": 0.10000000149011612,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.19999999925494194,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": 20,
+            "lastReadId": 20,
+            "firstTick": 0,
+            "lastTick": 0,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 20,
+            "tick": 0,
+            "postMs": 0,
+            "reportedByReplyId": 22
+          }
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 0,
+        "hostConfirmed": true,
+        "receipt": null,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": false,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "d",
+      "milliseconds": 100,
+      "before": {
+        "tick": 0,
+        "player": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        }
+      },
+      "state": {
+        "at": 7610.700000001118,
+        "tick": 9,
+        "status": "Running",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.400042772293091,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 28,
+          "lastAckId": 28,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -5.763424803635538,
+            3.151077591424863,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.763424803635538,
+            2.401077591424863,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.19999999925494194,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": 29,
+            "lastReadId": 29,
+            "firstTick": 9,
+            "lastTick": 9,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 27,
+            "tick": 7,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 29
+          }
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 1,
+        "hostConfirmed": true,
+        "receipt": null,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -5.9,
+      "state": {
+        "at": 7613.300000000745,
+        "tick": 9,
+        "status": "Running",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.400042772293091,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 28,
+          "lastAckId": 28,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -5.763424803635538,
+            3.151077591424863,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.763424803635538,
+            2.401077591424863,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.19999999925494194,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": 29,
+            "lastReadId": 29,
+            "firstTick": 9,
+            "lastTick": 9,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 27,
+            "tick": 7,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 29
+          }
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 1,
+        "hostConfirmed": true,
+        "receipt": null,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "w",
+      "milliseconds": 63,
+      "before": {
+        "tick": 9,
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.400042772293091,
+          "z": 11.875
+        }
+      },
+      "state": {
+        "at": 7742.300000000745,
+        "tick": 16,
+        "status": "Running",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.02500057220459
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 34,
+          "lastAckId": 34,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -5.845141382080771,
+            3.1500917919337423,
+            11.983130475312407
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.845141382080771,
+            2.4000917919337423,
+            11.983130475312407
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999925494194,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": 35,
+            "lastReadId": 35,
+            "firstTick": 16,
+            "lastTick": 16,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 33,
+            "tick": 14,
+            "postMs": 0.10000000149011612,
+            "reportedByReplyId": 35
+          }
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 2,
+        "hostConfirmed": true,
+        "receipt": null,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "w",
+      "milliseconds": 31,
+      "before": {
+        "tick": 16,
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.02500057220459
+        }
+      },
+      "state": {
+        "at": 7836.5999999996275,
+        "tick": 22,
+        "status": "Running",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 39,
+          "lastAckId": 39,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -5.849444584539255,
+            3.150039310384698,
+            12.083966081084526
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849444584539255,
+            2.400039310384698,
+            12.083966081084526
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999925494194,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": 40,
+            "lastReadId": 40,
+            "firstTick": 22,
+            "lastTick": 22,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 38,
+            "tick": 20,
+            "postMs": 0,
+            "reportedByReplyId": 40
+          }
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 3,
+        "hostConfirmed": true,
+        "receipt": null,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "z",
+      "target": 12.125,
+      "state": {
+        "at": 7840.200000001118,
+        "tick": 22,
+        "status": "Running",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 39,
+          "lastAckId": 39,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -5.849444584539255,
+            3.150039310384698,
+            12.083966081084526
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849444584539255,
+            2.400039310384698,
+            12.083966081084526
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999925494194,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": 40,
+            "lastReadId": 40,
+            "firstTick": 22,
+            "lastTick": 22,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 38,
+            "tick": 20,
+            "postMs": 0,
+            "reportedByReplyId": 40
+          }
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 3,
+        "hostConfirmed": true,
+        "receipt": null,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pause",
+      "state": {
+        "at": 7898.0999999996275,
+        "tick": 25,
+        "status": "Paused",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 5,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 47,
+          "lastAckId": 47,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -5.849444584539255,
+            3.150039310384698,
+            12.083966081084526
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849444584539255,
+            2.400039310384698,
+            12.083966081084526
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000149011612,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.10000000149011612,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": 49,
+            "lastReadId": 49,
+            "firstTick": 25,
+            "lastTick": 25,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 41,
+            "tick": 24,
+            "postMs": 0,
+            "reportedByReplyId": 49
+          }
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 4,
+        "hostConfirmed": true,
+        "receipt": null,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": true,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "panel",
+      "name": "Cargo",
+      "state": {
+        "at": 8092.0999999996275,
+        "tick": 25,
+        "status": "Paused",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 5,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 47,
+          "lastAckId": 47,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -5.849444584539255,
+            3.150039310384698,
+            12.083966081084526
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849444584539255,
+            2.400039310384698,
+            12.083966081084526
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999925494194,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.19999999925494194,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": 55,
+            "lastReadId": 55,
+            "firstTick": 25,
+            "lastTick": 25,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 54,
+            "tick": 25,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 55
+          }
+        },
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 4,
+        "hostConfirmed": true,
+        "receipt": null,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": true,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pickup",
+      "name": "Belt line · 4 m",
+      "state": {
+        "at": 8549.200000001118,
+        "tick": 25,
+        "status": "Paused",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 67,
+          "lastAckId": 67,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -5.849444584539255,
+            3.150039310384698,
+            12.083966081084526
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849444584539255,
+            2.400039310384698,
+            12.083966081084526
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "FinalizeFactoryCarrier",
+          "lastHandlerMs": 2,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 0,
+            "buildMs": 0,
+            "postMs": 0,
+            "carrierBindingChars": 0,
+            "ownerBindingChars": 0,
+            "firstReadId": null,
+            "lastReadId": null,
+            "firstTick": null,
+            "lastTick": null,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 69,
+            "tick": 25,
+            "postMs": 0,
+            "reportedByReplyId": 72
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -5850.001335144043,
+            1500,
+            11125.000953674316
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 4,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": true,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 8751.400000000373,
+        "tick": 25,
+        "status": "Running",
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 79,
+          "lastAckId": 79,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -5.850001335144043,
+            3.1500325202941895,
+            12.125000953674316
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.850001335144043,
+            2.4000325202941895,
+            12.125000953674316
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Play",
+          "lastHandlerMs": 0.2000000011175871,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0.09999999962747097,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 78,
+            "lastReadId": 78,
+            "firstTick": 25,
+            "lastTick": 25,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 78,
+            "tick": 25,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 80
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -5850.001335144043,
+            1500,
+            11125.000953674316
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 4,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "d",
+      "milliseconds": 100,
+      "before": {
+        "tick": 25,
+        "player": {
+          "x": -5.850001335144043,
+          "y": 2.4000325202941895,
+          "z": 12.125000953674316
+        }
+      },
+      "state": {
+        "at": 8916.599999999627,
+        "tick": 32,
+        "status": "Running",
+        "player": {
+          "x": -6.100002288818359,
+          "y": 2.4000401496887207,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 86,
+          "lastAckId": 86,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -6.021790115140543,
+            3.150044281160908,
+            12.125000953674316
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.021790115140543,
+            2.400044281160908,
+            12.125000953674316
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.2000000011175871,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 85,
+            "lastReadId": 85,
+            "firstTick": 32,
+            "lastTick": 32,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 84,
+            "tick": 30,
+            "postMs": 0.19999999925494194,
+            "reportedByReplyId": 85
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6100.002288818359,
+            1500,
+            11125.000953674316
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 5,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "d",
+      "milliseconds": 45,
+      "before": {
+        "tick": 32,
+        "player": {
+          "x": -6.100002288818359,
+          "y": 2.4000401496887207,
+          "z": 12.125000953674316
+        }
+      },
+      "state": {
+        "at": 9045.300000000745,
+        "tick": 39,
+        "status": "Running",
+        "player": {
+          "x": -6.350003242492676,
+          "y": 2.4000022411346436,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 91,
+          "lastAckId": 91,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -6.285766507362842,
+            3.1500197907671255,
+            12.125000953674316
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.285766507362842,
+            2.4000197907671255,
+            12.125000953674316
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.2999999988824129,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.19999999925494194,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 90,
+            "lastReadId": 90,
+            "firstTick": 39,
+            "lastTick": 39,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 89,
+            "tick": 37,
+            "postMs": 0.10000000149011612,
+            "reportedByReplyId": 90
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6350.003242492676,
+            1500.0001192092896,
+            11125.000953674316
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 6,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "a",
+      "milliseconds": 14,
+      "before": {
+        "tick": 39,
+        "player": {
+          "x": -6.350003242492676,
+          "y": 2.4000022411346436,
+          "z": 12.125000953674316
+        }
+      },
+      "state": {
+        "at": 9136.900000000373,
+        "tick": 45,
+        "status": "Running",
+        "player": {
+          "x": -6.450003623962402,
+          "y": 2.4000000953674316,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 95,
+          "lastAckId": 95,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -6.4309785905309775,
+            3.150002376859249,
+            12.125000953674316
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.4309785905309775,
+            2.400002376859249,
+            12.125000953674316
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999925494194,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 94,
+            "lastReadId": 94,
+            "firstTick": 45,
+            "lastTick": 45,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 92,
+            "tick": 43,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 94
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6450.003623962402,
+            1500,
+            11125.000953674316
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 7,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "a",
+      "milliseconds": 21,
+      "before": {
+        "tick": 45,
+        "player": {
+          "x": -6.450003623962402,
+          "y": 2.4000000953674316,
+          "z": 12.125000953674316
+        }
+      },
+      "state": {
+        "at": 9238.599999999627,
+        "tick": 51,
+        "status": "Running",
+        "player": {
+          "x": -6.3000030517578125,
+          "y": 2.4000000953674316,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 99,
+          "lastAckId": 99,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -6.333522038769004,
+            3.150000355573452,
+            12.125000953674316
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.333522038769004,
+            2.400000355573452,
+            12.125000953674316
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000000074505806,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 98,
+            "lastReadId": 98,
+            "firstTick": 51,
+            "lastTick": 51,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 96,
+            "tick": 49,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 98
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6300.0030517578125,
+            1500,
+            11125.000953674316
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 8,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -6.25,
+      "state": {
+        "at": 9241.599999999627,
+        "tick": 51,
+        "status": "Running",
+        "player": {
+          "x": -6.3000030517578125,
+          "y": 2.4000000953674316,
+          "z": 12.125000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 99,
+          "lastAckId": 99,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -6.333522038769004,
+            3.150000355573452,
+            12.125000953674316
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.333522038769004,
+            2.400000355573452,
+            12.125000953674316
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000000074505806,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 98,
+            "lastReadId": 98,
+            "firstTick": 51,
+            "lastTick": 51,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 96,
+            "tick": 49,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 98
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6300.0030517578125,
+            1500,
+            11125.000953674316
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 8,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "s",
+      "milliseconds": 406,
+      "before": {
+        "tick": 51,
+        "player": {
+          "x": -6.3000030517578125,
+          "y": 2.4000000953674316,
+          "z": 12.125000953674316
+        }
+      },
+      "state": {
+        "at": 9729.200000001118,
+        "tick": 80,
+        "status": "Running",
+        "player": {
+          "x": -6.200002670288086,
+          "y": 2.400186777114868,
+          "z": 10.924996376037598
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 115,
+          "lastAckId": 115,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -6.200005387970888,
+            3.1501165619951013,
+            10.990382608539775
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.200005387970888,
+            2.4001165619951013,
+            10.990382608539775
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.2999999988824129,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.19999999925494194,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 114,
+            "lastReadId": 114,
+            "firstTick": 80,
+            "lastTick": 80,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 113,
+            "tick": 78,
+            "postMs": 0,
+            "reportedByReplyId": 114
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6200.002670288086,
+            1499.9998807907104,
+            9924.996376037598
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 13,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "key",
+      "key": "s",
+      "milliseconds": 108,
+      "before": {
+        "tick": 80,
+        "player": {
+          "x": -6.200002670288086,
+          "y": 2.400186777114868,
+          "z": 10.924996376037598
+        }
+      },
+      "state": {
+        "at": 9923.200000001118,
+        "tick": 92,
+        "status": "Running",
+        "player": {
+          "x": -6.200002670288086,
+          "y": 2.400042772293091,
+          "z": 10.524994850158691
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 122,
+          "lastAckId": 122,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -6.200002705481825,
+            3.1501191881924533,
+            10.592981568795956
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.200002705481825,
+            2.4001191881924533,
+            10.592981568795956
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.2000000011175871,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.10000000149011612,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 121,
+            "lastReadId": 121,
+            "firstTick": 92,
+            "lastTick": 92,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 120,
+            "tick": 90,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 121
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6200.002670288086,
+            1500,
+            9524.994850158691
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 15,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "z",
+      "target": 10.5,
+      "state": {
+        "at": 9932.700000001118,
+        "tick": 92,
+        "status": "Running",
+        "player": {
+          "x": -6.200002670288086,
+          "y": 2.400042772293091,
+          "z": 10.524994850158691
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 6,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 122,
+          "lastAckId": 122,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "camera": {
+          "position": [
+            -6.200002705481825,
+            3.1501191881924533,
+            10.592981568795956
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.200002705481825,
+            2.4001191881924533,
+            10.592981568795956
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.2000000011175871,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.10000000149011612,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 121,
+            "lastReadId": 121,
+            "firstTick": 92,
+            "lastTick": 92,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 120,
+            "tick": 90,
+            "postMs": 0.09999999962747097,
+            "reportedByReplyId": 121
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6200.002670288086,
+            1500,
+            9524.994850158691
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 15,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": false,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pause",
+      "state": {
+        "at": 10013.700000001118,
+        "tick": 98,
+        "status": "Paused",
+        "player": {
+          "x": -6.200002670288086,
+          "y": 2.4000000953674316,
+          "z": 10.474994659423828
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 9,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 129,
+          "lastAckId": 129,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -6.200002705481825,
+            3.1501191881924533,
+            10.592981568795956
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.200002705481825,
+            2.4001191881924533,
+            10.592981568795956
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999962747097,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 131,
+            "lastReadId": 131,
+            "firstTick": 98,
+            "lastTick": 98,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 123,
+            "tick": 96,
+            "postMs": 0,
+            "reportedByReplyId": 131
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6200.002670288086,
+            1500,
+            9474.994659423828
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 16,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": true,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "isolated-clear-ground-belt4-save-before",
+      "state": {
+        "at": 10016.200000001118,
+        "tick": 98,
+        "status": "Paused",
+        "player": {
+          "x": -6.200002670288086,
+          "y": 2.4000000953674316,
+          "z": 10.474994659423828
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 9,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 129,
+          "lastAckId": 129,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "camera": {
+          "position": [
+            -6.200002705481825,
+            3.1501191881924533,
+            10.592981568795956
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.200002705481825,
+            2.4001191881924533,
+            10.592981568795956
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.40000000037253,
+          "maxAdvanceMs": 10.5,
+          "maxHandlerMs": 898.1999999992549,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999962747097,
+          "delayedCallbacks": [],
+          "timers": 1,
+          "readWindow": {
+            "count": 1,
+            "buildMs": 0.09999999962747097,
+            "postMs": 0,
+            "carrierBindingChars": 103249,
+            "ownerBindingChars": 0,
+            "firstReadId": 131,
+            "lastReadId": 131,
+            "firstTick": 98,
+            "lastTick": 98,
+            "priorAdvanceMs": null
+          },
+          "lastReadPost": {
+            "readId": 123,
+            "tick": 96,
+            "postMs": 0,
+            "reportedByReplyId": 131
+          }
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "profileId": "BELT4",
+          "massKg": 25.999998092651367,
+          "positionMm": [
+            -6200.002670288086,
+            1500,
+            9474.994659423828
+          ]
+        },
+        "facilityState": "Idle",
+        "facilityCount": 0,
+        "massMg": 2984400000,
+        "factorySteps": 16,
+        "hostConfirmed": true,
+        "receipt": {
+          "commandId": "ui_cargo_f1ba9465709e4b9d81c12d9f6a4e7df1",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": true,
+          "continueAvailable": false
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [],
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "testBridge": false
+      }
+    }
+  ],
+  "errors": [],
+  "admission": [
+    {
+      "name": "hvp.factoryStageAdmission",
+      "startTime": 8480.400000000373,
+      "duration": 0,
+      "detail": {
+        "sampleId": "factoryStageAdmission:567",
+        "data": {
+          "R": 91327418,
+          "T": 1635290,
+          "U": 72896,
+          "K": 1229988,
+          "D": null,
+          "P": null,
+          "oldBound": 16777216,
+          "totalBytes": 194928888,
+          "nativeReserveBytes": 100663296,
+          "cacheBreakdown": {
+            "cachedDomainCanonicalDescendantsBytes": 348,
+            "dryFactoryStateBytes": 0,
+            "dryFactoryStateBytesMatchesLastStepNextState": false,
+            "currentExactMaterialBindingsBytes": 201788,
+            "currentProductionMaterialBytes": 476380,
+            "beltMaterialFragmentBytes": 1024,
+            "catalogTreeBytes": 550448,
+            "goalProjectionMemoBytes": 0,
+            "initialMaterial": {
+              "included": false,
+              "checkpointDtoBytes": 0,
+              "exactMaterialBindingsBytes": 0,
+              "productionMaterialBytes": 0
+            }
+          },
+          "profileCacheReserveBytes": 524288,
+          "frameProjectionReferenceReserveBytes": 1024
+        }
+      }
+    },
+    {
+      "name": "hvp.factorySaveAdmission",
+      "startTime": 10082.200000001118,
+      "duration": 0,
+      "detail": {
+        "sampleId": "factorySaveAdmission:1060",
+        "data": {
+          "phase": "early",
+          "R": 90944792,
+          "T": 1656446,
+          "U": 75104,
+          "K": 2190130,
+          "D": null,
+          "P": null,
+          "oldBound": 16777216,
+          "totalBytes": 196055496,
+          "nativeReserveBytes": 100663296,
+          "profileCacheReserveBytes": 524288,
+          "frameProjectionReferenceReserveBytes": 1024
+        }
+      }
+    }
+  ],
+  "screenshot": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-18/performance-round2/r53-isolated-belt4-save-membership-stop.png",
+  "closeProof": {
+    "disconnected": true,
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-Final-NewGame-20261019-R53"
+  },
+  "video": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\acceptance-r53-final-fresh16-newgame-video\\page@aec8d415cff47651efda07c9de7387e1.webm",
+  "schema": "hestia.fp06.r53-isolated-belt4-save-membership-stop/v1",
+  "createdAtUtc": "2026-10-19T08:40:33.066Z",
+  "claim": "Actual negative Save reproduction without installed owners or preceding carrier veto; early196055496B; no slot written; oldSafe25separateprofileuntouched; realclose/noResume."
+}

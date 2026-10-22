@@ -1,0 +1,13 @@
+Read-only final FP06 five-visual-repair review. Reuse this existing Pi session and configured opencode-go/deepseek-v4.1-flash. Do not create agents or delegate. Human authorized affected FP06 sources and local measurements for this review; no credentials.
+
+Scope: Candidate E:/DEV/Weltraum-Spiel/FP06-Candidate. All five source changes are implemented. Distributor/Power actually rendered in partial R02; final integrated actual acceptance still pending. Saves/colliders/domain/security caps/old Goldens are unchanged. Performance diagnostic window is closed. Do not execute tests/builds/browser/profilers. Parent owns all execution and acceptance.
+
+Review only the final presentation integration in apps/weltraum-browser/src/hestia-prototype/bootstrap.ts, SHA256 126EBAA820D8DB09E691A0ABDE718EB377588B40BA00B78DE0B0DB69BF35F945, using factoryMaterialProjection.ts and batchPlayParts.ts only as needed. Bootstrap already has independent Codex lifecycle/geometry SOURCE PASS and TypeScript PASS. Your earlier readability and batch component review was adjudicated; do not repeat hypothetical negative scale/normal concerns already rejected and normalized in the source.
+
+Question: does lazy material/B09 projection use only fresh confirmed committed domain and Native proof, release old/pending scenes and charge all retained/staging resources safely? In particular inspect pending key/view lifetime, family-specific cable/lot/packet reuse, packet transforms from authoritative position, closed/open B09 mutual exclusion and stale/failure cleanup. Report only concrete remaining defects with source line and real failure sequence, or SOURCE PASS with two concise reasons. Do not replan, add features, change saved formats/caps or demand sealed CLI/performance runs. This is a visual-only patch. Actual screenshots/normal16kg/real-browser-restart are separately required by Parent.
+
+Read mandatory ADHD and Ponytail skills if needed. This is analysis only. Do NOT edit, create, or delete any files. Do NOT write code. Stop after one bounded review (maximum 8 minutes).
+
+Final response MUST contain exactly one final marker pair, FP06_FINAL_BOOTSTRAP_REVIEW_BEGIN and FP06_FINAL_BOOTSTRAP_REVIEW_END, enclosing the concise verdict/findings. Do not print private reasoning or source dumps.
+
+Post-review erratum: the sent prompt above had a stale path. The advisor found the exact hash at apps/weltraum-browser/src/hvp/hvpBootstrap.ts and explicitly reported that correction. The sent wording is retained; no wrong-path file was created.

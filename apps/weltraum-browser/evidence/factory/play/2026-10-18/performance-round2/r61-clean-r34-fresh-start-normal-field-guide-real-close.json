@@ -1,0 +1,440 @@
+{
+  "run": "R61",
+  "clean": "FP06-Clean-Acceptance-2026-10-19-r34",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "profile": "E:/DEV/Weltraum-Spiel/FP06-Final-NewGame-20261019-R61",
+  "fresh": {
+    "initial": {
+      "body": "HESTIA\nEXPEDITION · CRASH SITE\n\nThe ship is grounded. Its cargo will supply your first workshop.\n\nNew game\nContinue\nNo Factory checkpoint saved; Save checks memory before writing\nSettings\nNot available here yet\nField guide\nFactory prototype · First structural brace\nSession paused",
+      "continueEnabled": false
+    },
+    "fresh": {
+      "at": 7372.5,
+      "tick": 0,
+      "status": "Paused",
+      "player": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": null,
+      "clock": {
+        "maxTimerGapMs": 18.099999997764826,
+        "maxAdvanceMs": 0.10000000149011612,
+        "maxHandlerMs": 898,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000022351742,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 0,
+      "hostConfirmed": true,
+      "receipt": null,
+      "persistence": {
+        "state": "Idle",
+        "message": "No Factory checkpoint saved; Save checks memory before writing",
+        "revision": null,
+        "saveAvailable": true,
+        "continueAvailable": false
+      },
+      "power": {
+        "allocationConfirmed": false,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    },
+    "movement": {
+      "at": 7985.699999999255,
+      "tick": 24,
+      "status": "Running",
+      "player": {
+        "x": -5.5,
+        "y": 2.400001049041748,
+        "z": 10.974996566772461
+      },
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 2,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 32,
+        "lastAckId": 32,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "camera": {
+        "position": [
+          -5.5,
+          3.1500054334487775,
+          10.99604637146805
+        ],
+        "orientation": [
+          0,
+          1,
+          0,
+          6.123233995736766e-17
+        ],
+        "visualBody": [
+          -5.5,
+          2.4000054334487775,
+          10.99604637146805
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "clock": {
+        "maxTimerGapMs": 18.600000001490116,
+        "maxAdvanceMs": 11.699999999254942,
+        "maxHandlerMs": 898,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.30000000074505806,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 4,
+      "hostConfirmed": true,
+      "receipt": null,
+      "persistence": {
+        "state": "Idle",
+        "message": "No Factory checkpoint saved; Save checks memory before writing",
+        "revision": null,
+        "saveAvailable": false,
+        "continueAvailable": false
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    },
+    "cargo": {
+      "at": 8236.39999999851,
+      "tick": 28,
+      "status": "Paused",
+      "player": {
+        "x": -5.5,
+        "y": 2.400001049041748,
+        "z": 10.974996566772461
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 5,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 42,
+        "lastAckId": 42,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": {
+        "position": [
+          -5.5,
+          3.1500054334487775,
+          10.99604637146805
+        ],
+        "orientation": [
+          0,
+          1,
+          0,
+          6.123233995736766e-17
+        ],
+        "visualBody": [
+          -5.5,
+          2.4000054334487775,
+          10.99604637146805
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "clock": {
+        "maxTimerGapMs": 18.600000001490116,
+        "maxAdvanceMs": 11.699999999254942,
+        "maxHandlerMs": 898,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999925494194,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 4,
+      "hostConfirmed": true,
+      "receipt": null,
+      "persistence": {
+        "state": "Idle",
+        "message": "No Factory checkpoint saved; Save checks memory before writing",
+        "revision": null,
+        "saveAvailable": true,
+        "continueAvailable": false
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    },
+    "body": "Goal\nOpen wreck cargo\nN\n20.3 m area\n\nB Build · M Map · Esc Menu\n\nCargo & transport\nViews\nClose\nOpen cargo\n\nWreck cargo 1 · 2984.4 kg out of reach\n\nFormer kit\n341 kg\nCutter kit\n208 kg\nBattery\n50 kg\nCable pack · 40 m\n10 kg\nFormer kit\n\n341 kg · Wreck cargo 1\n\nPick up: Former kit\nMore transport packages\nView materials\nSession paused"
+  },
+  "guide": {
+    "opened": {
+      "at": 35625.300000000745,
+      "tick": 28,
+      "status": "Paused",
+      "player": {
+        "x": -5.5,
+        "y": 2.400001049041748,
+        "z": 10.974996566772461
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 5,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 42,
+        "lastAckId": 42,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": {
+        "position": [
+          -5.5,
+          3.1500054334487775,
+          10.99604637146805
+        ],
+        "orientation": [
+          0,
+          1,
+          0,
+          6.123233995736766e-17
+        ],
+        "visualBody": [
+          -5.5,
+          2.4000054334487775,
+          10.99604637146805
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "clock": {
+        "maxTimerGapMs": 18.600000001490116,
+        "maxAdvanceMs": 11.699999999254942,
+        "maxHandlerMs": 898,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000298023224,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 4,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_082e78b28b6d4ac68998a8dfeecb666d",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Idle",
+        "message": "No Factory checkpoint saved; Save checks memory before writing",
+        "revision": null,
+        "saveAvailable": true,
+        "continueAvailable": false
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    },
+    "body": "Goal\nBuild a cutter and former\nN\n20.3 m area\n\nB Build · M Map · Esc Menu\n\nField guide\nClose\nNext action\n\nMove heavy chassis first. Build the distributor before the Cutter–Former belt. Keep the load and yourself clear of the build area.\n\nMovement\n\nWASD to walk · Shift to sprint · Space to jump · V to change view. Play enables mouse look.\n\nWorkshop\n\nB opens Build; M opens the local map. Escape closes a view, otherwise cancels the build preview or pauses. Tab moves focus between controls.\n\nBuild preview: arrows move by 25 cm; R rotates by 90°. Confirm charges an admitted build. Cancel retains all material.\n\nTransport heavy chassis first. Set them down safely, step outside the machine footprint, then build.\n\nPause and focus\n\nClosing a view does not resume play. Select Play after an interruption; held movement keys are cleared.\n\nF pushes an existing detached body; 1/2/3 select tools. Q/E move the inspection camera. E is not an extra interaction key.\n\nFactory prototype: the ship remains permanently grounded. Global exploration and cities are outside this workshop.\nSession paused",
+    "metadata": {
+      "source": "hvp-factory-startsite-v5",
+      "seed": "hestia-factory-layout-a-001",
+      "testBridge": false
+    },
+    "box": {
+      "x": 699,
+      "y": 182.796875,
+      "width": 542,
+      "height": 44.78125
+    },
+    "screenshot": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-18/performance-round2/r61-fresh-normal-field-guide-build-order.png",
+    "expected": "Move heavy chassis first. Build the distributor before the Cutter–Former belt. Keep the load and yourself clear of the build area.",
+    "initialOpenCargoEnabled": true
+  },
+  "pageErrors": [],
+  "networkErrors": [],
+  "events": [
+    {
+      "kind": "R61-fresh-NewGame",
+      "tick": 0,
+      "status": "Paused",
+      "owners": 0,
+      "massMg": 2984400000
+    },
+    {
+      "kind": "play",
+      "tick": 0,
+      "status": "Running",
+      "owners": 0,
+      "massMg": 2984400000
+    },
+    {
+      "kind": "key",
+      "tick": 20,
+      "status": "Running",
+      "owners": 0,
+      "massMg": 2984400000
+    },
+    {
+      "kind": "settled-neutral-key",
+      "tick": 24,
+      "status": "Running",
+      "owners": 0,
+      "massMg": 2984400000
+    },
+    {
+      "kind": "pause",
+      "tick": 28,
+      "status": "Paused",
+      "owners": 0,
+      "massMg": 2984400000
+    },
+    {
+      "kind": "pause",
+      "tick": 28,
+      "status": "Paused",
+      "owners": 0,
+      "massMg": 2984400000
+    },
+    {
+      "kind": "panel",
+      "tick": 28,
+      "status": "Paused",
+      "owners": 0,
+      "massMg": 2984400000
+    },
+    {
+      "kind": "R61-normal-Open-Cargo",
+      "tick": 28,
+      "status": "Paused",
+      "owners": 0,
+      "massMg": 2984400000
+    },
+    {
+      "kind": "R61-open-finite-wreck-cargo",
+      "tick": 28,
+      "status": "Paused",
+      "owners": 0,
+      "massMg": 2984400000
+    }
+  ],
+  "outcome": "Genuinely empty profile NewGame/explicitPlay/ordinary movement/OpenCargo/FieldGuide; one Machines build-order hint visibly readable; actual FactoryV5 source/seed metadata; no TestBridge.",
+  "closed": {
+    "disconnected": true,
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-Final-NewGame-20261019-R61"
+  },
+  "video": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\acceptance-r61-final-newgame-field-guide-video\\page@daa923a46352045e2cfec5988410157f.webm"
+}

@@ -1,0 +1,9 @@
+{
+  "hypothesis": "view.camera.quaternion.w original player double instead of cold Float32",
+  "before": 6.123234262925839e-17,
+  "candidate": 6.123233995736766e-17,
+  "candidateHash": "1dd11290805d214911687bff5438d14f27f77010c2a52d17f148e507b03ee103",
+  "oldHash": "1dd11290805d214911687bff5438d14f27f77010c2a52d17f148e507b03ee103",
+  "match": true,
+  "readOnly": true
+}

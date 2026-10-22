@@ -1,0 +1,109 @@
+{
+  "schema": "hestia.fp06.delivery-acceptance/v1",
+  "createdAtUtc": "2026-10-19 10:59:14 UTC",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "branch": "feature/hestia-fp06-review-continuation-2026-10-15",
+  "candidate": "E:/DEV/Weltraum-Spiel/FP06-Candidate",
+  "delivery": "E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-19-v3",
+  "acceptance": "FUNCTIONAL PASS; performance full target remains MISS",
+  "sourceIdentity": {
+    "sourceManifestFiles": 878,
+    "acceptedProductFiles": 859,
+    "builtFiles": 201,
+    "allHashesExact": true,
+    "accepted": "E:/DEV/Weltraum-Spiel/FP06-Clean-Acceptance-2026-10-19-r35",
+    "ready": "E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-19-v3",
+    "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e"
+  },
+  "server": {
+    "session": 73089,
+    "copy": "FP06-Ready-2026-10-19-v3",
+    "url": "http://127.0.0.1:5197/factory.html"
+  },
+  "fresh16": "R57-R59: normal paid nine-owner setup/two4m belts/five cables; two finite8kg CUTs, PROFILE, SHEET, three manual brace phases, paid5.8kg installed brace owner10. Fresh balance16=5.8+3+5+2.2kg. WIP CUT8100/30000 survives actual process restart and completes once.",
+  "finalSource": {
+    "bootstrap": "3B5DF6C4D0F58A18219AE108E2D6DE13BB54CAA77951815735705CF0662F7FE9",
+    "bootstrapTest": "EC7D64E3F3D087DD1469498C09147E91A67C3C5DC4069357D77E4A8FC5AE6914",
+    "codec": "751097BB5962AAF43CB1DB36905B093DA4C2A476678D9B34807D3245E0A6996C",
+    "codecTest": "2F07E83B8BFA17031639BEEBD2802DB6AA3DA9CEE6BB02064048EEA9C6A741FD"
+  },
+  "persistence": {
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-Final-NewGame-20261019-R54",
+    "origin": "http://127.0.0.1:5197",
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 12,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 49058,
+      "payloadBytes": 13586523,
+      "contentHash": "sha256:7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+      "lastWriteReason": "ManualSave"
+    },
+    "hashes": {
+      "native": "29037991c66332b262f3239323d559cc2da42aef830d04459d36c5cbad5645c3",
+      "nativeFactory": "7164a587b35bfa227d8fec0191f0c05dd94469a0c938bfb73bfa941a0170a66a",
+      "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+      "host": "517d76e438592ebff97d068d7ad7046072964c584f0833e38ba222e335512e20",
+      "factoryAll": "6ccd87252cb84625b1b363198e17dddd70247c2e3c56c1d4e2c6ef1672304e8b",
+      "factoryExceptPublication": "41a0aafaf90d072e612788255d21e6efe5d9188d647800dbe6c1a64833591329"
+    },
+    "host": {
+      "epoch": 1,
+      "nativeTick": 24529,
+      "remainderTicks": 1,
+      "sessionId": "hvp-session-1",
+      "steps": 4088
+    },
+    "actualRestart": {
+      "disconnected": true,
+      "profile": "E:/DEV/Weltraum-Spiel/FP06-Final-NewGame-20261019-R54"
+    },
+    "slotUnchanged": true,
+    "saveBeforePlay": "R60Save8-to9 exact; R62newlyF64Save10-to11 exact; R64finalsourceSave11-to12 exact acrossNative/NativeFactory/profiles/Host/FactoryExceptPublication, entireviewexact",
+    "readyLoaded": {
+      "tick": 24529,
+      "status": "Paused",
+      "factorySteps": 4088,
+      "owners": 10,
+      "massMg": 2984400000
+    },
+    "explicitPlayAndPauseTick": 24547
+  },
+  "ui": "R60 normalmovement/visiblepointerlook/Mpauses/CloseNoResume/explicitPlay; R61 freshNewGame/OpenCargo/FieldGuide hint readable and actualFactoryV5source; R63visorRED thenR64/R65freeviewbeforePlay.",
+  "checks": {
+    "nativeSourceReview": "PASS on exactfinal hashes",
+    "checkpoint": "25/25 PASS on unchanged final Codec",
+    "focusedCameraVisor": "1/1 PASS17.00s on final Bootstrap",
+    "v2PrecloneBudget": "1/1 PASS",
+    "w06Accounting": "1/1 PASS",
+    "typeScriptBuildWhitespace": "PASS",
+    "bootstrapAggregate": "FAILED58passed2skipped; unchanged10000ms Cold-Plant beforeAll timeout365.38s",
+    "isolatedWholeCold": "FAILEDsame setup10000ms before assertions11.74s; no timeoutraise/no repeat-to-green"
+  },
+  "limits": {
+    "standingC2": {
+      "fps": 30.4852,
+      "p95Ms": 33.2,
+      "pass": true
+    },
+    "activeC2": {
+      "fps": 29.4179,
+      "p95Ms": 33.2,
+      "mean30Pass": false
+    },
+    "latestFunctionalFixFps": "NOT MEASURED; no new FPS/heap/GPU claim",
+    "performanceWindow": "candidates3/3 and profile1/1 CLOSED",
+    "piFinalReview": "NOT RUN: automaticapproval rejected new externalDeepSeekpayload; specificconsentpending; no new transfer/PiPASS",
+    "largeWreck": "NOT_ADMITTED",
+    "humanArtFun": "OWNER_REVIEW_PENDING",
+    "bootstrapFullSuite": "NOT PASS; see exact failures above"
+  },
+  "pageErrors": [],
+  "networkErrors": [],
+  "screenshot": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-18/performance-round2/r65-ready-v3-final-continue12-free-view.png",
+  "video": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\acceptance-r65-ready-v3-final-continue12-video\\page@190618ced244287b9a546fc8bfa4ff13.webm",
+  "policy": "Existing source/current local work retained, no commit/mainmerge/push, no teleport/free resources/collider shrink/autoResume/Clock or cap/Golden changes. V2/V1 compatibility unchanged. Raw browser save and credentials not included.",
+  "productWriters": "ALL_QUIESCENT; allleasesreleased; Rootsoleintegrator"
+}

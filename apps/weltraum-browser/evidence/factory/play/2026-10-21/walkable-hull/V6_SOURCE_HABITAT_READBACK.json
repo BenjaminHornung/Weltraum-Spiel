@@ -1,0 +1,104 @@
+{
+  "kind": "ACTUAL_PURE_V6_SOURCE_AND_HABITAT_READBACK",
+  "version": "hvp-factory-startsite-v6",
+  "seedName": "hestia-factory-layout-a-001",
+  "sourceDigest": "360b00fa",
+  "sourceSlotBytes": 8388608,
+  "sourceSlotsSha256": "a15c03002cc20b84f76172562b36b2df1aebe5cc79a65e7b9fbf661b57ed530c",
+  "parentDigest": "0e2a0bcb",
+  "parentSlotsSha256": "106a3c5ba17e7bb8861d853e1889d71ebf42a686f3d0605d0cb8efabb20c7911",
+  "initializationReceipt": {
+    "baseVersion": "hvp-factory-startsite-v5",
+    "addedMaskCount": 2,
+    "addedColumnCount": 11240,
+    "changedColumnCount": 11145,
+    "changedSlotCount": 124974,
+    "addedAreaMm2": 175625000,
+    "materialCreditMg": 0,
+    "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING"
+  },
+  "cargo": {
+    "version": "fp06-initial-cargo-s0-v1",
+    "ownerId": "fp02_wreck_owner",
+    "containerId": "fp02_wreck_cargo",
+    "sourceDigest": "360b00fa",
+    "sourceRefs": [
+      "FP01:5.5:source-access",
+      "FP01:E00:permanently-grounded-cargo",
+      "FP02:6.4:finite-reachable-depot",
+      "FP02:9.1:cargo-outside-machine-zone"
+    ],
+    "centerMm": [
+      -5500,
+      2000,
+      13125
+    ],
+    "sizeMm": [
+      1500,
+      1500,
+      1000
+    ],
+    "boundsMm": {
+      "min": [
+        -6250,
+        1250,
+        12625
+      ],
+      "max": [
+        -4750,
+        2750,
+        13625
+      ]
+    },
+    "accessPointMm": [
+      -5500,
+      2250,
+      12625
+    ],
+    "accessBoundsMm": {
+      "min": [
+        -6250,
+        1500,
+        11625
+      ],
+      "max": [
+        -4750,
+        3500,
+        12625
+      ]
+    },
+    "spawnMm": [
+      -5500,
+      2420,
+      11875
+    ],
+    "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+    "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"360b00fa\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+    "profileDigest": "d3dac375"
+  },
+  "vegetation": {
+    "profile": "hvp-factory-vegetation-v1",
+    "plannedCount": 97,
+    "invalidCount": 1,
+    "invalid": [
+      {
+        "id": "hvp:flora:bed-52-220",
+        "kind": "broadleaf",
+        "variant": 1,
+        "position": {
+          "x": -9.5,
+          "y": 2.5,
+          "z": 11.5
+        }
+      }
+    ],
+    "invalidCanonical": "[{\"id\":\"hvp:flora:bed-52-220\",\"kind\":\"broadleaf\",\"position\":{\"x\":-9.5,\"y\":2.5,\"z\":11.5},\"variant\":1}]",
+    "invalidSha256": "ee07c675070c011f0a9d5d6a2002d49c2415faa6f270b32d360f13537022d638",
+    "retainedCount": 96,
+    "retainedInstancesSha256": "da4225fd79ea64fa3dcfc689fe0fd7ac4a56be7d1dc9e406aaf9171f532ff6fb",
+    "vegetationSourceBytes": 5227968,
+    "woodCount": 2,
+    "woodBytes": 1522080,
+    "decorationBytes": 3705888
+  }
+}

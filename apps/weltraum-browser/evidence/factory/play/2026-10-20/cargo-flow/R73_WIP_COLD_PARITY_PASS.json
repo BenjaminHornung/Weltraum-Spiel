@@ -1,0 +1,423 @@
+{
+  "sourceHead": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "delivery": "FP06-Ready-2026-10-20-v3",
+  "mode": "headless installed Google Chrome, owned persistent profile, real process close and relaunch",
+  "proof": {
+    "before": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 5,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 45322,
+        "payloadBytes": 12153401,
+        "contentHash": "sha256:fdf7fd220817123daf491639ce79213d1a07889a5b644d15ed5d0c04a615cdbe",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "fdf7fd220817123daf491639ce79213d1a07889a5b644d15ed5d0c04a615cdbe",
+      "version": "fp06-combined-checkpoint-v2",
+      "signature": "fnv1a32:d9f65335",
+      "host": {
+        "epoch": 1,
+        "nativeTick": 22661,
+        "remainderTicks": 5,
+        "sessionId": "hvp-session-1",
+        "steps": 3776
+      },
+      "hashes": {
+        "native": "93549841749e1d3cfb3f28f54275ed8075aa8b1c59070781be55c3538744326a",
+        "nativeFactory": "62f2526a84b1eb5ef1b3d195c0121b268434797a42b2377a6f81a1a6342a694a",
+        "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+        "host": "5a88d2b4654e5f940f31e5ad32b576103d7350d94d4884aca1d7ab509f879624",
+        "factory": "10571393432521d39e9eca579685d43d2de75cadf86618cd6b26e0ebc437ef15",
+        "factoryExceptPublication": "60b14b18d89f0de23cbcb42592c101403c6d7e09dacf8d5a7cbd0432ec771e8e"
+      },
+      "installationCount": 9
+    },
+    "after": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 6,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 45322,
+        "payloadBytes": 12153401,
+        "contentHash": "sha256:ba0c8b0862a7235e3bed60d75b5dc4c9de8543639bb16b6f9c90a11234b6d3d9",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "ba0c8b0862a7235e3bed60d75b5dc4c9de8543639bb16b6f9c90a11234b6d3d9",
+      "version": "fp06-combined-checkpoint-v2",
+      "signature": "fnv1a32:cb718c21",
+      "host": {
+        "epoch": 1,
+        "nativeTick": 22661,
+        "remainderTicks": 5,
+        "sessionId": "hvp-session-1",
+        "steps": 3776
+      },
+      "hashes": {
+        "native": "93549841749e1d3cfb3f28f54275ed8075aa8b1c59070781be55c3538744326a",
+        "nativeFactory": "62f2526a84b1eb5ef1b3d195c0121b268434797a42b2377a6f81a1a6342a694a",
+        "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+        "host": "5a88d2b4654e5f940f31e5ad32b576103d7350d94d4884aca1d7ab509f879624",
+        "factory": "2b79ed39c24b288d92f43ab9c788ea3b5f202f7af3609e6af88a71afe19c959b",
+        "factoryExceptPublication": "60b14b18d89f0de23cbcb42592c101403c6d7e09dacf8d5a7cbd0432ec771e8e"
+      },
+      "installationCount": 9
+    },
+    "parity": {
+      "native": true,
+      "nativeFactory": true,
+      "profiles": true,
+      "host": true,
+      "factoryExceptPublication": true
+    },
+    "identity": {
+      "job": true,
+      "work": true,
+      "tick": true,
+      "steps": true,
+      "energy": true,
+      "paused": true,
+      "neutral": true
+    },
+    "loaded": {
+      "preserved": {
+        "metadata": {
+          "slotId": "factory-primary",
+          "displayName": "factory-primary",
+          "recordRevision": 5,
+          "saveSchemaVersion": 1,
+          "gameVersion": "hestia-factory-play-v1",
+          "universeTick": 45322,
+          "payloadBytes": 12153401,
+          "contentHash": "sha256:fdf7fd220817123daf491639ce79213d1a07889a5b644d15ed5d0c04a615cdbe",
+          "lastWriteReason": "ManualSave"
+        },
+        "payloadSha256": "fdf7fd220817123daf491639ce79213d1a07889a5b644d15ed5d0c04a615cdbe",
+        "version": "fp06-combined-checkpoint-v2",
+        "signature": "fnv1a32:d9f65335",
+        "host": {
+          "epoch": 1,
+          "nativeTick": 22661,
+          "remainderTicks": 5,
+          "sessionId": "hvp-session-1",
+          "steps": 3776
+        },
+        "hashes": {
+          "native": "93549841749e1d3cfb3f28f54275ed8075aa8b1c59070781be55c3538744326a",
+          "nativeFactory": "62f2526a84b1eb5ef1b3d195c0121b268434797a42b2377a6f81a1a6342a694a",
+          "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+          "host": "5a88d2b4654e5f940f31e5ad32b576103d7350d94d4884aca1d7ab509f879624",
+          "factory": "10571393432521d39e9eca579685d43d2de75cadf86618cd6b26e0ebc437ef15",
+          "factoryExceptPublication": "60b14b18d89f0de23cbcb42592c101403c6d7e09dacf8d5a7cbd0432ec771e8e"
+        },
+        "installationCount": 9
+      },
+      "state": {
+        "tick": 22661,
+        "status": "Paused",
+        "player": {
+          "x": -5.900105953216553,
+          "y": 2.400009870529175,
+          "z": 7.499860763549805
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 2,
+          "lastAckId": 2,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": false
+        },
+        "hostConfirmed": true,
+        "host": {
+          "sessionId": "hvp-session-1",
+          "epoch": 1,
+          "nativeTick": 22661,
+          "persistence": {
+            "state": "Saved",
+            "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+            "revision": 5,
+            "saveAvailable": true,
+            "continueAvailable": true
+          },
+          "simulationRecoveryAvailable": false,
+          "physicsStatus": "Paused",
+          "confirmed": true,
+          "input": {
+            "active": false,
+            "activationPending": false,
+            "pointerLocked": false,
+            "pausePending": false,
+            "focusedPanel": null,
+            "surface": "pause",
+            "error": null
+          },
+          "terrain": {
+            "epoch": 1,
+            "revision": 0,
+            "sourceDigest": "0e2a0bcb",
+            "baseDigest": "0e2a0bcb",
+            "profileVersion": "hvp-factory-startsite-v5",
+            "cellMeters": 0.125,
+            "originMeters": {
+              "x": -16,
+              "y": -8,
+              "z": -16
+            },
+            "sizeX": 256,
+            "sizeY": 128,
+            "sizeZ": 256
+          }
+        },
+        "clock": {
+          "maxTimerGapMs": 18,
+          "maxAdvanceMs": 0.10000000055879354,
+          "maxHandlerMs": 803.7999999998137,
+          "lastCommand": "Read",
+          "lastHandlerMs": 5.400000000372529,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "bodyCount": 14,
+        "colliderCount": 195,
+        "carrier": null,
+        "facilityState": "Idle",
+        "facilityCount": 9,
+        "massMg": 2984400000,
+        "factorySteps": 3776,
+        "interaction": {
+          "localDeposits": [],
+          "cargoOpened": true,
+          "cargoAccessible": false,
+          "handling": null,
+          "openCargo": {
+            "enabled": false,
+            "reason": "Wrackfracht nicht erreichbar"
+          },
+          "deposit": {
+            "enabled": false,
+            "reason": "Kein aktiver Transport"
+          },
+          "returnCargo": {
+            "enabled": false,
+            "reason": "Wrackfracht nicht erreichbar"
+          }
+        },
+        "receipt": {
+          "commandId": "ui_machine_e415049ce59d48ec9f64606ccd7334c9",
+          "status": "Committed",
+          "reason": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 5,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "power": {
+          "allocationConfirmed": true,
+          "devices": [
+            {
+              "id": "facility_fp02_device_battery_4kwh_1",
+              "revision": 4,
+              "name": "Expeditionsbatterie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b07_3",
+              "revision": 3566,
+              "name": "Umformwerk",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "facility_b06_12",
+              "revision": 2820,
+              "name": "Zuschnittstation",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "facility_fp02_device_distribution_40kw_14",
+              "revision": 22,
+              "name": "Verteiler",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            },
+            {
+              "id": "line_ui_power_93ac853114e5466e934a8ef617deec08",
+              "revision": 25,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": false,
+                "reason": "Anlage oder Stromanschluss nicht erreichbar"
+              }
+            },
+            {
+              "id": "line_ui_power_777d433c3fb64a468f8227cc83c0ec33",
+              "revision": 31,
+              "name": "Förderlinie",
+              "enabled": true,
+              "capability": {
+                "enabled": true,
+                "reason": null
+              }
+            }
+          ],
+          "status": "CONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 1400,
+          "batteryEnergyJ": 12896315.789473685,
+          "batteryCapacityJ": 14400000,
+          "reserveEnergyJ": 3600000,
+          "sourceQuality": "unsupported",
+          "consumers": [
+            {
+              "id": "consumer_facility_b06_12",
+              "name": "facility_b06_12",
+              "requestedWatts": 1200,
+              "allocatedWatts": 1200,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_facility_b07_3",
+              "name": "facility_b07_3",
+              "requestedWatts": 0,
+              "allocatedWatts": 0,
+              "reason": "Idle"
+            },
+            {
+              "id": "consumer_line_ui_power_777d433c3fb64a468f8227cc83c0ec33",
+              "name": "fp02_cargo_c23_unit_2",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            },
+            {
+              "id": "consumer_line_ui_power_93ac853114e5466e934a8ef617deec08",
+              "name": "fp02_cargo_c23_unit_1",
+              "requestedWatts": 100,
+              "allocatedWatts": 100,
+              "reason": "Powered"
+            }
+          ]
+        },
+        "testBridge": false
+      },
+      "machine": {
+        "id": "facility_b06_12",
+        "revision": 2820,
+        "definitionId": "B06",
+        "name": "Zuschnittstation",
+        "installed": true,
+        "status": "RUNNING",
+        "reason": null,
+        "selectedRecipe": {
+          "sourceId": "REC-01-CUT",
+          "version": 1,
+          "digest": "fnv1a:cc0cefe6"
+        },
+        "recipes": [
+          {
+            "ref": {
+              "sourceId": "REC-01-CUT",
+              "version": 1,
+              "digest": "fnv1a:cc0cefe6"
+            },
+            "name": "REC-01-CUT",
+            "durationMs": 30000,
+            "powerWatts": 1200
+          }
+        ],
+        "jobId": "job_ui_machine_e415049ce59d48ec9f64606ccd7334c9",
+        "confirmedWorkMs": 8000,
+        "requiredWorkMs": 30000,
+        "allocatedWatts": 1200,
+        "inputContainerId": "input_facility_b06_12",
+        "outputContainerId": "output_facility_b06_12",
+        "offcutContainerId": "offcut_facility_b06_12",
+        "wipContainerId": "wip_facility_b06_12",
+        "installedContainerId": "installed_facility_b06_12",
+        "ports": [
+          {
+            "id": "port_facility_b06_12_fp02_b06_in_steel",
+            "role": "SolidBatchIn",
+            "connected": true
+          },
+          {
+            "id": "port_facility_b06_12_fp02_b06_out_semi",
+            "role": "SolidBatchOut",
+            "connected": true
+          },
+          {
+            "id": "power_facility_b06_12",
+            "role": "PowerConsumer",
+            "connected": true
+          },
+          {
+            "id": "port_facility_b06_12_fp02_b06_offcut",
+            "role": "WasteCassette",
+            "connected": false
+          }
+        ],
+        "actions": {
+          "start": {
+            "enabled": false,
+            "reason": null
+          },
+          "manualWork": {
+            "enabled": false,
+            "reason": null
+          },
+          "manualFinish": {
+            "enabled": false,
+            "reason": null
+          },
+          "toggle": {
+            "enabled": false,
+            "reason": null
+          }
+        }
+      }
+    },
+    "close": {
+      "pageClosed": true,
+      "browserDisconnected": true,
+      "atUtc": "2026-10-20T18:08:16.790Z",
+      "mode": "headless Chrome"
+    }
+  }
+}

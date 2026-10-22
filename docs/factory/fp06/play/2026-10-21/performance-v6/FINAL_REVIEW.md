@@ -1,0 +1,5 @@
+Independent reviewer /root/canonical_plan_review supports measured diagnosis and rejects an optimization-success claim: target32ms NOT_MET, actual baseline42.2ms pre-render p95; nativeRAF ceiling shared by blank/paused/playing; overlapping profile paths not additive; no product candidates. Serializer STOP and no lease for unknown-fit cache supported. Standing-only, physical display cause and active-production performance remain unqualified.
+
+Review was written while final cold restart was pending. Root's subsequent actual receipt FINAL_ACTUAL_CHROME_RESTART.json confirms original Chrome disconnected, same profile restarted, normal build Paused48547/8091/10owners/2984400000mg, and exact original Save19 SHA. This later receipt closes only that cold-check evidence gap; it does not establish optimization success.
+
+Existing implementation writer independently confirms zero product/test edits and zero runtime/check execution in this new window. Root owns all runtime and final delivery parity. No code patch is attributed to Pi or reviewer.

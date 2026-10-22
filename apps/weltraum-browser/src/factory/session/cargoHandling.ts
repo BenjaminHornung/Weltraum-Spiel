@@ -6,6 +6,7 @@ import type { FactoryUiCommand } from "./hostPort";
 import type { FactoryCarrierRequest } from "../../hestia-prototype/physics/factoryFacilitySession";
 import { canonicalJson } from "../../resources/serialization";
 import { isSaveSafeResourceId } from "../../resources/ids";
+import { hasCompatibleMetadata } from "../../resources/transfer";
 export interface CargoHandlingLot { readonly containerId: string; readonly stackId: string; readonly quantityUnits: number }
 export interface CargoHandlingIntent {
   readonly commandId: string; readonly ownerId: string; readonly actorId: string;
@@ -98,7 +99,11 @@ export const createFactoryHandling = (host: FactoryHandlingHost) => {
             if(!source||!stack||source.state.revision!==command.source.containerRevision||!sourceAccess(source.state.containerId,native))throw Error("StaleOrRemoteTransferSource");
             if(source.state.containerId===c?.containerId&&(source.state.contents.length!==1||command.source.quantityUnits!==stack.quantity))throw Error("PartialCarrierTransferUnsupported");
             const item=before.catalog.items.find(i=>i.resourceId===stack.resourceId);if(!item)throw Error("UnknownTransferItem");
-            moves=[{sourceContainerId:source.state.containerId,sourceStackId:stack.stackId,itemId:item.sourceId,quantityUnits:command.source.quantityUnits,targetContainerId:targetId,targetStackId:command.source.quantityUnits===stack.quantity?stack.stackId:`${command.commandId}_lot`}];
+            const targetSnapshot=before.containers.find(v=>v.state.containerId===targetId);
+            // Milligram bulk lots may merge; pieces and cable-mm custody keep their existing IDs.
+            const compatibleBulkStack=item.quantityBasis==="mg"?targetSnapshot?.state.contents.find(candidate=>hasCompatibleMetadata(candidate,stack)):undefined;
+            const targetStackId=compatibleBulkStack?.stackId??(command.source.quantityUnits===stack.quantity?stack.stackId:`${command.commandId}_lot`);
+            moves=[{sourceContainerId:source.state.containerId,sourceStackId:stack.stackId,itemId:item.sourceId,quantityUnits:command.source.quantityUnits,targetContainerId:targetId,targetStackId}];
           }else{
             if(!c||command.handling.id!==c.ownerId||command.handling.revision!==native.revision||!sourceAccess(c.containerId,native))throw Error("StaleCarrier");
             const target=command.kind==="return"?command.target:command.target.kind==="container"?command.target.container:null;if(!target)throw Error("UnsupportedDeposit");targetId=target.id;targetRevision=target.revision;

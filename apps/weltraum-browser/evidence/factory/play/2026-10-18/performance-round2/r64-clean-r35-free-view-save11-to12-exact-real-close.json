@@ -1,0 +1,1123 @@
+{
+  "run": "R64",
+  "clean": "FP06-Clean-Acceptance-2026-10-19-r35",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "profile": "E:/DEV/Weltraum-Spiel/FP06-Final-NewGame-20261019-R54",
+  "cold": {
+    "at": 15567,
+    "tick": 24529,
+    "status": "Paused",
+    "player": {
+      "x": -8.685924530029297,
+      "y": 2.4000046253204346,
+      "z": 6.11818790435791
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 1,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 2,
+      "lastAckId": 2,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "camera": null,
+    "clock": {
+      "maxTimerGapMs": 18.699999999254942,
+      "maxAdvanceMs": 0.10000000149011612,
+      "maxHandlerMs": 1111.0999999977648,
+      "lastCommand": "Read",
+      "lastHandlerMs": 7.200000002980232,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "carrier": null,
+    "facilityState": "Idle",
+    "facilityCount": 10,
+    "massMg": 2984400000,
+    "factorySteps": 4088,
+    "hostConfirmed": true,
+    "receipt": {
+      "commandId": "ui_cargo_7be981e237804977bc406f86077abac6",
+      "status": "Committed",
+      "reason": null
+    },
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+      "revision": 11,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "power": {
+      "allocationConfirmed": true,
+      "devices": [
+        {
+          "id": "facility_fp02_device_battery_4kwh_3",
+          "revision": 6,
+          "name": "Expeditionsbatterie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b07_5",
+          "revision": 3822,
+          "name": "Umformwerk",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b06_14",
+          "revision": 3169,
+          "name": "Zuschnittstation",
+          "enabled": true,
+          "capability": {
+            "enabled": true,
+            "reason": null
+          }
+        },
+        {
+          "id": "facility_fp02_device_distribution_40kw_18",
+          "revision": 25,
+          "name": "Verteiler",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+          "revision": 28,
+          "name": "Förderlinie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "line_ui_power_92a0a3c9931a41acbe62650713250a84",
+          "revision": 36,
+          "name": "Förderlinie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        }
+      ],
+      "status": "CONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 200,
+      "batteryEnergyJ": 12677842.105263159,
+      "batteryCapacityJ": 14400000,
+      "reserveEnergyJ": 3600000,
+      "sourceQuality": "unsupported",
+      "consumers": [
+        {
+          "id": "consumer_facility_b06_14",
+          "name": "facility_b06_14",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_facility_b07_5",
+          "name": "facility_b07_5",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+          "name": "fp02_cargo_c23_unit_1",
+          "requestedWatts": 100,
+          "allocatedWatts": 100,
+          "reason": "Powered"
+        },
+        {
+          "id": "consumer_line_ui_power_92a0a3c9931a41acbe62650713250a84",
+          "name": "fp02_cargo_c23_unit_2",
+          "requestedWatts": 100,
+          "allocatedWatts": 100,
+          "reason": "Powered"
+        }
+      ]
+    },
+    "testBridge": false
+  },
+  "coldProof": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 11,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 49058,
+      "payloadBytes": 13586523,
+      "contentHash": "sha256:0f3da84c89b3bac446a69774502eb175eff17adab6330103ab21a33813f7e23b",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "0f3da84c89b3bac446a69774502eb175eff17adab6330103ab21a33813f7e23b",
+    "version": "fp06-combined-checkpoint-v2",
+    "signature": "fnv1a32:05332e26",
+    "host": {
+      "epoch": 1,
+      "nativeTick": 24529,
+      "remainderTicks": 1,
+      "sessionId": "hvp-session-1",
+      "steps": 4088
+    },
+    "publicationRevision": 10641,
+    "hashes": {
+      "native": "29037991c66332b262f3239323d559cc2da42aef830d04459d36c5cbad5645c3",
+      "nativeFactory": "7164a587b35bfa227d8fec0191f0c05dd94469a0c938bfb73bfa941a0170a66a",
+      "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+      "host": "517d76e438592ebff97d068d7ad7046072964c584f0833e38ba222e335512e20",
+      "factoryAll": "227adb199acd9842b303174e34d701a17f20bd96b00a32ef38797ce9a7591e21",
+      "factoryExceptPublication": "41a0aafaf90d072e612788255d21e6efe5d9188d647800dbe6c1a64833591329"
+    },
+    "installations": [
+      {
+        "instanceId": "facility_fp02_device_battery_4kwh_3",
+        "sourceId": "fp02.device.battery_4kwh"
+      },
+      {
+        "instanceId": "facility_b07_5",
+        "sourceId": "B07"
+      },
+      {
+        "instanceId": "facility_b09_10",
+        "sourceId": "B09"
+      },
+      {
+        "instanceId": "facility_b05_12",
+        "sourceId": "B05"
+      },
+      {
+        "instanceId": "facility_b06_14",
+        "sourceId": "B06"
+      },
+      {
+        "instanceId": "facility_fp02_device_distribution_40kw_18",
+        "sourceId": "fp02.device.distribution_40kw"
+      },
+      {
+        "instanceId": "line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+        "sourceId": "fp06.line.belt_4m"
+      },
+      {
+        "instanceId": "facility_b09_22",
+        "sourceId": "B09"
+      },
+      {
+        "instanceId": "line_ui_power_92a0a3c9931a41acbe62650713250a84",
+        "sourceId": "fp06.line.belt_4m"
+      },
+      {
+        "instanceId": "facility_fp02_comp_small_brace_65",
+        "sourceId": "fp02.comp.small_brace"
+      }
+    ],
+    "machines": [
+      {
+        "id": "facility_b05_12",
+        "status": "COMPLETED",
+        "job": {
+          "id": "job_ui_machine_dacd7c59ccfc436b8246d9e0b3ae134f",
+          "phase": "COMPLETED",
+          "workMilliJoule": "0"
+        }
+      },
+      {
+        "id": "facility_b06_14",
+        "status": "COMPLETED",
+        "job": {
+          "id": "job_ui_machine_f18feff29d08431bbc8a8b26346f11f0",
+          "phase": "COMPLETED",
+          "workMilliJoule": "36000000"
+        }
+      },
+      {
+        "id": "facility_b07_5",
+        "status": "COMPLETED",
+        "job": {
+          "id": "job_ui_machine_679c5937f1bd4bd9b28b6306ed98ebd4",
+          "phase": "COMPLETED",
+          "workMilliJoule": "80000000"
+        }
+      }
+    ],
+    "belts": [
+      {
+        "id": "line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+        "creditMg": 10000000,
+        "packet": null
+      },
+      {
+        "id": "line_ui_power_92a0a3c9931a41acbe62650713250a84",
+        "creditMg": 10000000,
+        "packet": null
+      }
+    ]
+  },
+  "save": {
+    "state": {
+      "at": 27295.60000000149,
+      "tick": 24529,
+      "status": "Paused",
+      "player": {
+        "x": -8.685924530029297,
+        "y": 2.4000046253204346,
+        "z": 6.11818790435791
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "camera": null,
+      "clock": {
+        "maxTimerGapMs": 810.7999999970198,
+        "maxAdvanceMs": 0.10000000149011612,
+        "maxHandlerMs": 1111.0999999977648,
+        "lastCommand": "Read",
+        "lastHandlerMs": 4.099999997764826,
+        "delayedCallbacks": [
+          {
+            "gapMs": 810.7999999970198,
+            "previousCommand": "FactoryCheckpoint",
+            "handlerMs": 807.1999999992549,
+            "advanceMs": 0
+          }
+        ],
+        "timers": 1
+      },
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "factorySteps": 4088,
+      "hostConfirmed": true,
+      "receipt": {
+        "commandId": "ui_cargo_7be981e237804977bc406f86077abac6",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 12,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [
+          {
+            "id": "facility_fp02_device_battery_4kwh_3",
+            "revision": 6,
+            "name": "Expeditionsbatterie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b07_5",
+            "revision": 3822,
+            "name": "Umformwerk",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "facility_b06_14",
+            "revision": 3169,
+            "name": "Zuschnittstation",
+            "enabled": true,
+            "capability": {
+              "enabled": true,
+              "reason": null
+            }
+          },
+          {
+            "id": "facility_fp02_device_distribution_40kw_18",
+            "revision": 25,
+            "name": "Verteiler",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+            "revision": 28,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          },
+          {
+            "id": "line_ui_power_92a0a3c9931a41acbe62650713250a84",
+            "revision": 36,
+            "name": "Förderlinie",
+            "enabled": true,
+            "capability": {
+              "enabled": false,
+              "reason": "Anlage oder Stromanschluss nicht erreichbar"
+            }
+          }
+        ],
+        "status": "CONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 200,
+        "batteryEnergyJ": 12677842.105263159,
+        "batteryCapacityJ": 14400000,
+        "reserveEnergyJ": 3600000,
+        "sourceQuality": "unsupported",
+        "consumers": [
+          {
+            "id": "consumer_facility_b06_14",
+            "name": "facility_b06_14",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_facility_b07_5",
+            "name": "facility_b07_5",
+            "requestedWatts": 0,
+            "allocatedWatts": 0,
+            "reason": "Idle"
+          },
+          {
+            "id": "consumer_line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+            "name": "fp02_cargo_c23_unit_1",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          },
+          {
+            "id": "consumer_line_ui_power_92a0a3c9931a41acbe62650713250a84",
+            "name": "fp02_cargo_c23_unit_2",
+            "requestedWatts": 100,
+            "allocatedWatts": 100,
+            "reason": "Powered"
+          }
+        ]
+      },
+      "testBridge": false
+    },
+    "proof": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 12,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 49058,
+        "payloadBytes": 13586523,
+        "contentHash": "sha256:7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+      "version": "fp06-combined-checkpoint-v2",
+      "signature": "fnv1a32:6d3c9589",
+      "host": {
+        "epoch": 1,
+        "nativeTick": 24529,
+        "remainderTicks": 1,
+        "sessionId": "hvp-session-1",
+        "steps": 4088
+      },
+      "publicationRevision": 10644,
+      "hashes": {
+        "native": "29037991c66332b262f3239323d559cc2da42aef830d04459d36c5cbad5645c3",
+        "nativeFactory": "7164a587b35bfa227d8fec0191f0c05dd94469a0c938bfb73bfa941a0170a66a",
+        "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+        "host": "517d76e438592ebff97d068d7ad7046072964c584f0833e38ba222e335512e20",
+        "factoryAll": "6ccd87252cb84625b1b363198e17dddd70247c2e3c56c1d4e2c6ef1672304e8b",
+        "factoryExceptPublication": "41a0aafaf90d072e612788255d21e6efe5d9188d647800dbe6c1a64833591329"
+      },
+      "installations": [
+        {
+          "instanceId": "facility_fp02_device_battery_4kwh_3",
+          "sourceId": "fp02.device.battery_4kwh"
+        },
+        {
+          "instanceId": "facility_b07_5",
+          "sourceId": "B07"
+        },
+        {
+          "instanceId": "facility_b09_10",
+          "sourceId": "B09"
+        },
+        {
+          "instanceId": "facility_b05_12",
+          "sourceId": "B05"
+        },
+        {
+          "instanceId": "facility_b06_14",
+          "sourceId": "B06"
+        },
+        {
+          "instanceId": "facility_fp02_device_distribution_40kw_18",
+          "sourceId": "fp02.device.distribution_40kw"
+        },
+        {
+          "instanceId": "line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+          "sourceId": "fp06.line.belt_4m"
+        },
+        {
+          "instanceId": "facility_b09_22",
+          "sourceId": "B09"
+        },
+        {
+          "instanceId": "line_ui_power_92a0a3c9931a41acbe62650713250a84",
+          "sourceId": "fp06.line.belt_4m"
+        },
+        {
+          "instanceId": "facility_fp02_comp_small_brace_65",
+          "sourceId": "fp02.comp.small_brace"
+        }
+      ],
+      "machines": [
+        {
+          "id": "facility_b05_12",
+          "status": "COMPLETED",
+          "job": {
+            "id": "job_ui_machine_dacd7c59ccfc436b8246d9e0b3ae134f",
+            "phase": "COMPLETED",
+            "workMilliJoule": "0"
+          }
+        },
+        {
+          "id": "facility_b06_14",
+          "status": "COMPLETED",
+          "job": {
+            "id": "job_ui_machine_f18feff29d08431bbc8a8b26346f11f0",
+            "phase": "COMPLETED",
+            "workMilliJoule": "36000000"
+          }
+        },
+        {
+          "id": "facility_b07_5",
+          "status": "COMPLETED",
+          "job": {
+            "id": "job_ui_machine_679c5937f1bd4bd9b28b6306ed98ebd4",
+            "phase": "COMPLETED",
+            "workMilliJoule": "80000000"
+          }
+        }
+      ],
+      "belts": [
+        {
+          "id": "line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+          "creditMg": 10000000,
+          "packet": null
+        },
+        {
+          "id": "line_ui_power_92a0a3c9931a41acbe62650713250a84",
+          "creditMg": 10000000,
+          "packet": null
+        }
+      ]
+    },
+    "admissions": {
+      "entries": [],
+      "drops": 0
+    }
+  },
+  "native": {
+    "slot": 12,
+    "hashes": {
+      "native.neighbor": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "native.plants": "5b027f3597abbc4643307bc1fa96cdafed296fd20f1ba3e1443231875bdc6204",
+      "native.profiles": "c4660607035f6e11a4af5e39eefc7b38e12659b617f30686531970b1ae3aa96d",
+      "native.progress": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "native.receipts": "0f83ef82b6159ea93019d78ef16c20faab3fd8f5faea9ebe2ce05aa2fbf0e571",
+      "native.terrain": "d3f01f701af897c549b7dbd32686ba89088cfeacae206840a934fcc148ef3b82",
+      "native.version": "304776f089ab14e278e8b8ff2054064531a32b484f1f56db35cbaaf48de257ef",
+      "native.view": "1669bf41b1a305cfa8696120aa22bb3583a0f107056aff1a4201330e7204d15c",
+      "native.world": "b00a372ec8c7fa258d866d21c731dd8132a87a2f75b9394f9592bf3690385894",
+      "world.bodies": "26032dce2e86ba95522be959433624442d09d14c3b4e3ddd902131d508368ae4",
+      "world.branch": "a29f86bcfd2342c04b1ea4bbf146b48299cddbffc3097a0024f50d45537ad0a4",
+      "world.collisionDigest": "6b1ef078672306aa2537d98136831b8ee6d28cef9d4a8b062518773f3d64ea38",
+      "world.coverage": "ed0483650efd415cb4a30ead5e754fd7deac4816fe49141a72e95eea109548dc",
+      "world.dropSpawn": "c2b2eedea6559ba4dd83b22a06aff2f9527975fc1aea93f07458b7e0dcc68824",
+      "world.gravity": "7589e18c87870c9ec5ac15e4c3162707fd0256f46129d25fa73412b491b59ae9",
+      "world.impulses": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "world.lastImpulse": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "world.lastImpulseTick": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "world.moving": "61f3f47eede894a5b9c94baf56151160b8040efe2a3fab7b54e248d16c8a38a2",
+      "world.neighbor": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "world.parked": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "world.player": "01d93b0d5a0fa2aadae31ddb3573bdbf79840a9e0394c28c420eb6bd3eb8cf5c",
+      "world.sessionId": "264a3f830f00ff18978db7f90f9f49c658cf2ccd19f60a46a8cdf24645c704fa",
+      "world.solver": "9e5c4e9137e52f16d47044f8bbd93cf3034b98d20286d7e513e5a4aa565f4df3",
+      "world.terrainGeneration": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "world.tick": "8ae86be36d79e6d39fe185b039fa3909ed730a92a88b6f057867ee0a0b2d7927",
+      "world.version": "3320fbc926495fa3a5b54b01e2abc27c7ebbe235797bcc38ff6655995aa0ea34",
+      "body.hvp:physics:drop.region": "12d83e621e1e6b998a79c420e935faf6e01aa14eb5e5aeb1d07bd4f72c649332",
+      "body.hvp:physics:drop.motions": "a00941f7ab32c7cce41ad9d4f1a149b1ae63b16fc90d3b4f96dd838ac34fd64a",
+      "body.hvp:physics:drop.object": "ad4a79e4f7e6ce9eaf486b9a7f4fadd0adcf4419612922a6920558efafa399f7",
+      "body.hvp:physics:drop.parentMotion": "d82c6ad171fc386226a34238eb77b4ad13432bd3324c6325a3299192994eac79",
+      "body.hvp:physics:drop.parentMotionSource": "152be4ba7befb9d3ec2b3c822c18e1d53a8d0a0d5120bd758f31b2231ff24f68",
+      "body.hvp:physics:drop.parentWorldPose": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "body.hvp:physics:drop.preCutCenterAuthorMeters": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "body.hvp:physics:drop.saveHash": "ea98159dc132441158db02df03f1f6a3a22e0df85bada4cd5424ac5bfbe139a6",
+      "body.hvp:physics:drop.schemaVersion": "3423fe156543e4db23c3fefec9547693d6fab6bd399b4436d3c0f4b901b11262",
+      "body.hvp:physics:inertia.region": "c6438bf3edd9bf1917b91734103395bcd77aab5dd64d98c05ae457488ad284f9",
+      "body.hvp:physics:inertia.motions": "8070d9361977fe6a2ee2b3bf8511a9ce16ce909191114f96fc04de2adea28173",
+      "body.hvp:physics:inertia.object": "68e22893d9d367777920db6edac65df4a82a8bf8806e48780dc6d3cfac617a7d",
+      "body.hvp:physics:inertia.parentMotion": "d82c6ad171fc386226a34238eb77b4ad13432bd3324c6325a3299192994eac79",
+      "body.hvp:physics:inertia.parentMotionSource": "152be4ba7befb9d3ec2b3c822c18e1d53a8d0a0d5120bd758f31b2231ff24f68",
+      "body.hvp:physics:inertia.parentWorldPose": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "body.hvp:physics:inertia.preCutCenterAuthorMeters": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "body.hvp:physics:inertia.saveHash": "0478ecd0dcfe0d6f2d5975e3dce9255987a55aa79907ef87418141d0d12492b8",
+      "body.hvp:physics:inertia.schemaVersion": "3423fe156543e4db23c3fefec9547693d6fab6bd399b4436d3c0f4b901b11262",
+      "body.hvp:branch:parent.region": "8a7aecdb2b284c444149e5d8c26391a31896e1464b955247616e2a4105e5f418",
+      "body.hvp:branch:parent.motions": "001d80beadff8bc515194610e08b0d544af72d9cbb9cb0cbaab4f5784d281e5c",
+      "body.hvp:branch:parent.object": "4d7b0c68b2186e908ac2304b16e0d710b2b781a8cabd306279ed5d35ceb31e59",
+      "body.hvp:branch:parent.parentMotion": "d82c6ad171fc386226a34238eb77b4ad13432bd3324c6325a3299192994eac79",
+      "body.hvp:branch:parent.parentMotionSource": "152be4ba7befb9d3ec2b3c822c18e1d53a8d0a0d5120bd758f31b2231ff24f68",
+      "body.hvp:branch:parent.parentWorldPose": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "body.hvp:branch:parent.preCutCenterAuthorMeters": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "body.hvp:branch:parent.saveHash": "4b4d3027ed9a3ad6ecc21b9aba5ac9b70b706053b7d185bc934c25da77226805",
+      "body.hvp:branch:parent.schemaVersion": "3423fe156543e4db23c3fefec9547693d6fab6bd399b4436d3c0f4b901b11262"
+    },
+    "bodies": [
+      {
+        "ownerId": "hvp:physics:drop",
+        "keys": [
+          "motions",
+          "object",
+          "parentMotion",
+          "parentMotionSource",
+          "parentWorldPose",
+          "preCutCenterAuthorMeters",
+          "saveHash",
+          "schemaVersion"
+        ],
+        "meta": {
+          "ccd": true,
+          "dynamic": true,
+          "family": "drop",
+          "ownerId": "hvp:physics:drop",
+          "sleeping": true,
+          "surfaces": [
+            {
+              "friction": 0.800000011920929,
+              "frictionCombine": 0,
+              "restitution": 0.05000000074505806,
+              "restitutionCombine": 0
+            }
+          ],
+          "version": "hvp-body-checkpoint-v1"
+        },
+        "motions": [
+          {
+            "angvelRadPerSecond": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "fragmentId": "fnv1a64-v1:b119cd39a62c5f0a",
+            "linvelMetersPerSecond": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "objectRevision": 0,
+            "rotation": {
+              "w": -0.6556918025016785,
+              "x": -0.6526768803596497,
+              "y": -0.2672846019268036,
+              "z": 0.2695181965827942
+            },
+            "sourceContentHash": "fnv1a64-v1:13c6f73bb706326f",
+            "translationMeters": {
+              "x": -9.626448631286621,
+              "y": 0.6241563558578491,
+              "z": -7.507630825042725
+            }
+          }
+        ],
+        "parentMotion": {
+          "angularVelocityRadPerSecond": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "velocityMetersPerSecond": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      },
+      {
+        "ownerId": "hvp:physics:inertia",
+        "keys": [
+          "motions",
+          "object",
+          "parentMotion",
+          "parentMotionSource",
+          "parentWorldPose",
+          "preCutCenterAuthorMeters",
+          "saveHash",
+          "schemaVersion"
+        ],
+        "meta": {
+          "ccd": true,
+          "dynamic": true,
+          "family": "inertia",
+          "ownerId": "hvp:physics:inertia",
+          "sleeping": true,
+          "surfaces": [
+            {
+              "friction": 0.5,
+              "frictionCombine": 0,
+              "restitution": 0,
+              "restitutionCombine": 0
+            },
+            {
+              "friction": 0.5,
+              "frictionCombine": 0,
+              "restitution": 0,
+              "restitutionCombine": 0
+            }
+          ],
+          "version": "hvp-body-checkpoint-v1"
+        },
+        "motions": [
+          {
+            "angvelRadPerSecond": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "fragmentId": "fnv1a64-v1:6a9067c2bfb76b02",
+            "linvelMetersPerSecond": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "objectRevision": 0,
+            "rotation": {
+              "w": 0.9338893890380859,
+              "x": -0.0005770744755864143,
+              "y": 0.3575614094734192,
+              "z": 0.00017385711544193327
+            },
+            "sourceContentHash": "fnv1a64-v1:15f3bb58342acf4c",
+            "translationMeters": {
+              "x": -8.716933250427246,
+              "y": 1.5457488298416138,
+              "z": -13.151494026184082
+            }
+          }
+        ],
+        "parentMotion": {
+          "angularVelocityRadPerSecond": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "velocityMetersPerSecond": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      },
+      {
+        "ownerId": "hvp:branch:parent",
+        "keys": [
+          "motions",
+          "object",
+          "parentMotion",
+          "parentMotionSource",
+          "parentWorldPose",
+          "preCutCenterAuthorMeters",
+          "saveHash",
+          "schemaVersion"
+        ],
+        "meta": {
+          "ccd": true,
+          "dynamic": false,
+          "family": "branch",
+          "ownerId": "hvp:branch:parent",
+          "sleeping": false,
+          "surfaces": [
+            {
+              "friction": 0.5,
+              "frictionCombine": 0,
+              "restitution": 0,
+              "restitutionCombine": 0
+            },
+            {
+              "friction": 0.5,
+              "frictionCombine": 0,
+              "restitution": 0,
+              "restitutionCombine": 0
+            }
+          ],
+          "version": "hvp-body-checkpoint-v1"
+        },
+        "motions": [
+          {
+            "angvelRadPerSecond": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "fragmentId": "fnv1a64-v1:1d75d35ddee62150",
+            "linvelMetersPerSecond": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "objectRevision": 0,
+            "rotation": {
+              "w": 1,
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sourceContentHash": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "translationMeters": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            }
+          }
+        ],
+        "parentMotion": {
+          "angularVelocityRadPerSecond": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "velocityMetersPerSecond": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      }
+    ],
+    "player": {
+      "coverageHold": false,
+      "gravity": 11.794460201817357,
+      "grounded": true,
+      "jumpCount": 1,
+      "position": {
+        "x": -8.685924530029297,
+        "y": 2.4000046253204346,
+        "z": 6.11818790435791
+      },
+      "profileDigest": "99d57649",
+      "velocityY": 0,
+      "version": "hvp-player-checkpoint-v1"
+    },
+    "tick": {
+      "backlogSeconds": 0.014933333334823455,
+      "discardedSeconds": 0.7055000000018783,
+      "status": "Paused",
+      "ticks": 24529
+    },
+    "view": {
+      "aoEnabled": true,
+      "camera": {
+        "fov": 60,
+        "mode": "Fly",
+        "position": {
+          "x": -8.685924530029297,
+          "y": 3.1500046253204346,
+          "z": 6.11818790435791
+        },
+        "preset": "C04-WIDE",
+        "quaternion": {
+          "w": -0.3145262969553282,
+          "x": 0.0050328502285012155,
+          "y": 0.9491139185409496,
+          "z": 0.015187118686234806
+        },
+        "target": {
+          "x": -2.7170274961553833,
+          "y": 2.8300592358576333,
+          "z": 14.13503910334949
+        }
+      },
+      "playerPitch": -0.032,
+      "playerYaw": 3.7815926535897937,
+      "thirdPerson": false,
+      "tool": {
+        "edges": 0,
+        "mode": 1,
+        "movingSequence": 0,
+        "sequence": 0,
+        "structureSequence": 0
+      },
+      "waterEnabled": true
+    }
+  },
+  "equal": {
+    "native": true,
+    "nativeFactory": true,
+    "profiles": true,
+    "host": true,
+    "factoryExceptPublication": true
+  },
+  "viewExact": true,
+  "screenshot": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-18/performance-round2/r64-r35-free-firstperson-cold-before-play.png",
+  "slotUnchanged": true,
+  "dialogs": [
+    {
+      "message": "Continue from the saved Factory checkpoint? Unsaved changes will be discarded.",
+      "type": "confirm"
+    }
+  ],
+  "continued": {
+    "at": 44393,
+    "tick": 24550,
+    "status": "Paused",
+    "player": {
+      "x": -8.685924530029297,
+      "y": 2.4000046253204346,
+      "z": 6.11818790435791
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 4,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 634,
+      "lastAckId": 634,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "camera": {
+      "position": [
+        -8.685924530029297,
+        3.1500046253204346,
+        6.11818790435791
+      ],
+      "orientation": [
+        0.0050328502285012155,
+        0.9491139185409496,
+        0.015187118686234806,
+        -0.3145262969553282
+      ],
+      "visualBody": [
+        -8.685924530029297,
+        2.4000046253204346,
+        6.11818790435791
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "clock": {
+      "maxTimerGapMs": 810.7999999970198,
+      "maxAdvanceMs": 11.100000001490116,
+      "maxHandlerMs": 1111.0999999977648,
+      "lastCommand": "Read",
+      "lastHandlerMs": 2.800000000745058,
+      "delayedCallbacks": [
+        {
+          "gapMs": 810.7999999970198,
+          "previousCommand": "FactoryCheckpoint",
+          "handlerMs": 807.1999999992549,
+          "advanceMs": 0
+        }
+      ],
+      "timers": 1
+    },
+    "carrier": null,
+    "facilityState": "Idle",
+    "facilityCount": 10,
+    "massMg": 2984400000,
+    "factorySteps": 4091,
+    "hostConfirmed": true,
+    "receipt": {
+      "commandId": "ui_cargo_7be981e237804977bc406f86077abac6",
+      "status": "Committed",
+      "reason": null
+    },
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint saved locally",
+      "revision": 12,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "power": {
+      "allocationConfirmed": true,
+      "devices": [
+        {
+          "id": "facility_fp02_device_battery_4kwh_3",
+          "revision": 6,
+          "name": "Expeditionsbatterie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b07_5",
+          "revision": 3825,
+          "name": "Umformwerk",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b06_14",
+          "revision": 3172,
+          "name": "Zuschnittstation",
+          "enabled": true,
+          "capability": {
+            "enabled": true,
+            "reason": null
+          }
+        },
+        {
+          "id": "facility_fp02_device_distribution_40kw_18",
+          "revision": 25,
+          "name": "Verteiler",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+          "revision": 28,
+          "name": "Förderlinie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "line_ui_power_92a0a3c9931a41acbe62650713250a84",
+          "revision": 36,
+          "name": "Förderlinie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        }
+      ],
+      "status": "CONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 200,
+      "batteryEnergyJ": 12677778.94736842,
+      "batteryCapacityJ": 14400000,
+      "reserveEnergyJ": 3600000,
+      "sourceQuality": "unsupported",
+      "consumers": [
+        {
+          "id": "consumer_facility_b06_14",
+          "name": "facility_b06_14",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_facility_b07_5",
+          "name": "facility_b07_5",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        },
+        {
+          "id": "consumer_line_ui_power_815b41e1b4344d5ea695021ac13b4ca4",
+          "name": "fp02_cargo_c23_unit_1",
+          "requestedWatts": 100,
+          "allocatedWatts": 100,
+          "reason": "Powered"
+        },
+        {
+          "id": "consumer_line_ui_power_92a0a3c9931a41acbe62650713250a84",
+          "name": "fp02_cargo_c23_unit_2",
+          "requestedWatts": 100,
+          "allocatedWatts": 100,
+          "reason": "Powered"
+        }
+      ]
+    },
+    "testBridge": false
+  },
+  "pageErrors": [],
+  "networkErrors": [],
+  "outcome": "Final-source actual Continue11 shows free first-person scene before any Play; explicit Save12 full five authority hashes and entire F64 view exact. Explicit Play advances normally, Pause returns without saving. Original new-camera Native bytes remain exact, no automatic Resume.",
+  "closed": {
+    "disconnected": true,
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-Final-NewGame-20261019-R54"
+  },
+  "video": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\acceptance-r64-final-freeview-save11-cold-exact-video\\page@627ac3c5d493c4c8e74fc14f104b490a.webm"
+}

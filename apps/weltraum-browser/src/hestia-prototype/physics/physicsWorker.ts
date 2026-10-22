@@ -7,20 +7,35 @@ import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission} fr
 import {prepareHvpWorldReplacement,type HvpWorldReplacement} from "./worldReplacement";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import type { FactoryCargoSite } from "../../factory/fixtures/cargoSite";
+import type { FactoryNativeWorldPartsV1, FactoryPhysicsCheckpoint } from "../persistence/factoryWorldParts";
 import type { FactoryFacilityRequest,FactoryCargoOpenIntent,FactoryCarrierRequest } from "./factoryFacilitySession";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 
 export type HvpPhysicsSnapshot = ReturnType<HvpPhysicsSession["read"]>;
+export interface HvpPhysicsReadWindow {
+  readonly count:number;readonly buildMs:number;readonly postMs:number;
+  readonly carrierBindingChars:number;readonly ownerBindingChars:number;
+  readonly firstReadId:number|null;readonly lastReadId:number|null;readonly firstTick:number|null;readonly lastTick:number|null;
+  /** Advance from the timer callback before this measured gap; it is not part of this callback's advanceMs. */
+  readonly priorAdvanceMs:number|null;
+}
+export interface HvpPhysicsReadPost {
+  readonly readId:number;readonly tick:number;readonly postMs:number;readonly reportedByReplyId:number;
+}
 export interface HvpPhysicsClock {
   readonly timers:number;
   readonly maxTimerGapMs:number;readonly maxAdvanceMs:number;readonly maxHandlerMs:number;
   readonly lastCommand:string;readonly lastHandlerMs:number;
-  readonly delayedCallbacks:readonly {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[];
-  readonly simulationHold?:Readonly<{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;backlogSeconds:number;ticks:number}>;
+  readonly delayedCallbacks:readonly {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;readWindow?:HvpPhysicsReadWindow}[];
+  readonly simulationHold?:Readonly<{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;backlogSeconds:number;ticks:number;readWindow?:HvpPhysicsReadWindow}>;
+  /** Present only for opt-in hvpMeasure sessions. */
+  readonly readWindow?:HvpPhysicsReadWindow;
+  /** Completed synchronous Read postMessage duration, reported by a later reply. */
+  readonly lastReadPost?:HvpPhysicsReadPost;
 }
 export type HvpPhysicsMessage = { readonly id: number } & (
   | { readonly kind: "Initialize"; readonly sectors: readonly HvpCollisionSector[]; readonly spawn: { x: number; y: number; z: number }; readonly gravity: number;
-      readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean;readonly factoryEnabled?:boolean;readonly initialFactoryCargo?:FactoryCargoSite }
+      readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean;readonly factoryEnabled?:boolean;readonly initialFactoryCargo?:FactoryCargoSite;readonly initialFactoryParts?:FactoryNativeWorldPartsV1 }
   | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };readonly cutAim?:{x:number;y:number;z:number} }
   | { readonly kind: "RecoverFactorySimulationHold"; readonly expectedTick:number }
   | { readonly kind: "FactoryInput"; readonly input: HvpPlayerInput; readonly cancelPendingJump: boolean }
@@ -35,6 +50,7 @@ export type HvpPhysicsMessage = { readonly id: number } & (
   | {readonly kind:"StageBodyCut";readonly transactionId:string;readonly products:HvpBodyCutAdmission}
   | {readonly kind:"CommitBodyCut"|"RollbackBodyCut"|"FinalizeBodyCut";readonly transactionId:string}
   | {readonly kind:"Checkpoint"}
+  | {readonly kind:"FactoryCheckpoint"}
   | {readonly kind:"PrepareRestore";readonly transactionId:string;readonly checkpoint:HvpWorldCheckpoint;readonly replacements:readonly {index:number;mesh:HvpCollisionSector}[]}
   | {readonly kind:"CommitRestore"|"RollbackRestore"|"FinalizeRestore";readonly transactionId:string}
   | {readonly kind:"PrepareNeighbor";readonly transactionId:string;readonly checkpoint:HvpNeighborCheckpoint;
@@ -49,7 +65,7 @@ export type HvpPhysicsMessage = { readonly id: number } & (
   | {readonly kind:"PrepareBodyResidency"|"CommitBodyResidency"|"FinalizeBodyResidency"|"RollbackBodyResidency";readonly transactionId:string}
 );
 export type HvpPhysicsReply = { readonly id: number; readonly snapshot?: HvpPhysicsSnapshot; readonly error?: string; readonly rejected?: string;readonly bodyPreparation?:HvpMovingCutPreparation;
-  readonly checkpoint?:HvpWorldCheckpoint;readonly restoreState?:string;readonly clock?:HvpPhysicsClock;
+  readonly checkpoint?:HvpWorldCheckpoint;readonly factoryCheckpoint?:FactoryPhysicsCheckpoint;readonly restoreState?:string;readonly clock?:HvpPhysicsClock;
   readonly timings?:{origin:number;steps:readonly (readonly[number,number])[];dropped:number} };
 
 const port = globalThis as unknown as { onmessage: (event: MessageEvent<HvpPhysicsMessage>) => void; postMessage(reply: HvpPhysicsReply): void };
@@ -63,17 +79,43 @@ let measure=false,droppedTimings=0;
 let stepTimings:(readonly[number,number])[]=[];
 const clock={maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:"Initialize",lastHandlerMs:0,
   simulationHold:undefined as HvpPhysicsClock["simulationHold"],
-  delayedCallbacks:[] as {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[]};
+  delayedCallbacks:[] as {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;readWindow?:HvpPhysicsReadWindow}[]};
+let readWindow:HvpPhysicsReadWindow={count:0,buildMs:0,postMs:0,carrierBindingChars:0,ownerBindingChars:0,
+  firstReadId:null,lastReadId:null,firstTick:null,lastTick:null,priorAdvanceMs:null};
+let lastReadPost:Omit<HvpPhysicsReadPost,"reportedByReplyId">|undefined;
+let previousAdvanceMs:number|undefined;
 type RestoreState={id:string;transaction?:HvpWorldReplacement;recoveryHold?:boolean};
 let restore:RestoreState|undefined;
 // A single worker owns the coupled World. No other worker can mutate its handles.
 port.onmessage = async ({ data }) => {
   const started=performance.now();
+  let measuredRead:Readonly<{id:number;tick:number}>|undefined;
   const reply=(value:HvpPhysicsReply)=>{
     clock.lastCommand=data.kind;clock.lastHandlerMs=performance.now()-started;clock.maxHandlerMs=Math.max(clock.maxHandlerMs,clock.lastHandlerMs);
     const timings=measure?{origin:performance.timeOrigin,steps:stepTimings,dropped:droppedTimings}:undefined;
     if(measure){stepTimings=[];droppedTimings=0;}
-    port.postMessage({...value,clock:{...clock,timers:timer===undefined?0:1,delayedCallbacks:[...clock.delayedCallbacks]},timings});
+    const readClock:HvpPhysicsClock={...clock,timers:timer===undefined?0:1,delayedCallbacks:[...clock.delayedCallbacks],
+      ...(measure?{readWindow:{...readWindow},...(lastReadPost?{lastReadPost:{...lastReadPost,reportedByReplyId:data.id}}:{})}:{})};
+    const message={...value,clock:readClock,timings};
+    const readForPost=measuredRead;measuredRead=undefined;
+    const postStarted=measure&&readForPost?performance.now():0;
+    port.postMessage(message);
+    if(measure&&readForPost){
+      const postMs=performance.now()-postStarted;
+      readWindow={...readWindow,postMs:readWindow.postMs+postMs};
+      lastReadPost={readId:readForPost.id,tick:readForPost.tick,postMs};
+    }
+  };
+  const measureReadSnapshot=(read:()=>HvpPhysicsSnapshot):HvpPhysicsSnapshot=>{
+    const buildStarted=performance.now(),snapshot=read(),buildMs=performance.now()-buildStarted,facilities=snapshot.factoryFacilities;
+    const carrierBindingChars=facilities?.carrier?.materialBinding.length??0;
+    const ownerBindingChars=facilities?.owners.reduce((sum,owner)=>sum+owner.materialBinding.length,0)??0;
+    measuredRead={id:data.id,tick:snapshot.ticks};
+    readWindow={count:readWindow.count+1,buildMs:readWindow.buildMs+buildMs,postMs:readWindow.postMs,
+      carrierBindingChars:readWindow.carrierBindingChars+carrierBindingChars,ownerBindingChars:readWindow.ownerBindingChars+ownerBindingChars,
+      firstReadId:readWindow.firstReadId??data.id,lastReadId:data.id,firstTick:readWindow.firstTick??snapshot.ticks,lastTick:snapshot.ticks,
+      priorAdvanceMs:readWindow.priorAdvanceMs};
+    return snapshot;
   };
   let bodyPreparation:HvpMovingCutPreparation|undefined;
   let releasingHeld=false;
@@ -95,7 +137,7 @@ port.onmessage = async ({ data }) => {
       initializing = true;
       factoryEnabled=data.factoryEnabled===true;
       measure=data.measure===true;
-      session = await createHvpPhysicsSession(data.sectors, data.spawn, data.gravity, data.player, data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind,data.factoryEnabled,data.initialFactoryCargo);
+      session = await createHvpPhysicsSession(data.sectors, data.spawn, data.gravity, data.player, data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind,data.factoryEnabled,data.initialFactoryCargo,data.initialFactoryParts);
       if (disposed) { session.dispose(); }
       else {
         previous = performance.now();
@@ -103,16 +145,20 @@ port.onmessage = async ({ data }) => {
           try {
              const now = performance.now();
              const gapMs=now-previous;clock.maxTimerGapMs=Math.max(clock.maxTimerGapMs,gapMs);
+             const readWindowAtEntry=measure?{...readWindow,priorAdvanceMs:previousAdvanceMs??null}:undefined;
+             if(measure)readWindow={count:0,buildMs:0,postMs:0,carrierBindingChars:0,ownerBindingChars:0,
+               firstReadId:null,lastReadId:null,firstTick:null,lastTick:null,priorAdvanceMs:null};
              if(restore===undefined){const steps=session!.advance((now - previous) / 1000,measure);
                for(const step of steps??[]){if(stepTimings.length<1024){stepTimings.push(step);}else{droppedTimings+=1;}}}
               const advanceMs=performance.now()-now;clock.maxAdvanceMs=Math.max(clock.maxAdvanceMs,advanceMs);
               if(gapMs>40&&clock.simulationHold===undefined){
                 const state=session!.read();
                 if(state.status==="SimulationHold"){clock.simulationHold={gapMs,previousCommand:clock.lastCommand,
-                  handlerMs:clock.lastHandlerMs,advanceMs,backlogSeconds:state.backlogSeconds,ticks:state.ticks};}
+                  handlerMs:clock.lastHandlerMs,advanceMs,backlogSeconds:state.backlogSeconds,ticks:state.ticks,...(readWindowAtEntry?{readWindow:readWindowAtEntry}:{})};}
               }
-             if(gapMs>60){clock.delayedCallbacks.push({gapMs,previousCommand:clock.lastCommand,handlerMs:clock.lastHandlerMs,advanceMs});
+             if(gapMs>60){clock.delayedCallbacks.push({gapMs,previousCommand:clock.lastCommand,handlerMs:clock.lastHandlerMs,advanceMs,...(readWindowAtEntry?{readWindow:readWindowAtEntry}:{})});
                if(clock.delayedCallbacks.length>8){clock.delayedCallbacks.shift();}}
+             if(measure)previousAdvanceMs=advanceMs;
             previous = now;
           } catch (error) {
             clearInterval(timer);timer=undefined; session?.dispose(); disposed = true;
@@ -145,13 +191,16 @@ port.onmessage = async ({ data }) => {
       }
       if(restore){
         if(data.kind!=="Read"&&data.kind!=="Pause"&&data.kind!=="Inspect"){throw new Error("World replacement Pending");}
-        reply({id:data.id,snapshot:session.read(),restoreState:restore.recoveryHold?"RecoveryHold":restore.transaction?.state??"Preparing"});return;
+        const currentSession=session!;
+        const snapshot=data.kind==="Read"&&measure?measureReadSnapshot(()=>currentSession.read()):currentSession.read();
+        reply({id:data.id,snapshot,restoreState:restore.recoveryHold?"RecoveryHold":restore.transaction?.state??"Preparing"});return;
       }
       if(data.kind==="RecoverFactorySimulationHold"){
         session.recoverFactorySimulationHold(data.expectedTick);
         previous=performance.now();reply({id:data.id,snapshot:session.read()});return;
       }
       if(data.kind==="Checkpoint"){reply({id:data.id,snapshot:session.read(),checkpoint:session.checkpoint()});return;}
+      if(data.kind==="FactoryCheckpoint"){const factoryCheckpoint=session.checkpointFactory();reply({id:data.id,snapshot:session.read(),factoryCheckpoint});return;}
       if(data.kind.startsWith("Finalize")||data.kind.startsWith("Rollback")){
         const before=session.read();
         releasingHeld=before.status!=="Running"||before.terrainTransaction!=="Idle"
@@ -203,13 +252,14 @@ port.onmessage = async ({ data }) => {
       // Deliberately held transaction/pause time is not simulation backlog.
       if(data.kind==="Resume"||data.kind==="Play"||data.kind==="Drop"||releasingHeld){previous=performance.now();}
     }
-    reply({ id: data.id, snapshot: session?.read(data.kind==="Initialize"||data.kind==="PrepareBranch"),bodyPreparation });
+    const snapshot=session?(data.kind==="Read"&&measure?measureReadSnapshot(()=>session!.read()):session!.read(data.kind==="Initialize"||data.kind==="PrepareBranch")):undefined;
+    reply({ id: data.id, snapshot,bodyPreparation });
   } catch (error) {
     if(releasingHeld){previous=performance.now();}
     if(data.kind === "PrepareTerrain" || data.kind === "CommitTerrain" || data.kind === "RollbackTerrain" || data.kind === "FinalizeTerrain"
       ||data.kind==="PrepareBranch"||data.kind==="CommitBranch"||data.kind==="RollbackBranch"||data.kind==="FinalizeBranch"
       ||data.kind==="BeginBodyCut"||data.kind==="StageBodyCut"||data.kind==="CommitBodyCut"||data.kind==="RollbackBodyCut"||data.kind==="FinalizeBodyCut"
-      ||data.kind==="Checkpoint"||data.kind==="PrepareRestore"||data.kind==="CommitRestore"||data.kind==="RollbackRestore"||data.kind==="FinalizeRestore"
+      ||data.kind==="Checkpoint"||data.kind==="FactoryCheckpoint"||data.kind==="PrepareRestore"||data.kind==="CommitRestore"||data.kind==="RollbackRestore"||data.kind==="FinalizeRestore"
       ||data.kind==="PrepareNeighbor"||data.kind==="CommitNeighbor"||data.kind==="RollbackNeighbor"||data.kind==="FinalizeNeighbor"
       ||data.kind==="ParkDistantBodies"||data.kind==="RestoreNearBodies"||data.kind==="PrepareBodyResidency"||data.kind==="CommitBodyResidency"
       ||data.kind==="FinalizeBodyResidency"||data.kind==="RollbackBodyResidency"

@@ -1,0 +1,50 @@
+{
+  "atUtc": "2026-10-21T12:08:42.074Z",
+  "url": "http://127.0.0.1:5197/factory.html?factoryLoad=primary",
+  "status": "Paused",
+  "tick": 48547,
+  "position": {
+    "x": 6.582930088043213,
+    "y": 3.525001287460327,
+    "z": 8.5822114944458
+  },
+  "factorySteps": 8091,
+  "facilityCount": 10,
+  "massMg": 2984400000,
+  "persistence": {
+    "state": "Saved",
+    "message": "Combined Factory checkpoint saved locally",
+    "revision": 19,
+    "saveAvailable": true,
+    "continueAvailable": true
+  },
+  "host": {
+    "epoch": 1,
+    "nativeTick": 48547,
+    "remainderTicks": 1,
+    "sessionId": "hvp-session-1",
+    "steps": 8091
+  },
+  "slotMetadata": {
+    "slotId": "factory-primary",
+    "displayName": "factory-primary",
+    "recordRevision": 19,
+    "saveSchemaVersion": 1,
+    "gameVersion": "hestia-factory-play-v1",
+    "universeTick": 97094,
+    "payloadBytes": 13199495,
+    "contentHash": "sha256:a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+    "lastWriteReason": "ManualSave"
+  },
+  "slotHashes": {
+    "native": "49e0d5ad69dfdf9f0c7edfca95773b137ba9c1cc4533eecb6009479b9427e93f",
+    "nativeFactory": "f9ee4d22e38101353a70d159d56f6caf3a75a63b172059e43a65e00985e93d14",
+    "profiles": "ec5838d818ce3648ca4c46d5982385b2e5469a906c4cf83695363109d14c3962",
+    "host": "340776d6fe275c4ddb4244d9f6aee21e472716b850d6d28f721cbabac772da8d",
+    "factory": "2893c55c5aa95ae16c86a8015f0da4723edd9c8581cfa63351d70d0a80b2a7db",
+    "factoryExceptPublication": "a28af46d55ef28ed613bbcd852577c566a751c4ece6bea0b1f15d7223fb374bb"
+  },
+  "testBridge": false,
+  "transportPending": [],
+  "locked": false
+}

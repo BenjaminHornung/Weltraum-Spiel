@@ -28,6 +28,8 @@ export interface SaveWriteRequest {
   readonly expectedRevision: SaveRecordRevision | number | null;
   readonly envelope: unknown;
   readonly lastWriteReason: string;
+  /** Synchronous final witness checked at the atomic commit boundary; never persisted. */
+  readonly beforeCommit?: () => void;
 }
 
 export interface SaveReadResult {

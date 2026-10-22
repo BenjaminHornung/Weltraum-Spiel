@@ -1,7 +1,9 @@
 import {createFactoryInstallationProfile} from "../../../src/factory/construction/installationProfile";
+import * as factoryInstallationProfiles from "../../../src/factory/construction/installationProfile";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { R, initializeHvpRapier } from "../../../src/hestia-prototype/physics/rapierPort";
 import { createFactoryFacilitySession } from "../../../src/hestia-prototype/physics/factoryFacilitySession";
+import { inspectFactoryNativeWorldParts } from "../../../src/hestia-prototype/persistence/factoryWorldParts";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
 import { createHvpPhysicsSession } from "../../../src/hestia-prototype/physics/session";
 beforeAll(initializeHvpRapier);
@@ -105,19 +107,20 @@ it("W07 direct Cargo dispose then checkpoint rejects before any freed-World read
 import { readCargoHandlingProfile } from "../../../src/factory/construction/cargoHandlingProfile";
 import { createResourceContainerState } from "../../../src/resources/containers";
 import { canonicalJson } from "../../../src/resources/serialization";
-const carrierFixture = () => {
+const carrierFixture = (profileId = "C27-PACK") => {
   // Explicit synthetic native floor. This verifies Rapier authority, not the actual D07 route.
   const world = new R.World({ x: 0, y: -9.81, z: 0 });
   world.createCollider(R.ColliderDesc.cuboid(16, .125, 16).setTranslation(0, 1.125, 0));
   const site = createFactoryCargoSite(materializeFactoryStartSite());
   const actor = { x: -5.75, y: 2.17, z: 11.875 };
-  const facilities = createFactoryFacilitySession(world, () => true, () => 0, () => 0, site, () => actor);
+  let paused = true;
+  const facilities = createFactoryFacilitySession(world, () => paused, () => 0, () => 0, site, () => actor);
   const cargo = facilities.read().cargo!;
   facilities.openCargo({ ownerId: cargo.ownerId, profileDigest: cargo.profileDigest, expectedRevision: 0, expectedTerrainRevision: 0 });
-  const profile = readCargoHandlingProfile(createFp02Fixture("cargo").catalog, "C27-PACK")!;
+  const profile = readCargoHandlingProfile(createFp02Fixture("cargo").catalog, profileId)!;
   const command = { transactionId: "carrier_former_1", ownerId: "factory_carrier", profileId: profile.profileId, profileDigest: profile.digest,
     expectedRevision: facilities.read().revision, expectedTerrainRevision: 0, sourceContainerId: site.containerId, materialBinding: "actual-unit-c27-custody-candidate" };
-  return { world, facilities, command, cargo, actor };
+  return { world, facilities, command, cargo, actor, setPaused: (value: boolean) => { paused = value; } };
 };
 describe("W09 actual Native closed depot frame",()=>{
  const carrying=()=>{
@@ -152,6 +155,136 @@ describe("W09 actual Native closed depot frame",()=>{
    expect(()=>facilities.prepareCarrierDeposit(deposit)).toThrow(/CarrierSnapSweep/);expect(facilities.read().carrier?.phase).toBe("Carrying");expect([world.bodies.len(),world.colliders.len()]).toEqual(before);
   }finally{world.free();}
  });
+ it.each(["Carrying","Deposited"] as const)("round-trips the exact %s carrier pose, q1 geometry, mass, COM and inertia without fresh support admission",phase=>{
+  const source=carrying();let nextWorld:R.World|undefined;
+  try{
+   if(phase==="Deposited"){
+    source.facilities.prepareCarrierDeposit(source.deposit);source.facilities.commitCarrier(source.deposit.transactionId);
+    source.facilities.publishCarrier(source.deposit.transactionId);source.facilities.finalizeCarrier(source.deposit.transactionId);
+   }
+   const before=source.facilities.read().carrier!,beforeBody=source.world.getRigidBody(before.bodyHandle),checkpoint=JSON.parse(JSON.stringify(source.facilities.checkpointNative()));
+   expect(checkpoint.carrier.phase).toBe(phase);
+   if(phase==="Carrying")expect(checkpoint.carrier.positionMm.some((value:number)=>value%250!==0)).toBe(true);
+   nextWorld=new R.World({x:0,y:-9.81,z:0});nextWorld.createRigidBody(R.RigidBodyDesc.fixed().setTranslation(50,1,50));
+   const restored=createFactoryFacilitySession(nextWorld,()=>true,()=>0,()=>0,source.cargo.site,()=>source.actor,()=>undefined,()=>true,checkpoint);
+   const after=restored.read().carrier!,body=nextWorld.getRigidBody(after.bodyHandle)!;
+   expect(after).toMatchObject({ownerId:before.ownerId,transactionId:before.transactionId,profileId:before.profileId,phase,massMg:before.massMg,materialBinding:before.materialBinding});
+   expect(after.positionMm).toEqual(checkpoint.carrier.positionMm);expect(body.rotation()).toEqual(checkpoint.carrier.physicalRotation);
+   expect(body.mass()).toBe(beforeBody.mass());expect(body.localCom()).toEqual(beforeBody.localCom());expect(body.principalInertia()).toEqual(beforeBody.principalInertia());
+   expect(body.isKinematic()).toBe(phase==="Carrying");expect(body.isFixed()).toBe(phase==="Deposited");expect(after.colliderHandles).toHaveLength(5);
+   expect(after.colliderHandles.every(handle=>nextWorld!.getCollider(handle)?.parent()===body)).toBe(true);
+   expect(restored.checkpointNative()).toEqual(checkpoint);
+  }finally{nextWorld?.free();source.world.free();}
+ });
+ it("rejects sparse arrays throughout the Native checkpoint DTO",()=>{
+  const {world,facilities,command}=carrierFixture();
+  try{
+   facilities.prepareCarrier(command);facilities.commitCarrier(command.transactionId);facilities.publishCarrier(command.transactionId);facilities.finalizeCarrier(command.transactionId);
+   const checkpoint=JSON.parse(JSON.stringify(facilities.checkpointNative()));
+   expect(()=>inspectFactoryNativeWorldParts({...checkpoint,owners:new Array(1)})).toThrow(/Native Factory checkpoint membership/);
+   expect(()=>inspectFactoryNativeWorldParts({...checkpoint,completedTransactionIds:new Array(1)})).toThrow(/Native Factory checkpoint membership/);
+   expect(()=>inspectFactoryNativeWorldParts({...checkpoint,carrier:{...checkpoint.carrier,positionMm:new Array(3)}})).toThrow(/Invalid Native carrier checkpoint/);
+   const profile=createFactoryInstallationProfile("B06"),transactionId="sparse_installation";
+   const owner={ownerId:"sparse_owner",instanceId:"sparse_owner",transactionId,definitionRef:profile.definitionRef,profileDigest:profile.profileDigest,
+    sourceDigest:profile.sourceDigest,massMg:profile.massMg,materialBinding:"{}",centerMm:new Array(3),quarterTurns:1,installationRevision:1};
+   expect(()=>inspectFactoryNativeWorldParts({...checkpoint,owners:[owner],completedTransactionIds:[transactionId,checkpoint.carrier.transactionId]}))
+    .toThrow(/Invalid Native installation owner/);
+  }finally{world.free();}
+ });
+ it("binds carrier capture to executed movement poses before and after hydration",()=>{
+  const source=carrying();let nextWorld:R.World|undefined,tamperedWorld:R.World|undefined;
+  const move=(facilities:ReturnType<typeof createFactoryFacilitySession>,world:R.World,actor:{x:number;y:number;z:number})=>{
+   const from={...actor},to={...actor,x:actor.x+.05,z:actor.z-.05},commit=facilities.preparePlayerMove(from,to);
+   expect(typeof commit).toBe("function");if(commit===false)throw new Error("Expected the paired Carrier move to be admitted");
+   commit();world.step();Object.assign(actor,to);
+  };
+  try{
+   const initial=source.facilities.read().carrier!.positionMm;
+   move(source.facilities,source.world,source.actor);
+   const checkpoint=JSON.parse(JSON.stringify(source.facilities.checkpointNative()));
+   expect(checkpoint.carrier.positionMm).not.toEqual(initial);
+   nextWorld=new R.World({x:0,y:-9.81,z:0});nextWorld.createRigidBody(R.RigidBodyDesc.fixed().setTranslation(50,1,50));
+   nextWorld.createCollider(R.ColliderDesc.cuboid(16,.125,16).setTranslation(0,1.125,0));
+   const restored=createFactoryFacilitySession(nextWorld,()=>true,()=>0,()=>0,source.cargo.site,()=>source.actor,()=>undefined,()=>true,checkpoint);
+   expect(restored.checkpointNative()).toEqual(checkpoint);
+   move(restored,nextWorld,source.actor);
+   const moved=restored.read().carrier!;
+   expect(restored.checkpointNative().carrier?.positionMm).toEqual(moved.positionMm);
+   const body=nextWorld.getRigidBody(moved.bodyHandle)!,position=body.translation();
+   body.setTranslation({x:position.x+.25,y:position.y,z:position.z},false);
+   expect(()=>restored.checkpointNative()).toThrow(/MembershipNotProven/);
+   tamperedWorld=new R.World({x:0,y:-9.81,z:0});
+   const tampered=createFactoryFacilitySession(tamperedWorld,()=>true,()=>0,()=>0,source.cargo.site,()=>source.actor,()=>undefined,()=>true,checkpoint);
+   const tamperedCarrier=tampered.read().carrier!,tamperedBody=tamperedWorld.getRigidBody(tamperedCarrier.bodyHandle)!,inertia=tamperedBody.principalInertia();
+   const alteredInertia=vi.spyOn(tamperedBody,"principalInertia").mockReturnValue({x:inertia.x+1,y:inertia.y,z:inertia.z});
+   try{expect(()=>tampered.checkpointNative()).toThrow(/MembershipNotProven/);}finally{alteredInertia.mockRestore();}
+  }finally{tamperedWorld?.free();nextWorld?.free();source.world.free();}
+ });
+ it("captures and continues an ordinarily moved 26kg BELT4 carrier after pause and restore",()=>{
+  const source=carrierFixture("BELT4");let nextWorld:R.World|undefined,restoredPaused=true;
+  try{
+   expect(source.facilities.checkpointNative().carrier).toBeNull();
+   source.facilities.prepareCarrier(source.command);source.facilities.commitCarrier(source.command.transactionId);
+   source.facilities.publishCarrier(source.command.transactionId);source.facilities.finalizeCarrier(source.command.transactionId);
+   const picked=source.facilities.read().carrier!;
+   expect(picked).toMatchObject({profileId:"BELT4",massMg:26_000_000,phase:"Carrying"});
+   expect(source.facilities.checkpointNative().carrier?.massMg).toBe(26_000_000);
+
+   source.setPaused(false);
+   const steps=29,target={x:-6.2,z:10.475},dx=(target.x-source.actor.x)/steps,dz=(target.z-source.actor.z)/steps;
+   for(let index=0;index<steps;index++){
+    const from={...source.actor},to={...from,x:from.x+dx,z:from.z+dz},commit=source.facilities.preparePlayerMove(from,to);
+    expect(typeof commit).toBe("function");if(commit===false)throw new Error("Expected the ordinary BELT4 movement step to be admitted");
+    commit();source.world.step();Object.assign(source.actor,to);
+   }
+   source.setPaused(true);
+   const checkpoint=source.facilities.checkpointNative();
+   expect(checkpoint.carrier).toMatchObject({profileId:"BELT4",phase:"Carrying",massMg:26_000_000});
+   expect(checkpoint.carrier!.positionMm[0]).toBeCloseTo(target.x*1000,3);
+   expect(checkpoint.carrier!.positionMm[2]).toBeCloseTo((target.z-1)*1000,3);
+   nextWorld=new R.World({x:0,y:-9.81,z:0});nextWorld.createCollider(R.ColliderDesc.cuboid(16,.125,16).setTranslation(0,1.125,0));
+   const restored=createFactoryFacilitySession(nextWorld,()=>restoredPaused,()=>0,()=>0,source.cargo.site,()=>source.actor,()=>undefined,()=>true,checkpoint);
+   expect(restored.checkpointNative()).toEqual(checkpoint);
+   restoredPaused=false;
+   const from={...source.actor},to={...from,x:from.x+.05,z:from.z-.05},commit=restored.preparePlayerMove(from,to);
+   expect(typeof commit).toBe("function");if(commit===false)throw new Error("Expected restored BELT4 movement to be admitted");
+   commit();nextWorld.step();Object.assign(source.actor,to);restoredPaused=true;
+   const continued=restored.checkpointNative();
+   expect(continued.carrier).toMatchObject({profileId:"BELT4",phase:"Carrying",massMg:26_000_000});
+   expect(continued.carrier!.positionMm).not.toEqual(checkpoint.carrier!.positionMm);
+   expect(continued.carrier!.positionMm[0]).toBeCloseTo(to.x*1000,3);
+   expect(continued.carrier!.positionMm[2]).toBeCloseTo((to.z-1)*1000,3);
+  }finally{nextWorld?.free();source.world.free();}
+ });
+ it.each([
+  ["two float32 ULPs",0.7499998807907104],
+  ["a non-float32 value",0.75000001],
+  ["a non-finite value",Number.NaN]
+ ] as const)("rejects carried COM drift of %s",(_label,comY)=>{
+  const source=carrierFixture("BELT4");
+  try{
+   source.facilities.prepareCarrier(source.command);source.facilities.commitCarrier(source.command.transactionId);
+   source.facilities.publishCarrier(source.command.transactionId);source.facilities.finalizeCarrier(source.command.transactionId);
+   const carrier=source.facilities.read().carrier!,body=source.world.getRigidBody(carrier.bodyHandle)!;
+   const altered=vi.spyOn(body,"localCom").mockReturnValue({x:0,y:comY,z:0});
+   try{expect(()=>source.facilities.checkpointNative()).toThrow(/MembershipNotProven/);}finally{altered.mockRestore();}
+  }finally{source.world.free();}
+ });
+});
+
+it("restores a paid fixed owner on missing support and still proves its Native geometry",()=>{
+ const source=carrierFixture();let nextWorld:R.World|undefined;
+ try{
+  const paidOwnerRequest={...request,expectedRevision:source.facilities.read().revision};
+  source.facilities.prepare(paidOwnerRequest);source.facilities.commit(paidOwnerRequest.transactionId);source.facilities.publish(paidOwnerRequest.transactionId);source.facilities.finalize(paidOwnerRequest.transactionId);
+  const checkpoint=JSON.parse(JSON.stringify(source.facilities.checkpointNative()));
+  nextWorld=new R.World({x:0,y:-9.81,z:0});
+  const restored=createFactoryFacilitySession(nextWorld,()=>true,()=>0,()=>0,source.cargo.site,()=>source.actor,()=>undefined,()=>false,checkpoint);
+  const read=restored.read();expect(read.state).toBe("Idle");expect(read.owners).toHaveLength(1);
+  expect(read.partObservations?.[0]).toMatchObject({confirmed:true,complete:true});
+  expect(read.production?.[0]).toMatchObject({confirmed:true,supported:false});
+  expect(restored.checkpointNative()).toEqual(checkpoint);
+ }finally{nextWorld?.free();source.world.free();}
 });
 describe("W09 paid SAME-world Native carrier", () => {
   it("consumes one paid local Former BOM depot atomically into the fixed machine and restores all original members on rollback",()=>{
@@ -332,14 +465,74 @@ it("W09 admits exactly four paid C14 metres and one finite C23 drive as one supp
 it("W09 publishes the actual paired Native carrier veto without moving poses or members and clears it only on adopted movement",()=>{
  const {world,facilities,command,actor}=carrierFixture();try{
   facilities.prepareCarrier(command);facilities.commitCarrier(command.transactionId);facilities.publishCarrier(command.transactionId);facilities.finalizeCarrier(command.transactionId);
-  const blocker=world.createRigidBody(R.RigidBodyDesc.kinematicPositionBased().setTranslation(-6.75,2,10.875));world.createCollider(R.ColliderDesc.cuboid(.1,.1,.1),blocker);world.updateSceneQueries();
+  const blocker=world.createRigidBody(R.RigidBodyDesc.kinematicPositionBased().setTranslation(-6.75,2,10.875)),blockerCollider=world.createCollider(R.ColliderDesc.cuboid(.1,.1,.1),blocker);world.updateSceneQueries();
   const carrier=facilities.read().carrier!,body=world.getRigidBody(carrier.bodyHandle),pose={...body.translation()},members=[world.bodies.len(),world.colliders.len()];
   const target={...actor,x:-6.75};expect(facilities.preparePlayerMove(actor,target)).toBe(false);
-  expect((facilities.read() as any).lastCarrierVeto).toMatchObject({reason:"CarrierOverlap",targetMm:[-6750,actor.y*1000,11875]});
+  expect(facilities.read().lastCarrierVeto).toMatchObject({reason:"CarrierOverlap",targetMm:[-6750,actor.y*1000,11875],colliderHandle:blockerCollider.handle,colliderShapeType:blockerCollider.shapeType()});
   expect(body.translation()).toEqual(pose);expect([world.bodies.len(),world.colliders.len()]).toEqual(members);
   const neutral=facilities.preparePlayerMove(actor,actor);expect(typeof neutral).toBe("function");if(neutral!==false)neutral();expect((facilities.read() as any).lastCarrierVeto).toBeDefined();
   world.removeRigidBody(blocker);world.updateSceneQueries();const move=facilities.preparePlayerMove(actor,target);expect(typeof move).toBe("function");if(move===false)return;
   expect((facilities.read() as any).lastCarrierVeto).toBeDefined();move();world.step();Object.assign(actor,target);expect((facilities.read() as any).lastCarrierVeto).toBeUndefined();
+ }finally{world.free();}
+});
+
+it("keeps a captured sweep query around the actual Native support foot at the Float32 commit boundary",()=>{
+ const {world,facilities,command,actor}=carrierFixture("BELT4");
+ try{
+  facilities.prepareCarrier(command);facilities.commitCarrier(command.transactionId);facilities.publishCarrier(command.transactionId);facilities.finalizeCarrier(command.transactionId);
+  const moveActor=(x:number)=>{
+   const from={...actor},to={...from,x},commit=facilities.preparePlayerMove(from,to);
+   expect(typeof commit).toBe("function");if(commit===false)throw new Error("Expected the paired Native move to be admitted");
+   commit();world.step();Object.assign(actor,to);
+  };
+  moveActor(7.750001430511475);
+  const carrier=facilities.read().carrier!,body=world.getRigidBody(carrier.bodyHandle)!,bodyStart=body.translation();
+  const nativeFoot=carrier.colliderHandles.map(handle=>world.getCollider(handle)!).find(c=>{
+   const half=c.halfExtents(),position=c.translation();
+   return half.x<.1&&half.z<.1&&position.x>bodyStart.x&&position.z>bodyStart.z;
+  });
+  if(!nativeFoot)throw new Error("Expected the actual Native q1 support foot");
+  const footStart={...nativeFoot.translation()};
+
+  const probeBody=world.createRigidBody(R.RigidBodyDesc.fixed());
+  world.createCollider(R.ColliderDesc.cuboid(.05,.05,.05).setTranslation(14,2,14),probeBody);
+  world.updateSceneQueries();
+  // Replay this real, distant Native hit only to enter the already-proven fallback
+  // at the measured foot; no blocker is placed in the tested movement path.
+  const injectedSweep=world.castShape({x:13,y:2,z:14},{x:0,y:0,z:0,w:1},{x:2,y:0,z:0},new R.Cuboid(.01,.01,.01),1,true);
+  if(!injectedSweep)throw new Error("Expected a real Native Sweep witness for the isolated fallback trigger");
+
+  const sweepQueries:{center:{x:number;y:number;z:number};half:{x:number;y:number;z:number}}[]=[];
+  let captureNextSweepVolume=false;
+  const intersections=world.intersectionsWithShape.bind(world);
+  vi.spyOn(world,"intersectionsWithShape").mockImplementation((position,rotation,shape,callback,...filters)=>{
+   if(captureNextSweepVolume&&shape instanceof R.Cuboid&&rotation.x===0&&rotation.y===0&&rotation.z===0&&rotation.w===1){
+    sweepQueries.push({center:{...position},half:{...shape.halfExtents}});
+    captureNextSweepVolume=false;
+   }
+   return intersections(position,rotation,shape,callback,...filters);
+  });
+  const cast=world.castShape.bind(world);let fallbackEntered=false,queryHalf:{x:number;y:number;z:number}|undefined;
+  vi.spyOn(world,"castShape").mockImplementation((position,rotation,velocity,shape,maxToi,stopAtPenetration,...filters)=>{
+   if(!fallbackEntered&&shape instanceof R.Cuboid&&Math.hypot(position.x-footStart.x,position.y-footStart.y,position.z-footStart.z)<1e-6){
+    fallbackEntered=true;captureNextSweepVolume=true;queryHalf={...shape.halfExtents};return injectedSweep;
+   }
+   return cast(position,rotation,velocity,shape,maxToi,stopAtPenetration,...filters);
+  });
+  const from={...actor},to={...from,z:from.z+.05},commit=facilities.preparePlayerMove(from,to);
+  expect(typeof commit).toBe("function");if(commit===false)throw new Error("Expected the captured fallback to admit its clear whole volume");
+  expect(fallbackEntered).toBe(true);expect(sweepQueries).toHaveLength(1);
+  commit();world.step();Object.assign(actor,to);
+
+  const actualFoot={...nativeFoot.translation()},bodyEnd=body.translation(),volume=sweepQueries[0]!,half=queryHalf!;
+  expect(bodyEnd.x).toBe(7.750001430511475);expect(actualFoot.x).toBe(8.000000953674316);
+  // The selected Native foot is square in X/Z; its actual post-step center and the
+  // query's own shrunken shape define the swept endpoint faces without private math.
+  for(const point of [footStart,actualFoot])for(const axis of ["x","y","z"] as const){
+   const actualLower=Math.fround(point[axis]-half[axis]),actualUpper=Math.fround(point[axis]+half[axis]);
+   const volumeLower=Math.fround(volume.center[axis]-volume.half[axis]),volumeUpper=Math.fround(volume.center[axis]+volume.half[axis]);
+   expect(volumeLower).toBeLessThanOrEqual(actualLower);expect(volumeUpper).toBeGreaterThanOrEqual(actualUpper);
+  }
  }finally{world.free();}
 });
 
@@ -468,11 +661,13 @@ it("PLAY06 NativeRead recomputes coverage and disabled native ground on each lat
  }finally{f.world.free();}
 });
 it("PLAY06 NativeRead rejects a newly removed real facility collider without cross-read proof reuse",()=>{
- const f=nativeReadFixture();try{
-  const first=f.facility.read();expect(first.production![0].confirmed).toBe(true);
+ const f=nativeReadFixture(),profileConstruction=vi.spyOn(factoryInstallationProfiles,"createFactoryInstallationProfile");try{
+  profileConstruction.mockClear();
+  const first=f.facility.read();expect(first.production![0].confirmed).toBe(true);expect(profileConstruction).not.toHaveBeenCalled();
   f.world.removeCollider(f.world.getCollider(first.owners[0].colliderHandles[0]!),true);f.world.updateSceneQueries();
   const removed=f.facility.read();expect(removed.revision).toBe(first.revision);expect(removed.production![0].confirmed).toBe(false);expect(removed.powerPorts![0].confirmed).toBe(false);
- }finally{f.world.free();}
+  expect(profileConstruction).not.toHaveBeenCalled();
+ }finally{profileConstruction.mockRestore();f.world.free();}
 });
 
 

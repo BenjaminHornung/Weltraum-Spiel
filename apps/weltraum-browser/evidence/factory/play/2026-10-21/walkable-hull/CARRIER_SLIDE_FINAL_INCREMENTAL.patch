@@ -1,0 +1,311 @@
+diff --git "a/E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\src\\hestia-prototype\\player\\locomotion.ts" "b/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hestia-prototype\\player\\locomotion.ts"
+index 0cedf51..a91c78d 100644
+--- "a/E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\src\\hestia-prototype\\player\\locomotion.ts"
++++ "b/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hestia-prototype\\player\\locomotion.ts"
+@@ -7,9 +7,10 @@ export interface HvpCollisionCoverage { readonly minX: number; readonly maxX: nu
+ 
+ export type HvpPairedMoveGuard = (from: Readonly<{ x: number; y: number; z: number }>, to: Readonly<{ x: number; y: number; z: number }>) => false | (() => void);
+ export type HvpPairedMoveLimiter = (from: Readonly<{ x: number; y: number; z: number }>, to: Readonly<{ x: number; y: number; z: number }>) => number;
++export type HvpPairedMoveAxisEligibility = (from: Readonly<{ x: number; y: number; z: number }>, to: Readonly<{ x: number; y: number; z: number }>) => boolean;
+ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number; y: number; z: number }>,
+   gravity: number, covered: (x: number, z: number) => boolean, saved?:HvpPlayerCheckpoint, pairedMoveGuard?: HvpPairedMoveGuard,
+-  pairedMoveLimiter?: HvpPairedMoveLimiter) => {
++  pairedMoveLimiter?: HvpPairedMoveLimiter, pairedMoveAxisEligibility?: HvpPairedMoveAxisEligibility) => {
+   if (![spawn.x, spawn.y, spawn.z, gravity].every(Number.isFinite) || gravity <= 0) { throw new RangeError("Invalid player admission"); }
+   if(saved){validateHvpPlayerCheckpoint(saved,gravity);}
+   const initial=saved?.position??spawn;
+@@ -115,6 +116,9 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
+       let computed = computeMovement(position, dx, dz, desiredY, grounded, velocityY);
+       grounded = computed.grounded; velocityY = computed.velocityY;
+       let next = { x: position.x + computed.movement.x, y: position.y + computed.movement.y, z: position.z + computed.movement.z };
++      coverageHold = [-radius, radius].some(x => [-radius, radius].some(z => !covered(next.x + x, next.z + z)));
++      if (coverageHold) { grounded = previous.grounded; velocityY = 0; jumpCount = previous.jumpCount; jumpPending = false; return; }
++      const originalNext=next;
+       let paired = pairedMoveGuard?.(position, next);
+       if (paired === false && pairedMoveLimiter !== undefined) {
+         let scale: number;
+@@ -124,19 +128,54 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
+           grounded = previous.grounded; velocityY = previous.velocityY; jumpCount = previous.jumpCount;
+           throw new RangeError("Invalid paired movement prefix");
+         }
+-        if (scale === 0) { grounded = previous.grounded; velocityY = previous.velocityY; jumpCount = previous.jumpCount; return; }
+-        if (scale < 1) {
+-          const retryDx = dx * scale, retryDz = dz * scale;
+-          coverageHold = [-radius, radius].some(x => [-radius, radius].some(z => !covered(position.x + retryDx + x, position.z + retryDz + z)));
+-          if (coverageHold) { grounded = previous.grounded; velocityY = 0; jumpCount = previous.jumpCount; jumpPending = false; return; }
+-          grounded = preCompute.grounded; velocityY = preCompute.velocityY; jumpCount = preCompute.jumpCount;
+-          computed = computeMovement(position, retryDx, retryDz, desiredY, grounded, velocityY);
+-          grounded = computed.grounded; velocityY = computed.velocityY;
+-          next = { x: position.x + computed.movement.x, y: position.y + computed.movement.y, z: position.z + computed.movement.z };
++        if (scale !== 0) {
++          if (scale < 1) {
++            const retryDx = dx * scale, retryDz = dz * scale;
++            coverageHold = [-radius, radius].some(x => [-radius, radius].some(z => !covered(position.x + retryDx + x, position.z + retryDz + z)));
++            if (coverageHold) { grounded = previous.grounded; velocityY = 0; jumpCount = previous.jumpCount; jumpPending = false; return; }
++            grounded = preCompute.grounded; velocityY = preCompute.velocityY; jumpCount = preCompute.jumpCount;
++            computed = computeMovement(position, retryDx, retryDz, desiredY, grounded, velocityY);
++            grounded = computed.grounded; velocityY = computed.velocityY;
++            next = { x: position.x + computed.movement.x, y: position.y + computed.movement.y, z: position.z + computed.movement.z };
++            coverageHold = [-radius, radius].some(x => [-radius, radius].some(z => !covered(next.x + x, next.z + z)));
++            if (coverageHold) { grounded = previous.grounded; velocityY = 0; jumpCount = previous.jumpCount; jumpPending = false; return; }
++          }
++          // A successful probe is only evidence; the unchanged paired guard
++          // must return the one closure that commits both poses for this step.
++          paired = pairedMoveGuard?.(position, next);
++        }
++      }
++      if (paired === false && pairedMoveAxisEligibility !== undefined && dx !== 0 && dz !== 0) {
++        const rollback = (): void => { grounded = previous.grounded; velocityY = previous.velocityY; jumpCount = previous.jumpCount; };
++        try {
++          // The eligibility hook must freshly classify the original endpoint;
++          // the scalar-prefix probes may have left a veto for a different pose.
++          if (pairedMoveAxisEligibility(position, originalNext) === true) {
++            const axes: readonly (readonly [number, number])[] = Math.abs(dx) >= Math.abs(dz)
++              ? [[dx, 0], [0, dz]] : [[0, dz], [dx, 0]];
++            for (let index = 0; index < axes.length; index += 1) {
++              const [axisX, axisZ] = axes[index]!;
++              coverageHold = [-radius, radius].some(x => [-radius, radius].some(z => !covered(position.x + axisX + x, position.z + axisZ + z)));
++              if (coverageHold) { rollback(); return; }
++              computed = computeMovement(position, axisX, axisZ, desiredY, preCompute.grounded, preCompute.velocityY);
++              const movement = computed.movement;
++              if (![movement.x, movement.y, movement.z].every(Number.isFinite)) throw new RangeError("Invalid axis movement result");
++              next = { x: position.x + movement.x, y: position.y + movement.y, z: position.z + movement.z };
++              coverageHold = [-radius, radius].some(x => [-radius, radius].some(z => !covered(next.x + x, next.z + z)));
++              if (coverageHold) { rollback(); return; }
++              if (movement.x === 0 && movement.z === 0) { rollback(); return; }
++              grounded = computed.grounded; velocityY = computed.velocityY; jumpCount = preCompute.jumpCount;
++              paired = pairedMoveGuard?.(position, next);
++              if (paired !== false) break;
++              // Only a fresh contact veto at axis one's computed endpoint can
++              // authorize trying the other original component.
++              if (index === 0 && pairedMoveAxisEligibility(position, next) !== true) break;
++            }
++          }
++        } catch (error) {
++          rollback();
++          throw error;
+         }
+-        // A successful probe is only evidence; the unchanged paired guard
+-        // must return the one closure that commits both poses for this step.
+-        paired = pairedMoveGuard?.(position, next);
+       }
+       if (paired === false) { grounded = previous.grounded; velocityY = previous.velocityY; jumpCount = previous.jumpCount; return; }
+       paired?.(); body.setNextKinematicTranslation(next);
+diff --git "a/E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\factoryFacilitySession.ts" "b/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\factoryFacilitySession.ts"
+index 626e340..53654b2 100644
+--- "a/E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\factoryFacilitySession.ts"
++++ "b/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\factoryFacilitySession.ts"
+@@ -118,7 +118,12 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+   let carrier: FactoryNativeCarrierRead | undefined;
+   let carrierColliderProofs:ReadonlyMap<number,Readonly<{object:R.Collider;shape:R.Shape;bytes:string}>>|undefined;
+   let lastCarrierVeto:FactoryCarrierVeto|undefined;
++  let carrierMoveHardFailure=false;
+   const currentCarrierVeto=():FactoryCarrierVeto|undefined=>lastCarrierVeto;
++  const hasFreshCarrierContactVeto=(to:Readonly<{x:number;y:number;z:number}>):boolean=>{
++    const veto=currentCarrierVeto(),targetMm=[to.x*1000,to.y*1000,to.z*1000];
++    return !!veto&&veto.targetMm.every((value,index)=>value===targetMm[index])&&(veto.reason==="CarrierOverlap"||veto.reason==="CarrierSweep");
++  };
+   let carrierDefinition: CargoHandlingProfile | undefined;
+   let carrierWork: { request: FactoryCarrierRequest; before: ReturnType<typeof members>; previousRevision: number;
+     bodyBytes: string; colliders: ReadonlyMap<number, Readonly<{ object: R.Collider; shape: R.Shape; bytes: string }>>;
+@@ -290,10 +295,12 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+     const light = profile.sizeMm[0] === 500;
+     const rawX=actor.x,rawZ=actor.z-(light?.75:1),x=snap?Math.round(rawX*4)/4:rawX,z=snap?Math.round(rawZ*4)/4:rawZ;
+     if(snap&&(Math.abs(x-rawX)>.125001||Math.abs(z-rawZ)>.125001))reject("CarrierSnapDistance");
+-    const ground = world.castRayAndGetNormal(new R.Ray({ x, y: actor.y + 1, z }, { x: 0, y: -1, z: 0 }), 6, true, undefined, undefined, undefined, undefined,
++    const rayOriginY=Math.fround(actor.y+1);
++    if(!Number.isFinite(rayOriginY))reject("CarrierSupport");
++    const ground = world.castRayAndGetNormal(new R.Ray({ x, y: rayOriginY, z }, { x: 0, y: -1, z: 0 }), 6, true, undefined, undefined, undefined, undefined,
+       collider => obstacle(collider) && (collider.parent()?.isFixed() ?? true));
+     if (!ground || ground.normal.y < .9) reject("CarrierSupport");
+-    const y = actor.y + 1 - ground!.toi, offset = light ? .0625 : .25;
++    const y = rayOriginY - ground!.toi, offset = light ? .0625 : .25;
+     for (const dx of [-offset, offset]) for (const dz of [-offset, offset]) for (const sx of [-.06249, -.03125, 0, .03125, .06249]) for (const sz of [-.06249, -.03125, 0, .03125, .06249]) {
+       const px = x + dx + sx, pz = z + dz + sz;
+       if (!covered(px, pz)) reject("CarrierCoverage");
+@@ -512,12 +519,15 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+     },
+     preparePlayerMove(from: Readonly<{ x: number; y: number; z: number }>, to: Readonly<{ x: number; y: number; z: number }>): false | (() => void) {
+       if (!carrier || carrier.phase !== "Carrying") return () => {};
+-      if (recovery || carrierWork || pending || !carrierDefinition) return false;
++      if (recovery || carrierWork || pending || !carrierDefinition) { carrierMoveHardFailure=true;return false; }
+       const body = world.getRigidBody(carrier.bodyHandle), profile = carrierDefinition, actual = actorPosition();
+       if (!body || !body.isKinematic() || !body.isEnabled() || !actual || Math.hypot(from.x - actual.x, from.y - actual.y, from.z - actual.z) > 1e-6) hold();
+       const current = body.translation(), offset = profile.sizeMm[0] === 500 ? .75 : 1;
+       if (Math.hypot(current.x - from.x, current.z - (from.z - offset)) > 1e-5) hold();
+-      const veto=(reason:string,details:Omit<FactoryCarrierVeto,"reason"|"targetMm">={})=>{lastCarrierVeto=Object.freeze({reason,targetMm:Object.freeze([to.x*1000,to.y*1000,to.z*1000]) as FactoryVector,...details});return false as const;};
++      const veto=(reason:string,details:Omit<FactoryCarrierVeto,"reason"|"targetMm">={})=>{
++        if(reason!=="CarrierOverlap"&&reason!=="CarrierSweep")carrierMoveHardFailure=true;
++        lastCarrierVeto=Object.freeze({reason,targetMm:Object.freeze([to.x*1000,to.y*1000,to.z*1000]) as FactoryVector,...details});return false as const;
++      };
+       try {
+         const pose = carrierPose(profile, to); assertCarrierClearance(profile, pose, true);
+         const delta = { x: pose.x - current.x, y: pose.y - current.y, z: pose.z - current.z };
+@@ -545,14 +555,13 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+       }
+     },
+     limitPlayerMove(from: Readonly<{ x: number; y: number; z: number }>, to: Readonly<{ x: number; y: number; z: number }>): number {
++      carrierMoveHardFailure=false;
+       const probe=(scale:number):Readonly<{pass:boolean;refinable:boolean}>=>{
+         const target={x:from.x+(to.x-from.x)*scale,y:to.y,z:from.z+(to.z-from.z)*scale};
+         lastCarrierVeto=undefined;
+         const prepared=this.preparePlayerMove(from,target);
+         if(prepared!==false)return {pass:true,refinable:false};
+-        const veto=currentCarrierVeto(),targetMm=[target.x*1000,target.y*1000,target.z*1000];
+-        const fresh=!!veto&&veto.targetMm.every((value,index)=>value===targetMm[index]);
+-        return {pass:false,refinable:fresh&&(veto?.reason==="CarrierOverlap"||veto?.reason==="CarrierSweep")};
++        return {pass:false,refinable:hasFreshCarrierContactVeto(target)};
+       };
+       // Only a freshly reproduced collision bound admits bisection. Probe
+       // preparations never execute their closures or mutate the World.
+@@ -568,6 +577,11 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+       }
+       return low;
+     },
++    canSlidePlayerMove(from:Readonly<{x:number;y:number;z:number}>,to:Readonly<{x:number;y:number;z:number}>):boolean{
++      if(carrierMoveHardFailure)return false;
++      lastCarrierVeto=undefined;
++      return this.preparePlayerMove(from,to)===false&&hasFreshCarrierContactVeto(to);
++    },
+     prepareCarrierDeposit(request: FactoryCarrierRequest): FactoryFacilityRead {
+       if (!safePaused() || recovery || pending || carrierWork || carrier?.phase !== "Carrying") reject("CarrierNotCarryingPaused");
+       if (![request.transactionId, request.ownerId].every(isSaveSafeResourceId) || request.ownerId !== carrier!.ownerId || completed.has(request.transactionId)) reject("CarrierTransactionMismatch");
+diff --git "a/E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\session.ts" "b/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\session.ts"
+index 1e49a6d..01cbdb0 100644
+--- "a/E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\session.ts"
++++ "b/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\session.ts"
+@@ -135,7 +135,8 @@ export const createHvpPhysicsSession = async (
+     const character = player === undefined ? undefined : createHvpLocomotion(world, player.spawn, gravity,
+       (x, z) => coverage.some(s => x >= s.minX && x < s.maxX && z >= s.minZ && z < s.maxZ),saved?.player??undefined,
+       factoryEnabled ? (from, to) => facilities?.preparePlayerMove(from, to) ?? (() => {}) : undefined,
+-      factoryEnabled ? (from, to) => facilities?.limitPlayerMove(from, to) ?? 0 : undefined);
++      factoryEnabled ? (from, to) => facilities?.limitPlayerMove(from, to) ?? 0 : undefined,
++      factoryEnabled ? (from, to) => facilities?.canSlidePlayerMove(from, to) ?? false : undefined);
+     disposeInitializationResources=()=>character?.dispose();
+     let stepCpuMs = 0;
+     let stepTimings:[number,number][]|undefined;
+diff --git "a/E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\tests\\unit\\hvp-locomotion.test.ts" "b/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\tests\\unit\\hvp-locomotion.test.ts"
+index ac076f1..c138365 100644
+--- "a/E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\tests\\unit\\hvp-locomotion.test.ts"
++++ "b/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\tests\\unit\\hvp-locomotion.test.ts"
+@@ -177,6 +177,7 @@ import { createFactoryFacilitySession } from "../../src/hestia-prototype/physics
+ import { createFactoryCargoSite } from "../../src/factory/fixtures/cargoSite";
+ import { materializeFactoryStartSite } from "../../src/factory/fixtures/startSite";
+ import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
++import { createFactoryInstallationProfile } from "../../src/factory/construction/installationProfile";
+ import { readCargoHandlingProfile } from "../../src/factory/construction/cargoHandlingProfile";
+ const pairedCarrierRig = (withLimiter=false, factoryCovered:(x:number,z:number)=>boolean=()=>true) => {
+   const world = new R.World({ x: 0, y: -9.81, z: 0 }); world.timestep = 1 / 60;
+@@ -184,7 +185,8 @@ const pairedCarrierRig = (withLimiter=false, factoryCovered:(x:number,z:number)=
+   let facilities: ReturnType<typeof createFactoryFacilitySession> | undefined;
+   const player = createHvpLocomotion(world, { x: -5.75, y: 2.17, z: 11.875 }, 9.81, () => true, undefined,
+     (from, to) => facilities?.preparePlayerMove(from, to) ?? (() => {}),
+-    withLimiter ? (from, to) => facilities?.limitPlayerMove(from, to) ?? 0 : undefined);
++    withLimiter ? (from, to) => facilities?.limitPlayerMove(from, to) ?? 0 : undefined,
++    withLimiter ? (from, to) => facilities?.canSlidePlayerMove(from, to) ?? false : undefined);
+   let playerHandle: number | undefined; world.forEachRigidBody(body => { if (body.isKinematic()) playerHandle = body.handle; });
+   player.setEnabled(true); const ticks = (n: number) => { for (let i = 0; i < n; i++) { player.step(); world.step(); } }; ticks(10);
+   facilities = createFactoryFacilitySession(world, () => true, () => 0, () => 0, createFactoryCargoSite(materializeFactoryStartSite()),
+@@ -250,6 +252,71 @@ describe("W09 paired actual Native carrier locomotion", () => {
+       expect(r.player.read().grounded).toBe(true);
+     }finally{r.dispose();}
+   });
++  it("slides an oblique actual carrier move along the free original axis in one World step",()=>{
++    const r=pairedCarrierRig(true);try{
++      r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,3).setTranslation(-7.27,2,10.875));r.world.updateSceneQueries();
++      r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.ticks(60);
++      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
++      expect(before.x).toBeLessThan(-6.45);expect(before.z).toBeLessThan(10);
++      r.player.step();
++      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
++      r.world.step();
++      const after=r.player.read().position,carrierAfter=carrier.translation();
++      expect(after.x).toBeCloseTo(before.x,3);expect(after.z).toBeLessThan(before.z-.02);
++      expect(carrierAfter.x).toBeCloseTo(carrierBefore.x,3);expect(carrierAfter.x).toBeCloseTo(after.x,4);
++      expect(carrierAfter.z).toBeCloseTo(after.z-1,4);
++    }finally{r.dispose();}
++  });
++  it("keeps an axis-one carrier coverage veto hard when the other axis is available",()=>{
++    let rejectXAxis=false;
++    const r=pairedCarrierRig(true,(_x,z)=>!rejectXAxis||z<11.36);try{
++      r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,.3).setTranslation(-6.52,2,10.875));r.world.updateSceneQueries();
++      r.facilities.limitPlayerMove=()=>0;
++      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
++      const zOnly=r.facilities.preparePlayerMove(before,{x:before.x,y:before.y,z:before.z-Math.SQRT1_2*.05});
++      expect(zOnly).not.toBe(false);
++      rejectXAxis=true;r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.player.step();
++      r.world.step();
++      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
++      expect(r.facilities.read().lastCarrierVeto?.reason).toBe("CarrierCoverage");
++    }finally{r.dispose();}
++  });
++  it("keeps a hard mid-bisection coverage veto from authorizing an otherwise clear axis",()=>{
++    let rejectMidpoint=false;
++    const r=pairedCarrierRig(true,(x,z)=>!rejectMidpoint||x<=-5.773||x>=-5.762||z<=10.852||z>=10.862);try{
++      r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,.02).setTranslation(-6.5201,2,11.385));r.world.updateSceneQueries();
++      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
++      const zOnly=r.facilities.preparePlayerMove(before,{x:before.x,y:before.y,z:before.z-Math.SQRT1_2*.05});
++      expect(zOnly).not.toBe(false);
++      rejectMidpoint=true;r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.player.step();
++      r.world.step();
++      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
++      expect(r.facilities.read().lastCarrierVeto?.reason).toBe("CarrierCoverage");
++      rejectMidpoint=false;
++      for(let attempt=0;attempt<4;attempt++){r.player.step();r.world.step();}
++      const resumed=r.player.read().position,resumedCarrier=carrier.translation();
++      expect(Math.hypot(resumed.x-before.x,resumed.z-before.z)).toBeGreaterThan(.01);
++      expect(resumedCarrier.x).toBeCloseTo(resumed.x,4);expect(resumedCarrier.z).toBeCloseTo(resumed.z-1,4);
++    }finally{r.dispose();}
++  });
++  it("does not let a stale contact veto authorize motion while a real Native owner is pending",()=>{
++    const r=pairedCarrierRig(true);try{
++      const wall=r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,.3).setTranslation(-6.5201,2,10.875));r.world.updateSceneQueries();
++      const before=r.player.read().position,target={x:before.x-.05/Math.SQRT2,y:before.y,z:before.z-.05/Math.SQRT2};
++      expect(r.facilities.preparePlayerMove(before,target)).toBe(false);
++      expect(r.facilities.read().lastCarrierVeto?.reason).toBe("CarrierOverlap");
++      r.world.removeCollider(wall,false);r.world.updateSceneQueries();
++      const profile=createFactoryInstallationProfile("B06");
++      r.facilities.prepare({transactionId:"pending_slide_build",ownerId:"pending_slide_build",instanceId:"pending_slide_build",
++        definitionRef:profile.definitionRef,profileDigest:profile.profileDigest,expectedRevision:r.facilities.read().revision,
++        expectedTerrainRevision:0,materialBinding:"pending-carrier-slide-fixture",centerMm:[-6250,1500,5000],quarterTurns:1});
++      const carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
++      expect(r.facilities.canSlidePlayerMove(before,target)).toBe(false);
++      r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.player.step();r.world.step();
++      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
++      expect(r.facilities.read().state).toBe("PreparedHeld");
++    }finally{r.dispose();}
++  });
+   it("keeps support-coverage rejection hard instead of bisecting it", () => {
+     let rejectCoverage=false;const r=pairedCarrierRig(true,(x)=>!rejectCoverage||x>-5.76);try{
+       const prepare=r.facilities.preparePlayerMove.bind(r.facilities);let preparations=0;
+@@ -324,4 +391,30 @@ describe("Factory paired-prefix rollback",()=>{
+       expect(guardCalls).toBe(1);expect(limiterCalls).toBe(1);
+     }finally{player.dispose();world.free();}
+   });
++  it("holds when Rapier projects a covered intent into an uncovered Avatar corner",()=>{
++    const radius=HVP_PLAYER_PROFILE.radius+HVP_PLAYER_PROFILE.offset,fullAxis=.05/Math.SQRT2;
++    for(const limited of [false,true]){
++      const world=new R.World({x:0,y:-9.81,z:0});world.timestep=1/60;
++      world.createCollider(R.ColliderDesc.cuboid(10,.5,10).setTranslation(0,-.5,0));
++      const saved=groundedCheckpoint(world),axis=fullAxis*(limited?.5:1);
++      const coverageHole={minX:radius+axis-.007,maxX:radius+axis+.007,minZ:-radius+.005,maxZ:-radius+.015};
++      const covered=(x:number,z:number)=>!(x>coverageHole.minX&&x<coverageHole.maxX&&z>coverageHole.minZ&&z<coverageHole.maxZ);
++      world.createCollider(R.ColliderDesc.cuboid(2,2,.005).setTranslation(0,2,radius+.007));world.updateSceneQueries();
++      for(const requestedScale of limited?[1,.5]:[1]){
++        const requested=fullAxis*requestedScale;
++        expect([-radius,radius].every(x=>[-radius,radius].every(z=>covered(requested+x,requested+z)))).toBe(true);
++      }
++      let guardCalls=0,limiterCalls=0,commits=0;
++      const player=createHvpLocomotion(world,saved.position,9.81,covered,saved,()=>{
++        guardCalls++;return limited&&guardCalls===1?false:()=>{commits++;};
++      },limited?()=>{limiterCalls++;return .5;}:undefined);
++      try{
++        player.setEnabled(true);const before=player.read();player.setInput({x:1,z:1,sprint:false,jump:false});player.step();world.step();
++        const after=player.read();
++        expect(after.position).toEqual(before.position);expect(after.status).toBe("CoverageHold");
++        expect(after.grounded).toBe(before.grounded);expect(after.velocityY).toBe(0);expect(after.jumpCount).toBe(before.jumpCount);
++        expect(guardCalls).toBe(limited?1:0);expect(limiterCalls).toBe(limited?1:0);expect(commits).toBe(0);
++      }finally{player.dispose();world.free();}
++    }
++  });
+ });

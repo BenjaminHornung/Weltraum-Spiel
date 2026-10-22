@@ -1,0 +1,17 @@
+# FP06 production-command confirmation R01
+
+Authority: existing direct request to finish actual normal production and power interruption. Actual clean-r09 R14 reproductions: supported/reachable powered Cutter with8kg input shows enabled Start but rejects ProductionMachineUnavailable; enabled Cutter disable rejects NativeDeviceControlUnavailable. Neither changes material/WIP/enabled. Saved revision7 and actual closed-browser video preserve the pre-fix case.
+
+Cause: submit validates a confirmed admittedHeader then sets commandBusy. Bootstrap's confirmed gate includes Factory isQuiescent, so reading the Host again inside the same command makes its own facts unconfirmed. This affects synchronous start preflight and the post-await set-enabled check. No position, resource, Native support or Clock defect is inferred.
+
+## Selected bounded correction
+
+Private factsFor gains an optional FactoryHostView argument defaulting to a fresh host.read(). Only synchronous command preflight receives the already confirmed admittedHeader; no await lies between admission and this use. Real advanceDomain facts keep the default fresh read. No header/receipt cache across Factory intervals.
+
+Keep commandBusy true throughout the asynchronous host.pause(). After it resolves, release that private flag only for exactly one synchronous host.read(), restore it immediately in try/finally, with no await, notify, listener, reconcile or other action inside this read phase. Actual Bootstrap read is pure and publication is separate; JavaScript run-to-completion prevents other commands/capture from interleaving. This fresh read evaluates every existing Host confirmation gate, including unrelated render/save/support/recovery holds. Then require current Host, same command session/epoch, Paused state and current expected binding; use the existing controlOwner proof/revision checks unchanged. Do not require an unchanged Native tick across the awaited pause: legitimate pause acknowledgement can advance it. Preserve rejection on terrain/UI binding drift, stale/current/session/epoch changes, actual unconfirmed Host and unavailable socket/support/access.
+
+Root selected this fresh complete-gate read over the Pi advisory proposal to remove the private controlOwner confirmation gate: that proposal cannot prove unrelated hidden Host holds absent after an await. No global confirmed/isQuiescent changes, no new Host/public API, schema, Clock policy, resource representation, cap, Golden, timeout, asset or dependency changes. This is a private command-admission repair, not a new Clock policy.
+
+## Exact lease and checks
+
+One writer only /root/fp06_writer: apps/weltraum-browser/src/factory/session/factorySession.ts and tests/unit/factory/hostLifecycle.test.ts. Root sole runtime integrator. All other product writers quiescent. First meaningful RED using existing bindConfirmationToQuiescence paid CUT/manual C05/control fixtures. GREEN must preserve real-unconfirmed rejection, deferred-pause concurrent-command Busy rejection, post-pause independent false confirmation rejection, fresh Paused/binding validation and existing terrain-drift rejection; no material/WIP/energy progression outside confirmed intervals. No further children/profiles/runtime access. Native reviewer and requested Pi review exact final diff, Root full Host tests/TSC/build. New immutable clean copy follows; actual Save7 Continue Paused then original Start/toggle reproduction, fresh16kg, WIP+packet closed-browser restart and15min remain required.

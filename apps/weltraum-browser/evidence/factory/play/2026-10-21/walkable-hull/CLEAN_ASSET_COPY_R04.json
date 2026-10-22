@@ -1,0 +1,214 @@
+{
+  "atUtc": "2026-10-21T06:40:56.1397616+00:00",
+  "source": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate",
+  "target": "E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v2",
+  "kind": "immutable-authoring-assets-and-root-license",
+  "files": [
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/01-bay-and-turrets.png",
+      "sha256": "6746c5cce9b7a639051ae0c38b70b259e33202ef1dc944bc939b454196363924",
+      "bytes": 2058071
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/02-rear-damage.png",
+      "sha256": "505ccd0398b9f55e8cb66080ea71d7ed74f7b47cd10264d0a2e173dab374c682",
+      "bytes": 2021109
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/03-plan-access.png",
+      "sha256": "222fc407596fd562da180077edef1b9484c7ecd1e264e02fc0c3c0fbc762f8f6",
+      "bytes": 1960887
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/04-cargo-detail.png",
+      "sha256": "6a9ad91550440f9b41a70008b9690d73102e9f298420de0cc5770cd7cbfafaec",
+      "bytes": 2435751
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/05-cockpit-and-turret.png",
+      "sha256": "3d0d16f98187cded83dfe93988f995a8c98df41460a809d9e0f6f16e88d25c1b",
+      "bytes": 2271815
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/06-broken-propulsion.png",
+      "sha256": "7ad809d040b609fb69be9b3ed61a9562010366006f05207c546e098816469a15",
+      "bytes": 2352736
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/AUTHORING_REPORT.json",
+      "sha256": "3751216996fb093fee27801fba52866785d5b90150db97c2ebbf6b4b0d1efbbd",
+      "bytes": 2691
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/build_crashsite.py",
+      "sha256": "6793a5373f9743f70648fbceef3db7bbb7fc624cd9e69b2ce6464cfeae6932c8",
+      "bytes": 22422
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/crashsite-walkable-v1.blend",
+      "sha256": "c0994d8aac74ebaddef02252a8dd152e159492eca4c6ad926eee377c92375c37",
+      "bytes": 335241
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/crashsite-walkable-v1.glb",
+      "sha256": "91d27929383cf3d3edfee3a2e44ab6d722de026837336e5dd6313c51bca7a2ed",
+      "bytes": 1073548
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/LICENSE",
+      "sha256": "cf6deffc6d6b32e41e729cfa13bb65f76fdb56c3e66da69a8f9f025c7b9e799b",
+      "bytes": 4643
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/MODEL_SPEC.json",
+      "sha256": "2ede6a6becd37284042e83d704184ad7075a2fd4256ee64989e95fa1f731aa9a",
+      "bytes": 7110
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/PROVENANCE.json",
+      "sha256": "9223108d1df63b9da6a52180bf56426c8aab53d842e1143249ff18c47403f7af",
+      "bytes": 1807
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/README.md",
+      "sha256": "d40951ecb028fd6234ac2ff07a09080beec8344cccf8d3be7aa778b81fa46ebf",
+      "bytes": 2512
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/RUNTIME_CENSUS.json",
+      "sha256": "3ede7faf2e6aeb077bb784d928b02f6cff919c556433bbbdae8b22696c4c321b",
+      "bytes": 3464
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/RUNTIME_NATIVE_BYTE_PINS.json",
+      "sha256": "fa0cb076de5d70b1500ce734290e6a6d0bfa597202bfdbe2f1d72452b454d051",
+      "bytes": 3089
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/validate_asset.py",
+      "sha256": "416629e48af1a5e3fd788031a9f5bc4d92a0649d7db8126d85dc9b9f523cde4b",
+      "bytes": 16629
+    },
+    {
+      "path": "art/factory/crashsite-walkable-v1-2026-10-19/WALKABILITY_VALIDATION.json",
+      "sha256": "512607b7a589814cfbb330ef4bf3aef0196b10dcf47eaea06d7966d306e02306",
+      "bytes": 1736
+    },
+    {
+      "path": "art/factory/fp01/power-kit/authoring-v1.json",
+      "sha256": "ebab668ca024e995b8742021f4440886c10b51ba58a5c7520de37a6bc87c7dd8",
+      "bytes": 7286
+    },
+    {
+      "path": "art/factory/fp01/power-kit/derived-report.json",
+      "sha256": "21bd57c0853b2f5ff151532d06308d0baffab4aa2920d2bd2bc1d3e9379d40f0",
+      "bytes": 16840
+    },
+    {
+      "path": "art/factory/fp01/power-kit/LICENSE.txt",
+      "sha256": "9fdc99e37e82fd73e718b8c53079634204015ceddcf51c7e296f874f0e1340ea",
+      "bytes": 332
+    },
+    {
+      "path": "art/factory/fp01/power-kit/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp01/power-kit/source.scene.json",
+      "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+      "bytes": 27070
+    },
+    {
+      "path": "art/factory/fp02/cutter/authoring-v1.json",
+      "sha256": "0cdb071fb15c5b7c5ee57fa5f10685b8919b741adbe0d10c5e7f47f93cca1a61",
+      "bytes": 5596
+    },
+    {
+      "path": "art/factory/fp02/cutter/derived-report.json",
+      "sha256": "03d2d4c8ad1198d8e24d655ded01de7cd8cdbbe7af798ef6f02c5a6b5ea9a38a",
+      "bytes": 10823
+    },
+    {
+      "path": "art/factory/fp02/cutter/LICENSE.txt",
+      "sha256": "9fdc99e37e82fd73e718b8c53079634204015ceddcf51c7e296f874f0e1340ea",
+      "bytes": 332
+    },
+    {
+      "path": "art/factory/fp02/cutter/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp02/cutter/source.scene.json",
+      "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+      "bytes": 19222
+    },
+    {
+      "path": "art/factory/fp02/former/authoring-v1.json",
+      "sha256": "31500d6c38d06be22226940222c8abcba5d2e9e48483e36293910da71575c34b",
+      "bytes": 5889
+    },
+    {
+      "path": "art/factory/fp02/former/derived-report.json",
+      "sha256": "d8886ba6ae7703a3718c2293582812d8d6c153bfc0defe717a49449713e4a8c9",
+      "bytes": 10954
+    },
+    {
+      "path": "art/factory/fp02/former/LICENSE.txt",
+      "sha256": "9fdc99e37e82fd73e718b8c53079634204015ceddcf51c7e296f874f0e1340ea",
+      "bytes": 332
+    },
+    {
+      "path": "art/factory/fp02/former/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp02/former/source.scene.json",
+      "sha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+      "bytes": 19487
+    },
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/build_cargo_surface_v2.py",
+      "sha256": "7f68693c9bbd8eb4299f56b0573b793ed908b5215c45783a3f2ba06ae4fdf96c",
+      "bytes": 17844
+    },
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/cargoSite-v1.native-owner-source.blob",
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+      "bytes": 4071
+    },
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/manifest.json",
+      "sha256": "16552a23e21034f8b653894b8d7247c1281bea1a834c0e9150f1a1e0937865f4",
+      "bytes": 10323
+    },
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/wreck_cargo_open_v2.provenance.json",
+      "sha256": "83eebf25a2e925b43201920a7825e63b8dc28e601c8ec019bcd8cacb30952f23",
+      "bytes": 4160
+    },
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/wreck_cargo_v2.provenance.json",
+      "sha256": "d93eae1571c60ed25b762d03bcab989cdb9b6c1334b287d55f487d7b4708e516",
+      "bytes": 4110
+    },
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/wreck-cargo-open-v2.glb",
+      "sha256": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+      "bytes": 13676
+    },
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/wreck-cargo-v2.glb",
+      "sha256": "2f213fae020ff7a245367939a24c2a8ceecd08809b7616858b241a57917b86ac",
+      "bytes": 15136
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "cf6deffc6d6b32e41e729cfa13bb65f76fdb56c3e66da69a8f9f025c7b9e799b",
+      "bytes": 4643
+    }
+  ],
+  "sourceTargetHashesExact": true
+}

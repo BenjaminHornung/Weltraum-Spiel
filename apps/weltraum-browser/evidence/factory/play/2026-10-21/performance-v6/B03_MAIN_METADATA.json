@@ -1,0 +1,369 @@
+{
+  "startUtc": "2026-10-21T14:35:06.854Z",
+  "endUtc": "2026-10-21T14:35:17.168Z",
+  "sampleIntervalUs": 1000,
+  "before": {
+    "at": 16413.79999999702,
+    "status": "Running",
+    "tick": 48849,
+    "player": {
+      "x": 6.582930088043213,
+      "y": 3.525001287460327,
+      "z": 8.5822114944458
+    },
+    "camera": {
+      "position": [
+        6.582930088043213,
+        4.275001287460327,
+        8.5822114944458
+      ],
+      "orientation": [
+        1.1102229406335997e-16,
+        -0.0003889803748751184,
+        -4.318549683136812e-20,
+        -0.9999999243471311
+      ],
+      "visualBody": [
+        6.582930088043213,
+        3.525001287460327,
+        8.5822114944458
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "input": {
+      "owner": "Player",
+      "locked": true,
+      "jumpEdges": 0,
+      "neutralizations": 1,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 10,
+      "lastAckId": 10,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": true
+    },
+    "clock": {
+      "maxTimerGapMs": 22.599999994039536,
+      "maxAdvanceMs": 11,
+      "maxHandlerMs": 774.5999999940395,
+      "lastCommand": "Read",
+      "lastHandlerMs": 3.5,
+      "delayedCallbacks": [],
+      "timers": 1,
+      "readWindow": {
+        "count": 1,
+        "buildMs": 3.300000011920929,
+        "postMs": 0,
+        "carrierBindingChars": 0,
+        "ownerBindingChars": 1380192,
+        "firstReadId": 164,
+        "lastReadId": 164,
+        "firstTick": 48849,
+        "lastTick": 48849,
+        "priorAdvanceMs": null
+      },
+      "lastReadPost": {
+        "readId": 163,
+        "tick": 48847,
+        "postMs": 0.5,
+        "reportedByReplyId": 164
+      }
+    },
+    "factorySteps": 8141,
+    "epoch": 1,
+    "confirmed": true,
+    "sourceDigest": "360b00fa",
+    "profile": "hvp-factory-startsite-v6",
+    "owners": 10,
+    "massMg": 2984400000,
+    "physicsBodies": 15,
+    "physicsColliders": 200,
+    "measurementHealth": {
+      "enabled": true,
+      "samples": 1674,
+      "errors": 0,
+      "dropped": 0
+    },
+    "render": {
+      "geometries": 199,
+      "materials": 19,
+      "representations": 199,
+      "ownedCpuBytes": 23532960,
+      "previewCount": 0
+    },
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+      "revision": 19,
+      "saveAvailable": false,
+      "continueAvailable": true
+    },
+    "visibility": "visible",
+    "focused": true,
+    "viewport": [
+      1249,
+      1221,
+      1
+    ],
+    "testBridge": false
+  },
+  "after": {
+    "at": 26539.29999999702,
+    "status": "Running",
+    "tick": 49457,
+    "player": {
+      "x": 6.582930088043213,
+      "y": 3.525001287460327,
+      "z": 8.5822114944458
+    },
+    "camera": {
+      "position": [
+        6.582930088043213,
+        4.275001287460327,
+        8.5822114944458
+      ],
+      "orientation": [
+        1.1102229406335997e-16,
+        -0.0003889803748751184,
+        -4.318549683136812e-20,
+        -0.9999999243471311
+      ],
+      "visualBody": [
+        6.582930088043213,
+        3.525001287460327,
+        8.5822114944458
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "input": {
+      "owner": "Player",
+      "locked": true,
+      "jumpEdges": 0,
+      "neutralizations": 1,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 10,
+      "lastAckId": 10,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": true
+    },
+    "clock": {
+      "maxTimerGapMs": 22.700000002980232,
+      "maxAdvanceMs": 11,
+      "maxHandlerMs": 774.5999999940395,
+      "lastCommand": "Read",
+      "lastHandlerMs": 3.7999999970197678,
+      "delayedCallbacks": [],
+      "timers": 1,
+      "readWindow": {
+        "count": 1,
+        "buildMs": 3.4000000059604645,
+        "postMs": 0,
+        "carrierBindingChars": 0,
+        "ownerBindingChars": 1380192,
+        "firstReadId": 470,
+        "lastReadId": 470,
+        "firstTick": 49457,
+        "lastTick": 49457,
+        "priorAdvanceMs": null
+      },
+      "lastReadPost": {
+        "readId": 469,
+        "tick": 49455,
+        "postMs": 0.29999999701976776,
+        "reportedByReplyId": 470
+      }
+    },
+    "factorySteps": 8242,
+    "epoch": 1,
+    "confirmed": true,
+    "sourceDigest": "360b00fa",
+    "profile": "hvp-factory-startsite-v6",
+    "owners": 10,
+    "massMg": 2984400000,
+    "physicsBodies": 15,
+    "physicsColliders": 200,
+    "measurementHealth": {
+      "enabled": true,
+      "samples": 4840,
+      "errors": 0,
+      "dropped": 0
+    },
+    "render": {
+      "geometries": 199,
+      "materials": 19,
+      "representations": 199,
+      "ownedCpuBytes": 23532960,
+      "previewCount": 0
+    },
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+      "revision": 19,
+      "saveAvailable": false,
+      "continueAvailable": true
+    },
+    "visibility": "visible",
+    "focused": true,
+    "viewport": [
+      1249,
+      1221,
+      1
+    ],
+    "testBridge": false
+  },
+  "paused": {
+    "at": 26707.5,
+    "status": "Paused",
+    "tick": 49465,
+    "player": {
+      "x": 6.582930088043213,
+      "y": 3.525001287460327,
+      "z": 8.5822114944458
+    },
+    "camera": {
+      "position": [
+        6.582930088043213,
+        4.275001287460327,
+        8.5822114944458
+      ],
+      "orientation": [
+        1.1102229406335997e-16,
+        -0.0003889803748751184,
+        -4.318549683136812e-20,
+        -0.9999999243471311
+      ],
+      "visualBody": [
+        6.582930088043213,
+        3.525001287460327,
+        8.5822114944458
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 4,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 479,
+      "lastAckId": 479,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "clock": {
+      "maxTimerGapMs": 22.700000002980232,
+      "maxAdvanceMs": 11,
+      "maxHandlerMs": 774.5999999940395,
+      "lastCommand": "Read",
+      "lastHandlerMs": 2.5999999940395355,
+      "delayedCallbacks": [],
+      "timers": 1,
+      "readWindow": {
+        "count": 1,
+        "buildMs": 2.5999999940395355,
+        "postMs": 0,
+        "carrierBindingChars": 0,
+        "ownerBindingChars": 1380192,
+        "firstReadId": 481,
+        "lastReadId": 481,
+        "firstTick": 49465,
+        "lastTick": 49465,
+        "priorAdvanceMs": null
+      },
+      "lastReadPost": {
+        "readId": 473,
+        "tick": 49463,
+        "postMs": 0.5,
+        "reportedByReplyId": 481
+      }
+    },
+    "factorySteps": 8244,
+    "epoch": 1,
+    "confirmed": true,
+    "sourceDigest": "360b00fa",
+    "profile": "hvp-factory-startsite-v6",
+    "owners": 10,
+    "massMg": 2984400000,
+    "physicsBodies": 15,
+    "physicsColliders": 200,
+    "measurementHealth": {
+      "enabled": true,
+      "samples": 4840,
+      "errors": 0,
+      "dropped": 0
+    },
+    "render": {
+      "geometries": 199,
+      "materials": 19,
+      "representations": 199,
+      "ownedCpuBytes": 23532960,
+      "previewCount": 0
+    },
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+      "revision": 19,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "visibility": "visible",
+    "focused": true,
+    "viewport": [
+      1249,
+      1221,
+      1
+    ],
+    "testBridge": false
+  },
+  "slot": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 19,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 97094,
+      "payloadBytes": 13199495,
+      "contentHash": "sha256:a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0"
+  },
+  "profileOnlyNotFpsAcceptance": true,
+  "build": "factory-D3ew0Sm8.js"
+}

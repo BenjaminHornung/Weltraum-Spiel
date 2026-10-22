@@ -1,0 +1,205 @@
+{
+  "kind": "ISOLATED_PROPOSED_VISIBLE_DOOR_AND_CONDUIT_RAISE_250MM_NOT_ASSET_OR_GAMEPLAY_ACCEPTANCE",
+  "assetSha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610",
+  "proposedModifiedVertices": 168,
+  "markerVertices": 120,
+  "conduitVertices": 48,
+  "anchor": {
+    "x": 6.5,
+    "y": 1.5,
+    "z": 7.5
+  },
+  "proposedApron": {
+    "minX": -2,
+    "maxX": 14.5,
+    "minZ": 3.5,
+    "maxZ": 13.75,
+    "topY": 1.5
+  },
+  "playerProfile": {
+    "height": 1.8,
+    "radius": 0.3,
+    "eyeHeight": 1.65,
+    "walkSpeed": 3,
+    "sprintSpeed": 5,
+    "stepHeight": 0.26,
+    "stepWidth": 0.125,
+    "offset": 0.01,
+    "slopeRadians": 0.7853981633974483,
+    "jumpHeight": 0.8,
+    "terminalSpeed": 35
+  },
+  "gravity": 11.794460201817357,
+  "vertices": 39104,
+  "triangles": 19552,
+  "trianglePayloadBytes": 703872,
+  "start": {
+    "ownerId": "hvp:player",
+    "position": {
+      "x": 6.5,
+      "y": 2.406723737716675,
+      "z": 13.5
+    },
+    "grounded": true,
+    "velocityY": 0,
+    "jumpCount": 0,
+    "cameraFraction": 1,
+    "status": "Walking"
+  },
+  "inner": {
+    "ownerId": "hvp:player",
+    "position": {
+      "x": 7.05670166015625,
+      "y": 3.4000048637390137,
+      "z": 8.899591445922852
+    },
+    "grounded": true,
+    "velocityY": 0,
+    "jumpCount": 0,
+    "cameraFraction": 1,
+    "status": "Walking"
+  },
+  "outside": {
+    "ownerId": "hvp:player",
+    "position": {
+      "x": 6.5,
+      "y": 2.4000000953674316,
+      "z": 13.499360084533691
+    },
+    "grounded": true,
+    "velocityY": 0,
+    "jumpCount": 0,
+    "cameraFraction": 1,
+    "status": "Walking"
+  },
+  "entered": true,
+  "turned": false,
+  "walkedInside": false,
+  "back1": false,
+  "back2": true,
+  "exited": true,
+  "allReached": false,
+  "samples": [
+    {
+      "label": "through-door",
+      "target": {
+        "x": 6.5,
+        "z": 8.9
+      },
+      "frames": 93,
+      "reached": true,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.5,
+        "y": 3.400029420852661,
+        "z": 8.907916069030762
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "inside-turn",
+      "target": {
+        "x": 8,
+        "z": 8.9
+      },
+      "frames": 240,
+      "reached": false,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 7.05629301071167,
+        "y": 3.400042772293091,
+        "z": 8.899999618530273
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "bay-walk",
+      "target": {
+        "x": 8,
+        "z": 8
+      },
+      "frames": 240,
+      "reached": false,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 7.05670166015625,
+        "y": 3.4000048637390137,
+        "z": 8.899591445922852
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "return-aisle",
+      "target": {
+        "x": 8,
+        "z": 8.9
+      },
+      "frames": 240,
+      "reached": false,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 7.05670166015625,
+        "y": 3.4000048637390137,
+        "z": 8.899591445922852
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "return-door",
+      "target": {
+        "x": 6.5,
+        "z": 8.9
+      },
+      "frames": 11,
+      "reached": true,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.506721496582031,
+        "y": 3.399833917617798,
+        "z": 8.899999618530273
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "leave-ramp",
+      "target": {
+        "x": 6.5,
+        "z": 13.5
+      },
+      "frames": 92,
+      "reached": true,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.5,
+        "y": 2.4000000953674316,
+        "z": 13.499360084533691
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    }
+  ]
+}
+

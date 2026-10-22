@@ -1,0 +1,192 @@
+{
+  "createdAtUtc": "2026-10-19T13:37:25.267Z",
+  "cleanCopy": "FP06-Ready-2026-10-19-v5",
+  "input": "normal Playwright keyboard/mouse on headed external Chrome, no TestBridge/teleport/Save",
+  "cargo": {
+    "inaccessibleE": {
+      "status": "Running",
+      "locked": true,
+      "surface": null,
+      "cargoOpened": false
+    },
+    "inventory": {
+      "status": "Paused",
+      "ticks": 3494,
+      "locked": false,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "cargo",
+        "error": null
+      },
+      "opened": false,
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2931,
+        "lastAckId": 2931,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      }
+    },
+    "close": {
+      "beforeTick": 3494,
+      "afterTick": 3494,
+      "status": "Paused",
+      "locked": false
+    },
+    "reachableE": {
+      "before": {
+        "tick": 0,
+        "status": "Running",
+        "locked": true,
+        "cargo": true,
+        "opened": false,
+        "input": {
+          "active": true,
+          "activationPending": false,
+          "pointerLocked": true,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": null,
+          "error": null
+        },
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        }
+      },
+      "after": {
+        "tick": 1,
+        "status": "Paused",
+        "locked": false,
+        "opened": false,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": "cargo",
+          "error": null
+        }
+      }
+    },
+    "open": {
+      "status": "Paused",
+      "tick": 1,
+      "locked": false,
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "openReceipt": {
+          "ownerId": "fp02_wreck_owner",
+          "profileDigest": "397e6216",
+          "expectedTerrainRevision": 0,
+          "expectedRevision": 0
+        }
+      },
+      "inventory": [
+        {
+          "id": "fp02_wreck_cargo",
+          "accessible": true,
+          "massMg": 2984400000
+        }
+      ],
+      "scenes": [
+        {
+          "id": "fp02_wreck_owner:open",
+          "assetId": "play_wreck_cargo_open_v1",
+          "error": null,
+          "visible": 1
+        }
+      ],
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": "cargo",
+        "surface": "cargo",
+        "error": null
+      }
+    },
+    "closeAndExplicitPlay": {
+      "a": 1,
+      "b": 1,
+      "running": {
+        "tick": 18,
+        "status": "Running",
+        "locked": true,
+        "opened": true
+      },
+      "final": {
+        "ticks": 21,
+        "status": "Paused",
+        "locked": false
+      }
+    }
+  },
+  "endFailure": {
+    "dialog": "End session? Unsaved changes will be discarded; your existing save is retained.",
+    "body": "Goal\nBuild a cutter and former\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nPause and session\nClose\n\nSession paused\n\nPlay\nSave\nLoad game\nNo Factory checkpoint saved; Save checks memory before writing\nOpen settings\nNot available here yet\nBack to menu\nOpen workshop\nOpen field guide\n\nWaiting for action confirmation\n\nSession paused\n\nFailed to end session – reload\n\nRestart",
+    "disposal": {
+      "state": "Failed",
+      "errors": [
+        "Error: Factory extension cleanup failed: Error: Factory host disposed or superseded"
+      ],
+      "scope": "HVP-owned registrations, worker timers, backend/cache objects; not process or GPU byte usage",
+      "disposed": {
+        "geometries": 0,
+        "materials": 0,
+        "textures": 0,
+        "workers": 0,
+        "listeners": 0,
+        "timers": 0,
+        "pendingJobs": 0,
+        "bodies": 0,
+        "colliders": 0,
+        "ownedBytes": 0
+      },
+      "cacheBytes": 0,
+      "visual": {
+        "geometries": 0,
+        "textures": 0
+      },
+      "native": {
+        "status": "Disposed",
+        "bodies": 0,
+        "colliders": 0
+      },
+      "measurementHealth": {
+        "enabled": false,
+        "samples": 0,
+        "errors": 0,
+        "dropped": 0
+      }
+    },
+    "errors": [
+      "Error: Factory host disposed or superseded",
+      "Error: Factory host disposed or superseded"
+    ]
+  }
+}

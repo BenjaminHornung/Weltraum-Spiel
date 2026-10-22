@@ -6,6 +6,7 @@ import { createFactoryHandling, prepareCargoHandling, type CargoHandlingIntent }
 import { commitFactoryMaterialStep, prepareFactoryMaterialStep, createFactoryMaterialView } from "../../../src/factory/material/reservations";
 import { readMaterialMassMg } from "../../../src/factory/material/resourcesAdapter";
 import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
+import type { ResourceStack } from "../../../src/resources/types";
 
 const fixture = createFp02Fixture("cargo");
 it.each([["CABLE4750",4750,4750/4*1000],["CABLE8000",8000,2000000]] as const)("binds the concretely needed %s Source-layout connection to one indivisible cable job",(id,quantity,mass)=>{
@@ -19,6 +20,14 @@ const setup = () => createFactoryMaterialView(fixture.catalog, [
   createResourceContainerSnapshot(createResourceContainerDefinition({ containerId: "factory_carrier", kind: "OutpostStorage", maxMassKg: 341, maxVolumeM3: 1.5, maxStackCount: 20 }),
     createResourceContainerState({ containerId: "factory_carrier", ownerId: fixture.resourceState.ownerId, contents: [] }, fixture.catalog.resources), fixture.catalog.resources)
 ]);
+const partialRawTransferMaterial=(targetPatch:(source:ResourceStack)=>Partial<ResourceStack>=()=>({}),targetMaxMassKg=10)=>{
+ const base=setup(),cargo=base.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!,raw=cargo.state.contents.find(s=>s.resourceId==="fp02_bulk_steel_known")!;
+ const sourceStack={...raw,stackId:"raw_source_2kg",quantity:2_000_000},targetStack={...raw,...targetPatch(raw),stackId:"raw_input_6kg",quantity:6_000_000};
+ const source=createResourceContainerSnapshot(cargo.definition,createResourceContainerState({containerId:cargo.state.containerId,ownerId:cargo.state.ownerId,contents:[sourceStack]},fixture.catalog.resources),fixture.catalog.resources);
+ const input=createResourceContainerSnapshot(createResourceContainerDefinition({containerId:"raw_input",kind:"OutpostStorage",maxMassKg:targetMaxMassKg,maxVolumeM3:1,maxStackCount:20}),
+  createResourceContainerState({containerId:"raw_input",ownerId:cargo.state.ownerId,contents:[targetStack]},fixture.catalog.resources),fixture.catalog.resources);
+ return createFactoryMaterialView(fixture.catalog,[source,input,...base.containers.filter(c=>c!==cargo)]);
+};
 const chassis = fixture.resourceState.contents.find(s => s.resourceId === "fp02_chassis_former")!;
 const intent: CargoHandlingIntent = { commandId: "pickup_former_1", ownerId: fixture.resourceState.ownerId!, actorId: fixture.resourceState.ownerId!, expectedMaterialRevision: 0,
   profileId: "C27-PACK", carrierContainerId: "factory_carrier", sourceLots: [{ containerId: fixture.resourceState.containerId, stackId: chassis.stackId, quantityUnits: 1 }] };
@@ -82,15 +91,20 @@ it("W09 paid Raw bin has clear body and current service in the actual unchanged 
  expect(readMaterialMassMg(built.materialCandidate)).toBe(readMaterialMassMg(paid));
  expect(source.initializationReceipt).toMatchObject({maskCount:15,columnCount:4480,areaMm2:70000000,materialCreditMg:0});
 });
-const hostHandlingFixture=()=>{
- const material=setup(),authority=createFactoryMaterialAuthority(material);let prepareCount=0,published=false,rejectPrepare=false;
+const hostHandlingFixture=(material=setup(),additionalSources:readonly string[]=[])=>{
+ const authority=createFactoryMaterialAuthority(material);let prepareCount=0,published=false,rejectPrepare=false;
  let native:any={revision:1,state:"Idle",owners:[],prepared:null,transactionId:null,cargo:{opened:true,accessible:true,ownerId:"fp02_wreck_owner",containerId:fixture.resourceState.containerId}};
- native.sources=[{containerId:"factory_carrier",instanceId:"actual_local",accessible:true}];
+ native.sources=[{containerId:"factory_carrier",instanceId:"actual_local",accessible:true},...additionalSources.map(containerId=>({containerId,instanceId:`actual_${containerId}`,accessible:true}))];
  const port:any={read:()=>native,prepare:async(request:any,_operation:string)=>{prepareCount++;if(rejectPrepare)throw Error("CarrierSupport");native={...native,state:"PreparedHeld",transactionId:request.transactionId,carrier:{ownerId:request.ownerId,transactionId:request.transactionId,profileId:request.profileId,profileDigest:request.profileDigest,containerId:request.custodyContainerId,phase:"PreparedHeld",massMg:readCargoHandlingProfile(fixture.catalog,request.profileId)!.massMg}};return native;},
  commit:async()=>{native={...native,state:"PublishedHeld",revision:native.revision+1};},publish:()=>{published=true;},rollback:async()=>{native={...native,state:"Idle",carrier:undefined};},finalize:async()=>{native={...native,state:"Idle",transactionId:null,carrier:{...native.carrier,phase:"Carrying"}};}};
  const controller=createFactoryHandling({materialAuthority:authority,native:port,current:()=>true,pause:async()=>{}});
  const command:FactoryUiCommand={version:"fp06-ui-command-v1",commandId:"host_pickup_c27",sessionId:crypto.randomUUID(),epoch:0,expected:{catalogDigest:fixture.catalog.catalogDigest,terrainSourceDigest:"unit-source",powerSourceProfileDigest:"fp01-fixed-net-observation-v1",terrainRevision:0,facilityRevision:1,materialRevision:0,netRevision:0,handlingRevision:0},kind:"pickup",profileId:"C27-PACK",sourceLots:[{containerId:fixture.resourceState.containerId,containerRevision:0,stackId:chassis.stackId,quantityUnits:1}]};
  return {authority,controller,command,get native(){return native;},get prepareCount(){return prepareCount;},get published(){return published;},reject:()=>{rejectPrepare=true;}};
+};
+const partialRawTransferCommand=(h:ReturnType<typeof hostHandlingFixture>,commandId="transfer_raw_2kg"):FactoryUiCommand=>{
+ const material=h.authority.read(),source=material.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!,target=material.containers.find(c=>c.state.containerId==="raw_input")!;
+ return {...h.command,commandId,expected:{...h.command.expected,materialRevision:material.revision,facilityRevision:h.native.revision},kind:"transfer",
+  source:{containerId:source.state.containerId,containerRevision:source.state.revision,stackId:"raw_source_2kg",quantityUnits:2_000_000},target:{id:target.state.containerId,revision:target.state.revision}};
 };
 it("pays the complete remote Former from its reachable local BOM depot instead of unreachable original Cargo",()=>{
   const material=setup(),profile=readCargoHandlingProfile(fixture.catalog,"B07-BOM")!;
@@ -123,6 +137,57 @@ it("rejects a partial 4kg transfer from an actual8kg carrier before either Resou
  expect(await h.controller.submit(transfer)).toMatchObject({status:"Rejected",reason:"PartialCarrierTransferUnsupported"});expect(h.authority.read()).toBe(material);expect(h.native.carrier.massMg).toBe(8000000);
 });
 
+it("merges an ordinary2kg RAW transfer into its compatible6kg bulk stack and records that target once",async()=>{
+ const initial=partialRawTransferMaterial(),mass=readMaterialMassMg(initial),h=hostHandlingFixture(initial,["raw_input"]),command=partialRawTransferCommand(h);
+ expect(await h.controller.submit(command)).toMatchObject({status:"Committed"});
+ const after=h.authority.read(),source=after.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!,input=after.containers.find(c=>c.state.containerId==="raw_input")!;
+ expect(source.state.contents).toEqual([]);expect(input.state.contents).toHaveLength(1);
+ expect(input.state.contents[0]).toMatchObject({stackId:"raw_input_6kg",quantity:8_000_000});expect(readMaterialMassMg(after)).toBe(mass);
+ const receipt=after.receipts.find(value=>value.transactionId===command.commandId)!;
+ expect(JSON.parse(receipt.requestCanonicalJson).moves[0]).toMatchObject({sourceStackId:"raw_source_2kg",targetStackId:"raw_input_6kg",quantityUnits:2_000_000});
+ expect(h.prepareCount).toBe(0);expect(h.published).toBe(false);
+ expect(await h.controller.submit(command)).toMatchObject({status:"Rejected",reason:"StaleHandlingBinding"});
+ expect(h.authority.read()).toBe(after);expect(readMaterialMassMg(h.authority.read())).toBe(mass);
+});
+
+it.each([
+ ["owner",(source:ResourceStack)=>({ownerId:source.ownerId==="other_owner"?"third_owner":"other_owner"})],
+ ["grade",(_source:ResourceStack)=>({grade:"other_grade"})],
+ ["condition",(source:ResourceStack)=>({condition:source.condition===0.5?1:0.5})],
+ ["extensions",(source:ResourceStack)=>({extensions:{...source.extensions,"fp06.transfervariant":source.extensions["fp06.transfervariant"]==="different"?"other":"different"}})]
+] as const)("keeps a %s mismatch in separate RAW stacks",async(kind,patch)=>{
+ const initial=partialRawTransferMaterial(patch),mass=readMaterialMassMg(initial),h=hostHandlingFixture(initial,["raw_input"]),command=partialRawTransferCommand(h,`transfer_${kind}_mismatch`);
+ expect(await h.controller.submit(command)).toMatchObject({status:"Committed"});
+ const after=h.authority.read(),input=after.containers.find(c=>c.state.containerId==="raw_input")!;
+ expect(input.state.contents).toHaveLength(2);
+ expect(input.state.contents.find(stack=>stack.stackId==="raw_input_6kg")?.quantity).toBe(6_000_000);
+ expect(input.state.contents.find(stack=>stack.stackId==="raw_source_2kg")?.quantity).toBe(2_000_000);
+ expect(after.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!.state.contents).toEqual([]);
+ expect(JSON.parse(after.receipts.find(value=>value.transactionId===command.commandId)!.requestCanonicalJson).moves[0].targetStackId).toBe("raw_source_2kg");
+ expect(readMaterialMassMg(after)).toBe(mass);
+});
+
+it("rejects a compatible partial RAW merge atomically when the target has only1kg capacity left",async()=>{
+ const initial=partialRawTransferMaterial(()=>({}),7),mass=readMaterialMassMg(initial),h=hostHandlingFixture(initial,["raw_input"]),command=partialRawTransferCommand(h);
+ expect(await h.controller.submit(command)).toMatchObject({status:"Rejected",reason:"TargetMassExceeded"});
+ expect(h.authority.read()).toBe(initial);expect(readMaterialMassMg(h.authority.read())).toBe(mass);
+ expect(h.authority.read().containers.find(c=>c.state.containerId==="raw_input")!.state.contents).toMatchObject([{stackId:"raw_input_6kg",quantity:6_000_000}]);
+ expect(h.authority.read().containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!.state.contents).toMatchObject([{stackId:"raw_source_2kg",quantity:2_000_000}]);
+ expect(h.prepareCount).toBe(0);expect(h.published).toBe(false);
+});
+
+it("uses the first sorted compatible bulk target stack",async()=>{
+ const base=partialRawTransferMaterial(),input=base.containers.find(c=>c.state.containerId==="raw_input")!,raw=fixture.resourceState.contents.find(s=>s.resourceId==="fp02_bulk_steel_known")!;
+ const first={...raw,stackId:"raw_a_1kg",quantity:1_000_000},sortedInput=createResourceContainerSnapshot(input.definition,
+  createResourceContainerState({containerId:input.state.containerId,ownerId:input.state.ownerId,contents:[...input.state.contents,first]},fixture.catalog.resources),fixture.catalog.resources);
+ const initial=createFactoryMaterialView(fixture.catalog,base.containers.map(c=>c===input?sortedInput:c)),mass=readMaterialMassMg(initial),h=hostHandlingFixture(initial,["raw_input"]),command=partialRawTransferCommand(h);
+ expect(await h.controller.submit(command)).toMatchObject({status:"Committed"});
+ const after=h.authority.read(),contents=after.containers.find(c=>c.state.containerId==="raw_input")!.state.contents;
+ expect(contents).toMatchObject([{stackId:"raw_a_1kg",quantity:3_000_000},{stackId:"raw_input_6kg",quantity:6_000_000}]);
+ expect(JSON.parse(after.receipts.find(value=>value.transactionId===command.commandId)!.requestCanonicalJson).moves[0].targetStackId).toBe("raw_a_1kg");
+ expect(readMaterialMassMg(after)).toBe(mass);
+});
+
 
 it("W09 three actual supported battery routes pay exactly19.75m from finite C07 with whole custody and no duplicate mass",()=>{
  const initial=setup(),owner=fixture.resourceState.ownerId!,cable=fixture.catalog.items.find(i=>i.sourceId==="fp02.comp.field_cable")!;
@@ -144,13 +209,25 @@ it("W09 three actual supported battery routes pay exactly19.75m from finite C07 
  expect(readCargoHandlingProfile(fixture.catalog,"CABLE7501")).toBeUndefined();
 });
 
-// Exact pre-change historical bytes were captured before the V5 closed-job implementation.
-it("PLAY04 V5 cable additions preserve all seven historical profile canonical bytes",()=>{
- const pins={"CABLE4750":"b3605328f7a34553b246e2afc85d4bea06b3f9dc5e8904d30f45ea9fa8cd280a","CABLE6500":"95b86f449ad908ee4b7d9c1e9d84dc32fd1880bc42f23be4a9e39fd2529d0f91","CABLE8000":"65642057a43dfd24ac3a5fe92d7891ac00892614d0424f5d171c31e53bf667ae","CABLE7000":"ee7e56c504a922642abc8148d88985b17ef2b61b674b52a95c942e90a1382065","CABLE5250":"981826bd9825822b1a73ae16db48667d6c91ba633b6c03ce3b8c5ce0cfd65413","CABLE7500":"8b6d9b77b8e566087aa2089015b5c754c38bef038d0b3358ba7554c4596403df","CABLE40":"912e97d5da96dac025b5760a6513c91df77b7f87892b821273182807750980b4"};
- for(const [id,sha] of Object.entries(pins)){
+// HEAD profile bytes/digests pin every historical cable job and CABLE40.
+it("preserves all nine historical cable jobs and CABLE40 bytes and digests",()=>{
+ const pins={"CABLE4750":["b3605328f7a34553b246e2afc85d4bea06b3f9dc5e8904d30f45ea9fa8cd280a","96327771"],"CABLE6500":["95b86f449ad908ee4b7d9c1e9d84dc32fd1880bc42f23be4a9e39fd2529d0f91","60747036"],"CABLE8000":["65642057a43dfd24ac3a5fe92d7891ac00892614d0424f5d171c31e53bf667ae","cadd4897"],"CABLE7000":["ee7e56c504a922642abc8148d88985b17ef2b61b674b52a95c942e90a1382065","844ff70e"],"CABLE5250":["981826bd9825822b1a73ae16db48667d6c91ba633b6c03ce3b8c5ce0cfd65413","2cd6f410"],"CABLE7500":["8b6d9b77b8e566087aa2089015b5c754c38bef038d0b3358ba7554c4596403df","944a1b82"],"CABLE5000":["b7b780c1845cdcc5efb96eb6e278abbc9e49da2265b2778e6948fffd77b3248d","ef3437cd"],"CABLE5750":["2e13ec76d29a2e9e5a0e0590dc4e6b25779cde04c264e37b980bfb31e5ec0ee5","5abaca26"],"CABLE7750":["34e22f4278d752394f8f09512315c37adc3bb4498ed4dbc7a2bb951e70eb5438","0d826860"],"CABLE40":["912e97d5da96dac025b5760a6513c91df77b7f87892b821273182807750980b4","1790f5ff"]} as const;
+ for(const [id,[sha,digest]] of Object.entries(pins)){
   const profile=readCargoHandlingProfile(fixture.catalog,id)!;
   expect(createHash("sha256").update(profile.canonicalJson).digest("hex"),id).toBe(sha);
+  expect(profile.digest,id).toBe(digest);
  }
+});
+it.each([["CABLE2750",2750,687_500,8_250_000],["CABLE8500",8500,2_125_000,25_500_000]] as const)("binds exact %s v4 terms, mass, volume and light custody",(id,length,mass,volume)=>{
+ const profile=readCargoHandlingProfile(fixture.catalog,id)!;
+ expect(profile).toMatchObject({terms:[{itemId:"fp02.comp.field_cable",quantityUnits:length}],massMg:mass,capacityMm3:volume,sizeMm:[500,1000,500]});
+ expect(profile.sourceRefs).toContain("fp06-technical-s0-closed-native-socket-cable-jobs-v4");
+ const material=setup(),source=material.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!,cable=fixture.catalog.items.find(i=>i.sourceId===profile.terms[0]!.itemId)!,stack=source.state.contents.find(s=>s.resourceId===cable.resourceId)!;
+ const request={...intent,commandId:`pay_${id.toLowerCase()}`,profileId:id,expectedMaterialRevision:material.revision,sourceLots:[{containerId:source.state.containerId,stackId:stack.stackId,quantityUnits:length}]};
+ const plan=prepareCargoHandling(material,request);expect(plan.status).toBe("Prepared");if(plan.status!=="Prepared")throw Error(plan.reason);
+ expect(plan.profile).toMatchObject({terms:profile.terms,massMg:mass,capacityMm3:volume});
+ expect(prepareCargoHandling(material,{...request,sourceLots:[{...request.sourceLots[0]!,quantityUnits:length-1}]})).toMatchObject({status:"Rejected",reason:"HandlingProfileTermsMismatch"});
+ expect(readCargoHandlingProfile(fixture.catalog,`CABLE${length+1}`)).toBeUndefined();
 });
 it.each([["CABLE5000",5000],["CABLE5750",5750],["CABLE7750",7750]] as const)("PLAY04 V5 closed %s pays its declared cable quantity in the original light envelope",(id,length)=>{
  const profile=readCargoHandlingProfile(fixture.catalog,id);

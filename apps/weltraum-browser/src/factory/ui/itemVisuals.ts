@@ -89,6 +89,7 @@ const profileLabels: Readonly<Record<string, string>> = Object.freeze({
   "C26-PACK": "Cutter chassis", "C27-PACK": "Former chassis", "B06-BOM": "Cutter kit", "B07-BOM": "Former kit",
   "BATTERY-PACK": "Battery", "DISTRIBUTOR-PACK": "Distributor", "BENCH-PACK": "Workbench", "BIN-PACK": "Material container",
   BELT4: "Belt line · 4 m", CABLE40: "Cable pack · 40 m", CABLE4750: "Cable · 4.75 m", CABLE6500: "Cable · 6.5 m", CABLE8000: "Cable · 8 m", CABLE7000: "Cable · 7 m", CABLE5250: "Cable · 5.25 m", CABLE7500: "Cable · 7.5 m",
+  CABLE2750: "Cable · 2.75 m", CABLE5000: "Cable · 5 m", CABLE5750: "Cable · 5.75 m", CABLE7750: "Cable · 7.75 m", CABLE8500: "Cable · 8.5 m",
   RAW8: "Steel batch · 8 kg", MONTAGE: "Brace materials", BRACE: "New brace",
 });
 export const factoryProfileLabel = (profileId: string, fallback: string): string => Object.hasOwn(profileLabels, profileId) ? profileLabels[profileId]! : englishFactoryText(fallback);

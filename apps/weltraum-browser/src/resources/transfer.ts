@@ -315,7 +315,7 @@ const stackMetadataPayload = (stack: ResourceStack): Record<string, unknown> => 
   extensions: stack.extensions
 });
 
-const hasCompatibleMetadata = (left: ResourceStack, right: ResourceStack): boolean =>
+export const hasCompatibleMetadata = (left: ResourceStack, right: ResourceStack): boolean =>
   canonicalJson(stackMetadataPayload(left)) === canonicalJson(stackMetadataPayload(right));
 
 const directionalPortAllowed = (

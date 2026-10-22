@@ -1,6 +1,7 @@
 import { assertHvpSourceComplete,restoreHvpCoastSource } from "../../../src/hvp/hvpCoastSource";
 import { describe, expect, it } from "vitest";
 import { materializeFactoryStartSite } from "../../../src/factory/fixtures/startSite";
+import { materializeFactoryStartSiteV6, readFactorySourceColumnWorldV6 } from "../../../src/factory/fixtures/startSiteV6";
 import * as factory from "../../../src/factory/fixtures/startSite";
 import { createHash } from "node:crypto";
 import { materializeHvpCoastSource, prepareHvpCoastSource } from "../../../src/hvp/hvpCoastSource";
@@ -71,7 +72,7 @@ it("PLAY01 V3 has its own closed header and exact Owner-approved pages while pre
   expect(materializeFactoryStartSite().sourceDigest).toBe("e62aea8a");
   expect(factory.materializeFactoryStartSiteV2().sourceDigest).toBe("ec8ba9b1");
   expect(materializeHvpCoastSource().sourceDigest).toBe("b8fde6b0");
-  expect(() => assertHvpSourceComplete({ ...site, version: "hvp-factory-startsite-v6" })).toThrow(/version|profile/);
+  expect(() => assertHvpSourceComplete({ ...site, version: "hvp-factory-startsite-v6" })).toThrow(/source/i);
   expect(() => restoreHvpCoastSource(site.copySlots(), site.sourceDigest)).toThrow(/digest/);
 });
 it("PLAY01 V3 changes only the additional380 columns and2492 actual slots without material credit", () => {
@@ -103,7 +104,7 @@ it("PLAY01 V4 binds its own header to the exact Owner-approved connector pages w
   expect(factory.materializeFactoryStartSiteV3().sourceDigest).toBe("16dbaa28");
   expect(factory.materializeFactoryStartSiteV2().sourceDigest).toBe("ec8ba9b1");
   expect(materializeFactoryStartSite().sourceDigest).toBe("e62aea8a");expect(materializeHvpCoastSource().sourceDigest).toBe("b8fde6b0");
-  expect(()=>assertHvpSourceComplete({...site,version:"hvp-factory-startsite-v6"})).toThrow(/version|profile/);
+  expect(()=>assertHvpSourceComplete({...site,version:"hvp-factory-startsite-v6"})).toThrow(/source/i);
   expect(()=>restoreHvpCoastSource(site.copySlots(),site.sourceDigest)).toThrow(/digest/);
 });
 it("PLAY01 V4 changes only the exact448 connector columns and1164 slots with zero material credit", () => {
@@ -132,7 +133,7 @@ it("PLAY01 V5 binds a separately named generation to the exact approved3m2 raw-b
  expect(factory.materializeFactoryStartSiteV2().sourceDigest).toBe("ec8ba9b1");
  expect(factory.materializeFactoryStartSite().sourceDigest).toBe("e62aea8a");
  expect(materializeHvpCoastSource().sourceDigest).toBe("b8fde6b0");
- expect(()=>assertHvpSourceComplete({...site,version:"hvp-factory-startsite-v6"})).toThrow(/version|profile/);
+  expect(()=>assertHvpSourceComplete({...site,version:"hvp-factory-startsite-v6"})).toThrow(/source/i);
 });
 it("PLAY01 V5 changes only192 approvedcolumns and1246 slots with214add1032remove and0credit",()=>{
  const before=factory.materializeFactoryStartSiteV4().copySlots(),site=v5Site(),after=site.copySlots(),columns=new Set<number>();
@@ -147,4 +148,34 @@ it("PLAY01 V5 changes only192 approvedcolumns and1246 slots with214add1032remove
   .toEqual({columns:192,changedColumns:185,changed:1246,added:214,removed:1032,remapped:0,dryRemoved:1018,soilRemoved:14});
  for(const c of columns)for(let y=0;y<128;y++)expect(site.readSlot(c%256,y,Math.floor(c/256))).toBe(+(y<=75));
  expect(site.initializationReceipt.materialCreditMg).toBe(0);
+});
+
+it("V6 layers only the two approved masks over byte-identical V5 pages and rejects a renamed V5 source",()=>{
+ const parent=factory.materializeFactoryStartSiteV5(),site=materializeFactoryStartSiteV6();
+ const before=parent.copySlots(),after=site.copySlots();
+ expect(parent.sourceDigest).toBe("0e2a0bcb");expect(factory.materializeFactoryStartSiteV5().sourceDigest).toBe("0e2a0bcb");
+ expect(site.version).toBe("hvp-factory-startsite-v6");
+ expect(site.sourceDigest).not.toBe(parent.sourceDigest);
+ expect(site.initializationReceipt).toMatchObject({baseVersion:"hvp-factory-startsite-v5",addedMaskCount:2,
+   addedColumnCount:11240,changedColumnCount:11145,changedSlotCount:124974,addedAreaMm2:175625000,materialCreditMg:0});
+ expect(()=>assertHvpSourceComplete(site)).not.toThrow();
+ expect(()=>assertHvpSourceComplete({...parent,version:"hvp-factory-startsite-v6"})).toThrow(/source/i);
+
+ const inV6Mask=(x:number,z:number)=>(x>=-2&&x<14.5&&z>=3.5&&z<13.75)
+   ||(x>=-5.25&&x<-1.75&&z>=10.5&&z<12.5);
+ let changedSlots=0;const changedColumns=new Set<number>();
+ for(let index=0;index<before.length;index++)if(before[index]!==after[index]){
+   const x=index%256,y=Math.floor(index/256)%128,z=Math.floor(index/(256*128));
+   expect(inV6Mask(-16+(x+.5)*.125,-16+(z+.5)*.125)).toBe(true);
+   expect(after[index]).toBe(y<=75?1:0);
+   changedSlots++;changedColumns.add(x+256*z);
+ }
+ expect({changedColumns:changedColumns.size,changedSlots}).toEqual({changedColumns:11145,changedSlots:124974});
+
+ const v5Read=factory.readFactorySourceColumnWorldV5;
+ expect(readFactorySourceColumnWorldV6(-2,3.5)).toEqual({topMeters:1.5,slot:1});
+ expect(readFactorySourceColumnWorldV6(14.5,3.5)).toEqual(v5Read(14.5,3.5));
+ expect(readFactorySourceColumnWorldV6(-5.25,10.5)).toEqual({topMeters:1.5,slot:1});
+ expect(readFactorySourceColumnWorldV6(-5.25,12.5)).toEqual(v5Read(-5.25,12.5));
+ expect(prepareHvpCoastSource(site).sourceDigest).toBe(site.sourceDigest);
 });

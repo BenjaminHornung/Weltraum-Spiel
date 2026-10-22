@@ -1,0 +1,38 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+······················x··················································stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one full support proof for coherent production and power in each facility snapshot
+NATIVE_READ_SCENARIO {"case":"facility-snapshot","elapsedMs":1.3531000000002678,"probeCount":256,"singleProofBudget":256,"revision":1,"profileDigest":"288390f5"}
+
+stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one facility snapshot in the actual public native session read
+NATIVE_READ_SCENARIO {"case":"public-session-snapshot","elapsedMs":1.5313999999998487,"probeCount":256,"singleProofBudget":256,"ticks":0,"status":"Paused"}
+
+····························
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/hvp-locomotion.test.ts:266:30
+    264|         }
+    265|       }
+    266|       expect(reachedContact).toBe(true);
+       |                              ^
+    267|       const before=r.player.read().position,carrier=r.world.getRigidBo…
+    268|       r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.player.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 100 passed (101)
+   Start at  11:47:09
+   Duration  13.30s (transform 690ms, setup 0ms, import 935ms, tests 12.09s, environment 0ms)
+

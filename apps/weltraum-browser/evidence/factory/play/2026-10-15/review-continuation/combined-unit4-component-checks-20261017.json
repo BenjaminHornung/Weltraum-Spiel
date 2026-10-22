@@ -1,0 +1,30 @@
+{
+  "timeUtc": "2026-10-17T17:56:44.001Z",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "checks": [
+    {
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit/browserStorageCodec.test.ts tests/unit/browserStorageMemoryRepository.test.ts --reporter=dot",
+      "exitCode": 0,
+      "files": 2,
+      "passed": 20,
+      "testsSeconds": 0.052,
+      "totalSeconds": 0.481,
+      "scope": "Canonical envelope reuse, CAS witness request validation, memory storage behavior; before later old-CAS payload cut"
+    },
+    {
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit/factory/hostLifecycle.test.ts tests/unit/factory/factoryOwnerRestore.test.ts tests/unit/factory/dryFactorySlice.test.ts --reporter=dot",
+      "exitCode": 0,
+      "files": 3,
+      "passed": 122,
+      "testsSeconds": 66.49,
+      "totalSeconds": 68.47,
+      "scope": "Source-quiescent owner/capture/restore rejection and production composition regressions; not real browser acceptance"
+    }
+  ],
+  "notRun": [
+    "Full integrated codec after new Native source preflight/copy cuts",
+    "Factory UI Save and cold Continue",
+    "Clean-copy full paid 16kg play",
+    "Actual persistent browser-process restart"
+  ]
+}

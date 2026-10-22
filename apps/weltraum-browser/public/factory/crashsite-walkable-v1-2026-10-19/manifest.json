@@ -1,0 +1,96 @@
+{
+  "schema": "hestia.factory.closed-hull/v1",
+  "assetId": "hestia_crashsite_walkable_v1",
+  "assetRevision": 1,
+  "runtimeGlb": {
+    "url": "/factory/crashsite-walkable-v1-2026-10-19/crashsite-walkable-v1.glb",
+    "bytes": 1073548,
+    "sha256": "91d27929383cf3d3edfee3a2e44ab6d722de026837336e5dd6313c51bca7a2ed"
+  },
+  "source": {
+    "sourceAssetId": "hestia_crashsite_hybrid_v2",
+    "sourceGlb": "art/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.glb",
+    "sourceGlbSha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610",
+    "authoringBlend": "art/factory/crashsite-walkable-v1-2026-10-19/crashsite-walkable-v1.blend",
+    "authoringBlendSha256": "c0994d8aac74ebaddef02252a8dd152e159492eca4c6ad926eee377c92375c37",
+    "builder": "art/factory/crashsite-walkable-v1-2026-10-19/build_crashsite.py",
+    "builderSha256": "6793a5373f9743f70648fbceef3db7bbb7fc624cd9e69b2ce6464cfeae6932c8",
+    "provenance": "art/factory/crashsite-walkable-v1-2026-10-19/PROVENANCE.json",
+    "provenanceSha256": "9223108d1df63b9da6a52180bf56426c8aab53d842e1143249ff18c47403f7af",
+    "license": "LicenseRef-PolyForm-Noncommercial-1.0.0",
+    "licenseFile": "art/factory/crashsite-walkable-v1-2026-10-19/LICENSE",
+    "licenseFileSha256": "cf6deffc6d6b32e41e729cfa13bb65f76fdb56c3e66da69a8f9f025c7b9e799b",
+    "referenceSha256": "1fac13e62a049b137370c1705549342cb7087195a0c614ae6234e6717e7f208c",
+    "runtimeCensus": "art/factory/crashsite-walkable-v1-2026-10-19/RUNTIME_CENSUS.json",
+    "runtimeCensusSha256": "3ede7faf2e6aeb077bb784d928b02f6cff919c556433bbbdae8b22696c4c321b",
+    "walkabilityValidation": "art/factory/crashsite-walkable-v1-2026-10-19/WALKABILITY_VALIDATION.json",
+    "walkabilityValidationSha256": "512607b7a589814cfbb330ef4bf3aef0196b10dcf47eaea06d7966d306e02306",
+    "modelSpec": "art/factory/crashsite-walkable-v1-2026-10-19/MODEL_SPEC.json",
+    "modelSpecSha256": "2ede6a6becd37284042e83d704184ad7075a2fd4256ee64989e95fa1f731aa9a"
+  },
+  "frame": "fp02_east_north_height_xyz_v1",
+  "metersPerUnit": 1,
+  "anchorMeters": [6.5, 1.5, 7.5],
+  "boundsM": {
+    "min": [-7.875, 0, -2.75],
+    "max": [7.25, 5.5, 5.375]
+  },
+  "sceneExtras": {
+    "assetId": "hestia_crashsite_walkable_v1",
+    "artGridMeters": 0.0625,
+    "bodyGridMeters": 0.125,
+    "worldAuthority": false,
+    "flight": "PERMANENTLY_INOPERABLE",
+    "turretGameplay": "STATIC_ART_ONLY_FINITE_AMMO_FUTURE"
+  },
+  "nodeExtras": {
+    "assetId": "hestia_crashsite_walkable_v1",
+    "worldAuthority": false,
+    "collisionPolicy": "None",
+    "gameplayAdmission": "NOT_ADMITTED",
+    "flight": "PERMANENTLY_INOPERABLE",
+    "artGridMeters": 0.0625,
+    "bodyGridMeters": 0.125
+  },
+  "parts": [
+    {"partId":"cargo_bay","vertices":2532,"indices":3798,"primitives":4,"maxPositionAccessor":1180,"maxIndexAccessor":1770,"native":{"vertexBytes":30384,"indexBytes":15192,"verticesSha256":"sha256:f2ebd2c8882c4628cca679afc5892197daa35ca1bacab3620fa0b2c4b5474de6","indicesSha256":"sha256:7d06412b6af208efc956b7d8c423a7c61c4b03f4f15607caf8c23b181a6ed0b2"}},
+    {"partId":"cockpit","vertices":2904,"indices":4356,"primitives":2,"maxPositionAccessor":1544,"maxIndexAccessor":2316,"native":{"vertexBytes":34848,"indexBytes":17424,"verticesSha256":"sha256:e659c9840c039126d3587c1fd5d091255432b5f3e9bf1ac52947a4fead5eb626","indicesSha256":"sha256:ede2f5d2d0b536956cb3f353fc72313e9d9935d8d9f496574a9d1fad2639bdaa"}},
+    {"partId":"debris","vertices":2172,"indices":3258,"primitives":4,"maxPositionAccessor":1096,"maxIndexAccessor":1644,"native":{"vertexBytes":26064,"indexBytes":13032,"verticesSha256":"sha256:dc5c11b4f4e044e4265e4474c3e13079701783000e19c5819577bf66ff53a121","indicesSha256":"sha256:3c170eb2a3bfee954bcdfddc816bf24be54beb778d9cc738263b3bac64b4ce40"}},
+    {"partId":"hull","vertices":18316,"indices":27474,"primitives":5,"maxPositionAccessor":10992,"maxIndexAccessor":16488,"native":{"vertexBytes":219792,"indexBytes":109896,"verticesSha256":"sha256:cabe51cc9f7da3714b71c984f91efd8ffd70c63ac8417234aba66fc52d26fef7","indicesSha256":"sha256:294536eb7557215834746e65e218c1b31268dc08b5538221fa0e6397f6e781c6"}},
+    {"partId":"rear","vertices":3876,"indices":5814,"primitives":5,"maxPositionAccessor":1924,"maxIndexAccessor":2886,"native":{"vertexBytes":46512,"indexBytes":23256,"verticesSha256":"sha256:75f606a09df266c1375427779876373641fcbeb9580e79c32fe0da303ef221f6","indicesSha256":"sha256:0a15f33a20c5b23ab5d6e7d0ad735cd64a5318b658098ab5d79256e06c6c7c0b"}},
+    {"partId":"spine","vertices":5384,"indices":8076,"primitives":4,"maxPositionAccessor":5080,"maxIndexAccessor":7620,"native":{"vertexBytes":64608,"indexBytes":32304,"verticesSha256":"sha256:b5a0aeeb63422f3f399c7854aa72d3030a88b31f70b8820f8541ae73bc569b12","indicesSha256":"sha256:a4410c3e8e35b03c7d53c48220ff8b056f6fa1621083606e428e262645e83f44"}},
+    {"partId":"turret_aft","vertices":1964,"indices":2946,"primitives":5,"maxPositionAccessor":1356,"maxIndexAccessor":2034,"native":{"vertexBytes":23568,"indexBytes":11784,"verticesSha256":"sha256:1f4a22e4822da7c464b19097336dd9184f7f11d9eefa0d30a078e63aaff83830","indicesSha256":"sha256:429e713789850e6a493da4b43a4cdcd10f3593f194c2d3ca726998c3b846035a"}},
+    {"partId":"turret_fore","vertices":1924,"indices":2886,"primitives":5,"maxPositionAccessor":1316,"maxIndexAccessor":1974,"native":{"vertexBytes":23088,"indexBytes":11544,"verticesSha256":"sha256:b0abbe8db4a7b8a40a2a1e45ee45abe2a8dfcdaf7517e4a2c02d54f0f4e91137","indicesSha256":"sha256:b12a6b76680e67eec08736e51b7b91df86e30ab847819d6e7cacf0a280f8bd82"}}
+  ],
+  "palette": [
+    {"name":"worn","color":[0.3049873113632202,0.2746773064136505,0.20863686501979828,1]},
+    {"name":"structure","color":[0.02955683507025242,0.04373503103852272,0.05126945674419403,1]},
+    {"name":"petrol","color":[0.040915198624134064,0.18447498977184296,0.177888423204422,1]},
+    {"name":"amber","color":[0.6795424818992615,0.37123769521713257,0.061246052384376526,1]},
+    {"name":"glass","color":[0.008568125776946545,0.03310476616024971,0.05448027700185776,1]},
+    {"name":"ceramic","color":[0.715693473815918,0.6583748459815979,0.5394794940948486,1]}
+  ],
+  "census": {
+    "jsonChunkBytes": 20604,
+    "jsonUtf16Bytes": 41208,
+    "jsonGraphBytes": 70144,
+    "vertices": 39072,
+    "indices": 58608,
+    "primitives": 34,
+    "renderPaletteBytes": 1054944,
+    "renderVertexColorBytes": 1523808,
+    "nativeVertexIndexBytes": 703296,
+    "nativeCollisionDigest": "7a63fed9"
+  },
+  "costs": {
+    "sourceBytes": 1073548,
+    "sourceSha256CopyBytes": 1073548,
+    "jsonUtf16Bytes": 41208,
+    "jsonGraphBytes": 70144,
+    "renderScratchBytes": 1523808,
+    "renderArtifactBytes": 1523808,
+    "stagedRenderArtifactBytes": 1523808,
+    "nativeSectorBytes": 703296,
+    "nativeHashCopyPeakBytes": 219792
+  }
+}

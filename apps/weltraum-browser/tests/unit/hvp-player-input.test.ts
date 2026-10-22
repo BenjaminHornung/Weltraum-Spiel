@@ -10,6 +10,7 @@ import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
 import { HVP_SOURCE_MIN_METERS } from "../../src/hvp/hvpCoastSource";
 import { createFactoryCargoSite } from "../../src/factory/fixtures/cargoSite";
 import { materializeFactoryStartSite } from "../../src/factory/fixtures/startSite";
+import { materializeFactoryStartSiteV6 } from "../../src/factory/fixtures/startSiteV6";
 import { createResourceContainerState } from "../../src/resources/containers";
 import { canonicalJson } from "../../src/resources/serialization";
 import { readCargoHandlingProfile } from "../../src/factory/construction/cargoHandlingProfile";
@@ -57,7 +58,7 @@ const inputHarness = async (factory = true) => {
   return { input, native, intents, key, win, block: () => { blocked = true; } };
 };
 
-const activationHarness = async (lockFailure?: "reject" | "throw" | "event", externalPauseUi = false) => {
+const activationHarness = async (lockFailure?: "reject" | "throw" | "event" | "not-supported" | "deferred", externalPauseUi = false) => {
   const native = await createHvpPhysicsSession([], { x: 10, y: 4, z: 10 }, undefined,
     { spawn: { x: 0, y: 2, z: 0 }, coverage: [{ minX: -16, minZ: -16, maxX: 16, maxZ: 16 }] });
   native.pause(); // Actual native paused start; pointer-lock failure grants no simulation resume.
@@ -65,11 +66,25 @@ const activationHarness = async (lockFailure?: "reject" | "throw" | "event", ext
   const doc = Object.assign(new EventTarget(), { body: new Element(), hidden: false, pointerLockElement: null as Element | null,
     createElement: () => { const value = new Element(); elements.push(value); return value; }, exitPointerLock: () => { doc.pointerLockElement = null; doc.dispatchEvent(new Event("pointerlockchange")); } });
   let activationWindow = false, lockRequests = 0, blocked = false;
-  const canvas = Object.assign(new Element(), { requestPointerLock: () => {
-    expect(activationWindow, "Pointer lock must stay inside the actual invoking gesture").toBe(true); lockRequests++;
+  const lockCalls: unknown[][] = [], pendingLockRequests: { resolve(): void; grant(): void; reject(error: Error): void }[] = [];
+  const canvas = Object.assign(new Element(), { requestPointerLock: (...args: unknown[]) => {
+    const fallback=lockFailure==="not-supported"&&lockRequests===1&&args.length===0;
+    if(!fallback)expect(activationWindow, "Pointer lock must stay inside the actual invoking gesture").toBe(true);
+    lockRequests++; lockCalls.push(args);
+    const raw=(args[0] as {unadjustedMovement?:boolean}|undefined)?.unadjustedMovement===true;
     if (lockFailure === "throw") throw Error("LockDenied");
     if (lockFailure === "reject") return Promise.reject(Error("LockDenied"));
-    if (lockFailure === "event") return Promise.resolve();
+    if (lockFailure === "not-supported" && raw) {
+      doc.dispatchEvent(new Event("pointerlockerror"));
+      return Promise.reject(new DOMException("Raw pointer lock unavailable", "NotSupportedError"));
+    }
+    if (lockFailure === "not-supported") {
+      doc.pointerLockElement = canvas; doc.dispatchEvent(new Event("pointerlockchange")); return Promise.resolve();
+    }
+    if (lockFailure === "event") return;
+    if (lockFailure === "deferred") return new Promise<void>((resolve, reject) => pendingLockRequests.push({
+      resolve, grant: () => { doc.pointerLockElement = canvas; doc.dispatchEvent(new Event("pointerlockchange")); resolve(); }, reject
+    }));
     doc.pointerLockElement = canvas; doc.dispatchEvent(new Event("pointerlockchange")); return Promise.resolve();
   } });
   const win = new EventTarget(), intents: HvpPlayerInput[] = [], acks: { resolve(): void; reject(error: Error): void }[] = [];
@@ -84,7 +99,10 @@ const activationHarness = async (lockFailure?: "reject" | "throw" | "event", ext
   const begin = () => { activationWindow = true; const result = input.start(); activationWindow = false;
     return Promise.resolve(result) as unknown as Promise<{ status: "Playing" | "Cancelled" | "Rejected"; reason: string | null }>; };
   const key = (type: string, code: string, repeat = false) => win.dispatchEvent(Object.assign(new Event(type, { cancelable: true }), { code, repeat }));
-  return { input, native, doc, win, key, begin, intents, acks, elements, lockRequests: () => lockRequests, block: () => { blocked = true; } };
+  return { input, native, doc, win, key, begin, intents, acks, elements, lockRequests: () => lockRequests, lockCalls,
+    rejectPointerLock: (index: number, error: Error) => pendingLockRequests[index]!.reject(error),
+    resolvePointerLockRequest: (index: number) => pendingLockRequests[index]!.resolve(),
+    grantPointerLock: (index: number) => pendingLockRequests[index]!.grant(), block: () => { blocked = true; } };
 };
 
 describe("PLAY03 actual user activation and Native Play ACK", () => {
@@ -122,12 +140,39 @@ describe("PLAY03 actual user activation and Native Play ACK", () => {
     const h = await activationHarness(); let settled = false;
     const started = h.begin().then(result => { settled = true; return result; });
     expect(h.lockRequests()).toBe(1); expect(h.acks).toHaveLength(1);
+    expect(h.lockCalls).toEqual([[{unadjustedMovement:true}]]);
     h.key("keydown", "KeyW"); h.key("keydown", "Space"); await turn();
     expect(settled).toBe(false); expect(h.intents.some(v => v.x || v.z || v.jump)).toBe(false);
     h.acks[0]!.resolve(); await turn(); expect((await started)?.status).toBe("Playing");
     expect(h.intents.some(v => v.x || v.z || v.jump)).toBe(false);
     h.key("keyup", "KeyW"); h.key("keyup", "Space"); h.key("keydown", "KeyD");
     expect(h.intents.at(-1)?.x).toBeCloseTo(-1);
+    const before=h.input.checkpoint();
+    const move=(movementX:number,movementY:number)=>h.doc.dispatchEvent(Object.assign(new Event("mousemove"),{movementX,movementY}));
+    move(12,-5);move(-7,3);
+    const after=h.input.checkpoint();
+    expect(after.playerYaw).toBeCloseTo(before.playerYaw-5*0.002,12);
+    expect(after.playerPitch).toBeCloseTo(before.playerPitch+2*0.002,12);
+    h.input.update();h.input.update();expect(h.input.checkpoint()).toEqual(after);
+  });
+  it("retries optionsless once when raw lock is NotSupported despite its preceding error event", async () => {
+    const h=await activationHarness("not-supported"),started=h.begin();await turn();
+    expect(h.lockCalls).toEqual([[{unadjustedMovement:true}],[]]);
+    expect(h.acks).toHaveLength(1);expect(h.doc.body.dataset.hestiaPrototypeInputError).toBeUndefined();
+    h.acks[0]!.resolve();expect((await started).status).toBe("Playing");
+  });
+  it("does not retry a cancelled raw request or let its late Promise/error cancel a newer activation", async () => {
+    const h=await activationHarness("deferred"),first=h.begin();
+    expect(h.lockCalls).toEqual([[{unadjustedMovement:true}]]);
+    h.input.stop();expect((await first).status).toBe("Cancelled");
+    let settled=false;const second=h.begin().then(result=>{settled=true;return result;});
+    expect(h.lockCalls).toEqual([[{unadjustedMovement:true}],[{unadjustedMovement:true}]]);
+    h.doc.dispatchEvent(new Event("pointerlockerror"));
+    h.rejectPointerLock(0,new DOMException("Old raw request unsupported","NotSupportedError"));await turn();
+    expect(h.lockRequests()).toBe(2);expect(settled).toBe(false);expect(h.acks).toHaveLength(0);
+    expect(h.doc.body.dataset.hestiaPrototypeInputError).toBeUndefined();
+    h.grantPointerLock(1);expect(h.acks).toHaveLength(1);
+    h.acks[0]!.resolve();expect((await second).status).toBe("Playing");
   });
   it.each(["stop", "blur", "visibility", "modal", "dispose"])("cancels %s before a late ACK without restoring held movement/jump or advancing poses", async kind => {
     const h = await activationHarness(), before = h.native.read(), started = h.begin();
@@ -155,7 +200,15 @@ describe("PLAY03 actual user activation and Native Play ACK", () => {
     if (failure === "event") h.doc.dispatchEvent(new Event("pointerlockerror"));
     await turn(); const result = await started;
     expect(result?.status).toBe("Rejected"); expect(result?.reason).toMatch(/lock|Lock/i);
+    expect(h.lockRequests()).toBe(1); expect(h.lockCalls).toEqual([[{unadjustedMovement:true}]]);
     expect(h.input.active).toBe(false); expect(h.native.read().status).toBe("Paused"); expect(h.acks).toHaveLength(0);
+  });
+  it("does not start Native Play when a lock-request Promise resolves without a real lock", async () => {
+    const h=await activationHarness("deferred"),started=h.begin();
+    h.resolvePointerLockRequest(0);await turn();
+    expect(h.acks).toHaveLength(0);expect(h.input.active).toBe(false);expect(h.input.activationPending).toBe(true);
+    expect(h.native.read().status).toBe("Paused");
+    h.input.stop();expect((await started).status).toBe("Cancelled");expect(h.native.read().status).toBe("Paused");
   });
   it("rejects its actual Native Play failure instead of acknowledging success", async () => {
     const h = await activationHarness(), started = h.begin(); h.acks[0]!.reject(Error("NativePlayRejected"));
@@ -194,6 +247,7 @@ class NativeTransport {
   supportedFixture = false;
   factoryCargoFixture = false;
   holdInputAcks=false;inputAcks:number[]=[];
+  holdFactoryCheckpointAcks=false;factoryCheckpoints:{id:number;value:NonNullable<HvpPhysicsReply["factoryCheckpoint"]>}[]=[];
   constructor() { NativeTransport.current = this; }
   postMessage(message: HvpPhysicsMessage) {
     this.messages.push(structuredClone(message));
@@ -203,6 +257,11 @@ class NativeTransport {
         spawn: { x: 0, y: 0.92, z: 0 }, coverage: [{ minX: -4, minZ: -4, maxX: 4, maxZ: 4 }]
       } : message.player, message.inertiaSpawn, message.branchSpawn, message.sessionId, undefined, message.branchKind, message.factoryEnabled,message.initialFactoryCargo);
       else if (message.kind === "Read") { if (message.input) this.session.input(message.input); this.reads.push(message); return; }
+      else if (message.kind === "FactoryCheckpoint") {
+        const value=this.session.checkpointFactory();
+        if(this.holdFactoryCheckpointAcks){this.factoryCheckpoints.push({id:message.id,value});return;}
+        this.reply(message.id, undefined, value); return;
+      }
       else if(message.kind==="FactoryInput"){
         this.session.factoryInput(message.input,message.cancelPendingJump);
         if(this.holdInputAcks)this.inputAcks.push(message.id);else this.onmessage?.(new MessageEvent("message",{data:{id:message.id}}));
@@ -225,9 +284,10 @@ class NativeTransport {
       this.reply(message.id);
     })().catch(error => { this.onmessage?.({ data: { id: message.id, rejected: String(error) } } as MessageEvent<HvpPhysicsReply>); });
   }
-  reply(id: number, bodyPreparation?: HvpPhysicsReply["bodyPreparation"]) { this.onmessage?.(new MessageEvent<HvpPhysicsReply>("message", { data: { id, ...(bodyPreparation ? { bodyPreparation } : {}), snapshot: this.session.read(), clock: { timers: 0, maxTimerGapMs: 0, maxAdvanceMs: 0,
+  reply(id: number, bodyPreparation?: HvpPhysicsReply["bodyPreparation"], factoryCheckpoint?:HvpPhysicsReply["factoryCheckpoint"]) { this.onmessage?.(new MessageEvent<HvpPhysicsReply>("message", { data: { id, ...(bodyPreparation ? { bodyPreparation } : {}), ...(factoryCheckpoint?{factoryCheckpoint}:{}), snapshot: this.session.read(), clock: { timers: 0, maxTimerGapMs: 0, maxAdvanceMs: 0,
     maxHandlerMs: 0, lastCommand: "explicit-native-transport-fixture", lastHandlerMs: 0, delayedCallbacks: [] } } })); }
   release() { const message = this.reads.shift(); if (!message) throw new Error("Missing held test Read"); this.reply(message.id); }
+  releaseFactoryCheckpoint() { const held=this.factoryCheckpoints.shift();if(!held)throw new Error("Missing held Factory checkpoint reply");this.reply(held.id,undefined,held.value); }
   terminate() { this.terminated = true; this.session?.dispose(); }
 }
 const clientHarness = async (factory = true, supported = false, onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void) => {
@@ -235,6 +295,13 @@ const clientHarness = async (factory = true, supported = false, onTimings?:(batc
   const client = await createHvpPhysicsClient([], { x: 10, y: 4, z: 10 }, new AbortController().signal,
     { x: 0, y: 2, z: 0 }, undefined, undefined, undefined, "branch", onTimings, factory);
   const worker = NativeTransport.current; cleanup.push(() => client.dispose()); return { client, worker };
+};
+const factoryCheckpointHarness=async()=>{
+  vi.stubGlobal("Worker",class extends NativeTransport { factoryCargoFixture=true; });
+  const site=createFactoryCargoSite(materializeFactoryStartSite());
+  const client=await createHvpPhysicsClient([], {x:10,y:4,z:10}, new AbortController().signal,
+    undefined,undefined,undefined,undefined,"branch",undefined,true,site);
+  const worker=NativeTransport.current;cleanup.push(()=>client.dispose());return {client,worker};
 };
 
 describe("PLAY03 readonly Factory input transport facts", () => {
@@ -258,6 +325,78 @@ describe("PLAY03 readonly Factory input transport facts", () => {
     const facts = (client.lifecycle!() as unknown as { factoryInput?: { lastSentId: number | null; lastAckId: number | null; pendingIds: readonly number[]; desiredLevel: HvpPlayerInput; canDispatch: boolean } }).factoryInput;
     expect(facts).toMatchObject({ lastSentId: before.lastSentId, lastAckId: before.lastAckId, pendingIds: [], desiredLevel: zero, canDispatch: false });
     expect(worker.messages).toHaveLength(count); expect(client.read().status).toBe("Paused");
+  });
+});
+
+it("rejects shadowed V6 Hull view sizes before cloning the caller backing store or creating a Worker",async()=>{
+  const site=createFactoryCargoSite(materializeFactoryStartSiteV6());
+  const oversized=new Float32Array(5*1024*1024/Float32Array.BYTES_PER_ELEMENT);
+  Object.defineProperties(oversized,{buffer:{value:new ArrayBuffer(703_116)},byteOffset:{value:0},byteLength:{value:703_116},length:{value:3}});
+  const sectors=Array.from({length:8},()=>({vertices:new Float32Array([0,0,0]),indices:new Uint32Array([0,1,2])}));
+  sectors[0]!.vertices=oversized;
+  let workerConstructions=0;vi.stubGlobal("Worker",class{constructor(){workerConstructions++;}});
+  const clone=vi.spyOn(globalThis,"structuredClone");
+  await expect(createHvpPhysicsClient([], {x:10,y:4,z:10},new AbortController().signal,undefined,undefined,undefined,undefined,
+    "branch",undefined,true,site,undefined,sectors)).rejects.toThrow(/Invalid Factory V6 Hull sector buffer/);
+  expect(clone).not.toHaveBeenCalled();
+  expect(workerConstructions).toBe(0);
+});
+
+describe("SAVE_READ_DRAIN_R01 Native checkpoint Read drain",()=>{
+  it("reserves the World, blocks competing work, and checkpoints after the one outstanding Read publishes",async()=>{
+    const {client,worker}=await factoryCheckpointHarness();await client.command("Pause");
+    const initialTick=client.read().ticks;client.update();expect(worker.reads).toHaveLength(1);
+    const checkpoint=client.checkpointFactory!();await turn();
+    const before=worker.messages.length;
+    client.update();client.setPlayerInput(zero,true);
+    await expect(client.command("Inspect")).rejects.toThrow(/checkpoint reservation/i);
+    await expect(client.commitTerrain("reservation_probe")).rejects.toThrow(/checkpoint reservation/i);
+    expect(worker.messages).toHaveLength(before);expect(worker.messages.some(message=>message.kind==="FactoryCheckpoint")).toBe(false);
+    worker.session.play();for(let step=0;step<6;step++)worker.session.advance(1/60);worker.session.pause();
+    const latestTick=worker.session.read().ticks;expect(latestTick).toBeGreaterThan(initialTick);
+    worker.release();
+    const saved=await checkpoint;
+    expect(saved.world.tick.status).toBe("Paused");expect(saved.world.tick.ticks).toBe(latestTick);expect(client.read().ticks).toBe(latestTick);
+    expect(worker.messages.filter(message=>message.kind==="FactoryCheckpoint")).toHaveLength(1);
+    expect(client.lifecycle!().factoryInput).toMatchObject({desiredLevel:zero,commandDepth:0,closing:false});
+  });
+
+  it("does not drain an outstanding non-Read request",async()=>{
+    const {client,worker}=await factoryCheckpointHarness();await client.command("Play");worker.holdInputAcks=true;
+    client.setPlayerInput({...zero,x:1});await client.command("Pause");
+    const before=worker.messages.filter(message=>message.kind==="FactoryCheckpoint").length;
+    const rejection=await client.checkpointFactory!().then(()=>undefined,error=>error);
+    expect(rejection).toMatchObject({cause:{kind:"hvp-factory-checkpoint-preflight",guards:{noPendingRequests:false,inputAcknowledged:false}}});
+    expect(worker.messages.filter(message=>message.kind==="FactoryCheckpoint")).toHaveLength(before);
+  });
+
+  it("revalidates the exact Read publication and releases the barrier after rejection",async()=>{
+    const {client,worker}=await factoryCheckpointHarness();await client.command("Pause");
+    client.update();const checkpoint=client.checkpointFactory!();await turn();
+    client.setPlayerInput({...zero,x:1});worker.session.play();worker.release();
+    const rejection=await checkpoint.then(()=>undefined,error=>error);
+    expect(rejection).toMatchObject({cause:{kind:"hvp-factory-checkpoint-preflight",guards:{paused:false,neutralInput:false}}});
+    expect(client.read().status).toBe("Running");
+    expect(worker.messages.some(message=>message.kind==="FactoryCheckpoint")).toBe(false);
+    await client.command("Pause");client.update();expect(worker.reads).toHaveLength(1);worker.release();await turn();
+    expect(client.read().status).toBe("Paused");
+  });
+
+  it("rejects a non-neutral input change made while the Native checkpoint ACK is delayed",async()=>{
+    const {client,worker}=await factoryCheckpointHarness();await client.command("Pause");worker.holdFactoryCheckpointAcks=true;
+    const checkpoint=client.checkpointFactory!();await turn();expect(worker.factoryCheckpoints).toHaveLength(1);
+    client.setPlayerInput({...zero,x:1});worker.releaseFactoryCheckpoint();
+    await expect(checkpoint).rejects.toThrow(/canceled while Native capture was pending/i);
+    expect(client.read().status).toBe("Paused");expect(worker.terminated).toBe(false);
+    await expect(client.command("Pause")).resolves.toBeUndefined();
+  });
+
+  it("lets terminal Dispose cancel a checkpoint whose Native ACK is delayed",async()=>{
+    const {client,worker}=await factoryCheckpointHarness();await client.command("Pause");worker.holdFactoryCheckpointAcks=true;
+    const checkpoint=client.checkpointFactory!();await turn();expect(worker.factoryCheckpoints).toHaveLength(1);
+    await expect(client.dispose()).resolves.toBeUndefined();
+    await expect(checkpoint).rejects.toThrow(/disposed/i);
+    expect(worker.terminated).toBe(true);
   });
 });
 
@@ -504,6 +643,47 @@ describe("W07 bounded Factory intent and independent Read transport", () => {
     const count=worker.messages.length;client.setPlayerInput({...zero,x:1});client.update();await turn();expect(worker.messages).toHaveLength(count);
     // The native Worker is already terminated; no Disposed ACK can exist.
     await expect(client.dispose()).rejects.toThrow(/backpressure/);
+  });
+});
+
+describe("W08 mouse-direction publication under a busy Read",()=>{
+  it("integrates mouse look until the next input update without exhausting the real transport",async()=>{
+    const {client,worker}=await clientHarness();
+    const doc=Object.assign(new EventTarget(),{body:new Element(),hidden:false,pointerLockElement:null as Element|null,
+      createElement:()=>new Element(),exitPointerLock:()=>{doc.pointerLockElement=null;doc.dispatchEvent(new Event("pointerlockchange"));}});
+    const canvas=Object.assign(new Element(),{requestPointerLock:async()=>{doc.pointerLockElement=canvas;doc.dispatchEvent(new Event("pointerlockchange"));}});
+    const win=new EventTarget();
+    const input=createHvpPlayerInput(canvas as unknown as HTMLCanvasElement,new PerspectiveCamera(),client,
+      doc as unknown as Document,win as unknown as Window,()=>{},{confirm(){},select(){}},()=>false,true);
+    cleanup.push(()=>input.dispose());
+    try{
+      expect((await input.start()).status).toBe("Playing");
+      worker.holdInputAcks=true;client.update();await turn();expect(worker.reads).toHaveLength(1);
+      const before=input.checkpoint(),nativeBefore=worker.session.read();
+      win.dispatchEvent(Object.assign(new Event("keydown",{cancelable:true}),{code:"KeyW",repeat:false}));
+      const initialCount=worker.messages.filter(message=>message.kind==="FactoryInput").length;
+      for(let index=0;index<32;index++)doc.dispatchEvent(Object.assign(new Event("mousemove"),{movementX:1,movementY:0}));
+      await turn();
+      const turned=input.checkpoint();
+      expect(turned.playerYaw).toBeCloseTo(before.playerYaw-32*0.002,12);
+      expect(worker.terminated).toBe(false);
+      expect(worker.messages.filter(message=>message.kind==="FactoryInput")).toHaveLength(initialCount);
+      input.update();
+      const afterFrame=worker.messages.filter(message=>message.kind==="FactoryInput");
+      expect(afterFrame).toHaveLength(initialCount+1);
+      expect(afterFrame.at(-1)?.input).toMatchObject({x:expect.closeTo(-Math.sin(turned.playerYaw),12),
+        z:expect.closeTo(-Math.cos(turned.playerYaw),12),sprint:false,jump:false});
+      win.dispatchEvent(Object.assign(new Event("keyup"),{code:"KeyW",repeat:false}));
+      expect(worker.messages.filter(message=>message.kind==="FactoryInput").at(-1)?.input).toEqual(zero);
+      expect(worker.reads).toHaveLength(1);expect(worker.session.read().ticks).toBe(nativeBefore.ticks);
+      expect(worker.session.read().player?.position).toEqual(nativeBefore.player?.position);
+      for(const id of worker.inputAcks.splice(0))worker.onmessage?.(new MessageEvent("message",{data:{id}}));
+      worker.release();await turn();
+      expect(client.read().ticks).toBe(nativeBefore.ticks);expect(client.read().player?.position).toEqual(nativeBefore.player?.position);
+    }finally{
+      input.dispose();
+      await client.dispose().catch(()=>{});
+    }
   });
 });
 

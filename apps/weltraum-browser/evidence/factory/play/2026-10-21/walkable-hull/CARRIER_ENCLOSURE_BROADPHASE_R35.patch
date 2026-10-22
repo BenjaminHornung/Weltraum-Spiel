@@ -1,0 +1,109 @@
+diff --git a/E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-21-v4/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts b/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts
+index 53654b2..fa49b13 100644
+--- a/E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-21-v4/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts
++++ b/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts
+@@ -86,6 +86,58 @@ const orderedFloat32=(value:number):number=>{
+   const view=new DataView(new ArrayBuffer(4));view.setFloat32(0,value,false);const bits=view.getUint32(0,false);
+   return (bits&0x80000000)!==0?0x80000000-(bits&0x7fffffff):0x80000000+bits;
+ };
++const carrierSweepFloat32Bound=(value:number,direction:"down"|"up"):number|undefined=>{
++  if(!Number.isFinite(value))return undefined;
++  const rounded=Math.fround(value);if(!Number.isFinite(rounded))return undefined;
++  if(direction==="down"?rounded<=value:rounded>=value)return rounded;
++  const ordered=orderedFloat32(rounded)+(direction==="up"?1:-1);
++  if(ordered<0||ordered>0xffffffff)return undefined;
++  const bits=ordered<0x80000000?0x80000000|(0x80000000-ordered):ordered-0x80000000;
++  const view=new DataView(new ArrayBuffer(4));view.setUint32(0,bits>>>0,false);
++  const next=view.getFloat32(0,false);return Number.isFinite(next)?next:undefined;
++};
++const carrierSweepEnclosure=(from:Readonly<{x:number;y:number;z:number}>,delta:Readonly<{x:number;y:number;z:number}>,
++  destination:Readonly<{x:number;y:number;z:number}>,rotation:Readonly<{x:number;y:number;z:number;w:number}>,
++  half:Readonly<{x:number;y:number;z:number}>):Readonly<{center:Readonly<{x:number;y:number;z:number}>;half:Readonly<{x:number;y:number;z:number}>}>|undefined=>{
++  const s=Math.fround(Math.SQRT1_2),hx=Math.fround(half.x),hy=Math.fround(half.y),hz=Math.fround(half.z);
++  if(rotation.x!==0||rotation.y!==s||rotation.z!==0||rotation.w!==s||![hx,hy,hz].every(value=>Number.isFinite(value)&&value>0))return undefined;
++  const admittedHalf=(hx===Math.fround(.2495)&&hy===Math.fround(.4995)&&hz===Math.fround(.2495))
++    ||(hx===Math.fround(.4995)&&hy===Math.fround(.4995)&&hz===Math.fround(.4995))
++    ||(hx===Math.fround(.4995)&&hy===Math.fround(.4995)&&hz===Math.fround(.7495))
++    ||(hx===Math.fround(.062)&&hy===Math.fround(.1245)&&hz===Math.fround(.062));
++  if(!admittedHalf||![destination.x,destination.y,destination.z].every(value=>Number.isFinite(value)&&Math.fround(value)===value))return undefined;
++  const k=2*s*s,gamma7=7*2**-24/(1-7*2**-24);
++  const radiusX=carrierSweepFloat32Bound(Math.max(k*hz+gamma7*k*(hx+hz),
++    Math.abs(1-k)*hx+k*hz+gamma7*((1+k)*hx+k*hz)),"up");
++  const radiusY=carrierSweepFloat32Bound(Math.max(k*hy*(1+gamma7),hy*(1+gamma7)),"up");
++  const radiusZ=carrierSweepFloat32Bound(Math.max(k*hx+gamma7*k*(hx+hz),
++    Math.abs(1-k)*hz+k*hx+gamma7*((1+k)*hz+k*hx)),"up");
++  if(radiusX===undefined||radiusY===undefined||radiusZ===undefined)return undefined;
++  const start={x:Math.fround(from.x),y:Math.fround(from.y),z:Math.fround(from.z)};
++  const velocity={x:Math.fround(delta.x),y:Math.fround(delta.y),z:Math.fround(delta.z)};
++  const exactEnd={x:start.x+velocity.x,y:start.y+velocity.y,z:start.z+velocity.z};
++  const roundedEnd={x:Math.fround(exactEnd.x),y:Math.fround(exactEnd.y),z:Math.fround(exactEnd.z)};
++  if(![start.x,start.y,start.z,velocity.x,velocity.y,velocity.z,exactEnd.x,exactEnd.y,exactEnd.z,
++    roundedEnd.x,roundedEnd.y,roundedEnd.z,destination.x,destination.y,destination.z].every(Number.isFinite))return undefined;
++  const lowerX=carrierSweepFloat32Bound(Math.min(start.x,exactEnd.x,roundedEnd.x,destination.x)-radiusX,"down");
++  const lowerY=carrierSweepFloat32Bound(Math.min(start.y,exactEnd.y,roundedEnd.y,destination.y)-radiusY,"down");
++  const lowerZ=carrierSweepFloat32Bound(Math.min(start.z,exactEnd.z,roundedEnd.z,destination.z)-radiusZ,"down");
++  const upperX=carrierSweepFloat32Bound(Math.max(start.x,exactEnd.x,roundedEnd.x,destination.x)+radiusX,"up");
++  const upperY=carrierSweepFloat32Bound(Math.max(start.y,exactEnd.y,roundedEnd.y,destination.y)+radiusY,"up");
++  const upperZ=carrierSweepFloat32Bound(Math.max(start.z,exactEnd.z,roundedEnd.z,destination.z)+radiusZ,"up");
++  if(lowerX===undefined||lowerY===undefined||lowerZ===undefined||upperX===undefined||upperY===undefined||upperZ===undefined)return undefined;
++  const center={x:Math.fround((lowerX+upperX)/2),y:Math.fround((lowerY+upperY)/2),z:Math.fround((lowerZ+upperZ)/2)};
++  const halfBound={
++    x:carrierSweepFloat32Bound(Math.max(center.x-lowerX,upperX-center.x),"up"),
++    y:carrierSweepFloat32Bound(Math.max(center.y-lowerY,upperY-center.y),"up"),
++    z:carrierSweepFloat32Bound(Math.max(center.z-lowerZ,upperZ-center.z),"up")};
++  if(![center.x,center.y,center.z,halfBound.x,halfBound.y,halfBound.z].every(value=>value!==undefined&&Number.isFinite(value)))return undefined;
++  const aabbLower={x:Math.fround(center.x-halfBound.x!),y:Math.fround(center.y-halfBound.y!),z:Math.fround(center.z-halfBound.z!)};
++  const aabbUpper={x:Math.fround(center.x+halfBound.x!),y:Math.fround(center.y+halfBound.y!),z:Math.fround(center.z+halfBound.z!)};
++  if(![aabbLower.x,aabbLower.y,aabbLower.z,aabbUpper.x,aabbUpper.y,aabbUpper.z].every(Number.isFinite)
++    ||aabbLower.x>lowerX||aabbUpper.x<upperX||aabbLower.y>lowerY||aabbUpper.y<upperY||aabbLower.z>lowerZ||aabbUpper.z<upperZ)return undefined;
++  return {center,half:{x:halfBound.x!,y:halfBound.y!,z:halfBound.z!}};
++};
+ const principalInertiaMatches=(actual:Readonly<{x:number;y:number;z:number}>,saved:Readonly<{x:number;y:number;z:number}>):boolean=>
+   [actual.x,actual.y,actual.z].every((value,index)=>{
+     const expected=[saved.x,saved.y,saved.z][index]!;
+@@ -363,6 +415,16 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+       }
+     }
+   };
++  const carrierSweepHasNoObstacle=(box:ReturnType<typeof carrierBoxes>[number],from:Readonly<{x:number;y:number;z:number}>,
++    delta:Readonly<{x:number;y:number;z:number}>,targetBody:Readonly<{x:number;y:number;z:number}>,rotation:Readonly<{x:number;y:number;z:number;w:number}>,
++    shape:R.Cuboid):boolean=>{
++    const committed={x:Math.fround(targetBody.x),y:Math.fround(targetBody.y),z:Math.fround(targetBody.z)};
++    const targetCenter={x:Math.fround(committed.x+box.center.z),y:Math.fround(committed.y+box.center.y),z:Math.fround(committed.z-box.center.x)};
++    const enclosure=carrierSweepEnclosure(from,delta,targetCenter,rotation,shape.halfExtents);if(!enclosure)return false;
++    let blocked=false;
++    world.collidersWithAabbIntersectingAabb(enclosure.center,enclosure.half,collider=>{if(obstacle(collider))blocked=true;return true;});
++    return !blocked;
++  };
+   const readCarrier = (): FactoryNativeCarrierRead | undefined => {
+     if (!carrier) return undefined;
+     const body = world.getRigidBody(carrier.bodyHandle);
+@@ -533,9 +595,11 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+         const delta = { x: pose.x - current.x, y: pose.y - current.y, z: pose.z - current.z };
+         if (Math.abs(delta.y) > .002) return veto("CarrierGroundHeight");
+         for (const box of carrierBoxes(profile)) {
+-          const hit = world.castShape({ x: current.x + box.center.z, y: current.y + box.center.y, z: current.z - box.center.x }, body.rotation(), delta,
+-            new R.Cuboid(box.half.x - .0005, box.half.y - .0005, box.half.z - .0005), 1, true, undefined, undefined, undefined, undefined, obstacle);
+-          if (hit !== null) return veto("CarrierSweep",{colliderHandle:hit.collider.handle,colliderShapeType:hit.collider.shapeType(),timeOfImpact:hit.toi,colliderLocalNormal:Object.freeze({...hit.normal2})});
++          const from={x:current.x+box.center.z,y:current.y+box.center.y,z:current.z-box.center.x},rotation=body.rotation();
++          const shape=new R.Cuboid(box.half.x-.0005,box.half.y-.0005,box.half.z-.0005);
++          const hit=world.castShape(from,rotation,delta,shape,1,true,undefined,undefined,undefined,undefined,obstacle);
++          if(hit!==null&&!carrierSweepHasNoObstacle(box,from,delta,pose,rotation,shape))
++            return veto("CarrierSweep",{colliderHandle:hit.collider.handle,colliderShapeType:hit.collider.shapeType(),timeOfImpact:hit.toi,colliderLocalNormal:Object.freeze({...hit.normal2})});
+         }
+         // Both next poses enter one subsequent private World.step; no pose or tick is changed by preparation.
+         return () => {
+@@ -596,9 +660,10 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
+       assertCarrierClearance(carrierDefinition!,depositPose);
+       const delta={x:depositPose.x-previousPose.x,y:depositPose.y-previousPose.y,z:depositPose.z-previousPose.z};
+       for(const box of carrierBoxes(carrierDefinition!)){
+-        const hit=world.castShape({x:previousPose.x+box.center.z,y:previousPose.y+box.center.y,z:previousPose.z-box.center.x},body.rotation(),delta,
+-          new R.Cuboid(box.half.x-.0005,box.half.y-.0005,box.half.z-.0005),1,true,undefined,undefined,undefined,undefined,obstacle);
+-        if(hit!==null)reject("CarrierSnapSweep");
++        const from={x:previousPose.x+box.center.z,y:previousPose.y+box.center.y,z:previousPose.z-box.center.x},rotation=body.rotation();
++        const shape=new R.Cuboid(box.half.x-.0005,box.half.y-.0005,box.half.z-.0005);
++        const hit=world.castShape(from,rotation,delta,shape,1,true,undefined,undefined,undefined,undefined,obstacle);
++        if(hit!==null&&!carrierSweepHasNoObstacle(box,from,delta,depositPose,rotation,shape))reject("CarrierSnapSweep");
+       }
+       const before = members(world);
+       carrierWork = { request: Object.freeze({ ...request }), before, previousRevision: revision, previousCarrier: original,previousPose,depositPose,

@@ -1,0 +1,182 @@
+{
+  "schema": "hestia.play-storage-surface-provenance/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "assetId": "play_storage_v2",
+  "originalAssetId": "play_storage_v1",
+  "sourceRuntimeGlb": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage.glb",
+    "sha256": "e7ddc40fd2be52f8886b8acd42561fcc5fb403b1630d674bd7be5e28190e1e03",
+    "bytes": 24160
+  },
+  "sourceFile": {
+    "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-2026-10-12/storage/storage/native-owner-source.blob",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061
+  },
+  "archivedSourceBlob": {
+    "path": "art/factory/play-storage-surface-v2-2026-10-21/storage-v1.native-owner-source.blob",
+    "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+    "bytes": 14061,
+    "checkoutNormalization": "CRLF-to-LF checkout normalization only",
+    "recordedV1SourceBlob": {
+      "path": "art/factory/play-2026-10-12/storage/storage/native-owner-source.blob",
+      "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c",
+      "bytes": 14061
+    }
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-2026-10-12/storage/storage/native-source.json",
+    "sha256": "d83602d45f89c8fa317e7a9b32679588886a03853fe37b15337531b8a4f68b1c",
+    "bytes": 3866
+  },
+  "nativeBoundsM": {
+    "min": [
+      -1.0,
+      0.0,
+      -1.0
+    ],
+    "max": [
+      1.0,
+      1.5,
+      1.0
+    ]
+  },
+  "generator": {
+    "path": "art/factory/play-storage-surface-v2-2026-10-21/build_storage_surface_v2.py",
+    "sha256": "121726c0fa6c33568afb3c29639034825ccc087c4c607c1d839d90bbdc816cce",
+    "bytes": 29472
+  },
+  "binaryHelper": {
+    "path": "art/factory/play-cargo-surface-v2-2026-10-19/build_cargo_surface_v2.py",
+    "sha256": "7f68693c9bbd8eb4299f56b0573b793ed908b5215c45783a3f2ba06ae4fdf96c",
+    "bytes": 17844
+  },
+  "outputAuthoringGlb": {
+    "path": "art/factory/play-storage-surface-v2-2026-10-21/storage-v2.glb",
+    "sha256": "0c8ece323ac5e15d344829043573ef76b7a6bf9d99bc2eb345f9fb49bc6b3836",
+    "bytes": 24168
+  },
+  "outputPublicGlb": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-v2.glb",
+    "sha256": "0c8ece323ac5e15d344829043573ef76b7a6bf9d99bc2eb345f9fb49bc6b3836",
+    "bytes": 24168,
+    "url": "/factory/play-2026-10-12/storage-v2.glb"
+  },
+  "visualRepair": {
+    "version": 1,
+    "kind": "bounded-render-surface-coplanarity-repair",
+    "originalAssetId": "play_storage_v1",
+    "nativeAuthority": "unchanged original B09 source only",
+    "surfaceGapM": 0.0009765625,
+    "positionAccessorAxisMapping": {
+      "X": "Native/runtime X",
+      "Y": "Native/runtime Y",
+      "Z": "Native/runtime Z"
+    },
+    "nativeBodyBoundsM": {
+      "min": [
+        -1.0,
+        0.25,
+        -1.0
+      ],
+      "max": [
+        1.0,
+        1.5,
+        1.0
+      ]
+    },
+    "planes": [
+      {
+        "positionAccessorAxis": "X",
+        "positionPlaneFromM": -1.0,
+        "positionPlaneToM": -0.9990234375,
+        "inwardOffsetM": 0.0009765625,
+        "overlappingTrianglePairs": 30,
+        "changedVertexCount": 24
+      },
+      {
+        "positionAccessorAxis": "X",
+        "positionPlaneFromM": 1.0,
+        "positionPlaneToM": 0.9990234375,
+        "inwardOffsetM": 0.0009765625,
+        "overlappingTrianglePairs": 30,
+        "changedVertexCount": 24
+      },
+      {
+        "positionAccessorAxis": "Y",
+        "positionPlaneFromM": 0.25,
+        "positionPlaneToM": 0.2509765625,
+        "inwardOffsetM": 0.0009765625,
+        "overlappingTrianglePairs": 16,
+        "changedVertexCount": 4
+      },
+      {
+        "positionAccessorAxis": "Y",
+        "positionPlaneFromM": 1.5,
+        "positionPlaneToM": 1.4990234375,
+        "inwardOffsetM": 0.0009765625,
+        "overlappingTrianglePairs": 8,
+        "changedVertexCount": 4
+      },
+      {
+        "positionAccessorAxis": "Z",
+        "positionPlaneFromM": -1.0,
+        "positionPlaneToM": -0.9990234375,
+        "inwardOffsetM": 0.0009765625,
+        "overlappingTrianglePairs": 20,
+        "changedVertexCount": 12
+      },
+      {
+        "positionAccessorAxis": "Z",
+        "positionPlaneFromM": 1.0,
+        "positionPlaneToM": 0.9990234375,
+        "inwardOffsetM": 0.0009765625,
+        "overlappingTrianglePairs": 14,
+        "changedVertexCount": 8
+      }
+    ],
+    "changedCoordinateCountByAxis": {
+      "positionX": 48,
+      "positionY": 8,
+      "positionZ": 20
+    },
+    "changedCoordinateCount": 76,
+    "topology": "same indexed triangles, normals, materials, nodes and Native bindings",
+    "meshCensus": {
+      "vertices": 600,
+      "indices": 900,
+      "primitives": 7
+    },
+    "nativeBoundsM": {
+      "min": [
+        -1.0,
+        0.0,
+        -1.0
+      ],
+      "max": [
+        1.0,
+        1.5,
+        1.0
+      ]
+    }
+  },
+  "license": {
+    "id": "LicenseRef-Hestia-Project-Original",
+    "path": "art/factory/play-storage-surface-v2-2026-10-21/LICENSE.txt",
+    "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+    "bytes": 326
+  },
+  "historicalLicense": {
+    "id": "LicenseRef-Hestia-Project-Original",
+    "path": "art/factory/play-2026-10-12/LICENSE.txt",
+    "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+    "bytes": 326
+  },
+  "licenseNormalization": "CRLF-to-LF checkout normalization only",
+  "authority": "render-only B09 surface; original Native source, profile, collision and save authority remain unchanged"
+}

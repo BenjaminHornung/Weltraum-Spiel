@@ -1,0 +1,3202 @@
+{
+  "kind": "baseline-heavy-first-move",
+  "before": {
+    "at": 192509.6000000001,
+    "tick": 48,
+    "status": "Paused",
+    "backlog": 0.003533333333519597,
+    "discarded": 0.005466666666946084,
+    "stepCpuMs": 0.19999999972060323,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.900001525878906,
+        "y": 2.400047540664673,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "carrier": {
+      "owner": "factory_carrier",
+      "phase": "Carrying",
+      "massMg": 341000000,
+      "nativeMassKg": 341,
+      "positionMm": [
+        -5900.001525878906,
+        1500,
+        10875
+      ],
+      "colliders": 5
+    },
+    "clock": {
+      "maxTimerGapMs": 30.700000000186265,
+      "maxAdvanceMs": 11.200000000186265,
+      "maxHandlerMs": 800.5,
+      "lastCommand": "Read",
+      "lastHandlerMs": 0.40000000037252903,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 5185,
+      "lastAckId": 5185,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "massMg": 2984400000,
+    "testBridge": false
+  },
+  "actions": [
+    {
+      "key": "w",
+      "ms": 100,
+      "after": {
+        "at": 193028.2999999998,
+        "tick": 63,
+        "status": "Running",
+        "backlog": 0.007599999999627474,
+        "discarded": 0.00900000000046568,
+        "stepCpuMs": 0.900000000372529,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.900001525878906,
+            "y": 2.4000422954559326,
+            "z": 12.125000953674316
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "carrier": {
+          "owner": "factory_carrier",
+          "phase": "Carrying",
+          "massMg": 341000000,
+          "nativeMassKg": 341,
+          "positionMm": [
+            -5900.001525878906,
+            1500.0001192092896,
+            11125.000953674316
+          ],
+          "colliders": 5
+        },
+        "clock": {
+          "maxTimerGapMs": 30.700000000186265,
+          "maxAdvanceMs": 11.200000000186265,
+          "maxHandlerMs": 800.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000009313226,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 5738,
+          "lastAckId": 5738,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "massMg": 2984400000,
+        "testBridge": false
+      }
+    },
+    {
+      "key": "d",
+      "ms": 700,
+      "after": {
+        "at": 193913,
+        "tick": 116,
+        "status": "Running",
+        "backlog": 0.004366666666387294,
+        "discarded": 0.00900000000046568,
+        "stepCpuMs": 0.7999999998137355,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -8.050009727478027,
+            "y": 2.400028944015503,
+            "z": 12.125000953674316
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "carrier": {
+          "owner": "factory_carrier",
+          "phase": "Carrying",
+          "massMg": 341000000,
+          "nativeMassKg": 341,
+          "positionMm": [
+            -8050.009727478027,
+            1500,
+            11125.000953674316
+          ],
+          "colliders": 5
+        },
+        "clock": {
+          "maxTimerGapMs": 30.700000000186265,
+          "maxAdvanceMs": 11.200000000186265,
+          "maxHandlerMs": 800.5,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000018626451,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "transport": {
+          "enabled": true,
+          "lastSentId": 5767,
+          "lastAckId": 5767,
+          "pendingIds": [],
+          "desiredLevel": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "commandDepth": 0,
+          "closing": false,
+          "canDispatch": true
+        },
+        "massMg": 2984400000,
+        "testBridge": false
+      }
+    }
+  ],
+  "samples": [
+    {
+      "at": 194123.19999999972,
+      "tick": 127,
+      "status": "Running",
+      "backlog": 0.012833333333333374,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.7999999998137355,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 194326.6000000001,
+      "tick": 139,
+      "status": "Running",
+      "backlog": 0.005133333333147111,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.5,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 194535,
+      "tick": 153,
+      "status": "Running",
+      "backlog": 0.011899999999906916,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.6000000000931323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 194736.7999999998,
+      "tick": 165,
+      "status": "Running",
+      "backlog": 0.0050999999996275275,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.900000000372529,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 194938.2999999998,
+      "tick": 176,
+      "status": "Running",
+      "backlog": 0.01236666666638734,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.7000000001862645,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.09999999962747097,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 195141.2999999998,
+      "tick": 189,
+      "status": "Running",
+      "backlog": 0.004599999999627544,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.6000000000931323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 195345,
+      "tick": 200,
+      "status": "Running",
+      "backlog": 0.01276666666629422,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.6000000000931323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 195547.7999999998,
+      "tick": 214,
+      "status": "Running",
+      "backlog": 0.004233333333240285,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 195752.19999999972,
+      "tick": 226,
+      "status": "Running",
+      "backlog": 0.011033333333054018,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.8000000002793968,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 195954.19999999972,
+      "tick": 238,
+      "status": "Running",
+      "backlog": 0.0028333333333334203,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 196156.2999999998,
+      "tick": 249,
+      "status": "Running",
+      "backlog": 0.011799999999813827,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.2999999998137355,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 196359,
+      "tick": 261,
+      "status": "Running",
+      "backlog": 0.004799999999813835,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.5,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 196565.19999999972,
+      "tick": 275,
+      "status": "Running",
+      "backlog": 0.010066666666573635,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 196767.8999999999,
+      "tick": 287,
+      "status": "Running",
+      "backlog": 0.0028666666663873727,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.6000000000931323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.09999999962747097,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 196970.6000000001,
+      "tick": 298,
+      "status": "Running",
+      "backlog": 0.011433333332960913,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.40000000037252903,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 197172.7999999998,
+      "tick": 311,
+      "status": "Running",
+      "backlog": 0.003866666666387377,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.6000000000931323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 197374.19999999972,
+      "tick": 322,
+      "status": "Running",
+      "backlog": 0.011133333333147175,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.6000000000931323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 197592.6000000001,
+      "tick": 336,
+      "status": "Running",
+      "backlog": 0.0022999999998138433,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.2999999998137355,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.09999999962747097,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 197795.3999999999,
+      "tick": 347,
+      "status": "Running",
+      "backlog": 0.01076666666629425,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.40000000037252903,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 197998.69999999972,
+      "tick": 360,
+      "status": "Running",
+      "backlog": 0.0015000000000001124,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.5,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 198213.1000000001,
+      "tick": 373,
+      "status": "Running",
+      "backlog": 0.009033333333054058,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.5,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 198415.5,
+      "tick": 385,
+      "status": "Running",
+      "backlog": 0.004133333333147197,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.6000000000931323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 198619.5,
+      "tick": 397,
+      "status": "Running",
+      "backlog": 0.00883333333333346,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 198826,
+      "tick": 410,
+      "status": "Running",
+      "backlog": 0.01626666666629427,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.7000000001862645,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.3000000002793968,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 199028,
+      "tick": 422,
+      "status": "Running",
+      "backlog": 0.00986666666638741,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.3000000002793968,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 199231.5,
+      "tick": 434,
+      "status": "Running",
+      "backlog": 0.016466666666480546,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.2999999998137355,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 199434.2999999998,
+      "tick": 446,
+      "status": "Running",
+      "backlog": 0.009166666666666812,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 199641.5,
+      "tick": 459,
+      "status": "Running",
+      "backlog": 0.01600000000000015,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.3000000002793968,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 199842.8999999999,
+      "tick": 471,
+      "status": "Running",
+      "backlog": 0.00839999999990703,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.7999999998137355,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 200044,
+      "tick": 483,
+      "status": "Running",
+      "backlog": 0.015399999999907038,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 200247,
+      "tick": 495,
+      "status": "Running",
+      "backlog": 0.009199999999720779,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.6000000000931323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 200448.7999999998,
+      "tick": 506,
+      "status": "Running",
+      "backlog": 0.016266666666294314,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.599999999627471,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 200657.1000000001,
+      "tick": 520,
+      "status": "Running",
+      "backlog": 0.007033333333054125,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.5,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 200860.2999999998,
+      "tick": 532,
+      "status": "Running",
+      "backlog": 0.014933333332960996,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.5,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 201062.2999999998,
+      "tick": 544,
+      "status": "Running",
+      "backlog": 0.007133333333147262,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.09999999962747097,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 201266,
+      "tick": 556,
+      "status": "Running",
+      "backlog": 0.014733333333240405,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 201467.7999999998,
+      "tick": 568,
+      "status": "Running",
+      "backlog": 0.006833333333333545,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 201675.19999999972,
+      "tick": 581,
+      "status": "Running",
+      "backlog": 0.014066666666573753,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 201880,
+      "tick": 593,
+      "status": "Running",
+      "backlog": 0.007366666666387495,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 202083.2999999998,
+      "tick": 605,
+      "status": "Running",
+      "backlog": 0.014766666666294368,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.3000000002793968,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 202284.2999999998,
+      "tick": 617,
+      "status": "Running",
+      "backlog": 0.0059666666664806405,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 202486.5,
+      "tick": 628,
+      "status": "Running",
+      "backlog": 0.015333333333333584,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.599999999627471,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 202707.7999999998,
+      "tick": 643,
+      "status": "Running",
+      "backlog": 0.005233333333240456,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.19999999972060323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 202910.5,
+      "tick": 654,
+      "status": "Running",
+      "backlog": 0.015199999999720864,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.3000000002793968,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 203113.5,
+      "tick": 667,
+      "status": "Running",
+      "backlog": 0.005233333333240473,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 203317.6000000001,
+      "tick": 680,
+      "status": "Running",
+      "backlog": 0.012966666666480678,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.2999999998137355,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000009313226,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 203520.5,
+      "tick": 692,
+      "status": "Running",
+      "backlog": 0.00406666666657381,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.39999999990686774,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 203723.5,
+      "tick": 703,
+      "status": "Running",
+      "backlog": 0.012933333332961088,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.40000000037252903,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 203925.3999999999,
+      "tick": 716,
+      "status": "Running",
+      "backlog": 0.004566666666573824,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.19999999972060323,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    },
+    {
+      "at": 204134.5,
+      "tick": 729,
+      "status": "Running",
+      "backlog": 0.011399999999907158,
+      "discarded": 0.00900000000046568,
+      "stepCpuMs": 0.2999999998137355,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.050009727478027,
+          "y": 2.400028944015503,
+          "z": 12.125000953674316
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "carrier": {
+        "owner": "factory_carrier",
+        "phase": "Carrying",
+        "massMg": 341000000,
+        "nativeMassKg": 341,
+        "positionMm": [
+          -8050.009727478027,
+          1500,
+          11125.000953674316
+        ],
+        "colliders": 5
+      },
+      "clock": {
+        "maxTimerGapMs": 30.700000000186265,
+        "maxAdvanceMs": 11.200000000186265,
+        "maxHandlerMs": 800.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.19999999972060323,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5767,
+        "lastAckId": 5767,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "massMg": 2984400000,
+      "testBridge": false
+    }
+  ],
+  "after": {
+    "at": 204343.7999999998,
+    "tick": 732,
+    "status": "Paused",
+    "backlog": 0.010199999999720894,
+    "discarded": 0.00900000000046568,
+    "stepCpuMs": 0.6000000000931323,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -8.050009727478027,
+        "y": 2.400028944015503,
+        "z": 12.125000953674316
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "carrier": {
+      "owner": "factory_carrier",
+      "phase": "Carrying",
+      "massMg": 341000000,
+      "nativeMassKg": 341,
+      "positionMm": [
+        -8050.009727478027,
+        1500,
+        11125.000953674316
+      ],
+      "colliders": 5
+    },
+    "clock": {
+      "maxTimerGapMs": 30.700000000186265,
+      "maxAdvanceMs": 11.200000000186265,
+      "maxHandlerMs": 800.5,
+      "lastCommand": "Read",
+      "lastHandlerMs": 0.20000000018626451,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 6089,
+      "lastAckId": 6089,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "massMg": 2984400000,
+    "testBridge": false
+  },
+  "browser": "155.0.8059.40"
+}

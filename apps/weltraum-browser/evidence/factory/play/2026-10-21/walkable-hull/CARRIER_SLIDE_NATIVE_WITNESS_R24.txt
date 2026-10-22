@@ -1,0 +1,29 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+----------------------x---------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+TypeError: Cannot read properties of null (reading 'handle')
+ ❯ tests/unit/hvp-locomotion.test.ts:265:56
+    263|         const position=collider.translation(),parent=collider.parent()…
+    264|         if(![before,carrierBefore].some(anchor=>Math.hypot(position.x-…
+    265|         const owner=parent===undefined?"static":parent.handle===r.play…
+       |                                                        ^
+    266|         const half=shapeType===R.ShapeType.Cuboid?collider.halfExtents…
+    267|         nearbyColliders.push({handle:collider.handle,shapeType,positio…
+ ❯ f node_modules/@dimforge/gen3d/gen3d/coarena.ts:51:29
+ ❯ forEach node_modules/@dimforge/gen3d/gen3d/geometry/collider_set.ts:198:17
+ ❯ forEach node_modules/@dimforge/gen3d/gen3d/pipeline/world.ts:635:23
+ ❯ tests/unit/hvp-locomotion.test.ts:261:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 31 skipped (32)
+   Start at  11:58:21
+   Duration  1.01s (transform 234ms, setup 0ms, import 310ms, tests 402ms, environment 0ms)
+

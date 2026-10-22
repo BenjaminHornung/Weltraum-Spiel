@@ -1,0 +1,4 @@
+exitCode=0
+B09_SURFACE_V2_BUILT=play_storage_v2 bytes=24168 changedCoordinates=76
+B09_SURFACE_V2_BUILT=play_storage_inspection_open_v2 bytes=24388 changedCoordinates=76
+B09_SURFACE_V2_MANIFEST=apps/weltraum-browser/public/factory/play-2026-10-12/manifest-storage-surface-v2.json bytes=14007 sha256=c22bc226d26692ddc1c83ed6bb33bf9ac56424edd840c8ec753020d88b37bd3f

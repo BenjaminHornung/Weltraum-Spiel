@@ -1,0 +1,73 @@
+{
+  "atUtc": "2026-10-21T06:47:04.3059293+00:00",
+  "status": "SOURCE_QUIESCENT_NOT_RUNTIME_ACCEPTED",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "files": [
+    {
+      "path": "src/factory/factoryEntry.ts",
+      "bytes": 24169,
+      "sha256": "8de518659820a37dfa6de96ad9845748c328d746e0149d2d31e52f2f497619e0"
+    },
+    {
+      "path": "src/factory/presentation/playAssetLoader.ts",
+      "bytes": 34018,
+      "sha256": "df7d5fc9faebd6b3ef8beb0d5ad2f599533ac11ecdadcbd5943a0955eaca4d9a"
+    },
+    {
+      "path": "src/factory/presentation/hullMetadata.ts",
+      "bytes": 3286,
+      "sha256": "7a9ba33faf0f6b229a69647251852f2303d6e5c150edb1b9a0810de59057a76f"
+    },
+    {
+      "path": "src/hestia-prototype/physics/client.ts",
+      "bytes": 58071,
+      "sha256": "93793b960a9245f83ce326583602e71e85a0ef54a097397b40b2c50fffb03d1f"
+    },
+    {
+      "path": "src/factory/session/factorySession.ts",
+      "bytes": 108279,
+      "sha256": "185bf2763f49a9513d4870b838e837f8932ca868bd1e01c6953c89b1a7e98258"
+    },
+    {
+      "path": "src/factory/persistence/factoryCheckpoint.ts",
+      "bytes": 107915,
+      "sha256": "235423e3a44303df3e92d5e9d1f49637a0aa7723b1b9fc35b2f631b2481efa5d"
+    },
+    {
+      "path": "src/factory/persistence/factorySaveStore.ts",
+      "bytes": 2853,
+      "sha256": "5d85adfe79c0f2e450f79381f09946e57e66d21ab526e5511d0cb26a1eb9b61f"
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "bytes": 246368,
+      "sha256": "1d2c3293fecd35280f6707f7ebb46a23667d37b2ff7aa8131a3ccbdbc4f06786"
+    },
+    {
+      "path": "tests/unit/factory/playAssetLoader.test.ts",
+      "bytes": 27361,
+      "sha256": "b92d51132dc0381f807497864cce769e9222cbdd3a77dd3421412479ba96bec3"
+    },
+    {
+      "path": "tests/unit/hvp-player-input.test.ts",
+      "bytes": 56712,
+      "sha256": "c26efc93b32206226596918267fd08be628281ddc23f5870ac4d14697d7c52a4"
+    },
+    {
+      "path": "tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 160034,
+      "sha256": "e20172cb49615780add29be5297b633ae68cf8e86461b3514e69e34e87d72b0a"
+    },
+    {
+      "path": "tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 122632,
+      "sha256": "6e92da02718fe9afddc70ffd8642c1043bb9ca8ff625b3f56710bcd5f8cfefea"
+    },
+    {
+      "path": "tests/unit/factory/factoryCheckpoint.test.ts",
+      "bytes": 86680,
+      "sha256": "d6073c19511572ce093967ad8c77ff3068f662acd894d5562172238c07b02d83"
+    }
+  ],
+  "executionDeferredUntilUtc": "2026-10-21T06:54:02Z"
+}

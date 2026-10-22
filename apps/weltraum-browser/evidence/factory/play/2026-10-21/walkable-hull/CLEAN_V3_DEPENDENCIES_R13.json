@@ -1,0 +1,10 @@
+{
+  "atUtc": "2026-10-21T07:48:45.7126332+00:00",
+  "source": "E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-20-v3\\apps\\weltraum-browser\\node_modules",
+  "target": "E:\\DEV\\Weltraum-Spiel\\FP06-Ready-2026-10-21-v3\\apps\\weltraum-browser\\node_modules",
+  "files": 3757,
+  "bytes": 123172605,
+  "allSourceAndCopiedHashesExact": true,
+  "reference": "CLEAN_DEPENDENCY_COPY_R03.json",
+  "status": "DEPENDENCIES_ONLY_PRODUCT_NOT_YET_STAGED"
+}

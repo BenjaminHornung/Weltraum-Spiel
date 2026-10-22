@@ -4,7 +4,7 @@ import * as resourcesAdapter from "../../../src/factory/material/resourcesAdapte
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
 import { readMaterialMassMg } from "../../../src/factory/material/resourcesAdapter";
 import { createFactoryMaterialView, type MaterialView } from "../../../src/factory/material/reservations";
-import { advanceFactoryBelt, assertFactoryBeltState, commitFactoryBeltStep, type BeltState, type BeltStepInput, type BeltPowerReceipt } from "../../../src/factory/conveyor/beltReference";
+import { advanceFactoryBelt, advanceFactoryBeltWithMaterialAuthority, assertFactoryBeltState, commitFactoryBeltStep, createFactoryBeltMaterialFragmentContext, isIssuedFactoryBeltNoMaterialProposal, type BeltState, type BeltStepInput, type BeltPowerReceipt } from "../../../src/factory/conveyor/beltReference";
 import type { BeltInstallation } from "../../../src/factory/conveyor/beltPorts";
 import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
 import { canonicalJson, canonicalSignature } from "../../../src/resources/serialization";
@@ -70,6 +70,11 @@ const persistedFacts = (pair: ReturnType<typeof initial>) => canonicalJson({ pac
 
 describe("PLAY06 C1 immutable material validation boundary", () => {
   const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+  const freezeData = <T>(value:T):T => { if(value&&typeof value==="object"&&!Object.isFrozen(value)){for(const child of Object.values(value))freezeData(child);Object.freeze(value);}return value; };
+  const runtimeInput=(inputValue:BeltStepInput,freezeChildren=true):BeltStepInput=>{
+    const value={...inputValue};if(freezeChildren)for(const [key,child] of Object.entries(value))if(key!=="material")freezeData(child);
+    Object.defineProperty(value,"material",{enumerable:false});return value;
+  };
 
   it("validates a cold immutable snapshot set once and preserves every warm/copy/restore proposal byte", () => {
     const pair = initial(), request = input(pair, false);
@@ -86,6 +91,127 @@ describe("PLAY06 C1 immutable material validation boundary", () => {
       expect(commitFactoryBeltStep(pair.line, request, cold)).toMatchObject({ status: "Committed", material: pair.material });
       expect(readMaterialMassMg(pair.material)).toBe(10_000_000);
     } finally { validate.mockRestore(); }
+  });
+
+  it("reuses only the exact current material fragment and preserves full public Belt bytes", () => {
+    const pair = initial(), context = createFactoryBeltMaterialFragmentContext(() => pair.material), request = input(pair, false, false);
+    const publicProposal = advanceFactoryBelt(pair.line, request);
+    const runtimeProposal = advanceFactoryBeltWithMaterialAuthority(pair.line, runtimeInput(request), context);
+    expect(canonicalJson(runtimeProposal)).toBe(canonicalJson(publicProposal));
+    const projection = { ...pair.material, containers: pair.material.containers.map(entry => {
+      const { depletion, ...data } = entry;
+      return depletion === undefined ? data : { ...data, depletion };
+    }) };
+    const prefix = `{"actorId":${canonicalJson(request.actorId)},"binding":${canonicalJson(request.binding)},"confirmed":${canonicalJson(request.confirmed)},"installation":${canonicalJson(request.installation)},"material":`;
+    const retainedBytes = canonicalJson(projection).length * 2 + 1024 + prefix.length * 2;
+    expect(context.readBytes()).toBe(retainedBytes);
+
+    const secondLine = { ...pair.line, lineId: "belt_second" };
+    const secondRequest = { ...request, binding: secondLine.binding, installation: secondLine.installation };
+    expect(canonicalJson(advanceFactoryBeltWithMaterialAuthority(secondLine, runtimeInput(secondRequest), context)))
+      .toBe(canonicalJson(advanceFactoryBelt(secondLine, secondRequest)));
+    expect(context.readBytes()).toBe(retainedBytes);
+
+    const copiedRequest = { ...request, material: clone(pair.material) };
+    expect(canonicalJson(advanceFactoryBeltWithMaterialAuthority(pair.line, runtimeInput(copiedRequest), context)))
+      .toBe(canonicalJson(advanceFactoryBelt(pair.line, copiedRequest)));
+    const proxiedRequest=runtimeInput({...request,material:new Proxy(pair.material,{})});
+    expect(canonicalJson(advanceFactoryBeltWithMaterialAuthority(pair.line,proxiedRequest,context)))
+      .toBe(canonicalJson(advanceFactoryBelt(pair.line,proxiedRequest)));
+    const accessorMaterial={...pair.material} as MaterialView;
+    Object.defineProperty(accessorMaterial,"receipts",{enumerable:true,get:()=>pair.material.receipts});
+    const accessorContext=createFactoryBeltMaterialFragmentContext(()=>accessorMaterial),accessorRequest=runtimeInput({...request,material:accessorMaterial});
+    expect(canonicalJson(advanceFactoryBeltWithMaterialAuthority(pair.line,accessorRequest,accessorContext)))
+      .toBe(canonicalJson(advanceFactoryBelt(pair.line,accessorRequest)));
+    const exoticMaterial=Object.assign(Object.create({fixture:true}),pair.material) as MaterialView;
+    const exoticContext=createFactoryBeltMaterialFragmentContext(()=>exoticMaterial),exoticRequest=runtimeInput({...request,material:exoticMaterial});
+    expect(canonicalJson(advanceFactoryBeltWithMaterialAuthority(pair.line,exoticRequest,exoticContext)))
+      .toBe(canonicalJson(advanceFactoryBelt(pair.line,exoticRequest)));
+    const rootProxy=new Proxy(runtimeInput(request),{get(target,key,receiver){return key==="actorId"?"spoofed_actor":Reflect.get(target,key,receiver);}});
+    expect(canonicalJson(advanceFactoryBeltWithMaterialAuthority(pair.line,rootProxy,context)))
+      .toBe(canonicalJson(advanceFactoryBelt(pair.line,rootProxy)));
+    const accessorPower={...request.power};Object.defineProperty(accessorPower,"digest",{enumerable:true,get:()=>request.power.digest});
+    const nestedAccessor=runtimeInput({...request,power:accessorPower},false);
+    expect(canonicalJson(advanceFactoryBeltWithMaterialAuthority(pair.line,nestedAccessor,context)))
+      .toBe(canonicalJson(advanceFactoryBelt(pair.line,nestedAccessor)));
+    expect(context.readBytes()).toBe(retainedBytes);
+  });
+
+  it("caches only two exact actor/binding/installation prefixes and hashes each complete request identically", () => {
+    const freezeData=<T>(value:T):T=>{if(value&&typeof value==="object"&&!Object.isFrozen(value)){for(const child of Object.values(value))freezeData(child);Object.freeze(value);}return value;};
+    const pair=initial(),line=freezeData(pair.line),context=createFactoryBeltMaterialFragmentContext(()=>pair.material),base=input(pair,false,false);
+    const projection={...pair.material,containers:pair.material.containers.map(entry=>{
+      const {depletion,...data}=entry;return depletion===undefined?data:{...data,depletion};
+    })};
+    const fragmentBytes=canonicalJson(projection).length*2+1024;
+    const prefixBytes=(request:BeltStepInput)=>`{"actorId":${canonicalJson(request.actorId)},"binding":${canonicalJson(request.binding)},"confirmed":${canonicalJson(request.confirmed)},"installation":${canonicalJson(request.installation)},"material":`;
+    const run=(actorId:string)=>{
+      const request={...base,actorId},inputValue=runtimeInput(request);
+      const proposal=advanceFactoryBeltWithMaterialAuthority(line,inputValue,context);
+      expect(proposal.status,proposal.status==="Rejected"?proposal.reason:undefined).toBe("Prepared");
+      expect(canonicalJson(proposal)).toBe(canonicalJson(advanceFactoryBelt(line,request)));
+      if(proposal.status==="Prepared")expect(proposal.nextLine.lastStep?.requestDigest).toBe(canonicalSignature(proposal.inputCanonicalJson));
+      return {inputValue,proposal,prefix:prefixBytes(request)};
+    };
+    const a=run("pilot"),b=run("pilot_two"),c=run("pilot_three");
+    expect(context.readBytes()).toBe(fragmentBytes+(b.prefix.length+c.prefix.length)*2);
+    expect(isIssuedFactoryBeltNoMaterialProposal(line,a.inputValue,a.proposal)).toBe(true);
+    expect(isIssuedFactoryBeltNoMaterialProposal(line,b.inputValue,b.proposal)).toBe(true);
+    expect(isIssuedFactoryBeltNoMaterialProposal(pair.line,a.inputValue,b.proposal)).toBe(false);
+    expect(isIssuedFactoryBeltNoMaterialProposal({...line,lineId:"belt_other"},b.inputValue,b.proposal)).toBe(false);
+    const copied=structuredClone(b.proposal) as typeof b.proposal;
+    expect(isIssuedFactoryBeltNoMaterialProposal(line,b.inputValue,copied)).toBe(false);
+    expect(isIssuedFactoryBeltNoMaterialProposal(undefined as unknown as BeltState,b.inputValue,copied)).toBe(false);
+    const nextA=run("pilot");
+    expect(context.readBytes()).toBe(fragmentBytes+(nextA.prefix.length+c.prefix.length)*2);
+    expect(isIssuedFactoryBeltNoMaterialProposal(line,nextA.inputValue,nextA.proposal)).toBe(true);
+  });
+
+  it("hashes the serialized request's Unicode, quotes, controls and lone surrogates exactly",()=>{
+    const pair=initial(),source=pair.material.containers.find(entry=>entry.state.containerId==="source")!,lot=source.state.contents[0]!;
+    const special=`quote " slash \\ control \u0001 astro 🌌 lone \ud800`;
+    const changedState=createResourceContainerState({...source.state,contents:[{...lot,extensions:{...lot.extensions,"factory.test":special}}],
+      initialContents:[{...lot,extensions:{...lot.extensions,"factory.test":special}}]},catalog.resources);
+    const changedSource=createResourceContainerSnapshot(source.definition,changedState,catalog.resources);
+    const material=createFactoryMaterialView(catalog,pair.material.containers.map(entry=>entry===source?changedSource:entry));
+    const request=input({...pair,material},false,false),context=createFactoryBeltMaterialFragmentContext(()=>material);
+    const publicProposal=advanceFactoryBelt(pair.line,request),runtimeProposal=advanceFactoryBeltWithMaterialAuthority(pair.line,runtimeInput(request),context);
+    expect(canonicalJson(runtimeProposal)).toBe(canonicalJson(publicProposal));
+    if(runtimeProposal.status==="Prepared")expect(runtimeProposal.nextLine.lastStep?.requestDigest).toBe(canonicalSignature(runtimeProposal.inputCanonicalJson));
+  });
+
+  it("preserves exact proposal fields through injection, motion and delivery", () => {
+    let pair=initial(),currentMaterial=pair.material;const context=createFactoryBeltMaterialFragmentContext(()=>currentMaterial);
+    const advance=(poweredLine:BeltState,poweredMaterial:MaterialView,source=true)=>{
+      const current={...pair,line:poweredLine,material:poweredMaterial},request=input(current,true,source,100_000);
+      const ordinary=advanceFactoryBelt(poweredLine,request),runtime=advanceFactoryBeltWithMaterialAuthority(poweredLine,runtimeInput(request),context);
+      expect(runtime).toEqual(ordinary);expect(runtime.status).toBe("Prepared");if(runtime.status!=="Prepared")throw Error(runtime.reason);
+      const committed=commitFactoryBeltStep(poweredLine,request,runtime);expect(committed.status).toBe("Committed");if(committed.status!=="Committed")throw Error(committed.status==="Rejected"?committed.reason:"UnexpectedBeltReplay");
+      currentMaterial=committed.material;return committed;
+    };
+    const injected=advance(pair.line,pair.material);expect(injected.line.lastStep?.outcome).toBe("Injected");
+    const moved=advance(injected.line,injected.material,false);expect(moved.line.lastStep?.outcome).toBe("Moved");
+    const nearEnd={...moved.line,packet:{...moved.line.packet!,positionMm:moved.line.installation.lengthMm-75}};
+    const delivered=advance(nearEnd,moved.material,false);expect(delivered.line.lastStep?.outcome).toBe("Delivered");
+    expect(delivered.line.packet).toBeNull();expect(context.readBytes()).toBeGreaterThanOrEqual(1024);
+  });
+
+  it("clears or disposes its single fragment and declines oversize retention", () => {
+    const pair = initial(), context = createFactoryBeltMaterialFragmentContext(() => pair.material), request = input(pair, false, false);
+    advanceFactoryBeltWithMaterialAuthority(pair.line, runtimeInput(request), context);
+    const warmBytes = context.readBytes();
+    expect(warmBytes).toBeGreaterThan(1024);
+    // Session capture reserves a barrier synchronously and invokes this same clear operation.
+    context.clear();expect(context.readBytes()).toBe(1024);
+    advanceFactoryBeltWithMaterialAuthority(pair.line,runtimeInput(request),context);expect(context.readBytes()).toBe(warmBytes);
+
+    const oversized = freezeData({ ...pair.material, receipts: [Object.freeze({ transactionId: "oversized_receipt", requestCanonicalJson: "x".repeat(1_050_000) })] }) as unknown as MaterialView;
+    const oversizedContext=createFactoryBeltMaterialFragmentContext(()=>oversized),oversizedRequest = runtimeInput({ ...request, material: oversized });
+    expect(canonicalJson(advanceFactoryBeltWithMaterialAuthority(pair.line, oversizedRequest, oversizedContext)))
+      .toBe(canonicalJson(advanceFactoryBelt(pair.line, oversizedRequest)));
+    expect(oversizedContext.readBytes()).toBe(1024);
+    context.dispose();
+    expect(context.readBytes()).toBe(0);
   });
 
   it("does not admit a shallow-frozen list whose snapshot can change after validation", () => {

@@ -1,0 +1,62 @@
+{
+  "timeUtc": "2026-10-17T18:05:17.742Z",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "command": "node node_modules/vitest/vitest.mjs run tests/unit/factory/factoryCheckpoint.test.ts tests/unit/browserStorageCodec.test.ts tests/unit/browserStorageMemoryRepository.test.ts tests/unit/hvp-bootstrap.test.ts --reporter=dot",
+  "exitCode": 1,
+  "passed": 84,
+  "failed": 5,
+  "testSeconds": 382.51,
+  "totalSeconds": 385.09,
+  "failures": [
+    {
+      "test": "W09 restores the consumed paid depot projection after actual held publication rejects",
+      "error": "Expected 5 render handles, received 0",
+      "file": "hvp-bootstrap.test.ts:523"
+    },
+    {
+      "test": "rejects unsupported Factory restore query ?hvpLoad=primary",
+      "error": "Expected rejected Promise; existing startHvp contract resolves disposeFailure with presented failure",
+      "file": "hvp-bootstrap.test.ts:814"
+    },
+    {
+      "test": "rejects unsupported Factory restore query ?factoryLoad=archive",
+      "error": "Expected rejected Promise; existing startHvp contract resolves disposeFailure with presented failure",
+      "file": "hvp-bootstrap.test.ts:814"
+    },
+    {
+      "test": "seeds the paid W09 owner without replay, checks live Native bodies, and cleans mounts",
+      "error": "Expected InjectedFactorySubscribeFailure; received Factory restore Native owners mismatch",
+      "file": "factoryCheckpoint.test.ts:489"
+    },
+    {
+      "test": "restores saved two-tick remainder and completes one step on four new Native ticks",
+      "error": "Factory restore Native owners mismatch",
+      "file": "restoreFactorySession.ts:52"
+    }
+  ],
+  "typecheck": {
+    "exitCode": 1,
+    "errors": [
+      "hvpBootstrap.ts(2463,203) TS2353 unexpected transactionId on Pick<centerMm|quarterTurns>",
+      "browser-storage-save-repository.spec.ts(424,13) TS2367 narrowed counter 0 versus 1"
+    ]
+  },
+  "counts": {
+    "P": 15477185,
+    "T": 20799108,
+    "U": 1176336,
+    "D": 33702912,
+    "native": 173414,
+    "nativeFactory": 562421,
+    "factory": 14740633,
+    "domain": 14111077,
+    "material": 164466,
+    "lastPower": 459605,
+    "installations": 1386
+  },
+  "notAcceptance": [
+    "Save gate still false pending W",
+    "No normal fresh 16kg cycle",
+    "No actual browser-process restart"
+  ]
+}

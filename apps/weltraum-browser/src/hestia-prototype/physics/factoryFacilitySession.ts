@@ -6,6 +6,7 @@ import type { FactoryCargoAccess } from "../../factory/construction/placement";
 import { isSaveSafeResourceId } from "../../resources/ids";
 import { createFp02Fixture } from "../../factory/catalog/fp02Catalog";
 import { readCargoHandlingProfile, type CargoHandlingProfile } from "../../factory/construction/cargoHandlingProfile";
+import type { FactoryNativeCarrierCheckpoint, FactoryNativeOwnerCheckpoint, FactoryNativeWorldPartsV1 } from "../persistence/factoryWorldParts";
 
 export interface FactoryFacilityRequest {
   readonly transactionId: string; readonly ownerId: string; readonly instanceId: string;
@@ -73,12 +74,103 @@ export interface FactoryFacilityRead {
 }
 const reject = (reason: string): never => { throw new Error(`FactoryFacilityRejected:${reason}`); };
 const bodyBytes=(body:R.RigidBody,enabled=true):string=>canonicalJson({...(enabled?{enabled:body.isEnabled()}:{}),type:body.bodyType(),pose:{...body.translation()},rotation:{...body.rotation()},velocity:{...body.linvel()},angular:{...body.angvel()},sleeping:body.isSleeping(),mass:body.mass(),localCom:{...body.localCom()},inertia:{...body.principalInertia()},inertiaFrame:{...body.principalInertiaLocalFrame()},gravityScale:body.gravityScale(),linearDamping:body.linearDamping(),angularDamping:body.angularDamping(),ccd:body.isCcdEnabled()});
-const colliderBytes=(collider:R.Collider,enabled=true):string=>{
+const colliderBytes=(collider:R.Collider,enabled=true,includeWorldPose=true):string=>{
   const type=collider.shapeType();
   const geometry=type===R.ShapeType.Cuboid||type===R.ShapeType.RoundCuboid?{halfExtents:{...collider.halfExtents()},...(type===R.ShapeType.RoundCuboid?{borderRadius:collider.roundRadius()}: {})}:
     type===R.ShapeType.Capsule||type===R.ShapeType.Cylinder||type===R.ShapeType.Cone?{radius:collider.radius(),halfHeight:collider.halfHeight()}:type===R.ShapeType.Ball?{radius:collider.radius()}:{type};
-  return canonicalJson({...(enabled?{enabled:collider.isEnabled()}:{}),parent:collider.parent()?.handle??null,pose:{...collider.translation()},rotation:{...collider.rotation()},type,geometry,sensor:collider.isSensor(),friction:collider.friction(),restitution:collider.restitution(),density:collider.density(),collisionGroups:collider.collisionGroups(),solverGroups:collider.solverGroups()});
+  return canonicalJson({...(enabled?{enabled:collider.isEnabled()}:{}),parent:collider.parent()?.handle??null,
+    ...(includeWorldPose?{pose:{...collider.translation()},rotation:{...collider.rotation()}}:{}),type,geometry,sensor:collider.isSensor(),friction:collider.friction(),
+    restitution:collider.restitution(),density:collider.density(),collisionGroups:collider.collisionGroups(),solverGroups:collider.solverGroups()});
 };
+const orderedFloat32=(value:number):number=>{
+  const view=new DataView(new ArrayBuffer(4));view.setFloat32(0,value,false);const bits=view.getUint32(0,false);
+  return (bits&0x80000000)!==0?0x80000000-(bits&0x7fffffff):0x80000000+bits;
+};
+const carrierSweepFloat32Bound=(value:number,direction:"down"|"up"):number|undefined=>{
+  if(!Number.isFinite(value))return undefined;
+  const rounded=Math.fround(value);if(!Number.isFinite(rounded))return undefined;
+  if(direction==="down"?rounded<=value:rounded>=value)return rounded;
+  const ordered=orderedFloat32(rounded)+(direction==="up"?1:-1);
+  if(ordered<0||ordered>0xffffffff)return undefined;
+  const bits=ordered<0x80000000?0x80000000|(0x80000000-ordered):ordered-0x80000000;
+  const view=new DataView(new ArrayBuffer(4));view.setUint32(0,bits>>>0,false);
+  const next=view.getFloat32(0,false);return Number.isFinite(next)?next:undefined;
+};
+const carrierSweepStrictPositiveFloat32=(value:number):number|undefined=>{
+  const rounded=carrierSweepFloat32Bound(value,"up");if(rounded===undefined||value<=0)return undefined;
+  if(rounded>value)return rounded;
+  const ordered=orderedFloat32(rounded)+1;
+  if(ordered>0xffffffff)return undefined;
+  const bits=ordered<0x80000000?0x80000000|(0x80000000-ordered):ordered-0x80000000;
+  const view=new DataView(new ArrayBuffer(4));view.setUint32(0,bits>>>0,false);
+  const next=view.getFloat32(0,false);return Number.isFinite(next)?next:undefined;
+};
+// Match the pinned Native q*vector F32 operation order instead of idealizing q1 as an exact axis swap.
+const nativeQ1BoxCenter=(translation:Readonly<{x:number;y:number;z:number}>,localCenter:Readonly<{x:number;y:number;z:number}>,
+  rotation:Readonly<{x:number;y:number;z:number;w:number}>):Readonly<{x:number;y:number;z:number}>|undefined=>{
+  const s=Math.fround(Math.SQRT1_2);
+  if(rotation.x!==0||rotation.y!==s||rotation.z!==0||rotation.w!==s)return undefined;
+  const q={x:Math.fround(0),y:s,z:Math.fround(0)},v={x:Math.fround(localCenter.x),y:Math.fround(localCenter.y),z:Math.fround(localCenter.z)};
+  const cross=(a:typeof q,b:typeof v)=>({x:Math.fround(Math.fround(a.y*b.z)-Math.fround(a.z*b.y)),
+    y:Math.fround(Math.fround(a.z*b.x)-Math.fround(a.x*b.z)),z:Math.fround(Math.fround(a.x*b.y)-Math.fround(a.y*b.x))});
+  const first=cross(q,v),t={x:Math.fround(first.x*2),y:Math.fround(first.y*2),z:Math.fround(first.z*2)},second=cross(q,t);
+  const rotated={x:Math.fround(Math.fround(Math.fround(t.x*s)+second.x)+v.x),y:Math.fround(Math.fround(Math.fround(t.y*s)+second.y)+v.y),z:Math.fround(Math.fround(Math.fround(t.z*s)+second.z)+v.z)};
+  return {x:Math.fround(Math.fround(translation.x)+rotated.x),y:Math.fround(Math.fround(translation.y)+rotated.y),z:Math.fround(Math.fround(translation.z)+rotated.z)};
+};
+const carrierSweepEnclosure=(from:Readonly<{x:number;y:number;z:number}>,delta:Readonly<{x:number;y:number;z:number}>,
+  physicalStart:Readonly<{x:number;y:number;z:number}>,destination:Readonly<{x:number;y:number;z:number}>,rotation:Readonly<{x:number;y:number;z:number;w:number}>,
+  half:Readonly<{x:number;y:number;z:number}>):Readonly<{center:Readonly<{x:number;y:number;z:number}>;half:Readonly<{x:number;y:number;z:number}>}>|undefined=>{
+  const s=Math.fround(Math.SQRT1_2),hx=Math.fround(half.x),hy=Math.fround(half.y),hz=Math.fround(half.z);
+  if(rotation.x!==0||rotation.y!==s||rotation.z!==0||rotation.w!==s||![hx,hy,hz].every(value=>Number.isFinite(value)&&value>0))return undefined;
+  const admittedHalf=(hx===Math.fround(.2495)&&hy===Math.fround(.4995)&&hz===Math.fround(.2495))
+    ||(hx===Math.fround(.4995)&&hy===Math.fround(.4995)&&hz===Math.fround(.4995))
+    ||(hx===Math.fround(.4995)&&hy===Math.fround(.4995)&&hz===Math.fround(.7495))
+    ||(hx===Math.fround(.062)&&hy===Math.fround(.1245)&&hz===Math.fround(.062));
+  if(!admittedHalf||![physicalStart.x,physicalStart.y,physicalStart.z,destination.x,destination.y,destination.z]
+    .every(value=>Number.isFinite(value)&&Math.fround(value)===value))return undefined;
+  const k=2*s*s,gamma7=7*2**-24/(1-7*2**-24);
+  const radiusX=carrierSweepStrictPositiveFloat32(Math.max(k*hz+gamma7*k*(hx+hz),
+    Math.abs(1-k)*hx+k*hz+gamma7*((1+k)*hx+k*hz)));
+  const radiusY=carrierSweepStrictPositiveFloat32(Math.max(k*hy*(1+gamma7),hy*(1+gamma7)));
+  const radiusZ=carrierSweepStrictPositiveFloat32(Math.max(k*hx+gamma7*k*(hx+hz),
+    Math.abs(1-k)*hz+k*hx+gamma7*((1+k)*hz+k*hx)));
+  if(radiusX===undefined||radiusY===undefined||radiusZ===undefined)return undefined;
+  const start={x:Math.fround(from.x),y:Math.fround(from.y),z:Math.fround(from.z)};
+  const velocity={x:Math.fround(delta.x),y:Math.fround(delta.y),z:Math.fround(delta.z)};
+  const exactEnd={x:start.x+velocity.x,y:start.y+velocity.y,z:start.z+velocity.z};
+  const roundedEnd={x:Math.fround(exactEnd.x),y:Math.fround(exactEnd.y),z:Math.fround(exactEnd.z)};
+  if(![start.x,start.y,start.z,velocity.x,velocity.y,velocity.z,exactEnd.x,exactEnd.y,exactEnd.z,
+    roundedEnd.x,roundedEnd.y,roundedEnd.z,physicalStart.x,physicalStart.y,physicalStart.z,destination.x,destination.y,destination.z].every(Number.isFinite))return undefined;
+  const lowerX=carrierSweepFloat32Bound(Math.min(start.x,exactEnd.x,roundedEnd.x,physicalStart.x,destination.x)-radiusX,"down");
+  const lowerY=carrierSweepFloat32Bound(Math.min(start.y,exactEnd.y,roundedEnd.y,physicalStart.y,destination.y)-radiusY,"down");
+  const lowerZ=carrierSweepFloat32Bound(Math.min(start.z,exactEnd.z,roundedEnd.z,physicalStart.z,destination.z)-radiusZ,"down");
+  const upperX=carrierSweepFloat32Bound(Math.max(start.x,exactEnd.x,roundedEnd.x,physicalStart.x,destination.x)+radiusX,"up");
+  const upperY=carrierSweepFloat32Bound(Math.max(start.y,exactEnd.y,roundedEnd.y,physicalStart.y,destination.y)+radiusY,"up");
+  const upperZ=carrierSweepFloat32Bound(Math.max(start.z,exactEnd.z,roundedEnd.z,physicalStart.z,destination.z)+radiusZ,"up");
+  if(lowerX===undefined||lowerY===undefined||lowerZ===undefined||upperX===undefined||upperY===undefined||upperZ===undefined)return undefined;
+  const center={x:Math.fround((lowerX+upperX)/2),y:Math.fround((lowerY+upperY)/2),z:Math.fround((lowerZ+upperZ)/2)};
+  const halfBound={
+    x:carrierSweepFloat32Bound(Math.max(center.x-lowerX,upperX-center.x),"up"),
+    y:carrierSweepFloat32Bound(Math.max(center.y-lowerY,upperY-center.y),"up"),
+    z:carrierSweepFloat32Bound(Math.max(center.z-lowerZ,upperZ-center.z),"up")};
+  if(![center.x,center.y,center.z,halfBound.x,halfBound.y,halfBound.z].every(value=>value!==undefined&&Number.isFinite(value)))return undefined;
+  const aabbLower={x:Math.fround(center.x-halfBound.x!),y:Math.fround(center.y-halfBound.y!),z:Math.fround(center.z-halfBound.z!)};
+  const aabbUpper={x:Math.fround(center.x+halfBound.x!),y:Math.fround(center.y+halfBound.y!),z:Math.fround(center.z+halfBound.z!)};
+  if(![aabbLower.x,aabbLower.y,aabbLower.z,aabbUpper.x,aabbUpper.y,aabbUpper.z].every(Number.isFinite)
+    ||aabbLower.x>lowerX||aabbUpper.x<upperX||aabbLower.y>lowerY||aabbUpper.y<upperY||aabbLower.z>lowerZ||aabbUpper.z<upperZ)return undefined;
+  return {center,half:{x:halfBound.x!,y:halfBound.y!,z:halfBound.z!}};
+};
+const principalInertiaMatches=(actual:Readonly<{x:number;y:number;z:number}>,saved:Readonly<{x:number;y:number;z:number}>):boolean=>
+  [actual.x,actual.y,actual.z].every((value,index)=>{
+    const expected=[saved.x,saved.y,saved.z][index]!;
+    return Number.isFinite(value)&&Number.isFinite(expected)&&Math.abs(orderedFloat32(value)-orderedFloat32(expected))<=2;
+  });
+const carrierComMatches=(actual:Readonly<{x:number;y:number;z:number}>,saved:Readonly<{x:number;y:number;z:number}>):boolean=>
+  [actual.x,actual.y,actual.z].every((value,index)=>{
+    const expected=[saved.x,saved.y,saved.z][index]!;
+    return Number.isFinite(value)&&Number.isFinite(expected)&&Math.fround(value)===value&&Math.fround(expected)===expected
+      &&Math.abs(orderedFloat32(value)-orderedFloat32(expected))<=1;
+  });
 const members=(world:R.World)=>{
   const bodies=new Map<number,{object:R.RigidBody;bytes:string}>(),colliders=new Map<number,{object:R.Collider;shape:R.Shape;bytes:string}>();
   world.forEachRigidBody(body=>bodies.set(body.handle,{object:body,bytes:bodyBytes(body)}));
@@ -90,14 +182,22 @@ const members=(world:R.World)=>{
 /** Only the private Native session supplies this SAME World. Requests contain no arbitrary body/box creation API. */
 export const createFactoryFacilitySession = (world: R.World, safePaused: () => boolean, dormantBodies: () => number,
   terrainRevision: () => number = () => 0, initialCargo?:FactoryCargoSite, actorPosition:()=>Readonly<{x:number;y:number;z:number}>|undefined=()=>undefined,
-  actorBodyHandle: () => number | undefined = () => undefined, covered: (x: number, z: number) => boolean = () => true) => {
-  let revision = 0, owners: readonly FactoryFacilityOwner[] = [], recovery = false;
+  actorBodyHandle: () => number | undefined = () => undefined, covered: (x: number, z: number) => boolean = () => true,
+  initialParts?:FactoryNativeWorldPartsV1) => {
+  let revision = initialParts?.revision ?? 0, owners: readonly FactoryFacilityOwner[] = [], recovery = false;
   let pending: { owner: FactoryFacilityOwner; state: "PreparedHeld" | "CommittedHeld" | "PublishedHeld";
     before: ReturnType<typeof members>; originalMembers?:ReturnType<typeof members>; consumedCarrier?:FactoryNativeCarrierRead; candidateBodyBytes:string;candidateColliders:ReadonlyMap<number,Readonly<{object:R.Collider;shape:R.Shape;bytes:string}>>; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number } | undefined;
-  const completed = new Set<string>();
+  const completed = new Set<string>(initialParts?.completedTransactionIds ?? []);
   const handlingCatalog = createFp02Fixture("cargo").catalog;
   let carrier: FactoryNativeCarrierRead | undefined;
+  let carrierColliderProofs:ReadonlyMap<number,Readonly<{object:R.Collider;shape:R.Shape;bytes:string}>>|undefined;
   let lastCarrierVeto:FactoryCarrierVeto|undefined;
+  let carrierMoveHardFailure=false;
+  const currentCarrierVeto=():FactoryCarrierVeto|undefined=>lastCarrierVeto;
+  const hasFreshCarrierContactVeto=(to:Readonly<{x:number;y:number;z:number}>):boolean=>{
+    const veto=currentCarrierVeto(),targetMm=[to.x*1000,to.y*1000,to.z*1000];
+    return !!veto&&veto.targetMm.every((value,index)=>value===targetMm[index])&&(veto.reason==="CarrierOverlap"||veto.reason==="CarrierSweep");
+  };
   let carrierDefinition: CargoHandlingProfile | undefined;
   let carrierWork: { request: FactoryCarrierRequest; before: ReturnType<typeof members>; previousRevision: number;
     bodyBytes: string; colliders: ReadonlyMap<number, Readonly<{ object: R.Collider; shape: R.Shape; bytes: string }>>;
@@ -106,8 +206,9 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
 
   if(initialCargo)initialCargo=copyFactoryCargoSite(initialCargo);
   let supportCache:Readonly<{revision:number;valid:boolean}>|undefined;
-  let cargoBody:R.RigidBody|undefined,cargoCollider:R.Collider|undefined,cargoOpened=false;
-  let cargoOpenReceipt:FactoryCargoOpenIntent|null=null;
+  let cargoBody:R.RigidBody|undefined,cargoCollider:R.Collider|undefined,cargoOpened=initialParts?.cargo.opened??false;
+  let cargoOpenReceipt:FactoryCargoOpenIntent|null=initialParts?.cargo.openReceipt?Object.freeze({...initialParts.cargo.openReceipt}):null;
+  let cargoBodyProof:string|undefined,cargoColliderProof:string|undefined;
   const hold = (): never => { recovery = true; throw new Error("FactoryFacilityRecoveryHold:MembershipNotProven"); };
   const verifyOld = (before: ReturnType<typeof members>): boolean => {
     const current = members(world);
@@ -142,7 +243,7 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
     const body = world.getRigidBody(owner.bodyHandle);
     if (!body || !body.isFixed() || !body.isEnabled() || !owner.colliderHandles.every(handle => world.getCollider(handle)?.parent() === body)) return false;
     if (Math.hypot(body.translation().x - owner.centerMm[0] / 1000, body.translation().y - owner.centerMm[1] / 1000, body.translation().z - owner.centerMm[2] / 1000) > 1e-6) return false;
-    const profile = createFactoryInstallationProfile(owner.definitionRef.sourceId);
+    const profile = profileFor(owner);
     if (profile.profileDigest !== owner.profileDigest) return false;
     const access = transformFactoryBounds(profile.serviceBoundsMm, owner.centerMm, owner.quarterTurns);
     const point = [actor.x, actor.y, actor.z].map((value, index) => Math.min(access.max[index]! / 1000, Math.max(access.min[index]! / 1000, value)));
@@ -153,13 +254,37 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       distance - .001, true, undefined, undefined, undefined, body, obstacle);
   };
   const ownerProfiles=new Map<string,ReturnType<typeof createFactoryInstallationProfile>>();
-  const ownerMembers=new Map<string,{body:R.RigidBody;colliders:ReadonlyMap<number,R.Collider>}>();
+  const ownerMembers=new Map<string,{body:R.RigidBody;colliders:ReadonlyMap<number,R.Collider>;bodyProof:string;colliderProofs:ReadonlyMap<number,string>}>();
   const observedDefinitions=new Set(["B06","B07","B09"]);
   const profileFor=(owner:FactoryFacilityOwner)=>{let profile=ownerProfiles.get(owner.instanceId);if(!profile){profile=createFactoryInstallationProfile(owner.definitionRef.sourceId);ownerProfiles.set(owner.instanceId,profile);}return profile;};
+  const installOwnerNative=(saved:FactoryNativeOwnerCheckpoint,profile:ReturnType<typeof createFactoryInstallationProfile>,enabled:boolean):FactoryFacilityOwner=>{
+    const body=world.createRigidBody(R.RigidBodyDesc.fixed().setTranslation(saved.centerMm[0]/1000,saved.centerMm[1]/1000,saved.centerMm[2]/1000)
+      .setRotation({x:0,y:Math.sin(saved.quarterTurns*Math.PI/4),z:0,w:Math.cos(saved.quarterTurns*Math.PI/4)}).setEnabled(enabled));
+    const handles:number[]=[];
+    try{
+      for(const box of profile.colliders){
+        const collider=world.createCollider(R.ColliderDesc.cuboid(box.sizeMm[0]/2000,box.sizeMm[1]/2000,box.sizeMm[2]/2000)
+          .setTranslation(box.centerMm[0]/1000,box.centerMm[1]/1000,box.centerMm[2]/1000)
+          .setRotation({x:0,y:0,z:Math.sin(box.rotationZRadians/2),w:Math.cos(box.rotationZRadians/2)}),body);
+        collider.setEnabled(enabled);handles.push(collider.handle);
+      }
+      refresh();
+      const owner:FactoryFacilityOwner=Object.freeze({...saved,definitionRef:Object.freeze({...saved.definitionRef}),centerMm:Object.freeze([...saved.centerMm]) as FactoryVector,
+        bodyHandle:body.handle,colliderHandles:Object.freeze(handles)});
+      const colliders=new Map(handles.map(handle=>[handle,world.getCollider(handle)!]));
+      ownerMembers.set(owner.instanceId,{body,colliders,bodyProof:bodyBytes(body,false),colliderProofs:new Map(handles.map(handle=>[handle,colliderBytes(world.getCollider(handle)!,false)]))});
+      ownerProfiles.set(owner.instanceId,profile);
+      return owner;
+    }catch(error){
+      if(world.getRigidBody(body.handle))world.removeRigidBody(body);
+      refresh();throw error;
+    }
+  };
   const partObservation=(owner:FactoryFacilityOwner,published=true,enabled=true):FactoryNativePartObservation=>{
     const profile=profileFor(owner),saved=ownerMembers.get(owner.instanceId),body=world.getRigidBody(owner.bodyHandle),pose=body?.translation(),rotation=body?.rotation();
     const sy=Math.sin(owner.quarterTurns*Math.PI/4),cy=Math.cos(owner.quarterTurns*Math.PI/4);
     const confirmed=!!body&&body===saved?.body&&body.isFixed()&&body.isEnabled()===enabled
+      &&bodyBytes(body,false)===saved?.bodyProof
       &&profile.definitionRef.sourceId===owner.definitionRef.sourceId&&profile.definitionRef.version===owner.definitionRef.version&&profile.definitionRef.digest===owner.definitionRef.digest
       &&profile.profileDigest===owner.profileDigest&&profile.sourceDigest===owner.sourceDigest
       &&Math.hypot(pose!.x-owner.centerMm[0]/1000,pose!.y-owner.centerMm[1]/1000,pose!.z-owner.centerMm[2]/1000)<1e-6
@@ -169,7 +294,8 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       let missing=0,valid=confirmed&&boxes.length>0;const presentHandles:number[]=[];
       for(const {box,handle} of boxes){
         const collider=handle===undefined?null:world.getCollider(handle);if(!collider){missing++;valid=false;continue;}presentHandles.push(handle!);
-        if(!confirmed||collider!==saved?.colliders.get(handle!)||collider.parent()!==body||collider.isEnabled()!==enabled||collider.isSensor()||collider.shapeType()!==R.ShapeType.Cuboid){valid=false;continue;}
+        if(!confirmed||collider!==saved?.colliders.get(handle!)
+          ||collider.parent()!==body||collider.isEnabled()!==enabled||collider.isSensor()||collider.shapeType()!==R.ShapeType.Cuboid){valid=false;continue;}
         const half=collider.halfExtents(),p=collider.translation(),q=collider.rotation(),center=transformFactoryPoint(box.centerMm,owner.centerMm,owner.quarterTurns),sz=Math.sin(box.rotationZRadians/2),cz=Math.cos(box.rotationZRadians/2),expected={x:sy*sz,y:sy*cz,z:cy*sz,w:cy*cz};
         if(Math.hypot(half.x-box.sizeMm[0]/2000,half.y-box.sizeMm[1]/2000,half.z-box.sizeMm[2]/2000)>=1e-6
           ||Math.hypot(p.x-center[0]/1000,p.y-center[1]/1000,p.z-center[2]/1000)>=1e-6
@@ -183,8 +309,9 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
   };
   const productionObservation=(owner:FactoryFacilityOwner,parts?:FactoryNativePartObservation)=>{
     let profile=ownerProfiles.get(owner.instanceId);if(!profile){profile=createFactoryInstallationProfile(owner.definitionRef.sourceId);ownerProfiles.set(owner.instanceId,profile);}
+    const needsPartProof=observedDefinitions.has(owner.definitionRef.sourceId),currentParts=needsPartProof?(parts??partObservation(owner)):undefined;
     const body=world.getRigidBody(owner.bodyHandle),pose=body?.translation(),rotation=body?.rotation(),expectedY=Math.sin(owner.quarterTurns*Math.PI/4),expectedW=Math.cos(owner.quarterTurns*Math.PI/4);
-    const confirmed=(!observedDefinitions.has(owner.definitionRef.sourceId)||(parts??partObservation(owner)).complete)&&!!body&&body.isFixed()&&body.isEnabled()&&profile.profileDigest===owner.profileDigest&&profile.sourceDigest===owner.sourceDigest
+    const confirmed=(!needsPartProof||currentParts?.complete===true)&&!!body&&body.isFixed()&&body.isEnabled()&&profile.profileDigest===owner.profileDigest&&profile.sourceDigest===owner.sourceDigest
       &&Math.hypot(pose!.x-owner.centerMm[0]/1000,pose!.y-owner.centerMm[1]/1000,pose!.z-owner.centerMm[2]/1000)<1e-6
       &&Math.hypot(rotation!.x,rotation!.y-expectedY,rotation!.z,rotation!.w-expectedW)<1e-6
       &&body.numColliders()===profile.colliders.length&&owner.colliderHandles.every((handle,index)=>{const collider=world.getCollider(handle),box=profile!.colliders[index];if(!collider||!box||collider.parent()!==body||!collider.isEnabled()||collider.shapeType()!==R.ShapeType.Cuboid)return false;const half=collider.halfExtents();return Math.hypot(half.x-box.sizeMm[0]/2000,half.y-box.sizeMm[1]/2000,half.z-box.sizeMm[2]/2000)<1e-6;});
@@ -203,7 +330,7 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       let free=true;for(let x=b.min[0]+.5;x<b.max[0];x+=125)for(let z=b.min[2]+.5;z<b.max[2];z+=125)if(!covered(x/1000,z/1000))free=false;
       world.intersectionsWithShape(center,{x:0,y:0,z:0,w:1},new R.Cuboid(Math.max(.0001,(b.max[0]-b.min[0])/2000-.0005),Math.max(.0001,(b.max[1]-b.min[1])/2000-.0005),Math.max(.0001,(b.max[2]-b.min[2])/2000-.0005)),()=>{free=false;return false;},undefined,undefined,undefined,body,solid);return free;
     };
-    return Object.freeze({instanceId:owner.instanceId,profileDigest:owner.profileDigest,sourceDigest:owner.sourceDigest,installationRevision:owner.installationRevision,terrainRevision:terrainRevision(),facilityRevision:revision,confirmed,supported,serviceClear:confirmed&&clear(profile.serviceBoundsMm),sweepClear:confirmed&&profile.sweepBoundsMm.every(clear),accessible:localSourceAccess(`input_${owner.instanceId}`,owner.instanceId)});
+    return Object.freeze({instanceId:owner.instanceId,profileDigest:owner.profileDigest,sourceDigest:owner.sourceDigest,installationRevision:owner.installationRevision,terrainRevision:terrainRevision(),facilityRevision:revision,confirmed,supported,serviceClear:confirmed&&clear(profile.serviceBoundsMm),sweepClear:confirmed&&profile.sweepBoundsMm.every(clear),accessible:localSourceAccess(`input_${owner.instanceId}`,owner.instanceId,currentParts)});
   };
   const powerSocketObservation=(owner:FactoryFacilityOwner,readProof:()=>ReturnType<typeof productionObservation>)=>{
     const profile=ownerProfiles.get(owner.instanceId)??createFactoryInstallationProfile(owner.definitionRef.sourceId);
@@ -242,10 +369,12 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
     const light = profile.sizeMm[0] === 500;
     const rawX=actor.x,rawZ=actor.z-(light?.75:1),x=snap?Math.round(rawX*4)/4:rawX,z=snap?Math.round(rawZ*4)/4:rawZ;
     if(snap&&(Math.abs(x-rawX)>.125001||Math.abs(z-rawZ)>.125001))reject("CarrierSnapDistance");
-    const ground = world.castRayAndGetNormal(new R.Ray({ x, y: actor.y + 1, z }, { x: 0, y: -1, z: 0 }), 6, true, undefined, undefined, undefined, undefined,
+    const rayOriginY=Math.fround(actor.y+1);
+    if(!Number.isFinite(rayOriginY))reject("CarrierSupport");
+    const ground = world.castRayAndGetNormal(new R.Ray({ x, y: rayOriginY, z }, { x: 0, y: -1, z: 0 }), 6, true, undefined, undefined, undefined, undefined,
       collider => obstacle(collider) && (collider.parent()?.isFixed() ?? true));
     if (!ground || ground.normal.y < .9) reject("CarrierSupport");
-    const y = actor.y + 1 - ground!.toi, offset = light ? .0625 : .25;
+    const y = rayOriginY - ground!.toi, offset = light ? .0625 : .25;
     for (const dx of [-offset, offset]) for (const dz of [-offset, offset]) for (const sx of [-.06249, -.03125, 0, .03125, .06249]) for (const sz of [-.06249, -.03125, 0, .03125, .06249]) {
       const px = x + dx + sx, pz = z + dz + sz;
       if (!covered(px, pz)) reject("CarrierCoverage");
@@ -263,15 +392,62 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
     return [{ center: { x: 0, y: .75, z: 0 }, half: { x: profile.sizeMm[0] / 2000, y: .5, z: profile.sizeMm[2] / 2000 } },
       ...[-offset, offset].flatMap(x => [-offset, offset].map(z => ({ center: { x, y: .125, z }, half: { x: .0625, y: .125, z: .0625 } })))];
   };
-  const assertCarrierClearance = (profile: CargoHandlingProfile, pose: Readonly<{ x: number; y: number; z: number }>): void => {
+  const installCarrierNative=(saved:FactoryNativeCarrierCheckpoint,profile:CargoHandlingProfile):void=>{
+    const mass=profile.massMg/1_000_000,a=profile.sizeMm[0]/1000,b=profile.sizeMm[1]/1000,c=profile.sizeMm[2]/1000;
+    const position={x:saved.positionMm[0]/1000,y:saved.positionMm[1]/1000,z:saved.positionMm[2]/1000};
+    const body=world.createRigidBody(R.RigidBodyDesc.kinematicPositionBased().setTranslation(position.x,position.y,position.z)
+      .setRotation({...saved.physicalRotation}).setEnabled(false)
+      .setAdditionalMassProperties(mass,{x:0,y:.75,z:0},{x:mass*(b*b+c*c)/12,y:mass*(a*a+c*c)/12,z:mass*(a*a+b*b)/12},{x:0,y:0,z:0,w:1}));
+    try{
+      const handles=carrierBoxes(profile).map(box=>world.createCollider(R.ColliderDesc.cuboid(box.half.x,box.half.y,box.half.z)
+        .setTranslation(box.center.x,box.center.y,box.center.z).setDensity(0).setFriction(.8).setEnabled(false),body).handle);
+      body.recomputeMassPropertiesFromColliders();
+      if(saved.phase==="Deposited")body.setBodyType(R.RigidBodyType.Fixed,false);
+      body.setEnabled(true);handles.forEach(handle=>world.getCollider(handle)!.setEnabled(true));
+      refresh();
+      carrier=Object.freeze({...saved,bodyHandle:body.handle,colliderHandles:Object.freeze(handles),positionMm:Object.freeze([...saved.positionMm]) as FactoryVector,
+        nativeMassKg:body.mass(),localCom:Object.freeze({...body.localCom()}),principalInertia:Object.freeze({...body.principalInertia()})});
+      carrierDefinition=profile;
+      carrierColliderProofs=new Map(handles.map(handle=>{const collider=world.getCollider(handle)!;return [handle,{object:collider,shape:collider.shape,bytes:colliderBytes(collider,false,false)}] as const;}));
+    }catch(error){
+      if(world.getRigidBody(body.handle))world.removeRigidBody(body);
+      refresh();throw error;
+    }
+  };
+  if(initialParts){
+    if(!initialCargo)reject("NativeCargoSiteRequired");
+    owners=Object.freeze(initialParts.owners.map(saved=>installOwnerNative(saved,createFactoryInstallationProfile(saved.definitionRef.sourceId),true)));
+    if(initialParts.carrier!==null){
+      const profile=readCargoHandlingProfile(handlingCatalog,initialParts.carrier.profileId);
+      if(!profile||profile.digest!==initialParts.carrier.profileDigest||profile.massMg!==initialParts.carrier.massMg)reject("NativeCarrierProfileMismatch");
+      installCarrierNative(initialParts.carrier,profile!);
+    }
+  }
+  const assertCarrierClearance = (profile: CargoHandlingProfile, pose: Readonly<{ x: number; y: number; z: number }>, captureOverlapDetails=false): void => {
     for (const box of carrierBoxes(profile)) {
       let blocked = false;
+      let firstOverlap:Readonly<{colliderHandle:number;colliderShapeType:number}>|undefined;
       // Tutorial transport q1: east→-Z, north→+X. The body carries exactly this same rotation.
       world.intersectionsWithShape({ x: pose.x + box.center.z, y: pose.y + box.center.y, z: pose.z - box.center.x },
         { x: 0, y: Math.SQRT1_2, z: 0, w: Math.SQRT1_2 }, new R.Cuboid(box.half.x - .0005, box.half.y - .0005, box.half.z - .0005),
-        () => { blocked = true; return false; }, undefined, undefined, undefined, undefined, obstacle);
-      if (blocked) reject("CarrierOverlap");
+        collider => { blocked = true;if(captureOverlapDetails&&firstOverlap===undefined)firstOverlap=Object.freeze({colliderHandle:collider.handle,colliderShapeType:collider.shapeType()});return false; }, undefined, undefined, undefined, undefined, obstacle);
+      if (blocked) {
+        if(firstOverlap)throw Object.assign(new Error("FactoryFacilityRejected:CarrierOverlap"),{cause:firstOverlap});
+        reject("CarrierOverlap");
+      }
     }
+  };
+  const carrierSweepHasNoObstacle=(box:ReturnType<typeof carrierBoxes>[number],from:Readonly<{x:number;y:number;z:number}>,
+    delta:Readonly<{x:number;y:number;z:number}>,currentBody:Readonly<{x:number;y:number;z:number}>,targetBody:Readonly<{x:number;y:number;z:number}>,
+    rotation:Readonly<{x:number;y:number;z:number;w:number}>,
+    shape:R.Cuboid):boolean=>{
+    const physicalStart=nativeQ1BoxCenter(currentBody,box.center,rotation),physicalTarget=nativeQ1BoxCenter(targetBody,box.center,rotation);
+    if(!physicalStart||!physicalTarget)return false;
+    const enclosure=carrierSweepEnclosure(from,delta,physicalStart,physicalTarget,rotation,shape.halfExtents);if(!enclosure)return false;
+    let blocked=false;
+    world.intersectionsWithShape(enclosure.center,{x:0,y:0,z:0,w:1},new R.Cuboid(enclosure.half.x,enclosure.half.y,enclosure.half.z),
+      collider=>{if(obstacle(collider)){blocked=true;return false;}return true;},undefined,undefined,undefined,undefined,obstacle);
+    return !blocked;
   };
   const readCarrier = (): FactoryNativeCarrierRead | undefined => {
     if (!carrier) return undefined;
@@ -313,24 +489,33 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
     world.intersectionsWithShape({x:center[0]!,y:center[1]!,z:center[2]!},{x:0,y:0,z:0,w:1},new R.Cuboid(extent[0]!,extent[1]!,extent[2]!),()=>{blocked=true;return false;},undefined,undefined,undefined,cargoBody,obstacle);return !blocked;
   };
   if(initialCargo){
-    refresh();
-    if(world.bodies.len()+dormantBodies()+1>64||world.colliders.len()+1>4096)reject("CargoBudgetExceeded");
-    let blocked=false;
-    world.intersectionsWithShape({x:-5.5,y:2,z:13.125},{x:0,y:0,z:0,w:1},new R.Cuboid(.7495,.7495,.4995),()=>{blocked=true;return false;},undefined,undefined,undefined,undefined,collider=>collider.isEnabled()&&!collider.isSensor());
-    if(blocked||!currentCargoSupport()||!cargoClearance())reject("CargoNativeSupportOrClearance");
-    cargoBody=world.createRigidBody(R.RigidBodyDesc.fixed().setTranslation(-5.5,2,13.125));
-    try{cargoCollider=world.createCollider(R.ColliderDesc.cuboid(.75,.75,.5).setFriction(.8),cargoBody);refresh();}catch(error){world.removeRigidBody(cargoBody);refresh();throw error;}
+    const center=initialCargo.centerMm.map(value=>value/1000),half=initialCargo.sizeMm.map(value=>value/2000);
+    if(initialParts===undefined){
+      refresh();
+      if(world.bodies.len()+dormantBodies()+1>64||world.colliders.len()+1>4096)reject("CargoBudgetExceeded");
+      let blocked=false;
+      world.intersectionsWithShape({x:center[0]!,y:center[1]!,z:center[2]!},{x:0,y:0,z:0,w:1},new R.Cuboid(half[0]!-.0005,half[1]!-.0005,half[2]!-.0005),()=>{blocked=true;return false;},undefined,undefined,undefined,undefined,collider=>collider.isEnabled()&&!collider.isSensor());
+      if(blocked||!currentCargoSupport()||!cargoClearance())reject("CargoNativeSupportOrClearance");
+    }else if(canonicalJson(initialParts.cargo.site)!==canonicalJson(initialCargo))reject("NativeCargoSiteMismatch");
+    cargoBody=world.createRigidBody(R.RigidBodyDesc.fixed().setTranslation(center[0]!,center[1]!,center[2]!));
+    try{cargoCollider=world.createCollider(R.ColliderDesc.cuboid(half[0]!,half[1]!,half[2]!).setFriction(.8),cargoBody);refresh();
+      cargoBodyProof=bodyBytes(cargoBody,false);cargoColliderProof=colliderBytes(cargoCollider,false);
+    }catch(error){world.removeRigidBody(cargoBody);refresh();throw error;}
   }
   const readCargo=():FactoryNativeCargoRead|undefined=>{
     if(!initialCargo||!cargoBody||!cargoCollider)return undefined;
     const pose=cargoBody.translation(),orientation=cargoBody.rotation();
-    const intact=world.getRigidBody(cargoBody.handle)===cargoBody&&world.getCollider(cargoCollider.handle)===cargoCollider&&cargoBody.isFixed()&&cargoBody.isEnabled()&&cargoCollider.isEnabled()&&Math.hypot(pose.x+5.5,pose.y-2,pose.z-13.125)<1e-6&&Math.hypot(orientation.x,orientation.y,orientation.z)<1e-6&&Math.abs(orientation.w-1)<1e-6;
+    const intact=world.getRigidBody(cargoBody.handle)===cargoBody&&world.getCollider(cargoCollider.handle)===cargoCollider&&cargoBody.isFixed()&&cargoBody.isEnabled()&&cargoCollider.isEnabled()
+      &&Math.hypot(pose.x-initialCargo.centerMm[0]/1000,pose.y-initialCargo.centerMm[1]/1000,pose.z-initialCargo.centerMm[2]/1000)<1e-6
+      &&Math.hypot(orientation.x,orientation.y,orientation.z)<1e-6&&Math.abs(orientation.w-1)<1e-6;
     if(!intact)recovery=true;
     const actor=actorPosition(),target=initialCargo.accessPointMm.map(v=>v/1000);let accessible=false;
     if(intact&&actor){const distance=Math.hypot(actor.x-target[0]!,actor.y-target[1]!,actor.z-target[2]!);
       if(distance<=4){const ray=new R.Ray(actor,{x:(target[0]!-actor.x)/Math.max(distance,.0001),y:(target[1]!-actor.y)/Math.max(distance,.0001),z:(target[2]!-actor.z)/Math.max(distance,.0001)});
         accessible=!world.castRay(ray,Math.max(0,distance-.001),true,undefined,undefined,undefined,cargoBody,obstacle)&&currentCargoSupport()&&cargoClearance();}}
-    return Object.freeze({ownerId:initialCargo.ownerId,containerId:initialCargo.containerId,sourceDigest:initialCargo.sourceDigest,profileDigest:initialCargo.profileDigest,opened:cargoOpened,positionMm:initialCargo.centerMm,accessBoundsMm:initialCargo.accessBoundsMm,bodyHandle:cargoBody.handle,colliderHandles:Object.freeze([cargoCollider.handle]),site:initialCargo,accessible,openReceipt:cargoOpenReceipt});
+    return Object.freeze({ownerId:initialCargo.ownerId,containerId:initialCargo.containerId,sourceDigest:initialCargo.sourceDigest,profileDigest:initialCargo.profileDigest,opened:cargoOpened,
+      positionMm:Object.freeze([pose.x*1000,pose.y*1000,pose.z*1000]) as FactoryVector,accessBoundsMm:initialCargo.accessBoundsMm,bodyHandle:cargoBody.handle,
+      colliderHandles:Object.freeze([cargoCollider.handle]),site:initialCargo,accessible,openReceipt:cargoOpenReceipt});
   };
   const rollback = (id: string): void => {
     const candidate = requirePending(id);
@@ -356,6 +541,61 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       return Object.freeze({ ...(lastCarrierVeto?{lastCarrierVeto}:{}),solidPorts:Object.freeze(owners.flatMap(owner=>solidPortObservation(owner,()=>observeProduction(owner)))),partObservations:Object.freeze(owners.filter(owner=>observedDefinitions.has(owner.definitionRef.sourceId)).map(observeParts)),
         ...(pending&&observedDefinitions.has(pending.owner.definitionRef.sourceId)?{preparedPartObservation:partObservation(pending.owner,false,pending.state!=="PreparedHeld")}:{}),powerPorts:Object.freeze(owners.flatMap(owner=>powerSocketObservation(owner,()=>observeProduction(owner)))),production:Object.freeze(owners.filter(owner=>["B05","B06","B07"].includes(owner.definitionRef.sourceId)).map(observeProduction)),sources:Object.freeze(owners.flatMap(owner=>(owner.definitionRef.sourceId==="B09"?["storage"]:["B05","B06","B07"].includes(owner.definitionRef.sourceId)?["input","output","offcut"]:[]).map(role=>Object.freeze({containerId:`${role}_${owner.instanceId}`,instanceId:owner.instanceId,accessible:localSourceAccess(`${role}_${owner.instanceId}`,owner.instanceId,observedDefinitions.has(owner.definitionRef.sourceId)?observeParts(owner):undefined)})))), ...(cargo?{cargo}:{}), ...(currentCarrier?{carrier:currentCarrier}:{}), revision, state: recovery ? "RecoveryHold" : pending?.state ?? (carrierWork ? carrier!.phase as "PreparedHeld" | "CommittedHeld" | "PublishedHeld" : "Idle"), transactionId: pending?.owner.transactionId ?? (carrierWork ? carrier!.transactionId : null),
       owners, prepared: pending?.owner ?? null }); },
+    checkpointNative():FactoryNativeWorldPartsV1{
+      if(!safePaused()||recovery||pending||carrierWork)reject("NativeCheckpointRequiresIdlePaused");
+      const checkpointCargoSite=initialCargo,checkpointCargoBody=cargoBody,checkpointCargoCollider=cargoCollider;
+      if(!checkpointCargoSite||!checkpointCargoBody||!checkpointCargoCollider||!cargoBodyProof||!cargoColliderProof)throw new Error("FactoryFacilityRejected:NativeCargoUnavailable");
+      if(world.getRigidBody(checkpointCargoBody.handle)!==checkpointCargoBody||world.getCollider(checkpointCargoCollider.handle)!==checkpointCargoCollider
+        ||!checkpointCargoBody.isFixed()||!checkpointCargoBody.isEnabled()||checkpointCargoBody.numColliders()!==1
+        ||!checkpointCargoCollider.isEnabled()||bodyBytes(checkpointCargoBody,false)!==cargoBodyProof||colliderBytes(checkpointCargoCollider,false)!==cargoColliderProof)hold();
+      if(cargoOpened!==(cargoOpenReceipt!==null))hold();
+      const ownerCheckpoints=owners.map(owner=>{
+        const observation=partObservation(owner),ownerBaseline=ownerMembers.get(owner.instanceId);
+        const exactColliderProof=!!ownerBaseline&&owner.colliderHandles.length===ownerBaseline.colliders.size&&owner.colliderHandles.every(handle=>{
+          const collider=world.getCollider(handle);
+          return !!collider&&collider===ownerBaseline.colliders.get(handle)&&colliderBytes(collider,false)===ownerBaseline.colliderProofs.get(handle);
+        });
+        if(!observation.complete||!exactColliderProof)hold();
+        const {bodyHandle:_body,colliderHandles:_colliders,...saved}=owner;
+        return Object.freeze({...saved,definitionRef:Object.freeze({...saved.definitionRef}),centerMm:Object.freeze([...saved.centerMm]) as FactoryVector});
+      });
+      let carrierCheckpoint:FactoryNativeCarrierCheckpoint|null=null;
+      if(carrier){
+        const body=world.getRigidBody(carrier.bodyHandle),profile=carrierDefinition,position=body?.translation(),rotation=body?.rotation();
+        if(!body||!profile||!position||!rotation)hold();
+        const phaseValid=carrier.phase==="Carrying"||carrier.phase==="Deposited";
+        const bodyTypeValid=carrier.phase==="Carrying"?body.bodyType()===R.RigidBodyType.KinematicPositionBased:carrier.phase==="Deposited"&&body.isFixed();
+        const poseValid=[position.x,position.y,position.z,rotation.x,rotation.y,rotation.z,rotation.w].every(Number.isFinite)
+          &&Math.abs(rotation.x)<=1e-5&&Math.abs(rotation.z)<=1e-5&&Math.abs(Math.abs(rotation.y)-Math.SQRT1_2)<=1e-5&&Math.abs(Math.abs(rotation.w)-Math.SQRT1_2)<=1e-5;
+        const acceptedPose=carrier.positionMm,worldPoseBound=acceptedPose.length===3&&acceptedPose.every(Number.isFinite)
+          &&Math.hypot(position.x-acceptedPose[0]/1000,position.y-acceptedPose[1]/1000,position.z-acceptedPose[2]/1000)<1e-6;
+        const comValid=carrierComMatches(body.localCom(),carrier.localCom);
+        const inertiaValid=principalInertiaMatches(body.principalInertia(),carrier.principalInertia);
+        const inertiaFrameValid=canonicalJson({...body.principalInertiaLocalFrame()})===canonicalJson({x:0,y:0,z:0,w:1});
+        const boxes=profile?carrierBoxes(profile):[];
+        const colliderValid=!!carrierColliderProofs&&body.numColliders()===5&&carrier.colliderHandles.every((handle,index)=>{
+          const collider=world.getCollider(handle),saved=carrierColliderProofs!.get(handle),box=boxes[index];
+          if(!collider||!saved||!box||collider!==saved.object||collider.shape!==saved.shape||collider.parent()!==body||!collider.isEnabled()
+            ||colliderBytes(collider,false,false)!==saved.bytes)return false;
+          const half=collider.halfExtents(),worldPosition=collider.translation(),colliderRotation=collider.rotation();
+          const expected={x:position.x+box.center.z,y:position.y+box.center.y,z:position.z-box.center.x};
+          const rotationMatches=Math.min(Math.hypot(colliderRotation.x-rotation.x,colliderRotation.y-rotation.y,colliderRotation.z-rotation.z,colliderRotation.w-rotation.w),
+            Math.hypot(colliderRotation.x+rotation.x,colliderRotation.y+rotation.y,colliderRotation.z+rotation.z,colliderRotation.w+rotation.w))<1e-6;
+          return Math.hypot(half.x-box.half.x,half.y-box.half.y,half.z-box.half.z)<1e-6
+            &&Math.hypot(worldPosition.x-expected.x,worldPosition.y-expected.y,worldPosition.z-expected.z)<1e-6&&rotationMatches;
+        });
+        if(!carrierColliderProofs||!phaseValid||!bodyTypeValid||!body.isEnabled()||!poseValid||!worldPoseBound||body.mass()!==carrier.nativeMassKg
+          ||!comValid||!inertiaValid||!inertiaFrameValid||!colliderValid)hold();
+        carrierCheckpoint=Object.freeze({ownerId:carrier.ownerId,transactionId:carrier.transactionId,profileId:carrier.profileId,profileDigest:carrier.profileDigest,
+          phase:carrier.phase as "Carrying"|"Deposited",massMg:carrier.massMg,materialBinding:carrier.materialBinding,containerId:carrier.containerId,
+          positionMm:Object.freeze([position.x*1000,position.y*1000,position.z*1000]) as FactoryVector,physicalRotation:Object.freeze({...rotation}),
+          physicalBodyPhase:carrier.phase==="Carrying"?"KinematicPositionBased":"Fixed"});
+      }
+      return Object.freeze({version:"fp06-native-factory-parts-v1",revision,state:"Idle",transactionId:null,prepared:null,
+        cargo:Object.freeze({ownerId:checkpointCargoSite.ownerId,containerId:checkpointCargoSite.containerId,opened:cargoOpened,sourceDigest:checkpointCargoSite.sourceDigest,
+          profileDigest:checkpointCargoSite.profileDigest,site:checkpointCargoSite,openReceipt:cargoOpenReceipt}),carrier:carrierCheckpoint,
+        owners:Object.freeze(ownerCheckpoints),completedTransactionIds:Object.freeze([...completed])});
+    },
     openCargo(intent:FactoryCargoOpenIntent):FactoryFacilityRead{
       if(pending||carrierWork||recovery)reject("CargoBusy");
       const cargo=readCargo();if(cargoOpenReceipt&&canonicalJson(intent)===canonicalJson(cargoOpenReceipt)&&intent.expectedTerrainRevision===terrainRevision()){if(!cargo?.accessible)reject("CargoOutOfReach");return this.read();}
@@ -365,27 +605,70 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
     },
     preparePlayerMove(from: Readonly<{ x: number; y: number; z: number }>, to: Readonly<{ x: number; y: number; z: number }>): false | (() => void) {
       if (!carrier || carrier.phase !== "Carrying") return () => {};
-      if (recovery || carrierWork || pending || !carrierDefinition) return false;
+      if (recovery || carrierWork || pending || !carrierDefinition) { carrierMoveHardFailure=true;return false; }
       const body = world.getRigidBody(carrier.bodyHandle), profile = carrierDefinition, actual = actorPosition();
       if (!body || !body.isKinematic() || !body.isEnabled() || !actual || Math.hypot(from.x - actual.x, from.y - actual.y, from.z - actual.z) > 1e-6) hold();
       const current = body.translation(), offset = profile.sizeMm[0] === 500 ? .75 : 1;
       if (Math.hypot(current.x - from.x, current.z - (from.z - offset)) > 1e-5) hold();
-      const veto=(reason:string,details:Omit<FactoryCarrierVeto,"reason"|"targetMm">={})=>{lastCarrierVeto=Object.freeze({reason,targetMm:Object.freeze([to.x*1000,to.y*1000,to.z*1000]) as FactoryVector,...details});return false as const;};
+      const veto=(reason:string,details:Omit<FactoryCarrierVeto,"reason"|"targetMm">={})=>{
+        if(reason!=="CarrierOverlap"&&reason!=="CarrierSweep")carrierMoveHardFailure=true;
+        lastCarrierVeto=Object.freeze({reason,targetMm:Object.freeze([to.x*1000,to.y*1000,to.z*1000]) as FactoryVector,...details});return false as const;
+      };
       try {
-        const pose = carrierPose(profile, to); assertCarrierClearance(profile, pose);
+        const pose = carrierPose(profile, to); assertCarrierClearance(profile, pose, true);
         const delta = { x: pose.x - current.x, y: pose.y - current.y, z: pose.z - current.z };
         if (Math.abs(delta.y) > .002) return veto("CarrierGroundHeight");
         for (const box of carrierBoxes(profile)) {
-          const hit = world.castShape({ x: current.x + box.center.z, y: current.y + box.center.y, z: current.z - box.center.x }, body.rotation(), delta,
-            new R.Cuboid(box.half.x - .0005, box.half.y - .0005, box.half.z - .0005), 1, true, undefined, undefined, undefined, undefined, obstacle);
-          if (hit !== null) return veto("CarrierSweep",{colliderHandle:hit.collider.handle,colliderShapeType:hit.collider.shapeType(),timeOfImpact:hit.toi,colliderLocalNormal:Object.freeze({...hit.normal2})});
+          const from={x:current.x+box.center.z,y:current.y+box.center.y,z:current.z-box.center.x},rotation=body.rotation();
+          const shape=new R.Cuboid(box.half.x-.0005,box.half.y-.0005,box.half.z-.0005);
+          const hit=world.castShape(from,rotation,delta,shape,1,true,undefined,undefined,undefined,undefined,obstacle);
+          if(hit!==null&&!carrierSweepHasNoObstacle(box,from,delta,current,pose,rotation,shape))
+            return veto("CarrierSweep",{colliderHandle:hit.collider.handle,colliderShapeType:hit.collider.shapeType(),timeOfImpact:hit.toi,colliderLocalNormal:Object.freeze({...hit.normal2})});
         }
         // Both next poses enter one subsequent private World.step; no pose or tick is changed by preparation.
-        return () => { if(Math.hypot(to.x-from.x,to.z-from.z)>1e-6)lastCarrierVeto=undefined;body.setNextKinematicTranslation(pose); };
+        return () => {
+          if(Math.hypot(to.x-from.x,to.z-from.z)>1e-6)lastCarrierVeto=undefined;
+          body.setNextKinematicTranslation(pose);
+          carrier=Object.freeze({...carrier!,positionMm:Object.freeze([pose.x*1000,pose.y*1000,pose.z*1000]) as FactoryVector});
+        };
       } catch (error) {
-        if (error instanceof Error && /^FactoryFacilityRejected:Carrier(?:Support|Coverage|Overlap)$/.test(error.message)) return veto(error.message.split(":")[1]!);
+        if (error instanceof Error && /^FactoryFacilityRejected:Carrier(?:Support|Coverage|Overlap)$/.test(error.message)) {
+          const reason=error.message.split(":")[1]!,cause=error.cause;
+          if(reason==="CarrierOverlap"&&cause!==null&&typeof cause==="object"&&"colliderHandle" in cause&&typeof cause.colliderHandle==="number"&&Number.isFinite(cause.colliderHandle)
+            &&"colliderShapeType" in cause&&typeof cause.colliderShapeType==="number"&&Number.isInteger(cause.colliderShapeType))
+            return veto(reason,{colliderHandle:cause.colliderHandle,colliderShapeType:cause.colliderShapeType});
+          return veto(reason);
+        }
         throw error;
       }
+    },
+    limitPlayerMove(from: Readonly<{ x: number; y: number; z: number }>, to: Readonly<{ x: number; y: number; z: number }>): number {
+      carrierMoveHardFailure=false;
+      const probe=(scale:number):Readonly<{pass:boolean;refinable:boolean}>=>{
+        const target={x:from.x+(to.x-from.x)*scale,y:to.y,z:from.z+(to.z-from.z)*scale};
+        lastCarrierVeto=undefined;
+        const prepared=this.preparePlayerMove(from,target);
+        if(prepared!==false)return {pass:true,refinable:false};
+        return {pass:false,refinable:hasFreshCarrierContactVeto(target)};
+      };
+      // Only a freshly reproduced collision bound admits bisection. Probe
+      // preparations never execute their closures or mutate the World.
+      const full=probe(1);
+      if(full.pass)return 1;
+      if(!full.refinable)return 0;
+      let low=0,high=1;
+      for(let attempt=0;attempt<7;attempt++){
+        const middle=(low+high)/2,result=probe(middle);
+        if(result.pass)low=middle;
+        else if(result.refinable)high=middle;
+        else return 0;
+      }
+      return low;
+    },
+    canSlidePlayerMove(from:Readonly<{x:number;y:number;z:number}>,to:Readonly<{x:number;y:number;z:number}>):boolean{
+      if(carrierMoveHardFailure)return false;
+      lastCarrierVeto=undefined;
+      return this.preparePlayerMove(from,to)===false&&hasFreshCarrierContactVeto(to);
     },
     prepareCarrierDeposit(request: FactoryCarrierRequest): FactoryFacilityRead {
       if (!safePaused() || recovery || pending || carrierWork || carrier?.phase !== "Carrying") reject("CarrierNotCarryingPaused");
@@ -401,9 +684,10 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       assertCarrierClearance(carrierDefinition!,depositPose);
       const delta={x:depositPose.x-previousPose.x,y:depositPose.y-previousPose.y,z:depositPose.z-previousPose.z};
       for(const box of carrierBoxes(carrierDefinition!)){
-        const hit=world.castShape({x:previousPose.x+box.center.z,y:previousPose.y+box.center.y,z:previousPose.z-box.center.x},body.rotation(),delta,
-          new R.Cuboid(box.half.x-.0005,box.half.y-.0005,box.half.z-.0005),1,true,undefined,undefined,undefined,undefined,obstacle);
-        if(hit!==null)reject("CarrierSnapSweep");
+        const from={x:previousPose.x+box.center.z,y:previousPose.y+box.center.y,z:previousPose.z-box.center.x},rotation=body.rotation();
+        const shape=new R.Cuboid(box.half.x-.0005,box.half.y-.0005,box.half.z-.0005);
+        const hit=world.castShape(from,rotation,delta,shape,1,true,undefined,undefined,undefined,undefined,obstacle);
+        if(hit!==null&&!carrierSweepHasNoObstacle(box,from,delta,previousPose,depositPose,rotation,shape))reject("CarrierSnapSweep");
       }
       const before = members(world);
       carrierWork = { request: Object.freeze({ ...request }), before, previousRevision: revision, previousCarrier: original,previousPose,depositPose,
@@ -457,11 +741,12 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
           positionMm: Object.freeze([pose.x * 1000, pose.y * 1000, pose.z * 1000]) as FactoryVector,
           nativeMassKg: body.mass(), localCom: Object.freeze({ ...body.localCom() }), principalInertia: Object.freeze({ ...body.principalInertia() }) });
         carrierDefinition = profile;
+        carrierColliderProofs=new Map(handles.map(handle=>{const collider=world.getCollider(handle)!;return [handle,{object:collider,shape:collider.shape,bytes:colliderBytes(collider,false,false)}] as const;}));
         carrierWork = { request: Object.freeze({ ...request }), before, previousRevision: revision, bodyBytes: bodyBytes(body, false),
           colliders: new Map(handles.map(handle => { const collider = world.getCollider(handle); return [handle, { object: collider, shape: collider.shape, bytes: colliderBytes(collider, false) }]; })) };
         requireCarrierWork(request.transactionId);
       } catch (error) {
-        if (body && world.getRigidBody(body.handle)) world.removeRigidBody(body); refresh(); carrier = undefined; carrierDefinition = undefined; carrierWork = undefined;
+        if (body && world.getRigidBody(body.handle)) world.removeRigidBody(body); refresh(); carrier = undefined; carrierDefinition = undefined; carrierColliderProofs=undefined; carrierWork = undefined;
         if (world.bodies.len() !== before.bodies.size || world.colliders.len() !== before.colliders.size || !verifyOld(before)) hold(); throw error;
       }
       return this.read();
@@ -477,7 +762,11 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
         work.bodyBytes = bodyBytes(body, false);
         work.colliders=new Map(carrier!.colliderHandles.map(handle=>{const collider=world.getCollider(handle);return [handle,{object:collider,shape:collider.shape,bytes:colliderBytes(collider,false)}];}));
       }
-      carrier = Object.freeze({ ...carrier!, phase: "CommittedHeld" }); return this.read();
+      carrierColliderProofs=new Map(carrier!.colliderHandles.map(handle=>{const collider=world.getCollider(handle)!;return [handle,{object:collider,shape:collider.shape,bytes:colliderBytes(collider,false,false)}] as const;}));
+      const position=body.translation();
+      carrier = Object.freeze({ ...carrier!, phase: "CommittedHeld",positionMm:Object.freeze([position.x*1000,position.y*1000,position.z*1000]) as FactoryVector,
+        nativeMassKg:body.mass(),localCom:Object.freeze({...body.localCom()}),
+        principalInertia:Object.freeze({...body.principalInertia()}) }); return this.read();
     },
     publishCarrier(id: string): FactoryFacilityRead {
       const work = requireCarrierWork(id); if (carrier!.phase !== "CommittedHeld") reject("WrongPhase");
@@ -489,7 +778,7 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
         world.removeRigidBody(world.getRigidBody(carrier!.bodyHandle));refresh();
         const oldOthers={bodies:new Map([...work.before.bodies].filter(([handle])=>handle!==work.previousCarrier!.bodyHandle)),colliders:new Map([...work.before.colliders].filter(([handle])=>!work.previousCarrier!.colliderHandles.includes(handle)))};
         if(world.bodies.len()!==oldOthers.bodies.size||world.colliders.len()!==oldOthers.colliders.size||!verifyOld(oldOthers))hold();
-        carrier=undefined;carrierDefinition=undefined;carrierWork=undefined;completed.add(id);return this.read();
+        carrier=undefined;carrierDefinition=undefined;carrierColliderProofs=undefined;carrierWork=undefined;completed.add(id);return this.read();
       }
       carrier = Object.freeze({ ...carrier!, phase: work.previousCarrier ? "Deposited" : "Carrying" }); carrierWork = undefined; completed.add(id); return this.read();
     },
@@ -504,7 +793,7 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       }
       world.removeRigidBody(world.getRigidBody(carrier!.bodyHandle)); refresh();
       if (world.bodies.len() !== work.before.bodies.size || world.colliders.len() !== work.before.colliders.size || !verifyOld(work.before)) hold();
-      revision = work.previousRevision; carrier = undefined; carrierDefinition = undefined; carrierWork = undefined; return this.read();
+      revision = work.previousRevision; carrier = undefined; carrierDefinition = undefined; carrierColliderProofs=undefined; carrierWork = undefined; return this.read();
     },
     prepare(request: FactoryFacilityRequest): FactoryFacilityRead {
       if (recovery || pending || carrierWork || !safePaused()) reject("NotIdlePaused");
@@ -535,7 +824,7 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       // Only the completely consumed, bound paid depot is replaced. Every other member stays collidable.
       const originalMembers=consumedCarrier?members(world):undefined;
       if(consumedCarrier){world.getRigidBody(consumedCarrier.bodyHandle).setEnabled(false);consumedCarrier.colliderHandles.forEach(handle=>world.getCollider(handle).setEnabled(false));}
-      const before = members(world), handles: number[] = [];
+      const before = members(world);
       let body: R.RigidBody | undefined;
       try {
       refresh();
@@ -545,20 +834,11 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
         world.intersectionsWithShape({x:center[0]/1000,y:center[1]/1000,z:center[2]/1000},{x:sy*sz,y:sy*cz,z:cy*sz,w:cy*cz},new R.Cuboid(Math.max(.0001,box.sizeMm[0]/2000-.0005),Math.max(.0001,box.sizeMm[1]/2000-.0005),Math.max(.0001,box.sizeMm[2]/2000-.0005)),()=>{blocked=true;return false;},undefined,undefined,undefined,undefined,collider=>collider.isEnabled());
         if(blocked)reject("NativeOverlap");
       }
-        body = world.createRigidBody(R.RigidBodyDesc.fixed().setTranslation(request.centerMm[0]!/1000,request.centerMm[1]!/1000,request.centerMm[2]!/1000)
-          .setRotation({ x: 0, y: Math.sin(request.quarterTurns*Math.PI/4), z: 0, w: Math.cos(request.quarterTurns*Math.PI/4) }).setEnabled(false));
-        for (const box of profile.colliders) {
-          const collider = world.createCollider(R.ColliderDesc.cuboid(box.sizeMm[0]/2000,box.sizeMm[1]/2000,box.sizeMm[2]/2000)
-            .setTranslation(box.centerMm[0]/1000,box.centerMm[1]/1000,box.centerMm[2]/1000)
-            .setRotation({ x: 0, y: 0, z: Math.sin(box.rotationZRadians/2), w: Math.cos(box.rotationZRadians/2) }), body);
-          collider.setEnabled(false); handles.push(collider.handle);
-        }
-        const owner: FactoryFacilityOwner = Object.freeze({ ownerId: request.ownerId, instanceId: request.instanceId, transactionId: request.transactionId,
-          definitionRef: profile.definitionRef, profileDigest: profile.profileDigest, sourceDigest: profile.sourceDigest, massMg: profile.massMg,
-          materialBinding: request.materialBinding, centerMm: Object.freeze([...request.centerMm]) as FactoryVector, quarterTurns: request.quarterTurns,
-          bodyHandle: body.handle, colliderHandles: Object.freeze(handles),installationRevision:revision+1 });
-        refresh();const candidateColliders=new Map(handles.map(handle=>{const collider=world.getCollider(handle);return [handle,{object:collider,shape:collider.shape,bytes:colliderBytes(collider,false)}] as const;}));
-        ownerMembers.set(owner.instanceId,{body,colliders:new Map(handles.map(handle=>[handle,world.getCollider(handle)]))});ownerProfiles.set(owner.instanceId,profile);
+        const semantic:FactoryNativeOwnerCheckpoint={ownerId:request.ownerId,instanceId:request.instanceId,transactionId:request.transactionId,
+          definitionRef:profile.definitionRef,profileDigest:profile.profileDigest,sourceDigest:profile.sourceDigest,massMg:profile.massMg,
+          materialBinding:request.materialBinding,centerMm:Object.freeze([...request.centerMm]) as FactoryVector,quarterTurns:request.quarterTurns,installationRevision:revision+1};
+        const owner=installOwnerNative(semantic,profile,false);body=world.getRigidBody(owner.bodyHandle)!;
+        const candidateColliders=new Map(owner.colliderHandles.map(handle=>{const collider=world.getCollider(handle)!;return [handle,{object:collider,shape:collider.shape,bytes:colliderBytes(collider,false)}] as const;}));
         pending = { owner, state: "PreparedHeld", before,...(originalMembers?{originalMembers,consumedCarrier}:{}),candidateBodyBytes:bodyBytes(body,false),candidateColliders, previousOwners: owners, previousRevision: revision };
         if (!verifyCandidate(pending)) hold();
       } catch (error) {
@@ -593,7 +873,7 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
         const c=candidate.consumedCarrier,others={bodies:new Map([...candidate.before.bodies].filter(([handle])=>handle!==c.bodyHandle)),colliders:new Map([...candidate.before.colliders].filter(([handle])=>!c.colliderHandles.includes(handle)))};
         world.removeRigidBody(world.getRigidBody(c.bodyHandle));refresh();
         if(world.bodies.len()!==others.bodies.size+1||world.colliders.len()!==others.colliders.size+candidate.owner.colliderHandles.length||!verifyOld(others))hold();
-        carrier=undefined;carrierDefinition=undefined;
+        carrier=undefined;carrierDefinition=undefined;carrierColliderProofs=undefined;
       }
       completed.add(id); pending = undefined; return this.read();
     }

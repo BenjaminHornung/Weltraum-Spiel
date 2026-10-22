@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-21-v4/apps/weltraum-browser
+
+-----------------------------------·-----------------------------------
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 70 skipped (71)
+   Start at  13:15:01
+   Duration  1.39s (transform 720ms, setup 0ms, import 913ms, tests 355ms, environment 0ms)
+

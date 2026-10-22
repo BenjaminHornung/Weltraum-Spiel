@@ -13,6 +13,7 @@ export interface ParsedSaveWriteRequest {
   readonly expectedRevision: SaveRecordRevision | null;
   readonly envelope: unknown;
   readonly lastWriteReason: string;
+  readonly beforeCommit?: () => void;
 }
 
 const ownDataField = (request: object, field: keyof SaveWriteRequest): unknown => {
@@ -34,6 +35,28 @@ const ownDataField = (request: object, field: keyof SaveWriteRequest): unknown =
     );
   }
   return descriptor.value;
+};
+
+const optionalBeforeCommit = (request: object): (() => void) | undefined => {
+  let descriptor: PropertyDescriptor | undefined;
+  try {
+    descriptor = Object.getOwnPropertyDescriptor(request, "beforeCommit");
+  } catch {
+    throw new SaveRepositoryError(
+      "InvalidEnvelope",
+      "writeSlot",
+      "Write request commit guard could not be inspected."
+    );
+  }
+  if (descriptor === undefined) return undefined;
+  if (!("value" in descriptor) || typeof descriptor.value !== "function") {
+    throw new SaveRepositoryError(
+      "InvalidEnvelope",
+      "writeSlot",
+      "Write request commit guard must be an own data property containing a function."
+    );
+  }
+  return descriptor.value as () => void;
 };
 
 const boundedWriteReason = (value: unknown): string => {
@@ -78,6 +101,7 @@ export const parseSaveWriteRequest = (value: unknown): ParsedSaveWriteRequest =>
     : parseSaveRecordRevision(expectedRevisionValue, "writeSlot");
   const lastWriteReason = boundedWriteReason(ownDataField(value, "lastWriteReason"));
   const envelope = ownDataField(value, "envelope");
+  const beforeCommit = optionalBeforeCommit(value);
 
-  return Object.freeze({ slotId, expectedRevision, envelope, lastWriteReason });
+  return Object.freeze({ slotId, expectedRevision, envelope, lastWriteReason, beforeCommit });
 };

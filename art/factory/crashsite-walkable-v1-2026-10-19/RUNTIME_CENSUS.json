@@ -1,0 +1,169 @@
+{
+  "kind": "ACTUAL_HULL_GLB_CENSUS",
+  "sha256": "91d27929383cf3d3edfee3a2e44ab6d722de026837336e5dd6313c51bca7a2ed",
+  "bytes": 1073548,
+  "jsonChunkBytes": 20604,
+  "vertices": 39072,
+  "indices": 58608,
+  "primitives": 34,
+  "renderPaletteBytes": 1054944,
+  "renderVertexColorBytes": 1523808,
+  "nativeVertexIndexBytes": 703296,
+  "parts": [
+    {
+      "name": "cargo_bay",
+      "vertices": 2532,
+      "indices": 3798,
+      "primitives": 4,
+      "maxPositionAccessor": 1180,
+      "maxIndexAccessor": 1770,
+      "indexComponentTypes": [
+        5123
+      ]
+    },
+    {
+      "name": "cockpit",
+      "vertices": 2904,
+      "indices": 4356,
+      "primitives": 2,
+      "maxPositionAccessor": 1544,
+      "maxIndexAccessor": 2316,
+      "indexComponentTypes": [
+        5123
+      ]
+    },
+    {
+      "name": "debris",
+      "vertices": 2172,
+      "indices": 3258,
+      "primitives": 4,
+      "maxPositionAccessor": 1096,
+      "maxIndexAccessor": 1644,
+      "indexComponentTypes": [
+        5123
+      ]
+    },
+    {
+      "name": "hull",
+      "vertices": 18316,
+      "indices": 27474,
+      "primitives": 5,
+      "maxPositionAccessor": 10992,
+      "maxIndexAccessor": 16488,
+      "indexComponentTypes": [
+        5123
+      ]
+    },
+    {
+      "name": "rear",
+      "vertices": 3876,
+      "indices": 5814,
+      "primitives": 5,
+      "maxPositionAccessor": 1924,
+      "maxIndexAccessor": 2886,
+      "indexComponentTypes": [
+        5123
+      ]
+    },
+    {
+      "name": "spine",
+      "vertices": 5384,
+      "indices": 8076,
+      "primitives": 4,
+      "maxPositionAccessor": 5080,
+      "maxIndexAccessor": 7620,
+      "indexComponentTypes": [
+        5123
+      ]
+    },
+    {
+      "name": "turret_aft",
+      "vertices": 1964,
+      "indices": 2946,
+      "primitives": 5,
+      "maxPositionAccessor": 1356,
+      "maxIndexAccessor": 2034,
+      "indexComponentTypes": [
+        5123
+      ]
+    },
+    {
+      "name": "turret_fore",
+      "vertices": 1924,
+      "indices": 2886,
+      "primitives": 5,
+      "maxPositionAccessor": 1316,
+      "maxIndexAccessor": 1974,
+      "indexComponentTypes": [
+        5123
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "name": "worn",
+      "color": [
+        0.3049873113632202,
+        0.2746773064136505,
+        0.20863686501979828,
+        1
+      ]
+    },
+    {
+      "name": "structure",
+      "color": [
+        0.02955683507025242,
+        0.04373503103852272,
+        0.05126945674419403,
+        1
+      ]
+    },
+    {
+      "name": "petrol",
+      "color": [
+        0.040915198624134064,
+        0.18447498977184296,
+        0.177888423204422,
+        1
+      ]
+    },
+    {
+      "name": "amber",
+      "color": [
+        0.6795424818992615,
+        0.37123769521713257,
+        0.061246052384376526,
+        1
+      ]
+    },
+    {
+      "name": "glass",
+      "color": [
+        0.008568125776946545,
+        0.03310476616024971,
+        0.05448027700185776,
+        1
+      ]
+    },
+    {
+      "name": "ceramic",
+      "color": [
+        0.715693473815918,
+        0.6583748459815979,
+        0.5394794940948486,
+        1
+      ]
+    }
+  ],
+  "metadata": {
+    "assetId": "hestia_crashsite_walkable_v1",
+    "partId": "cargo_bay",
+    "worldAuthority": false,
+    "collisionPolicy": "None",
+    "gameplayAdmission": "NOT_ADMITTED",
+    "flight": "PERMANENTLY_INOPERABLE",
+    "artGridMeters": 0.0625,
+    "bodyGridMeters": 0.125
+  },
+  "authoringRosterExact": true
+}

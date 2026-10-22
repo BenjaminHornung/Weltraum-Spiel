@@ -1,0 +1,67 @@
+{
+  "body": "HVP-02 UNAVAILABLE\n\nTechnical initialization failure: HVP scene BudgetExceeded: 270168482 CPU bytes exceed 268435456\n\nNOT GAMEPLAY · no terrain readiness is being claimed",
+  "keys": [
+    "hestiaPrototype",
+    "hestiaPrototypeState"
+  ],
+  "measures": [],
+  "source": "clean-r11 beforeGoalBaselineR01 same legitimate Save11",
+  "slotUnchanged": true,
+  "trace": [
+    {
+      "name": "hvp.startupRendererMs",
+      "duration": 26.700000001117587,
+      "detail": {
+        "sampleId": "startupRendererMs:0"
+      }
+    },
+    {
+      "name": "hvp.factoryColdAdmission",
+      "duration": 0,
+      "detail": {
+        "sampleId": "factoryColdAdmission:1",
+        "data": {
+          "R": 0,
+          "T": 21074842,
+          "U": 2833296,
+          "K": 1359352,
+          "D": 39359936,
+          "P": 13535070,
+          "oldBound": 16777216,
+          "totalBytes": 156848866,
+          "ownerImportBytes": 0,
+          "decodedSourceBytes": 14140864,
+          "baseBytes": 8388608,
+          "preparedBaseBytes": 8388608,
+          "nativeReserveBytes": 100663296
+        }
+      }
+    },
+    {
+      "name": "hvp.startupSourceMs",
+      "duration": 5461.5999999996275,
+      "detail": {
+        "sampleId": "startupSourceMs:2"
+      }
+    },
+    {
+      "name": "hvp.startupCoastMeshMs",
+      "duration": 2024.0999999996275,
+      "detail": {
+        "sampleId": "startupCoastMeshMs:3"
+      }
+    },
+    {
+      "name": "hvp.startupVegetationMs",
+      "duration": 373.69999999925494,
+      "detail": {
+        "sampleId": "startupVegetationMs:4"
+      }
+    }
+  ],
+  "closure": {
+    "disconnected": true,
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-Browser-Acceptance-20261018-R11"
+  },
+  "video": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\acceptance-r19-cold-diagnosis-video\\page@58f020cf8ac1f73da703b553bde85989.webm"
+}

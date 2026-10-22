@@ -1,0 +1,9 @@
+{
+  "atUtc": "2026-10-21T15:56:40.2778423+00:00",
+  "comparedTo": "FP06-Ready-2026-10-21-v4/DELIVERY_MANIFEST.json",
+  "manifestCoveredSourceTestConfigEntries": 692,
+  "changedOrMissing": [],
+  "unchanged": true,
+  "newProductOrTestCode": false,
+  "buildAndUnitTests": "NOT_RUN; no product, test or asset changes"
+}

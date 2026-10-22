@@ -1,0 +1,47 @@
+[
+  {
+    "path": "art/factory/crashsite-hybrid-v2/build_crashsite.py",
+    "bytes": 21769,
+    "sha256": "b06d94501452e182cb6e704cfbfacc8983321e23fedbd473c77a6a7b102b131b"
+  },
+  {
+    "path": "art/factory/crashsite-hybrid-v2/validate_asset.py",
+    "bytes": 4798,
+    "sha256": "bf14b2d37c05dd817334b262910a6c6f7564328274686b3c8c066d8b0751faeb"
+  },
+  {
+    "path": "art/factory/crashsite-hybrid-v2/MODEL_SPEC.json",
+    "bytes": 1838,
+    "sha256": "8b28c9d3ea42edba7a4b369c72b186d20c4baa51fa6c3e83f2f29a2bc033d40b"
+  },
+  {
+    "path": "art/factory/crashsite-hybrid-v2/crashsite-hybrid-v2.glb",
+    "bytes": 1073900,
+    "sha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610"
+  },
+  {
+    "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+    "bytes": 40502,
+    "sha256": "dc40fe0b9c8805046702dbe5670d092a96aefe8817863afed9ecb69d59e958f3"
+  },
+  {
+    "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "bytes": 238572,
+    "sha256": "5ee82c12ac67146ea4828883dc95b91ee27be7de9b36e4501cb5ce205847ced0"
+  },
+  {
+    "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "bytes": 51284,
+    "sha256": "6cf6746d7b6a5bd2cb8d8eb63c312a61c66d7068ef8297b03ee9f83778c98966"
+  },
+  {
+    "path": "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts",
+    "bytes": 20899,
+    "sha256": "6351c3fe2dcc982145b9a2e224b858dc064f1317f4164e99ca4ec34bf3f693b0"
+  },
+  {
+    "path": "apps/weltraum-browser/src/factory/persistence/factoryCheckpoint.ts",
+    "bytes": 104588,
+    "sha256": "751097bb5962aaf43cb1db36905b093da4c2a476678d9b34807d3245e0a6996c"
+  }
+]

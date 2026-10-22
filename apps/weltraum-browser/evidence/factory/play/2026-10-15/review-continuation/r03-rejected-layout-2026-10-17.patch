@@ -1,0 +1,47 @@
+diff --git a/apps/weltraum-browser/src/factory/factoryEntry.ts b/apps/weltraum-browser/src/factory/factoryEntry.ts
+--- a/apps/weltraum-browser/src/factory/factoryEntry.ts
++++ b/apps/weltraum-browser/src/factory/factoryEntry.ts
+@@ -60 +60 @@
+-  const distributor=button("Preview distributor","factory-build-distributor",()=>{void choose("fp02.device.distribution_40kw",[-4750,1500,5250],1);});
++  const distributor=button("Preview distributor","factory-build-distributor",()=>{void choose("fp02.device.distribution_40kw",[-4500,1500,5500],1);});
+diff --git a/apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts b/apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts
+--- a/apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts
++++ b/apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts
+@@ -25 +25 @@
+-export const FACTORY_CLOSED_CABLE_JOBS=Object.freeze({CABLE4750:4750,CABLE6500:6500,CABLE8000:8000,CABLE7000:7000,CABLE5250:5250,CABLE7500:7500,CABLE5000:5000,CABLE5750:5750,CABLE7750:7750,CABLE2750:2750,CABLE8500:8500});
++export const FACTORY_CLOSED_CABLE_JOBS=Object.freeze({CABLE4750:4750,CABLE6500:6500,CABLE8000:8000,CABLE7000:7000,CABLE5250:5250,CABLE7500:7500,CABLE5000:5000,CABLE5750:5750,CABLE7750:7750,CABLE2750:2750,CABLE8500:8500,CABLE5500:5500});
+@@ -42 +42 @@
+-  if(Object.hasOwn(FACTORY_CLOSED_CABLE_JOBS,profileId))refs.add(["CABLE2750","CABLE8500"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v4":["CABLE5000","CABLE5750","CABLE7750"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v3":["CABLE7000","CABLE5250","CABLE7500"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v2":"fp06-technical-s0-closed-native-socket-cable-jobs-v1");
++  if(Object.hasOwn(FACTORY_CLOSED_CABLE_JOBS,profileId))refs.add(profileId==="CABLE5500"?"fp06-technical-s0-closed-native-socket-cable-jobs-v5":["CABLE2750","CABLE8500"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v4":["CABLE5000","CABLE5750","CABLE7750"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v3":["CABLE7000","CABLE5250","CABLE7500"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v2":"fp06-technical-s0-closed-native-socket-cable-jobs-v1");
+diff --git a/apps/weltraum-browser/src/factory/ui/itemVisuals.ts b/apps/weltraum-browser/src/factory/ui/itemVisuals.ts
+--- a/apps/weltraum-browser/src/factory/ui/itemVisuals.ts
++++ b/apps/weltraum-browser/src/factory/ui/itemVisuals.ts
+@@ -92 +92 @@
+-  CABLE2750: "Cable · 2.75 m", CABLE5000: "Cable · 5 m", CABLE5750: "Cable · 5.75 m", CABLE7750: "Cable · 7.75 m", CABLE8500: "Cable · 8.5 m",
++  CABLE2750: "Cable · 2.75 m", CABLE5000: "Cable · 5 m", CABLE5750: "Cable · 5.75 m", CABLE7750: "Cable · 7.75 m", CABLE8500: "Cable · 8.5 m", CABLE5500: "Cable · 5.5 m",
+diff --git a/apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts b/apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts
+--- a/apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts
++++ b/apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts
+@@ -166,0 +167,14 @@
++it("PLAY04 binds the R03 CABLE5500 split to v5 and the unchanged light C07 custody",()=>{
++ const profile=readCargoHandlingProfile(fixture.catalog,"CABLE5500")!;
++ expect(profile).toMatchObject({terms:[{itemId:"fp02.comp.field_cable",quantityUnits:5500}],massMg:1_375_000,capacityMm3:16_500_000,sizeMm:[500,1000,500]});
++ expect(profile.sourceRefs).toContain("fp06-technical-s0-closed-native-socket-cable-jobs-v5");
++ const plannedLengths=[8500,5250,2750,8000,profile.terms[0]!.quantityUnits],used=plannedLengths.reduce((total,length)=>total+length,0);
++ expect(used).toBe(30_000);expect(40_000-used).toBe(10_000);
++ const material=setup(),source=material.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!,cable=fixture.catalog.items.find(i=>i.sourceId==="fp02.comp.field_cable")!,stack=source.state.contents.find(s=>s.resourceId===cable.resourceId)!;
++ const request={...intent,commandId:"pay_cable5500_v5",profileId:"CABLE5500",expectedMaterialRevision:material.revision,sourceLots:[{containerId:source.state.containerId,stackId:stack.stackId,quantityUnits:5500}]};
++ const plan=prepareCargoHandling(material,request);expect(plan.status).toBe("Prepared");if(plan.status!=="Prepared")throw Error(plan.reason);
++ expect(plan.profile).toMatchObject({terms:profile.terms,massMg:1_375_000,capacityMm3:16_500_000});
++ expect(prepareCargoHandling(material,{...request,sourceLots:[{...request.sourceLots[0]!,quantityUnits:5499}]})).toMatchObject({status:"Rejected",reason:"HandlingProfileTermsMismatch"});
++ expect(readCargoHandlingProfile(fixture.catalog,"CABLE5501")).toBeUndefined();
++});
++
+diff --git a/apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts b/apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts
+--- a/apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts
++++ b/apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts
+@@ -122 +122 @@
+-    const labels = [["CABLE2750", "Cable · 2.75 m"], ["CABLE5000", "Cable · 5 m"], ["CABLE5750", "Cable · 5.75 m"],
+-      ["CABLE7750", "Cable · 7.75 m"], ["CABLE8500", "Cable · 8.5 m"]] as const;
++    const labels = [["CABLE2750", "Cable · 2.75 m"], ["CABLE5000", "Cable · 5 m"], ["CABLE5750", "Cable · 5.75 m"],
++      ["CABLE7750", "Cable · 7.75 m"], ["CABLE8500", "Cable · 8.5 m"], ["CABLE5500", "Cable · 5.5 m"]] as const;

@@ -37,6 +37,7 @@ interface InitialWriteResult {
   readonly readRevision: number;
   readonly writtenSignature: string;
   readonly readSignature: string;
+  readonly writeResultMutationIsolated: boolean;
   readonly slotId: string;
 }
 
@@ -268,6 +269,9 @@ test("normal route preserves an IndexedDB save across reload and detects control
           envelope: persistence.createSaveGameEnvelopeV1Fixture(),
           lastWriteReason: "E2EInitialWrite"
         });
+        const originalFirstByte = written.payloadBytes[0];
+        if (originalFirstByte === undefined) throw new Error("The write result unexpectedly has no payload bytes.");
+        written.payloadBytes[0] = originalFirstByte ^ 0xff;
         const read = await repository.readSlot(primarySlot);
         return {
           modulePath: storagePath,
@@ -278,6 +282,10 @@ test("normal route preserves an IndexedDB save across reload and detects control
           readRevision: read.metadata.recordRevision,
           writtenSignature: written.metadata.contentHash,
           readSignature: read.metadata.contentHash,
+          writeResultMutationIsolated:
+            written.payloadBytes[0] !== originalFirstByte
+            && read.payloadBytes[0] === originalFirstByte
+            && read.metadata.contentHash === written.metadata.contentHash,
           slotId: read.metadata.slotId
         };
       } finally {
@@ -295,6 +303,7 @@ test("normal route preserves an IndexedDB save across reload and detects control
       moduleLoaded: true,
       writtenRevision: 1,
       readRevision: 1,
+      writeResultMutationIsolated: true,
       slotId: slotA
     });
     expect(initialWrite.writtenSignature).toMatch(/^sha256:[0-9a-f]{64}$/);
@@ -384,12 +393,35 @@ test("normal route preserves an IndexedDB save across reload and detects control
         }
         const afterStaleCas = await repository.readSlot(primarySlot);
 
-        const matchingWrite = await repository.writeSlot({
+        let guardCalls = 0;
+        const guardedAbort = repository.writeSlot({
           slotId: primarySlot,
           expectedRevision: reloaded.metadata.recordRevision,
           envelope: persistence.createSaveGameEnvelopeV1Fixture(),
-          lastWriteReason: "E2EMatchingWrite"
+          lastWriteReason: "E2EGuardAbort",
+          beforeCommit: () => { guardCalls += 1; throw new Error("controlled commit witness rejection"); }
         });
+        const guardWasDeferredUntilAfterCall = guardCalls === 0;
+        let guardRejected = false;
+        try { await guardedAbort; } catch { guardRejected = true; }
+        const afterGuardAbort = await repository.readSlot(primarySlot);
+        if (!guardWasDeferredUntilAfterCall || !guardRejected || guardCalls !== 1
+          || afterGuardAbort.metadata.recordRevision !== reloaded.metadata.recordRevision
+          || afterGuardAbort.metadata.contentHash !== reloaded.metadata.contentHash) {
+          throw new Error("The commit witness did not abort atomically after asynchronous encoding.");
+        }
+
+        let successfulGuardCalls = 0;
+        const matchingPromise = repository.writeSlot({
+          slotId: primarySlot,
+          expectedRevision: reloaded.metadata.recordRevision,
+          envelope: persistence.createSaveGameEnvelopeV1Fixture(),
+          lastWriteReason: "E2EMatchingWrite",
+          beforeCommit: () => { successfulGuardCalls += 1; }
+        });
+        if (successfulGuardCalls !== 0) throw new Error("The commit witness ran before asynchronous encoding completed.");
+        const matchingWrite = await matchingPromise;
+        if (Number(successfulGuardCalls) !== 1) throw new Error("The commit witness did not run exactly once.");
         const exported = await repository.exportSlot(primarySlot);
         const imported = await repository.importSlot(JSON.parse(JSON.stringify(exported)), {
           kind: "CreateNewSlot",

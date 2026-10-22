@@ -1,0 +1,116 @@
+{
+  "run": "R71",
+  "atUtc": "2026-10-20T16:46:38.237Z",
+  "delivery": "FP06-Ready-2026-10-19-v10",
+  "closed": {
+    "text": "Goal\nOpen wreck cargo\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nCargo & transport\nViews\nClose\nOpen cargo\n\nWreck cargo 1 · 2984.4 kg Closed · open cargo first\n\nFormer kit\n341 kg\nCutter kit\n208 kg\nBattery\n50 kg\nCable pack · 40 m\n10 kg\nFormer kit\n\n341 kg · Wreck cargo 1\n\nPick up: Former kit\nMore transport packages\nView materials\nSession paused",
+    "pickUpDisabled": true,
+    "openEnabled": true
+  },
+  "opened": {
+    "text": "Goal\nBuild a cutter and former\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nCargo & transport\nViews\nClose\n\nWreck cargo 1 · 2984.4 kg available\n\nFormer kit\n341 kg\nCutter kit\n208 kg\nBattery\n50 kg\nCable pack · 40 m\n10 kg\nFormer kit\n\n341 kg · Wreck cargo 1\n\nPick up: Former kit\nMore transport packages\nView materials\n\nAction confirmed\n\nSession paused",
+    "pickUpEnabled": true,
+    "native": {
+      "ticks": 0,
+      "cargo": {
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "sourceDigest": "0e2a0bcb",
+        "profileDigest": "397e6216",
+        "opened": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "accessBoundsMm": {
+          "min": [
+            -6250,
+            1500,
+            11625
+          ],
+          "max": [
+            -4750,
+            3500,
+            12625
+          ]
+        },
+        "bodyHandle": 2e-323,
+        "colliderHandles": [
+          3.95e-322
+        ],
+        "site": {
+          "version": "fp06-initial-cargo-s0-v1",
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "0e2a0bcb",
+          "sourceRefs": [
+            "FP01:5.5:source-access",
+            "FP01:E00:permanently-grounded-cargo",
+            "FP02:6.4:finite-reachable-depot",
+            "FP02:9.1:cargo-outside-machine-zone"
+          ],
+          "centerMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "sizeMm": [
+            1500,
+            1500,
+            1000
+          ],
+          "boundsMm": {
+            "min": [
+              -6250,
+              1250,
+              12625
+            ],
+            "max": [
+              -4750,
+              2750,
+              13625
+            ]
+          },
+          "accessPointMm": [
+            -5500,
+            2250,
+            12625
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "spawnMm": [
+            -5500,
+            2420,
+            11875
+          ],
+          "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+          "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"0e2a0bcb\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+          "profileDigest": "397e6216"
+        },
+        "accessible": true,
+        "openReceipt": {
+          "ownerId": "fp02_wreck_owner",
+          "profileDigest": "397e6216",
+          "expectedTerrainRevision": 0,
+          "expectedRevision": 0
+        }
+      }
+    }
+  },
+  "errors": [],
+  "closedProcess": {
+    "pageClosed": true,
+    "browserConnected": false
+  }
+}

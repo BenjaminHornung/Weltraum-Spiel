@@ -1,0 +1,1443 @@
+{
+  "atUtc": "2026-10-21T15:54:39.824Z",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "build": "Ready21-v4/factory-D3ew0Sm8.js",
+  "originalSlot": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 19,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 97094,
+      "payloadBytes": 13199495,
+      "contentHash": "sha256:a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0"
+  },
+  "beforeFinalLoad": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 19,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 97094,
+      "payloadBytes": 13199495,
+      "contentHash": "sha256:a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0"
+  },
+  "finalSlot": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 19,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 97094,
+      "payloadBytes": 13199495,
+      "contentHash": "sha256:a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0"
+  },
+  "finalState": {
+    "status": "Paused",
+    "tick": 48547,
+    "player": {
+      "x": 6.582930088043213,
+      "y": 3.525001287460327,
+      "z": 8.5822114944458
+    },
+    "factorySteps": 8091,
+    "owners": 10,
+    "massMg": 2984400000,
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+      "revision": 19,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "profile": "hvp-factory-startsite-v6",
+    "sourceDigest": "360b00fa",
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 1,
+      "pressedKeys": []
+    },
+    "testBridge": false
+  },
+  "assets": {
+    "scenes": [
+      {
+        "instanceId": "facility_fp02_device_battery_4kwh_1",
+        "assetId": "play_battery_v1",
+        "glbSha256": "eab84e1fd9742059f14675fe546006ba1f0321fb84ae18aaa628f32ef7f3caa8",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 4,
+        "s1": false
+      },
+      {
+        "instanceId": "facility_b07_3",
+        "assetId": "play_former_v2",
+        "glbSha256": "2ea1dca9b5f1915ce984762cefded3b00063c6675ae4b62f02b51d63f308ba81",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 13,
+        "s1": true
+      },
+      {
+        "instanceId": "facility_b09_8",
+        "assetId": "play_storage_v1",
+        "glbSha256": "e7ddc40fd2be52f8886b8acd42561fcc5fb403b1630d674bd7be5e28190e1e03",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 5,
+        "s1": false
+      },
+      {
+        "instanceId": "facility_b05_10",
+        "assetId": "play_workbench_v1",
+        "glbSha256": "c957db9f660663be30c882b74c3df6f53fa27c8277823cb2d79a4e3499c1cfb0",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 5,
+        "s1": false
+      },
+      {
+        "instanceId": "facility_b06_12",
+        "assetId": "play_cutter_v2",
+        "glbSha256": "4f0885139b19835cc985ab9e4fb2b9c5c8d4d430a21011f0e0c03805d6821eb4",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 12,
+        "s1": true
+      },
+      {
+        "instanceId": "facility_fp02_device_distribution_40kw_14",
+        "assetId": "play_distribution_v1",
+        "glbSha256": "985f4c5627cc884c549dbe8aed9683798ef7a2d44c2f8340a3c2ef5fd9238b51",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 4,
+        "s1": false
+      },
+      {
+        "instanceId": "line_ui_power_dd53e4f459a145e2802a1ddf751ef2bc",
+        "assetId": "play_belt_v1",
+        "glbSha256": "412b734ea5ae0f14b5dbeb2449b4098c2b360c0257624b3348896dc673cb0c49",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 9,
+        "s1": false
+      },
+      {
+        "instanceId": "facility_b09_18",
+        "assetId": "play_storage_v1",
+        "glbSha256": "e7ddc40fd2be52f8886b8acd42561fcc5fb403b1630d674bd7be5e28190e1e03",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 5,
+        "s1": false
+      },
+      {
+        "instanceId": "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d",
+        "assetId": "play_belt_v1",
+        "glbSha256": "412b734ea5ae0f14b5dbeb2449b4098c2b360c0257624b3348896dc673cb0c49",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 9,
+        "s1": false
+      },
+      {
+        "instanceId": "facility_fp02_comp_small_brace_59",
+        "assetId": "play_brace_v1",
+        "glbSha256": "074d92de4c24cf088b54c5ea21d5fdede1e666b43fdbd0d38e471166645bcd61",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 3,
+        "s1": false
+      },
+      {
+        "instanceId": "factory_hull:crashsite",
+        "assetId": "hestia_crashsite_walkable_v1",
+        "glbSha256": "91d27929383cf3d3edfee3a2e44ab6d722de026837336e5dd6313c51bca7a2ed",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 8,
+        "s1": false
+      },
+      {
+        "instanceId": "fp02_wreck_owner:open",
+        "assetId": "play_wreck_cargo_open_v2",
+        "glbSha256": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+        "published": true,
+        "modelError": null,
+        "visibleParts": 1,
+        "s1": false
+      }
+    ],
+    "cost": {
+      "cpu": 24885010,
+      "mesh": 3794544,
+      "triangles": 24324,
+      "draws": 79
+    }
+  },
+  "viewport": {
+    "width": 1249,
+    "height": 1221
+  },
+  "errors": [],
+  "requestFailures": [],
+  "shots": [
+    {
+      "id": 1,
+      "path": "01_HULL_INSIDE.png",
+      "state": {
+        "status": "Running",
+        "tick": 48550,
+        "player": {
+          "x": 6.582930088043213,
+          "y": 3.525001287460327,
+          "z": 8.5822114944458
+        },
+        "factorySteps": 8091,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          6.582930088043213,
+          4.275001287460327,
+          8.5822114944458
+        ],
+        "orientation": [
+          1.1102229406335997e-16,
+          -0.0003889803748751184,
+          -4.318549683136812e-20,
+          -0.9999999243471311
+        ],
+        "visualBody": [
+          6.582930088043213,
+          3.525001287460327,
+          8.5822114944458
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:30:15.155Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/02_HULL_INSIDE_TURNED.png",
+      "state": {
+        "status": "Running",
+        "tick": 50663,
+        "player": {
+          "x": 6.582930088043213,
+          "y": 3.525001287460327,
+          "z": 8.5822114944458
+        },
+        "factorySteps": 8443,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 4,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          6.582930088043213,
+          4.275001287460327,
+          8.5822114944458
+        ],
+        "orientation": [
+          -0.0004749742043700608,
+          -0.9982039591351928,
+          0.007985802037585074,
+          -0.059370508942976276
+        ],
+        "visualBody": [
+          6.582930088043213,
+          3.525001287460327,
+          8.5822114944458
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:32:44.712Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/03_HULL_EXIT_FORWARD.png",
+      "state": {
+        "status": "Running",
+        "tick": 50804,
+        "player": {
+          "x": 6.564147472381592,
+          "y": 2.6534483432769775,
+          "z": 12.482151985168457
+        },
+        "factorySteps": 8467,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 7,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          6.56416630019965,
+          3.4047362419139784,
+          12.478242659049057
+        ],
+        "orientation": [
+          3.841990195068266e-19,
+          -0.9999971023430301,
+          -1.5959409733957771e-16,
+          -0.0024073440849906843
+        ],
+        "visualBody": [
+          6.56416630019965,
+          2.6547362419139784,
+          12.478242659049057
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:33:40.462Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/04_HULL_EXTERIOR_FRONT.png",
+      "state": {
+        "status": "Running",
+        "tick": 50973,
+        "player": {
+          "x": 6.561553478240967,
+          "y": 1.2750427722930908,
+          "z": 15.682164192199707
+        },
+        "factorySteps": 8495,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 13,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          6.561553478240967,
+          2.025042772293091,
+          15.682164192199707
+        ],
+        "orientation": [
+          0.037874191368905616,
+          -0.07825219176229539,
+          -0.002975015398916249,
+          -0.9962094606035041
+        ],
+        "visualBody": [
+          6.561553478240967,
+          1.2750427722930908,
+          15.682164192199707
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:34:10.473Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/05_HULL_EXTERIOR_OBLIQUE.png",
+      "state": {
+        "status": "Running",
+        "tick": 51376,
+        "player": {
+          "x": 3.269948959350586,
+          "y": 1.5250306129455566,
+          "z": 14.050101280212402
+        },
+        "factorySteps": 8562,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 22,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          3.269948959350586,
+          2.2750306129455566,
+          14.050101280212402
+        ],
+        "orientation": [
+          -0.043020903696379856,
+          0.401474626014516,
+          -0.01888321381052799,
+          -0.9146642830830541
+        ],
+        "visualBody": [
+          3.269948959350586,
+          1.5250306129455566,
+          14.050101280212402
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:35:07.180Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/06_WEST_APPROACH.png",
+      "state": {
+        "status": "Running",
+        "tick": 51682,
+        "player": {
+          "x": 3.547490119934082,
+          "y": 1.650028944015503,
+          "z": 15.689545631408691
+        },
+        "factorySteps": 8613,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 28,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          3.547490119934082,
+          2.400028944015503,
+          15.689545631408691
+        ],
+        "orientation": [
+          -1.1109923809046984e-16,
+          0.7385934964409627,
+          1.217192703605934e-16,
+          0.6741510565259937
+        ],
+        "visualBody": [
+          3.547490119934082,
+          1.650028944015503,
+          15.689545631408691
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:36:06.954Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/07_HULL_WIDE.png",
+      "state": {
+        "status": "Running",
+        "tick": 49055,
+        "player": {
+          "x": -1.4497456550598145,
+          "y": 2.4000370502471924,
+          "z": 13.414027214050293
+        },
+        "factorySteps": 8175,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 16,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -1.4497456550598145,
+          3.1500370502471924,
+          13.414027214050293
+        ],
+        "orientation": [
+          -0.06080708432968136,
+          0.3863737843296343,
+          -0.025537761368004307,
+          -0.9199813150398387
+        ],
+        "visualBody": [
+          -1.4497456550598145,
+          2.4000370502471924,
+          13.414027214050293
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:38:51.531Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/08_CARGO_OPEN_FRONT.png",
+      "state": {
+        "status": "Running",
+        "tick": 49481,
+        "player": {
+          "x": -5.547868728637695,
+          "y": 2.400001049041748,
+          "z": 11.85572624206543
+        },
+        "factorySteps": 8246,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 34,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -5.547868728637695,
+          3.150001049041748,
+          11.85572624206543
+        ],
+        "orientation": [
+          0.0000843901014032038,
+          -0.998199551405435,
+          -0.05996394709638179,
+          -0.001404813482813911
+        ],
+        "visualBody": [
+          -5.547868728637695,
+          2.400001049041748,
+          11.85572624206543
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:38:59.952Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/09_CARGO_OPEN_DETAIL.png",
+      "state": {
+        "status": "Running",
+        "tick": 49582,
+        "player": {
+          "x": -5.547868728637695,
+          "y": 2.400001049041748,
+          "z": 11.85572624206543
+        },
+        "factorySteps": 8263,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 40,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -5.547868728637695,
+          3.150001049041748,
+          11.85572624206543
+        ],
+        "orientation": [
+          0.00013546067050204465,
+          -0.9430876029438263,
+          -0.33254414329917065,
+          -0.0003841633708220396
+        ],
+        "visualBody": [
+          -5.547868728637695,
+          2.400001049041748,
+          11.85572624206543
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:39:38.193Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/10_CARGO_INVENTORY.png",
+      "state": {
+        "status": "Paused",
+        "tick": 49585,
+        "player": {
+          "x": -5.547868728637695,
+          "y": 2.400001049041748,
+          "z": 11.85572624206543
+        },
+        "factorySteps": 8264,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 42,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -5.547868728637695,
+          3.150001049041748,
+          11.85572624206543
+        ],
+        "orientation": [
+          0.00013546067050204465,
+          -0.9430876029438263,
+          -0.33254414329917065,
+          -0.0003841633708220396
+        ],
+        "visualBody": [
+          -5.547868728637695,
+          2.400001049041748,
+          11.85572624206543
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:39:38.446Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/11_CARGO_1280x720.png",
+      "state": {
+        "status": "Paused",
+        "tick": 49585,
+        "player": {
+          "x": -5.547868728637695,
+          "y": 2.400001049041748,
+          "z": 11.85572624206543
+        },
+        "factorySteps": 8264,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 42,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -5.547868728637695,
+          3.150001049041748,
+          11.85572624206543
+        ],
+        "orientation": [
+          0.00013546067050204465,
+          -0.9430876029438263,
+          -0.33254414329917065,
+          -0.0003841633708220396
+        ],
+        "visualBody": [
+          -5.547868728637695,
+          2.400001049041748,
+          11.85572624206543
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:40:34.912Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/12_BELT_AND_STORAGE.png",
+      "state": {
+        "status": "Running",
+        "tick": 49968,
+        "player": {
+          "x": -5.906888961791992,
+          "y": 2.400005578994751,
+          "z": 8.6071195602417
+        },
+        "factorySteps": 8328,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 57,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -5.906888961791992,
+          3.150005578994751,
+          8.6071195602417
+        ],
+        "orientation": [
+          0.1057753020866831,
+          -0.6984607911449109,
+          -0.10556202397485552,
+          -0.6998719652879576
+        ],
+        "visualBody": [
+          -5.906888961791992,
+          2.400005578994751,
+          8.6071195602417
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:41:10.868Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/13_LINE_EAST_OVERVIEW.png",
+      "state": {
+        "status": "Running",
+        "tick": 50235,
+        "player": {
+          "x": -3.15696120262146,
+          "y": -0.599957287311554,
+          "z": 8.586296081542969
+        },
+        "factorySteps": 8372,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 69,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -3.15696120262146,
+          0.15004271268844593,
+          8.586296081542969
+        ],
+        "orientation": [
+          0.07785821691669564,
+          -0.7007149647037361,
+          -0.07739104207367964,
+          -0.7049448651529739
+        ],
+        "visualBody": [
+          -3.15696120262146,
+          -0.599957287311554,
+          8.586296081542969
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:42:04.735Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/14_CUTTER_POWER_SIDE.png",
+      "state": {
+        "status": "Running",
+        "tick": 50530,
+        "player": {
+          "x": -2.978235960006714,
+          "y": 1.4655977487564087,
+          "z": 5.488353729248047
+        },
+        "factorySteps": 8421,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 81,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -2.978354095550528,
+          2.2160877659834193,
+          5.488161912561347
+        ],
+        "orientation": [
+          0.04244372433395897,
+          -0.7051216954077588,
+          -0.04235814370023534,
+          -0.70654632727955
+        ],
+        "visualBody": [
+          -2.978354095550528,
+          1.4660877659834193,
+          5.488161912561347
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:42:10.561Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/15_CUTTER_DISTRIBUTOR_OVERVIEW.png",
+      "state": {
+        "status": "Running",
+        "tick": 50805,
+        "player": {
+          "x": -1.0011389255523682,
+          "y": 2.4000394344329834,
+          "z": 5.472452163696289
+        },
+        "factorySteps": 8467,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 1,
+          "neutralizations": 93,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -1.0011389255523682,
+          3.1500394344329834,
+          5.472452163696289
+        ],
+        "orientation": [
+          0.04252835567746158,
+          -0.7037071934523401,
+          -0.04227317159189986,
+          -0.7079551566380203
+        ],
+        "visualBody": [
+          -1.0011389255523682,
+          2.4000394344329834,
+          5.472452163696289
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:45:00.768Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/16_FACTORY_LINE_OBLIQUE.png",
+      "state": {
+        "status": "Running",
+        "tick": 51088,
+        "player": {
+          "x": -1.0920121669769287,
+          "y": 2.3995022773742676,
+          "z": 6.449438095092773
+        },
+        "factorySteps": 8514,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 1,
+          "neutralizations": 105,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -1.0920121669769287,
+          3.1495022773742676,
+          6.449438095092773
+        ],
+        "orientation": [
+          0.05629127040309295,
+          -0.4978982560893232,
+          -0.032409042241508285,
+          -0.8647995567994962
+        ],
+        "visualBody": [
+          -1.0920121669769287,
+          2.3995022773742676,
+          6.449438095092773
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:45:41.355Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/17_BELT_STORAGE_WIDE.png",
+      "state": {
+        "status": "Running",
+        "tick": 51197,
+        "player": {
+          "x": -1.0920121669769287,
+          "y": 2.3995022773742676,
+          "z": 6.449438095092773
+        },
+        "factorySteps": 8532,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 1,
+          "neutralizations": 111,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -1.0920121669769287,
+          3.1495022773742676,
+          6.449438095092773
+        ],
+        "orientation": [
+          0.049457515810608,
+          -0.7053685993604427,
+          -0.04945660748095135,
+          -0.7053815542971095
+        ],
+        "visualBody": [
+          -1.0920121669769287,
+          2.3995022773742676,
+          6.449438095092773
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:45:43.502Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/18_POWER_UI.png",
+      "state": {
+        "status": "Paused",
+        "tick": 51200,
+        "player": {
+          "x": -1.0920121669769287,
+          "y": 2.3995022773742676,
+          "z": 6.449438095092773
+        },
+        "factorySteps": 8533,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 1,
+          "neutralizations": 114,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -1.0920121669769287,
+          3.1495022773742676,
+          6.449438095092773
+        ],
+        "orientation": [
+          0.049457515810608,
+          -0.7053685993604427,
+          -0.04945660748095135,
+          -0.7053815542971095
+        ],
+        "visualBody": [
+          -1.0920121669769287,
+          2.3995022773742676,
+          6.449438095092773
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:48:09.691Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/19_POWER_1280x720.png",
+      "state": {
+        "status": "Paused",
+        "tick": 51200,
+        "player": {
+          "x": -1.0920121669769287,
+          "y": 2.3995022773742676,
+          "z": 6.449438095092773
+        },
+        "factorySteps": 8533,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 1,
+          "neutralizations": 114,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -1.0920121669769287,
+          3.1495022773742676,
+          6.449438095092773
+        ],
+        "orientation": [
+          0.049457515810608,
+          -0.7053685993604427,
+          -0.04945660748095135,
+          -0.7053815542971095
+        ],
+        "visualBody": [
+          -1.0920121669769287,
+          2.3995022773742676,
+          6.449438095092773
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:48:09.809Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/20_CUTTER_SERVICE_OBLIQUE.png",
+      "state": {
+        "status": "Running",
+        "tick": 49624,
+        "player": {
+          "x": -5.953437805175781,
+          "y": 2.4000000953674316,
+          "z": 6.90513801574707
+        },
+        "factorySteps": 8270,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 37,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -5.953437805175781,
+          3.1500000953674316,
+          6.90513801574707
+        ],
+        "orientation": [
+          0.02392199822979108,
+          -0.2900645022415006,
+          -0.007253123686437114,
+          -0.9566805708996465
+        ],
+        "visualBody": [
+          -5.953437805175781,
+          2.4000000953674316,
+          6.90513801574707
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:51:05.347Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/21_FORMER_SERVICE_OBLIQUE.png",
+      "state": {
+        "status": "Running",
+        "tick": 49966,
+        "player": {
+          "x": -5.920828819274902,
+          "y": 2.4000244140625,
+          "z": 0.5057748556137085
+        },
+        "factorySteps": 8327,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 49,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -5.920828819274902,
+          3.1500244140625,
+          0.5057748556137085
+        ],
+        "orientation": [
+          -0.0097146684318532,
+          -0.23709722018081328,
+          0.0023710512373762583,
+          -0.9714344607413409
+        ],
+        "visualBody": [
+          -5.920828819274902,
+          2.4000244140625,
+          0.5057748556137085
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "atUtc": "2026-10-21T15:51:11.932Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/22_FORMER_THIRD_PERSON.png",
+      "state": {
+        "status": "Running",
+        "tick": 54314,
+        "player": {
+          "x": -5.920828819274902,
+          "y": 2.4000244140625,
+          "z": 0.5057748556137085
+        },
+        "factorySteps": 9052,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": false,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 52,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": {
+        "position": [
+          -4.441372041143207,
+          3.5359086846437817,
+          3.3560442622108737
+        ],
+        "orientation": [
+          -0.0802249018276124,
+          0.23629921835099127,
+          0.019580426659035522,
+          0.9681648885522086
+        ],
+        "visualBody": [
+          -5.920828819274902,
+          2.4000244140625,
+          0.5057748556137085
+        ],
+        "heightMeters": 1.8,
+        "view": "ThirdPerson"
+      },
+      "atUtc": "2026-10-21T15:53:15.318Z"
+    },
+    {
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/23_FINAL_PAUSED_SAVE19.png",
+      "state": {
+        "status": "Paused",
+        "tick": 48547,
+        "player": {
+          "x": 6.582930088043213,
+          "y": 3.525001287460327,
+          "z": 8.5822114944458
+        },
+        "factorySteps": 8091,
+        "owners": 10,
+        "massMg": 2984400000,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 19,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "profile": "hvp-factory-startsite-v6",
+        "sourceDigest": "360b00fa",
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "testBridge": false
+      },
+      "camera": null,
+      "atUtc": "2026-10-21T15:54:39.823Z"
+    }
+  ],
+  "finalShot": {
+    "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-audit/23_FINAL_PAUSED_SAVE19.png",
+    "state": {
+      "status": "Paused",
+      "tick": 48547,
+      "player": {
+        "x": 6.582930088043213,
+        "y": 3.525001287460327,
+        "z": 8.5822114944458
+      },
+      "factorySteps": 8091,
+      "owners": 10,
+      "massMg": 2984400000,
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+        "revision": 19,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "profile": "hvp-factory-startsite-v6",
+      "sourceDigest": "360b00fa",
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "testBridge": false
+    },
+    "camera": null,
+    "atUtc": "2026-10-21T15:54:39.823Z"
+  },
+  "noSavedWrites": true,
+  "noProductEdits": true,
+  "noTestBridge": true,
+  "profileOrPerformanceMeasurement": "NOT_RUN; previous window remains closed",
+  "automationIssue": "Initial V toggle immediately after Play was ignored while activation pending; 30s view wait timed out. Fresh actual state showed FirstPerson/Running; one later V after activation produced ThirdPerson normally. No timeout change or gameplay workaround.",
+  "exploratoryViews": "Frames03-06 and13 are exploratory terrain/shore viewpoints, not safe-route or full asset acceptance. Frame14 filename mentions Cutter but actual striped surface is Distributor; corrected by world pose/source binding."
+}

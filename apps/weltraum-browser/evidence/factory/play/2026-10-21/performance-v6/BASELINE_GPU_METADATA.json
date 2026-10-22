@@ -1,0 +1,59 @@
+{
+  "atUtc": "2026-10-21T14:15:27.341Z",
+  "readOnlyGpuMetadata": true,
+  "devices": [
+    {
+      "vendorId": 4098,
+      "deviceId": 29772,
+      "vendorString": "",
+      "deviceString": "AMD Radeon RX 7900 XTX",
+      "driverVendor": "AMD",
+      "driverVersion": "32.0.32015.7029"
+    },
+    {
+      "vendorId": 4098,
+      "deviceId": 5710,
+      "vendorString": "",
+      "deviceString": "AMD Radeon(TM) Graphics",
+      "driverVendor": "",
+      "driverVersion": "32.0.21045.16010"
+    },
+    {
+      "vendorId": 4098,
+      "deviceId": 29772,
+      "vendorString": "",
+      "deviceString": "AMD Radeon RX 7900 XTX",
+      "driverVendor": "",
+      "driverVersion": "32.0.32015.7029"
+    },
+    {
+      "vendorId": 5140,
+      "deviceId": 140,
+      "vendorString": "",
+      "deviceString": "Microsoft Basic Render Driver",
+      "driverVendor": "",
+      "driverVersion": "10.0.26100.9711"
+    }
+  ],
+  "features": {
+    "2d_canvas": "enabled",
+    "direct_rendering_display_compositor": "disabled_off_ok",
+    "gpu_compositing": "enabled",
+    "multiple_raster_threads": "enabled_on",
+    "opengl": "enabled_on",
+    "rasterization": "enabled",
+    "raw_draw": "disabled_off_ok",
+    "skia_graphite": "disabled_off",
+    "trees_in_viz": "disabled_off",
+    "video_decode": "enabled",
+    "video_encode": "enabled",
+    "webgl": "enabled",
+    "webgpu": "enabled",
+    "webnn": "disabled_off"
+  },
+  "aux": {
+    "glRenderer": "ANGLE (AMD, AMD Radeon RX 7900 XTX (0x0000744C) Direct3D11 vs_5_0 ps_5_0, D3D11-32.0.32015.7029)",
+    "glVendor": "Google Inc. (AMD)",
+    "glVersion": "OpenGL ES 3.0 (ANGLE 2.1.28854 git hash: cccf60cde32c)"
+  }
+}

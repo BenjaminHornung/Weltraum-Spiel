@@ -1,0 +1,78 @@
+{
+  "kind": "ACTUAL_STATIC_GLB_AND_CORRIDOR_INSPECTION",
+  "result": "PASS",
+  "assetId": "hestia_crashsite_walkable_v1",
+  "sourceSha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610",
+  "sha256": "91d27929383cf3d3edfee3a2e44ab6d722de026837336e5dd6313c51bca7a2ed",
+  "bytes": 1073548,
+  "triangles": 19536,
+  "vertices": 39072,
+  "drawCalls": 34,
+  "parts": [
+    {
+      "part": "cargo_bay",
+      "triangles": 1266
+    },
+    {
+      "part": "cockpit",
+      "triangles": 1452
+    },
+    {
+      "part": "debris",
+      "triangles": 1086
+    },
+    {
+      "part": "hull",
+      "triangles": 9158
+    },
+    {
+      "part": "rear",
+      "triangles": 1938
+    },
+    {
+      "part": "spine",
+      "triangles": 2692
+    },
+    {
+      "part": "turret_aft",
+      "triangles": 982
+    },
+    {
+      "part": "turret_fore",
+      "triangles": 962
+    }
+  ],
+  "materials": 6,
+  "textures": 0,
+  "boundsYupM": {
+    "min": [
+      -7.875,
+      0.0,
+      -2.75
+    ],
+    "max": [
+      7.25,
+      5.5,
+      5.375
+    ]
+  },
+  "artGridMeters": 0.0625,
+  "nativeBytes": 335241,
+  "nativeSha256": "c0994d8aac74ebaddef02252a8dd152e159492eca4c6ad926eee377c92375c37",
+  "nativeEncoding": "zstd",
+  "nativeDecodedHeader": "BLENDER17-01",
+  "corridor": {
+    "result": "PASS",
+    "segments": 26,
+    "floorSamples": 1400,
+    "widthMeters": 0.875,
+    "headroomMeters": 2.125,
+    "maximumStepMeters": 0.125,
+    "externalTerrainSeam": "NOT_ASSERTED_BY_GLB"
+  },
+  "flight": "PERMANENTLY_INOPERABLE",
+  "exactTurretCount": 2,
+  "worldAuthority": false,
+  "gameplayAdmission": "NOT_ADMITTED",
+  "visualAcceptance": "OWNER_REVIEW_PENDING"
+}

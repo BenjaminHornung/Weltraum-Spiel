@@ -1,0 +1,47 @@
+{
+  "id": "fp06-v6-main-frame-cpu-20261021",
+  "result": "NOT_MET_NO_PRODUCT_CANDIDATE; diagnosis complete, optimization incomplete; result in RESULT.md",
+  "finalSourceParity": "692 manifest-covered product/test/config entries match Ready21-v4",
+  "finalSave": "Actual Chrome disconnect/relaunch and Save19 whole SHA parity PASS; no saved-state writes",
+  "window": "NEW_DIRECT_USER_WINDOW",
+  "deadlineUtc": "2026-10-21T15:07:20Z",
+  "metric": "hvp.mainFrameCpuMs",
+  "statistic": "p95-nearest-rank",
+  "unit": "ms",
+  "direction": "lower",
+  "target": 32,
+  "maximumIterations": 3,
+  "allowedPaths": [
+    "apps/weltraum-browser/src/factory/production/productionStep.ts",
+    "apps/weltraum-browser/tests/unit/factory/production.test.ts"
+  ],
+  "baseline": {
+    "run": "B02_PLAYING_MEASURED",
+    "p95": 42.20000000298023,
+    "meanFps": 30.61020340113371,
+    "rafP95Ms": 33.10000000000582,
+    "longTasks": 8,
+    "nativeSolverP95Ms": 0.20000000298023224
+  },
+  "guards": {
+    "meanFpsMin": 30,
+    "rafP95MsMax": 50,
+    "savePayloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+    "owners": 10,
+    "massMg": 2984400000,
+    "inputMovementCount": 0,
+    "clockAndCaps": "UNCHANGED",
+    "savedFormatAndPublicSafetyContracts": "UNCHANGED"
+  },
+  "interpretation": "Metric ends BEFORE backend.renderFrame. It measures blocking game work/headroom, not full renderer/GPU or end-to-end input latency. Blank30.55/Paused30.66/Playing30.61FPS expose the current display/browser ceiling. An uninstrumented control is30.58FPS. CPU gain is never called a gain above this FPS ceiling. Profiled times/overlapping spans are attribution only.",
+  "budget": {
+    "mainProfileUsed": 1,
+    "workerProfileUsed": 0,
+    "candidatesStarted": 0
+  },
+  "references": {
+    "mainProfile": "B03_MAIN_10S.cpuprofile",
+    "analysis": "B03_MAIN_ANALYSIS.json",
+    "exactSourcemaps": "FP06-Ready-2026-10-21-v4/apps/weltraum-browser/dist"
+  }
+}

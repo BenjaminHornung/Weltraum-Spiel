@@ -118,6 +118,12 @@ export const createFactoryMaterialView = (catalog: FactoryCatalog, containers: r
   return freeze(view);
 };
 
+/** Re-admits a complete saved owner through the same snapshot, receipt and reservation checks as live material. */
+export const validateFactoryMaterialCheckpointView = (view: MaterialView): MaterialView => {
+  assertView(view);
+  return freeze(view);
+};
+
 const assertWipAccess = (view: MaterialView, id: string, ownerId: string): void => {
   const owner = view.reservations.find((reservation) => reservation.wipContainerId === id);
   if (owner && owner.ownerId !== ownerId) rejectMaterial("ReservationOwnerMismatch");

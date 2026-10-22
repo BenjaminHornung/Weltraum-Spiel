@@ -1,0 +1,49 @@
+{
+  "atUtc": "2026-10-21T19:01:59.459Z",
+  "slot": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 19,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 97094,
+      "payloadBytes": 13199495,
+      "contentHash": "sha256:a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0"
+  },
+  "errors": [
+    "Factory extension cleanup failed: Error: RecoveryHold: Factory retirement unproven: Error: HVP representations must share one projection frame."
+  ],
+  "diagnostic": {
+    "alerts": [
+      "HVP-02 UNAVAILABLETechnical initialization failure: HVP representations must share one projection frame.NOT GAMEPLAY · no terrain readiness is being claimed"
+    ],
+    "materialAdmission": "Error: HVP representations must share one projection frame.",
+    "projection": {
+      "cost": {
+        "cpu": 25677484,
+        "mesh": 3794544,
+        "triangles": 24324,
+        "draws": 79
+      },
+      "scenes": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    "physics": null
+  }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+    "bytes": 10445,
+    "sha256": "08e7cb7ddc3aeec96cc589ae8adc6f7dc1b4a98d21b1ec7dc4789921c45573ff"
+  },
+  {
+    "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "bytes": 77657,
+    "sha256": "6bca7eabf77f8ddeecd03648a042705ef4f6a1ae28a00e73a0a5dc610a425862"
+  },
+  {
+    "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "bytes": 43068,
+    "sha256": "1a4625150aca19957347ff25d448ad7e3d2b2c6351798153ca9c851dca660482"
+  },
+  {
+    "path": "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
+    "bytes": 22156,
+    "sha256": "482d46a209130fb763a4d799b7a1ec339b15f6c441f11ba6f207768abede1d49"
+  }
+]

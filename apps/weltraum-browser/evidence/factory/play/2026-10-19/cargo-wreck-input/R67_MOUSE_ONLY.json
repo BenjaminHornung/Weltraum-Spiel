@@ -1,0 +1,126 @@
+{
+  "clean": "FP06-Ready-2026-10-19-v7",
+  "automaticFirstPlay": "WrongDocumentError rejected while Paused; preserved, no recovery/autoResume bypass. Explicit second Play after bringToFront succeeded with visibility=visible, hasFocus=true, canvas connected/rootDocument=true.",
+  "before": {
+    "status": "Running",
+    "ticks": 1096,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.41003680229187,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    "camera": {
+      "position": [
+        -5.5,
+        3.16003680229187,
+        11.875
+      ],
+      "orientation": [
+        0,
+        1,
+        0,
+        6.123233995736766e-17
+      ],
+      "visualBody": [
+        -5.5,
+        2.41003680229187,
+        11.875
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "input": {
+      "enabled": true,
+      "lastSentId": 2545,
+      "lastAckId": 2545,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": true
+    },
+    "locked": true
+  },
+  "after": {
+    "status": "Running",
+    "ticks": 1164,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.41003680229187,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    "camera": {
+      "position": [
+        -5.5,
+        3.16003680229187,
+        11.875
+      ],
+      "orientation": [
+        -0.018658317495612885,
+        0.9774721805901371,
+        -0.0980743507121617,
+        -0.18596081601505043
+      ],
+      "visualBody": [
+        -5.5,
+        2.41003680229187,
+        11.875
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "input": {
+      "enabled": true,
+      "lastSentId": 2545,
+      "lastAckId": 2545,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": true
+    },
+    "locked": true
+  },
+  "observed": {
+    "count": 32,
+    "x": -188,
+    "y": -100,
+    "locked": 32
+  },
+  "expected": [
+    -0.018658317495612534,
+    0.9774721805901376,
+    -0.09807435071216176,
+    -0.1859608160150469
+  ],
+  "maxError": 3.524958103184872e-15,
+  "noExtraFactoryInput": true,
+  "positionUnchanged": true,
+  "errors": []
+}

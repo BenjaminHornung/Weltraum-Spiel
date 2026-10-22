@@ -5,16 +5,19 @@ import { createFp02CatalogInput, loadFactoryCatalog } from "../catalog/fp02Catal
 import { factoryItemIcon } from "./itemVisuals";
 
 const catalog = loadFactoryCatalog(createFp02CatalogInput());
+const beltLineUnitLabels: Readonly<Record<string, string>> = Object.freeze({
+  "fp02_cargo_c23_unit_1": "1", "fp02_cargo_c23_unit_2": "2",
+});
 
 export const mountFactoryPowerPanel = (port: FactoryUiPort, doc: Document = document): FactoryPanel => {
   const panel = createFactoryPanel(port, doc, "power", "Power supply");
   panel.content.className += " factory-power-content";
   const number = new Intl.NumberFormat("en-GB", { maximumFractionDigits: 6 });
-  const status = uiText(doc, "p", ""), totals = uiText(doc, "p", ""), battery = doc.createElement("div"), charge = uiText(doc, "strong", ""), capacity = uiText(doc, "small", "");
+  const status = uiText(doc, "p", ""), prototypeNote = uiText(doc, "small", "Battery-powered prototype. Wind and solar have no confirmed environmental feed and currently supply no power."), totals = uiText(doc, "p", ""), battery = doc.createElement("div"), charge = uiText(doc, "strong", ""), capacity = uiText(doc, "small", "");
   status.className = "factory-power-state"; battery.className = "factory-power-battery";
   battery.append(factoryItemIcon(doc, "fp02.device.battery_4kwh", "Battery"), charge, capacity);
   const consumers = doc.createElement("div"), devices = doc.createElement("div"), empty = uiText(doc, "p", "Build a power source and a machine, then connect their ports using field cable.");
-  panel.content.append(status, totals, battery, consumers, devices, empty);
+  panel.content.append(status, prototypeNote, totals, battery, consumers, devices, empty);
   const consumerRows = new Map<string, { element: HTMLElement; title: HTMLElement; nominal: HTMLElement; demand: HTMLElement; allocated: HTMLElement; reason: HTMLElement; work: HTMLElement }>();
   const deviceRows = new Map<string, { element: HTMLElement; state: HTMLElement; toggle: HTMLButtonElement; reason: HTMLElement }>();
   const connections = doc.createElement("section"); connections.className = "factory-power-connections";
@@ -29,7 +32,7 @@ export const mountFactoryPowerPanel = (port: FactoryUiPort, doc: Document = docu
     const view = panel.view, options = view.connections?.power ?? [];
     connections.hidden = options.length === 0;
     const portName = (id: string) => view.machines.find(m => m.ports.some(p => p.id === id))?.name ?? view.power.devices?.find(d => id === `power_${d.id}`)?.name ?? "Port";
-    const labels = options.map(c => ({ id: c.id, text: `${englishFactoryText(portName(c.sourcePortId))} → ${englishFactoryText(portName(c.targetPortId))}` })), key = JSON.stringify(labels);
+    const labels = options.map(c => ({ id: c.id, text: `${englishFactoryText(portName(c.sourcePortId))} → ${englishFactoryText(portName(c.targetPortId))} · ${number.format(c.lengthMm / 1000)} m` })), key = JSON.stringify(labels);
     if (connectionSelect.dataset.options !== key) {
       const old = connectionSelect.value; connectionSelect.replaceChildren();
       const blank = doc.createElement("option"); blank.value = ""; blank.textContent = "Choose connection"; connectionSelect.append(blank);
@@ -66,7 +69,8 @@ export const mountFactoryPowerPanel = (port: FactoryUiPort, doc: Document = docu
       const ref = machine?.selectedRecipe;
       const recipe = view.binding.catalogDigest === catalog.catalogDigest && ref ? catalog.recipes.find(r => r.sourceId === ref.sourceId && r.version === ref.version && r.digest === ref.digest) : undefined;
       const process = recipe?.processes.find(p => p.availability === "first-dry-loop");
-      row.title.textContent = englishFactoryText(machine?.name ?? consumer.name);
+      const sourceName = machine?.name ?? consumer.name, beltUnit = Object.hasOwn(beltLineUnitLabels, sourceName) ? beltLineUnitLabels[sourceName]! : null;
+      row.title.textContent = beltUnit === null ? englishFactoryText(sourceName) : `${englishFactoryText("Förderlinie")} · ${beltUnit}`;
       row.nominal.hidden = !process; row.nominal.textContent = process ? `Nominal demand ${number.format(process.powerWatts / 1000)} kW` : "";
       row.demand.textContent = `Current demand ${number.format(consumer.requestedWatts)} W`;
       row.allocated.textContent = confirmed ? `Allocated ${number.format(consumer.allocatedWatts)} W` : "Allocation pending";

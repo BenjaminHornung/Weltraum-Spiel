@@ -1,0 +1,508 @@
+{
+  "schema": "hestia.fp06.cargo-pickup-acceptance/v1",
+  "atUtc": "2026-10-19T15:34:22.469Z",
+  "status": "PASS_BOUNDED_CARGO_PICKUP_UI_REPAIR",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "branch": "feature/hestia-fp06-review-continuation-2026-10-15",
+  "source": "E:/DEV/Weltraum-Spiel/FP06-Candidate",
+  "delivery": "E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-19-v10",
+  "integrator": "/root",
+  "writers": "ALL_QUIESCENT; cargo-pickup-ui-r01 released",
+  "scope": {
+    "changedProduct": [
+      "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+    ],
+    "sourceSha256": "16c26baf67927d3ac63723e7a0ad9cbf15e7bc7a5df587913623441d0b72e274",
+    "testSha256": "05f88dfbae786c9ebf4a3cb9cba6e9827739cfaabc4709321244ad92076b1971",
+    "behavior": "Distinguish reachable closed Cargo from out of reach; explain existing CarrierSupport rejection and normal recovery. No automatic opening or changed physical admission."
+  },
+  "verification": {
+    "focusedRegression": "2 RED on old product, 2 GREEN on corrected product",
+    "panelsAndCargoHandling": "48/48 PASS on exact final source",
+    "typeScript": "PASS",
+    "independentFinalDiffReview": "PASS; /root/combined_save_plan",
+    "offlineInstall": "59 packages from locked offline cache, exit 0",
+    "cleanBuild": "TypeScript and Vite 327 modules, exit 0; existing chunk-size warning retained",
+    "cleanManifest": {
+      "files": 899,
+      "allHashesExact": true
+    },
+    "productParity": {
+      "files": 860,
+      "allExactCandidate": true,
+      "onlyTwoChangedSinceReady9": true
+    },
+    "renderedUi": "Actual 1249x1221 Chrome screenshot inspected: closed hint and support recovery fit panel"
+  },
+  "runtime": {
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-CargoPickup-20261019-R69",
+    "initialClosedUi": "Closed · open cargo first; enabled Open cargo; disabled Pick up with title Open cargo first",
+    "realRejection": {
+      "reason": "FactoryFacilityRejected:CarrierSupport",
+      "unchangedMassMg": 2984400000,
+      "message": "Action rejected. Load needs solid, level ground. Close Cargo, select Play, step onto clear level ground nearby, reopen Cargo, and retry."
+    },
+    "ordinaryRecovery": "Close, explicit foreground Play, normal D movement from x=-5.5 to x=-6.100002288818359, I, Pick up: Former kit",
+    "carried": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 13,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.100002288818359,
+            "y": 2.400042772293091,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 6,
+        "colliderCount": 86
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "carrier": {
+        "ownerId": "factory_carrier",
+        "transactionId": "ui_cargo_5a5b9a7d12e747c2a108779dacacb98c",
+        "profileId": "B07-BOM",
+        "phase": "Carrying",
+        "containerId": "carrier_ui_cargo_5a5b9a7d12e747c2a108779dacacb98c",
+        "massMg": 341000000,
+        "positionMm": [
+          -6100.002288818359,
+          1499.9998807907104,
+          10875
+        ],
+        "nativeMassKg": 341,
+        "colliderCount": 5,
+        "accessible": true
+      },
+      "facilities": {
+        "revision": 2,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": "cargo",
+        "surface": "cargo",
+        "error": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint available; Save checks memory before writing",
+        "revision": 1,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "totalMg": 2984400000,
+      "receipt": {
+        "status": "Committed",
+        "reason": null
+      }
+    },
+    "deposit": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 24,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.600004196166992,
+            "y": 2.400021553039551,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 6,
+        "colliderCount": 86
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "carrier": {
+        "ownerId": "factory_carrier",
+        "transactionId": "ui_cargo_52c8992110874c3682b00cb1c29bb972",
+        "profileId": "B07-BOM",
+        "phase": "Deposited",
+        "containerId": "carrier_ui_cargo_5a5b9a7d12e747c2a108779dacacb98c",
+        "massMg": 341000000,
+        "positionMm": [
+          -6500,
+          1500.0001192092896,
+          11000
+        ],
+        "nativeMassKg": 341,
+        "colliderCount": 5,
+        "accessible": true
+      },
+      "facilities": {
+        "revision": 3,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": "cargo",
+        "surface": "cargo",
+        "error": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint available; Save checks memory before writing",
+        "revision": 1,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "totalMg": 2984400000,
+      "receipt": {
+        "status": "Committed",
+        "reason": null
+      }
+    },
+    "returned": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 24,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.600004196166992,
+            "y": 2.400021553039551,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 5,
+        "colliderCount": 81
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "carrier": null,
+      "facilities": {
+        "revision": 4,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": "cargo",
+        "surface": "cargo",
+        "error": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint available; Save checks memory before writing",
+        "revision": 1,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "totalMg": 2984400000,
+      "receipt": {
+        "status": "Committed",
+        "reason": null
+      }
+    },
+    "saveCompatibility": {
+      "oldSave1": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+        "revision": 1,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "save1To2AllFiveHashParity": {
+        "native": true,
+        "nativeFactory": true,
+        "profiles": true,
+        "host": true,
+        "factoryExceptPublication": true
+      },
+      "close": {
+        "atUtc": "2026-10-19T15:32:17.535Z",
+        "closed": true,
+        "browserConnected": false
+      },
+      "coldLoaded": {
+        "physics": {
+          "status": "Paused",
+          "ticks": 904,
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.550004005432129,
+              "y": 2.400010108947754,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Inspection"
+          },
+          "bodyCount": 5,
+          "colliderCount": 81
+        },
+        "cargo": {
+          "opened": true,
+          "accessible": true,
+          "positionMm": [
+            -5500,
+            2000,
+            13125
+          ]
+        },
+        "carrier": null,
+        "facilities": {
+          "revision": 4,
+          "state": "Idle",
+          "transactionId": null
+        },
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": "pause",
+          "error": null
+        },
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 2,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "totalMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        }
+      },
+      "coldSlotUnchanged": true,
+      "save2To3AllFiveHashParity": {
+        "native": true,
+        "nativeFactory": true,
+        "profiles": true,
+        "host": true,
+        "factoryExceptPublication": true
+      },
+      "save3": {
+        "metadata": {
+          "slotId": "factory-primary",
+          "displayName": "factory-primary",
+          "recordRevision": 3,
+          "saveSchemaVersion": 1,
+          "gameVersion": "hestia-factory-play-v1",
+          "universeTick": 1808,
+          "payloadBytes": 1617950,
+          "contentHash": "sha256:5678891c7234e5249898257ef2cad85a602df1b85384f1c749222241da8f11b5",
+          "lastWriteReason": "ManualSave"
+        },
+        "payloadSha256": "5678891c7234e5249898257ef2cad85a602df1b85384f1c749222241da8f11b5",
+        "version": "fp06-combined-checkpoint-v2",
+        "signature": "fnv1a32:06b90b92",
+        "host": {
+          "epoch": 1,
+          "nativeTick": 904,
+          "remainderTicks": 4,
+          "sessionId": "hvp-session-1",
+          "steps": 150
+        },
+        "publicationRevision": 548,
+        "hashes": {
+          "native": "5268c4e4df6c2c5bd8ed694bf395037f7fa98ee7d4278183bf41973ff6403a9f",
+          "nativeFactory": "81fbb59b21fd6d255d088d54d4403bd53c2789e4bee8426e526ff9d7df2192e0",
+          "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+          "host": "6297e883aaee28e09017e0a8aa229bfccc75ee59ba13150fd2155b931d3aee9c",
+          "factoryAll": "07987187ae6303a229a8b0290e9c8b4c13584c4d45880d28ebca60ec5510b8b2",
+          "factoryExceptPublication": "440859003ecb81e7678e9e016f8ef6e00fb13111a6634e38a41389d902a9853b"
+        },
+        "installations": [],
+        "machines": [],
+        "belts": []
+      },
+      "ordinaryExplicitPlayAfterColdContinue": {
+        "status": "Running",
+        "ticks": 908,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.700004577636719,
+            "y": 2.400021553039551,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "bodyCount": 5,
+        "colliderCount": 81
+      },
+      "finalRealClose": {
+        "atUtc": "2026-10-19T15:33:05.982Z",
+        "closed": true,
+        "browserConnected": false
+      }
+    },
+    "runtimeErrors": [],
+    "coldErrors": [],
+    "initialSandboxStartup": {
+      "resolved": true,
+      "errors": [
+        "http://127.0.0.1:5197/factory.html: net::ERR_CONNECTION_TIMED_OUT",
+        "http://127.0.0.1:5197/factory.html: net::ERR_CONNECTION_TIMED_OUT",
+        "http://127.0.0.1:5197/factory.html: net::ERR_CONNECTION_TIMED_OUT"
+      ],
+      "remedy": "Relaunch the same loopback-only Vite preview with approved sandbox escalation; no product/timeout change"
+    }
+  },
+  "user": {
+    "url": "http://127.0.0.1:5197/factory.html#cargo-pickup-fixed",
+    "ready": {
+      "physics": {
+        "status": "Paused",
+        "ticks": 16,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.200002670288086,
+            "y": 2.400042772293091,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "bodyCount": 5,
+        "colliderCount": 81
+      },
+      "cargo": {
+        "opened": true,
+        "accessible": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ]
+      },
+      "carrier": null,
+      "facilities": {
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null
+      },
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": "cargo",
+        "surface": "cargo",
+        "error": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint available; Save checks memory before writing",
+        "revision": 12,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "totalMg": 2984400000,
+      "receipt": {
+        "status": "Committed",
+        "reason": null
+      }
+    },
+    "before": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 12,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 49058,
+        "payloadBytes": 13586523,
+        "contentHash": "sha256:7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2"
+    },
+    "after": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 12,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 49058,
+        "payloadBytes": 13586523,
+        "contentHash": "sha256:7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2"
+    },
+    "slotUnchanged": true,
+    "originalTabPreserved": true,
+    "priorTabPreserved": true,
+    "errors": []
+  },
+  "evidence": {
+    "baseline": "apps/weltraum-browser/evidence/factory/play/2026-10-19/cargo-pickup/R69_BASELINE_RUNTIME.json",
+    "candidateRuntime": "apps/weltraum-browser/evidence/factory/play/2026-10-19/cargo-pickup/R70_READY_V10_RUNTIME.json",
+    "plan": "docs/factory/fp06/play/2026-10-19/cargo-pickup/EXEC_PLAN.md"
+  },
+  "limits": [
+    "No new full16kg cycle or performance window for this UI-only repair; prior normal production acceptance retained.",
+    "Local-display/human hardware retest NOT RUN; Windows Remote32Hz limitation remains.",
+    "Walkable V6 hull not implemented by this repair; explicit stored-contract approval remains pending.",
+    "No Clock, schema, terrain, collider, custody, finite resource, global cap/timeout or Golden changes; no merge/push."
+  ]
+}

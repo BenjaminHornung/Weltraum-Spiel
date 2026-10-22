@@ -17,7 +17,7 @@ import { createHvpTerrainConsumer, type HvpStagedTerrain,type HvpPreparedTerrain
 import {meshHvpTerrainFragment,meshHvpBodyCells} from "../hestia-prototype/presentation/terrainFragment";
 import {readHvpBodyCells} from "../hestia-prototype/physics/bodyCutPlan";
 import {createHvpSaveStore,HVP_SAVE_SLOT} from "../hestia-prototype/persistence/saveStore";
-import {encodeHvpGame,type HvpDecodedGame} from "../hestia-prototype/persistence/gameCheckpoint";
+import {encodeHvpGame,HVP_SAVE_PROFILES,type HvpDecodedGame} from "../hestia-prototype/persistence/gameCheckpoint";
 import {encodeHvpPlant} from "../hestia-prototype/persistence/plantCheckpoint";
 import {replaceHvpScene} from "../hestia-prototype/persistence/sceneReplacement";
 import {createPersistenceSignature} from "../persistence";
@@ -32,12 +32,13 @@ import {createHvpStructuralConsumer,type HvpStagedBranch} from "../hestia-protot
 import {createHvpBodyCutConsumer} from "../hestia-prototype/terrain/bodyCutConsumer";
 import { createHvpPlayerInput } from "../hestia-prototype/player/input";
 import { createHvpAvatarMesh, HVP_AVATAR_KEY } from "../hestia-prototype/player/presentation";
-import type { HvpCollisionSource } from "../hestia-prototype/physics/terrainColliders";
+import type { HvpCollisionSector, HvpCollisionSource } from "../hestia-prototype/physics/terrainColliders";
 import { fnv1aHash } from "../core/hash";
 import { ThreeRenderBackend } from "../render/three/backend";
 import { ThreeMaterialFactory, type ThreeMaterialLease } from "../render/three/backend/threeMaterialFactory";
 import {
   artifactRevision,
+  type BackendRevision,
   backendRevision,
   createFrameProjectionSnapshot,
   createMeshArtifact,
@@ -52,6 +53,7 @@ import {
   sourceRevision,
   visibilityPlanRevision,
   type FrameId,
+  type FrameProjectionSnapshot,
   type MaterialProfile,
   type MaterialRange,
   type MeshArtifact,
@@ -63,7 +65,12 @@ import {
 import {canonicalJson as factoryCanonicalJson,canonicalSignature as factoryCanonicalSignature} from "../resources/serialization";
 import { createHvpCamera, type HvpCameraPreset } from "./hvpCamera";
 import { createHvpHud, type HvpLifecycleState } from "./hvpHud";
-import { buildHvpPlant, estimateHvpVegetationSourceBytes, isHvpPlantHabitat, meshHvpVegetation, planHvpVegetation, projectHvpVegetation, HVP_VEGETATION_VERSION } from "../hestia-prototype/presentation/vegetation";
+import { buildHvpPlant, estimateHvpVegetationSourceBytes, isHvpPlantHabitat, meshHvpVegetation, planHvpVegetation, projectHvpVegetation, HVP_VEGETATION_VERSION,
+  type HvpPlantSource, type HvpVegetationProduct } from "../hestia-prototype/presentation/vegetation";
+import { countFactoryDecorFaces, createFactoryDecorFootprints, createFactoryDecorProjection, estimateFactoryDecorFootprintBytes,
+  factoryDecorFaceBytes, factoryDecorFootprintGeometryMatchesOwners, factoryDecorFootprintsMatchOwners,
+  factoryDecorHullFootprintFromNativeSectors,
+  type FactoryDecorFootprints, type FactoryDecorHullFootprint, type FactoryDecorInstallationBounds } from "../factory/presentation/factoryDecorProjection";
 import type { RepresentationTransformSnapshot } from "../presentation";
 import {
   assertHvpWaterPresentation,
@@ -90,10 +97,14 @@ import {
   materializeHvpCoastSourceAsync,
   prepareHvpCoastSource,
   readHvpSourceColumnWorld,
+  type HvpFactorySourceVersion,
   type HvpCoastSourceSnapshot,
   type HvpPreparedCoastSource,
   type HvpWaterMask
 } from "./hvpCoastSource";
+import { readFactorySourceColumnWorld, readFactorySourceColumnWorldV2, readFactorySourceColumnWorldV3,
+  readFactorySourceColumnWorldV4, readFactorySourceColumnWorldV5 } from "../factory/fixtures/startSite";
+import { readFactorySourceColumnWorldV6 } from "../factory/fixtures/startSiteV6";
 import {
   HVP_COAST_MESH_ALGORITHM_VERSION,
   HVP_FARFIELD_MESH_ALGORITHM_VERSION,
@@ -102,7 +113,8 @@ import {
   meshHvpJoinRing,
   meshHvpWaterMask,
   meshHvpOccupancy,
-  type HvpCompactMesh
+  type HvpCompactMesh,
+  type HvpMeshOccupancy
 } from "./hvpCoastMesher";
 import {
   HVP_FRAME_ID,
@@ -135,8 +147,36 @@ export interface HvpBootstrapHandle {
   dispose(): Promise<void>;
 }
 
+type FactoryColdRestore = Readonly<{
+  decoded: import("../factory/persistence/factoryCheckpoint").FactoryDecodedCheckpoint;
+  owner: import("../factory/persistence/factoryCheckpoint").FactorySessionCheckpointV2;
+  metadata: Readonly<{ recordRevision: number; payloadBytes: number }>;
+}>;
+type FactoryColdStore = Readonly<{
+  initialize(): Promise<void>;
+  list(): Promise<Readonly<{ slots: readonly Readonly<{ slotId: string; recordRevision: number }>[] }>>;
+  load(retainedCpuBytes?: number): Promise<FactoryColdRestore>;
+  save(value: import("../factory/persistence/factoryCheckpoint").FactoryStoredCheckpoint, expectedRevision: number | null,
+    beforeCommit?: () => void): Promise<Readonly<{ metadata: Readonly<{ recordRevision: number }>; envelope: import("../persistence").SaveGameEnvelopeV1 }>>;
+  close(): Promise<void>;
+}>;
+
 const HVP_JOIN_REPRESENTATION_KEY = "hvp:join";
 const HVP_FAR_REPRESENTATION_KEY = "hvp:far";
+const FACTORY_HULL_METADATA_CPU_BYTES=42_578;
+const FACTORY_HULL_PROJECTION_CPU_PEAK_BYTES=1_073_548*2+41_208+70_144+1_523_808*3+703_296+219_792+703_296+219_792+329_688;
+const FACTORY_HULL_RENDER_MESH_PEAK_BYTES=1_523_808*2;
+const FACTORY_HULL_TRIANGLES=19_536;
+const FACTORY_HULL_DRAWS=8;
+const factorySourceReaders:Readonly<Record<HvpFactorySourceVersion,FactorySourceProfile["readColumn"]>>=Object.freeze({
+  "hvp-factory-startsite-v1":readFactorySourceColumnWorld,
+  "hvp-factory-startsite-v2":readFactorySourceColumnWorldV2,
+  "hvp-factory-startsite-v3":readFactorySourceColumnWorldV3,
+  "hvp-factory-startsite-v4":readFactorySourceColumnWorldV4,
+  "hvp-factory-startsite-v5":readFactorySourceColumnWorldV5,
+  "hvp-factory-startsite-v6":readFactorySourceColumnWorldV6
+});
+const factorySourceProfileFor=(version:HvpFactorySourceVersion):FactorySourceProfile=>({version,readColumn:factorySourceReaders[version]});
 
 const accepted = (result: RenderCommandResult): boolean =>
   result.status === "Accepted" || result.status === "AlreadyApplied";
@@ -389,7 +429,7 @@ const createHvpLookScene = (scene: THREE.Scene, look: HvpLookProfile): HvpLookSc
   root.add(ambient, key, fill);
   scene.add(root);
 
-  let disposed = false;
+    let disposed = false;
   return {
     dispose(): void {
       if (disposed) return;
@@ -417,6 +457,8 @@ interface HvpProjectionCamera {
 interface HvpPresentationBackend extends RenderBackend {
   setWaterEnabled(enabled: boolean): void;
   updateProjection(): void;
+  updateCameraProjection(): void;
+  releaseProjectionReference(): void;
 }
 
 export const createHvpPresentationBackend = (
@@ -432,25 +474,59 @@ export const createHvpPresentationBackend = (
   let lastFrameId: FrameId | undefined;
   let projectionRevision = 0;
   let waterEnabled = true;
+  let acceptedProjection: FrameProjectionSnapshot | undefined;
+  let acceptedProjectionBackendRevision: BackendRevision | undefined;
+  const releaseProjectionReference = (): void => {
+    acceptedProjection = undefined;
+    acceptedProjectionBackendRevision = undefined;
+  };
+  const sameVector = (left: { readonly x: number; readonly y: number; readonly z: number },
+    right: { readonly x: number; readonly y: number; readonly z: number }): boolean =>
+    Object.is(left.x, right.x) && Object.is(left.y, right.y) && Object.is(left.z, right.z);
+  const sameQuaternion = (left: { readonly x: number; readonly y: number; readonly z: number; readonly w: number },
+    right: { readonly x: number; readonly y: number; readonly z: number; readonly w: number }): boolean =>
+    Object.is(left.x, right.x) && Object.is(left.y, right.y) && Object.is(left.z, right.z) && Object.is(left.w, right.w);
+  const sameProjectionCore = (left: FrameProjectionSnapshot, right: FrameProjectionSnapshot): boolean =>
+    left.frameId === right.frameId
+      && sameVector(left.cameraPositionRelative, right.cameraPositionRelative)
+      && sameQuaternion(left.cameraOrientation, right.cameraOrientation)
+      && left.projectionParameters.kind === right.projectionParameters.kind
+      && Object.is(left.projectionParameters.verticalFovDegrees, right.projectionParameters.verticalFovDegrees)
+      && Object.is(left.projectionParameters.aspect, right.projectionParameters.aspect)
+      && Object.is(left.projectionParameters.near, right.projectionParameters.near)
+      && Object.is(left.projectionParameters.far, right.projectionParameters.far)
+      && left.representationTransforms.length === right.representationTransforms.length
+      && left.representationTransforms.every((transform, index) => {
+        const other = right.representationTransforms[index];
+        return other !== undefined && transform.representationKey === other.representationKey
+          && sameVector(transform.positionRelative, other.positionRelative)
+          && sameQuaternion(transform.orientation, other.orientation)
+          && sameVector(transform.scale, other.scale);
+      });
+  const sameProjectionCamera = (snapshot: FrameProjectionSnapshot, camera: HvpProjectionCamera): boolean =>
+    snapshot.projectionParameters.kind === "Perspective"
+      && sameVector(snapshot.cameraPositionRelative, camera.position)
+      && sameQuaternion(snapshot.cameraOrientation, camera.orientation)
+      && Object.is(snapshot.projectionParameters.verticalFovDegrees, camera.verticalFovDegrees)
+      && Object.is(snapshot.projectionParameters.aspect, camera.aspect)
+      && Object.is(snapshot.projectionParameters.near, camera.near)
+      && Object.is(snapshot.projectionParameters.far, camera.far);
 
   const publishCurrentSet = (): void => {
     if (deferInitialProjection) { return; }
     const current = framesByRepresentation.values().next().value ?? lastFrameId;
     if (current === undefined) return;
     const started=onTiming?performance.now():0;
-    for (const candidate of framesByRepresentation.values()) {
-      if (candidate !== current) throw new Error("HVP representations must share one projection frame.");
-    }
-    projectionRevision += 1;
-    const camera = readCamera();
-    const keys = [...framesByRepresentation.keys()];
-    const isVisible = (key: RepresentationKey): boolean => (waterEnabled || (key !== waterRepresentationKey && !key.startsWith(`${waterRepresentationKey}:`))) && isRepresentationVisible(key);
-    const objectTransforms = new Map(readObjectTransforms().map((transform) => [transform.representationKey, transform]));
-    const revision = backend.readDiagnostics().backendRevision;
-    requireAccepted(backend.dispatch(createRenderCommand({
-      kind: "ApplyFrameProjection",
-      backendRevision: revision,
-      snapshot: createFrameProjectionSnapshot({
+    try {
+      for (const candidate of framesByRepresentation.values()) {
+        if (candidate !== current) throw new Error("HVP representations must share one projection frame.");
+      }
+      projectionRevision += 1;
+      const camera = readCamera();
+      const keys = [...framesByRepresentation.keys()];
+      const revision = backend.readDiagnostics().backendRevision;
+      const objectTransforms = new Map(readObjectTransforms().map((transform) => [transform.representationKey, transform]));
+      const snapshot = createFrameProjectionSnapshot({
         frameId: current,
         frameRevision: frameRevision(projectionRevision),
         cameraPositionRelative: camera.position,
@@ -468,42 +544,88 @@ export const createHvpPresentationBackend = (
           orientation: { x: 0, y: 0, z: 0, w: 1 },
           scale: { x: 1, y: 1, z: 1 }
         }))
-      })
-    })), "HVP frame projection");
-    requireAccepted(backend.dispatch(createRenderCommand({
-      kind: "ApplyVisibilityPlan",
-      backendRevision: revision,
-      plan: createVisibilityPlan({
-        planRevision: visibilityPlanRevision(projectionRevision),
-        visibleRepresentationKeys: keys.filter(isVisible),
-        fallbackRepresentationKeys: [],
-        hiddenRepresentationKeys: keys.filter(key => !isVisible(key))
-      })
-    })), "HVP visibility plan");
-    onTiming?.("startupProjectionMs",started,performance.now()-started);
+      });
+      if (acceptedProjectionBackendRevision !== revision || acceptedProjection === undefined
+        || !sameProjectionCore(acceptedProjection, snapshot)) {
+        const result = backend.dispatch(createRenderCommand({ kind: "ApplyFrameProjection", backendRevision: revision, snapshot }));
+        requireAccepted(result, "HVP frame projection");
+        if (result.status === "Accepted") {
+          acceptedProjection = snapshot;
+          acceptedProjectionBackendRevision = revision;
+        } else {
+          // AlreadyApplied does not prove this exact frozen object is backend-owned.
+          releaseProjectionReference();
+        }
+      }
+      const isVisible = (key: RepresentationKey): boolean => (waterEnabled || (key !== waterRepresentationKey && !key.startsWith(`${waterRepresentationKey}:`))) && isRepresentationVisible(key);
+      requireAccepted(backend.dispatch(createRenderCommand({
+        kind: "ApplyVisibilityPlan",
+        backendRevision: revision,
+        plan: createVisibilityPlan({
+          planRevision: visibilityPlanRevision(projectionRevision),
+          visibleRepresentationKeys: keys.filter(isVisible),
+          fallbackRepresentationKeys: [],
+          hiddenRepresentationKeys: keys.filter(key => !isVisible(key))
+        })
+      })), "HVP visibility plan");
+      onTiming?.("startupProjectionMs",started,performance.now()-started);
+    } catch (error) {
+      releaseProjectionReference();
+      throw error;
+    }
+  };
+
+  const publishCameraUpdate = (): void => {
+    deferInitialProjection = false;
+    const current = framesByRepresentation.values().next().value ?? lastFrameId;
+    if (current === undefined) return;
+    try {
+      for (const candidate of framesByRepresentation.values()) {
+        if (candidate !== current) throw new Error("HVP representations must share one projection frame.");
+      }
+      const revision = backend.readDiagnostics().backendRevision;
+      const camera = readCamera();
+      if (acceptedProjectionBackendRevision !== revision || acceptedProjection === undefined
+        || !sameProjectionCamera(acceptedProjection, camera)) {
+        publishCurrentSet();
+      }
+    } catch (error) {
+      releaseProjectionReference();
+      throw error;
+    }
   };
 
   const dispatch = (command: RenderCommand): RenderCommandResult => {
+    // Commands crossing this adapter can change backend ownership or state that
+    // the local projection core cannot prove unchanged.
+    releaseProjectionReference();
     const started=onTiming&&command.kind==="UpsertMeshArtifact"?performance.now():0;
-    const result = backend.dispatch(command);
-    if(onTiming&&command.kind==="UpsertMeshArtifact"){onTiming("startupBackendUpsertMs",started,performance.now()-started);}
-    if (command.kind === "UpsertMeshArtifact" && accepted(result)) {
-      lastFrameId = command.artifact.frameId;
-      framesByRepresentation.set(command.artifact.representationKey, command.artifact.frameId);
-      publishCurrentSet();
-    } else if ((command.kind === "RemoveRepresentation" || command.kind === "EvictRepresentation") && accepted(result)) {
-      framesByRepresentation.delete(command.representationKey);
-      publishCurrentSet();
-    } else if (command.kind === "ResetBackend" || command.kind === "DisposeBackend") {
-      framesByRepresentation.clear();
-      lastFrameId = undefined;
+    try {
+      const result = backend.dispatch(command);
+      if(onTiming&&command.kind==="UpsertMeshArtifact"){onTiming("startupBackendUpsertMs",started,performance.now()-started);}
+      if (command.kind === "UpsertMeshArtifact" && accepted(result)) {
+        lastFrameId = command.artifact.frameId;
+        framesByRepresentation.set(command.artifact.representationKey, command.artifact.frameId);
+        publishCurrentSet();
+      } else if ((command.kind === "RemoveRepresentation" || command.kind === "EvictRepresentation") && accepted(result)) {
+        framesByRepresentation.delete(command.representationKey);
+        publishCurrentSet();
+      } else if (command.kind === "ResetBackend" || command.kind === "DisposeBackend") {
+        framesByRepresentation.clear();
+        lastFrameId = undefined;
+      }
+      return result;
+    } catch (error) {
+      releaseProjectionReference();
+      throw error;
     }
-    return result;
   };
 
   return Object.freeze({
     dispatch,
     updateProjection: () => { deferInitialProjection = false; publishCurrentSet(); },
+    updateCameraProjection: publishCameraUpdate,
+    releaseProjectionReference,
     renderFrame: () => backend.renderFrame(),
     getCapabilities: () => backend.getCapabilities(),
     readDiagnostics: () => backend.readDiagnostics(),
@@ -767,6 +889,7 @@ export const startHvp = async (
   activeHvpMount = true;
   const myEpoch = ++hvpMountEpoch;
   const windowPort = overrides.windowPort ?? window;
+  const factoryLogicalCameraReserveBytes = overrides.factoryExtension ? 16 * 1024 : 0;
   const measurement=createHvpMeasurements(new URLSearchParams(windowPort.location?.search??"").get("hvpMeasure")==="1");
   const measurementStarted=performance.now();
   let startupPhaseStarted=measurementStarted;
@@ -779,10 +902,12 @@ export const startHvp = async (
   documentPort.body.dataset.hestiaPrototypeState = "Loading" satisfies HvpLifecycleState;
 
   let backend: HvpBackend | undefined;
+  let logicalFactoryCamera: THREE.PerspectiveCamera | undefined;
   let camera: ReturnType<typeof createHvpCamera> | undefined;
   let hud: ReturnType<typeof createHvpHud> | undefined;
   let physics: HvpPhysicsClient | undefined;
   let playerInput: ReturnType<typeof createHvpPlayerInput> | undefined;
+  let applyFactoryDecorProjection:(()=>void)|undefined;
   let factoryMount: Promise<FactoryHostExtensionHandle> | undefined;
   let factoryHandle: FactoryHostExtensionHandle | undefined;
   const factoryListeners = new Set<(view: FactoryHostView) => void>();
@@ -791,7 +916,7 @@ export const startHvp = async (
   const factoryPausePending=()=>factoryFocusPauseDepth>0||factoryRecoveryPending;
   const factoryPanelFocused=()=>factoryFocusedPanel!==null||factorySurface!==null;
   const factoryBlocked = () => factoryHandle !== undefined && !factoryHandle.isQuiescent();
-  let publishFactoryView: (() => FactoryHostView) | undefined;
+  let publishFactoryView: ((deferInstalledProjection?: boolean) => FactoryHostView) | undefined;
   let readFactoryView: (() => FactoryHostView) | undefined;
   const factoryCanResume = () => readFactoryView?.().confirmed === true && !documentPort.hidden && !factoryPausePending();
   const physicsAbort = new AbortController();
@@ -809,6 +934,12 @@ export const startHvp = async (
   const neighborCache=new MemoryContentCache(32*1024*1024);
   let plasmaTool: ReturnType<typeof createHvpPlasmaTool> | undefined;
   let saveStore:ReturnType<typeof createHvpSaveStore>|undefined;
+  let factorySaveStore:FactoryColdStore|undefined;
+  let factorySaveStoreInitialized=false;
+  let cleanupFactoryPresentation:(()=>void)|undefined;
+  let factoryAssetController:AbortController|undefined;
+  let factoryPlayAssets:typeof import("../factory/presentation/playAssetLoader")|undefined;
+  let releasePresentationProjectionReference:(()=>void)|undefined;
   let saveBusy=false,saveHold=false;
   const listeners=createHvpListeners();
   let visualDisposal:Readonly<{geometries:number;textures:number}>|undefined;
@@ -822,6 +953,7 @@ export const startHvp = async (
   let waterEnabled = true;
   let animationFrame: number | undefined;
   let failureRoot: HTMLElement | undefined;
+  let fatalFactoryDecorationError: Error | undefined;
   let disposed = false;
   let disposePromise: Promise<void> | undefined;
   const flightHud = documentPort.querySelector<HTMLElement>("#flight-hud");
@@ -857,6 +989,7 @@ export const startHvp = async (
       // Extension cleanup precedes every native, input and render owner.
       await attempt(async () => { if (factoryMount) await (await factoryMount).dispose(); });
       factoryHandle = undefined;
+      await attempt(()=>cleanupFactoryPresentation?.());cleanupFactoryPresentation=undefined;
       await attempt(()=>listeners.dispose());
       await attempt(()=>playerInput?.dispose()); playerInput=undefined;
       await attempt(()=>plasmaTool?.dispose());plasmaTool=undefined;
@@ -869,11 +1002,13 @@ export const startHvp = async (
       physicsAbort.abort();
       await attempt(()=>physics?.dispose());
       await attempt(()=>saveStore?.close());saveStore=undefined;
+      await attempt(()=>factorySaveStore?.close());factorySaveStore=undefined;factorySaveStoreInitialized=false;
       physics = undefined;
       await attempt(()=>hud?.dispose());
       hud = undefined;
       await attempt(()=>camera?.dispose());
       camera = undefined;
+      logicalFactoryCamera=undefined;
       await attempt(()=>lookScene?.dispose());
       lookScene = undefined;
       failureRoot?.remove();
@@ -889,6 +1024,8 @@ export const startHvp = async (
         await attempt(()=>pair.lease.release());
       }
       if (backend !== undefined) {
+        await attempt(()=>releasePresentationProjectionReference?.());
+        releasePresentationProjectionReference=undefined;
         await attempt(()=>{const revision=backend!.readDiagnostics().backendRevision;
           requireAccepted(backend!.dispatch(createRenderCommand({kind:"DisposeBackend",backendRevision:revision})),"HVP backend disposal");});
         backend = undefined;
@@ -966,6 +1103,10 @@ export const startHvp = async (
     documentPort.body.dataset.hestiaPrototypeRenderer = "three-basic-lit";
 
     let vegetationTransforms: readonly RepresentationTransformSnapshot[] = [];
+    let vegetation: readonly HvpVegetationProduct[]=[];
+    let plantSources: readonly HvpPlantSource[]=[];
+    let factoryDecorFootprints:FactoryDecorFootprints|undefined;
+    const vegetationArtifactRevisions=new Map<string,number>();
     let physicsTransforms: readonly RepresentationTransformSnapshot[] = [];
     const activeTerrainKeys = new Set<string>();
     const activeFragmentKeys=new Set<string>();
@@ -977,16 +1118,19 @@ export const startHvp = async (
     let factoryTransforms:readonly RepresentationTransformSnapshot[]=[];
     type FactoryCost={cpu:number;mesh:number;triangles:number;draws:number};
     const factoryCosts=new Map<string,FactoryCost>();
-    const factoryTotals=()=>[...factoryCosts.values()].reduce((a,b)=>({cpu:a.cpu+b.cpu,mesh:a.mesh+b.mesh,triangles:a.triangles+b.triangles,draws:a.draws+b.draws}),{cpu:0,mesh:0,triangles:0,draws:0});
+    const factoryProfileCacheReserveBytes=512*1024;
+    const factoryFrameProjectionReferenceReserveBytes=512*1024;
+    const factoryTotals=()=>[...factoryCosts.values()].reduce((a,b)=>({cpu:a.cpu+b.cpu,mesh:a.mesh+b.mesh,triangles:a.triangles+b.triangles,draws:a.draws+b.draws}),
+      {cpu:factoryProfileCacheReserveBytes+factoryFrameProjectionReferenceReserveBytes+factoryLogicalCameraReserveBytes,mesh:0,triangles:0,draws:0});
     let branchProducts:readonly HvpBranchProduct[]=[];
     let activePreviewKey="";
     const presentation = createHvpPresentationBackend(backend, () => ({
-      position: backend!.camera.position,
-      orientation: backend!.camera.quaternion,
-      verticalFovDegrees: backend!.camera.fov,
-      aspect: backend!.camera.aspect,
-      near: backend!.camera.near,
-      far: backend!.camera.far
+      position: (logicalFactoryCamera ?? backend!.camera).position,
+      orientation: (logicalFactoryCamera ?? backend!.camera).quaternion,
+      verticalFovDegrees: (logicalFactoryCamera ?? backend!.camera).fov,
+      aspect: (logicalFactoryCamera ?? backend!.camera).aspect,
+      near: (logicalFactoryCamera ?? backend!.camera).near,
+      far: (logicalFactoryCamera ?? backend!.camera).far
     }), representationKey(HVP_WATER_REPRESENTATION_KEY), () => [...vegetationTransforms, ...physicsTransforms,...factoryTransforms,
       ...physicsTransforms.filter(t=>t.representationKey==="hvp:branch:parent").map(t=>({...t,representationKey:representationKey(HVP_SALVAGE_LINK_KEY)})),
       ...branchProducts.filter(p=>p.decoration).flatMap(p=>{
@@ -1007,12 +1151,13 @@ export const startHvp = async (
       && (!(key.startsWith("hvp:branch:")||key.startsWith("hvp-branch:"))||activeBranchKeys.has(key)||activeFragmentKeys.has(key))
       && (!key.startsWith("hvp:tool:preview:") || key===activePreviewKey),
       measurement.enabled?(name,start,duration)=>{if(startupMeasuring){measurement.record(name,start,duration);}}:undefined,true);
+    releasePresentationProjectionReference=presentation.releaseProjectionReference;
 
     const frame = frameId(HVP_FRAME_ID);
     const caps: HvpResourceCaps = { ...HVP_RESOURCE_CAPS_DEFAULT, ...overrides.resourceCaps };
     admitHvpResources(
       {
-        totalCpuBytes: estimateHvpPreflightBytes() + 32 * 1024 * 1024,
+        totalCpuBytes: estimateHvpPreflightBytes() + 32 * 1024 * 1024 + factoryLogicalCameraReserveBytes,
         retainedMeshBytes: 0,
         triangles: 0,
         drawCalls: 0
@@ -1020,34 +1165,123 @@ export const startHvp = async (
       caps
     );
     startupPhase("startupRendererMs");
-    const loadQuery=new URLSearchParams(windowPort.location?.search??"").get("hvpLoad");
+    const query=new URLSearchParams(windowPort.location?.search??"");
+    const loadQuery=query.get("hvpLoad"),factoryLoadQuery=query.get("factoryLoad");
     if (overrides.factoryExtension && loadQuery !== null) throw new Error("Factory requires a combined checkpoint; legacy load is unavailable");
+    if (!overrides.factoryExtension && factoryLoadQuery !== null) throw new Error("Combined Factory checkpoint requires the Factory owner");
+    if (factoryLoadQuery !== null && factoryLoadQuery !== "primary") throw new Error("Unknown Factory restore slot");
     if(loadQuery!==null&&loadQuery!=="primary"){throw new Error("Unknown Hestia restore slot");}
-    let coldGame:HvpDecodedGame|undefined,coldRevision:number|null=null,checkpointSourceBytes=0;
+    let coldGame:HvpDecodedGame|undefined,coldFactory:FactoryColdRestore|undefined,coldRevision:number|null=null,checkpointSourceBytes=0,coldNeighborAdoptedBytes=0,coldPlantAdoptedBytes=0;
     if(loadQuery==="primary"){
       admitHvpResources({totalCpuBytes:80*1024*1024,retainedMeshBytes:0,triangles:0,drawCalls:0},caps);
       saveStore=createHvpSaveStore();await saveStore.initialize();const record=await saveStore.load();
       coldGame=record.game;coldRevision=record.metadata.recordRevision;
       checkpointSourceBytes=HVP_SOURCE_SLOT_COUNT+coldGame.world.sourceBytes+record.metadata.payloadBytes*4+(coldGame.neighborRoot?HVP_SOURCE_SLOT_COUNT:0);
     }
-    const snapshot = coldGame?.base??await (overrides.createSourceSnapshot?.() ?? materializeHvpCoastSourceAsync());
+    let factoryRestore:FactoryColdRestore["decoded"]|undefined,factoryRestoreOwner:FactoryColdRestore["owner"]|undefined;
+    if(factoryLoadQuery==="primary"){
+      // Loading a combined checkpoint is an exclusive cold phase: there is no retained scene,
+      // Native World, or asset staging yet, and the full bounded CPU cap is reserved first.
+      const hullLoader=await import("../factory/presentation/playAssetLoader");
+      const coldHullMetadataBytes=hullLoader.readLoadedHullMetadataBytes();
+      if(!Number.isSafeInteger(coldHullMetadataBytes)||coldHullMetadataBytes<0||coldHullMetadataBytes>FACTORY_HULL_METADATA_CPU_BYTES)
+        throw new Error("Factory Hull metadata cache byte count invalid");
+      admitHvpResources({totalCpuBytes:256*1024*1024,retainedMeshBytes:0,triangles:0,drawCalls:0},caps);
+      const persistence=await import("../factory/persistence/factorySaveStore");
+      factorySaveStore=persistence.createFactorySaveStore();
+      await factorySaveStore.initialize();factorySaveStoreInitialized=true;
+      coldFactory=await factorySaveStore.load(coldHullMetadataBytes);
+      factoryRestore=coldFactory.decoded;
+      factoryRestoreOwner=coldFactory.owner;
+      coldRevision=coldFactory.metadata.recordRevision;
+      const [codec,dryFactory,production]=await Promise.all([
+        import("../factory/persistence/factoryCheckpoint"),import("../factory/session/dryFactorySlice"),import("../factory/production/recipeAdmission")
+      ]);
+      const tree=factoryRestore.preflight,units=64*(tree.objectCount+tree.arrayCount)+16*Math.max(0,tree.nodeCount-1);
+      const cacheBytes=dryFactory.readDryFactoryCheckpointCacheBytes(factoryRestoreOwner.domain,factoryRestore.material)
+        +production.readProductionFactoryCheckpointCacheBytes(factoryRestore.material);
+      const ownerImportBytes=codec.readFactoryDecodedOwnerImportBytes(factoryRestore);
+      const retainedColdBytes=tree.utf16Bytes+units+ownerImportBytes+cacheBytes+factoryRestore.native.decodedBytes;
+      const coldPreparationBytes=2*HVP_SOURCE_SLOT_COUNT+96*1024*1024+factoryProfileCacheReserveBytes+factoryFrameProjectionReferenceReserveBytes
+        +factoryLogicalCameraReserveBytes+coldHullMetadataBytes;
+      const coldPhaseBytes=retainedColdBytes+coldPreparationBytes;
+      if(!Number.isSafeInteger(units)||!Number.isSafeInteger(cacheBytes)||cacheBytes<0||!Number.isSafeInteger(retainedColdBytes)
+        ||!Number.isSafeInteger(coldPhaseBytes))throw new Error("Combined Factory cold memory count invalid");
+      if(measurement.enabled)measurement.record("factoryColdAdmission",performance.now(),0,{R:0,T:tree.utf16Bytes,U:units,K:cacheBytes,
+        D:factoryRestore.decodeWorkingBytes,P:coldFactory.metadata.payloadBytes,oldBound:16*1024*1024,totalBytes:coldPhaseBytes,
+        ownerImportBytes,decodedSourceBytes:factoryRestore.native.decodedBytes,baseBytes:HVP_SOURCE_SLOT_COUNT,preparedBaseBytes:HVP_SOURCE_SLOT_COUNT,nativeReserveBytes:96*1024*1024,
+        profileCacheReserveBytes:factoryProfileCacheReserveBytes,frameProjectionReferenceReserveBytes:factoryFrameProjectionReferenceReserveBytes,
+        logicalCameraReserveBytes:factoryLogicalCameraReserveBytes});
+      // Decoder scratch is retired. Count the exact retained payload/source/cache
+      // generation plus the separate V5 snapshot, its prepared copy, and full Native96
+      // before source preparation, meshing, or World creation.
+      admitHvpResources({totalCpuBytes:coldPhaseBytes,retainedMeshBytes:0,triangles:0,drawCalls:0},caps);
+      checkpointSourceBytes=retainedColdBytes;
+    }
+    // A validated saved source owns Continue's terrain/profile selection; the
+    // New Game default never upgrades an older checkpoint during restoration.
+    const factorySourceProfile=factoryRestore
+      ?factorySourceProfileFor(factoryRestore.checkpoint.native.profiles.source)
+      :overrides.factorySourceProfile;
+    if(overrides.factoryExtension){
+      const renderCamera=backend!.camera;
+      logicalFactoryCamera=new THREE.PerspectiveCamera(renderCamera.fov,renderCamera.aspect,renderCamera.near,renderCamera.far);
+      logicalFactoryCamera.position.copy(renderCamera.position);
+      logicalFactoryCamera.quaternion.copy(renderCamera.quaternion);
+    }
+    let coldWorldCheckpoint=coldGame?.checkpoint.world??factoryRestore?.checkpoint.native.world;
+    let coldNativeWorld=coldGame?.world??factoryRestore?.native.world;
+    let coldRoot=coldGame?.root??factoryRestore?.native.root;
+    let coldBase=coldGame?.base??factoryRestore?.native.base;
+    let coldPlants=coldGame?.plants??factoryRestore?.native.plants;
+    let coldNeighborRoot=coldGame?.neighborRoot??factoryRestore?.native.neighborRoot;
+    let coldReceipts=coldGame?.receipts??factoryRestore?.native.receipts;
+    let coldView=coldGame?.view??factoryRestore?.native.view;
+    const coldProgress=coldGame?.checkpoint.progress??factoryRestore?.checkpoint.native.progress??null;
+    const coldRestore=Boolean(coldGame||factoryRestore);
+    let snapshot:HvpCoastSourceSnapshot|undefined=coldBase??await (overrides.createSourceSnapshot?.() ?? materializeHvpCoastSourceAsync());
+    if(!snapshot)throw new Error("HVP source snapshot missing");
+    const snapshotVersion=snapshot.version;
     if (disposed || hvpMountEpoch !== myEpoch) {
       // Canceled while the source was deferred: publish nothing, schedule
       // nothing, claim neither Ready nor Error.
       return Object.freeze({ dispose });
     }
-    if(overrides.factorySourceProfile && (!overrides.factoryExtension||(overrides.factorySourceProfile.version!=="hvp-factory-startsite-v1"&&overrides.factorySourceProfile.version!=="hvp-factory-startsite-v2"&&overrides.factorySourceProfile.version!=="hvp-factory-startsite-v3"&&overrides.factorySourceProfile.version!=="hvp-factory-startsite-v4"&&overrides.factorySourceProfile.version!=="hvp-factory-startsite-v5")||snapshot.version!==overrides.factorySourceProfile.version))throw new Error("Factory source/profile binding mismatch");
-    if((snapshot.version==="hvp-factory-startsite-v1"||snapshot.version==="hvp-factory-startsite-v2"||snapshot.version==="hvp-factory-startsite-v3"||snapshot.version==="hvp-factory-startsite-v4"||snapshot.version==="hvp-factory-startsite-v5")&&!overrides.factorySourceProfile)throw new Error("Factory source requires its explicitly bound profile");
-    const initialFactoryCargo=overrides.factorySourceProfile?(await import("../factory/fixtures/cargoSite")).createFactoryCargoSite(snapshot):undefined;
+    if(factorySourceProfile && (!overrides.factoryExtension||!Object.hasOwn(factorySourceReaders,factorySourceProfile.version)||snapshot.version!==factorySourceProfile.version))throw new Error("Factory source/profile binding mismatch");
+    if((snapshot.version==="hvp-factory-startsite-v1"||snapshot.version==="hvp-factory-startsite-v2"||snapshot.version==="hvp-factory-startsite-v3"||snapshot.version==="hvp-factory-startsite-v4"||snapshot.version==="hvp-factory-startsite-v5"||snapshot.version==="hvp-factory-startsite-v6")&&!factorySourceProfile)throw new Error("Factory source requires its explicitly bound profile");
+    if(factorySourceProfile){
+      if(factorySourceProfile.version==="hvp-factory-startsite-v6"){
+        factoryAssetController=new AbortController();
+        cleanupFactoryPresentation=()=>factoryAssetController?.abort();
+      }
+      factoryPlayAssets=await import("../factory/presentation/playAssetLoader");
+      const loadedMetadataBytes=factoryPlayAssets.readLoadedHullMetadataBytes();
+      if(!Number.isSafeInteger(loadedMetadataBytes)||loadedMetadataBytes<0||loadedMetadataBytes>FACTORY_HULL_METADATA_CPU_BYTES)
+        throw new Error("Factory Hull metadata cache byte count invalid");
+      if(loadedMetadataBytes>0)factoryCosts.set("factory:hull-metadata",{cpu:loadedMetadataBytes,mesh:0,triangles:0,draws:0});
+      if(factorySourceProfile.version==="hvp-factory-startsite-v6"){
+        factoryCosts.set("factory:hull-metadata",{cpu:FACTORY_HULL_METADATA_CPU_BYTES,mesh:0,triangles:0,draws:0});
+        factoryCosts.set("factory:hull-projection",{cpu:FACTORY_HULL_PROJECTION_CPU_PEAK_BYTES,mesh:FACTORY_HULL_RENDER_MESH_PEAK_BYTES,
+          triangles:FACTORY_HULL_TRIANGLES,draws:FACTORY_HULL_DRAWS});
+      }
+    }
+    let factoryHullProjection:import("../factory/presentation/playAssetLoader").FactoryHullProjection|undefined;
+    let factoryHullRenderProjection:import("../factory/presentation/playAssetLoader").PlayAssetProjection|undefined;
+    let factoryHullNativeSectors:readonly HvpCollisionSector[]|undefined;
+    let factoryDecorHullFootprint:FactoryDecorHullFootprint|undefined;
+    const initialFactoryCargo=factorySourceProfile?(await import("../factory/fixtures/cargoSite")).createFactoryCargoSite(snapshot):undefined;
     if(initialFactoryCargo)factoryCosts.set(initialFactoryCargo.ownerId,{cpu:initialFactoryCargo.canonicalJson.length*16+1944,mesh:1296,triangles:12,draws:1});
-    const sourceColumn=overrides.factorySourceProfile?.readColumn??readHvpSourceColumnWorld;
-    const vegetationProfile=overrides.factorySourceProfile?{version:"hvp-factory-vegetation-v1" as const,readColumn:sourceColumn}:undefined;
+    const sourceColumn=factorySourceProfile?.readColumn??readHvpSourceColumnWorld;
+    const vegetationProfile=factorySourceProfile?{version:"hvp-factory-vegetation-v1" as const,readColumn:sourceColumn}:undefined;
     const prepared = prepareHvpCoastSource(snapshot);
     startupPhase("startupSourceMs");
+    documentPort.body.dataset.hestiaPrototypeSourceRevision = prepared.version;
+    documentPort.body.dataset.hestiaPrototypeSeed = prepared.seedName;
     documentPort.body.dataset.hestiaPrototypeSourceDigest = prepared.sourceDigest;
-    const terrainRoot = createHvpTerrainOwner(coldGame?.root??createHvpTerrainRoot(prepared, `hvp-session-${myEpoch}`, myEpoch));
-    documentPort.body.dataset.hestiaPrototypeRestoreSource=coldGame?"artifact":"authored-start";
-    const coldEast=coldGame?.checkpoint.world.neighbor?.resident?coldGame.neighborRoot?.read():undefined;
+    const terrainRoot = createHvpTerrainOwner(coldRoot??createHvpTerrainRoot(prepared, `hvp-session-${myEpoch}`, myEpoch));
+    snapshot=undefined;coldBase=undefined;coldRoot=undefined;
+    documentPort.body.dataset.hestiaPrototypeRestoreSource=coldRestore?"artifact":"authored-start";
+    let coldEast=coldWorldCheckpoint?.neighbor?.resident?coldNeighborRoot?.read():undefined;
     const initialTerrain = meshInitialHvpTerrain(terrainRoot.read(),coldEast);
     const terrainMesh = initialTerrain.get(0)!;
     if (terrainMesh.faceCount === 0) throw new Error("HVP coast mesher produced no terrain faces.");
@@ -1070,9 +1304,9 @@ export const startHvp = async (
     const terrainLooks = new Map([...initialTerrain].map(([id, mesh]) => [id, createHvpCompactLookTerrain(mesh, look, {allowPartialRoles:true})]));
     let joinLook = createHvpCompactLookTerrain(joinMesh, look);
     let farLook = createHvpCompactLookTerrain(farMesh, look, { allowPartialRoles: true });
-    const plants = coldGame?coldGame.plants.map(p=>p.instance):(()=>{
+    const plannedPlants = coldPlants?coldPlants.map(p=>p.instance):(()=>{
       const planned=planHvpVegetation(undefined,vegetationProfile);
-      if(overrides.factorySourceProfile?.version!=="hvp-factory-startsite-v2"&&overrides.factorySourceProfile?.version!=="hvp-factory-startsite-v3"&&overrides.factorySourceProfile?.version!=="hvp-factory-startsite-v4"&&overrides.factorySourceProfile?.version!=="hvp-factory-startsite-v5")return planned;
+      if(factorySourceProfile?.version!=="hvp-factory-startsite-v2"&&factorySourceProfile?.version!=="hvp-factory-startsite-v3"&&factorySourceProfile?.version!=="hvp-factory-startsite-v4"&&factorySourceProfile?.version!=="hvp-factory-startsite-v5"&&factorySourceProfile?.version!=="hvp-factory-startsite-v6")return planned;
       const invalid=planned.filter(p=>!isHvpPlantHabitat(p.kind,p.position.x,p.position.z,vegetationProfile));
       const removed=invalid[0];
       if(planned.length!==97||invalid.length!==1||removed?.id!=="hvp:flora:bed-52-220"||removed.kind!=="broadleaf"||removed.variant!==1
@@ -1080,12 +1314,132 @@ export const startHvp = async (
       // Exact source-derived nonphysical broadleaf delta; all wood/native owners and habitat guards remain intact.
       return Object.freeze(planned.filter(p=>p!==removed));
     })();
+    const plants = !coldRestore&&!coldPlants&&factorySourceProfile?.version==="hvp-factory-startsite-v6"?(()=>{
+      const heroMatches=plannedPlants.filter(p=>p.id==="hvp:flora:hero");
+      const hero=heroMatches[0];
+      if(heroMatches.length!==1||hero?.kind!=="tree"||hero.variant!==0||hero.position.x!==8||hero.position.z!==7){
+        throw Error("Factory V6 initial hero vegetation binding mismatch");
+      }
+      return Object.freeze(plannedPlants.filter(p=>p!==hero));
+    })():plannedPlants;
     const vegetationSourceBytes = estimateHvpVegetationSourceBytes(plants);
     if (vegetationSourceBytes > 16 * 1024 * 1024) { throw new Error("Vegetation source BudgetExceeded before allocation"); }
+    const physicsPrepareBytes = 96 * 1024 * 1024;
+    if(factorySourceProfile?.version==="hvp-factory-startsite-v6"){
+      if(!factoryPlayAssets||!factoryAssetController||factoryCosts.get("factory:hull-metadata")?.cpu!==FACTORY_HULL_METADATA_CPU_BYTES
+        ||factoryCosts.get("factory:hull-projection")?.cpu!==FACTORY_HULL_PROJECTION_CPU_PEAK_BYTES){
+        throw new Error("Factory V6 Hull admission reservation missing");
+      }
+      const hullPreloadLedger=buildHvpResourceLedger({terrainMesh,terrainMeshes:[...initialTerrain.values()],waterMesh:water,joinMesh,farMesh,
+        groupedIndexBytes:[...terrainLooks.values()].reduce((n,group)=>n+group.indices.byteLength,0)+joinLook.indices.byteLength+farLook.indices.byteLength,
+        drawCalls:[...terrainLooks.values()].reduce((n,group)=>n+group.materialRanges.length,0)+1+joinLook.materialRanges.length+farLook.materialRanges.length,
+        checkpointSourceBytes,visualEffects:true});
+      const cost=factoryTotals(),baseCpu=hullPreloadLedger.totalCpuBytes+cost.cpu;
+      const totalCpuBytes=Math.max(baseCpu+32*1024*1024,baseCpu-hullPreloadLedger.tempEstimateBytes+physicsPrepareBytes);
+      const vegetationDrawCalls=plants.reduce((draws,plant)=>draws+(plant.kind==="tree"?2:1),0);
+      admitHvpResources({totalCpuBytes,retainedMeshBytes:hullPreloadLedger.retainedMeshBytes+cost.mesh,
+        triangles:hullPreloadLedger.triangles+cost.triangles,
+        drawCalls:hullPreloadLedger.drawCalls+cost.draws+vegetationDrawCalls+3},caps);
+      if(factoryAssetController.signal.aborted||disposed||hvpMountEpoch!==myEpoch)return Object.freeze({dispose});
+      const metadata=await factoryPlayAssets.readFactoryHullMetadata();
+      const metadataBytes=metadata.metadataCosts.sidecarUtf8Bytes+metadata.metadataCosts.sidecarHashCopyBytes
+        +metadata.metadataCosts.sidecarRawUtf16Bytes+metadata.metadataCosts.sidecarParsedUtf16Bytes+metadata.metadataCosts.sidecarParsedGraphBytes;
+      if(metadataBytes!==FACTORY_HULL_METADATA_CPU_BYTES)throw new Error("Factory V6 Hull metadata admission changed");
+      factoryHullProjection=await factoryPlayAssets.loadFactoryHullProjection({instanceId:"factory_hull:crashsite",signal:factoryAssetController.signal});
+      const hullCosts=factoryHullProjection.costs;
+      const loadedHullBytes=hullCosts.sourceBytes+hullCosts.sourceSha256CopyBytes+hullCosts.jsonUtf16Bytes+hullCosts.jsonGraphBytes
+        +hullCosts.renderScratchBytes+hullCosts.renderArtifactBytes+hullCosts.stagedRenderArtifactBytes+hullCosts.nativeSectorBytes+hullCosts.nativeHashCopyPeakBytes;
+      const nativeHashScratch=219_792,collisionDigestScratch=329_688;
+      if(loadedHullBytes!==7_752_960||loadedHullBytes+703_296+nativeHashScratch+collisionDigestScratch!==FACTORY_HULL_PROJECTION_CPU_PEAK_BYTES
+        ||factoryHullProjection.parts.length!==8||factoryHullProjection.nativeSectors.length!==8
+        ||factoryHullProjection.costs.nativeSectorBytes!==703_296||factoryHullProjection.collisionDigest!==metadata.census.nativeCollisionDigest){
+        throw new Error("Factory V6 Hull projection cost or geometry binding mismatch");
+      }
+      factoryHullNativeSectors=factoryHullProjection.nativeSectors;
+      factoryDecorHullFootprint=factoryDecorHullFootprintFromNativeSectors(factoryHullNativeSectors);
+      if(disposed||hvpMountEpoch!==myEpoch)return Object.freeze({dispose});
+    }
+    const eastHaloReader = (east: NonNullable<typeof coldEast>) =>
+      (x:number,y:number,z:number) => x>=256?east.readSlot(x-256,y,z):undefined;
     const collisionSources: HvpCollisionSource[] = [{...terrainRoot.read(),
-      readHaloSlot:coldEast?(x,y,z)=>x>=256?coldEast.readSlot(x-256,y,z):undefined:undefined}];
-    const plantSources=coldGame?.plants??plants.map(plant=>buildHvpPlant(plant,vegetationProfile));
-    const vegetation = plantSources.flatMap((source) => {
+      readHaloSlot:coldEast?eastHaloReader(coldEast):undefined}];
+    plantSources=coldPlants??plants.map(plant=>buildHvpPlant(plant,vegetationProfile));
+    const checkpointSourceBytesBeforePlantAdoption=checkpointSourceBytes;
+    const plantGenerationMatchesNative=factoryRestore!==undefined&&coldPlants===factoryRestore.native.plants;
+    if(factoryRestore&&plantGenerationMatchesNative){
+      let sourceBytes=0;
+      for(const plant of plantSources){
+        for(const bytes of [plant.wood?.byteLength??0,plant.decoration.byteLength]){
+          if(!Number.isSafeInteger(bytes)||bytes<0||!Number.isSafeInteger(sourceBytes+bytes))throw Error("Factory cold plant source byte count invalid");
+          sourceBytes+=bytes;
+        }
+      }
+      if(sourceBytes!==vegetationSourceBytes||sourceBytes>factoryRestore.native.decodedBytes||sourceBytes>checkpointSourceBytes){
+        throw Error("Factory cold plant source binding mismatch");
+      }
+      coldPlantAdoptedBytes=sourceBytes;
+      checkpointSourceBytes-=coldPlantAdoptedBytes;
+    }
+    coldPlants=undefined;
+    const coldDecorInstallations:FactoryDecorInstallationBounds[]=factorySourceProfile?(factoryRestore?.checkpoint.factory.installations??[]).map(installation=>{
+      const native=factoryRestore?.checkpoint.nativeFactory.owners.find(owner=>owner.instanceId===installation.instanceId);
+      if(!native||native.definitionRef.sourceId!==installation.definitionSourceId||native.sourceDigest!==installation.sourceDigest
+        ||native.profileDigest!==installation.profileDigest||native.quarterTurns!==installation.quarterTurns
+        ||native.centerMm.some((value,index)=>value!==installation.centerMm[index])||!Number.isSafeInteger(native.installationRevision)
+        ||native.installationRevision<1)throw Error("Factory cold decoration owner binding mismatch");
+      return {instanceId:installation.instanceId,boundsMm:installation.boundsMm,
+        ownerWitness:JSON.stringify([native.sourceDigest,native.profileDigest,native.definitionRef.sourceId,...native.centerMm,
+          native.quarterTurns,native.installationRevision])};
+    }):[];
+    let offsetBytesEstimate=0,vegetationBaseLedger:ReturnType<typeof buildHvpResourceLedger>|undefined;
+    if(factorySourceProfile){
+      const footprintBytes=estimateFactoryDecorFootprintBytes(coldDecorInstallations,factoryDecorHullFootprint);
+      offsetBytesEstimate=plantSources.filter(source=>source.instance.kind!=="tree").length*22*22*Int16Array.BYTES_PER_ELEMENT;
+      vegetationBaseLedger=buildHvpResourceLedger({terrainMesh,terrainMeshes:[...initialTerrain.values()],waterMesh:water,joinMesh,farMesh,
+        vegetationSourceBytes,checkpointSourceBytes,groupedIndexBytes:[...terrainLooks.values()].reduce((n,group)=>n+group.indices.byteLength,0)
+          +joinLook.indices.byteLength+farLook.indices.byteLength,
+        drawCalls:[...terrainLooks.values()].reduce((n,group)=>n+group.materialRanges.length,0)+1+joinLook.materialRanges.length+farLook.materialRanges.length,
+        visualEffects:true});
+      const existingFactoryCost=factoryTotals(),decorContextBytes=footprintBytes+offsetBytesEstimate;
+      const preReaderBaseCpu=vegetationBaseLedger.totalCpuBytes+existingFactoryCost.cpu;
+      const preReaderCpu=Math.max(preReaderBaseCpu+decorContextBytes,
+        preReaderBaseCpu-vegetationBaseLedger.tempEstimateBytes+decorContextBytes+physicsPrepareBytes);
+      if(!Number.isSafeInteger(footprintBytes)||footprintBytes<0||!Number.isSafeInteger(offsetBytesEstimate)||offsetBytesEstimate<0
+        ||!Number.isSafeInteger(preReaderCpu)||preReaderCpu<0)throw Error("Factory decoration pre-reader count invalid");
+      admitHvpResources({totalCpuBytes:preReaderCpu,retainedMeshBytes:vegetationBaseLedger.retainedMeshBytes+existingFactoryCost.mesh,
+        triangles:vegetationBaseLedger.triangles+existingFactoryCost.triangles,
+        drawCalls:vegetationBaseLedger.drawCalls+existingFactoryCost.draws},caps);
+      factoryDecorFootprints=createFactoryDecorFootprints(coldDecorInstallations,factoryDecorHullFootprint);
+      if(factoryDecorFootprints.retainedBytes!==footprintBytes)throw Error("Factory decoration footprint admission changed");
+      factoryCosts.set("factory:decor-projection",{cpu:decorContextBytes,mesh:0,triangles:0,draws:0});
+    }
+    let initialDecorReaders:{occupancy:HvpMeshOccupancy;offsetBytes:number}[]=factorySourceProfile
+      ?plantSources.map(source=>{const projection=createFactoryDecorProjection(source,vegetationProfile,factoryDecorFootprints!);
+        return {occupancy:projection.occupancy,offsetBytes:projection.offsetBytes};})
+      :[];
+    if(initialDecorReaders.reduce((bytes,reader)=>bytes+reader.offsetBytes,0)!==offsetBytesEstimate)
+      throw Error("Factory decoration offset admission changed");
+    const initialDecorCounts=factorySourceProfile?initialDecorReaders.map(reader=>countFactoryDecorFaces(reader.occupancy)):[];
+    const projectedDecorBytes={mesh:0,temp:0,triangles:0};
+    if(factorySourceProfile){
+      const base=vegetationBaseLedger!;
+      for(const decor of initialDecorCounts){
+        const cost=factoryDecorFaceBytes(decor.exposedFaces,false);
+        projectedDecorBytes.mesh+=cost.mesh;projectedDecorBytes.temp+=cost.temp;projectedDecorBytes.triangles+=cost.triangles;
+      }
+      // Only the new Factory decoration projection has a pre-mesher bound here.
+      // Existing wood and ordinary HVP scenes retain their established ledger path.
+      const factoryCostWithReaders=factoryTotals();
+      const preMeshCpu=Math.max(base.totalCpuBytes+factoryCostWithReaders.cpu+2*projectedDecorBytes.mesh+projectedDecorBytes.temp,
+        base.totalCpuBytes-base.tempEstimateBytes+factoryCostWithReaders.cpu+2*projectedDecorBytes.mesh+physicsPrepareBytes);
+      const decorDrawCalls=initialDecorCounts.filter(value=>value.occupiedCells>0).length;
+      if(!Number.isSafeInteger(preMeshCpu)||preMeshCpu<0||!Number.isSafeInteger(projectedDecorBytes.mesh)||projectedDecorBytes.mesh<0
+        ||!Number.isSafeInteger(projectedDecorBytes.temp)||projectedDecorBytes.temp<0)throw Error("Factory decoration mesher count invalid");
+      admitHvpResources({totalCpuBytes:preMeshCpu,retainedMeshBytes:base.retainedMeshBytes+factoryCostWithReaders.mesh+projectedDecorBytes.mesh,
+        triangles:base.triangles+factoryCostWithReaders.triangles+projectedDecorBytes.triangles,
+        drawCalls:base.drawCalls+factoryCostWithReaders.draws+decorDrawCalls},caps);
+    }
+    vegetation = plantSources.flatMap((source,index) => {
       const plant=source.instance;
       if (source.wood !== null) {
         const wood = source.wood;
@@ -1093,13 +1447,19 @@ export const startHvp = async (
           originMeters: { x: plant.position.x + wood.originMeters.x, y: plant.position.y + wood.originMeters.y, z: plant.position.z + wood.originMeters.z },
           readSlot: (x, y, z) => wood.slotAt(x, y, z) });
       }
-      return meshHvpVegetation(source);
+      if(!factorySourceProfile)return meshHvpVegetation(source);
+      const decor=initialDecorCounts[index]!;
+      return meshHvpVegetation(source,undefined,{decoration:initialDecorReaders[index]!.occupancy,
+        ...(decor.occupiedCells===0?{omitEmptyDecoration:true}:{})});
     });
+    initialDecorReaders=[];
+    if(factoryDecorFootprints?.retainedBytes)factoryCosts.set("factory:decor-projection",{cpu:factoryDecorFootprints.retainedBytes,mesh:0,triangles:0,draws:0});
+    else factoryCosts.delete("factory:decor-projection");
     startupPhase("startupVegetationMs");
     if(coldEast){collisionSources.push({...coldEast,readHaloSlot:(x,y,z)=>x<0?terrainRoot.read().readSlot(x+256,y,z):undefined});}
-    const spawn = coldGame?.checkpoint.world.dropSpawn??{ x: -9, y: sourceColumn(-9, -9).topMeters + 2.25, z: -9 };
-    const savedDrop=coldGame?.world.bodies.find(b=>b.checkpoint.family==="drop"),savedInertia=coldGame?.world.bodies.find(b=>b.checkpoint.family==="inertia");
-    if(coldGame&&(!savedDrop||!savedInertia)){throw new Error("Saved prototype specimens missing");}
+    const spawn = coldWorldCheckpoint?.dropSpawn??{ x: -9, y: sourceColumn(-9, -9).topMeters + 2.25, z: -9 };
+    const savedDrop=coldNativeWorld?.bodies.find(b=>b.checkpoint.family==="drop"),savedInertia=coldNativeWorld?.bodies.find(b=>b.checkpoint.family==="inertia");
+    if(coldRestore&&(!savedDrop||!savedInertia)){throw new Error("Saved prototype specimens missing");}
     const dropMesh = savedDrop?meshHvpBodyCells(readHvpBodyCells(savedDrop.recipe.source),savedDrop.recipe.mass.centerOfMassMeters!,savedDrop.recipe.source.contentHash)
       :meshHvpOccupancy({ sizeX: 4, sizeY: 4, sizeZ: 4, cellMeters: 0.125,
       originMeters: { x: -0.25, y: -0.25, z: -0.25 }, slotAt: () => 1 }, undefined, "hvp-drop-cube-v1", "hvp-drop-cube-v1");
@@ -1114,7 +1474,7 @@ export const startHvp = async (
     })));
     const scenario=new URLSearchParams(windowPort.location?.search??"").get("hvpScenario")??"coast";
     if(!["coast","rock-arm","salvage","east-edge"].includes(scenario)){throw new Error("Unknown Hestia scenario");}
-    const salvageScenario=coldGame?coldGame.checkpoint.world.branch?.kind==="salvage":scenario==="salvage";
+    const salvageScenario=coldRestore?coldWorldCheckpoint?.branch?.kind==="salvage":scenario==="salvage";
     const salvageMarker=salvageScenario?createHvpSalvageMarker(sourceColumn(-11.5,-12.625).topMeters):undefined;
     const salvageLink=salvageScenario?createHvpSalvageLink():undefined;
     type NeighborCosts={meshes:readonly HvpCompactMesh[];groupedBytes:number;draws:number;sourceBytes:number;cacheBytes:number;checkpointBytes:number;baseProxyBytes:number;sharedBytes:number;physicsBytes:number};
@@ -1149,32 +1509,50 @@ export const startHvp = async (
     // Mesher scratch is no longer owned in this phase. Reserve two bounded
     // collision jobs (40 MiB each) plus 8 MiB results and their solver copy.
     // Never add serial phase peaks, or omit simultaneously owned worker buffers.
-    const physicsPrepareBytes = 96 * 1024 * 1024;
+    const sceneTotalAfterPlantAdoption=Math.max(ledger.totalCpuBytes,ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes);
+    if(factoryRestore&&measurement.enabled){
+      const sceneTotalBeforePlantAdoption=Math.max(ledger.totalCpuBytes+coldPlantAdoptedBytes,
+        ledger.totalCpuBytes+coldPlantAdoptedBytes-ledger.tempEstimateBytes+physicsPrepareBytes);
+      measurement.record("factoryColdPlantAdoption",performance.now(),0,{phase:"scene",plantGenerationMatchesNative,plantSourceBytes:coldPlantAdoptedBytes,
+        checkpointSourceBytesBefore:checkpointSourceBytesBeforePlantAdoption,checkpointSourceBytesAfter:checkpointSourceBytes,
+        sceneTotalBefore:sceneTotalBeforePlantAdoption,sceneTotalAfter:sceneTotalAfterPlantAdoption,mesherScratchBytes:ledger.tempEstimateBytes,
+        nativeReserveBytes:physicsPrepareBytes,capBytes:caps.maxCpuBytes});
+    }
     admitHvpResources({ ...ledger,
-      totalCpuBytes: Math.max(ledger.totalCpuBytes, ledger.totalCpuBytes - ledger.tempEstimateBytes + physicsPrepareBytes)
+      totalCpuBytes: sceneTotalAfterPlantAdoption
     }, caps);
     const rockScenario=scenario==="rock-arm";
     // Explicit new-session scenario, never a camera-driven teleport of a live avatar.
-    const playerSpawn = coldGame?.checkpoint.world.player?.position??(initialFactoryCargo?{x:initialFactoryCargo.spawnMm[0]/1000,y:initialFactoryCargo.spawnMm[1]/1000,z:initialFactoryCargo.spawnMm[2]/1000}:scenario==="east-edge"?{x:7,y:sourceColumn(7,-14).topMeters+.92,z:-14}:rockScenario?{x:7,y:.125+.92,z:-6.25}:salvageScenario?
+    const playerSpawn = coldWorldCheckpoint?.player?.position??(initialFactoryCargo?{x:initialFactoryCargo.spawnMm[0]/1000,y:initialFactoryCargo.spawnMm[1]/1000,z:initialFactoryCargo.spawnMm[2]/1000}:scenario==="east-edge"?{x:7,y:sourceColumn(7,-14).topMeters+.92,z:-14}:rockScenario?{x:7,y:.125+.92,z:-6.25}:salvageScenario?
       {x:-11.8125,y:sourceColumn(-11.8125,-15.25).topMeters+.92,z:-15.25}:{ x: -9, y: sourceColumn(-9, -11).topMeters + 0.92, z: -11 });
-    documentPort.body.dataset.hestiaPrototypeScenario=coldGame?"saved":scenario;
+    documentPort.body.dataset.hestiaPrototypeScenario=coldRestore?"saved":scenario;
     // Authored dry impulse area behind the start, not the sloping channel bank.
     const inertiaSpawn={x:-9,y:Math.max(...[-9,-8].flatMap(x=>[-13.75,-12.5].map(z=>sourceColumn(x,z).topMeters)))+1.25,z:-13};
     const branchSpawn={x:-12,y:Math.max(...[-12,-11.5].flatMap(x=>[-13.5,-13].map(z=>sourceColumn(x,z).topMeters))),z:-13.5};
     startupPhase("startupAdmissionMs");
-    physics = await (overrides.createPhysics ?? createHvpPhysicsClient)(collisionSources, spawn, physicsAbort.signal, playerSpawn, inertiaSpawn,branchSpawn,coldGame?.checkpoint.world,salvageScenario?"salvage":"branch",measurement.enabled?measurement.worker:undefined,overrides.factorySourceProfile!==undefined,initialFactoryCargo);
+    const coldNeighborLod=coldGame?.checkpoint.neighbor?.lod??factoryRestore?.checkpoint.native.neighbor?.lod;
+    physics = await (overrides.createPhysics ?? createHvpPhysicsClient)(collisionSources, spawn, physicsAbort.signal, playerSpawn, inertiaSpawn,branchSpawn,coldWorldCheckpoint,salvageScenario?"salvage":"branch",measurement.enabled?measurement.worker:undefined,factorySourceProfile!==undefined,initialFactoryCargo,factoryRestore?.checkpoint.nativeFactory,factoryHullNativeSectors);
+    if(factoryHullProjection){
+      const {assetId,glbSha256,sourceFileSha256,definitionRef,visualOnlyAnchor,frameId,bounds,parts,visualVariant}=factoryHullProjection;
+      factoryHullRenderProjection=Object.freeze({assetId,glbSha256,sourceFileSha256,definitionRef,visualOnlyAnchor,frameId,bounds,parts,
+        ...(visualVariant?{visualVariant}:{})});
+      factoryHullProjection=undefined;factoryHullNativeSectors=undefined;
+      factoryCosts.set("factory:hull-projection",{cpu:1_523_808,mesh:1_523_808,triangles:0,draws:0});
+    }
+    coldWorldCheckpoint=undefined;coldEast=undefined;collisionSources.length=0;
     startupPhase("startupPhysicsMs");
     if (disposed || hvpMountEpoch !== myEpoch) { await physics.dispose(); physics = undefined; return Object.freeze({ dispose }); }
     const branch=physics.read().structural;
     if (physicsPausedByFocus || documentPort.hidden) { await physics.command("Pause"); }
     if(!branch){throw new Error("Canonical anchored branch is missing from the admitted World");}
     const fixedBranchOwners=new Set(branch.parts.filter(p=>p.anchored).map(p=>p.ownerId));
-    branchProducts=meshHvpBranchProducts(branch).filter(p=>!coldGame||p.decoration||fixedBranchOwners.has(p.ownerId));
-    const coldFragments=coldGame?.world.bodies.filter(b=>b.checkpoint.family==="terrain"||(b.checkpoint.family==="branch"&&b.checkpoint.dynamic)).map(b=>{
+    branchProducts=meshHvpBranchProducts(branch).filter(p=>!coldRestore||p.decoration||fixedBranchOwners.has(p.ownerId));
+    const coldFragments=coldNativeWorld?.bodies.filter(b=>b.checkpoint.family==="terrain"||(b.checkpoint.family==="branch"&&b.checkpoint.dynamic)).map(b=>{
       const cells=readHvpBodyCells(b.recipe.source),mesh=meshHvpBodyCells(cells,b.recipe.mass.centerOfMassMeters!,b.recipe.source.contentHash);
       return {ownerId:b.checkpoint.ownerId,family:b.checkpoint.family as "terrain"|"branch",mesh,cells:cells.length,
         sourceBytes:b.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES,group:createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true})};
     })??[];
+    coldNativeWorld=undefined;
     ledger=sceneLedger({terrainMesh:initialTerrain.get(0)!,terrainMeshes:[...initialTerrain.values()],waterMesh:water,joinMesh,farMesh,
       additionalMeshes:[...vegetation.map(p=>p.mesh),dropMesh,avatarMesh,inertiaMesh,...branchProducts.map(p=>p.mesh),...coldFragments.map(p=>p.mesh)],vegetationSourceBytes,checkpointSourceBytes,visualEffects:true,
       groupedIndexBytes:[...terrainLooks.values()].reduce((n,g)=>n+g.indices.byteLength,joinLook.indices.byteLength+farLook.indices.byteLength+coldFragments.reduce((n,p)=>n+p.group.indices.byteLength,0)),
@@ -1378,12 +1756,13 @@ export const startHvp = async (
       }
     };
 
-    camera = createHvpCamera({ camera: backend.camera, canvas, windowPort: windowPort as Window,
-      isInputBlocked: () => Boolean(playerInput?.active||playerInput?.activationPending||factoryPanelFocused()) });
-    playerInput = createHvpPlayerInput(canvas, backend.camera, physics, documentPort as Document, windowPort as Window, () => {
+    const inputCamera=logicalFactoryCamera??backend.camera;
+    camera = createHvpCamera({ camera: inputCamera, canvas, windowPort: windowPort as Window,
+      isInputBlocked: () => Boolean(saveBusy||saveHold||playerInput?.active||playerInput?.activationPending||factoryPanelFocused()) });
+    playerInput = createHvpPlayerInput(canvas, inputCamera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
-    },{confirm:()=>{if (!factoryBlocked()) void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||factoryPanelFocused()||factoryBlocked()||Boolean(dormancy?.read().recoveryHold)||Boolean(overrides.factoryExtension&&!factoryCanResume()),overrides.factorySourceProfile!==undefined,overrides.factoryExtension!==undefined);
-    if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
+    },{confirm:()=>{if (!factoryBlocked()) void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||factoryPanelFocused()||factoryBlocked()||Boolean(dormancy?.read().recoveryHold)||Boolean(overrides.factoryExtension&&!factoryCanResume()),factorySourceProfile!==undefined,overrides.factoryExtension!==undefined);
+    if(!coldRestore&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
     const dropProfile = createMaterialProfile({ id: materialProfileId("hvp:drop-limestone-v1"), kind: "BasicLit",
       baseColor: { r: 0.8, g: 0.35, b: 0.12 }, opacity: 1, doubleSided: false, wireframe: false, depthWrite: true });
     const avatarProfile = createMaterialProfile({ id: materialProfileId("hvp:player:suit-v1"), kind: "BasicLit",
@@ -1830,9 +2209,12 @@ export const startHvp = async (
       }finally{supportPending=false;}
     };
     let saveRevision:number|null=coldRevision,saveInitialized=coldGame!==undefined,restoreSequence=0;
-    let saveView={state:coldGame?"Loaded":"Idle",message:coldGame?"Started from save – paused":"Local Hestia save",revision:coldRevision};
+    let saveView={state:coldRestore?"Loaded":"Idle",message:coldRestore?"Started from save – paused":"Local Hestia save",revision:coldRevision};
+    let factoryPersistenceState:"Idle"|"Saving"|"Saved"|"Rejected"|"RecoveryHold"=coldRestore?"Saved":"Idle";
+    let factoryPersistenceMessage=coldRestore?"Combined checkpoint loaded and paused":"No Factory checkpoint saved";
+    let factorySlotAvailable=Boolean(coldFactory),factorySaveAdmissionReady=false;
     let plantCheckpoints:ReturnType<typeof encodeHvpPlant>[]|undefined;
-    let salvage=salvageScenario?createHvpSalvageLoop(terrainRoot.read().sessionId,coldGame?.checkpoint.progress??undefined):undefined;
+    let salvage=salvageScenario?createHvpSalvageLoop(terrainRoot.read().sessionId,coldProgress??undefined):undefined;
     const observeSalvage=()=>{
       if(!salvage){return;}
       const s=physics!.read();salvage.observe({ticks:s.ticks,status:s.status,terrainTransaction:s.terrainTransaction,movingState:s.moving.state,
@@ -1841,7 +2223,7 @@ export const startHvp = async (
     };
     const currentView=()=>({camera:camera!.checkpoint(),...playerInput!.checkpoint(),tool:plasmaTool!.checkpoint(),waterEnabled,aoEnabled});
     const restoreView=(view:ReturnType<typeof currentView>)=>{
-      playerInput!.restore(view);camera!.restore(view.camera);inspectEnabled=view.camera.mode==="Fly";plasmaTool!.restore(view.tool);
+      playerInput!.restore(view);camera!.restore(view.camera);inspectEnabled=!overrides.factoryExtension&&view.camera.mode==="Fly";plasmaTool!.restore(view.tool);
       waterEnabled=view.waterEnabled;presentation.setWaterEnabled(waterEnabled);documentPort.body.dataset.hestiaPrototypeWater=waterEnabled?"on":"off";
       aoEnabled=view.aoEnabled;setAoOnNodes(aoEnabled);documentPort.body.dataset.hestiaPrototypeAo=aoEnabled?"on":"off";
     };
@@ -2041,16 +2423,24 @@ export const startHvp = async (
       finally{saveBusy=false;if(!disposed&&hvpMountEpoch===myEpoch){hud?.updateSave();if(!saveHold){syncPhysicsTransforms();observeSalvage();updateTerrainState();}}}
     };
     let inspectEnabled = false;
-    if(coldGame){
-      terrainConsumer!.restoreReceipts(coldGame.receipts.terrain);structuralConsumer!.restoreReceipts(coldGame.receipts.structural);bodyCutConsumer!.restoreReceipts(coldGame.receipts.moving);
-      if(coldGame.neighborRoot){
-        await neighbor!.initialize(coldGame.neighborRoot,coldGame.checkpoint.neighbor!.lod);
+    if(coldRestore){
+      if(!coldReceipts)throw new Error("Saved Hestia receipts missing");
+      terrainConsumer!.restoreReceipts(coldReceipts.terrain);structuralConsumer!.restoreReceipts(coldReceipts.structural);bodyCutConsumer!.restoreReceipts(coldReceipts.moving);
+      coldReceipts=undefined;
+      if(coldNeighborRoot){
+        if(coldNeighborLod===undefined)throw new Error("Saved neighbour LOD binding missing");
+        await neighbor!.initialize(coldNeighborRoot,coldNeighborLod);
         // The decoded B grid is handed to the controller (or released when
         // dormant); it is no longer an additional checkpoint-owned copy.
-        checkpointSourceBytes-=HVP_SOURCE_SLOT_COUNT;
-        ledger={...ledger,checkpointSourceBytes,totalCpuBytes:ledger.totalCpuBytes-HVP_SOURCE_SLOT_COUNT};
+        const adoptedNeighborBytes=factoryRestore?HVP_SOURCE_SLOT_COUNT+(coldNeighborRoot?.read().overlayBytes??0):HVP_SOURCE_SLOT_COUNT;
+        coldNeighborAdoptedBytes=adoptedNeighborBytes;
+        checkpointSourceBytes-=adoptedNeighborBytes;
+        ledger={...ledger,checkpointSourceBytes,totalCpuBytes:ledger.totalCpuBytes-adoptedNeighborBytes};
+        coldNeighborRoot=undefined;
       }
-      restoreView(coldGame.view);syncPhysicsTransforms();presentation.updateProjection();updateTerrainState();
+      if(!coldView)throw new Error("Saved Hestia view missing");
+      restoreView(coldView);syncPhysicsTransforms();presentation.updateProjection();updateTerrainState();
+      coldView=undefined;
       coldGame=undefined;
     }
     dormancy=createHvpDormancyController({physics,stage:stageDormancy,current:()=>!disposed&&hvpMountEpoch===myEpoch,
@@ -2097,24 +2487,28 @@ export const startHvp = async (
         loadNewSession:()=>{if (rejectLegacyPersistence()) return; if(!saveBusy&&!saveHold&&windowPort.confirm?.("Reopen the saved session? Unsaved changes will be discarded.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpLoad=primary");}},
         setPreset: (preset: HvpCameraPreset) => {
+          if(saveBusy||saveHold)return;
           playerInput!.stop();
           camera!.setPreset(preset);
           if(preset==="C07-QUARRY") { void physics!.command("Pause");playerInput!.aimAt({x:-10.5,y:1,z:-9}); }
           hud!.update("Ready", camera!.readPose(), stats);
         },
         resetCamera: () => {
+          if(saveBusy||saveHold)return;
           playerInput!.stop();
           camera!.reset();
           hud!.update("Ready", camera!.readPose(), stats);
         },
         readWaterEnabled: () => waterEnabled,
         setWaterEnabled: (enabled: boolean) => {
+          if(saveBusy||saveHold)return;
           waterEnabled = enabled;
           presentation.setWaterEnabled(enabled);
           documentPort.body.dataset.hestiaPrototypeWater = enabled ? "on" : "off";
         },
         readInspectEnabled: () => inspectEnabled,
         setInspectEnabled: (enabled: boolean) => {
+          if(saveBusy||saveHold)return;
           playerInput!.stop();
           inspectEnabled = enabled;
           camera!.setMode(enabled ? "Fly" : "Orbit");
@@ -2122,6 +2516,7 @@ export const startHvp = async (
         },
         readAoEnabled: () => aoEnabled,
         setAoEnabled: (enabled: boolean) => {
+          if(saveBusy||saveHold)return;
           aoEnabled = enabled;
           setAoOnNodes(enabled);
           documentPort.body.dataset.hestiaPrototypeAo = enabled ? "on" : "off";
@@ -2147,13 +2542,14 @@ export const startHvp = async (
           const result = physics!.command(kind);
           return publishFactoryView ? result.then(() => { publishFactoryView!(); }) : result;
         },
-        play: () => { if (overrides.factoryExtension && !factoryCanResume()) return; inspectEnabled = false; camera!.setMode("Orbit"); playerInput!.start(); },
+        play: () => { if (saveBusy||saveHold||(overrides.factoryExtension && !factoryCanResume())) return; inspectEnabled = false; camera!.setMode("Orbit"); playerInput!.start(); },
         readThirdPerson: () => playerInput!.thirdPerson,
         readAimScreen: () => playerInput!.aimScreen,
-        togglePlayerView: () => playerInput!.toggleView(),
+        togglePlayerView: () => {if(!saveBusy&&!saveHold)playerInput!.toggleView();},
         readTool:()=>plasmaTool!.read(),
-        selectTool:mode=>plasmaTool!.select(mode),
+        selectTool:mode=>{if(!saveBusy&&!saveHold)plasmaTool!.select(mode);},
         aimBranch:()=>{
+          if(saveBusy||saveHold)return;
           playerInput!.stop();plasmaTool!.select(physics!.read().structural?.cutEdge===1?1:2);
           const target=physics!.read().structural?.aimPoint;
           if(target){playerInput!.aimAt(target);}
@@ -2163,6 +2559,7 @@ export const startHvp = async (
         },
         previewSupport:()=>{void previewRockSupport();},
         aimRock:()=>{
+          if(saveBusy||saveHold)return;
           playerInput!.stop();camera!.setPreset("C05-ROCKARM");plasmaTool!.select(2);
           playerInput!.aimAt({x:6.49,y:2.1875,z:-6.25});void physics!.command("Pause");
           hud!.update("Ready",camera!.readPose(),stats);
@@ -2196,11 +2593,32 @@ export const startHvp = async (
 
     if (overrides.factoryExtension) {
       const current = () => !disposed && hvpMountEpoch === myEpoch;
+      const factoryHostEpoch=factoryRestore?.checkpoint.host.epoch??myEpoch;
+      let factoryProjectionReady=!factoryRestore;
+      try{
+        if(!factorySaveStore){
+          const persistence=await import("../factory/persistence/factorySaveStore");
+          factorySaveStore=persistence.createFactorySaveStore();
+        }
+        if(!factorySaveStoreInitialized){await factorySaveStore.initialize();factorySaveStoreInitialized=true;}
+        const slots=await factorySaveStore.list(),slot=slots.slots.find(value=>value.slotId==="factory-primary");
+        factorySlotAvailable=slot!==undefined;
+        if(!coldRestore)saveRevision=slot?.recordRevision??null;
+        if(slot){
+          factoryPersistenceState="Saved";
+          factoryPersistenceMessage=coldRestore&&slot.recordRevision!==saveRevision
+            ?"Loaded checkpoint is older than the saved primary; Save will recheck memory before writing"
+            :"Combined Factory checkpoint available; Save checks memory before writing";
+        }
+        else if(!coldRestore){factoryPersistenceState="Idle";factoryPersistenceMessage="No Factory checkpoint saved; Save checks memory before writing";}
+      }catch(error){
+        factorySlotAvailable=false;factoryPersistenceState="Rejected";factoryPersistenceMessage=`Factory storage unavailable: ${String(error)}`;
+      }
       // An admitted internal command owns the Factory barrier; all native/host holds still apply.
-      const nativeFactoryConfirmed=()=>{const native=physics!.read();return confirmed(true)&&!saveBusy&&!saveHold&&(!native.factoryFacilities||native.factoryFacilities.state==="Idle")&&["Running","Paused"].includes(native.status);};
+      const nativeFactoryConfirmed=()=>{const native=physics!.read();return confirmed(true)&&(!factoryHandle||factoryProjectionReady)&&!saveBusy&&!saveHold&&(!native.factoryFacilities||native.factoryFacilities.state==="Idle")&&["Running","Paused"].includes(native.status);};
       const factoryRecoveryAvailable=()=>{
         const native=physics!.read(),input=physics!.lifecycle?.().factoryInput;
-        return current()&&!documentPort.hidden&&!factoryPausePending()&&!saveBusy&&!saveHold&&confirmed(true)&&!factoryBlocked()
+        return current()&&(!factoryHandle||factoryProjectionReady)&&!documentPort.hidden&&!factoryPausePending()&&!saveBusy&&!saveHold&&confirmed(true)&&!factoryBlocked()
           &&!!physics!.recoverFactorySimulationHold&&!!factoryHandle?.recoverSimulationHold
           &&native.status==="SimulationHold"&&native.factoryFacilities?.state==="Idle"&&native.terrainTransaction==="Idle"
           &&native.neighborTransaction==="Idle"&&native.bodyResidencyTransaction==="Idle"&&native.moving.state==="Idle"
@@ -2208,74 +2626,198 @@ export const startHvp = async (
           &&!!input&&input.enabled&&!input.closing&&input.commandDepth===0&&input.pendingIds.length===0
           &&input.desiredLevel.x===0&&input.desiredLevel.z===0&&!input.desiredLevel.sprint&&!input.desiredLevel.jump;
       };
+      const retainedSaveCpuBytes=()=>Math.max(0,ledger.totalCpuBytes-ledger.tempEstimateBytes+physics!.collisionBytes*2
+        +Math.max(0,factoryTotals().cpu-ledger.factoryCpuBytes));
+      const factorySaveAvailable=()=>{
+        if(!factorySaveAdmissionReady||!factorySaveStore||!factorySaveStoreInitialized||!current()||(factoryHandle&&!factoryProjectionReady)||documentPort.hidden||saveBusy||saveHold||factoryPausePending()
+          ||!confirmed(true)||playerInput!.active||playerInput!.activationPending||factoryInputError!==null)return false;
+        const native=physics!.read(),facilities=native.factoryFacilities,input=physics!.lifecycle?.().factoryInput,compiler=terrainCompiler!.diagnostics();
+        return native.status==="Paused"&&facilities?.state==="Idle"&&facilities.transactionId===null
+          &&facilities.prepared===null&&native.terrainTransaction==="Idle"&&native.neighborTransaction==="Idle"
+          &&native.bodyResidencyTransaction==="Idle"&&native.moving.state==="Idle"&&(!native.structural||native.structural.state==="Idle")
+          &&!!input&&input.enabled&&!input.closing&&input.commandDepth===0&&input.pendingIds.length===0
+          &&input.desiredLevel.x===0&&input.desiredLevel.z===0&&!input.desiredLevel.sprint&&!input.desiredLevel.jump
+          &&compiler.runningJobs===0&&compiler.queue===0;
+      };
+      const factoryContinueAvailable=()=>Boolean(factorySaveStore&&factorySaveStoreInitialized&&factorySlotAvailable&&current()&&(!factoryHandle||factoryProjectionReady)&&!documentPort.hidden&&!saveBusy&&!saveHold);
       const read = (): FactoryHostView => {
         if (!current()) throw new Error("Factory host disposed or superseded");
         const root = terrainRoot.read(), native = physics!.read();
-        return Object.freeze({ sessionId: root.sessionId, epoch: myEpoch, nativeTick: native.ticks,
+        return Object.freeze({ sessionId: root.sessionId, epoch: factoryHostEpoch, nativeTick: native.ticks,
+          persistence:Object.freeze({state:factoryPersistenceState,message:factoryPersistenceMessage,revision:saveRevision,
+            saveAvailable:factorySaveAvailable(),continueAvailable:factoryContinueAvailable()}),
           simulationRecoveryAvailable:factoryRecoveryAvailable(),
-          physicsStatus: native.status, confirmed: confirmed() && !saveBusy && !saveHold && !factoryPausePending() && (!native.factoryFacilities||native.factoryFacilities.state==="Idle") && ["Running", "Paused"].includes(native.status),
+          physicsStatus: native.status, confirmed: confirmed() && (!factoryHandle||factoryProjectionReady) && !saveBusy && !saveHold && !factoryPausePending() && (!native.factoryFacilities||native.factoryFacilities.state==="Idle") && ["Running", "Paused"].includes(native.status),
           input:Object.freeze({active:playerInput!.active,activationPending:playerInput!.activationPending,pointerLocked:(documentPort as Document).pointerLockElement===canvas,
             pausePending:factoryPausePending(),focusedPanel:factoryFocusedPanel,surface:factorySurface,error:factoryInputError}),
           terrain: Object.freeze({ epoch: root.epoch, revision: root.revision, sourceDigest: root.sourceDigest,
-            baseDigest: root.baseDigest, profileVersion:overrides.factorySourceProfile?snapshot.version as NonNullable<FactoryHostView["terrain"]["profileVersion"]>:undefined, cellMeters: root.cellMeters, originMeters: root.originMeters,
+            baseDigest: root.baseDigest, profileVersion:factorySourceProfile?snapshotVersion as NonNullable<FactoryHostView["terrain"]["profileVersion"]>:undefined, cellMeters: root.cellMeters, originMeters: root.originMeters,
             sizeX: root.sizeX, sizeY: root.sizeY, sizeZ: root.sizeZ }) });
       };
       let syncCarrierProjection=()=>{};
-      let syncInstalledProjection=()=>{};
-      publishFactoryView = () => {
-        syncCarrierProjection();
+      let syncInstalledProjection:(deferProjection?:boolean)=>void=()=>{};
+      publishFactoryView = (deferInstalledProjection=false) => {
+        const carrierStarted=measurement.enabled?performance.now():0;
+        try{syncCarrierProjection();}finally{if(measurement.enabled)measurement.record("factoryCarrierProjection",carrierStarted,performance.now()-carrierStarted,{calls:1});}
         const view = read();
-        for (const listener of factoryListeners) listener(view);
-        syncInstalledProjection();
+        let listenerIndex=0;
+        for (const listener of factoryListeners){
+          const listenerStarted=measurement.enabled?performance.now():0;
+          try{listener(view);}finally{if(measurement.enabled)measurement.record("factoryPublishListener",listenerStarted,performance.now()-listenerStarted,{calls:1,index:listenerIndex});}
+          listenerIndex++;
+        }
+        const installedStarted=measurement.enabled?performance.now():0;
+        try{syncInstalledProjection(deferInstalledProjection);}finally{if(measurement.enabled)measurement.record("factoryInstalledProjection",installedStarted,performance.now()-installedStarted,{calls:1});}
         return view;
       };
       readFactoryView = read;
+      const factoryAssetAbort=factoryAssetController??new AbortController();
+      factoryAssetController=factoryAssetAbort;
+      cleanupFactoryPresentation=()=>factoryAssetAbort.abort();
       const factoryAssets=await import("../factory/presentation/factoryAssets");
-      const playAssets=await import("../factory/presentation/playAssetLoader");
+      const playAssets=factoryPlayAssets??await import("../factory/presentation/playAssetLoader");
+      factoryPlayAssets=playAssets;
+      const loadedHullMetadataBytes=playAssets.readLoadedHullMetadataBytes();
+      if(!Number.isSafeInteger(loadedHullMetadataBytes)||loadedHullMetadataBytes<0||loadedHullMetadataBytes>FACTORY_HULL_METADATA_CPU_BYTES)
+        throw new Error("Factory Hull metadata cache byte count invalid");
+      if(loadedHullMetadataBytes>0&&!factoryCosts.has("factory:hull-metadata"))
+        factoryCosts.set("factory:hull-metadata",{cpu:loadedHullMetadataBytes,mesh:0,triangles:0,draws:0});
       const s1Assets=await import("../factory/presentation/factoryS1Assets");
       const partCells=await import("../factory/presentation/factoryPartCells");
       const handlingProfiles=await import("../factory/construction/cargoHandlingProfile");
       const factoryCatalog=(await import("../factory/catalog/fp02Catalog"));
       const playCatalog=factoryCatalog.loadFactoryCatalog(factoryCatalog.createFp02CatalogInput());
-      const factoryAssetAbort=new AbortController();
+      const factoryMaterialView=(await import("../factory/presentation/factoryMaterialProjection"));
+      const factoryPlayBatch=(await import("../factory/presentation/batchPlayParts"));
       const installationProfiles=await import("../factory/construction/installationProfile");
+      if(installationProfiles.FACTORY_RUNTIME_INSTALLATION_PROFILE_CACHE_RESERVE_BYTES!==factoryProfileCacheReserveBytes)throw new Error("Factory runtime profile cache reserve mismatch");
+      const factoryStorageProfile=installationProfiles.readRuntimeFactoryInstallationProfile("B09");
+      type HvpCurrentPhysicsSnapshot=ReturnType<HvpPhysicsClient["read"]>;
+      type FactoryDecorDomainRead=ReturnType<NonNullable<FactoryHostExtensionHandle["readFactoryPresentation"]>>;
+      type FactoryMaterialView=import("../factory/presentation/factoryMaterialProjection").FactoryMaterialProjection;
+      type FactoryProjectionPose=Readonly<{instanceId:string;definitionSourceId:string;centerMm:readonly number[];quarterTurns:number}>;
       type FactoryScene={id:string;keys:readonly RepresentationKey[];artifacts:MeshArtifact[];transforms:readonly RepresentationTransformSnapshot[];published:boolean;
         play?:import("../factory/presentation/playAssetLoader").PlayAssetProjection;
-        request?:FactoryPlacementRequest;s1?:import("../factory/presentation/factoryS1Assets").FactoryS1Assets;
+        request?:FactoryProjectionPose;s1?:import("../factory/presentation/factoryS1Assets").FactoryS1Assets;
+        nativeOwnerId?:string;materialAssetId?:string;materialPacketId?:string;materialFamily?:"cables"|"lots"|"packets";
         expectedSourceDigest?:string;expectedProfileDigest?:string;retiredKeys?:Set<RepresentationKey>;
         safePose?:Readonly<{jobId:string|null;partPoses:import("../factory/presentation/machinePose").MachinePose["partPoses"]}>;modelError?:string|null};
       const factoryScenes=new Map<string,FactoryScene>();
-      const factoryStages=new Map<string,{request:FactoryFacilityRequest;binding:FactoryHostView;prepared:import("../hestia-prototype/physics/factoryFacilitySession").FactoryFacilityRead;scene?:FactoryScene;play?:import("../factory/presentation/playAssetLoader").PlayAssetProjection;s1?:import("../factory/presentation/factoryS1Assets").FactoryS1Assets;consumedProjection?:{scene:FactoryScene;published:boolean;activeKeys:readonly RepresentationKey[];registered:boolean}}>();
+      const factoryMaterialTemplates=new Map<string,import("../factory/presentation/playAssetLoader").PlayAssetProjection>();
+      const factoryMaterialTemplateAssetIds=Object.freeze(["play_cable_link_v1","play_cable_end_v1","play_steel_v1","play_semi_v1","play_profile_v1","play_sheet_v1","play_offcut_v1"] as const);
+      let factoryMaterialDesired:{key:string;view:FactoryMaterialView}|undefined;
+      let factoryMaterialAcceptedKey="",factoryMaterialWorker:Promise<void>|undefined,factoryMaterialGeneration=0;
+      let factoryMaterialAcceptedFamilies:{cables:string;lots:string;packets:string;key:string;cableRoutes:readonly string[];
+        lotPlacements:readonly string[];lotPlacementBindings:readonly (readonly [string,string])[]}=
+        {cables:"",lots:"",packets:"",key:"",cableRoutes:Object.freeze([]),lotPlacements:Object.freeze([]),lotPlacementBindings:Object.freeze([])};
+      let factoryMaterialSummary:Readonly<Record<string,unknown>>=Object.freeze({links:[],lots:[],packets:[]});
+      const factoryMaterialScenes=new Map<string,FactoryScene>();
+      const factoryStorageInspectionScenes=new Map<string,FactoryScene>();
+      const factoryStorageInspectionLoading=new Set<string>(),factoryStorageInspectionVisible=new Set<string>();
+      let factoryStorageInspectionGeneration=0;
+      let factoryDecorAttemptBinding:string|undefined;
+      let factoryDecorBackendDispatchPending=false;
+      const failFactoryDecorClosed=(error:unknown,resource:"decoration"|"material"="decoration"):never=>{
+        const failure=new Error(`RecoveryHold: Factory ${resource} renderer publication failed: ${String(error)}`);
+        fatalFactoryDecorationError=failure;
+        void dispose().finally(()=>{
+          if(hvpMountEpoch===myEpoch){failureRoot?.remove();failureRoot=presentHvpFailure(documentPort,failure);}
+        }).catch(()=>{});
+        throw failure;
+      };
+      const updateFactoryDecorProjection=()=>{
+        try{presentation.updateProjection();factoryDecorBackendDispatchPending=false;}
+        catch(error){if(factoryDecorBackendDispatchPending)failFactoryDecorClosed(error);throw error;}
+      };
+      applyFactoryDecorProjection=updateFactoryDecorProjection;
+      const admitFactoryDecor=(candidate:Parameters<typeof admitHvpResources>[0]):boolean=>{
+        try{admitHvpResources(candidate,caps);return true;}
+        catch(error){
+          if(error instanceof Error&&error.message.startsWith("HVP scene BudgetExceeded:")){
+            documentPort.body.dataset.hestiaPrototypeDecorationAdmission=error.message;return false;
+          }
+          throw error;
+        }
+      };
+      const factoryStages=new Map<string,{request:FactoryFacilityRequest;binding:FactoryHostView;prepared:import("../hestia-prototype/physics/factoryFacilitySession").FactoryFacilityRead;captureCostKey:string;scene?:FactoryScene;play?:import("../factory/presentation/playAssetLoader").PlayAssetProjection;s1?:import("../factory/presentation/factoryS1Assets").FactoryS1Assets;consumedProjection?:{scene:FactoryScene;published:boolean;activeKeys:readonly RepresentationKey[];registered:boolean}}>();
       let carrierScene:FactoryScene|undefined,carrierProjectionRevision=0,carrierPoseKey="",carrierOperation:"pickup"|"deposit"|"release"|undefined,carrierCaptureCostKey:string|undefined;
+      let factoryHullScene:FactoryScene|undefined;
       let ghost:FactoryScene|undefined;
       let ghostDefinition:string|undefined;
       // Closed S0 definitions share bounded presentation slots; paid Native instance IDs stay separate.
       const ghostSlots=new Map(["B06","B07","B05","B09","fp02.comp.small_brace","fp02.device.battery_4kwh","fp02.device.distribution_40kw","fp02.device.pv_pack_2kwp","fp02.device.wind_pack_6kw"].map((definition,index)=>[definition,{id:`ghost:slot_${index}`,revision:0}]));
-      const factoryPose=(keys:readonly RepresentationKey[],request:FactoryPlacementRequest):readonly RepresentationTransformSnapshot[]=>{
+      const factoryPose=(keys:readonly RepresentationKey[],request:Pick<FactoryProjectionPose,"centerMm"|"quarterTurns">):readonly RepresentationTransformSnapshot[]=>{
         if(request.centerMm.length!==3||!request.centerMm.every(Number.isFinite)||!Number.isInteger(request.quarterTurns)||request.quarterTurns<0||request.quarterTurns>3)throw new Error("Invalid Factory projection pose");
         return keys.map(key=>({representationKey:key,positionRelative:{x:request.centerMm[0]!/1000,y:request.centerMm[1]!/1000,z:request.centerMm[2]!/1000},orientation:{x:0,y:Math.sin(request.quarterTurns*Math.PI/4),z:0,w:Math.cos(request.quarterTurns*Math.PI/4)},scale:{x:1,y:1,z:1}}));
       };
       const costFor=(sourceId:string,materialBytes=0):FactoryCost=>{const profile=installationProfiles.createFactoryInstallationProfile(sourceId),boxes=profile.colliders.length;
         return {cpu:boxes*648*3+profile.canonicalJson.length*2+materialBytes*2,mesh:boxes*648*2,triangles:boxes*12,draws:boxes};};
-      const admitFactory=()=>{const cost=factoryTotals();admitHvpResources({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.factoryCpuBytes+cost.cpu,retainedMeshBytes:ledger.retainedMeshBytes-ledger.factoryMeshBytes+cost.mesh,triangles:ledger.triangles-ledger.factoryTriangles+cost.triangles,drawCalls:ledger.drawCalls-ledger.factoryDraws+cost.draws},caps);};
-      // The loader's sealed 25-file census caps every file at 108824 bytes,
+      const admitFactory=()=>{
+        const cost=factoryTotals(),memory=factoryHandle?.readFactoryCheckpointMemory?.();
+        if(factoryHandle&&!memory)throw Error("Factory committed-owner memory telemetry unavailable");
+        if(memory&&(!Number.isSafeInteger(memory.cacheBytes)||memory.cacheBytes<0))throw Error("Factory committed-owner cache count invalid");
+        const tree=memory?.treeMetrics,units=tree?64*(tree.objectCount+tree.arrayCount)+16*Math.max(0,tree.nodeCount-1):0;
+        const ownerBytes=tree?tree.utf16Bytes+units+(memory?.cacheBytes??0):0;
+        if(!Number.isSafeInteger(ownerBytes)||ownerBytes<0)throw Error("Factory committed-owner memory count invalid");
+        const retained=estimateHvpStageCpuBytes(ledger,ledger,0,physicsPrepareBytes)-ledger.factoryCpuBytes+cost.cpu;
+        const totalCpuBytes=retained+ownerBytes;
+        const cacheBreakdown=memory?.cacheBreakdown;
+        if(measurement.enabled)measurement.record("factoryStageAdmission",performance.now(),0,{R:retained-physicsPrepareBytes,T:tree?.utf16Bytes??0,
+          U:units,K:memory?.cacheBytes??0,D:null,P:null,oldBound:16*1024*1024,totalBytes:totalCpuBytes,nativeReserveBytes:physicsPrepareBytes,cacheBreakdown,
+          profileCacheReserveBytes:factoryProfileCacheReserveBytes,frameProjectionReferenceReserveBytes:factoryFrameProjectionReferenceReserveBytes,
+          logicalCameraReserveBytes:factoryLogicalCameraReserveBytes});
+        admitHvpResources({...ledger,totalCpuBytes,
+          retainedMeshBytes:ledger.retainedMeshBytes-ledger.factoryMeshBytes+cost.mesh,
+          triangles:ledger.triangles-ledger.factoryTriangles+cost.triangles,drawCalls:ledger.drawCalls-ledger.factoryDraws+cost.draws},caps);
+      };
+      // The loader's sealed 30-file census caps every file at 108824 bytes,
       // 3720 vertices / 5580 indices / 24 ranges. Admit transient parsing and
       // both original + backend geometry copies before starting an import.
-      const playImportPeak:FactoryCost={cpu:108824*8+(83735+9721)*4+3720*32,mesh:(3720*24+5580*2)*2,triangles:1860,draws:24};
+      const playColorBytes=3720*3*Float32Array.BYTES_PER_ELEMENT;
+      const playImportPeak:FactoryCost={cpu:108824*8+(83735+9721+10782+5520+14007)*4+3720*32+playColorBytes*3,
+        mesh:(3720*(24+3*Float32Array.BYTES_PER_ELEMENT)+5580*2)*2,triangles:1860,draws:24};
       const playCost=(projection:import("../factory/presentation/playAssetLoader").PlayAssetProjection):FactoryCost=>{
-        const bytes=projection.parts.reduce((n,p)=>n+p.artifact.positions.byteLength+(p.artifact.normals?.byteLength??0)+p.artifact.indices.byteLength,0);
-        return {cpu:bytes*3+108824*8+(83735+9721)*4,mesh:bytes*2,triangles:projection.parts.reduce((n,p)=>n+p.artifact.indices.length/3,0),draws:projection.parts.reduce((n,p)=>n+p.artifact.materialRanges.length,0)};
+        const bytes=projection.parts.reduce((n,p)=>n+p.artifact.positions.byteLength+(p.artifact.normals?.byteLength??0)+p.artifact.indices.byteLength+(p.artifact.attributes?.color?.byteLength??0),0);
+        return {cpu:bytes*3+108824*8+(83735+9721+10782+5520+14007)*4,mesh:bytes*2,triangles:projection.parts.reduce((n,p)=>n+p.artifact.indices.length/3,0),draws:projection.parts.reduce((n,p)=>n+p.artifact.materialRanges.length,0)};
+      };
+      const materialTemplateItem:Readonly<Record<string,string>>=Object.freeze({play_steel_v1:"fp02.bulk.steel_known",play_semi_v1:"fp02.bulk.steel_semi",
+        play_profile_v1:"fp02.bulk.steel_profile",play_sheet_v1:"fp02.bulk.steel_sheet",play_offcut_v1:"fp02.bulk.steel_offcut"});
+      const materialExpectedBinding=(assetId:string):import("../factory/presentation/playAssetLoader").PlayExpectedBinding=>{
+        if(assetId==="play_cable_link_v1"||assetId==="play_cable_end_v1")return {visualOnlyAnchor:{kind:"visual-only-cable",itemId:"fp02.comp.field_cable",
+          quantityAuthority:"installed_cable routeMm from confirmed paid job",deformation:"only approved route; visual scale cannot add length, ports, mass or material"}};
+        const itemId=materialTemplateItem[assetId],item=playCatalog.items.find(value=>value.sourceId===itemId);
+        if(!item||!itemId)throw Error("Factory material template catalog binding missing");
+        return {visualOnlyAnchor:{kind:"visual-only-material",itemId,catalogDigest:playCatalog.catalogDigest,
+          quantityAuthority:"existing unique actual lot custody; never a quantity encoded by triangles",
+          itemRef:{sourceId:item.sourceId,version:item.version,digest:item.digest}}};
+      };
+      const loadFactoryMaterialTemplates=async(assetIds:ReadonlySet<string>)=>{
+        for(const assetId of factoryMaterialTemplateAssetIds){
+          if(!assetIds.has(assetId)||factoryMaterialTemplates.has(assetId))continue;
+          const importKey=`factory:material:template-import:${assetId}`,templateKey=`factory:material:template:${assetId}`;
+          factoryCosts.set(importKey,playImportPeak);
+          try{
+            admitFactory();
+            const projection=await playAssets.loadPlayAssetProjection({assetId,instanceId:`factory:material-template:${assetId}`,signal:factoryAssetAbort.signal,
+              expectedBinding:materialExpectedBinding(assetId),renderMode:"vertex-colors"});
+            if(!current())throw Error("Factory material template import superseded");
+            const bytes=projection.parts.reduce((n,part)=>n+              +part.artifact.positions.byteLength+(part.artifact.normals?.byteLength??0)+part.artifact.indices.byteLength+(part.artifact.attributes?.color?.byteLength??0),0);
+            if(!Number.isSafeInteger(bytes)||bytes<=0)throw Error("Factory material template geometry count invalid");
+            factoryCosts.delete(importKey);factoryCosts.set(templateKey,{cpu:bytes+4096,mesh:0,triangles:0,draws:0});
+            admitFactory();factoryMaterialTemplates.set(assetId,projection);
+          }catch(error){factoryCosts.delete(importKey);throw error;}
+        }
       };
       // Include these module-retained closed definitions in every Factory
       // lifetime, including a second session whose compiler cache is warm.
       factoryCosts.set("s1:closed-definitions",{cpu:2*13*32768+(19222+19487+5596+5889)*8,mesh:0,triangles:0,draws:0});admitFactory();
-      const refreshFactoryProjection=()=>{
+      const refreshFactoryProjection=(deferProjection=false)=>{
         factoryTransforms=Object.freeze([...factoryScenes.values(),...(ghost?[ghost]:[])].filter(scene=>scene.published).flatMap(scene=>scene.transforms));
-        documentPort.body.dataset.hestiaFactoryPresentation=JSON.stringify({sessionId:terrainRoot.read().sessionId,epoch:myEpoch,nativeTick:physics!.read().ticks,
+        documentPort.body.dataset.hestiaFactoryPresentation=JSON.stringify({sessionId:terrainRoot.read().sessionId,epoch:factoryHostEpoch,nativeTick:physics!.read().ticks,
           scenes:[...factoryScenes.values()].map(scene=>({instanceId:scene.id,published:scene.published,assetId:scene.play?.assetId??null,
             glbSha256:scene.play?.glbSha256??null,sourceFileSha256:scene.play?.sourceFileSha256??null,s1:!!scene.s1,modelError:scene.modelError??null,
-            visibleKeys:scene.keys.filter(key=>activeFactoryKeys.has(key)),transforms:scene.transforms})),cost:factoryTotals()});
-        presentation.updateProjection();
+            visibleKeys:scene.keys.filter(key=>activeFactoryKeys.has(key)),transforms:scene.transforms})),material:factoryMaterialSummary,cost:factoryTotals()});
+        if(!deferProjection)updateFactoryDecorProjection();
       };
       const dropFactoryScene=(scene:FactoryScene)=>{
         const retired=scene.retiredKeys??=new Set();
@@ -2285,15 +2827,424 @@ export const startHvp = async (
         }}catch(error){factoryScenes.set(scene.id,scene);throw Error(`RecoveryHold: Factory retirement unproven: ${String(error)}`);}
         for(const key of scene.keys)managedFactoryKeys.delete(key);if(scene.s1)s1Assets.disposeFactoryS1Assets(scene.s1);factoryCosts.delete(scene.id);factoryScenes.delete(scene.id);
       };
-      const stagePlayScene=(id:string,projection:import("../factory/presentation/playAssetLoader").PlayAssetProjection,request:FactoryPlacementRequest):FactoryScene=>{
+      const stagePlayScene=(id:string,projection:import("../factory/presentation/playAssetLoader").PlayAssetProjection,request:FactoryProjectionPose,
+        s1?:import("../factory/presentation/factoryS1Assets").FactoryS1Assets):FactoryScene=>{
         const keys=projection.parts.map(part=>part.artifact.representationKey);
         for(const key of keys)managedFactoryKeys.add(key);
-        const scene:FactoryScene={id,keys,artifacts:[],transforms:factoryPose(keys,request),published:false,play:projection};
+        const scene:FactoryScene={id,keys,artifacts:[],transforms:factoryPose(keys,request),published:false,play:projection,request,...(s1?{s1}:{})};
         try{for(const part of projection.parts){const artifact=createMeshArtifact({...part.artifact,frameId:frame});
           requireAccepted(presentation.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact,materialProfiles:part.materialProfiles})),"Play hidden mesh stage");
-          scene.artifacts.push(artifact);plainTerrainLeases.push({nodeKey:artifact.representationKey,lease:materialFactory.acquire(part.materialProfiles)});}}
+          scene.artifacts.push(artifact);plainTerrainLeases.push({nodeKey:artifact.representationKey,lease:materialFactory.acquire(part.materialProfiles,{vertexColors:artifact.attributes?.color!==undefined})});}}
         catch(error){dropFactoryScene(scene);throw error;}return scene;
       };
+      const playBatchTransform=(key:RepresentationKey,position:readonly [number,number,number],orientation:Readonly<{x:number;y:number;z:number;w:number}>,scale:Readonly<{x:number;y:number;z:number}>):RepresentationTransformSnapshot=>
+        Object.freeze({representationKey:key,positionRelative:Object.freeze({x:position[0],y:position[1],z:position[2]}),orientation:Object.freeze({...orientation}),scale:Object.freeze({...scale})});
+      const materialIdentityTransform=(key:RepresentationKey):RepresentationTransformSnapshot=>playBatchTransform(key,[0,0,0],{x:0,y:0,z:0,w:1},{x:1,y:1,z:1});
+      const directionFromZ=(from:readonly number[],to:readonly number[])=>{
+        const dx=(to[0]!-from[0]!)/1000,dy=(to[1]!-from[1]!)/1000,dz=(to[2]!-from[2]!)/1000,length=Math.hypot(dx,dy,dz);
+        if(!Number.isFinite(length)||length<=0)throw Error("Factory material route direction invalid");
+        const x=dx/length,y=dy/length,z=dz/length;
+        if(z<-.999999)return Object.freeze({x:0,y:1,z:0,w:0});
+        const qx=-y,qy=x,qz=0,qw=1+z,magnitude=Math.hypot(qx,qy,qz,qw);
+        return Object.freeze({x:qx/magnitude,y:qy/magnitude,z:qz/magnitude,w:qw/magnitude});
+      };
+      const materialCableInstances=(view:FactoryMaterialView,generation:number):import("../factory/presentation/batchPlayParts").FactoryPlayBatchInstance[]=>{
+        const instances:import("../factory/presentation/batchPlayParts").FactoryPlayBatchInstance[]=[];
+        for(const link of view.links){
+          const nonzero:Array<Readonly<{from:readonly number[];to:readonly number[]}>>=[];
+          for(let index=0;index<3;index++){const from=link.routeMm[index]!,to=link.routeMm[index+1]!;
+            if(from.some((value,axis)=>value!==to[axis]))nonzero.push({from,to});}
+          if(nonzero.length===0||nonzero.length>3)throw Error("Factory paid cable route has no admitted segments");
+          for(const segment of nonzero){
+            const key=representationKey(`factory:material:cable:${generation}:${instances.length}`),from=segment.from.map(value=>value/1000) as [number,number,number],to=segment.to.map(value=>value/1000) as [number,number,number];
+            const delta=to.map((value,axis)=>value-from[axis]!),length=Math.hypot(...delta),projection=factoryMaterialTemplates.get(link.assetId);
+            if(!projection)throw Error("Factory paid cable template unavailable");
+            instances.push({projection,transform:playBatchTransform(key,[(from[0]+to[0])/2,(from[1]+to[1])/2,(from[2]+to[2])/2],
+              directionFromZ(segment.from,segment.to),{x:1,y:1,z:length})});
+          }
+          for(const [endIndex,point] of [link.routeMm[0],link.routeMm[3]].entries()){
+            const key=representationKey(`factory:material:cable-end:${generation}:${instances.length}`),endProjection=factoryMaterialTemplates.get(link.endAssetId);
+            if(!endProjection)throw Error("Factory paid cable end template unavailable");
+            const segment=endIndex===0?nonzero[0]!:nonzero.at(-1)!;
+            instances.push({projection:endProjection,transform:playBatchTransform(key,[point[0]/1000,point[1]/1000,point[2]/1000],
+              directionFromZ(segment.from,segment.to),{x:1,y:1,z:1})});
+          }
+        }
+        return instances;
+      };
+      const materialLotPartId=(lot:FactoryMaterialView["lots"][number]):string=>{
+        if(lot.definitionSourceId==="B05"||lot.role==="storage")return "body";
+        const prefix=lot.definitionSourceId==="B06"?"cutter_":"former_";
+        return `${prefix}${lot.role==="input"?"infeed_carriage":lot.role==="wip"?"clamp":lot.role==="output"?"outfeed_carriage":"offcut"}`;
+      };
+      // B09's source-derived interior floor tops at .32m; corner posts leave a clear +/- .875m footprint.
+      const b09StorageInteriorBounds=Object.freeze({min:Object.freeze({x:-.875,y:.32,z:-.875}),max:Object.freeze({x:.875,y:.32,z:.875})});
+      type FactoryMaterialLot=FactoryMaterialView["lots"][number];
+      type FactoryMaterialLotLayout=Readonly<{count:number;columns:number;rows:number;scale:number;cellWidth:number;cellDepth:number}>;
+      const materialLotLayouts=(view:FactoryMaterialView)=>{
+        const sorted=[...view.lots].sort((a,b)=>a.instanceId.localeCompare(b.instanceId)||a.role.localeCompare(b.role)||a.itemId.localeCompare(b.itemId));
+        const groups=new Map<string,FactoryMaterialLot[]>();for(const lot of sorted){const key=`${lot.instanceId}:${lot.role}`,group=groups.get(key)??[];group.push(lot);groups.set(key,group);}
+        const layouts=new Map<string,FactoryMaterialLotLayout>(),gap=.01;
+        for(const [key,lots] of groups){
+          const first=lots[0]!,scene=factoryScenes.get(first.instanceId),tray=scene?.play?.parts.find(value=>value.partId===materialLotPartId(first));
+          const bounds=lots.map(lot=>factoryMaterialTemplates.get(lot.assetId)?.parts[0]?.artifact.bounds);
+          if(!tray||bounds.some(value=>!value))continue;
+          const trayBounds=first.definitionSourceId==="B09"&&first.role==="storage"?b09StorageInteriorBounds:tray.artifact.bounds;
+          const trayWidth=trayBounds.max.x-trayBounds.min.x,trayDepth=trayBounds.max.z-trayBounds.min.z;
+          const glyphWidth=Math.max(...bounds.map(value=>value!.max.x-value!.min.x)),glyphDepth=Math.max(...bounds.map(value=>value!.max.z-value!.min.z));
+          if(![trayWidth,trayDepth,glyphWidth,glyphDepth].every(Number.isFinite)||trayWidth<=0||trayDepth<=0||glyphWidth<=0||glyphDepth<=0)continue;
+          let best:FactoryMaterialLotLayout|undefined;
+          for(let columns=1;columns<=lots.length;columns++){
+            const rows=Math.ceil(lots.length/columns),cellWidth=trayWidth/columns,cellDepth=trayDepth/rows;
+            const scale=Math.min(.35,(cellWidth-gap)/glyphWidth,(cellDepth-gap)/glyphDepth);
+            if(Number.isFinite(scale)&&scale>0&&(!best||scale>best.scale))best=Object.freeze({count:lots.length,columns,rows,scale,cellWidth,cellDepth});
+          }
+          if(best)layouts.set(key,best);
+        }
+        const ordinals=new Map<string,number>();
+        return sorted.map(lot=>{const key=`${lot.instanceId}:${lot.role}`,ordinal=ordinals.get(key)??0;ordinals.set(key,ordinal+1);
+          return {lot,ordinal,layout:layouts.get(key)};});
+      };
+      const materialLotTransform=(lot:FactoryMaterialLot,ordinal:number,layout:FactoryMaterialLotLayout|undefined,domain:FactoryDecorDomainRead):RepresentationTransformSnapshot|undefined=>{
+        const scene=factoryScenes.get(lot.instanceId),request=scene?.request,partId=materialLotPartId(lot),part=scene?.play?.parts.find(value=>value.partId===partId);
+        const glyph=factoryMaterialTemplates.get(lot.assetId)?.parts[0]?.artifact.bounds;
+        if(!scene?.published||!request||!part||!layout||!glyph)return undefined;
+        const machine=domain.machines.find(value=>value.instanceId===lot.instanceId),safePoseState=scene.safePose;
+        const safePose=scene.s1&&safePoseState&&safePoseState.jobId===machine?.jobId
+          ?safePoseState.partPoses.find(value=>value.partId===partId)?.translationM:[0,0,0];
+        const isB09Storage=lot.definitionSourceId==="B09"&&lot.role==="storage";
+        const bounds=isB09Storage?b09StorageInteriorBounds:part.artifact.bounds,min=[bounds.min.x,bounds.min.y,bounds.min.z],max=[bounds.max.x,bounds.max.y,bounds.max.z];
+        const column=ordinal%layout.columns,row=Math.floor(ordinal/layout.columns),rowCount=Math.min(layout.columns,layout.count-row*layout.columns);
+        const glyphCenterX=(glyph.min.x+glyph.max.x)/2,glyphCenterZ=(glyph.min.z+glyph.max.z)/2;
+        const floorClearance=isB09Storage?1/1024:.04;
+        const local=[(min[0]!+max[0]!)/2+(column-(rowCount-1)/2)*layout.cellWidth-glyphCenterX*layout.scale,
+          max[1]!+floorClearance-glyph.min.y*layout.scale,
+          (min[2]!+max[2]!)/2+(row-(layout.rows-1)/2)*layout.cellDepth-glyphCenterZ*layout.scale];
+        const turns=request.quarterTurns,rotated=turns===0?local:turns===1?[local[2]!,local[1]!,-local[0]!]:turns===2?[-local[0]!,local[1]!,-local[2]!]:[-local[2]!,local[1]!,local[0]!];
+        const pose=safePose??[0,0,0],center=request.centerMm.map(value=>value/1000),key=representationKey(`factory:material:lot:${ordinal}`);
+        const rotatedPose=turns===0?pose:turns===1?[pose[2]!,pose[1]!,-pose[0]!]:turns===2?[-pose[0]!,pose[1]!,-pose[2]!]:[-pose[2]!,pose[1]!,pose[0]!];
+        const orientation=turns===0?{x:0,y:0,z:0,w:1}:turns===1?{x:0,y:Math.SQRT1_2,z:0,w:Math.SQRT1_2}:turns===2?{x:0,y:1,z:0,w:0}:{x:0,y:-Math.SQRT1_2,z:0,w:Math.SQRT1_2};
+        return playBatchTransform(key,[center[0]!+rotated[0]!+rotatedPose[0]!,center[1]!+rotated[1]!+rotatedPose[1]!,center[2]!+rotated[2]!+rotatedPose[2]!],orientation,{x:layout.scale,y:layout.scale,z:layout.scale});
+      };
+      const materialLotInstances=(view:FactoryMaterialView,domain:FactoryDecorDomainRead,generation:number):import("../factory/presentation/batchPlayParts").FactoryPlayBatchInstance[]=>{
+        const instances:import("../factory/presentation/batchPlayParts").FactoryPlayBatchInstance[]=[];
+        for(const {lot,ordinal,layout} of materialLotLayouts(view)){
+          const projection=factoryMaterialTemplates.get(lot.assetId),transform=materialLotTransform(lot,ordinal,layout,domain);
+          if(!projection||!transform)continue;
+          const key=representationKey(`factory:material:lot:${generation}:${instances.length}`);
+          instances.push({projection,transform:Object.freeze({...transform,representationKey:key})});
+        }
+        return instances;
+      };
+      const materialPacketKey=(packet:FactoryMaterialView["packets"][number])=>`packet:${packet.lineId}:${packet.packetId}`;
+      const materialPacketTransform=(packet:FactoryMaterialView["packets"][number],domain:FactoryDecorDomainRead,key:RepresentationKey):RepresentationTransformSnapshot=>{
+        const line=domain.belts.find(value=>value.lineId===packet.lineId);
+        if(!line)throw Error("Factory material packet line binding unavailable");
+        return playBatchTransform(key,packet.worldPositionMm.map(value=>value/1000) as [number,number,number],directionFromZ(line.source.centerMm,line.target.centerMm),{x:.4,y:.4,z:.4});
+      };
+      const materialFamilyKeys=(view:FactoryMaterialView,host:FactoryHostView,domain:FactoryDecorDomainRead)=>{
+        const lotPlacements=materialLotLayouts(view).map(({lot,ordinal,layout})=>{const transform=materialLotTransform(lot,ordinal,layout,domain);
+          return [JSON.stringify([lot.instanceId,lot.role,lot.containerId,lot.itemId]),JSON.stringify([lot.assetId,transform?.positionRelative??null,transform?.orientation??null,transform?.scale??null])];});
+        const cableRoutes=view.links.map(link=>JSON.stringify(link.routeMm)).sort();
+        const packetGeometry=view.packets.map(({lineId,packetId,assetId})=>[lineId,packetId,assetId]);
+        const lotPlacementBindings=Object.freeze(lotPlacements.map(([group,pose])=>Object.freeze([group!,pose!] as const)));
+        return {cables:JSON.stringify(cableRoutes),lots:JSON.stringify(lotPlacements),packets:JSON.stringify(packetGeometry),cableRoutes:Object.freeze(cableRoutes),
+          lotPlacements:Object.freeze(lotPlacementBindings.map(([group,pose])=>`${group}:${pose}`)),lotPlacementBindings,
+          key:JSON.stringify([host.sessionId,host.epoch,JSON.stringify(cableRoutes),JSON.stringify(lotPlacements),JSON.stringify(packetGeometry)])};
+      };
+      const restoreAcceptedFactoryMaterialVisibility=(family:ReturnType<typeof materialFamilyKeys>,host:FactoryHostView,domain:FactoryDecorDomainRead):boolean=>{
+        if(family.key!==factoryMaterialAcceptedKey||!host.confirmed||!domain.confirmed||domain.sessionId!==host.sessionId||domain.epoch!==host.epoch
+          ||domain.nativeTick!==host.nativeTick||domain.phase!==host.physicsStatus||domain.terrainRevision!==host.terrain.revision
+          ||domain.catalogDigest!==domain.material.catalog.catalogDigest)return false;
+        let changed=false;
+        for(const scene of factoryMaterialScenes.values()){
+          const stableKey=scene.materialFamily==="cables"?"cables":scene.materialFamily==="lots"?"lots":undefined;
+          if(!stableKey||scene.published||factoryMaterialScenes.get(stableKey)!==scene||factoryScenes.get(scene.id)!==scene||!factoryCosts.has(scene.id)
+            ||scene.keys.some(key=>scene.retiredKeys?.has(key)))continue;
+          const matches=stableKey==="cables"?family.cables===factoryMaterialAcceptedFamilies.cables:family.lots===factoryMaterialAcceptedFamilies.lots;
+          if(!matches)continue;
+          scene.published=true;for(const key of scene.keys)activeFactoryKeys.add(key);changed=true;
+        }
+        return changed;
+      };
+      const materialTemplateIds=(view:FactoryMaterialView):ReadonlySet<string>=>new Set([
+        ...view.links.flatMap(link=>[link.assetId,link.endAssetId]),...view.lots.map(lot=>lot.assetId),...view.packets.map(packet=>packet.assetId)
+      ]);
+      const captureCurrentFactoryMaterial=()=>{
+        if(!current()||disposed)return undefined;
+        const snapshot=physics!.read(),host=read(),domain=factoryHandle?.readFactoryPresentation?.(host),facilities=snapshot.factoryFacilities;
+        if(!domain||!facilities)return undefined;
+        const view=factoryMaterialView.readFactoryMaterialProjection({domain,host,facilities});
+        return Object.freeze({snapshot,host,domain,facilities,view});
+      };
+      const makeFactoryMaterialSummary=(view:FactoryMaterialView)=>Object.freeze({
+        links:Object.freeze(view.links.map(link=>Object.freeze([link.linkId,link.containerId,link.containerRevision,link.stackId,link.lengthMm,link.routeMm]))),
+        lots:Object.freeze(view.lots.map(lot=>Object.freeze([lot.instanceId,lot.role,lot.containerId,lot.containerRevision,lot.itemId,lot.itemVersion,lot.stackId,lot.stackCount,lot.quantityUnits]))),
+        packets:Object.freeze(view.packets.map(packet=>Object.freeze([packet.lineId,packet.packetId,packet.bandContainerId,packet.containerRevision,
+          packet.stackId,packet.itemId,packet.itemVersion,packet.quantityUnits,packet.positionMm,packet.worldPositionMm])))
+      });
+      const stageFactoryMaterialBatch=(id:string,family:"cables"|"lots",batch:import("../factory/presentation/batchPlayParts").FactoryPlayBatch,onAccepted:()=>void):FactoryScene|undefined=>{
+        const source=batch.artifact;if(!source)return undefined;
+        const artifact=createMeshArtifact({...source,frameId:frame});
+        const scene:FactoryScene={id,keys:Object.freeze([artifact.representationKey]),artifacts:[],transforms:Object.freeze([materialIdentityTransform(artifact.representationKey)]),published:false,materialFamily:family};
+        managedFactoryKeys.add(artifact.representationKey);
+        requireAccepted(presentation.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact,materialProfiles:batch.materialProfiles})),"Factory material batch stage");
+        onAccepted();
+        scene.artifacts.push(artifact);plainTerrainLeases.push({nodeKey:artifact.representationKey,lease:materialFactory.acquire(batch.materialProfiles,{vertexColors:true})});return scene;
+      };
+      const stageFactoryMaterialPacket=(id:string,packet:FactoryMaterialView["packets"][number],domain:FactoryDecorDomainRead,generation:number,onAccepted:()=>void):FactoryScene=>{
+        const projection=factoryMaterialTemplates.get(packet.assetId),part=projection?.parts[0];if(!projection||!part)throw Error("Factory material packet template unavailable");
+        const key=representationKey(`factory:material:packet:${generation}:${factoryMaterialScenes.size}:${fnv1aHash(packet.lineId+":"+packet.packetId)}`);
+        const artifact=createMeshArtifact({...part.artifact,representationKey:key,frameId:frame});
+        const scene:FactoryScene={id,keys:Object.freeze([key]),artifacts:[],transforms:Object.freeze([materialPacketTransform(packet,domain,key)]),published:false,
+          materialAssetId:packet.assetId,materialPacketId:materialPacketKey(packet),materialFamily:"packets"};
+        managedFactoryKeys.add(key);
+        requireAccepted(presentation.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact,materialProfiles:part.materialProfiles})),"Factory material packet stage");
+        onAccepted();
+        scene.artifacts.push(artifact);plainTerrainLeases.push({nodeKey:key,lease:materialFactory.acquire(part.materialProfiles,{vertexColors:true})});return scene;
+      };
+      const updateFactoryMaterialPackets=(view:FactoryMaterialView,domain:FactoryDecorDomainRead):boolean=>{
+        let changed=false;const currentPackets=new Map(view.packets.map(packet=>[materialPacketKey(packet),packet]));
+        for(const scene of factoryMaterialScenes.values()){
+          if(scene.materialFamily!=="packets")continue;
+          const packet=scene.materialPacketId?currentPackets.get(scene.materialPacketId):undefined;
+          if(!packet||scene.materialAssetId!==packet.assetId){if(scene.published){scene.published=false;for(const key of scene.keys)activeFactoryKeys.delete(key);changed=true;}continue;}
+          const key=scene.keys[0]!;const transform=materialPacketTransform(packet,domain,key);
+          if(JSON.stringify(scene.transforms[0])!==JSON.stringify(transform)){scene.transforms=Object.freeze([transform]);changed=true;}
+          if(!scene.published){scene.published=true;for(const itemKey of scene.keys)activeFactoryKeys.add(itemKey);changed=true;}
+        }
+        if(factoryMaterialAcceptedFamilies.packets===JSON.stringify(view.packets.map(({lineId,driveInstanceId,bandContainerId,containerRevision,packetId,stackId,itemId,itemVersion,itemDigest,quantityUnits,assetId})=>
+          [lineId,driveInstanceId,bandContainerId,containerRevision,packetId,stackId,itemId,itemVersion,itemDigest,quantityUnits,assetId])))factoryMaterialSummary=makeFactoryMaterialSummary(view);
+        return changed;
+      };
+      const runFactoryMaterialWorker=async()=>{
+        while(factoryMaterialDesired&&factoryMaterialDesired.key!==factoryMaterialAcceptedKey){
+          const request=factoryMaterialDesired;
+          try{
+            await loadFactoryMaterialTemplates(materialTemplateIds(request.view));
+            const live=captureCurrentFactoryMaterial();if(!live)throw Error("Factory material current read unavailable");
+            const liveKeys=materialFamilyKeys(live.view,live.host,live.domain);
+            if(liveKeys.key!==request.key){
+              if(liveKeys.key===factoryMaterialAcceptedKey){
+                if(factoryMaterialDesired?.key===request.key)factoryMaterialDesired=undefined;
+                if(restoreAcceptedFactoryMaterialVisibility(liveKeys,live.host,live.domain))refreshFactoryProjection();
+              }else factoryMaterialDesired={key:liveKeys.key,view:live.view};
+              continue;
+            }
+            const generation=factoryMaterialGeneration+1;if(!Number.isSafeInteger(generation))throw Error("Factory material render generation exhausted");
+            const rebuildCables=liveKeys.cables!==factoryMaterialAcceptedFamilies.cables||(live.view.links.length>0&&!factoryMaterialScenes.has("cables"));
+            const rebuildLots=liveKeys.lots!==factoryMaterialAcceptedFamilies.lots||(live.view.lots.length>0&&!factoryMaterialScenes.has("lots"));
+            const cables=rebuildCables?materialCableInstances(live.view,generation):[],lots=rebuildLots?materialLotInstances(live.view,live.domain,generation):[];
+            const packetsToStage=live.view.packets.filter(packet=>{const old=factoryMaterialScenes.get(materialPacketKey(packet));return !old||old.materialAssetId!==packet.assetId;});
+            const cableEstimate=factoryPlayBatch.estimateFactoryPlayBatch(cables),lotEstimate=factoryPlayBatch.estimateFactoryPlayBatch(lots);
+            const packetBytes=packetsToStage.reduce((sum,packet)=>{
+              const part=factoryMaterialTemplates.get(packet.assetId)?.parts[0];if(!part)throw Error("Factory packet template unavailable");
+              return sum+part.artifact.positions.byteLength+part.artifact.normals.byteLength+part.artifact.indices.byteLength+(part.artifact.attributes?.color?.byteLength??0);
+            },0);
+            const packetTriangles=packetsToStage.reduce((sum,packet)=>sum+(factoryMaterialTemplates.get(packet.assetId)?.parts[0]?.artifact.indices.length??0)/3,0);
+            const packetDraws=packetsToStage.reduce((sum,packet)=>sum+(factoryMaterialTemplates.get(packet.assetId)?.parts[0]?.artifact.materialRanges.length??0),0);
+            const stagingInstances=cables.length+lots.length+packetsToStage.length;
+            const frameRebindBytes=(cableEstimate.drawCalls?cableEstimate.geometryBytes:0)+(lotEstimate.drawCalls?lotEstimate.geometryBytes:0);
+            const stagingCost:FactoryCost={cpu:cableEstimate.cpuBytes+lotEstimate.cpuBytes+frameRebindBytes+packetBytes*3+stagingInstances*1024,
+              mesh:cableEstimate.meshBytes+lotEstimate.meshBytes+packetBytes*2,
+              triangles:cableEstimate.triangles+lotEstimate.triangles+packetTriangles,draws:cableEstimate.drawCalls+lotEstimate.drawCalls+packetDraws};
+            if(![stagingCost.cpu,stagingCost.mesh,stagingCost.triangles,stagingCost.draws].every(Number.isSafeInteger))throw Error("Factory material batch cost invalid");
+            const stagingKey="factory:material:staging";factoryCosts.set(stagingKey,stagingCost);
+            try{admitFactory();}catch(error){factoryCosts.delete(stagingKey);throw error;}
+            const staged:Array<Readonly<{stableKey:string;scene:FactoryScene;cost:FactoryCost}>>=[];let acceptedCommands=0;
+            try{
+              if(cables.length){const batch=factoryPlayBatch.createFactoryPlayBatch(representationKey(`factory:material:cables:${generation}`),cables);
+                const scene=stageFactoryMaterialBatch(`factory:material:cables:${generation}`,"cables",batch,()=>{acceptedCommands++;});if(scene){staged.push({stableKey:"cables",scene,
+                  cost:{cpu:batch.costs.cpuBytes,mesh:batch.costs.meshBytes,triangles:batch.costs.triangles,draws:batch.costs.drawCalls}});}}
+              if(lots.length){const batch=factoryPlayBatch.createFactoryPlayBatch(representationKey(`factory:material:lots:${generation}`),lots);
+                const scene=stageFactoryMaterialBatch(`factory:material:lots:${generation}`,"lots",batch,()=>{acceptedCommands++;});if(scene){staged.push({stableKey:"lots",scene,
+                  cost:{cpu:batch.costs.cpuBytes,mesh:batch.costs.meshBytes,triangles:batch.costs.triangles,draws:batch.costs.drawCalls}});}}
+              for(const packet of packetsToStage){const stableKey=materialPacketKey(packet),scene=stageFactoryMaterialPacket(`factory:material:${stableKey}:${generation}`,packet,live.domain,generation,()=>{acceptedCommands++;}),part=factoryMaterialTemplates.get(packet.assetId)!.parts[0]!;
+                staged.push({stableKey,cost:{cpu:(part.artifact.positions.byteLength+part.artifact.normals.byteLength+part.artifact.indices.byteLength+(part.artifact.attributes?.color?.byteLength??0))*3,
+                  mesh:(part.artifact.positions.byteLength+part.artifact.normals.byteLength+part.artifact.indices.byteLength+(part.artifact.attributes?.color?.byteLength??0))*2,
+                  triangles:part.artifact.indices.length/3,draws:part.artifact.materialRanges.length},scene});}
+              const current=captureCurrentFactoryMaterial();if(!current||disposed){
+                try{for(const item of staged)dropFactoryScene(item.scene);}catch(error){failFactoryDecorClosed(error,"material");}
+                factoryCosts.delete(stagingKey);if(factoryMaterialDesired?.key===request.key)factoryMaterialDesired=undefined;break;
+              }
+              if(materialFamilyKeys(current.view,current.host,current.domain).key!==request.key){
+                try{for(const item of staged)dropFactoryScene(item.scene);}catch(error){failFactoryDecorClosed(error,"material");}
+                factoryCosts.delete(stagingKey);const keys=materialFamilyKeys(current.view,current.host,current.domain);
+                if(keys.key===factoryMaterialAcceptedKey){if(factoryMaterialDesired?.key===request.key)factoryMaterialDesired=undefined;
+                  if(restoreAcceptedFactoryMaterialVisibility(keys,current.host,current.domain))refreshFactoryProjection();}
+                else factoryMaterialDesired={key:keys.key,view:current.view};
+                continue;
+              }
+              const prior=[...factoryMaterialScenes.entries()],nextScenes=new Map<string,FactoryScene>();
+              if(!rebuildCables){const scene=factoryMaterialScenes.get("cables");if(scene)nextScenes.set("cables",scene);}
+              if(!rebuildLots){const scene=factoryMaterialScenes.get("lots");if(scene)nextScenes.set("lots",scene);}
+              for(const packet of live.view.packets){const stableKey=materialPacketKey(packet),scene=factoryMaterialScenes.get(stableKey);
+                if(scene&&scene.materialAssetId===packet.assetId)nextScenes.set(stableKey,scene);}
+              for(const item of staged){item.scene.published=true;factoryScenes.set(item.scene.id,item.scene);factoryCosts.set(item.scene.id,item.cost);
+                for(const key of item.scene.keys)activeFactoryKeys.add(key);nextScenes.set(item.stableKey,item.scene);}
+              for(const stableKey of factoryMaterialScenes.keys())if(!nextScenes.has(stableKey))factoryMaterialScenes.delete(stableKey);
+              for(const [stableKey,scene] of nextScenes)factoryMaterialScenes.set(stableKey,scene);
+              try{for(const [stableKey,scene] of prior)if(nextScenes.get(stableKey)!==scene)dropFactoryScene(scene);}
+              catch(error){failFactoryDecorClosed(error,"material");}
+              factoryCosts.delete(stagingKey);factoryMaterialGeneration=generation;factoryMaterialAcceptedKey=request.key;
+              const family=materialFamilyKeys(live.view,live.host,live.domain);factoryMaterialAcceptedFamilies=family;
+              factoryMaterialSummary=makeFactoryMaterialSummary(live.view);
+              if(factoryMaterialDesired?.key===request.key)factoryMaterialDesired=undefined;
+              delete documentPort.body.dataset.hestiaFactoryMaterialAdmission;
+              refreshFactoryProjection();
+            }catch(error){
+              factoryCosts.delete(stagingKey);
+              if(acceptedCommands)failFactoryDecorClosed(error,"material");
+              throw error;
+            }
+          }catch(error){
+            if(disposed){if(factoryMaterialDesired?.key===request.key)factoryMaterialDesired=undefined;break;}
+            if(!current()){factoryMaterialRejectedKey=request.key;if(factoryMaterialDesired?.key===request.key)factoryMaterialDesired=undefined;break;}
+            const reason=String(error);documentPort.body.dataset.hestiaFactoryMaterialAdmission=reason;
+            factoryMaterialRejectedKey=request.key;if(factoryMaterialDesired?.key===request.key)factoryMaterialDesired=undefined;break;
+          }
+        }
+      };
+      let factoryMaterialRejectedKey="";
+      const startFactoryMaterialWorker=()=>{
+        if(factoryMaterialWorker||!factoryMaterialDesired||factoryMaterialDesired.key===factoryMaterialAcceptedKey||factoryMaterialDesired.key===factoryMaterialRejectedKey)return;
+        factoryMaterialWorker=runFactoryMaterialWorker().finally(()=>{factoryMaterialWorker=undefined;startFactoryMaterialWorker();});
+      };
+      const requestFactoryMaterialUpdate=(view:FactoryMaterialView,host:FactoryHostView,domain:FactoryDecorDomainRead):boolean=>{
+        const family=materialFamilyKeys(view,host,domain);let changed=updateFactoryMaterialPackets(view,domain);
+        if(family.key===factoryMaterialAcceptedKey){
+          if(factoryMaterialDesired?.key===family.key)factoryMaterialDesired=undefined;
+          changed=restoreAcceptedFactoryMaterialVisibility(family,host,domain)||changed;factoryMaterialSummary=makeFactoryMaterialSummary(view);
+          if(factoryMaterialDesired&&!factoryMaterialWorker)startFactoryMaterialWorker();return changed;
+        }
+        if(family.key===factoryMaterialDesired?.key)return changed;
+        if(family.key===factoryMaterialRejectedKey)return changed;
+        const remainingRoutes=new Map<string,number>();for(const route of family.cableRoutes)remainingRoutes.set(route,(remainingRoutes.get(route)??0)+1);
+        const oldCablesRemain=factoryMaterialAcceptedFamilies.cableRoutes.every(route=>{const count=remainingRoutes.get(route)??0;if(count===0)return false;remainingRoutes.set(route,count-1);return true;});
+        const currentLotPlacements=new Map(family.lotPlacementBindings);
+        const oldLotsRemain=factoryMaterialAcceptedFamilies.lotPlacementBindings.every(([group,pose])=>currentLotPlacements.get(group)===pose);
+        for(const scene of factoryMaterialScenes.values()){
+          const stillCurrent=scene.materialFamily==="cables"?oldCablesRemain:scene.materialFamily==="lots"?oldLotsRemain:true;
+          if(!stillCurrent&&scene.published){scene.published=false;for(const key of scene.keys)activeFactoryKeys.delete(key);changed=true;}
+        }
+        factoryMaterialDesired={key:family.key,view};
+        startFactoryMaterialWorker();
+        return changed;
+      };
+      const eligibleFactoryStorageInspections=(snapshot:HvpCurrentPhysicsSnapshot,facilities:NonNullable<HvpCurrentPhysicsSnapshot["factoryFacilities"]>,host:FactoryHostView,
+        domain:FactoryDecorDomainRead):ReadonlySet<string>=>{
+        const eligible=new Set<string>();
+        if(host.input?.surface!=="cargo"||!host.confirmed||!domain.confirmed||domain.sessionId!==host.sessionId||domain.epoch!==host.epoch
+          ||snapshot.ticks!==host.nativeTick||domain.nativeTick!==host.nativeTick||domain.phase!==host.physicsStatus
+          ||domain.terrainRevision!==host.terrain.revision||domain.facilityRevision!==facilities.revision
+          ||domain.catalogDigest!==domain.material.catalog.catalogDigest||facilities.state!=="Idle"||facilities.transactionId!==null||facilities.prepared!==null
+          ||!((snapshot.status==="Running"||snapshot.status==="Paused")&&domain.phase===snapshot.status))return eligible;
+        for(const installation of domain.installations){
+          if(installation.definitionSourceId!=="B09"||installation.sourceDigest!==factoryStorageProfile.sourceDigest
+            ||installation.profileDigest!==factoryStorageProfile.profileDigest||installation.massMg!==factoryStorageProfile.massMg
+            ||installation.centerMm.length!==3||!Number.isSafeInteger(installation.quarterTurns)||installation.quarterTurns<0||installation.quarterTurns>3)continue;
+          const scene=factoryScenes.get(installation.instanceId),play=scene?.play,definitionRef=play?.definitionRef;
+          if(!scene||!scene.published||!play||!definitionRef||!scene.request||scene.request.instanceId!==installation.instanceId
+            ||scene.request.definitionSourceId!==factoryStorageProfile.definitionRef.sourceId
+            ||scene.request.quarterTurns!==installation.quarterTurns||scene.request.centerMm.some((value,axis)=>value!==installation.centerMm[axis])
+            ||definitionRef.sourceId!==factoryStorageProfile.definitionRef.sourceId
+            ||definitionRef.version!==factoryStorageProfile.definitionRef.version||definitionRef.digest!==factoryStorageProfile.definitionRef.digest
+            ||scene.expectedSourceDigest!==installation.sourceDigest
+            ||scene.expectedProfileDigest!==installation.profileDigest)continue;
+          const owners=facilities.owners.filter(owner=>owner.instanceId===installation.instanceId);
+          const observations=facilities.partObservations?.filter(row=>row.instanceId===installation.instanceId)??[];
+          const sources=facilities.sources?.filter(source=>source.instanceId===installation.instanceId&&source.containerId===`storage_${installation.instanceId}`)??[];
+          const owner=owners[0],observation=observations[0];
+          if(owners.length!==1||!owner||owner.ownerId!==owner.instanceId
+            ||owner.sourceDigest!==installation.sourceDigest||owner.sourceDigest!==factoryStorageProfile.sourceDigest
+            ||owner.profileDigest!==installation.profileDigest||owner.profileDigest!==factoryStorageProfile.profileDigest||owner.massMg!==installation.massMg
+            ||!Number.isSafeInteger(owner.installationRevision)||owner.installationRevision<1||owner.installationRevision>facilities.revision
+            ||owner.centerMm.length!==3||owner.centerMm.some((value,axis)=>value!==installation.centerMm[axis])
+            ||owner.quarterTurns!==installation.quarterTurns||owner.definitionRef.sourceId!==factoryStorageProfile.definitionRef.sourceId
+            ||owner.definitionRef.version!==factoryStorageProfile.definitionRef.version||owner.definitionRef.digest!==factoryStorageProfile.definitionRef.digest
+            ||observations.length!==1||!observation||!observation.confirmed||!observation.published||!observation.complete
+            ||observation.definitionRef.sourceId!==factoryStorageProfile.definitionRef.sourceId
+            ||observation.definitionRef.version!==factoryStorageProfile.definitionRef.version||observation.definitionRef.digest!==factoryStorageProfile.definitionRef.digest
+            ||observation.sourceDigest!==owner.sourceDigest||observation.profileDigest!==owner.profileDigest
+            ||observation.installationRevision!==owner.installationRevision||observation.terrainRevision!==domain.terrainRevision
+            ||observation.facilityRevision!==facilities.revision||observation.parts.length!==factoryStorageProfile.source.parts.length
+            ||new Set(observation.parts.map(part=>part.partId)).size!==factoryStorageProfile.source.parts.length
+            ||factoryStorageProfile.source.parts.some(expected=>!observation.parts.some(part=>part.partId===expected.partId&&part.status==="Present"&&part.colliderHandles.length>0))
+            ||sources.length!==1||sources[0]!.accessible!==true)continue;
+          const {observationDigest,...proof}=observation;
+          if(observationDigest!==factoryCanonicalSignature(proof))continue;
+          eligible.add(installation.instanceId);
+        }
+        return eligible;
+      };
+      const loadFactoryStorageInspection=async(instanceId:string)=>{
+        if(factoryStorageInspectionLoading.has(instanceId)||factoryStorageInspectionScenes.has(instanceId))return;
+        const base=factoryScenes.get(instanceId);if(!base?.play?.definitionRef||!base.request)return;
+        factoryStorageInspectionLoading.add(instanceId);
+        const generation=factoryStorageInspectionGeneration+1,sceneId=`factory:storage-inspection:${instanceId}`,importKey=`${sceneId}:import`;
+        if(!Number.isSafeInteger(generation)){factoryStorageInspectionLoading.delete(instanceId);return;}
+        let staged:FactoryScene|undefined;
+        try{
+          factoryCosts.set(importKey,playImportPeak);admitFactory();
+          const projection=await playAssets.loadPlayAssetProjection({assetId:"play_storage_inspection_open_v2",instanceId:`${instanceId}:inspection:${generation}`,
+            signal:factoryAssetAbort.signal,expectedBinding:{definitionRef:base.play.definitionRef},renderMode:"vertex-colors"});
+          const live=captureCurrentFactoryMaterial();
+          if(!live||!eligibleFactoryStorageInspections(live.snapshot,live.facilities,live.host,live.domain).has(instanceId)||factoryScenes.get(instanceId)!==base){
+            factoryCosts.delete(importKey);return;
+          }
+          const cost=playCost(projection),hiddenCost={...cost,triangles:0,draws:0};
+          factoryCosts.delete(importKey);factoryCosts.set(sceneId,hiddenCost);admitFactory();
+          staged=stagePlayScene(sceneId,projection,base.request);
+          staged.nativeOwnerId=instanceId;staged.expectedSourceDigest=base.expectedSourceDigest;staged.expectedProfileDigest=base.expectedProfileDigest;staged.published=true;
+          factoryScenes.set(sceneId,staged);factoryStorageInspectionScenes.set(instanceId,staged);factoryStorageInspectionGeneration=generation;refreshFactoryProjection();
+          delete documentPort.body.dataset.hestiaFactoryStorageInspection;
+        }catch(error){
+          factoryCosts.delete(importKey);factoryCosts.delete(sceneId);
+          if(staged){try{dropFactoryScene(staged);}catch(cleanup){failFactoryDecorClosed(cleanup,"material");}factoryStorageInspectionScenes.delete(instanceId);}
+          if(staged||String(error).includes("RecoveryHold"))failFactoryDecorClosed(error,"material");
+          if(!disposed&&current())documentPort.body.dataset.hestiaFactoryStorageInspection=String(error);
+        }finally{factoryStorageInspectionLoading.delete(instanceId);}
+      };
+      const syncFactoryStorageInspection=(snapshot:HvpCurrentPhysicsSnapshot,facilities:HvpCurrentPhysicsSnapshot["factoryFacilities"],host:FactoryHostView,
+        domain:FactoryDecorDomainRead|undefined):boolean=>{
+        const requested=facilities&&domain?eligibleFactoryStorageInspections(snapshot,facilities,host,domain):new Set<string>();
+        for(const instanceId of requested)if(!factoryStorageInspectionScenes.has(instanceId))void loadFactoryStorageInspection(instanceId);
+        let changed=false;
+        for(const [instanceId,openScene] of factoryStorageInspectionScenes){
+          const open=requested.has(instanceId),wasOpen=factoryStorageInspectionVisible.has(instanceId),base=factoryScenes.get(instanceId);
+          if(!base||!openScene.play){
+            factoryStorageInspectionVisible.delete(instanceId);factoryStorageInspectionScenes.delete(instanceId);
+            try{dropFactoryScene(openScene);}catch(error){failFactoryDecorClosed(error,"material");}
+            changed=true;continue;
+          }
+          if(open===wasOpen)continue;
+          const baseCost=factoryCosts.get(instanceId),openCost=factoryCosts.get(openScene.id);
+          if(!baseCost||!openCost)continue;
+          const baseDraws=base.play?.parts.reduce((sum,part)=>sum+part.artifact.materialRanges.length,0)??baseCost.draws;
+          const baseTriangles=base.play?.parts.reduce((sum,part)=>sum+part.artifact.indices.length/3,0)??baseCost.triangles;
+          const openDraws=openScene.play.parts.reduce((sum,part)=>sum+part.artifact.materialRanges.length,0);
+          const openTriangles=openScene.play.parts.reduce((sum,part)=>sum+part.artifact.indices.length/3,0);
+          const previousBase={...baseCost},previousOpen={...openCost};
+          factoryCosts.set(instanceId,{...baseCost,draws:open?0:baseDraws,triangles:open?0:baseTriangles});
+          factoryCosts.set(openScene.id,{...openCost,draws:open?openDraws:0,triangles:open?openTriangles:0});
+          try{admitFactory();if(open)factoryStorageInspectionVisible.add(instanceId);else factoryStorageInspectionVisible.delete(instanceId);changed=true;}
+          catch(error){factoryCosts.set(instanceId,previousBase);factoryCosts.set(openScene.id,previousOpen);
+            if(open)documentPort.body.dataset.hestiaFactoryStorageInspection=String(error);
+            else{factoryStorageInspectionVisible.delete(instanceId);factoryCosts.set(instanceId,{...previousBase,draws:0,triangles:0});
+              factoryCosts.set(openScene.id,{...previousOpen,draws:0,triangles:0});for(const key of base.keys)activeFactoryKeys.delete(key);
+              for(const key of openScene.keys)activeFactoryKeys.delete(key);documentPort.body.dataset.hestiaFactoryStorageInspection=String(error);changed=true;}}
+        }
+        return changed;
+      };
+      if(factoryHullRenderProjection){
+        const id="factory_hull:crashsite";
+        factoryCosts.set("factory:hull-projection",{cpu:FACTORY_HULL_RENDER_MESH_PEAK_BYTES,mesh:FACTORY_HULL_RENDER_MESH_PEAK_BYTES,
+          triangles:FACTORY_HULL_TRIANGLES,draws:FACTORY_HULL_DRAWS});
+        admitFactory();
+        factoryHullScene=stagePlayScene(id,factoryHullRenderProjection,{instanceId:id,definitionSourceId:"hestia_crashsite_walkable_v1",
+          centerMm:[6500,1500,7500],quarterTurns:0});
+        if(factoryProjectionReady){factoryHullScene.published=true;for(const key of factoryHullScene.keys)activeFactoryKeys.add(key);factoryScenes.set(id,factoryHullScene);refreshFactoryProjection();}
+      }
       const stageFactoryScene=(request:FactoryPlacementRequest,id:string,isGhost:boolean,derivedRevision=1):FactoryScene=>{
         const profile=installationProfiles.createFactoryInstallationProfile(request.definitionSourceId);
         const projection=factoryAssets.createFactoryAssetProjection({...profile.definitionRef,instanceId:id},profile.source);
@@ -2308,7 +3259,25 @@ export const startHvp = async (
         catch(error){dropFactoryScene(scene);throw error;}return scene;
       };
       const cargoVariants:FactoryScene[]=[];
-      let cargoVariantKey="";
+      let factoryPresentationDisposed=false;
+      const disposeFactoryPresentation=()=>{
+        if(factoryPresentationDisposed)return;
+        factoryAssetAbort.abort();
+        for(const scene of cargoVariants)if(!factoryScenes.has(scene.id))dropFactoryScene(scene);
+        if(carrierScene&&!factoryScenes.has(carrierScene.id))dropFactoryScene(carrierScene);
+        if(factoryHullScene&&!factoryScenes.has(factoryHullScene.id))dropFactoryScene(factoryHullScene);
+        carrierScene=undefined;syncCarrierProjection=()=>{};syncInstalledProjection=()=>{};factoryDecorAttemptBinding=undefined;
+        for(const stage of factoryStages.values())if(stage.scene&&!factoryScenes.has(stage.scene.id))dropFactoryScene(stage.scene);
+        for(const scene of factoryScenes.values())dropFactoryScene(scene);
+        if(ghost)dropFactoryScene(ghost);
+        ghost=undefined;ghostDefinition=undefined;factoryHullScene=undefined;factoryScenes.clear();factoryStages.clear();factoryCosts.clear();factoryTransforms=[];
+        factoryDecorFootprints=undefined;vegetation=[];plantSources=[];vegetationTransforms=[];vegetationArtifactRevisions.clear();
+        factoryMaterialScenes.clear();factoryMaterialTemplates.clear();factoryMaterialDesired=undefined;factoryMaterialAcceptedKey="";factoryMaterialSummary=Object.freeze({links:[],lots:[],packets:[]});
+        factoryStorageInspectionScenes.clear();factoryStorageInspectionLoading.clear();factoryStorageInspectionVisible.clear();
+        presentation.updateProjection();factoryPresentationDisposed=true;
+      };
+      cleanupFactoryPresentation=disposeFactoryPresentation;
+      let cargoVariantKey="",cargoVariantsPublished=false;
       if(initialFactoryCargo){
         const nativeCargo=physics!.read().factoryFacilities?.cargo;
         if(!nativeCargo||nativeCargo.profileDigest!==initialFactoryCargo.profileDigest)throw new Error("Factory Cargo native profile receipt missing");
@@ -2317,11 +3286,11 @@ export const startHvp = async (
         for(const opened of [false,true]){
           const id=`${initialFactoryCargo.ownerId}:${opened?"open":"closed"}`;
           factoryCosts.set(id,playImportPeak);admitFactory();
-          const projection=await playAssets.loadPlayAssetProjection({assetId:opened?"play_wreck_cargo_open_v1":"play_wreck_cargo_v1",instanceId:id,signal:factoryAssetAbort.signal,
-            expectedBinding:{visualOnlyAnchor:{kind:"visual-only-cargo",ownerId:nativeCargo.ownerId,containerId:nativeCargo.containerId,worldCenterMm:nativeCargo.positionMm,nativeBoundsMm:nativeCargo.site.boundsMm,quantityAuthority:"existing finite cargo readview",opened}}});
+          const projection=await playAssets.loadPlayAssetProjection({assetId:opened?"play_wreck_cargo_open_v2":"play_wreck_cargo_v2",instanceId:id,signal:factoryAssetAbort.signal,
+            expectedBinding:{visualOnlyAnchor:{kind:"visual-only-cargo",ownerId:nativeCargo.ownerId,containerId:nativeCargo.containerId,worldCenterMm:nativeCargo.positionMm,nativeBoundsMm:nativeCargo.site.boundsMm,quantityAuthority:"existing finite cargo readview",opened}},renderMode:"vertex-colors"});
           if(!current())throw Error("Factory Cargo import superseded");
           factoryCosts.set(id,playCost(projection));admitFactory();
-          cargoVariants.push(stagePlayScene(id,projection,{transactionId:id,instanceId:id,definitionSourceId:"Cargo",centerMm:origin,quarterTurns:0}));
+          cargoVariants.push(stagePlayScene(id,projection,{instanceId:id,definitionSourceId:"Cargo",centerMm:origin,quarterTurns:0}));
         }
       }
       const stageCarrierScene=async(native:import("../hestia-prototype/physics/factoryFacilitySession").FactoryNativeCarrierRead|undefined):Promise<FactoryScene>=>{
@@ -2331,36 +3300,37 @@ export const startHvp = async (
         if(!profile||profile.digest!==native.profileDigest||profile.massMg!==native.massMg)throw Error("Carrier render profile binding mismatch");
         const kind=profile.sizeMm[0]===500?"light":profile.sizeMm[2]===1500?"heavy":"medium";
         const projection=await playAssets.loadPlayAssetProjection({assetId:`play_carrier_${kind}_v1`,instanceId:`carrier:slot:${carrierProjectionRevision}`,signal:factoryAssetAbort.signal,
-          expectedBinding:{visualOnlyAnchor:{kind:"visual-only-carrier",owner:"existing Native carrier",profileSizeMm:profile.sizeMm,quantityAuthority:"closed CargoHandlingProfile and active custody readview"}}});
+          expectedBinding:{visualOnlyAnchor:{kind:"visual-only-carrier",owner:"existing Native carrier",profileSizeMm:profile.sizeMm,quantityAuthority:"closed CargoHandlingProfile and active custody readview"}},renderMode:"vertex-colors"});
         if(!current())throw Error("Carrier import superseded");
         factoryCosts.set("carrier:slot",playCost(projection));admitFactory();
-        return stagePlayScene("carrier:slot",projection,{transactionId:native.transactionId,instanceId:native.ownerId,definitionSourceId:native.profileId,centerMm:native.positionMm,quarterTurns:1});
+        return stagePlayScene("carrier:slot",projection,{instanceId:native.ownerId,definitionSourceId:native.profileId,centerMm:native.positionMm,quarterTurns:1});
       };
       syncCarrierProjection=()=>{
         const native=physics!.read(),cargo=native.factoryFacilities?.cargo,carrier=native.factoryFacilities?.carrier;
         const cargoKey=JSON.stringify([cargo?.profileDigest,cargo?.opened,cargo?.positionMm]);let changed=false;
-        if(cargoKey!==cargoVariantKey){cargoVariantKey=cargoKey;changed=true;
+        if(cargoKey!==cargoVariantKey||(factoryProjectionReady&&!cargoVariantsPublished)){cargoVariantKey=cargoKey;changed=true;
           for(const [index,scene] of cargoVariants.entries()){
-            scene.published=Boolean(cargo&&cargo.profileDigest===initialFactoryCargo?.profileDigest&&index===(cargo.opened?1:0));
+            scene.published=Boolean(factoryProjectionReady&&cargo&&cargo.profileDigest===initialFactoryCargo?.profileDigest&&index===(cargo.opened?1:0));
             for(const key of scene.keys)scene.published?activeFactoryKeys.add(key):activeFactoryKeys.delete(key);
             if(scene.published)factoryScenes.set(scene.id,scene);else factoryScenes.delete(scene.id);
           }
+          cargoVariantsPublished=factoryProjectionReady;
         }
-        if(carrierScene?.published&&carrier){const key=JSON.stringify(carrier.positionMm);if(key!==carrierPoseKey){carrierPoseKey=key;changed=true;carrierScene.transforms=factoryPose(carrierScene.keys,{transactionId:carrier.transactionId,instanceId:carrier.ownerId,definitionSourceId:carrier.profileId,centerMm:carrier.positionMm,quarterTurns:1});}}
+        if(carrierScene?.published&&carrier){const key=JSON.stringify(carrier.positionMm);if(key!==carrierPoseKey){carrierPoseKey=key;changed=true;carrierScene.transforms=factoryPose(carrierScene.keys,{centerMm:carrier.positionMm,quarterTurns:1});}}
         if(changed)refreshFactoryProjection();
       };
-      const playIds:Readonly<Record<string,string>>={B06:"play_cutter_v2",B07:"play_former_v2",B05:"play_workbench_v1",B09:"play_storage_v1",
+      const playIds:Readonly<Record<string,string>>={B06:"play_cutter_v2",B07:"play_former_v2",B05:"play_workbench_v1",B09:"play_storage_v2",
         "fp02.comp.small_brace":"play_brace_v1","fp06.line.belt_4m":"play_belt_v1","fp02.device.battery_4kwh":"play_battery_v1",
-        "fp02.device.distribution_40kw":"play_distribution_v1","fp02.device.pv_pack_2kwp":"play_pv_v1","fp02.device.wind_pack_6kw":"play_wind_v1"};
-      const loadInstalledPlay=async(request:FactoryFacilityRequest)=>{
+        "fp02.device.distribution_40kw":"play_distribution_v2","fp02.device.pv_pack_2kwp":"play_pv_v1","fp02.device.wind_pack_6kw":"play_wind_v1"};
+      const loadInstalledPlay=async(request:Pick<FactoryFacilityRequest,"definitionRef"|"instanceId">)=>{
         const assetId=playIds[request.definitionRef.sourceId];if(!assetId)throw Error("Factory definition has no admitted Play model");
         const s1=["B06","B07"].includes(request.definitionRef.sourceId)
-          ?await s1Assets.loadFactoryS1Assets({...request.definitionRef,instanceId:request.instanceId},{signal:factoryAssetAbort.signal}):undefined;
-        const play=s1?.render??await playAssets.loadPlayAssetProjection({assetId,instanceId:request.instanceId,expectedBinding:{definitionRef:request.definitionRef},signal:factoryAssetAbort.signal});
-        if(!current())throw Error("Installed Play import superseded");
+          ?await s1Assets.loadFactoryS1Assets({...request.definitionRef,instanceId:request.instanceId},{signal:factoryAssetAbort.signal,renderMode:"vertex-colors"}):undefined;
+        const play=s1?.render??await playAssets.loadPlayAssetProjection({assetId,instanceId:request.instanceId,expectedBinding:{definitionRef:request.definitionRef},signal:factoryAssetAbort.signal,renderMode:"vertex-colors"});
+        if(!current()){if(s1)s1Assets.disposeFactoryS1Assets(s1);throw Error("Installed Play import superseded");}
         return {play,...(s1?{s1}:{})};
       };
-      const admitInstalledImport=(request:FactoryFacilityRequest,baseCpu:number)=>{
+      const admitInstalledImport=(request:Pick<FactoryFacilityRequest,"definitionRef"|"instanceId">,baseCpu:number)=>{
         let cellMeshPeak=0;
         if(["B06","B07"].includes(request.definitionRef.sourceId)){
           // These two closed definitions stay cached for the module lifetime.
@@ -2377,19 +3347,217 @@ export const startHvp = async (
         }
         factoryCosts.set(request.instanceId,{...playImportPeak,cpu:baseCpu+playImportPeak.cpu+cellMeshPeak});admitFactory();
       };
-      syncInstalledProjection=()=>{
+      const buildFactoryDecorLedger=(products:readonly HvpVegetationProduct[],footprintBytes:number)=>{
+        const base=sceneLedger({terrainMesh:terrainEntries.get(0)!.mesh,terrainMeshes:[...terrainEntries.values()].map(entry=>entry.mesh),
+          waterMesh:water,joinMesh,farMesh,additionalMeshes:[...products.map(product=>product.mesh),dropMesh,avatarMesh,inertiaMesh,
+            ...branchProducts.map(product=>product.mesh),...[...fragmentEntries.values()].map(entry=>entry.mesh)],vegetationSourceBytes,checkpointSourceBytes,
+          visualEffects:true,groupedIndexBytes:[...terrainEntries.values()].reduce((n,entry)=>n+entry.group.indices.byteLength,
+            joinLook.indices.byteLength+farLook.indices.byteLength+[...fragmentEntries.values()].reduce((n,entry)=>n+entry.group.indices.byteLength,0)),
+          drawCalls:[...terrainEntries.values()].reduce((n,entry)=>n+entry.group.materialRanges.length,
+            4+joinLook.materialRanges.length+farLook.materialRanges.length+products.reduce((n,product)=>n+product.profiles.length,0)
+              +branchProducts.length+[...fragmentEntries.values()].reduce((n,entry)=>n+entry.group.materialRanges.length,0))});
+        const previousBytes=factoryCosts.get("factory:decor-projection")?.cpu??0,delta=footprintBytes-previousBytes;
+        return {...base,factoryCpuBytes:base.factoryCpuBytes+delta,totalCpuBytes:base.totalCpuBytes+delta};
+      };
+      const currentFactoryDecorOwners=(snapshot:HvpCurrentPhysicsSnapshot,
+        facilities:NonNullable<HvpCurrentPhysicsSnapshot["factoryFacilities"]>,header:FactoryHostView,
+        domain:FactoryDecorDomainRead):FactoryDecorInstallationBounds[]|undefined=>{
+        if(!factorySourceProfile||!factoryHandle?.isQuiescent()||!factoryProjectionReady||!current()||!header.confirmed||!domain.confirmed
+          ||!facilities||facilities.state!=="Idle"||facilities.transactionId!==null||facilities.prepared!==null
+          ||snapshot.status!=="Running"&&snapshot.status!=="Paused"
+          ||header.sessionId!==domain.sessionId||header.epoch!==domain.epoch||header.nativeTick!==snapshot.ticks||domain.nativeTick!==snapshot.ticks
+          ||snapshot.terrainGeneration!==header.terrain.revision||header.terrain.sourceDigest!==prepared.sourceDigest
+          ||domain.phase!==header.physicsStatus||domain.terrainRevision!==header.terrain.revision||domain.facilityRevision!==facilities.revision
+          ||header.terrain.profileVersion!==factorySourceProfile.version||domain.installations.length!==facilities.owners.length)return undefined;
+        const result:FactoryDecorInstallationBounds[]=[];
+        for(const installation of domain.installations){
+          const owner=facilities.owners.find(value=>value.instanceId===installation.instanceId),profile=installationProfiles.readRuntimeFactoryInstallationProfile(installation.definitionSourceId);
+          if(!owner||profile.sourceDigest!==installation.sourceDigest||profile.profileDigest!==installation.profileDigest
+            ||profile.massMg!==installation.massMg||factoryCanonicalJson(profile.definitionRef)!==factoryCanonicalJson(owner.definitionRef)
+            ||owner.instanceId!==installation.instanceId||owner.sourceDigest!==installation.sourceDigest||owner.profileDigest!==installation.profileDigest
+            ||owner.massMg!==installation.massMg||factoryCanonicalJson(owner.centerMm)!==factoryCanonicalJson(installation.centerMm)
+            ||owner.quarterTurns!==installation.quarterTurns||!Number.isSafeInteger(owner.installationRevision)||owner.installationRevision<1
+            ||owner.colliderHandles.length!==profile.colliders.length||new Set(owner.colliderHandles).size!==owner.colliderHandles.length
+            ||factoryCanonicalJson(installation.boundsMm)!==factoryCanonicalJson(installationProfiles.transformFactoryBounds(
+              profile.boundsMm,installation.centerMm,installation.quarterTurns)))return undefined;
+          if(["B06","B07","B09"].includes(installation.definitionSourceId)){
+            const observations=facilities.partObservations?.filter(value=>value.instanceId===installation.instanceId)??[],observation=observations[0];
+            const expectedParts=profile.source.parts.map(part=>({partId:part.partId,status:"Present",colliderHandles:profile.colliders.flatMap((box,index)=>
+              box.partId===part.partId?[owner.colliderHandles[index]]:[])}));
+            if(observations.length!==1||!observation||!observation.confirmed||!observation.published||!observation.complete
+              ||observation.installationRevision!==owner.installationRevision||observation.terrainRevision!==header.terrain.revision
+              ||observation.facilityRevision!==facilities.revision||observation.sourceDigest!==owner.sourceDigest||observation.profileDigest!==owner.profileDigest
+              ||factoryCanonicalJson(observation.definitionRef)!==factoryCanonicalJson(owner.definitionRef)
+              ||factoryCanonicalJson(observation.parts)!==factoryCanonicalJson(expectedParts))return undefined;
+            const {observationDigest,...proof}=observation;
+            if(observationDigest!==factoryCanonicalSignature(proof))return undefined;
+          }
+          result.push({instanceId:installation.instanceId,ownerWitness:JSON.stringify([owner.sourceDigest,owner.profileDigest,owner.definitionRef.sourceId,
+            ...owner.centerMm,owner.quarterTurns,owner.installationRevision]),boundsMm:installation.boundsMm});
+        }
+        return result;
+      };
+      const refreshFactoryDecorProjection=(snapshot:HvpCurrentPhysicsSnapshot,
+        facilities:HvpCurrentPhysicsSnapshot["factoryFacilities"],header:FactoryHostView,
+        domain:FactoryDecorDomainRead|undefined):boolean=>{
+        const previousFootprints=factoryDecorFootprints;
+        if(!factorySourceProfile||!previousFootprints||!domain||!facilities)return false;
+        if(!factoryHandle?.isQuiescent()||!factoryProjectionReady||!current()||!header.confirmed||!domain.confirmed
+          ||facilities.state!=="Idle"||facilities.transactionId!==null||facilities.prepared!==null
+          ||snapshot.status!=="Running"&&snapshot.status!=="Paused"||header.sessionId!==domain.sessionId||header.epoch!==domain.epoch
+          ||header.nativeTick!==snapshot.ticks||domain.nativeTick!==snapshot.ticks||domain.phase!==header.physicsStatus
+          ||snapshot.terrainGeneration!==header.terrain.revision||header.terrain.sourceDigest!==prepared.sourceDigest
+          ||domain.terrainRevision!==header.terrain.revision||domain.facilityRevision!==facilities.revision
+          ||header.terrain.profileVersion!==factorySourceProfile.version)return false;
+        const binding=JSON.stringify([header.sessionId,header.epoch,header.terrain.revision,header.terrain.sourceDigest,facilities.revision]);
+        if(binding===factoryDecorAttemptBinding)return false;
+        const owners=currentFactoryDecorOwners(snapshot,facilities,header,domain);if(!owners)return false;
+        const hull=factoryDecorHullFootprint;
+        if(factoryDecorFootprintsMatchOwners(previousFootprints,owners,hull,true)){
+          factoryDecorAttemptBinding=binding;return false;
+        }
+        const footprintBytes=estimateFactoryDecorFootprintBytes(owners,hull);
+        if(!Number.isSafeInteger(footprintBytes)||footprintBytes<0)throw Error("Factory decoration footprint count invalid");
+        const changedRegions:{minX:number;maxX:number;minZ:number;maxZ:number}[]=[];
+        const pushOldRegion=(index:number)=>{const offset=index*6;changedRegions.push({minX:previousFootprints.boundsMeters[offset]!,maxX:previousFootprints.boundsMeters[offset+3]!,
+          minZ:previousFootprints.boundsMeters[offset+2]!,maxZ:previousFootprints.boundsMeters[offset+5]!});};
+        const pushNewRegion=(owner:FactoryDecorInstallationBounds)=>changedRegions.push({minX:owner.boundsMm.min[0]/1000,maxX:owner.boundsMm.max[0]/1000,
+          minZ:owner.boundsMm.min[2]/1000,maxZ:owner.boundsMm.max[2]/1000});
+        const oldBoundsEqual=(index:number,owner:FactoryDecorInstallationBounds)=>{
+          const offset=index*6;return owner.boundsMm.min[0]/1000===previousFootprints.boundsMeters[offset]
+            &&owner.boundsMm.min[1]/1000===previousFootprints.boundsMeters[offset+1]
+            &&owner.boundsMm.min[2]/1000===previousFootprints.boundsMeters[offset+2]
+            &&owner.boundsMm.max[0]/1000===previousFootprints.boundsMeters[offset+3]
+            &&owner.boundsMm.max[1]/1000===previousFootprints.boundsMeters[offset+4]
+            &&owner.boundsMm.max[2]/1000===previousFootprints.boundsMeters[offset+5];
+        };
+        if(!factoryDecorFootprintGeometryMatchesOwners(previousFootprints,owners,hull)){
+          for(let index=0;index<previousFootprints.ownerCount;index++){
+            const next=owners.find(owner=>owner.instanceId===previousFootprints.ownerIds[index]);
+            if(!next||!oldBoundsEqual(index,next)){pushOldRegion(index);if(next)pushNewRegion(next);}
+          }
+          for(const owner of owners)if(!previousFootprints.ownerIds.includes(owner.instanceId))pushNewRegion(owner);
+        }
+        const affected:number[]=[];
+        for(let index=0;index<plantSources.length;index++){
+          const source=plantSources[index]!,volume=source.decoration,originX=source.instance.position.x+volume.originMeters.x,
+            originZ=source.instance.position.z+volume.originMeters.z,maxX=originX+volume.sizeX*volume.cellMeters,maxZ=originZ+volume.sizeZ*volume.cellMeters;
+          if(changedRegions.some(region=>maxX>region.minX&&originX<region.maxX&&maxZ>region.minZ&&originZ<region.maxZ))affected.push(index);
+        }
+        const readerBytes=affected.reduce((bytes,index)=>bytes+(plantSources[index]!.instance.kind==="tree"?0:22*22*Int16Array.BYTES_PER_ELEMENT),0);
+        const retainedCpu=ledger.totalCpuBytes-ledger.tempEstimateBytes;
+        const preReaderCpu=Math.max(ledger.totalCpuBytes+footprintBytes+readerBytes,
+          retainedCpu+footprintBytes+readerBytes+physicsPrepareBytes);
+        if(!Number.isSafeInteger(readerBytes)||readerBytes<0||!Number.isSafeInteger(preReaderCpu)||preReaderCpu<0)
+          throw Error("Factory decoration reader count invalid");
+        factoryDecorAttemptBinding=binding;
+        if(!admitFactoryDecor({totalCpuBytes:preReaderCpu,retainedMeshBytes:ledger.retainedMeshBytes,triangles:ledger.triangles,drawCalls:ledger.drawCalls}))return false;
+        const nextFootprints=createFactoryDecorFootprints(owners,hull);
+        if(nextFootprints.retainedBytes!==footprintBytes)throw Error("Factory decoration footprint admission changed");
+        const readers=affected.map(index=>({index,...createFactoryDecorProjection(plantSources[index]!,vegetationProfile,nextFootprints)}));
+        const readerOffsetBytes=readers.reduce((bytes,reader)=>bytes+reader.offsetBytes,0);
+        if(readerOffsetBytes>readerBytes)throw Error("Factory decoration reader admission changed");
+        const changes:Readonly<{index:number;old?:HvpVegetationProduct;faces:number;occupied:number}>[]=[];
+        let projectedMeshBytes=0,projectedTempBytes=0,projectedTriangles=0,newDraws=0,oldTriangles=0,oldDraws=0;
+        for(const reader of readers){
+          const source=plantSources[reader.index]!,stats=countFactoryDecorFaces(reader.occupancy),key=representationKey(`${source.instance.id}:${source.instance.kind}`);
+          const old=vegetation.find(product=>product.artifact.representationKey===key),cost=factoryDecorFaceBytes(stats.exposedFaces,false);
+          oldTriangles+=old?old.mesh.indices.length/3:0;oldDraws+=old?old.profiles.length:0;
+          projectedMeshBytes+=cost.mesh;projectedTempBytes+=cost.temp;projectedTriangles+=cost.triangles;
+          if(stats.occupiedCells>0)newDraws++;
+          changes.push({index:reader.index,...(old?{old}:{}),faces:stats.exposedFaces,occupied:stats.occupiedCells});
+        }
+        const projectedCpu=Math.max(ledger.totalCpuBytes+footprintBytes+readerOffsetBytes+2*projectedMeshBytes+projectedTempBytes,
+          retainedCpu+footprintBytes+readerOffsetBytes+2*projectedMeshBytes+physicsPrepareBytes);
+        const projectedRetained=ledger.retainedMeshBytes+projectedMeshBytes;
+        const projectedSceneTriangles=ledger.triangles-oldTriangles+projectedTriangles;
+        const projectedSceneDraws=ledger.drawCalls-oldDraws+newDraws;
+        if(!Number.isSafeInteger(readerOffsetBytes)||readerOffsetBytes<0||!Number.isSafeInteger(projectedCpu)||projectedCpu<0
+          ||!Number.isSafeInteger(projectedRetained)||projectedRetained<0||!Number.isSafeInteger(projectedSceneTriangles)
+          ||projectedSceneTriangles<0||!Number.isSafeInteger(projectedSceneDraws)||projectedSceneDraws<0)
+          throw Error("Factory decoration mesh count invalid");
+        if(!admitFactoryDecor({totalCpuBytes:projectedCpu,retainedMeshBytes:projectedRetained,triangles:projectedSceneTriangles,drawCalls:projectedSceneDraws}))return false;
+        const replacements=new Map<RepresentationKey,HvpVegetationProduct|undefined>(),stagedProducts:HvpVegetationProduct[]=[],renderChanges=new Set<RepresentationKey>();
+        for(const change of changes){
+          const source=plantSources[change.index]!,key=representationKey(`${source.instance.id}:${source.instance.kind}`);
+          if(change.occupied===0){replacements.set(key,undefined);if(change.old)renderChanges.add(key);continue;}
+          const oldRevision=change.old?Number(change.old.artifact.artifactRevision):0;
+          const nextRevision=Math.max(vegetationArtifactRevisions.get(key)??0,oldRevision)+1;
+          if(!Number.isSafeInteger(nextRevision))throw Error("Factory vegetation artifact revision overflow");
+          const generated=meshHvpVegetation(source,undefined,{decoration:readers.find(reader=>reader.index===change.index)!.occupancy,
+            artifactRevision:nextRevision,decorationOnly:true});
+          if(generated.length!==1||generated[0]!.artifact.representationKey!==key)throw Error("Factory decoration replacement identity mismatch");
+          const product=generated[0]!;
+          const bytes=product.mesh.positions.byteLength+product.mesh.normals.byteLength+product.mesh.indices.byteLength+(product.mesh.colors?.byteLength??0);
+          const faceBound=factoryDecorFaceBytes(change.faces,false);
+          if(bytes>faceBound.mesh||product.mesh.tempEstimateBytes>faceBound.temp)throw Error("Factory decoration mesh exceeded its admitted face bound");
+          if(change.old?.artifact.contentHash===product.artifact.contentHash)replacements.set(key,change.old);
+          else{replacements.set(key,product);renderChanges.add(key);stagedProducts.push(product);}
+        }
+        const nextVegetation:HvpVegetationProduct[]=[];
+        for(const product of vegetation){
+          if(!replacements.has(product.artifact.representationKey)){nextVegetation.push(product);continue;}
+          const replacement=replacements.get(product.artifact.representationKey);if(replacement)nextVegetation.push(replacement);
+        }
+        for(const [key,product] of replacements)if(product&&!vegetation.some(value=>value.artifact.representationKey===key))nextVegetation.push(product);
+        const nextLedger=buildFactoryDecorLedger(nextVegetation,nextFootprints.retainedBytes);
+        const publishedLedger={...nextLedger,tempEstimateBytes:physicsPrepareBytes,
+          totalCpuBytes:nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes};
+        const actualStagedBytes=stagedProducts.reduce((bytes,product)=>bytes+product.mesh.positions.byteLength+product.mesh.normals.byteLength
+          +product.mesh.indices.byteLength+(product.mesh.colors?.byteLength??0),0);
+        if(actualStagedBytes>projectedMeshBytes)throw Error("Factory decoration staging exceeded its admitted bound");
+        const actualPeakCpu=Math.max(ledger.totalCpuBytes+footprintBytes+readerOffsetBytes+2*actualStagedBytes+projectedTempBytes,
+          retainedCpu+footprintBytes+readerOffsetBytes+2*actualStagedBytes+physicsPrepareBytes);
+        if(!admitFactoryDecor({totalCpuBytes:actualPeakCpu,retainedMeshBytes:ledger.retainedMeshBytes+actualStagedBytes,
+          triangles:Math.max(ledger.triangles,nextLedger.triangles),drawCalls:Math.max(ledger.drawCalls,nextLedger.drawCalls)}))return false;
+        let acceptedCommands=0;
+        const dispatchDecor=(command:RenderCommand,operation:string)=>{
+        const result=(()=>{try{return presentation.dispatch(command);}catch(error){return failFactoryDecorClosed(error);}})();
+          requireAccepted(result,operation);acceptedCommands++;factoryDecorBackendDispatchPending=true;
+        };
+        try{
+          if(renderChanges.size){
+            for(const [key,product] of replacements){
+              if(!renderChanges.has(key))continue;
+              const old=vegetation.find(value=>value.artifact.representationKey===key);
+              if(product){dispatchDecor(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),
+                artifact:product.artifact,materialProfiles:product.profiles}),"Factory decoration replacement");
+                vegetationArtifactRevisions.set(key,Number(product.artifact.artifactRevision));}
+              else if(old){dispatchDecor(createRenderCommand({kind:"RemoveRepresentation",backendRevision:backendRevision(0),
+                representationKey:key,expectedSourceRevision:old.artifact.sourceRevision,expectedArtifactRevision:old.artifact.artifactRevision,
+                expectedContentHash:old.artifact.contentHash}),"Factory decoration retirement");
+                vegetationArtifactRevisions.set(key,Number(old.artifact.artifactRevision));}
+            }
+            vegetation=nextVegetation;
+            vegetationTransforms=projectHvpVegetation(vegetation,plants.map(plant=>({ownerId:plant.id,position:plant.position,orientation:{x:0,y:0,z:0,w:1}})));
+            documentPort.body.dataset.hestiaPrototypeVegetationDigest=fnv1aHash(JSON.stringify({
+              products:vegetation.map(product=>[product.artifact.representationKey,product.artifact.contentHash]),transforms:vegetationTransforms}));
+          }
+          factoryDecorFootprints=nextFootprints;
+          factoryCosts.set("factory:decor-projection",{cpu:nextFootprints.retainedBytes,mesh:0,triangles:0,draws:0});
+          ledger=publishedLedger;
+          delete documentPort.body.dataset.hestiaPrototypeDecorationAdmission;
+          return true;
+        }catch(error){if(acceptedCommands)failFactoryDecorClosed(error);throw error;}
+      };
+      syncInstalledProjection=(deferProjection=false)=>{
+        if(!factoryProjectionReady)return;
         // No await or external UI data between this private snapshot and sample.
         const snapshot=physics!.read(),facilities=snapshot.factoryFacilities,header=read();
-        const domain=factoryHandle?.readFactoryPresentation?.(header);let changed=false;
+        const domain=factoryHandle?.readFactoryPresentation?.(header);let changed=refreshFactoryDecorProjection(snapshot,facilities,header,domain);
+        changed=syncFactoryStorageInspection(snapshot,facilities,header,domain)||changed;
         for(const scene of factoryScenes.values()){
-          if(!scene.play||!scene.request||!scene.published)continue;
-          const owner=facilities?.owners.find(o=>o.instanceId===scene.id&&o.sourceDigest===scene.expectedSourceDigest&&o.profileDigest===scene.expectedProfileDigest);
-          const native=facilities?.partObservations?.find(p=>p.instanceId===scene.id);
+          // Carrier and cargo projections share the scene table but are not installed owners.
+          // Only installation scenes carry the source/profile binding set during stageProjection.
+          if(!scene.play||!scene.request||!scene.published||!scene.expectedSourceDigest||!scene.expectedProfileDigest)continue;
+          const ownerInstanceId=scene.nativeOwnerId??scene.id;
+          const owner=facilities?.owners.find(o=>o.instanceId===ownerInstanceId&&o.sourceDigest===scene.expectedSourceDigest&&o.profileDigest===scene.expectedProfileDigest);
+          const native=facilities?.partObservations?.find(p=>p.instanceId===ownerInstanceId);
           let poses=scene.play.parts.map(p=>({partId:p.partId,translationM:[0,0,0] as readonly number[]}));
           try{
             if(!owner)poses=[];
             else if(scene.s1){
-              const machine=domain?.machines.find(m=>m.instanceId===scene.id);if(!native||!machine||!domain)throw Error("Current Native/domain machine read unavailable");
+              const machine=domain?.machines.find(m=>m.instanceId===ownerInstanceId);if(!native||!machine||!domain)throw Error("Current Native/domain machine read unavailable");
               const work={...machine,sessionId:domain.sessionId,epoch:domain.epoch,publicationRevision:domain.publicationRevision,nativeTick:domain.nativeTick,catalogDigest:domain.catalogDigest,
                 terrainRevision:domain.terrainRevision,facilityRevision:domain.facilityRevision,confirmed:domain.confirmed&&machine.confirmed&&snapshot.status==="Running"};
               const pose=s1Assets.sampleFactoryS1Assets(scene.s1,{sessionId:header.sessionId,epoch:header.epoch,nativeTick:snapshot.ticks,terrainRevision:header.terrain.revision,
@@ -2402,6 +3570,8 @@ export const startHvp = async (
               const safe=scene.safePose?.jobId===work.jobId?scene.safePose.partPoses:poses;
               poses=safe.filter(p=>present.has(p.partId)).map(p=>({partId:p.partId,translationM:p.translationM}));
             }else if(scene.request.definitionSourceId==="B09"){
+              const openVariant=scene.nativeOwnerId!==undefined,inspectionVisible=factoryStorageInspectionVisible.has(ownerInstanceId);
+              if(openVariant!==inspectionVisible)poses=[];
               const present=new Set(native?.confirmed&&native.published?native.parts.filter(p=>p.status==="Present"&&p.colliderHandles.length).map(p=>p.partId):[]);
               poses=poses.filter(p=>present.has(p.partId));
             }
@@ -2412,7 +3582,14 @@ export const startHvp = async (
           const shown=new Set(transforms.map(t=>t.representationKey));
           for(const key of scene.keys){const wanted=shown.has(key);if(wanted!==activeFactoryKeys.has(key)){changed=true;wanted?activeFactoryKeys.add(key):activeFactoryKeys.delete(key);}}
         }
-        if(changed)refreshFactoryProjection();
+        if(domain&&facilities)changed=requestFactoryMaterialUpdate(factoryMaterialView.readFactoryMaterialProjection({domain,host:header,facilities}),header,domain)||changed;
+        else if(factoryMaterialScenes.size){
+          try{for(const [stableKey,scene] of factoryMaterialScenes){factoryMaterialScenes.delete(stableKey);dropFactoryScene(scene);}}
+          catch(error){failFactoryDecorClosed(error,"material");}
+          factoryMaterialAcceptedKey="";factoryMaterialAcceptedFamilies={cables:"",lots:"",packets:"",key:"",cableRoutes:Object.freeze([]),lotPlacements:Object.freeze([]),lotPlacementBindings:Object.freeze([])};
+          factoryMaterialSummary=Object.freeze({links:[],lots:[],packets:[]});changed=true;
+        }
+        if(changed)refreshFactoryProjection(deferProjection);
       };
       const construction:FactoryNativeConstructionPort=Object.freeze({
         openCargo:async()=>{const native=physics!.read(),cargo=native.factoryFacilities?.cargo;if(!cargo||!physics!.openFactoryCargo||!nativeFactoryConfirmed())throw new Error("Factory Cargo host unavailable");await physics!.openFactoryCargo({ownerId:cargo.ownerId,profileDigest:cargo.profileDigest,expectedTerrainRevision:native.terrainGeneration,expectedRevision:native.factoryFacilities!.revision});publishFactoryView!();},
@@ -2421,15 +3598,22 @@ export const startHvp = async (
           return {binding:{sessionId:view.sessionId,epoch:view.epoch,terrainRevision:view.terrain.revision,sourceDigest:view.terrain.sourceDigest,baseDigest:view.terrain.baseDigest,facilityRevision:native.factoryFacilities?.revision??0},
             cargoAccess:native.factoryFacilities?.cargo,
             ...(native.factoryFacilities?.carrier?.phase==="Deposited"?{buildDepot:{containerId:native.factoryFacilities.carrier.containerId,profileId:native.factoryFacilities.carrier.profileId,profileDigest:native.factoryFacilities.carrier.profileDigest,accessible:native.factoryFacilities.carrier.accessible===true,bodyHandle:native.factoryFacilities.carrier.bodyHandle}}:{}),
-            actor:{actorId:"hvp_player",ownerId:"fp02_wreck_owner",positionMm:[position.x*1000,position.y*1000,position.z*1000],canBuild:confirmed(true)&&["Running","Paused"].includes(native.status)},
+            actor:{actorId:"hvp_player",ownerId:"fp02_wreck_owner",positionMm:[position.x*1000,position.y*1000,position.z*1000],canBuild:confirmed(true)&&(!factoryHandle||factoryProjectionReady)&&["Running","Paused"].includes(native.status)},
             terrain:{cellMm:125,originMm:[view.terrain.originMeters.x*1000,view.terrain.originMeters.y*1000,view.terrain.originMeters.z*1000],size:[view.terrain.sizeX,view.terrain.sizeY,view.terrain.sizeZ],readSlot:(x:number,y:number,z:number)=>hostPort.readTerrainSlot(x,y,z)}};},
         prepareNative:async(input:FactoryFacilityRequest)=>{if(!current()||!physics!.prepareFactoryFacility)throw new Error("Native Factory capability missing");
           const request=deepFreezeMetadata(JSON.parse(JSON.stringify(input)) as FactoryFacilityRequest),binding=read();
           const estimate=costFor(request.definitionRef.sourceId,request.materialBinding.length),native=physics!.read();
-          let loaded:Awaited<ReturnType<typeof loadInstalledPlay>>|undefined;
-          try{admitInstalledImport(request,estimate.cpu+native.collisionBytes*2+(native.colliderCount+native.bodyCount)*2048);loaded=await loadInstalledPlay(request);const cost=playCost(loaded.play);factoryCosts.set(request.instanceId,{...cost,cpu:cost.cpu+(loaded.s1?.cost.cpu??0)+estimate.cpu+native.collisionBytes*2+(native.colliderCount+native.bodyCount)*2048});admitFactory();
-            const receipt=await physics!.prepareFactoryFacility(request);factoryStages.set(request.transactionId,{request,binding,prepared:receipt,...loaded});return receipt;}
-          catch(error){if(loaded?.s1)s1Assets.disposeFactoryS1Assets(loaded.s1);factoryCosts.delete(request.instanceId);throw error;}},
+          const captureCostKey=`installation:capture:${request.transactionId}`;
+          factoryCosts.set(captureCostKey,{cpu:native.collisionBytes*2+(native.colliderCount+native.bodyCount)*2048,mesh:0,triangles:0,draws:0});
+          let loaded:Awaited<ReturnType<typeof loadInstalledPlay>>|undefined,nativePrepareStarted=false;
+          try{admitInstalledImport(request,estimate.cpu);loaded=await loadInstalledPlay(request);const cost=playCost(loaded.play);
+            factoryCosts.set(request.instanceId,{...cost,cpu:cost.cpu+(loaded.s1?.cost.cpu??0)+estimate.cpu});admitFactory();
+            nativePrepareStarted=true;const receipt=await physics!.prepareFactoryFacility(request);
+            factoryStages.set(request.transactionId,{request,binding,prepared:receipt,captureCostKey,...loaded});return receipt;}
+          catch(error){if(loaded?.s1)s1Assets.disposeFactoryS1Assets(loaded.s1);
+            // Bootstrap cannot prove the client's private rollback completed after a Native rejection.
+            if(!nativePrepareStarted){factoryCosts.delete(captureCostKey);factoryCosts.delete(request.instanceId);}
+            throw error;}},
         commitNative:async(id:string)=>{if(!physics!.commitFactoryFacility)throw new Error("Native Factory capability missing");await physics!.commitFactoryFacility(id);},
         publishNative:(id:string)=>{if(!physics!.publishFactoryFacility)throw new Error("Native Factory capability missing");const stage=factoryStages.get(id);
           if(stage?.request.consumedCustody&&carrierScene)stage.consumedProjection={scene:carrierScene,published:carrierScene.published,activeKeys:carrierScene.keys.filter(key=>activeFactoryKeys.has(key)),registered:factoryScenes.has(carrierScene.id)};
@@ -2464,8 +3648,8 @@ export const startHvp = async (
           scene.published=true;for(const key of scene.keys)activeFactoryKeys.add(key);factoryScenes.set(scene.id,scene);syncInstalledProjection();refreshFactoryProjection();},
         rollbackProjection:(id:string)=>{const stage=factoryStages.get(id);if(!stage)throw new Error("Factory rollback stage missing");if(stage.scene){factoryScenes.delete(stage.scene.id);dropFactoryScene(stage.scene);}else{if(stage.s1)s1Assets.disposeFactoryS1Assets(stage.s1);factoryCosts.delete(stage.request.instanceId);}
           if(stage.consumedProjection){const saved=stage.consumedProjection;carrierScene=saved.scene;carrierScene.published=saved.published;for(const key of carrierScene.keys)activeFactoryKeys.delete(key);for(const key of saved.activeKeys)activeFactoryKeys.add(key);if(saved.registered)factoryScenes.set(carrierScene.id,carrierScene);}
-          refreshFactoryProjection();factoryStages.delete(id);},
-        finalizeProjection:(id:string)=>{if(!factoryStages.get(id)?.scene?.published)throw new Error("Factory finalize scene missing");factoryStages.delete(id);},
+          factoryStages.delete(id);factoryCosts.delete(stage.captureCostKey);refreshFactoryProjection();},
+        finalizeProjection:(id:string)=>{const stage=factoryStages.get(id);if(!stage?.scene?.published)throw new Error("Factory finalize scene missing");factoryStages.delete(id);factoryCosts.delete(stage.captureCostKey);refreshFactoryProjection();},
         projectGhost:(request:FactoryPlacementRequest|null)=>{
           if(request&&ghost&&ghostDefinition===request.definitionSourceId){ghost.transforms=factoryPose(ghost.keys,request);refreshFactoryProjection();return;}
           const slot=request?ghostSlots.get(request.definitionSourceId):undefined;
@@ -2473,8 +3657,7 @@ export const startHvp = async (
           if(request)factoryPose([],request);
           if(ghost){dropFactoryScene(ghost);ghost=undefined;ghostDefinition=undefined;refreshFactoryProjection();}if(!request)return;
           const id=slot!.id;factoryCosts.set(id,costFor(request.definitionSourceId));try{admitFactory();slot!.revision++;ghost=stageFactoryScene(request,id,true,slot!.revision);ghostDefinition=request.definitionSourceId;ghost.published=true;for(const key of ghost.keys)activeFactoryKeys.add(key);refreshFactoryProjection();}catch(error){factoryCosts.delete(id);throw error;}},
-        dispose:()=>{factoryAssetAbort.abort();for(const scene of cargoVariants)if(!factoryScenes.has(scene.id))dropFactoryScene(scene);if(carrierScene&&!factoryScenes.has(carrierScene.id))dropFactoryScene(carrierScene);carrierScene=undefined;syncCarrierProjection=()=>{};syncInstalledProjection=()=>{};for(const stage of factoryStages.values())if(stage.scene&&!factoryScenes.has(stage.scene.id))dropFactoryScene(stage.scene);for(const scene of factoryScenes.values())dropFactoryScene(scene);if(ghost)dropFactoryScene(ghost);
-          ghost=undefined;ghostDefinition=undefined;factoryScenes.clear();factoryStages.clear();factoryCosts.clear();factoryTransforms=[];presentation.updateProjection();}
+        dispose:disposeFactoryPresentation
       });
       const handling:FactoryNativeHandlingPort=Object.freeze({
         read:()=>{if(!current())throw Error("Factory Host disposed");const value=physics!.read().factoryFacilities;if(!value)throw Error("Factory Native authority unavailable");return value;},
@@ -2492,7 +3675,7 @@ export const startHvp = async (
         publish:(id:string)=>{if(!physics!.publishFactoryCarrier)throw Error("Factory carrier unavailable");physics!.publishFactoryCarrier(id);if(carrierOperation==="pickup"){if(!carrierScene)throw Error("RecoveryHold: Missing carrier projection");carrierScene.published=true;for(const key of carrierScene.keys)activeFactoryKeys.add(key);factoryScenes.set(carrierScene.id,carrierScene);carrierPoseKey="";syncCarrierProjection();}else if(carrierOperation==="release"&&carrierScene){
           try{factoryScenes.delete(carrierScene.id);dropFactoryScene(carrierScene);carrierScene=undefined;refreshFactoryProjection();}catch(error){throw Error(`RecoveryHold: Published carrier retirement unproven: ${String(error)}`);}}},
         rollback:async(id:string)=>{if(!physics!.rollbackFactoryCarrier)throw Error("Factory carrier unavailable");await physics!.rollbackFactoryCarrier(id);if(carrierOperation==="pickup"&&carrierScene){dropFactoryScene(carrierScene);carrierScene=undefined;refreshFactoryProjection();}if(carrierCaptureCostKey)factoryCosts.delete(carrierCaptureCostKey);carrierCaptureCostKey=undefined;carrierOperation=undefined;},
-        finalize:async(id:string)=>{if(!physics!.finalizeFactoryCarrier)throw Error("Factory carrier unavailable");await physics!.finalizeFactoryCarrier(id);if(carrierCaptureCostKey)factoryCosts.delete(carrierCaptureCostKey);carrierCaptureCostKey=undefined;carrierOperation=undefined;publishFactoryView!();}
+        finalize:async(id:string)=>{if(!physics!.finalizeFactoryCarrier)throw Error("Factory carrier unavailable");await physics!.finalizeFactoryCarrier(id);if(carrierCaptureCostKey)factoryCosts.delete(carrierCaptureCostKey);carrierCaptureCostKey=undefined;carrierOperation=undefined;refreshFactoryProjection();publishFactoryView!();}
       });
       const pauseForFactoryFocus=()=>{
         factoryFocusPauseDepth++;playerInput!.stop();
@@ -2506,7 +3689,7 @@ export const startHvp = async (
           if(!wasBlocked&&factoryPanelFocused())pauseForFactoryFocus();
         },
         setSurface:(surface:FactoryHostSurface|null,binding:Readonly<{sessionId:string;epoch:number}>)=>{
-          if(!current()||binding.sessionId!==terrainRoot.read().sessionId||binding.epoch!==myEpoch||factorySurface===surface)return;
+          if(!current()||binding.sessionId!==terrainRoot.read().sessionId||binding.epoch!==factoryHostEpoch||factorySurface===surface)return;
           const wasBlocked=factoryPanelFocused();factorySurface=surface;
           if(!wasBlocked&&factoryPanelFocused())pauseForFactoryFocus();
         },
@@ -2536,6 +3719,127 @@ export const startHvp = async (
             if(current())publishFactoryView!();throw error;
           }
         },
+        save:async()=>{
+          if(!factorySaveAvailable())throw Error("Factory Save is unavailable until its complete checkpoint memory admission is established");
+          if(!physics!.checkpointFactory)throw Error("Factory Native checkpoint capability missing");
+          const session=factoryHandle,store=factorySaveStore;
+          if(!store||!factorySaveStoreInitialized||!session?.beginFactoryCheckpoint||session.canBeginFactoryCheckpoint?.()!==true){
+            throw Error("Factory checkpoint capture unavailable");
+          }
+          type FactoryCapture=ReturnType<NonNullable<FactoryHostExtensionHandle["beginFactoryCheckpoint"]>>;
+          let capture:FactoryCapture|undefined,retainedCpuBytes=0,cacheBytes=0,rawAdmissionComplete=false;
+          let progressCandidate:HvpSalvageCheckpoint|undefined,witnessFailure:string|undefined;
+          try{
+            capture=session.beginFactoryCheckpoint((_rawFactory,rawCacheBytes,tree)=>{
+              // The synchronous Factory admission has already checked the confirmed host and
+              // acquired its barrier. Raise the Root busy fence before any budget work/copies.
+              saveBusy=true;factoryPersistenceState="Saving";factoryPersistenceMessage="Capturing confirmed paused Factory state";
+              const retained=retainedSaveCpuBytes(),units=64*(tree.objectCount+tree.arrayCount)+16*Math.max(0,tree.nodeCount-1);
+              if(!Number.isSafeInteger(rawCacheBytes)||rawCacheBytes<0)throw Error("Factory checkpoint cache budget invalid");
+              const earlyBytes=retained+tree.utf16Bytes+8*units+rawCacheBytes+physicsPrepareBytes;
+              if(!Number.isSafeInteger(earlyBytes))throw Error("Factory checkpoint early memory budget overflow");
+              if(measurement.enabled)measurement.record("factorySaveAdmission",performance.now(),0,{phase:"early",R:retained,T:tree.utf16Bytes,U:units,
+                K:rawCacheBytes,D:null,P:null,oldBound:16*1024*1024,totalBytes:earlyBytes,nativeReserveBytes:physicsPrepareBytes,
+                profileCacheReserveBytes:factoryProfileCacheReserveBytes,frameProjectionReferenceReserveBytes:factoryFrameProjectionReferenceReserveBytes,
+                logicalCameraReserveBytes:factoryLogicalCameraReserveBytes});
+              admitHvpResources({...ledger,totalCpuBytes:earlyBytes},caps);
+              retainedCpuBytes=retained;cacheBytes=rawCacheBytes;rawAdmissionComplete=true;
+            });
+            if(!capture)throw Error("Factory checkpoint capture unavailable");
+            const activeCapture=capture;
+            const root=terrainRoot.read(),initialHost=read(),viewCapture=currentView(),initialNative=physics!.read(),initialFacilities=initialNative.factoryFacilities;
+            const expectedFacilityRevision=initialFacilities?.revision;
+            const assertCurrent=()=>{
+              try{
+                activeCapture.assertCurrent();
+                const currentHost=read(),currentNative=physics!.read(),facilities=currentNative.factoryFacilities,input=physics!.lifecycle?.().factoryInput,compiler=terrainCompiler!.diagnostics();
+                if(!rawAdmissionComplete||disposed||hvpMountEpoch!==myEpoch||!factorySaveAdmissionReady||saveHold||retainedSaveCpuBytes()!==retainedCpuBytes
+                  ||terrainRoot.read()!==root||root.sessionId!==activeCapture.host.sessionId||root.epoch!==activeCapture.host.epoch||root.revision!==initialHost.terrain.revision
+                  ||currentHost.sessionId!==initialHost.sessionId||currentHost.epoch!==initialHost.epoch
+                  ||currentHost.terrain.revision!==initialHost.terrain.revision||currentHost.terrain.sourceDigest!==initialHost.terrain.sourceDigest
+                  ||currentHost.terrain.baseDigest!==initialHost.terrain.baseDigest||currentNative.status!=="Paused"
+                  ||currentNative.ticks!==activeCapture.host.nativeTick||currentNative.terrainGeneration!==root.revision
+                  ||!facilities||expectedFacilityRevision===undefined||facilities.revision!==expectedFacilityRevision
+                  ||facilities.state!=="Idle"||facilities.transactionId!==null||facilities.prepared!==null
+                  ||currentNative.terrainTransaction!=="Idle"||currentNative.neighborTransaction!=="Idle"
+                  ||currentNative.bodyResidencyTransaction!=="Idle"||currentNative.moving.state!=="Idle"
+                  ||(currentNative.structural?.state!==undefined&&currentNative.structural.state!=="Idle")
+                  ||documentPort.hidden||factoryPausePending()||playerInput!.active||playerInput!.activationPending||factoryInputError!==null
+                  ||!input||!input.enabled||input.closing||input.commandDepth!==0||input.pendingIds.length!==0
+                  ||input.desiredLevel.x!==0||input.desiredLevel.z!==0||input.desiredLevel.sprint||input.desiredLevel.jump
+                  ||compiler.runningJobs!==0||compiler.queue!==0
+                  ||factoryCanonicalJson(currentView())!==factoryCanonicalJson(viewCapture)){
+                  throw Error("RecoveryHold: Factory save capture witness changed before storage commit");
+                }
+              }catch(error){witnessFailure=String(error);throw error;}
+            };
+            publishFactoryView!();
+            assertCurrent();
+            const native=await physics!.checkpointFactory();
+            if(native.world.tick.ticks!==capture.host.nativeTick||native.world.tick.status!=="Paused"
+              ||native.world.terrainGeneration!==root.revision||native.facilities.revision!==expectedFacilityRevision){
+              throw Error("RecoveryHold: Native Factory checkpoint binding mismatch");
+            }
+            assertCurrent();
+            const [terrainReceipts,structuralReceipts,movingReceipts]=await Promise.all([
+              terrainConsumer!.checkpoint(),structuralConsumer!.checkpoint(),bodyCutConsumer!.checkpoint()
+            ]);
+            const east=await neighbor!.checkpoint();
+            assertCurrent();
+            observeSalvage();
+            if(salvage&&["Save","Completed"].includes(salvage.read().stage!))progressCandidate=salvage.prepareSave(createPersistenceSignature(native.world));
+            const terrainCheckpoint=await terrainRoot.checkpointAsync(factoryAssetAbort.signal);
+            assertCurrent();
+            const codec=await import("../factory/persistence/factoryCheckpoint");
+            assertCurrent();
+            if(!factorySourceProfile)throw Error("Factory checkpoint source profile missing");
+            const checkpointInput={host:activeCapture.host,native:{version:"fp06-native-core-checkpoint-v1" as const,
+              profiles:{...HVP_SAVE_PROFILES,source:factorySourceProfile.version},terrain:terrainCheckpoint,plants:sourcesForSave(),
+              world:native.world,receipts:{terrain:terrainReceipts,structural:structuralReceipts,moving:movingReceipts},view:viewCapture,
+              progress:progressCandidate??salvage?.checkpoint()??null,
+              neighbor:east?{version:"hvp-neighbor-scene-v1" as const,terrain:east,lod:neighbor!.read().renderLod??neighbor!.read().lod}:null},
+              nativeFactory:native.facilities};
+            const admitCheckpoint=(metrics:import("../factory/persistence/factoryCheckpoint").FactoryCheckpointAdmissionMetrics):void=>{
+                if(!rawAdmissionComplete)throw Error("Factory checkpoint raw admission was not completed");
+                const units=64*(metrics.tree.objectCount+metrics.tree.arrayCount)+16*Math.max(0,metrics.tree.nodeCount-1),payload=metrics.tree.jsonUtf8Bytes;
+                const working=Math.max(physicsPrepareBytes,metrics.decodeWorkingBytes+3*payload,5*payload+codec.FACTORY_SAVE_TRANSPORT_BYTES);
+                const total=retainedCpuBytes+metrics.tree.utf16Bytes+8*units+cacheBytes+working;
+                if(measurement.enabled)measurement.record("factorySaveAdmission",performance.now(),0,{phase:"full",R:retainedCpuBytes,T:metrics.tree.utf16Bytes,
+                  U:units,K:cacheBytes,D:metrics.decodeWorkingBytes,P:payload,oldBound:codec.FACTORY_SAVE_TRANSPORT_BYTES,totalBytes:total,workingBytes:working,
+                  profileCacheReserveBytes:factoryProfileCacheReserveBytes,frameProjectionReferenceReserveBytes:factoryFrameProjectionReferenceReserveBytes,
+                  logicalCameraReserveBytes:factoryLogicalCameraReserveBytes});
+                if(!Number.isSafeInteger(total)||total>codec.FACTORY_SAVE_CPU_BYTES)throw Error("Factory checkpoint CPU/decode budget");
+                admitHvpResources({...ledger,totalCpuBytes:total},caps);
+            };
+            const checkpoint=activeCapture.factory.version==="fp06-factory-session-owner-v2"
+              ? codec.encodeFactoryCheckpointV2({...checkpointInput,factory:activeCapture.factory},admitCheckpoint)
+              : codec.encodeFactoryCheckpoint({...checkpointInput,factory:activeCapture.factory},admitCheckpoint);
+            assertCurrent();
+            const saved=await store.save(checkpoint,saveRevision,assertCurrent);
+            saveRevision=saved.metadata.recordRevision;factorySlotAvailable=true;
+            if(progressCandidate&&salvage)salvage.commitSave(progressCandidate,checkpoint.native.progress);
+            factoryPersistenceState="Saved";factoryPersistenceMessage="Combined Factory checkpoint saved locally";
+            return;
+          }catch(error){
+            const diagnostic=error instanceof Error?error.cause:undefined;
+            if(measurement.enabled&&diagnostic!==null&&typeof diagnostic==="object"&&!Array.isArray(diagnostic)
+              &&(diagnostic as {readonly kind?:unknown}).kind==="hvp-factory-checkpoint-preflight"){
+              measurement.record("factorySaveRejected",performance.now(),0,{phase:"native-preflight",cause:diagnostic});
+            }
+            const reason=witnessFailure??String(error),recovery=witnessFailure!==undefined||/RecoveryHold|deadline|timed out|timeout|witness changed/i.test(reason);
+            if(recovery){saveHold=true;factoryPersistenceState="RecoveryHold";}else{factoryPersistenceState="Rejected";}
+            factoryPersistenceMessage=reason;throw error;
+          }finally{
+            try{capture?.release();}finally{saveBusy=false;if(current())publishFactoryView!();}
+          }
+        },
+        continueSession:()=>{
+          if(!factoryContinueAvailable())throw Error("Factory Continue is unavailable without a saved primary checkpoint");
+          if(!windowPort.location?.assign)throw Error("Factory navigation is unavailable");
+          if(!windowPort.confirm?.("Continue from the saved Factory checkpoint? Unsaved changes will be discarded."))return;
+          if(!factoryContinueAvailable())throw Error("Factory Continue became unavailable while confirming");
+          windowPort.location.assign("/factory.html?factoryLoad=primary");
+        },
         endSession,
         readTerrainSlot: (x: number, y: number, z: number) => {
           if (!current()) throw new Error("Factory host disposed or superseded");
@@ -2557,9 +3861,99 @@ export const startHvp = async (
           if (!current() || !factoryCanResume()) throw new Error("Factory host busy, hidden or unconfirmed");
           await physics!.command("Resume"); return publishFactoryView!();
         } });
-      factoryMount = overrides.factoryExtension(hostPort);
+      factoryMount = overrides.factoryExtension(hostPort,factoryRestore,factoryRestoreOwner);
       factoryHandle = await factoryMount;
       if (!current()) { await dispose(); return Object.freeze({ dispose }); }
+      if(factoryRestore){
+        const savedInstallations=factoryRestore.checkpoint.factory.installations;
+        const savedCarrier=factoryRestore.checkpoint.nativeFactory.carrier;
+        const adoptedWorldSourceBytes=factoryRestore.native.world.sourceBytes;
+        const codec=await import("../factory/persistence/factoryCheckpoint");
+        let retainedNativeProjection:{native:unknown;nativeFactory:unknown}|undefined={
+          native:factoryRestore.checkpoint.native,nativeFactory:factoryRestore.checkpoint.nativeFactory
+        };
+        const residualTree=codec.inspectFactoryCheckpointMemoryTree(retainedNativeProjection);
+        const residualUnits=64*(residualTree.objectCount+residualTree.arrayCount)+16*Math.max(0,residualTree.nodeCount-1);
+        const retainedDecodedBytes=Math.max(0,factoryRestore.native.decodedBytes-coldNeighborAdoptedBytes-coldPlantAdoptedBytes);
+        const residualSourceBytes=residualTree.utf16Bytes+residualUnits+retainedDecodedBytes;
+        if(!Number.isSafeInteger(residualUnits)||!Number.isSafeInteger(retainedDecodedBytes)||!Number.isSafeInteger(residualSourceBytes)){
+          throw Error("Combined Factory retained Native memory count invalid");
+        }
+        const sourceDelta=residualSourceBytes-ledger.checkpointSourceBytes;
+        const sourceLedger={...ledger,checkpointSourceBytes:residualSourceBytes,totalCpuBytes:ledger.totalCpuBytes+sourceDelta};
+        const sourceTotal=Math.max(sourceLedger.totalCpuBytes,sourceLedger.totalCpuBytes-sourceLedger.tempEstimateBytes+physicsPrepareBytes);
+        if(measurement.enabled)measurement.record("factoryColdPlantAdoption",performance.now(),0,{phase:"residual",plantAdoptedBytes:coldPlantAdoptedBytes,
+          decodedSourceBytes:factoryRestore.native.decodedBytes,neighborAdoptedBytes:coldNeighborAdoptedBytes,retainedDecodedBytes,
+          checkpointSourceBytesBefore:ledger.checkpointSourceBytes,checkpointSourceBytesAfter:residualSourceBytes,
+          residualTotalBytes:sourceTotal,mesherScratchBytes:sourceLedger.tempEstimateBytes,nativeReserveBytes:physicsPrepareBytes,capBytes:caps.maxCpuBytes});
+        admitHvpResources({...sourceLedger,totalCpuBytes:sourceTotal},caps);
+        ledger={...sourceLedger,totalCpuBytes:sourceTotal};checkpointSourceBytes=residualSourceBytes;
+        // The mounted session now owns the Factory tree/cache; keep only the Native
+        // projection through restore verification and asset staging.
+        factoryRestore=undefined;factoryRestoreOwner=undefined;coldFactory=undefined;
+        // Transfer admission from the V1 wire plus imported Owner generation to
+        // the mounted Owner's live tree/cache before any restored asset import.
+        admitFactory();
+        publishFactoryView();
+        const header=read();
+        const restoredInstallationScenes:FactoryScene[]=[];
+        const domain=factoryHandle.readFactoryPresentation?.(header),native=physics!.read(),facilities=native.factoryFacilities;
+        if(!domain||factoryCanonicalJson(domain.installations)!==factoryCanonicalJson(savedInstallations)
+          ||!facilities||facilities.state!=="Idle"||facilities.transactionId!==null||facilities.prepared!==null
+          ||facilities.owners.length!==savedInstallations.length){throw Error("Combined Factory owner mount differs from its issued checkpoint");}
+        for(const installation of savedInstallations){
+          const owner=facilities.owners.find(value=>value.instanceId===installation.instanceId);
+          if(!owner||owner.definitionRef.sourceId!==installation.definitionSourceId||owner.profileDigest!==installation.profileDigest
+            ||owner.sourceDigest!==installation.sourceDigest||owner.massMg!==installation.massMg
+            ||factoryCanonicalJson(owner.centerMm)!==factoryCanonicalJson(installation.centerMm)||owner.quarterTurns!==installation.quarterTurns){
+            throw Error(`Combined Factory Native owner binding mismatch: ${installation.instanceId}`);
+          }
+          const request={definitionRef:owner.definitionRef,instanceId:owner.instanceId};
+          const estimate=costFor(request.definitionRef.sourceId,owner.materialBinding.length);
+          admitInstalledImport(request,estimate.cpu);
+          let loaded:Awaited<ReturnType<typeof loadInstalledPlay>>|undefined;
+          try{
+            loaded=await loadInstalledPlay(request);
+            const cost=playCost(loaded.play);
+            factoryCosts.set(request.instanceId,{...cost,cpu:cost.cpu+(loaded.s1?.cost.cpu??0)+estimate.cpu});
+            admitFactory();
+          }catch(error){if(loaded?.s1)s1Assets.disposeFactoryS1Assets(loaded.s1);factoryCosts.delete(request.instanceId);throw error;}
+          const scene=stagePlayScene(installation.instanceId,loaded.play,{instanceId:installation.instanceId,
+            definitionSourceId:installation.definitionSourceId,centerMm:installation.centerMm,quarterTurns:installation.quarterTurns},loaded.s1);
+          scene.expectedSourceDigest=installation.sourceDigest;scene.expectedProfileDigest=installation.profileDigest;
+          factoryScenes.set(scene.id,scene);restoredInstallationScenes.push(scene);
+        }
+        const carrier=facilities.carrier;
+        if(Boolean(savedCarrier)!==Boolean(carrier))throw Error("Combined Factory carrier presence mismatch after Native mount");
+        if(carrier){
+          if(!savedCarrier||carrier.ownerId!==savedCarrier.ownerId||carrier.profileId!==savedCarrier.profileId
+            ||carrier.profileDigest!==savedCarrier.profileDigest||carrier.phase!==savedCarrier.phase||carrier.massMg!==savedCarrier.massMg
+            ||carrier.containerId!==savedCarrier.containerId||factoryCanonicalJson(carrier.positionMm)!==factoryCanonicalJson(savedCarrier.positionMm)){
+            throw Error("Combined Factory carrier binding mismatch after Native mount");
+          }
+          carrierScene=await stageCarrierScene(carrier);carrierScene.published=true;
+          for(const key of carrierScene.keys)activeFactoryKeys.add(key);
+          factoryScenes.set(carrierScene.id,carrierScene);carrierPoseKey="";
+        }
+        // Publish installed models together only after every owner and projection is staged.
+        for(const scene of restoredInstallationScenes){scene.published=true;for(const key of scene.keys)activeFactoryKeys.add(key);}
+        if(factoryHullScene){factoryHullScene.published=true;for(const key of factoryHullScene.keys)activeFactoryKeys.add(key);factoryScenes.set(factoryHullScene.id,factoryHullScene);}
+        factoryProjectionReady=true;
+        syncCarrierProjection();syncInstalledProjection();refreshFactoryProjection();
+        publishFactoryView();
+        // The Factory assets now own their retained caches. Drop the last raw Native
+        // checkpoint projection before replacing it with the live source/root charge.
+        retainedNativeProjection=undefined;
+        const adoptedSourceBytes=HVP_SOURCE_SLOT_COUNT+terrainRoot.read().overlayBytes+adoptedWorldSourceBytes;
+        const delta=adoptedSourceBytes-ledger.checkpointSourceBytes;
+        const next={...ledger,checkpointSourceBytes:adoptedSourceBytes,totalCpuBytes:ledger.totalCpuBytes+delta};
+        const totalCpuBytes=Math.max(next.totalCpuBytes,next.totalCpuBytes-next.tempEstimateBytes+physicsPrepareBytes);
+        admitHvpResources({...next,totalCpuBytes},caps);ledger={...next,totalCpuBytes};
+        checkpointSourceBytes=adoptedSourceBytes;
+      }
+      admitFactory();
+      factorySaveAdmissionReady=true;
+      if(coldRestore&&factoryPersistenceState==="Saved")factoryPersistenceMessage="Combined Factory checkpoint loaded and paused; Save checks memory before writing";
       publishFactoryView();
     }
 
@@ -2592,7 +3986,11 @@ export const startHvp = async (
         }
         documentPort.body.dataset.hestiaPrototypeTool=JSON.stringify(plasmaTool!.read());
          const state = physics!.read();
-         publishFactoryView?.();
+         const deferInstalledProjection=state.ticks!==physicsTick;
+         const factoryPublishStarted=measurement.enabled?performance.now():0;
+         publishFactoryView?.(deferInstalledProjection);
+         if(measurement.enabled)measurement.record("factoryPublishView",factoryPublishStarted,performance.now()-factoryPublishStarted,{calls:1});
+         const factoryFrameStateStarted=measurement.enabled?performance.now():0;
          dormancy!.update();
          documentPort.body.dataset.hestiaPrototypeBodyResidency=JSON.stringify({...dormancy!.read(),parkedRenderOwners:[...parkedRenderOwners],
            derivedMeshCacheBytes:[...fragmentEntries.values()].filter(e=>parkedRenderOwners.has(e.ownerId)).reduce((n,e)=>n+e.mesh.positions.byteLength+e.mesh.normals.byteLength+e.mesh.indices.byteLength+(e.mesh.colors?.byteLength??0),0)});
@@ -2604,19 +4002,25 @@ export const startHvp = async (
         documentPort.body.dataset.hestiaPrototypePhysicsClock = JSON.stringify(physics!.clock??null);
         if(overrides.factoryExtension)documentPort.body.dataset.hestiaFactoryInputTransport=JSON.stringify(physics!.lifecycle?.().factoryInput??null);
         documentPort.body.dataset.hestiaPrototypeStructure = JSON.stringify(state.structural);
-        if (state.ticks !== physicsTick || playerInput!.active) {
+        if(measurement.enabled)measurement.record("factoryFrameState",factoryFrameStateStarted,performance.now()-factoryFrameStateStarted,{calls:1});
+        if (deferInstalledProjection || playerInput!.active) {
           physicsTick = state.ticks;
           syncPhysicsTransforms();
-          presentation.updateProjection();
+          if(applyFactoryDecorProjection)applyFactoryDecorProjection();else presentation.updateProjection();
         }
         hud!.updatePhysics();
         hideFactoryLegacyHud();
         if(!saveBusy){observeSalvage();}
       } catch (error) {
+        if(error===fatalFactoryDecorationError)return;
         void dispose().finally(() => { failureRoot = presentHvpFailure(documentPort, error); });
         return;
       }
       camera!.update(deltaSeconds);
+      if(overrides.factoryExtension){
+        try{presentation.updateCameraProjection();}
+        catch(error){void dispose().finally(()=>{failureRoot=presentHvpFailure(documentPort,error);});return;}
+      }
       if (disposed) return;
       if(measurement.enabled){measurement.record("mainFrameCpuMs",frameStarted,performance.now()-frameStarted);}
       backend!.renderFrame();

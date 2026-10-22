@@ -81,7 +81,7 @@ export class MemorySaveRepository implements SaveRepository {
 
   public async writeSlot(request: SaveWriteRequest): Promise<SaveWriteResult> {
     this.#assertOpen("writeSlot");
-    const { slotId, expectedRevision, envelope, lastWriteReason } = parseSaveWriteRequest(request);
+    const { slotId, expectedRevision, envelope, lastWriteReason, beforeCommit } = parseSaveWriteRequest(request);
     const encoded = await this.#codec.encode(envelope);
     const current = this.#records.get(slotId);
     const revision = this.#nextWriteRevision(slotId, current, expectedRevision, "writeSlot");
@@ -94,6 +94,7 @@ export class MemorySaveRepository implements SaveRepository {
     );
     const committed = createStoredSaveRecord(metadata, encoded.payloadBytes);
     const result = writeResultFrom(metadata, encoded);
+    beforeCommit?.();
     this.#records.set(slotId, committed);
     return result;
   }

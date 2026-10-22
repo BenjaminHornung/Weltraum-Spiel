@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createDefinitionResolutionFixture,
   createSaveGameEnvelopeV1Fixture,
+  serializeSaveGameEnvelopeV1,
   type DefinitionResolutionSnapshot
 } from "../../src/persistence";
 import {
@@ -74,10 +75,13 @@ describe("browser storage codec", () => {
     source.gameVersion = "fixture-🚀";
 
     const encoded = await codec.encode(source);
+    const expectedCanonicalPayload = serializeSaveGameEnvelopeV1(source, codec.definitionSnapshots);
     const expected = createHash("sha256").update(encoded.payloadBytes).digest("hex");
     const decoded = await codec.decodeStoredRecord(createStoredSaveRecord(metadataFor(encoded), encoded.payloadBytes));
 
     expect(encoded.contentHash).toBe(`sha256:${expected}`);
+    expect(encoded.canonicalPayload).toBe(expectedCanonicalPayload);
+    expect(encoded.payloadBytes).toEqual(new TextEncoder().encode(expectedCanonicalPayload));
     expect(new TextDecoder().decode(encoded.payloadBytes)).toBe(encoded.canonicalPayload);
     expect(decoded.envelope).toEqual(encoded.envelope);
     expect(decoded.payloadBytes).toEqual(encoded.payloadBytes);

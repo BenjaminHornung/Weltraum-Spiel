@@ -26,7 +26,8 @@ const install=(id:string,sourceId:string,centerMm:readonly [number,number,number
 // Real adopted Material/Production/Construction owner transitions below; only
 // power supply, terrain, Native callbacks/observers and reach are synthetic.
 // No actual World, time jump, UI, transport or normal 16kg-flow PASS is claimed.
-const makeFlow=async function*(starter=false){
+type RepeatMode="none"|"independent-paid"|"shared-producer";
+const makeFlow=async function*(starter=false,repeatMode:RepeatMode="none"){
  const cargo=createResourceContainerSnapshot(createResourceContainerDefinition({containerId:"fp02_wreck_cargo",kind:"ShipCargo",maxMassKg:4000,maxVolumeM3:30,maxStackCount:200}),fixture.resourceState,catalog.resources);
  const initialMaterial=createFactoryMaterialView(catalog,[cargo]);
  const authority=createFactoryMaterialAuthority(createFactoryMaterialView(catalog,[cargo,...["cutter","former","bench"].flatMap(id=>["installed","input","wip","output","offcut"].map(role=>{
@@ -85,16 +86,61 @@ const makeFlow=async function*(starter=false){
  stages.ready=deepFreezeMetadata({...snapshot(),material:current.material,native:{revision:4,state:"Idle",transactionId:null,owners:[...stages.brace.native.owners,nativeOwner(brace,4,request.transactionId,request.materialBinding)],production:productionRows(4),prepared:null},binding:{catalogDigest:catalog.catalogDigest,terrainRevision:0,facilityRevision:4,confirmed:true}});
  expect(readMaterialMassMg(stages.ready.material)).toBe(readMaterialMassMg(initialMaterial));
  yield stages;
+ if(repeatMode!=="none"){
+  const cut=(job:string)=>{transfer(`feed_${job}`,"fp02_wreck_cargo",source("fp02_wreck_cargo","fp02.bulk.steel_known"),"input_cutter",`raw_${job}`,"fp02.bulk.steel_known",8000000);start("cutter",job,"REC-01-CUT");finishElectric("cutter");};
+  const form=(job:string,cutJob:string,recipe:string)=>{transfer(`feed_${job}`,"output_cutter",`${cutJob}_output_0`,"input_former",`semi_${job}`,"fp02.bulk.steel_semi",7500000);start("former",job,recipe);finishElectric("former");};
+  cut("cut_c");if(repeatMode==="independent-paid")cut("cut_d");
+  stages.secondCut=deepFreezeMetadata({...snapshot(),native:stages.ready.native,binding:stages.ready.binding});
+  yield stages;
+  form("profile_job_2","cut_c","REC-02-PROFILE");
+  if(repeatMode==="independent-paid")form("sheet_job_2","cut_d","REC-03-SHEET");
+  stages.secondForm=deepFreezeMetadata({...snapshot(),native:stages.ready.native,binding:stages.ready.binding});
+  yield stages;
+  transfer("feed_brace_profiles_2","output_former","profile_job_2_output_0","input_bench","bench_profiles_2","fp02.bulk.steel_profile",4000000);
+  const sharedSheet=repeatMode==="shared-producer";
+  transfer("feed_brace_sheet_2","output_former",`${sharedSheet?"sheet_job":"sheet_job_2"}_output_0`,"input_bench","bench_sheet_2","fp02.bulk.steel_sheet",2000000);
+  start("bench","brace_job_2","REC-05-BRACE");
+  step("bench",{kind:"manual-work",commandId:"montage_brace_2",jobId:"brace_job_2",actorId:"unit_player"});
+  step("bench",{kind:"manual-finish",commandId:"finish_brace_2",jobId:"brace_job_2",actorId:"unit_player"});
+  transfer("move_produced_brace_2","output_bench","brace_job_2_output_0","fp02_wreck_cargo","brace_job_2_output_0","fp02.comp.small_brace",1);
+  stages.secondProduced=deepFreezeMetadata({...snapshot(),native:stages.ready.native,binding:stages.ready.binding});
+  yield stages;
+  if(repeatMode==="independent-paid"){
+   let secondRequest:FactoryFacilityRequest|undefined;
+   const secondPlacement={...placement,material:authority.read(),installations:installations.filter(i=>i.definitionSourceId==="fp02.comp.small_brace")};
+   const secondConstruction=createFactoryConstruction({materialAuthority:authority,readPlacementView:()=>secondPlacement,pause:async()=>{},prepareNative:async r=>{secondRequest=r;},commitNative:async()=>{},publishNative:()=>{},rollbackNative:async()=>{},finalizeNative:async()=>{},stageProjection:async()=>{},publishProjection:()=>{},rollbackProjection:()=>{},finalizeProjection:()=>{}},authority.read());
+   const secondPlan=secondConstruction.preview({transactionId:"paid_brace_build_2",instanceId:"built_brace_2",definitionSourceId:"fp02.comp.small_brace",centerMm:[2000,0,12000],quarterTurns:1});
+   if(secondPlan.status!=="Prepared")throw Error(secondPlan.reason);
+   const secondBuild=await secondConstruction.commit(secondPlan);if(secondBuild.status!=="Committed")throw Error(secondBuild.reason);
+   const secondBrace=secondConstruction.read().installations.find(i=>i.instanceId==="built_brace_2")!,secondReceipt=secondRequest!;
+   installations.push(secondBrace);
+   stages.secondReady=deepFreezeMetadata({...snapshot(),material:secondConstruction.read().material,
+    native:{revision:5,state:"Idle",transactionId:null,owners:[...stages.ready.native.owners,nativeOwner(secondBrace,5,secondReceipt.transactionId,secondReceipt.materialBinding)],production:productionRows(5),prepared:null},
+    binding:{catalogDigest:catalog.catalogDigest,terrainRevision:0,facilityRevision:5,confirmed:true}});
+   expect(readMaterialMassMg(stages.secondReady.material)).toBe(readMaterialMassMg(initialMaterial));
+   yield stages;
+  }
+ }
  return stages;
 };
-let stages:Record<string,FactoryProductionGoalInput>,starter:Record<string,FactoryProductionGoalInput>;
+let stages:Record<string,FactoryProductionGoalInput>,starter:Record<string,FactoryProductionGoalInput>,sharedStages:Record<string,FactoryProductionGoalInput>;
 // One retained owner flow; each natural phase stays under the existing hook
 // deadline. Neither work intervals nor the runner's timeout are changed.
-const flow=makeFlow(),starterFlow=makeFlow(true);
+const flow=makeFlow(false,"independent-paid"),starterFlow=makeFlow(true),sharedFlow=makeFlow(false,"shared-producer");
 beforeAll(async()=>{stages=(await flow.next()).value!;});
 beforeAll(async()=>{await flow.next();});
 beforeAll(async()=>{await flow.next();});
+beforeAll(async()=>{await flow.next();});
+beforeAll(async()=>{await flow.next();});
+beforeAll(async()=>{await flow.next();});
+beforeAll(async()=>{await flow.next();});
 beforeAll(async()=>{starter=(await starterFlow.next()).value!;});
+beforeAll(async()=>{await sharedFlow.next();});
+beforeAll(async()=>{await sharedFlow.next();});
+beforeAll(async()=>{await sharedFlow.next();});
+beforeAll(async()=>{await sharedFlow.next();});
+beforeAll(async()=>{await sharedFlow.next();});
+beforeAll(async()=>{sharedStages=(await sharedFlow.next()).value!;});
 const goal=(stage:string)=>projectFactoryProductionGoals(stages[stage]!);
 describe("PLAY04 actual receipt-linked fresh 16kg lineage projection",()=>{
  it("two adopted CUTs already expose16/15/1 and leave the HUD CUT task before any Brace",()=>{
@@ -112,6 +158,26 @@ describe("PLAY04 actual receipt-linked fresh 16kg lineage projection",()=>{
   const facts=goal("ready");expect(facts).toMatchObject({inputSteelMg:16000000,cutBatches:2,cutOutputMg:15000000,cutOffcutMg:1000000,profileOutputMg:7000000,sheetOutputMg:7000000,formerOffcutMg:1000000,braceOutputMg:5800000,braceOffcutMg:200000,installedBraceMg:5800000,paidBraceInstallation:true});
   const lots=stages.ready.material.containers.flatMap(c=>c.state.contents),quantity=(id:string)=>lots.filter(s=>s.resourceId===id&&s.extensions["factory.production"]).reduce((n,s)=>n+s.quantity,0);
   expect(quantity("fp02_bulk_steel_profile")).toBe(3000000);expect(quantity("fp02_bulk_steel_sheet")).toBe(5000000);expect(quantity("fp02_bulk_steel_offcut")).toBe(2200000);expect(5800000+3000000+5000000+2200000).toBe(16000000);
+ });
+ it("keeps the first paid Goal when a second independent 16kg brace is only produced",()=>{
+  const first=goal("ready"),later=projectFactoryProductionGoals(stages.secondProduced!);
+  expect(stages.secondProduced!.machines.some(m=>m.commandReceipts.some(r=>r.jobId==="brace_job_2"&&r.kind==="manual-finish"))).toBe(true);
+  expect(later).toMatchObject({inputSteelMg:16000000,braceOutputMg:5800000,installedBraceMg:5800000,paidBraceInstallation:true});
+  expect(later!.lineageId).toBe(first!.lineageId);
+ });
+ it("selects the earliest paid witness when both independent 16kg brace cycles are installed",()=>{
+  const first=goal("ready"),both=projectFactoryProductionGoals(stages.secondReady!);
+  expect(stages.secondReady!.native.owners.filter(o=>o.definitionRef.sourceId==="fp02.comp.small_brace")).toHaveLength(2);
+  const firstPaid=stages.secondReady!.material.receipts.find(r=>r.transactionId==="paid_brace_build")!,secondPaid=stages.secondReady!.material.receipts.find(r=>r.transactionId==="paid_brace_build_2")!;
+  expect(secondPaid.revisionAfter).toBeGreaterThan(firstPaid.revisionAfter);
+  expect(both).toMatchObject({inputSteelMg:16000000,braceOutputMg:5800000,installedBraceMg:5800000,paidBraceInstallation:true});
+  expect(both!.lineageId).toBe(first!.lineageId);
+  const secondOnly=projectFactoryProductionGoals({...stages.secondReady!,native:{...stages.secondReady!.native,owners:stages.secondReady!.native.owners.filter(o=>o.instanceId!=="built_brace")}});
+  expect(secondOnly).not.toBeNull();expect(secondOnly!.lineageId).not.toBe(first!.lineageId);
+ });
+ it("keeps equally complete candidates fail-closed when they share a sheet producer",()=>{
+  expect(sharedStages.secondProduced!.machines.some(m=>m.commandReceipts.some(r=>r.jobId==="brace_job_2"&&r.kind==="manual-finish"))).toBe(true);
+  expect(projectFactoryProductionGoals(sharedStages.secondProduced!)).toBeNull();
  });
  it("material NoOp replay does not count any output or parent twice",()=>{
   const input=stages.ready,receipt=input.material.receipts.at(-1)!,intent=JSON.parse(receipt.requestCanonicalJson) as MaterialIntent,plan=prepareFactoryMaterialStep(input.material,intent);if(plan.status!=="Prepared")throw Error(plan.reason);const replay=commitFactoryMaterialStep(input.material,plan);expect(replay.status).toBe("NoOp");expect(goal("ready")).toMatchObject({cutBatches:2,inputSteelMg:16000000});expect(projectFactoryProductionGoals({...input,material:replay.view})).toEqual(goal("ready"));

@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+··········································stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one full support proof for coherent production and power in each facility snapshot
+NATIVE_READ_SCENARIO {"case":"facility-snapshot","elapsedMs":1.2512000000006083,"probeCount":256,"singleProofBudget":256,"revision":1,"profileDigest":"288390f5"}
+
+stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one facility snapshot in the actual public native session read
+NATIVE_READ_SCENARIO {"case":"public-session-snapshot","elapsedMs":1.3119000000006054,"probeCount":256,"singleProofBudget":256,"ticks":0,"status":"Paused"}
+
+····························
+
+ Test Files  1 passed (1)
+      Tests  70 passed (70)
+   Start at  11:38:27
+   Duration  10.57s (transform 693ms, setup 0ms, import 875ms, tests 9.58s, environment 0ms)
+

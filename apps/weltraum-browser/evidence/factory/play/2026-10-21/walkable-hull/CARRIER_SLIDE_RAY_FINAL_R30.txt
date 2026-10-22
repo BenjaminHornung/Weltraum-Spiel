@@ -1,0 +1,31 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+······················x···················································stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one full support proof for coherent production and power in each facility snapshot
+NATIVE_READ_SCENARIO {"case":"facility-snapshot","elapsedMs":1.2154000000009546,"probeCount":256,"singleProofBudget":256,"revision":1,"profileDigest":"288390f5"}
+
+stdout | tests/unit/factory/facilitySession.test.ts > PLAY06 NativeRead uses one facility snapshot in the actual public native session read
+NATIVE_READ_SCENARIO {"case":"public-session-snapshot","elapsedMs":1.8738000000012107,"probeCount":256,"singleProofBudget":256,"ticks":0,"status":"Paused"}
+
+····························
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+AssertionError: expected 11.089166641235352 to be less than 10
+ ❯ tests/unit/hvp-locomotion.test.ts:260:61
+    258|       r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.ticks(6…
+    259|       const before=r.player.read().position,carrier=r.world.getRigidBo…
+    260|       expect(before.x).toBeLessThan(-6.45);expect(before.z).toBeLessTh…
+       |                                                             ^
+    261|       r.player.step();
+    262|       expect(r.player.read().position).toEqual(before);expect(carrier.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 101 passed (102)
+   Start at  12:10:26
+   Duration  14.69s (transform 713ms, setup 0ms, import 957ms, tests 13.49s, environment 0ms)
+

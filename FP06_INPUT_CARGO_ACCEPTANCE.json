@@ -1,0 +1,263 @@
+{
+  "schema": "hestia.fp06.input-cargo-acceptance/v1",
+  "createdAtUtc": "2026-10-19T14:34:34.725Z",
+  "status": "BOUNDED_INPUT_CARGO_REPAIR_PASS_WITH_RECORDED_LIMITS",
+  "source": "E:/DEV/Weltraum-Spiel/FP06-Candidate",
+  "delivery": "E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-19-v9",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "branch": "feature/hestia-fp06-review-continuation-2026-10-15",
+  "url": "http://127.0.0.1:5197/factory.html",
+  "integrator": "/root",
+  "writers": "Both implementation writers quiescent; leases released",
+  "cleanCopy": {
+    "checkedAtUtc": "2026-10-19T14:33:06.812Z",
+    "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+    "manifestFiles": 896,
+    "manifestMismatches": [],
+    "productFiles": 846,
+    "productMismatches": [],
+    "manifestSha256": "acbcba0205b921dfd39f4f72ccac4fd1a12d321692c105689cca6ae9ced94d36",
+    "install": {
+      "status": "PASS",
+      "command": "npm ci --offline --cache E:/DEV/Weltraum-Spiel/FP06-npm-cache --no-audit --no-fund",
+      "packages": 59
+    },
+    "build": {
+      "status": "PASS",
+      "command": "npm run build",
+      "modules": 327,
+      "durationSeconds": 4.4347,
+      "warning": "Existing >500 kB chunk warning; no limit changed"
+    },
+    "postRuntimeReceipt": "This file is an additive final receipt outside the sealed 896-file source manifest"
+  },
+  "repairs": {
+    "mouseBackpressure": {
+      "status": "PASS",
+      "firstStop": "HVP-02 UNAVAILABLE / Technical initialization failure: Physics command backpressure",
+      "change": "Remove immediate mouseMove walking-direction RPC; integrate every raw delta immediately and publish the latest walking direction on the existing frame update",
+      "retained": "Immediate keyboard/jump/neutral/Stop/blur/hidden/dispose paths, Client/Worker and pending cap8",
+      "actualWalking": {
+        "capturedLockedEvents": 320,
+        "nativeTicksAdvanced": 774,
+        "errors": []
+      },
+      "actualLookOnly": {
+        "events": 32,
+        "maximumQuaternionError": 3.524958103184872e-15,
+        "positionUnchanged": true,
+        "noExtraFactoryInput": true
+      }
+    },
+    "cargoAccess": {
+      "status": "PASS",
+      "controls": "I opens existing Cargo/transport UI; E while Playing opens it for confirmed reachable Cargo or a carried load",
+      "pause": "Actual Native Pause ACK, neutral input and released cursor; Close remains Paused; only explicit Play resumes",
+      "nativeCargo": "Open cargo remains explicit; unchanged bounds, reach/LOS/support, finite material and 2984400000mg total"
+    },
+    "cargoSurface": {
+      "status": "PASS",
+      "assets": [
+        {
+          "id": "play_wreck_cargo_v2",
+          "sha256": "2f213fae020ff7a245367939a24c2a8ceecd08809b7616858b241a57917b86ac"
+        },
+        {
+          "id": "play_wreck_cargo_open_v2",
+          "sha256": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f"
+        }
+      ],
+      "change": "New bounded two-model derivatives remove front and rear co-facing role overlap; old V1 assets and seals retained",
+      "nativeBoundsMm": {
+        "min": [
+          -6250,
+          1250,
+          12625
+        ],
+        "max": [
+          -4750,
+          2750,
+          13625
+        ]
+      },
+      "policy": "Only fp02_wreck_owner Cargo meshes stop receiving self/external shadows; they retain ground-shadow casting; neighboring receivers and global light settings unchanged",
+      "actualSameViewAB": {
+        "baseline": "Ready-v8",
+        "candidate": "Ready-v9",
+        "same": {
+          "slot": true,
+          "view": true,
+          "hashes": true
+        },
+        "stripes": "Absent in candidate; Root and independent reviewer inspected actual PNG pair"
+      },
+      "admissionBudgetBothVariants": {
+        "cpu": 4448928,
+        "mesh": 52416,
+        "triangles": 336,
+        "draws": 2
+      }
+    },
+    "endSession": {
+      "status": "PASS",
+      "change": "Private owner-liveness guard before Shell host reads; cleanup still runs",
+      "actual": "No errors, all owned counters zero, no old Shell; explicit Restart reaches normal menu and New game Paused0",
+      "label": "End session matches existing terminal-receipt/explicit-Restart behavior"
+    }
+  },
+  "persistence": {
+    "freshCargo": {
+      "profile": "E:/DEV/Weltraum-Spiel/FP06-Cargo-Backpressure-Acceptance-20261019-R68",
+      "nativeTick": 1634,
+      "factoryTick": 272,
+      "remainderTicks": 2,
+      "totalMg": 2984400000,
+      "save1": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 1,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 3268,
+        "payloadBytes": 1586626,
+        "contentHash": "sha256:01c7042e267d10fb7561b4105ba5db1c745e6c68a34cdfa37f1814980d0e4db5",
+        "lastWriteReason": "ManualSave"
+      },
+      "actualClose": {
+        "closedAtUtc": "2026-10-19T14:14:41.350Z",
+        "closed": true,
+        "browserConnected": false
+      },
+      "restoredSlotUnchanged": true,
+      "save2": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 2,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 3268,
+        "payloadBytes": 1586626,
+        "contentHash": "sha256:254316faf5b5d075136368d0c980d2f55ef7610f7e584966b80766354a1b3098",
+        "lastWriteReason": "ManualSave"
+      },
+      "allFiveEqualSave1To2": {
+        "native": true,
+        "nativeFactory": true,
+        "profiles": true,
+        "host": true,
+        "factoryExceptPublication": true
+      },
+      "save3OnFinalReady9": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 3,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 3268,
+        "payloadBytes": 1586626,
+        "contentHash": "sha256:a039108cdd6af3a6f270fd9e078f327fb30f77901de9e806c86f9ad718127407",
+        "lastWriteReason": "ManualSave"
+      },
+      "allFiveEqualOnFinalReady9": {
+        "native": true,
+        "nativeFactory": true,
+        "profiles": true,
+        "host": true,
+        "factoryExceptPublication": true
+      },
+      "canonicalHashes": {
+        "native": "5ed146faa9567c927d479e2bfa453f36d881a09784f8feda588dabca683ecb74",
+        "nativeFactory": "ff8b445fbfcd5dda35fc7364dfdfba5dd009c984e3f28ddbcc6fb55fb4a91e80",
+        "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+        "host": "ddf9b52b2d71cb6e937f4ea26171f1c73e47e354279fd1fe4e6fc6d626352d41",
+        "factoryAll": "3d99233a7264b7395fb470e6a653e21b528e30e1e080f1fef4b589a631a74083",
+        "factoryExceptPublication": "90fe963ba565024aa5196a097c6a2ef34cd21f6b503dca252a9388c9417521e7"
+      },
+      "finalClose": {
+        "closedAtUtc": "2026-10-19T14:25:27.401Z",
+        "browserConnected": false
+      }
+    },
+    "previousFullProduction": {
+      "profile": "E:/DEV/Weltraum-Spiel/FP06-Browser-Acceptance-20261018-R11",
+      "clean": "Ready-v9",
+      "live": {
+        "status": "Paused",
+        "tick": 227986,
+        "owners": 11,
+        "locked": false,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": "pause",
+          "error": null
+        },
+        "cargo": [
+          {
+            "id": "play_wreck_cargo_open_v2",
+            "sha": "8e889da0085b93ac093a62ea832db31c3b2fa6d409c95f7bb86f32a938e8b08f",
+            "error": null
+          }
+        ],
+        "goal": "Goal\nFirst structural brace installed\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc M",
+        "cost": {
+          "cpu": 23637936,
+          "mesh": 756288,
+          "triangles": 4848,
+          "draws": 74
+        }
+      },
+      "slot": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 25,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 455972,
+        "payloadBytes": 15121771,
+        "contentHash": "sha256:15cd3e9d4b878b444ec9be84483183e8516bddfa2744a1884fc0baf9ced3ba82",
+        "lastWriteReason": "ManualSave"
+      },
+      "sha": "15cd3e9d4b878b444ec9be84483183e8516bddfa2744a1884fc0baf9ced3ba82",
+      "unchanged": true,
+      "errors": [],
+      "noPlay": true,
+      "noSave": true,
+      "closedAtUtc": "2026-10-19T14:26:32.590Z",
+      "browserConnectedAfterClose": false
+    },
+    "retainedUserProgress": {
+      "revision": 12,
+      "sha": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+      "unchanged": true
+    },
+    "policy": "Real Chrome close and disconnected browser followed by a new Chrome process, same profile/origin, normal Continue confirmation. Restores Paused/unlocked/neutral. No automatic Resume, slot rewrite or excluded Native field; only explicit Save changes publication metadata."
+  },
+  "focusedChecks": {
+    "playerInput": "53/53 PASS",
+    "adjacentCameraPresentation": "11/11 PASS",
+    "shell": "27/27 PASS",
+    "loader": "59/59 PASS",
+    "cargoDerivatives": "2/2 selected PASS",
+    "visualEffects": "2/2 PASS",
+    "typescriptAndScopedDiff": "PASS",
+    "review": "Independent registered source/binary/render reviews and existing Pi opencode-go/deepseek-v4.1-flash plan/final advisory reviews incorporated"
+  },
+  "priorProductionAcceptance": {
+    "status": "RETAINED_EARLIER_FUNCTIONAL_PASS_NOT_RERUN_FOR_THIS_UI_RENDER_REPAIR",
+    "evidence": "README_PLAY.md and 19 October functional acceptance R57-R64",
+    "normalPaidFreshCycle": "16kg = installed brace5.8kg + profiles3kg + sheet5kg + offcuts2.2kg; 10 installed owners; finite total2984.4kg; actual second-CUT WIP restart and completion once"
+  },
+  "limits": [
+    "Windows Remote session: actual Chrome reports32Hz; empty-page control30.7713FPS/p9533ms. Local-monitor smoothness and human hardware retest after the producer line are NOT RUN; no new FPS improvement claim.",
+    "Prior performance candidate3/3 and MAIN profile1/1 are CLOSED. Active production mean target remained missed; no new performance window, Clock policy, cap or timeout increase.",
+    "The user selected a walkable full 15.125m crash hull after the bounded repair gate. It remains NOT_ADMITTED/OWNER_REVIEW_PENDING and is not delivered in Ready-v9; placement, collision and save compatibility are being investigated separately.",
+    "Full historical derivative selection retains four Git lookup failures (exit128); full Bootstrap retains the historical unchanged10s Cold-Plant setup failure (58pass/2skip). Neither is relabeled PASS.",
+    "Cargo shadow policy intentionally removes reception of both self and external shadows. Human overall art/fun acceptance and other browsers/devices remain unverified."
+  ],
+  "details": "E:/DEV/Weltraum-Spiel/FP06-Candidate/docs/factory/fp06/play/2026-10-19/cargo-wreck-input/RESULTS.md"
+}
+

@@ -1,4 +1,5 @@
 import {
+  canonicalizeSaveGameEnvelopeV1,
   deserializeSaveGameEnvelopeV1,
   serializeSaveGameEnvelopeV1,
   type DefinitionResolutionSnapshot,
@@ -47,8 +48,8 @@ export const createCanonicalSavePayload = (
   value: unknown,
   definitionSnapshots: readonly DefinitionResolutionSnapshot[]
 ): CanonicalSavePayload => {
-  const canonicalPayload = serializeSaveGameEnvelopeV1(value, definitionSnapshots);
-  const envelope = deserializeSaveGameEnvelopeV1(canonicalPayload, definitionSnapshots);
+  const envelope = canonicalizeSaveGameEnvelopeV1(value, definitionSnapshots);
+  const canonicalPayload = JSON.stringify(envelope);
   return Object.freeze({
     envelope,
     canonicalPayload,

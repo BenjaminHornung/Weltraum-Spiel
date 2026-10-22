@@ -1,0 +1,79 @@
+diff --git "a/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\factory\\persistence\\factoryCheckpoint.ts" "b/E:\\DEV\\Weltraum-Spiel\\FP06-Clean-Acceptance-2026-10-17-r01\\apps\\weltraum-browser\\src\\factory\\persistence\\factoryCheckpoint.ts"
+index a6cb65f..96bc20e 100644
+--- "a/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\factory\\persistence\\factoryCheckpoint.ts"
++++ "b/E:\\DEV\\Weltraum-Spiel\\FP06-Clean-Acceptance-2026-10-17-r01\\apps\\weltraum-browser\\src\\factory\\persistence\\factoryCheckpoint.ts"
+@@ -1121,9 +1121,9 @@ export const encodeFactoryCheckpoint = (data: FactoryCombinedCheckpointInput, ad
+   const measuredCheckpoint = { ...unsigned, signature: "fnv1a32:00000000" };
+   const tree = inspectFactoryCheckpointTree(createFactorySaveEnvelopeInput(measuredCheckpoint));
+   const decodeWorkingBytes = estimateFactoryNativeDecodeWorkingBytes(data.native) + data.factory.material.containers.length * 1024;
++  admit?.({ tree, decodeWorkingBytes });
+   factoryCheckpointCpuWorkingBytes(tree, decodeWorkingBytes);
+   if (decodeWorkingBytes > FACTORY_SAVE_DECODE_BYTES) throw new Error("Factory checkpoint CPU/decode budget before allocation");
+-  admit?.({ tree, decodeWorkingBytes });
+   const checkpoint = { ...unsigned, signature: createPersistenceSignature(unsigned) } as FactoryCombinedCheckpointV1;
+   if (!/^fnv1a32:[0-9a-f]{8}$/.test(checkpoint.signature)) throw new Error("Factory checkpoint signature width mismatch");
+   const signedTree = inspectFactoryCheckpointTree(createFactorySaveEnvelopeInput(checkpoint));
+diff --git "a/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hvp\\hvpBootstrap.ts" "b/E:\\DEV\\Weltraum-Spiel\\FP06-Clean-Acceptance-2026-10-17-r01\\apps\\weltraum-browser\\src\\hvp\\hvpBootstrap.ts"
+index b72aa56..9afaad0 100644
+--- "a/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hvp\\hvpBootstrap.ts"
++++ "b/E:\\DEV\\Weltraum-Spiel\\FP06-Clean-Acceptance-2026-10-17-r01\\apps\\weltraum-browser\\src\\hvp\\hvpBootstrap.ts"
+@@ -2394,8 +2394,10 @@ export const startHvp = async (
+         if(!Number.isSafeInteger(ownerBytes)||ownerBytes<0)throw Error("Factory committed-owner memory count invalid");
+         const retained=estimateHvpStageCpuBytes(ledger,ledger,0,physicsPrepareBytes)-ledger.factoryCpuBytes+cost.cpu;
+         const totalCpuBytes=retained+ownerBytes;
++        const cacheBreakdown=memory&&"cacheBreakdown" in memory?memory.cacheBreakdown:undefined;
+         if(measurement.enabled)measurement.record("factoryStageAdmission",performance.now(),0,{R:retained-physicsPrepareBytes,T:tree?.utf16Bytes??0,
+-          U:units,K:memory?.cacheBytes??0,D:null,P:null,oldBound:16*1024*1024,totalBytes:totalCpuBytes,nativeReserveBytes:physicsPrepareBytes});
++          U:units,K:memory?.cacheBytes??0,D:null,P:null,oldBound:16*1024*1024,totalBytes:totalCpuBytes,nativeReserveBytes:physicsPrepareBytes,
++          ...(cacheBreakdown===undefined?{}:{cacheBreakdown})});
+         admitHvpResources({...ledger,totalCpuBytes,
+           retainedMeshBytes:ledger.retainedMeshBytes-ledger.factoryMeshBytes+cost.mesh,
+           triangles:ledger.triangles-ledger.factoryTriangles+cost.triangles,drawCalls:ledger.drawCalls-ledger.factoryDraws+cost.draws},caps);
+@@ -2777,9 +2779,9 @@ export const startHvp = async (
+                 const units=64*(metrics.tree.objectCount+metrics.tree.arrayCount)+16*Math.max(0,metrics.tree.nodeCount-1),payload=metrics.tree.jsonUtf8Bytes;
+                 const working=Math.max(physicsPrepareBytes,metrics.decodeWorkingBytes+3*payload,5*payload+codec.FACTORY_SAVE_TRANSPORT_BYTES);
+                 const total=retainedCpuBytes+metrics.tree.utf16Bytes+8*units+cacheBytes+working;
+-                if(!Number.isSafeInteger(total)||total>codec.FACTORY_SAVE_CPU_BYTES)throw Error("Factory checkpoint CPU/decode budget");
+                 if(measurement.enabled)measurement.record("factorySaveAdmission",performance.now(),0,{phase:"full",R:retainedCpuBytes,T:metrics.tree.utf16Bytes,
+                   U:units,K:cacheBytes,D:metrics.decodeWorkingBytes,P:payload,oldBound:codec.FACTORY_SAVE_TRANSPORT_BYTES,totalBytes:total,workingBytes:working});
++                if(!Number.isSafeInteger(total)||total>codec.FACTORY_SAVE_CPU_BYTES)throw Error("Factory checkpoint CPU/decode budget");
+                 admitHvpResources({...ledger,totalCpuBytes:total},caps);
+               });
+             assertCurrent();
+@@ -2789,6 +2791,11 @@ export const startHvp = async (
+             factoryPersistenceState="Saved";factoryPersistenceMessage="Combined Factory checkpoint saved locally";
+             return;
+           }catch(error){
++            const diagnostic=error instanceof Error?error.cause:undefined;
++            if(measurement.enabled&&diagnostic!==null&&typeof diagnostic==="object"&&!Array.isArray(diagnostic)
++              &&(diagnostic as {readonly kind?:unknown}).kind==="hvp-factory-checkpoint-preflight"){
++              measurement.record("factorySaveRejected",performance.now(),0,{phase:"native-preflight",cause:diagnostic});
++            }
+             const reason=witnessFailure??String(error),recovery=witnessFailure!==undefined||/RecoveryHold|deadline|timed out|timeout|witness changed/i.test(reason);
+             if(recovery){saveHold=true;factoryPersistenceState="RecoveryHold";}else{factoryPersistenceState="Rejected";}
+             factoryPersistenceMessage=reason;throw error;
+diff --git "a/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\client.ts" "b/E:\\DEV\\Weltraum-Spiel\\FP06-Clean-Acceptance-2026-10-17-r01\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\client.ts"
+index 31bd811..7a2d3ad 100644
+--- "a/E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\client.ts"
++++ "b/E:\\DEV\\Weltraum-Spiel\\FP06-Clean-Acceptance-2026-10-17-r01\\apps\\weltraum-browser\\src\\hestia-prototype\\physics\\client.ts"
+@@ -389,7 +389,19 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
+         ||before?.status!=="Paused"||!facilities||facilities.state!=="Idle"||facilities.transactionId!==null
+         ||before.terrainTransaction!=="Idle"||before.neighborTransaction!=="Idle"||before.bodyResidencyTransaction!=="Idle"
+         ||before.moving.state!=="Idle"||(before.structural!==null&&before.structural.state!=="Idle")||!neutral||!inputAcked){
+-        throw new Error("Factory checkpoint requires a confirmed idle paused World and neutral acknowledged input");
++        const guards=Object.freeze({factoryEnabled,notDisposed:!disposed,workerHealthy:failure===undefined,notMutating:!mutating,
++          noBodyPending:!bodyPending,notBusy:!busy,inputOpen:!factoryInputClosing,noFactoryCommand:factoryCommandDepth===0,noPendingRequests:pending.size===0,
++          paused:before?.status==="Paused",hasFacilities:facilities!==undefined,facilitiesIdle:facilities?.state==="Idle",
++          noFacilityTransaction:facilities?.transactionId===null,terrainIdle:before?.terrainTransaction==="Idle",neighborIdle:before?.neighborTransaction==="Idle",
++          bodyResidencyIdle:before?.bodyResidencyTransaction==="Idle",movingIdle:before?.moving.state==="Idle",
++          structuralIdle:before?.structural===null||before?.structural?.state==="Idle",neutralInput:neutral,inputAcknowledged:inputAcked});
++        const pendingRequestKinds=Object.freeze([...pending.values()].map(request=>request.kind).sort());
++        const cause=Object.freeze({kind:"hvp-factory-checkpoint-preflight",guards,pendingRequestCount:pending.size,pendingRequestKinds,
++          status:before?.status??"missing",facilityState:facilities?.state??"missing",terrainTransaction:before?.terrainTransaction??"missing",
++          neighborTransaction:before?.neighborTransaction??"missing",bodyResidencyTransaction:before?.bodyResidencyTransaction??"missing",
++          movingState:before?.moving.state??"missing",structuralState:before?.structural?.state??"missing",
++          pendingFactoryInputCount:pendingRequestKinds.filter(kind=>kind==="FactoryInput").length,inputAcked});
++        throw new Error("Factory checkpoint requires a confirmed idle paused World and neutral acknowledged input",{cause});
+       }
+       mutating=true;heldSnapshot=undefined;
+       try{

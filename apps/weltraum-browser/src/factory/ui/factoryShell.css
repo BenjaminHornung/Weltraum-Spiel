@@ -107,9 +107,10 @@
 .factory-package-identity strong { font-size: 17px; }
 .factory-package-identity .factory-item-symbol { width: 54px; height: 54px; flex-basis: 54px; }
 .factory-cargo-packages > p:not(.factory-package-source) { margin: 5px 0 12px 66px; font-size: 18px; font-weight: 700; }
-.factory-shell .factory-cargo-packages > div > button[data-factory-profile], .factory-shell .factory-cargo-packages > div:nth-child(5) > button {
+.factory-shell .factory-cargo-actions > button {
   width: 100%; color: #fff; background: var(--factory-accent); border-color: var(--factory-accent); font-size: 16px; font-weight: 650;
 }
+.factory-shell .factory-cargo-actions > button:hover:not(:disabled) { background: var(--factory-accent-hover); border-color: var(--factory-accent-hover); }
 .factory-cargo-packages details { margin-top: 9px; font-size: 13px; color: var(--factory-muted); }
 .factory-cargo-packages summary { cursor: pointer; padding: 5px 0; }
 .factory-shell .factory-cargo-reveal, .factory-cargo-detail > button, .factory-cargo-all-lots { min-height: 36px; padding: 5px 0; background: transparent; border: 0; text-align: left; color: var(--factory-accent); font-size: 14px; }
@@ -212,8 +213,8 @@
 }
 @media (prefers-reduced-motion: reduce) { .factory-shell * { transition: none !important; animation: none !important; } }
 /* Primary commands stay visible when their detail sections scroll. */
-.factory-shell .factory-cargo-packages > div:nth-child(5) { position: sticky; bottom: 0; background: var(--factory-panel); padding-top: 6px; }
-.factory-shell .factory-cargo-packages > div:nth-child(5) > button:disabled { color: #636766; background: #e5e1d8; border-color: #c9c7bf; }
+.factory-shell .factory-cargo-actions { position: sticky; bottom: 0; background: var(--factory-panel); padding-top: 6px; }
+.factory-shell .factory-cargo-actions > button:disabled { color: #636766; background: #e5e1d8; border-color: #c9c7bf; }
 #factory-status { display: none; }
 @media (max-width: 520px) {
   .factory-shell-hud { width: calc(100vw - 24px); }

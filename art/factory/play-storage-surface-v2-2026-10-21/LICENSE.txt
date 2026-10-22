@@ -1,0 +1,6 @@
+LicenseRef-Hestia-Project-Original
+
+Original procedural technical S0 geometry authored for BenjaminHornung/Weltraum-Spiel.
+No third-party asset, texture, provider or external license is incorporated.
+These sources remain subject to the repository owner's rights and distribution terms;
+this file grants no new public license.

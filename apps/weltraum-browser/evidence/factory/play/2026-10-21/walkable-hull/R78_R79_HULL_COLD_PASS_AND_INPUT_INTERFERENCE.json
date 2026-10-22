@@ -1,0 +1,1094 @@
+{
+  "atUtc": "2026-10-21T08:09:07.893Z",
+  "firstHull": {
+    "entry": {
+      "tick": 489,
+      "status": "Paused",
+      "player": {
+        "x": 6.5793633460998535,
+        "y": 3.4561805725097656,
+        "z": 8.824885368347168
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 5,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 825,
+        "lastAckId": 825,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "hostConfirmed": true,
+      "host": {
+        "sessionId": "hvp-session-1",
+        "epoch": 1,
+        "nativeTick": 489,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": true,
+          "continueAvailable": false
+        },
+        "simulationRecoveryAvailable": false,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": "pause",
+          "error": null
+        },
+        "terrain": {
+          "epoch": 1,
+          "revision": 0,
+          "sourceDigest": "360b00fa",
+          "baseDigest": "360b00fa",
+          "profileVersion": "hvp-factory-startsite-v6",
+          "cellMeters": 0.125,
+          "originMeters": {
+            "x": -16,
+            "y": -8,
+            "z": -16
+          },
+          "sizeX": 256,
+          "sizeY": 128,
+          "sizeZ": 256
+        }
+      },
+      "clock": {
+        "maxTimerGapMs": 18.19999999552965,
+        "maxAdvanceMs": 13.100000001490116,
+        "maxHandlerMs": 697.1000000014901,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000149011612,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "bodyCount": 5,
+      "colliderCount": 83,
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 81,
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": false,
+        "cargoAccessible": false,
+        "handling": null,
+        "openCargo": {
+          "enabled": false,
+          "reason": "Wrackfracht nicht erreichbar"
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": false,
+          "reason": "Wrackfracht nicht erreichbar"
+        }
+      },
+      "receipt": null,
+      "persistence": {
+        "state": "Idle",
+        "message": "No Factory checkpoint saved; Save checks memory before writing",
+        "revision": null,
+        "saveAvailable": true,
+        "continueAvailable": false
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    },
+    "inventory": {
+      "tick": 504,
+      "status": "Paused",
+      "player": {
+        "x": 6.449524402618408,
+        "y": 3.525059223175049,
+        "z": 8.554438591003418
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 7,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2434,
+        "lastAckId": 2434,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "hostConfirmed": true,
+      "host": {
+        "sessionId": "hvp-session-1",
+        "epoch": 1,
+        "nativeTick": 504,
+        "persistence": {
+          "state": "Idle",
+          "message": "No Factory checkpoint saved; Save checks memory before writing",
+          "revision": null,
+          "saveAvailable": true,
+          "continueAvailable": false
+        },
+        "simulationRecoveryAvailable": false,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": "cargo",
+          "error": null
+        },
+        "terrain": {
+          "epoch": 1,
+          "revision": 0,
+          "sourceDigest": "360b00fa",
+          "baseDigest": "360b00fa",
+          "profileVersion": "hvp-factory-startsite-v6",
+          "cellMeters": 0.125,
+          "originMeters": {
+            "x": -16,
+            "y": -8,
+            "z": -16
+          },
+          "sizeX": 256,
+          "sizeY": 128,
+          "sizeZ": 256
+        }
+      },
+      "clock": {
+        "maxTimerGapMs": 30.100000001490116,
+        "maxAdvanceMs": 13.100000001490116,
+        "maxHandlerMs": 697.1000000014901,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000298023224,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "bodyCount": 5,
+      "colliderCount": 83,
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 84,
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": false,
+        "cargoAccessible": false,
+        "handling": null,
+        "openCargo": {
+          "enabled": false,
+          "reason": "Wrackfracht nicht erreichbar"
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": false,
+          "reason": "Wrackfracht nicht erreichbar"
+        }
+      },
+      "receipt": null,
+      "persistence": {
+        "state": "Idle",
+        "message": "No Factory checkpoint saved; Save checks memory before writing",
+        "revision": null,
+        "saveAvailable": true,
+        "continueAvailable": false
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    },
+    "save1": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 1,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 1008,
+        "payloadBytes": 1508789,
+        "contentHash": "sha256:5f507c61f2d8cfe28dc80cc68fe6a5ec8989ff342ae047b45d2714cd84925b23",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "5f507c61f2d8cfe28dc80cc68fe6a5ec8989ff342ae047b45d2714cd84925b23",
+      "version": "fp06-combined-checkpoint-v2",
+      "signature": "fnv1a32:29cb8be6",
+      "host": {
+        "epoch": 1,
+        "nativeTick": 504,
+        "remainderTicks": 0,
+        "sessionId": "hvp-session-1",
+        "steps": 84
+      },
+      "hashes": {
+        "native": "1ea8498c8c8e4f7bec8c7c6292ae02851a05cf343d4cca87f5983e2687a73c92",
+        "nativeFactory": "fb617819c4971c42a12ffc4865f314d6a25e6b12794d453f19e6fd959e935a54",
+        "profiles": "ec5838d818ce3648ca4c46d5982385b2e5469a906c4cf83695363109d14c3962",
+        "host": "846c88f4e4a8836098abb27929efce8953ef9682bbfc9275c68b15f9fde60db8",
+        "factory": "00dd23b75aea1eeca20bc15cec2820d706da07eb45a95791f929daedfd02016b",
+        "factoryExceptPublication": "a6f2a8f26d51c5e004476949c9ee6bdf701ba510f092d4ffe612764100f01cee"
+      },
+      "installationCount": 0
+    },
+    "closed": {
+      "profile": "E:/DEV/Weltraum-Spiel/FP06-V6-FullFlow-20261021-R78",
+      "pageClosed": true,
+      "disconnected": true
+    },
+    "coldBeforePlay": {
+      "tick": 504,
+      "status": "Paused",
+      "player": {
+        "x": 6.449524402618408,
+        "y": 3.525059223175049,
+        "z": 8.554438591003418
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2,
+        "lastAckId": 2,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "hostConfirmed": true,
+      "host": {
+        "sessionId": "hvp-session-1",
+        "epoch": 1,
+        "nativeTick": 504,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+          "revision": 1,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "simulationRecoveryAvailable": false,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": "pause",
+          "error": null
+        },
+        "terrain": {
+          "epoch": 1,
+          "revision": 0,
+          "sourceDigest": "360b00fa",
+          "baseDigest": "360b00fa",
+          "profileVersion": "hvp-factory-startsite-v6",
+          "cellMeters": 0.125,
+          "originMeters": {
+            "x": -16,
+            "y": -8,
+            "z": -16
+          },
+          "sizeX": 256,
+          "sizeY": 128,
+          "sizeZ": 256
+        }
+      },
+      "clock": {
+        "maxTimerGapMs": 28.200000002980232,
+        "maxAdvanceMs": 0.10000000149011612,
+        "maxHandlerMs": 795.6000000014901,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.09999999403953552,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "bodyCount": 5,
+      "colliderCount": 83,
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 84,
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": false,
+        "cargoAccessible": false,
+        "handling": null,
+        "openCargo": {
+          "enabled": false,
+          "reason": "Wrackfracht nicht erreichbar"
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": false,
+          "reason": "Wrackfracht nicht erreichbar"
+        }
+      },
+      "receipt": null,
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+        "revision": 1,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    },
+    "save2": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 2,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 1008,
+        "payloadBytes": 1508789,
+        "contentHash": "sha256:1bceef435aecb487c921b4f186b6df61c34d1d187140e65679aeaf7b691856f5",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "1bceef435aecb487c921b4f186b6df61c34d1d187140e65679aeaf7b691856f5",
+      "version": "fp06-combined-checkpoint-v2",
+      "signature": "fnv1a32:c389f068",
+      "host": {
+        "epoch": 1,
+        "nativeTick": 504,
+        "remainderTicks": 0,
+        "sessionId": "hvp-session-1",
+        "steps": 84
+      },
+      "hashes": {
+        "native": "1ea8498c8c8e4f7bec8c7c6292ae02851a05cf343d4cca87f5983e2687a73c92",
+        "nativeFactory": "fb617819c4971c42a12ffc4865f314d6a25e6b12794d453f19e6fd959e935a54",
+        "profiles": "ec5838d818ce3648ca4c46d5982385b2e5469a906c4cf83695363109d14c3962",
+        "host": "846c88f4e4a8836098abb27929efce8953ef9682bbfc9275c68b15f9fde60db8",
+        "factory": "355fe35bd9e0c8fd204802b48eccc1639770020d560d26a350ec41e50eaa3599",
+        "factoryExceptPublication": "a6f2a8f26d51c5e004476949c9ee6bdf701ba510f092d4ffe612764100f01cee"
+      },
+      "installationCount": 0
+    },
+    "parity": {
+      "native": true,
+      "nativeFactory": true,
+      "profiles": true,
+      "host": true,
+      "factoryExceptPublication": true
+    },
+    "exit": {
+      "tick": 4126,
+      "status": "Paused",
+      "player": {
+        "x": 6.5495147705078125,
+        "y": 2.4000937938690186,
+        "z": 13.354456901550293
+      },
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 9,
+        "pressedKeys": []
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 5110,
+        "lastAckId": 5110,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      },
+      "hostConfirmed": true,
+      "host": {
+        "sessionId": "hvp-session-1",
+        "epoch": 1,
+        "nativeTick": 4126,
+        "persistence": {
+          "state": "Saved",
+          "message": "Combined Factory checkpoint saved locally",
+          "revision": 2,
+          "saveAvailable": true,
+          "continueAvailable": true
+        },
+        "simulationRecoveryAvailable": false,
+        "physicsStatus": "Paused",
+        "confirmed": true,
+        "input": {
+          "active": false,
+          "activationPending": false,
+          "pointerLocked": false,
+          "pausePending": false,
+          "focusedPanel": null,
+          "surface": "pause",
+          "error": null
+        },
+        "terrain": {
+          "epoch": 1,
+          "revision": 0,
+          "sourceDigest": "360b00fa",
+          "baseDigest": "360b00fa",
+          "profileVersion": "hvp-factory-startsite-v6",
+          "cellMeters": 0.125,
+          "originMeters": {
+            "x": -16,
+            "y": -8,
+            "z": -16
+          },
+          "sizeX": 256,
+          "sizeY": 128,
+          "sizeZ": 256
+        }
+      },
+      "clock": {
+        "maxTimerGapMs": 733.3999999985099,
+        "maxAdvanceMs": 10.899999998509884,
+        "maxHandlerMs": 795.6000000014901,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.10000000149011612,
+        "delayedCallbacks": [
+          {
+            "gapMs": 733.3999999985099,
+            "previousCommand": "FactoryCheckpoint",
+            "handlerMs": 728.8000000044703,
+            "advanceMs": 0
+          }
+        ],
+        "timers": 1
+      },
+      "bodyCount": 5,
+      "colliderCount": 83,
+      "carrier": null,
+      "facilityState": "Idle",
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "factorySteps": 687,
+      "interaction": {
+        "localDeposits": [],
+        "cargoOpened": false,
+        "cargoAccessible": false,
+        "handling": null,
+        "openCargo": {
+          "enabled": false,
+          "reason": "Wrackfracht nicht erreichbar"
+        },
+        "deposit": {
+          "enabled": false,
+          "reason": "Kein aktiver Transport"
+        },
+        "returnCargo": {
+          "enabled": false,
+          "reason": "Wrackfracht nicht erreichbar"
+        }
+      },
+      "receipt": null,
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 2,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "power": {
+        "allocationConfirmed": true,
+        "devices": [],
+        "status": "UNCONNECTED",
+        "generationWatts": 0,
+        "allocatedWatts": 0,
+        "batteryEnergyJ": null,
+        "batteryCapacityJ": null,
+        "reserveEnergyJ": null,
+        "sourceQuality": "unsupported",
+        "consumers": []
+      },
+      "testBridge": false
+    }
+  },
+  "interference": {
+    "samples": [
+      {
+        "at": 603183.6000000015,
+        "tick": 7622,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.13851374233170977,
+          -0.5592018452446889,
+          0.09541523099393931,
+          0.8117901041245655
+        ],
+        "desired": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        }
+      },
+      {
+        "at": 603267.1000000015,
+        "tick": 7628,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.13851374233170977,
+          -0.5592018452446889,
+          0.09541523099393931,
+          0.8117901041245655
+        ],
+        "desired": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        }
+      },
+      {
+        "at": 603330.1999999955,
+        "tick": 7632,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.13851374233170977,
+          -0.5592018452446889,
+          0.09541523099393931,
+          0.8117901041245655
+        ],
+        "desired": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        }
+      },
+      {
+        "at": 603391.8999999985,
+        "tick": 7636,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.13851374233170977,
+          -0.5592018452446889,
+          0.09541523099393931,
+          0.8117901041245655
+        ],
+        "desired": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        }
+      },
+      {
+        "at": 603457.6999999955,
+        "tick": 7639,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.14257094452188787,
+          -0.5587177810690309,
+          0.09821003588223622,
+          0.8110873909434452
+        ],
+        "desired": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        }
+      },
+      {
+        "at": 603550,
+        "tick": 7645,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.31322662490902514,
+          -0.6279865128192587,
+          0.30567901206121956,
+          0.6434923175535857
+        ],
+        "desired": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        }
+      },
+      {
+        "at": 603646.1999999955,
+        "tick": 7651,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.45223493594693476,
+          -0.5413203528833945,
+          0.44133773263999687,
+          0.5546862572765399
+        ],
+        "desired": {
+          "x": 0.9997026035598405,
+          "z": -0.024386562604767785,
+          "sprint": false,
+          "jump": false
+        }
+      },
+      {
+        "at": 603738.299999997,
+        "tick": 7657,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.45995597157492724,
+          -0.5350887779347981,
+          0.44887271962758035,
+          0.5483008166280156
+        ],
+        "desired": {
+          "x": 0.9997026035598405,
+          "z": -0.024386562604767785,
+          "sprint": false,
+          "jump": false
+        }
+      },
+      {
+        "at": 603801,
+        "tick": 7659,
+        "player": {
+          "x": -5.0664777755737305,
+          "y": 2.4000401496887207,
+          "z": 2.375532388687134
+        },
+        "q": [
+          0.45995597157492724,
+          -0.5350887779347981,
+          0.44887271962758035,
+          0.5483008166280156
+        ],
+        "desired": {
+          "x": 0.9997026035598405,
+          "z": -0.024386562604767785,
+          "sprint": false,
+          "jump": false
+        }
+      }
+    ],
+    "mouse": [
+      {
+        "t": 602868.299999997,
+        "dx": 0,
+        "dy": 0,
+        "locked": false
+      },
+      {
+        "t": 603104.6999999955,
+        "dx": 54,
+        "dy": 131,
+        "locked": true
+      },
+      {
+        "t": 603104.799999997,
+        "dx": 0,
+        "dy": 0,
+        "locked": true
+      },
+      {
+        "t": 603426.5,
+        "dx": 0,
+        "dy": -5,
+        "locked": true
+      },
+      {
+        "t": 603457.8999999985,
+        "dx": 9,
+        "dy": -27,
+        "locked": true
+      },
+      {
+        "t": 603488.6999999955,
+        "dx": 54,
+        "dy": -73,
+        "locked": true
+      },
+      {
+        "t": 603520,
+        "dx": 107,
+        "dy": -179,
+        "locked": true
+      },
+      {
+        "t": 603550.8999999985,
+        "dx": 0,
+        "dy": -75,
+        "locked": true
+      },
+      {
+        "t": 603581,
+        "dx": 0,
+        "dy": -110,
+        "locked": true
+      },
+      {
+        "t": 603606.6999999955,
+        "dx": 0,
+        "dy": -46,
+        "locked": true
+      },
+      {
+        "t": 603646.299999997,
+        "dx": 0,
+        "dy": -14,
+        "locked": true
+      }
+    ]
+  },
+  "carryingSave3": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 3,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 15334,
+      "payloadBytes": 4326939,
+      "contentHash": "sha256:b7fe52059b59be848a75d73a54498112c6c15ec5a1726e06adf5c42aa8e1bd40",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "b7fe52059b59be848a75d73a54498112c6c15ec5a1726e06adf5c42aa8e1bd40",
+    "version": "fp06-combined-checkpoint-v2",
+    "signature": "fnv1a32:84c370d2",
+    "host": {
+      "epoch": 1,
+      "nativeTick": 7667,
+      "remainderTicks": 5,
+      "sessionId": "hvp-session-1",
+      "steps": 1277
+    },
+    "hashes": {
+      "native": "a9a7c7d20e0ba816728958747cc9985c2aba3f0d58e8d8312161581adb39edea",
+      "nativeFactory": "0eaae9b2920a5408d31fad984137663009ae5fc880964f207fb5cc9804a6068c",
+      "profiles": "ec5838d818ce3648ca4c46d5982385b2e5469a906c4cf83695363109d14c3962",
+      "host": "93e36e9ea73890146d6eec75d7505885abf4967c6faab3ca37af73b78ef674d0",
+      "factory": "2c63c90bd7bf535f332feba9917dfa10dc6958500f5bb7c9c57cc935c78ebf95",
+      "factoryExceptPublication": "d561ac3f1f548d00495860014eb90706874a42967a48a44d77b30a45d5acb86a"
+    },
+    "installationCount": 2
+  },
+  "current": {
+    "tick": 7667,
+    "status": "Paused",
+    "player": {
+      "x": -5.0664777755737305,
+      "y": 2.4000401496887207,
+      "z": 2.375532388687134
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 52,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 22004,
+      "lastAckId": 22004,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "hostConfirmed": true,
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 7667,
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 3,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "simulationRecoveryAvailable": false,
+      "physicsStatus": "Paused",
+      "confirmed": true,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "pause",
+        "error": null
+      },
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "360b00fa",
+        "baseDigest": "360b00fa",
+        "profileVersion": "hvp-factory-startsite-v6",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "clock": {
+      "maxTimerGapMs": 733.3999999985099,
+      "maxAdvanceMs": 10.899999998509884,
+      "maxHandlerMs": 795.6000000014901,
+      "lastCommand": "Read",
+      "lastHandlerMs": 1.7000000029802322,
+      "delayedCallbacks": [
+        {
+          "gapMs": 733.3999999985099,
+          "previousCommand": "FactoryCheckpoint",
+          "handlerMs": 728.8000000044703,
+          "advanceMs": 0
+        },
+        {
+          "gapMs": 698.3999999985099,
+          "previousCommand": "FactoryCheckpoint",
+          "handlerMs": 694.6000000014901,
+          "advanceMs": 0
+        }
+      ],
+      "timers": 1
+    },
+    "bodyCount": 8,
+    "colliderCount": 129,
+    "carrier": {
+      "phase": "Carrying",
+      "profileId": "CABLE8500",
+      "massKg": 2.125,
+      "positionMm": [
+        -5066.4777755737305,
+        1499.9998807907104,
+        1625.5323886871338
+      ]
+    },
+    "facilityState": "Idle",
+    "facilityCount": 2,
+    "massMg": 2984400000,
+    "factorySteps": 1277,
+    "interaction": {
+      "localDeposits": [
+        {
+          "target": {
+            "id": "input_facility_b07_3",
+            "revision": 0
+          },
+          "capability": {
+            "enabled": true,
+            "reason": null
+          }
+        }
+      ],
+      "cargoOpened": true,
+      "cargoAccessible": false,
+      "handling": {
+        "id": "factory_carrier",
+        "revision": 8,
+        "profileId": "CABLE8500",
+        "phase": "Carrying",
+        "massMg": 2125000
+      },
+      "openCargo": {
+        "enabled": false,
+        "reason": "Wrackfracht nicht erreichbar"
+      },
+      "deposit": {
+        "enabled": true,
+        "reason": null
+      },
+      "returnCargo": {
+        "enabled": false,
+        "reason": "Wrackfracht nicht erreichbar"
+      }
+    },
+    "receipt": {
+      "commandId": "ui_cargo_e385900eb93748fea13ff0b8993fcf3a",
+      "status": "Committed",
+      "reason": null
+    },
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint saved locally",
+      "revision": 3,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "power": {
+      "allocationConfirmed": true,
+      "devices": [
+        {
+          "id": "facility_fp02_device_battery_4kwh_1",
+          "revision": 4,
+          "name": "Expeditionsbatterie",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        },
+        {
+          "id": "facility_b07_3",
+          "revision": 254,
+          "name": "Umformwerk",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        }
+      ],
+      "status": "UNCONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 0,
+      "batteryEnergyJ": 12960000,
+      "batteryCapacityJ": 14400000,
+      "reserveEnergyJ": 3600000,
+      "sourceQuality": "unsupported",
+      "consumers": [
+        {
+          "id": "consumer_facility_b07_3",
+          "name": "facility_b07_3",
+          "requestedWatts": 0,
+          "allocatedWatts": 0,
+          "reason": "Idle"
+        }
+      ]
+    },
+    "testBridge": false
+  },
+  "closed": {
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-V6-FullFlow-20261021-R78",
+    "pageClosed": true,
+    "disconnected": true
+  },
+  "reason": "Unexpected locked mouse events without automation mouse calls; next isolated normal Chrome UI run is headless, no FPS comparison; final visible cold Continue required"
+}

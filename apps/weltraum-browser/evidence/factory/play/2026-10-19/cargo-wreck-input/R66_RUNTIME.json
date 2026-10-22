@@ -1,0 +1,162 @@
+{
+  "createdAtUtc": "2026-10-19T13:34:15.967Z",
+  "cleanCopy": "FP06-Ready-2026-10-19-v5",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "profile": "FP06-Cargo-Backpressure-Acceptance-20261019-R66",
+  "backpressure": {
+    "before": {
+      "prototype": "Ready",
+      "status": "Running",
+      "ticks": 1645,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.41003680229187,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "input": {
+        "active": true,
+        "activationPending": false,
+        "pointerLocked": true,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": null,
+        "error": null
+      },
+      "cargo": {
+        "accessible": true,
+        "opened": false
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 807,
+        "lastAckId": 807,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "locked": true
+    },
+    "after": {
+      "prototype": "Ready",
+      "status": "Running",
+      "ticks": 2419,
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -3.5912346839904785,
+          "y": -0.16674980521202087,
+          "z": 7.232205867767334
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "input": {
+        "active": true,
+        "activationPending": false,
+        "pointerLocked": true,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": null,
+        "error": null
+      },
+      "cargo": {
+        "accessible": false,
+        "opened": false
+      },
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2373,
+        "lastAckId": 2373,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": true
+      },
+      "locked": true
+    },
+    "observed": {
+      "count": 320,
+      "locked": 320,
+      "sumX": 81,
+      "sumY": -154,
+      "max": 158
+    },
+    "errors": []
+  },
+  "cargo": {
+    "inaccessibleE": {
+      "status": "Running",
+      "locked": true,
+      "surface": null,
+      "cargoOpened": false
+    },
+    "inventory": {
+      "status": "Paused",
+      "ticks": 3494,
+      "locked": false,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "cargo",
+        "error": null
+      },
+      "opened": false,
+      "transport": {
+        "enabled": true,
+        "lastSentId": 2931,
+        "lastAckId": 2931,
+        "pendingIds": [],
+        "desiredLevel": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "commandDepth": 0,
+        "closing": false,
+        "canDispatch": false
+      }
+    },
+    "close": {
+      "beforeTick": 3494,
+      "afterTick": 3494,
+      "status": "Paused",
+      "locked": false
+    }
+  },
+  "menu": {
+    "dialog": "End session? Unsaved changes will be discarded; your existing save is retained.",
+    "current": {},
+    "body": "Goal\nOpen wreck cargo\nN\n20.3 m area\n\nB Build · M Map · E Cargo · I Inventory · Esc Menu\n\nPause and session\nClose\n\nSession paused\n\nPlay\nSave\nLoad game\nNo Factory checkpoint saved; Save checks memory before writing\nOpen settings\nNot available here yet\nBack to menu\nOpen workshop\nOpen field guide\n\nWaiting for action confirmation\n\nSession paused\n\nFailed to end session – reload\n\nRestart",
+    "errors": [
+      "Error: Factory host disposed or superseded"
+    ]
+  }
+}

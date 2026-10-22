@@ -1,0 +1,37 @@
+{
+  "url": "http://127.0.0.1:5197/factory.html?factoryLoad=primary&hvpMeasure=1",
+  "body": "HVP-02 UNAVAILABLE\n\nTechnical initialization failure: HVP scene BudgetExceeded: 270168482 CPU bytes exceed 268435456\n\nNOT GAMEPLAY · no terrain readiness is being claimed",
+  "metrics": [
+    {
+      "name": "hvp.factoryColdAdmission",
+      "startTime": 6373.200000001118,
+      "duration": 0,
+      "detail": {
+        "sampleId": "factoryColdAdmission:1",
+        "data": {
+          "R": 0,
+          "T": 21074842,
+          "U": 2833296,
+          "K": 1359352,
+          "D": 39359936,
+          "P": 13535070,
+          "oldBound": 16777216,
+          "totalBytes": 156848866,
+          "ownerImportBytes": 0,
+          "decodedSourceBytes": 14140864,
+          "baseBytes": 8388608,
+          "preparedBaseBytes": 8388608,
+          "nativeReserveBytes": 100663296
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "network": [],
+  "slotUnchanged": true,
+  "closure": {
+    "disconnected": true,
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-Browser-Acceptance-20261018-R11"
+  },
+  "video": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\acceptance-r18-video\\page@790a79613b276b43ba3febb835f44b13.webm"
+}

@@ -1,0 +1,506 @@
+{
+  "schema": "hestia.fp06.mouse-input-repair/v1",
+  "date": "2026-10-19",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "candidate": "E:/DEV/Weltraum-Spiel/FP06-Candidate",
+  "delivery": "E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-19-v4",
+  "origin": "http://127.0.0.1:5197",
+  "server": {
+    "session": 14269,
+    "previousOwnedSession73089Stopped": true
+  },
+  "status": "MOUSE_INPUT_FIX_PASS_SOURCE_CLEAN_BUILD_ACTUAL_HARDWARE",
+  "source": {
+    "beforeInput": "ED69CF1E5AE60661A2386D84E97E8E298DC5504B7AA35F26F2ED890B4B9E638B",
+    "afterInput": "5E0A00047EC60149D79D66B1C59E1382C43DE9AD41BCABACC4456C7DD59D6A1E",
+    "inputTest": "241E5075D0F057D1C2DE0DED217D75A745B36881859FA7ACB64905493DFF7361",
+    "bootstrapUnchanged": "3B5DF6C4D0F58A18219AE108E2D6DE13BB54CAA77951815735705CF0662F7FE9",
+    "nativeReview": "HASHBOUND_SOURCE_TEST_DIFF_PASS",
+    "integrationOwner": "/root",
+    "implementationWriter": "/root/fp06_writer (quiescent)",
+    "maxProductWriters": 1
+  },
+  "baseline": {
+    "capturedLockedMouseEvents": 321,
+    "sumX": 154412,
+    "turnsAtUnchangedGain": 49.15086614541149,
+    "source": "E:/DEV/Weltraum-Spiel/FP06-Chromium-PointerLock-2026-10-19/hestia-human-mouse-baseline.json",
+    "sampleLimit": "1200 interleaved pointer/mouse rows; reported321 locked mouse events are a captured subset"
+  },
+  "isolatedPhysicalRawControl": {
+    "runs": [
+      {
+        "mode": "raw",
+        "status": "Released",
+        "trusted": true,
+        "requestedAt": 18408.29999999702,
+        "count": 79,
+        "sumX": 206,
+        "sumY": -1,
+        "maxX": 177,
+        "maxY": 7,
+        "locks": [
+          {
+            "t": 18413.699999999255,
+            "locked": true
+          },
+          {
+            "t": 22962.79999999702,
+            "locked": false
+          }
+        ],
+        "medianAbsX": 33
+      },
+      {
+        "mode": "raw",
+        "status": "Released",
+        "trusted": true,
+        "requestedAt": 31620.39999999851,
+        "count": 171,
+        "sumX": 1119,
+        "sumY": -94,
+        "maxX": 39,
+        "maxY": 4,
+        "locks": [
+          {
+            "t": 31620.89999999851,
+            "locked": true
+          },
+          {
+            "t": 38039.79999999702,
+            "locked": false
+          }
+        ],
+        "medianAbsX": 4
+      }
+    ],
+    "source": "E:/DEV/Weltraum-Spiel/FP06-Chromium-PointerLock-2026-10-19/raw-human-control.json",
+    "notGameHardwareAcceptance": true
+  },
+  "checks": {
+    "regressionRED": {
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit/hvp-player-input.test.ts -t 'requests lock synchronously|retries optionsless once|does not retry a cancelled raw request' --reporter=dot --maxWorkers=1",
+      "exit": 1,
+      "failed": 3,
+      "skipped": 48,
+      "durationSeconds": 1.27
+    },
+    "focusedGREEN": {
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit/hvp-player-input.test.ts -t 'PLAY03 actual user activation and Native Play ACK' --reporter=dot --maxWorkers=1",
+      "exit": 0,
+      "passed": 19,
+      "skipped": 33,
+      "durationSeconds": 1.31
+    },
+    "relatedSuites": {
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit/hvp-player-input.test.ts tests/unit/hvp-camera.test.ts tests/unit/hvp-player-presentation.test.ts --reporter=dot --maxWorkers=1",
+      "exit": 0,
+      "passed": 63,
+      "files": 3,
+      "durationSeconds": 5.75
+    },
+    "tsc": {
+      "command": "node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+      "exit": 0
+    },
+    "whitespace": {
+      "exit": 0
+    },
+    "cleanExport": {
+      "files": 879,
+      "mismatches": 0,
+      "includesCurrentLocalChanges": true,
+      "finalManifest": {
+        "files": 879,
+        "mismatches": 0,
+        "documentationRefresh": [
+          "apps/weltraum-browser/README_PLAY.md",
+          "docs/factory/fp06/play/2026-10-19/mouse-input/RAW_POINTER_INPUT_R01.md"
+        ],
+        "onlyOtherChangesFromReadyV3": [
+          "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        ]
+      }
+    },
+    "install": {
+      "command": "npm.cmd ci --offline --cache E:/DEV/Weltraum-Spiel/FP06-npm-cache --no-audit --no-fund",
+      "exit": 0,
+      "packages": 59
+    },
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "wallSeconds": 5.5,
+      "actualFactoryScript": "/assets/factory-BPmtGo4M.js"
+    },
+    "automation": {
+      "before": {
+        "tick": 0,
+        "status": "Paused",
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "camera": null,
+        "locked": false
+      },
+      "started": {
+        "tick": 0,
+        "status": "Running",
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.5,
+            3.1700000762939453,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.5,
+            2.4200000762939453,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "locked": true
+      },
+      "moved": {
+        "tick": 16,
+        "status": "Running",
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.250002861022949,
+            "y": 2.400042772293091,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 2,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -6.150537056203812,
+            3.150160292255309,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.150537056203812,
+            2.400160292255309,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "locked": true
+      },
+      "paused": {
+        "tick": 19,
+        "status": "Paused",
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -6.3000030517578125,
+            "y": 2.400042772293091,
+            "z": 11.875
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 5,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -6.150537056203812,
+            3.150160292255309,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -6.150537056203812,
+            2.400160292255309,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "locked": false
+      },
+      "errors": []
+    },
+    "physicalGame": {
+      "status": "PASS",
+      "sessions": [
+        {
+          "durationMs": 18745,
+          "count": 211,
+          "recordedRows": 211,
+          "sumX": 296,
+          "sumY": 171,
+          "medianAbsX": 7,
+          "maxX": 643,
+          "maxY": 294,
+          "quaternionMaxError": 0,
+          "gainUnchanged": 0.002
+        },
+        {
+          "durationMs": 3494.800000000745,
+          "count": 29,
+          "recordedRows": 29,
+          "sumX": -267,
+          "sumY": 67,
+          "medianAbsX": 18,
+          "maxX": 121,
+          "maxY": 30,
+          "quaternionMaxError": 0,
+          "gainUnchanged": 0.002
+        },
+        {
+          "durationMs": 13014.70000000298,
+          "count": 75,
+          "recordedRows": 75,
+          "sumX": -2181,
+          "sumY": -120,
+          "medianAbsX": 9,
+          "maxX": 377,
+          "maxY": 359,
+          "quaternionMaxError": 0,
+          "gainUnchanged": 0.002
+        }
+      ],
+      "totalMouseEvents": 315,
+      "allRowsRetained": true,
+      "quaternionMaxError": 0,
+      "gameScript": [
+        "http://127.0.0.1:5197/assets/factory-BPmtGo4M.js"
+      ],
+      "final": {
+        "status": "Paused",
+        "tick": 2130,
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 13,
+          "pressedKeys": []
+        },
+        "locked": false
+      },
+      "browserErrors": [],
+      "diagnosticRemoved": true,
+      "sourceRecord": "apps/weltraum-browser/evidence/factory/play/2026-10-19/mouse-input/PHYSICAL_GAME_MOUSE_PASS.json"
+    },
+    "completionReview": "Independent read-only hardware acceptance PASS after source freeze; no broader FP06/performance PASS inferred"
+  },
+  "preservation": {
+    "before": {
+      "saved": {
+        "metadata": {
+          "slotId": "factory-primary",
+          "displayName": "factory-primary",
+          "recordRevision": 12,
+          "saveSchemaVersion": 1,
+          "gameVersion": "hestia-factory-play-v1",
+          "universeTick": 49058,
+          "payloadBytes": 13586523,
+          "contentHash": "sha256:7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+          "lastWriteReason": "ManualSave"
+        },
+        "sha256": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2"
+      },
+      "current": {
+        "state": "Paused",
+        "tick": 1802,
+        "camera": {
+          "position": [
+            -7.360755920410156,
+            3.150317668914795,
+            11.0703125
+          ],
+          "orientation": [
+            -0.5953689429092555,
+            0.2921489531244409,
+            -0.24607366858116939,
+            -0.706846914570909
+          ],
+          "visualBody": [
+            -7.360755920410156,
+            2.400317668914795,
+            11.0703125
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 8,
+          "pressedKeys": []
+        }
+      }
+    },
+    "after": {
+      "oldGame": {
+        "status": "Paused",
+        "tick": 1802,
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -7.360755920410156,
+            "y": 2.400317668914795,
+            "z": 11.0703125
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "camera": {
+          "position": [
+            -7.360755920410156,
+            3.150317668914795,
+            11.0703125
+          ],
+          "orientation": [
+            -0.5953689429092555,
+            0.2921489531244409,
+            -0.24607366858116939,
+            -0.706846914570909
+          ],
+          "visualBody": [
+            -7.360755920410156,
+            2.400317668914795,
+            11.0703125
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "locked": false
+      },
+      "saved": {
+        "metadata": {
+          "slotId": "factory-primary",
+          "displayName": "factory-primary",
+          "recordRevision": 12,
+          "saveSchemaVersion": 1,
+          "gameVersion": "hestia-factory-play-v1",
+          "universeTick": 49058,
+          "payloadBytes": 13586523,
+          "contentHash": "sha256:7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+          "lastWriteReason": "ManualSave"
+        },
+        "sha256": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2"
+      }
+    },
+    "oldUnsavedGameNotReloaded": true,
+    "explicitSaveOrLoadPerformed": false,
+    "newGameIsSeparateTab": true,
+    "finalAfterHuman": {
+      "saved": {
+        "metadata": {
+          "slotId": "factory-primary",
+          "displayName": "factory-primary",
+          "recordRevision": 12,
+          "saveSchemaVersion": 1,
+          "gameVersion": "hestia-factory-play-v1",
+          "universeTick": 49058,
+          "payloadBytes": 13586523,
+          "contentHash": "sha256:7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+          "lastWriteReason": "ManualSave"
+        },
+        "sha256": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+        "status": "Paused",
+        "diagnosticRemoved": true
+      },
+      "original": {
+        "status": "Paused",
+        "tick": 1802,
+        "camera": "{\"position\":[-7.360755920410156,3.150317668914795,11.0703125],\"orientation\":[-0.5953689429092555,0.2921489531244409,-0.24607366858116939,-0.706846914570909],\"visualBody\":[-7.360755920410156,2.400317668914795,11.0703125],\"heightMeters\":1.8,\"view\":\"FirstPerson\"}",
+        "locked": false
+      }
+    }
+  },
+  "limits": {
+    "physicalGameHardware": "PASS on the user's actual mouse and external headed Chrome",
+    "otherHardwareBrowsers": "NOT RUN",
+    "legacy": "Unnumbered late pointerlockerror can reject a new legacy request fail-closed; no universal stale-event guarantee",
+    "performance": "No new performance experiment; previous bounded window remains CLOSED",
+    "fullBootstrap": "Not repeated for input-only change; prior known Cold setup failure remains historical, not a full-suite PASS",
+    "clockGainPitchSaveCapsGoldens": "UNCHANGED",
+    "diagnosticServer5199Stopped": true,
+    "priorFunctionalEvidence": "Normal paid build, fresh16kg, WIP real Chrome restart and combined Save passed on Ready-v3; all Factory/Save/Clock source files are identical in Ready-v4. Whole production/restart was not repeated for this input-only change."
+  },
+  "userConfirmation": "Kontrollierbar, Fehler weg"
+}

@@ -1,0 +1,427 @@
+{
+  "url": "http://127.0.0.1:5197/factory.html#raw-r01",
+  "title": "Hestia · Workshop",
+  "body": "Goal\nOpen wreck cargo\nPause\nN\n20.3 m area\n\nB Build · M Map · Esc Menu\n\nHVP-02 UNAVAILABLE\n\nTechnical initialization failure: Physics command backpressure\n\nNOT GAMEPLAY · no terrain readiness is being claimed",
+  "remainingDataset": {
+    "hestiaFactoryPresentation": "{\"sessionId\":\"hvp-session-1\",\"epoch\":1,\"nativeTick\":1142,\"scenes\":[{\"instanceId\":\"fp02_wreck_owner:closed\",\"published\":true,\"assetId\":\"play_wreck_cargo_v1\",\"glbSha256\":\"4b16d587014cba2587b8cf7ca34f674f3352c77c25aecfac3dca2073bd17a639\",\"sourceFileSha256\":\"83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c\",\"s1\":false,\"modelError\":null,\"visibleKeys\":[\"factory-play:fp02_wreck_owner:closed:play_wreck_cargo_v1:cargo_access\"],\"transforms\":[{\"representationKey\":\"factory-play:fp02_wreck_owner:closed:play_wreck_cargo_v1:cargo_access\",\"positionRelative\":{\"x\":-5.5,\"y\":1.25,\"z\":13.125},\"orientation\":{\"x\":0,\"y\":0,\"z\":0,\"w\":1},\"scale\":{\"x\":1,\"y\":1,\"z\":1}}]}],\"cost\":{\"cpu\":4449352,\"mesh\":95184,\"triangles\":732,\"draws\":35}}",
+    "hestiaPrototype": "1",
+    "hestiaPrototypeState": "Error"
+  },
+  "locked": false,
+  "frameObservation": {
+    "startedAt": "2026-10-19T13:08:47.547Z",
+    "paused": {
+      "samples": 120,
+      "meanMs": 32.552500000000386,
+      "p50Ms": 32.5,
+      "p95Ms": 33.199999999953434,
+      "maxMs": 33.60000000009313,
+      "fps": 30.719606789032735
+    },
+    "active": {
+      "samples": 120,
+      "meanMs": 31.25000000000194,
+      "p50Ms": 31.200000000186265,
+      "p95Ms": 31.600000000093132,
+      "maxMs": 31.800000000046566,
+      "fps": 31.999999999998014
+    },
+    "raw": {
+      "paused": [
+        32.800000000046566,
+        32.300000000046566,
+        32.39999999990687,
+        32.5,
+        32.800000000046566,
+        32.300000000046566,
+        32.89999999990687,
+        32.4000000001397,
+        33,
+        32.5999999998603,
+        32.5,
+        32.200000000186265,
+        32.199999999953434,
+        32.699999999953434,
+        32.5,
+        32.39999999990687,
+        32.4000000001397,
+        32.699999999953434,
+        32.10000000009313,
+        32.299999999813735,
+        33,
+        32.60000000009313,
+        32.199999999953434,
+        33.199999999953434,
+        32.700000000186265,
+        32.39999999990687,
+        32.300000000046566,
+        32.39999999990687,
+        32.199999999953434,
+        33,
+        32.700000000186265,
+        32.0999999998603,
+        32.699999999953434,
+        32.4000000001397,
+        33,
+        32.5999999998603,
+        32.300000000046566,
+        32.300000000046566,
+        32.199999999953434,
+        32.60000000009313,
+        32.5999999998603,
+        32.300000000046566,
+        32.5,
+        32.5,
+        32.5,
+        32.699999999953434,
+        32.4000000001397,
+        32.199999999953434,
+        32.89999999990687,
+        32.300000000046566,
+        32.800000000046566,
+        32.199999999953434,
+        32.60000000009313,
+        32.39999999990687,
+        33.60000000009313,
+        33.5999999998603,
+        32.5,
+        32.9000000001397,
+        32.300000000046566,
+        32.299999999813735,
+        32.700000000186265,
+        32.39999999990687,
+        33.10000000009313,
+        32.299999999813735,
+        32.5,
+        32.300000000046566,
+        32.5,
+        32.800000000046566,
+        32.5,
+        32.5,
+        32.5,
+        32.5,
+        32.300000000046566,
+        32.300000000046566,
+        32.5,
+        32.0999999998603,
+        33.4000000001397,
+        32.299999999813735,
+        32.60000000009313,
+        32.699999999953434,
+        32.300000000046566,
+        32.60000000009313,
+        33.199999999953434,
+        32.5999999998603,
+        32.60000000009313,
+        33.300000000046566,
+        32.5999999998603,
+        32.700000000186265,
+        32.39999999990687,
+        32.39999999990687,
+        32.800000000046566,
+        32.300000000046566,
+        32.300000000046566,
+        32.199999999953434,
+        33.10000000009313,
+        32.199999999953434,
+        33.0999999998603,
+        32.300000000046566,
+        32.699999999953434,
+        32.5,
+        33.200000000186265,
+        32.0999999998603,
+        32.699999999953434,
+        33.10000000009313,
+        33.10000000009313,
+        32.199999999953434,
+        32.800000000046566,
+        32.39999999990687,
+        32.699999999953434,
+        32.5,
+        32.5,
+        32.5,
+        32.60000000009313,
+        32.300000000046566,
+        32.199999999953434,
+        32.39999999990687,
+        32.300000000046566,
+        32.199999999953434,
+        32.300000000046566,
+        32.199999999953434
+      ],
+      "active": [
+        31.199999999953434,
+        31.300000000046566,
+        31.199999999953434,
+        31.300000000046566,
+        31.100000000093132,
+        31.5999999998603,
+        31.199999999953434,
+        31,
+        31.4000000001397,
+        31.399999999906868,
+        31.100000000093132,
+        31.399999999906868,
+        31,
+        31.600000000093132,
+        30.899999999906868,
+        31.300000000046566,
+        31.399999999906868,
+        31,
+        31.4000000001397,
+        31.0999999998603,
+        31.200000000186265,
+        31.5999999998603,
+        31.100000000093132,
+        31.0999999998603,
+        31.4000000001397,
+        31.0999999998603,
+        31.4000000001397,
+        31,
+        31.5,
+        31.399999999906868,
+        31.100000000093132,
+        31,
+        31.300000000046566,
+        31.699999999953434,
+        31.199999999953434,
+        31,
+        31.399999999906868,
+        31.800000000046566,
+        30.699999999953434,
+        31.4000000001397,
+        31,
+        31.600000000093132,
+        30.899999999906868,
+        31.600000000093132,
+        31.100000000093132,
+        31,
+        31.5,
+        31.299999999813735,
+        31,
+        31.5,
+        31.300000000046566,
+        30.9000000001397,
+        31.699999999953434,
+        31.199999999953434,
+        30.800000000046566,
+        31.5,
+        31,
+        31.5999999998603,
+        31.100000000093132,
+        31.100000000093132,
+        31.5,
+        31,
+        31.299999999813735,
+        31.5,
+        30.9000000001397,
+        31.5,
+        31.5,
+        31,
+        31.399999999906868,
+        31.199999999953434,
+        31.200000000186265,
+        31.399999999906868,
+        31,
+        31.300000000046566,
+        31.0999999998603,
+        31.300000000046566,
+        31.5,
+        31.199999999953434,
+        31.100000000093132,
+        31.199999999953434,
+        31.100000000093132,
+        31.5999999998603,
+        31.100000000093132,
+        31.399999999906868,
+        31.300000000046566,
+        31,
+        31.4000000001397,
+        31,
+        31.5999999998603,
+        30.9000000001397,
+        31.199999999953434,
+        31.399999999906868,
+        31.300000000046566,
+        31.199999999953434,
+        31.100000000093132,
+        31.399999999906868,
+        31.199999999953434,
+        31.5,
+        31.4000000001397,
+        30.899999999906868,
+        31.300000000046566,
+        31.600000000093132,
+        30.699999999953434,
+        31.5,
+        31.199999999953434,
+        31.300000000046566,
+        31.199999999953434,
+        31.199999999953434,
+        31.5,
+        30.9000000001397,
+        31.199999999953434,
+        31.300000000046566,
+        31.299999999813735,
+        31.600000000093132,
+        30.800000000046566,
+        31.5999999998603,
+        31.200000000186265,
+        31,
+        31.5,
+        31
+      ]
+    }
+  },
+  "saved": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 12,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 49058,
+      "payloadBytes": 13586523,
+      "contentHash": "sha256:7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2",
+      "lastWriteReason": "ManualSave"
+    },
+    "sha256": "7f131c2fb14e3043fe9ddded10114bc95e15856ae06a99c219a0e033848e98e2"
+  },
+  "browserErrors": [
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory extension cleanup failed: Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    },
+    {
+      "kind": "pageerror",
+      "message": "Error: Factory host disposed or superseded"
+    }
+  ],
+  "diagnosticRemoved": true,
+  "blankChromeControl": {
+    "samples": 90,
+    "meanMs": 32.49777777777778,
+    "p50Ms": 32.5,
+    "p95Ms": 33,
+    "maxMs": 33.400000000000034,
+    "fps": 30.77133479212254,
+    "visible": "visible",
+    "kind": "empty page in the same actual Chrome; no game code"
+  }
+}

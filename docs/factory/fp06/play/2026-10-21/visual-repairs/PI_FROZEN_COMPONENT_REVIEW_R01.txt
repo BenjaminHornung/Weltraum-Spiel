@@ -1,0 +1,12 @@
+Continue the existing authorized FP06 DeepSeek advisor, read-only, no child agents, no edits, no runtime/build/browser. User authorized FP06 source review via opencode-go. Never read credentials or raw saves.
+Review only frozen readability and batch implementation, not the moving Decor/Bootstrap/material planner. Read mandatory ADHD/Ponytail guidance; concise findings first.
+Files in apps/weltraum-browser:
+src/render/three/backend/threeMaterialFactory.ts SHA45E37E87A1E3291FB3AABC08DEC06FA86024A1A809B9E39CCDB198D0EE0E98D8
+src/hestia-prototype/presentation/visualEffects.ts SHA81629D678011B0058F37EBE27DB126A6E8DDD78304BDF90FEA7D5898A2ACEF71
+tests/unit/hvp-visual-effects.test.ts SHAD47F753BE2750FF1579FF64B06274FE9AE3FDB4833719D645D770134868DCE7E
+src/factory/presentation/batchPlayParts.ts SHAD12BD39E18857BCA50643F927254FE712B0E4865994CCE51FCC875F0698E7A0B
+tests/unit/factory/playAssetLoader.test.ts SHAE58BDA8497A9EEFB0BF4E9C1822906C8E7102E2ADB9ED71C9D1E5C20DFE6BEFB
+Authority: repair five actual visual findings using existing assets, preserve saves/Native/colliders/clock/caps. Read PROJECTION_BOUNDARIES.md for exact policy. Readability uses six existing Factory material IDs, skip inappropriate terrain strata, max(outgoingLight,diffuseColor*0.35), no added material/light/draw. Factory material name equals profile ID, caching unchanged. Per-draw uniforms rejected because installed Three Lambert upload only refreshes some draws. Actual same-view visual acceptance remains Root work, not proven by tests.
+Batch helper accepts only seven closed existing one-part template IDs, at most640 instances; validates transforms/counts, uses inverse-scale normals, Uint16/32 threshold, unique caller generation key. Estimator before allocation, CPU3G/mesh2G. Caller must separately book templates,1024B/instance staging, old/new coexistence; integration not part of this review. Root tests passed readability3 and loader69.
+Check real correctness/regression risks, exact installed Three behavior if needed locally. Avoid speculative framework/tests or counts. Missing test finding must name a concrete user/data/contract defect. Do not repeat prior plan comments unless implementation fails them.
+Time bound10minutes, max5findings, include exact path/line and minimal correction. If no blocking findings explicitly say so and state runtime NOT RUN. Return only a final answer enclosed FP06_COMPONENT_REVIEW_BEGIN and FP06_COMPONENT_REVIEW_END. Never include internal reasoning or tool transcript.

@@ -315,6 +315,15 @@ export interface HvpVegetationProduct {
   readonly profiles:readonly MaterialProfile[];
   readonly mesh:HvpCompactMesh;
 }
+export interface HvpVegetationMeshOptions {
+  /** Private render-only occupancy; authoritative source volumes remain untouched. */
+  readonly decoration?:HvpMeshOccupancy;
+  readonly artifactRevision?:number;
+  /** Rebuild only the changed decorative product while retaining its unchanged wood artifact. */
+  readonly decorationOnly?:boolean;
+  /** A fully covered private render projection retires its old artifact instead of meshing an invalid empty artifact. */
+  readonly omitEmptyDecoration?:boolean;
+}
 const colors = {
   wood:[[0.32,0.21,0.10]],
   tree:[[0.13,0.37,0.11],[0.22,0.46,0.13],[0.09,0.30,0.15]],
@@ -326,13 +335,17 @@ const colors = {
 
 export const meshHvpVegetation = (
   source:HvpPlantSource,
-  canopyPalette: readonly (readonly [number, number, number])[] = colors.tree
+  canopyPalette: readonly (readonly [number, number, number])[] = colors.tree,
+  options:HvpVegetationMeshOptions = {}
 ):readonly HvpVegetationProduct[] => {
   const result:HvpVegetationProduct[]=[];
   for(const [part,volume] of [["wood",source.wood],[source.instance.kind,source.decoration]] as const) {
     if(volume===null) { continue; }
+    if(options.decorationOnly&&part==="wood")continue;
+    if(options.omitEmptyDecoration&&part!=="wood")continue;
+    const renderedVolume=part==="wood"?volume:(options.decoration??volume);
     const occupancy = part === "wood" ? volume : {
-      ...volume, slotAt:(x:number,y:number,z:number)=>volume.slotAt(x,y,z) === 0 ? 0 : 1
+      ...renderedVolume, slotAt:(x:number,y:number,z:number)=>renderedVolume.slotAt(x,y,z) === 0 ? 0 : 1
     };
     const raw=meshHvpOccupancy(occupancy,undefined,source.digest,HVP_VEGETATION_VERSION,{ao:part==="wood"});
     // Flat voxel faces own their vertices. Bake cosmetic colors without merging
@@ -348,8 +361,8 @@ export const meshHvpVegetation = (
           // not force otherwise merge-compatible cosmetic faces to split.
           const sample=[0,1,2].map((axis)=>Math.floor((raw.positions[vertex+axis]!
             -raw.normals[vertex+axis]!*cell/2+(center[axis]!-raw.positions[vertex+axis]!)*0.001
-            -[volume.originMeters.x,volume.originMeters.y,volume.originMeters.z][axis]!)/cell));
-          const slot=volume.slotAt(sample[0]!,sample[1]!,sample[2]!);
+            -[renderedVolume.originMeters.x,renderedVolume.originMeters.y,renderedVolume.originMeters.z][axis]!)/cell));
+          const slot=renderedVolume.slotAt(sample[0]!,sample[1]!,sample[2]!);
           const rgb=(part==="tree"?canopyPalette:colors[part])[slot-1];
           if(rgb===undefined || rgb.length!==3 || !rgb.every((v)=>Number.isFinite(v)&&v>=0&&v<=1)) {
             throw new Error("Invalid vegetation presentation palette or face sample");
@@ -364,7 +377,7 @@ export const meshHvpVegetation = (
       baseColor:{r:rgb[0]!,g:rgb[1]!,b:rgb[2]!},opacity:1,doubleSided:false,wireframe:false,depthWrite:true})];
     result.push(Object.freeze({ownerId:source.instance.id,mesh,profiles:Object.freeze(profiles),artifact:createMeshArtifact({
       representationKey:representationKey(`${source.instance.id}:${part}`),frameId:frameId(HVP_FRAME_ID),
-      sourceRevision:sourceRevision(1),artifactRevision:artifactRevision(0),algorithmVersion:HVP_VEGETATION_VERSION,
+      sourceRevision:sourceRevision(1),artifactRevision:artifactRevision(options.artifactRevision??0),algorithmVersion:HVP_VEGETATION_VERSION,
       positions:mesh.positions,normals:mesh.normals,indices:mesh.indices,
       attributes:mesh.colors===null?undefined:{color:mesh.colors},bounds:mesh.boundsMeters,
       materialRanges:mesh.materialRanges.map((range,i)=>({materialProfileId:profiles[i]!.id,startIndex:range.startIndex,indexCount:range.indexCount}))

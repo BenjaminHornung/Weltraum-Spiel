@@ -5,6 +5,7 @@ import type { FactoryFacilityRequest } from "../../hestia-prototype/physics/fact
 import type { FactoryMaterialAuthority } from "../session/dryFactorySlice";
 export interface FactoryConstructionHost {
   readonly materialAuthority?: FactoryMaterialAuthority;
+  readonly canCommit?: () => boolean;
   readPlacementView(): FactoryPlacementView;
   pause?(): Promise<void>;
   prepareNative?(request: FactoryFacilityRequest): Promise<unknown>;
@@ -22,8 +23,8 @@ export interface FactoryConstructionHost {
 }
 export interface FactoryConstructionResult { readonly status: "Committed" | "Rejected" | "RecoveryHold"; readonly reason: string; readonly transactionId: string }
 /** One Host-owned complete MaterialView. UI/Renderer/Worker receive projections or bounded commands only. */
-export const createFactoryConstruction = (host: FactoryConstructionHost, initial: MaterialView) => {
-  let legacyMaterial=initial, installations:readonly FactoryInstallation[]=[], state:"Ready"|"Preparing"|"Finalizing"|"RecoveryHold"="Ready";
+export const createFactoryConstruction = (host: FactoryConstructionHost, initial: MaterialView, initialInstallations:readonly FactoryInstallation[] = []) => {
+  let legacyMaterial=initial, installations:readonly FactoryInstallation[]=initialInstallations, state:"Ready"|"Preparing"|"Finalizing"|"RecoveryHold"="Ready";
   const material=()=>host.materialAuthority?.read()??legacyMaterial;
   const current=():FactoryPlacementView=>({...host.readPlacementView(),material:material(),installations});
   const same=(plan:FactoryPlacementPlan)=>factoryPlacementBytes(current())===plan.baseBytes;
@@ -36,6 +37,7 @@ export const createFactoryConstruction = (host: FactoryConstructionHost, initial
     async commit(plan:FactoryPlacementPlan):Promise<FactoryConstructionResult>{
       const id=plan.request.transactionId;
       const rejected=(reason:string):FactoryConstructionResult=>({status:"Rejected",reason,transactionId:id});
+      if(host.canCommit?.()===false)return rejected("BUILD_BUSY");
       if(state!=="Ready")return rejected("BUILD_BUSY");
       if(!same(plan))return rejected("STALE_PLACEMENT");
       const checked=prepareFactoryPlacement(current(),plan.request);

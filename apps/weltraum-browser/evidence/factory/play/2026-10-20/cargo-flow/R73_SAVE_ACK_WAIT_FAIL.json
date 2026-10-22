@@ -1,0 +1,174 @@
+{
+  "failure": {
+    "kind": "AUTOMATION_STALE_SAVED_WAIT",
+    "beforeCloseOwners": 9,
+    "savedOwners": 7,
+    "slot": {
+      "metadata": {
+        "slotId": "factory-primary",
+        "displayName": "factory-primary",
+        "recordRevision": 2,
+        "saveSchemaVersion": 1,
+        "gameVersion": "hestia-factory-play-v1",
+        "universeTick": 27680,
+        "payloadBytes": 1790327,
+        "contentHash": "sha256:f52ddac9968574539620cc4c815269635d47c436e97cf6387b400bd6a913e5c2",
+        "lastWriteReason": "ManualSave"
+      },
+      "payloadSha256": "f52ddac9968574539620cc4c815269635d47c436e97cf6387b400bd6a913e5c2",
+      "version": "fp06-combined-checkpoint-v2",
+      "signature": "fnv1a32:36252fde",
+      "host": {
+        "epoch": 1,
+        "nativeTick": 13840,
+        "remainderTicks": 4,
+        "sessionId": "hvp-session-1",
+        "steps": 2306
+      },
+      "hashes": {
+        "native": "525e54e8ccce128e413bde3f45d5e671123def475ef3562877a9a48b0585eef7",
+        "nativeFactory": "7a33f4a2d045e147bb353a08f29189fa13265dffd03033c1756c822ecb77989e",
+        "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+        "host": "1c3f599e725c9946bf3067607c62f2ae8165349f58aaed3a14cbc257362a128a",
+        "factory": "408c3f41016607d89a4b816e7012bd3a4b70bd8e824dedac2b8c02290120ad37",
+        "factoryExceptPublication": "9b81d1c1b2a4df51ae34f844a8c4b9da06a29261bcbbc5f63aa8a8920e0d27e1"
+      },
+      "installationCount": 7
+    },
+    "note": "Root wait accepted prior Saved revision2 before a new write acknowledgement. No product bypass; resume actual confirmed seven-owner slot."
+  },
+  "continuedState": {
+    "tick": 0,
+    "status": "Paused",
+    "player": {
+      "x": -5.5,
+      "y": 2.4200000762939453,
+      "z": 11.875
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 1,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 2,
+      "lastAckId": 2,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "hostConfirmed": true,
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 0,
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint available; Save checks memory before writing",
+        "revision": 2,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "simulationRecoveryAvailable": false,
+      "physicsStatus": "Paused",
+      "confirmed": true,
+      "input": {
+        "active": false,
+        "activationPending": false,
+        "pointerLocked": false,
+        "pausePending": false,
+        "focusedPanel": null,
+        "surface": "start",
+        "error": null
+      },
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "0e2a0bcb",
+        "baseDigest": "0e2a0bcb",
+        "profileVersion": "hvp-factory-startsite-v5",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "clock": {
+      "maxTimerGapMs": 28.899999999441206,
+      "maxAdvanceMs": 0.2999999998137355,
+      "maxHandlerMs": 782.7999999998137,
+      "lastCommand": "Read",
+      "lastHandlerMs": 0.09999999962747097,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "bodyCount": 5,
+    "colliderCount": 81,
+    "carrier": null,
+    "facilityState": "Idle",
+    "facilityCount": 0,
+    "massMg": 2984400000,
+    "factorySteps": 0,
+    "interaction": {
+      "localDeposits": [],
+      "cargoOpened": false,
+      "cargoAccessible": true,
+      "handling": null,
+      "openCargo": {
+        "enabled": true,
+        "reason": null
+      },
+      "deposit": {
+        "enabled": false,
+        "reason": "Kein aktiver Transport"
+      },
+      "returnCargo": {
+        "enabled": false,
+        "reason": null
+      }
+    },
+    "receipt": null,
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint available; Save checks memory before writing",
+      "revision": 2,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "power": {
+      "allocationConfirmed": false,
+      "devices": [],
+      "status": "UNCONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 0,
+      "batteryEnergyJ": null,
+      "batteryCapacityJ": null,
+      "reserveEnergyJ": null,
+      "sourceQuality": "unsupported",
+      "consumers": []
+    },
+    "testBridge": false
+  },
+  "errors": [
+    "Cannot read properties of undefined (reading 'length')"
+  ],
+  "notes": [
+    "Start Continue click and native keyboard Enter left statusPaused/tick0/owners0 with intactSaved slotrevision2",
+    "Root wait predicate accidentally read missing u.installations; evaluationerror is automation only, not game crash"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "slot": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 16,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 68508,
+      "payloadBytes": 11958692,
+      "contentHash": "sha256:d7ee70dfc006690baaa361a0137ac931d71f4b26669ac7a341cd3f44dbac8b80",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "d7ee70dfc006690baaa361a0137ac931d71f4b26669ac7a341cd3f44dbac8b80",
+    "version": "fp06-combined-checkpoint-v2",
+    "signature": "fnv1a32:00488682",
+    "host": {
+      "epoch": 1,
+      "nativeTick": 34254,
+      "remainderTicks": 0,
+      "sessionId": "hvp-session-1",
+      "steps": 5709
+    },
+    "hashes": {
+      "native": "6259755be5c7d4f04ae4f9f0f87cd402379e1b429b987b567f2e0266385f4caf",
+      "nativeFactory": "3f8d26b09e2de4e3e80e61bc9e97863b887092ccd0bb033ecda4bc9088c07549",
+      "profiles": "ec5838d818ce3648ca4c46d5982385b2e5469a906c4cf83695363109d14c3962",
+      "host": "252d814df1a2f17283bca4b7a351147c50f1650fa5d32193b6c70211d1e26d26",
+      "factory": "0c36c8ee17229be01ed9e906921a182b3dff36a5bec4649dda96e6dfe8d159c4",
+      "factoryExceptPublication": "756b9072499350d2e797096cac0be66117c43f010d27719712618918e083751a"
+    },
+    "installationCount": 9,
+    "viewInput": {
+      "playerYaw": -7.85440734641022,
+      "playerPitch": -1.6653345369377348e-16,
+      "thirdPerson": false
+    }
+  },
+  "pausedTickStable": true,
+  "workMs": 8100,
+  "close": {
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-V6-FullFlow-20261021-R78",
+    "pageClosed": true,
+    "disconnected": true
+  },
+  "errors": []
+}

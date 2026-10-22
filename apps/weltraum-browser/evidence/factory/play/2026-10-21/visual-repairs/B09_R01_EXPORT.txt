@@ -1,0 +1,12 @@
+exitCode=1
+Traceback (most recent call last):
+  File "E:\DEV\Weltraum-Spiel\FP06-Candidate\art\factory\play-storage-surface-v2-2026-10-21\build_storage_surface_v2.py", line 538, in <module>
+    main()
+  File "E:\DEV\Weltraum-Spiel\FP06-Candidate\art\factory\play-storage-surface-v2-2026-10-21\build_storage_surface_v2.py", line 398, in main
+    output_bytes, repair = derive(helper, source_path, original, output_id)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\DEV\Weltraum-Spiel\FP06-Candidate\art\factory\play-storage-surface-v2-2026-10-21\build_storage_surface_v2.py", line 278, in derive
+    fail(f"Coplanar B09 overlap is outside the sealed Native boundary: axis={axis}, plane={plane}")
+  File "E:\DEV\Weltraum-Spiel\FP06-Candidate\art\factory\play-storage-surface-v2-2026-10-21\build_storage_surface_v2.py", line 50, in fail
+    raise ValueError(message)
+ValueError: Coplanar B09 overlap is outside the sealed Native boundary: axis=1, plane=0.25

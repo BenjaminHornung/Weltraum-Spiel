@@ -1,0 +1,262 @@
+{
+  "schema": "hestia.fp06.cargo-flow-acceptance/v1",
+  "atUtc": "2026-10-20T18:28:48.806Z",
+  "status": "PASS_FUNCTIONAL_CARGO_FRESH16_AND_REAL_CHROME_RESTART",
+  "head": "7ee85b0e0e3dedc5a41c3ccf98b3fe92b64f846e",
+  "branch": "feature/hestia-fp06-review-continuation-2026-10-15",
+  "source": "E:/DEV/Weltraum-Spiel/FP06-Candidate",
+  "delivery": "E:/DEV/Weltraum-Spiel/FP06-Ready-2026-10-20-v3",
+  "integrator": "/root",
+  "writers": "ALL_QUIESCENT; released UI leases; Root sole runtime integrator",
+  "scope": {
+    "changedProductSinceReadyV10": [
+      {
+        "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+        "sha256": "0c2587bb754f3736502b557778bd70e8823913d0ea204838f3584640696a49b8"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+        "sha256": "a1f11671f249eaa6463209e7932eef7700510997c4de9e650b7e88cbd9b6829c"
+      },
+      {
+        "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+        "sha256": "b6f2279579ea4ec0d969c0204ba3e0fb79f8b9db49f3f2917900bf0fc2ae05ad"
+      }
+    ],
+    "behavior": "One existing explicit Open cargo action in sticky final content position; hide closed Cargo pickup until confirmed opening; retain independent non-Cargo actions and handling visibility; scoped existing dark hover accent. Opening and pickup remain separate guarded clicks.",
+    "noNewGameClockOrRepresentation": true
+  },
+  "verification": {
+    "sourceTests": "Final Panels21/21 and CargoHandling27/27 are separate passing selections; meaningful closed/open and carrying regressions observed RED then GREEN",
+    "typeScript": "PASS",
+    "independentExactSourceAndCssReview": "PASS; /root/combined_save_plan",
+    "lockedOfflineInstall": "59 packages, exit0",
+    "cleanBuild": "TSC and Vite327 modules, exit0; existing chunk warning retained",
+    "diffCheck": "PASS",
+    "cleanManifest": {
+      "files": 901,
+      "allHashesExact": true,
+      "sha256": "1dce6007db872cab3c4600d36c46ac5020da2630660404dd66b487d308b5f7be",
+      "currentCandidateProductFiles": 843,
+      "allProductHashesExact": true,
+      "onlyThreeProductPathsChangedSinceReadyV10": true
+    },
+    "renderedUi": "Actual1280x720 expanded materials/wheel1100 retained one primary Open atY605.8125; final screenshot inspected, white on existing dark hover accent. Explicit Open committed without auto-pick. Real pickup/carry keeps Set-down/Return active and hides package actions."
+  },
+  "runtime": {
+    "profile": "E:/DEV/Weltraum-Spiel/FP06-FullFlow-20261020-R73",
+    "url": "http://127.0.0.1:5197/factory.html",
+    "browser": "Installed Google Chrome, owned persistent profile; headed New game/setup, isolated headless production/WIP cold restart, final actual headed cold Continue",
+    "initial": {
+      "tick": 0,
+      "status": "Paused",
+      "player": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "facilityCount": 0,
+      "massMg": 2984400000,
+      "carrier": null,
+      "hostConfirmed": true,
+      "factorySteps": 0,
+      "receipt": null,
+      "persistence": {
+        "state": "Idle",
+        "message": "No Factory checkpoint saved; Save checks memory before writing",
+        "revision": null,
+        "saveAvailable": true,
+        "continueAvailable": false
+      },
+      "testBridge": false
+    },
+    "normalPaidSetup": {
+      "owners": 9,
+      "belts": 2,
+      "beltLengthMetres": 4,
+      "powerCables": 5,
+      "cableLengthMetres": 29.5,
+      "finiteInitialMassMg": 2984400000
+    },
+    "freshProduction": {
+      "steelInputMg": 16000000,
+      "recipes": [
+        "REC-01-CUT",
+        "REC-01-CUT",
+        "REC-02-PROFILE",
+        "REC-03-SHEET",
+        "REC-05-BRACE"
+      ],
+      "manualPhases": [
+        "LAID_OUT",
+        "ASSEMBLED",
+        "COMPLETED"
+      ],
+      "onlyFreshFormerOutputsForBrace": true,
+      "braceInstallation": {
+        "massMg": 5800000,
+        "centerMm": [
+          -8750,
+          1500,
+          7500
+        ],
+        "quarterTurns": 2
+      },
+      "freshFinal": {
+        "installedBraceMg": 5800000,
+        "profilesMg": 3000000,
+        "sheetMg": 5000000,
+        "offcutsMg": 2200000
+      },
+      "totalMassMg": 2984400000,
+      "finalOwners": 10
+    },
+    "wipColdRestart": {
+      "saveBefore": 5,
+      "saveAfter": 6,
+      "workMs": 8000,
+      "requiredWorkMs": 30000,
+      "jobId": "job_ui_machine_e415049ce59d48ec9f64606ccd7334c9",
+      "realChromeClose": {
+        "pageClosed": true,
+        "browserDisconnected": true,
+        "atUtc": "2026-10-20T18:08:16.790Z",
+        "mode": "headless Chrome"
+      },
+      "slotUnchangedUntilExplicitSave": true,
+      "parity": {
+        "native": true,
+        "nativeFactory": true,
+        "profiles": true,
+        "host": true,
+        "factoryExceptPublication": true
+      },
+      "identity": {
+        "job": true,
+        "work": true,
+        "tick": true,
+        "steps": true,
+        "energy": true,
+        "paused": true,
+        "neutral": true
+      },
+      "sameJobExplicitlyContinuedOnce": true,
+      "independentProofAudit": "PASS"
+    },
+    "finalHeadedColdRestart": {
+      "realChromeClose": {
+        "pageClosed": true,
+        "browserDisconnected": true,
+        "atUtc": "2026-10-20T18:20:04.145Z"
+      },
+      "saveBefore": 7,
+      "saveAfter": 8,
+      "slotUnchangedUntilExplicitSave": true,
+      "parity": {
+        "native": true,
+        "nativeFactory": true,
+        "profiles": true,
+        "host": true,
+        "factoryExceptPublication": true
+      },
+      "identity": {
+        "tick": true,
+        "steps": true,
+        "energy": true,
+        "owners": true,
+        "paused": true,
+        "mass": true
+      },
+      "fullHashesBefore": {
+        "native": "5c463fb10d1018af671d9c78a93719bd5faaedf849c8587a707e94176926d1f3",
+        "nativeFactory": "3d9d46dc51d9b440771ab6e0f1903771d44a65fbf62f7d181c43ea298230a14b",
+        "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+        "host": "b151cd2f20bfad02c74dbe0a719c52f8ebabdd1a41ce7e8a705fa7430a1303ba",
+        "factory": "ff282f819020e37e1b0ace655ff9b6f1e1bc07881fb9c436bb5f3d59345d2fe3",
+        "factoryExceptPublication": "d4b8986beb3845bd8a39144408b57e9f8e2ba27d2f96d3955749d29bc685d5a8"
+      },
+      "fullHashesAfter": {
+        "native": "5c463fb10d1018af671d9c78a93719bd5faaedf849c8587a707e94176926d1f3",
+        "nativeFactory": "3d9d46dc51d9b440771ab6e0f1903771d44a65fbf62f7d181c43ea298230a14b",
+        "profiles": "3742793481e5857386eceb1577bfd754e57f53693baa3f57ebef162e93b3473e",
+        "host": "b151cd2f20bfad02c74dbe0a719c52f8ebabdd1a41ce7e8a705fa7430a1303ba",
+        "factory": "77cb9bb18ab26629573d943ff9c35914ab01a7347a7401444b97113ad5f33a4a",
+        "factoryExceptPublication": "d4b8986beb3845bd8a39144408b57e9f8e2ba27d2f96d3955749d29bc685d5a8"
+      },
+      "nativeTick": 31383,
+      "factorySteps": 5230,
+      "remainderTicks": 3,
+      "saveBytes": 13236114,
+      "saveEndToEndMs": 9797
+    },
+    "final": {
+      "tick": 31383,
+      "status": "Paused",
+      "player": {
+        "x": -8.660152435302734,
+        "y": 2.400008201599121,
+        "z": 6.84986686706543
+      },
+      "facilityCount": 10,
+      "massMg": 2984400000,
+      "carrier": null,
+      "hostConfirmed": true,
+      "factorySteps": 5230,
+      "receipt": {
+        "commandId": "ui_cargo_1938613380cb438a91f4eb858bb95e57",
+        "status": "Committed",
+        "reason": null
+      },
+      "persistence": {
+        "state": "Saved",
+        "message": "Combined Factory checkpoint saved locally",
+        "revision": 8,
+        "saveAvailable": true,
+        "continueAvailable": true
+      },
+      "testBridge": false
+    },
+    "testBridgeAbsent": true,
+    "recordedPhysicsStatuses": [
+      "Paused",
+      "Running"
+    ],
+    "simulationHold": "Not observed; no recovery/automatic-resume action used",
+    "pageErrors": {
+      "observed": [
+        "Cannot read properties of undefined (reading 'length')"
+      ],
+      "classification": "The one TypeError about undefined.length came from the Root wait predicate reading nonexistent u.installations. The predicate was corrected to the published Native owners. No unsolicited game page error was observed."
+    },
+    "priorSave12And25": "Not opened or written by this run; no new whole-slot audit of those independent profiles claimed"
+  },
+  "retainedFailures": {
+    "scroll": "Ready20-v1/R72 actual scrollFAIL retained",
+    "hover": "Ready20-v2 white-on-pale enabled hoverFAIL retained",
+    "staleSaveWait": "Root accepted oldSaved revision2 and closed before nine-owner acknowledgement; actual seven-owner slot remained intact. Recovered from that slot and rebuilt normally. R73_SAVE_ACK_WAIT_FAIL.json retained.",
+    "continue": "Playwright auto-dismissed the required ordinary Continue confirmation; exact-message dialog acceptance proved normal load with no product change",
+    "manualQueue": "Paused Start waits for explicit Play; Check response is read-only, no duplicate Start",
+    "saveObservation": "FinalSave7 outlasted the initial10s test observation, then committed normally. Only test Save observation now20s; every product deadline/cap/Clock unchanged."
+  },
+  "reviews": {
+    "finalCompletionAudit": "PASS; /root/combined_save_plan independently audited full-run SHA528243deaf1f5ebe6d7c6a3d118c78439252e6221961bd16ed5db9283d77155f, fresh provenance/equation, same WIP job continuation and final headed five-authority parity; no material gap in this functional scope",
+    "scope": "Functional Cargo/full fresh16kg/commonSave only; not full FPS/hull/all-suite acceptance"
+  },
+  "evidence": {
+    "fullRun": "apps/weltraum-browser/evidence/factory/play/2026-10-20/cargo-flow/R73_FULL_CYCLE_AND_FINAL_COLD_PASS.json",
+    "fullRunSha256": "528243deaf1f5ebe6d7c6a3d118c78439252e6221961bd16ed5db9283d77155f",
+    "wipCold": "apps/weltraum-browser/evidence/factory/play/2026-10-20/cargo-flow/R73_WIP_COLD_PARITY_PASS.json",
+    "wipColdSha256": "8e98ed38541baafc083abfdf718fc2d1683617e08b57ea733df0dfef29a497f7",
+    "scrollImage": "apps/weltraum-browser/evidence/factory/play/2026-10-20/cargo-flow/r73-v3-scroll-hover-pass.png",
+    "finalImage": "apps/weltraum-browser/evidence/factory/play/2026-10-20/cargo-flow/r73-final-headed-save8.png",
+    "quickStart": "PLAY_CURRENT.md",
+    "postRunSupplements": "Acceptance and quick-start supplement the immutable901-file source manifest without rewriting its sealed README/plan"
+  },
+  "limits": [
+    "No new FPS/heap/GPU qualification; existing active-CUT FPS target remains missed and local-display human check NOT RUN in Windows Remote context",
+    "Full Bootstrap suite NOT repeated; retained earlier Cold-Plant setup-hook failure is not converted into a suite PASS",
+    "Walkable full hull not delivered; concrete V6 stored-contract/derived-asset approval requested separately",
+    "New Pi/DeepSeek payload NOT sent: earlier automatic approval rejected external nonpublic-data transfer; separate specific approval remains pending",
+    "All original physical/custody/rollback/budget/Golden contracts retained; no teleport, free resources, smaller collider, game timeout/cap/Clock/Core change, mainmerge or push"
+  ]
+}

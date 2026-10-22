@@ -117,6 +117,15 @@ describe("game item and selected inspector presentation", () => {
     expect(h.commands[0]).toMatchObject({ kind: "pickup", profileId: "B06-BOM", sourceLots: profile.sourceLots });
     panel.dispose();
   });
+  it("shows the closed and raw cable package choices in metres", () => {
+    const h = harness(), base = h.value, container = base.inventory[0]!, profile = container.pickupProfiles[0]!;
+    const labels = [["CABLE2750", "Cable · 2.75 m"], ["CABLE5000", "Cable · 5 m"], ["CABLE5750", "Cable · 5.75 m"],
+      ["CABLE7750", "Cable · 7.75 m"], ["CABLE8500", "Cable · 8.5 m"]] as const;
+    h.publish({ ...base, inventory: [{ ...container, pickupProfiles: labels.map(([profileId]) => ({ ...profile, profileId, name: profileId })) }, base.inventory[1]!] });
+    const panel = mountFactoryCargoPanel(h.port, doc());
+    for (const [, label] of labels) expect(button(panel.element, `Pick up: ${label}`)).toBeDefined();
+    panel.dispose();
+  });
   it("previews a finite cable connection and submits the current admitted lot once on confirmation", () => {
     const h = harness(), base = h.value, lot = { containerId: "wreck", containerRevision: 2, stackId: "cable", quantityUnits: 8000 };
     h.publish({ ...base, inventory: [{ ...base.inventory[0]!, contents: [...base.inventory[0]!.contents,

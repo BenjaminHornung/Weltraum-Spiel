@@ -24,10 +24,12 @@ export const factoryReason = (reason: string | null): string => {
   const labels: Record<string, string> = {
     IDLE: "Ready", RUNNING: "Running", READY: "Ready", WAIT_POWER: "Waiting for power",
     BLOCKED_OUTPUT: "Output full", WAIT_OUTPUT: "Output full", WAIT_INPUT: "Missing material",
-    LAID_OUT: "Material deposited", ASSEMBLED: "Assembled", FINISHED: "Completed",
+    LAID_OUT: "Material deposited", ASSEMBLED: "Assembled", FINISHED: "Completed", COMPLETED: "Completed",
     NOT_IMPLEMENTED: "Planned", NOT_INSTALLED: "Not built yet", OUT_OF_REACH: "Out of reach",
     SOURCE_STALE: "View expired", STALE: "View expired", RecoveryHold: "Recovery required",
     Waiting: "Please wait", Disposed: "Session ended", Ready: "Ready",
+    CarrierSupport: "Load needs solid, level ground. Close Cargo, select Play, step onto clear level ground nearby, reopen Cargo, and retry.",
+    "FactoryFacilityRejected:CarrierSupport": "Load needs solid, level ground. Close Cargo, select Play, step onto clear level ground nearby, reopen Cargo, and retry.",
   };
   return reason ? labels[reason] ?? "Action currently unavailable" : "";
 };
@@ -119,6 +121,10 @@ const containerName = (view: FactoryUiReadModel, id: string): string => {
   const index = view.inventory.filter(c => c.role === container.role).findIndex(c => c.id === id) + 1;
   return `${roles[container.role]}${machine ? ` · ${englishFactoryText(machine.name)}` : ` ${index}`}`;
 };
+const containerAccessStatus = (view: FactoryUiReadModel, container: FactoryUiInventory, accessibleLabel: string): string =>
+  container.role === "cargo" && !view.interaction.cargoOpened
+    ? view.interaction.cargoAccessible ? "Closed · open cargo first" : "Closed · out of reach"
+    : container.accessible ? accessibleLabel : "Out of reach";
 const exactQuantity = (text: string, basis: "mg" | "mm" | "piece"): number | null => {
   const digits = basis === "mg" ? 6 : basis === "mm" ? 3 : 0;
   const match = /^(\d+)(?:[,.](\d+))?$/.exec(text.trim());
@@ -156,20 +162,21 @@ export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = docu
     const h = panel.view.interaction.handling, target = panel.view.inventory.find(c => c.role === "cargo" && c.accessible);
     if (h && target && panel.view.interaction.returnCargo.enabled) panel.submit({ kind: "return", handling: { id: h.id, revision: h.revision }, target: { id: target.id, revision: target.revision } });
   });
-  controls.append(open, handling, deposit, back);
+  controls.append(handling, deposit, back);
   const overview = doc.createElement("div"); overview.className = "factory-cargo-materials";
   let materialsExpanded = false;
   const revealMaterials = uiButton(doc, "View materials", () => { materialsExpanded = !materialsExpanded; overview.hidden = !materialsExpanded; revealMaterials.setAttribute("aria-expanded", String(materialsExpanded)); updateTransfer(); });
   revealMaterials.className = "factory-cargo-reveal"; revealMaterials.setAttribute("aria-expanded", "false");
   const packages = doc.createElement("section"); packages.className = "factory-cargo-packages";
   const packageSelect = doc.createElement("select"); packageSelect.setAttribute("aria-label", "Transport package");
-  const packageMass = uiText(doc, "p", ""), packageActions = doc.createElement("div");
+  const packageMass = uiText(doc, "p", ""), packageActions = doc.createElement("div"); packageActions.className = "factory-cargo-actions";
   const packageIcon = doc.createElement("div"); packageIcon.className = "factory-package-identity";
   const packageChoices = doc.createElement("div"); packageChoices.className = "factory-package-choices";
   const packageSource = uiText(doc, "p", ""); packageSource.className = "factory-package-source";
   const packageChoiceButtons = new Map<string, HTMLButtonElement>();
   const packageOptions = doc.createElement("details"), optionsTitle = uiText(doc, "summary", "More transport packages"); packageOptions.append(optionsTitle, packageSelect);
-  packages.append(packageSource, packageChoices, packageIcon, packageMass, packageActions, packageOptions);
+  packages.append(packageSource, packageChoices, packageIcon, packageMass, packageOptions);
+  packageActions.append(open);
   const materialRows = new Map<string, { element: HTMLElement; title: HTMLElement; summary: HTMLElement; choices: Map<string, HTMLElement> }>();
   const source = doc.createElement("select"), target = doc.createElement("select"), amount = doc.createElement("input");
   source.hidden = true;
@@ -205,7 +212,7 @@ export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = docu
   const fields = doc.createElement("div"); fields.className = "factory-cargo-transfer"; fields.append(amountLabel, amount, target, transfer);
   materialDetail.append(selectedName, selectedQuantity, lotQuantity, fields, source);
   transferForm.append(packages, sourceToggle, materialDetail, allLots);
-  panel.content.append(controls, transferForm, revealMaterials, overview, inventory);
+  panel.content.append(controls, transferForm, revealMaterials, overview, inventory, packageActions);
   const rows = new Map<string, { row: HTMLElement; title: HTMLElement; summary: HTMLElement; stacks: HTMLElement; pickups: Map<string, HTMLButtonElement> }>();
   const updateTransfer = () => {
     const selected = selection();
@@ -231,7 +238,8 @@ export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = docu
     let current: FactoryUiInventory["pickupProfiles"][number] | undefined, owner: FactoryUiInventory | undefined;
     for (const container of panel.view.inventory) for (const profile of container.pickupProfiles) {
       const match = JSON.stringify([container.id, profile.profileId]) === packageSelect.value;
-      const button = rows.get(container.id)?.pickups.get(profile.profileId); if (button) button.hidden = !match;
+      const button = rows.get(container.id)?.pickups.get(profile.profileId);
+      if (button) button.hidden = !match || (container.role === "cargo" && !panel.view.interaction.cargoOpened);
       if (match) { current = profile; owner = container; }
     }
     packageSelect.disabled = panel.busy;
@@ -249,7 +257,7 @@ export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = docu
       packageIcon.replaceChildren(factoryItemIcon(doc, itemId, factoryProfileLabel(current.profileId, current.name)), uiText(doc, "strong", factoryProfileLabel(current.profileId, current.name)));
       packageIcon.dataset.profile = current.profileId;
     }
-    packages.hidden = !current || panel.view.interaction.handling !== null;
+    packages.hidden = packageActions.hidden = !current || panel.view.interaction.handling !== null;
   };
   packageSelect.addEventListener("change", updatePackage);
   panel.start(view => {
@@ -259,13 +267,13 @@ export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = docu
       if (!row) { const element = doc.createElement("div"), title = uiText(doc, "h3", ""), summary = uiText(doc, "p", ""), stacks = doc.createElement("div");
         element.append(title, summary, stacks); inventory.append(element); row = { row: element, title, summary, stacks, pickups: new Map() }; rows.set(container.id, row); }
       row.title.textContent = containerName(view, container.id);
-      row.summary.textContent = `${formatQuantity(container.massMg, "mg")} / ${formatQuantity(container.capacityMassMg, "mg")} · ${container.accessible ? "Accessible" : "Out of reach"}`;
+      row.summary.textContent = `${formatQuantity(container.massMg, "mg")} / ${formatQuantity(container.capacityMassMg, "mg")} · ${containerAccessStatus(view, container, "Accessible")}`;
       const content = container.contents.map(stack => `${englishFactoryText(stack.name)}: ${formatQuantity(stack.quantityUnits, stack.quantityBasis)}${stack.quantityBasis === "mg" ? "" : ` · ${formatQuantity(stack.massMg, "mg")}`}${stack.freshProduction ? " · Freshly produced" : ""}`);
       if (row.stacks.dataset.contents !== JSON.stringify(content)) { row.stacks.replaceChildren(...content.map(t => uiText(doc, "p", t))); row.stacks.dataset.contents = JSON.stringify(content); }
       if (["cargo", "carrier", "depot", "input", "output", "offcut"].includes(container.role) && container.contents.length) {
         let materialRow = materialRows.get(container.id);
         if (!materialRow) { const element = doc.createElement("section"), title = uiText(doc, "h3", ""), summary = uiText(doc, "small", ""); element.append(title, summary); overview.append(element); materialRow = { element, title, summary, choices: new Map() }; materialRows.set(container.id, materialRow); }
-        materialRow.title.textContent = containerName(view, container.id); materialRow.summary.textContent = container.accessible ? `${formatQuantity(container.massMg, "mg")} · accessible` : "Out of reach";
+        materialRow.title.textContent = containerName(view, container.id); materialRow.summary.textContent = `${container.role === "cargo" && !view.interaction.cargoOpened ? "" : formatQuantity(container.massMg, "mg") + " · "}${containerAccessStatus(view, container, "accessible")}`;
         const groups = groupFactoryItems(container, view.binding.catalogDigest);
         for (const [key, choice] of materialRow.choices) if (!groups.some(g => g.key === key)) { choice.remove(); materialRow.choices.delete(key); }
         for (const group of groups) {
@@ -296,7 +304,8 @@ export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = docu
         }); row.pickups.set(profile.profileId, pickup); packageActions.append(pickup); }
         pickup.textContent = `Pick up: ${factoryProfileLabel(profile.profileId, profile.name)}`;
         pickup.disabled = panel.busy || !container.accessible || !profile.capability.enabled;
-        pickup.title = factoryReason(profile.capability.reason);
+        pickup.title = panel.busy ? "Please wait" : container.role === "cargo" && !view.interaction.cargoOpened
+          ? view.interaction.cargoAccessible ? "Open cargo first" : "Out of reach" : factoryReason(profile.capability.reason);
       }
     }
     open.disabled = panel.busy || !view.interaction.openCargo.enabled;
@@ -331,7 +340,7 @@ export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = docu
       const text = valid && mass <= BigInt(Number.MAX_SAFE_INTEGER) ? formatQuantity(Number(mass), "mg") : "Unconfirmed";
       if (choice.dataset.summary !== name + text) { choice.replaceChildren(factoryItemIcon(doc, pickupItemId(profile.profile), name), uiText(doc, "span", name), uiText(doc, "strong", text)); choice.dataset.summary = name + text; }
     }
-    packageSource.textContent = view.inventory.filter(c => c.role === "cargo").map(c => `${containerName(view, c.id)} · ${formatQuantity(c.massMg, "mg")} ${c.accessible ? "available" : "out of reach"}`).join(" · ");
+    packageSource.textContent = view.inventory.filter(c => c.role === "cargo").map(c => `${containerName(view, c.id)} · ${formatQuantity(c.massMg, "mg")} ${containerAccessStatus(view, c, "available")}`).join(" · ");
     overview.hidden = !materialsExpanded && profiles.some(p => p.profile === "B07-BOM" || p.profile === "B06-BOM");
     revealMaterials.hidden = !overview.hidden && !materialsExpanded;
     updateTransfer();

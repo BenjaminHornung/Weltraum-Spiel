@@ -1,0 +1,430 @@
+{
+  "events": [
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 130,
+      "state": {
+        "tick": 24,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 4,
+          "pressedKeys": []
+        },
+        "clock": {
+          "maxTimerGapMs": 18.5,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999552965164,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pickup",
+      "state": {
+        "tick": 26,
+        "status": "Paused",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 8,
+          "pressedKeys": []
+        },
+        "clock": {
+          "maxTimerGapMs": 18.5,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "FinalizeFactoryCarrier",
+          "lastHandlerMs": 1.1999999955296516,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -5900.001525878906,
+            1500,
+            10875
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "w",
+      "ms": 100,
+      "state": {
+        "tick": 53,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.4000399112701416,
+          "z": 12.225001335144043
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "clock": {
+          "maxTimerGapMs": 18.5,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -5900.001525878906,
+            1500,
+            11225.001335144043
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 700,
+      "state": {
+        "tick": 108,
+        "status": "Running",
+        "player": {
+          "x": -7.995350360870361,
+          "y": 2.4024832248687744,
+          "z": 12.203752517700195
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "clock": {
+          "maxTimerGapMs": 18.5,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999999552965164,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -7995.350360870361,
+            1500,
+            11203.752517700195
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "s",
+      "ms": 4500,
+      "state": {
+        "tick": 394,
+        "status": "Running",
+        "player": {
+          "x": -7.995331764221191,
+          "y": 2.4000065326690674,
+          "z": -1.3963121175765991
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "clock": {
+          "maxTimerGapMs": 18.5,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000149011612,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -7995.331764221191,
+            1499.9998807907104,
+            -2396.3122367858887
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 550,
+      "state": {
+        "tick": 440,
+        "status": "Running",
+        "player": {
+          "x": -6.29532527923584,
+          "y": 2.400026798248291,
+          "z": -1.3963121175765991
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "clock": {
+          "maxTimerGapMs": 18.5,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 341,
+          "position": [
+            -6295.32527923584,
+            1500,
+            -2396.3122367858887
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "depot",
+      "state": {
+        "tick": 442,
+        "status": "Paused",
+        "player": {
+          "x": -6.29532527923584,
+          "y": 2.400026798248291,
+          "z": -1.3963121175765991
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 14,
+          "pressedKeys": []
+        },
+        "clock": {
+          "maxTimerGapMs": 18.5,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000149011612,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 341,
+          "position": [
+            -6250,
+            1500,
+            -2500
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 650,
+      "state": {
+        "tick": 501,
+        "status": "Running",
+        "player": {
+          "x": -4.345317840576172,
+          "y": 2.4000041484832764,
+          "z": -1.3963121175765991
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 16,
+          "pressedKeys": []
+        },
+        "clock": {
+          "maxTimerGapMs": 18.5,
+          "maxAdvanceMs": 9.399999998509884,
+          "maxHandlerMs": 937.3999999985099,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000000447034836,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 341,
+          "position": [
+            -6250,
+            1500,
+            -2500
+          ]
+        },
+        "massMg": 2984400000,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    }
+  ],
+  "error": null,
+  "final": {
+    "tick": 503,
+    "status": "Paused",
+    "player": {
+      "x": -4.345317840576172,
+      "y": 2.4000041484832764,
+      "z": -1.3963121175765991
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 21,
+      "pressedKeys": []
+    },
+    "clock": {
+      "maxTimerGapMs": 18.5,
+      "maxAdvanceMs": 9.399999998509884,
+      "maxHandlerMs": 937.3999999985099,
+      "lastCommand": "CommitFactoryFacility",
+      "lastHandlerMs": 17.299999997019768,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "carrier": {
+      "phase": "Deposited",
+      "mass": 341,
+      "position": [
+        -6250,
+        1500,
+        -2500
+      ]
+    },
+    "massMg": 2984400000,
+    "receipt": {
+      "status": "Committed",
+      "reason": null
+    },
+    "testBridge": false
+  },
+  "installation": {
+    "installations": [
+      {
+        "id": "facility_b07_1",
+        "definition": "B07",
+        "center": [
+          -7250,
+          1500,
+          -2500
+        ]
+      }
+    ],
+    "scenes": [
+      {
+        "id": "fp02_wreck_owner:open",
+        "published": true,
+        "s1": false,
+        "error": null,
+        "visibleParts": 1
+      },
+      {
+        "id": "carrier:slot",
+        "published": false,
+        "s1": false,
+        "error": null,
+        "visibleParts": 0
+      },
+      {
+        "id": "facility_b07_1",
+        "published": true,
+        "s1": true,
+        "error": "Error: Current Native/domain machine read unavailable",
+        "visibleParts": 0
+      }
+    ],
+    "text": "Goal\nConfirming workshop state\nN\n\nNo confirmed map source available.\n\nArrows Move · R Rotate · Esc Back\n\nBuild\nViews\nClose\nFormer\n\nPlacement rejected · material is retained\n\nKit\n341 kg\nBuild grid\n0.25 m\nChoose another facilityRotate previewCancel preview\nConfirm build\n\nPlacement rejected · material is retained\n\nSession paused"
+  }
+}

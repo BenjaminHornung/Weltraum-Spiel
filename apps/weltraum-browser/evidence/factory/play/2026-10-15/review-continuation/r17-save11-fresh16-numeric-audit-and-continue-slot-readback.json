@@ -1,0 +1,262 @@
+{
+  "version": "hestia.fp06.save11-fresh16-audit/v1",
+  "source": "Read-only legitimate manual Save11 retained by existing controller; no save import or game-state injection",
+  "slot": {
+    "slotId": "factory-primary",
+    "displayName": "factory-primary",
+    "recordRevision": 11,
+    "saveSchemaVersion": 1,
+    "gameVersion": "hestia-factory-play-v1",
+    "universeTick": 96076,
+    "payloadBytes": 13535070,
+    "contentHash": "sha256:01d41d286e21f463e536d2d3e61e24a0ad200f0204f4e2f48c12ef45a3e4576a",
+    "lastWriteReason": "ManualSave"
+  },
+  "equation": {
+    "inputSteelMg": 16000000,
+    "installedBraceMg": 5800000,
+    "profileMg": 3000000,
+    "sheetMg": 5000000,
+    "offcutMg": 2200000
+  },
+  "balanceMg": 16000000,
+  "freshLots": [
+    {
+      "containerId": "output_facility_b07_5",
+      "resourceId": "fp02_bulk_steel_sheet",
+      "quantityUnits": 5000000,
+      "basis": "mg",
+      "stackId": "job_ui_machine_9f543123641849ae8ca42e64b62fa35c_output_0",
+      "recipeRef": {
+        "digest": "fnv1a:03dfab3f",
+        "sourceId": "REC-03-SHEET",
+        "version": 1
+      }
+    },
+    {
+      "containerId": "output_facility_b07_5",
+      "resourceId": "fp02_bulk_steel_profile",
+      "quantityUnits": 3000000,
+      "basis": "mg",
+      "stackId": "job_ui_machine_cb16aa834b844089b5045b5d0b6c8c0b_output_0",
+      "recipeRef": {
+        "digest": "fnv1a:a3dc3ad4",
+        "sourceId": "REC-02-PROFILE",
+        "version": 1
+      }
+    },
+    {
+      "containerId": "offcut_facility_b07_5",
+      "resourceId": "fp02_bulk_steel_offcut",
+      "quantityUnits": 500000,
+      "basis": "mg",
+      "stackId": "job_ui_machine_9f543123641849ae8ca42e64b62fa35c_output_1",
+      "recipeRef": {
+        "digest": "fnv1a:03dfab3f",
+        "sourceId": "REC-03-SHEET",
+        "version": 1
+      }
+    },
+    {
+      "containerId": "offcut_facility_b07_5",
+      "resourceId": "fp02_bulk_steel_offcut",
+      "quantityUnits": 500000,
+      "basis": "mg",
+      "stackId": "job_ui_machine_cb16aa834b844089b5045b5d0b6c8c0b_output_1",
+      "recipeRef": {
+        "digest": "fnv1a:a3dc3ad4",
+        "sourceId": "REC-02-PROFILE",
+        "version": 1
+      }
+    },
+    {
+      "containerId": "offcut_facility_b05_14",
+      "resourceId": "fp02_bulk_steel_offcut",
+      "quantityUnits": 200000,
+      "basis": "mg",
+      "stackId": "job_ui_machine_ac4f320056e44485af7a106c8a755748_output_1",
+      "recipeRef": {
+        "digest": "fnv1a:3531c19d",
+        "sourceId": "REC-05-BRACE",
+        "version": 1
+      }
+    },
+    {
+      "containerId": "offcut_facility_b06_16",
+      "resourceId": "fp02_bulk_steel_offcut",
+      "quantityUnits": 500000,
+      "basis": "mg",
+      "stackId": "job_ui_machine_46b738f1c1744ca3801dc01dd47ad4f2_output_1",
+      "recipeRef": {
+        "digest": "fnv1a:cc0cefe6",
+        "sourceId": "REC-01-CUT",
+        "version": 1
+      }
+    },
+    {
+      "containerId": "offcut_facility_b06_16",
+      "resourceId": "fp02_bulk_steel_offcut",
+      "quantityUnits": 500000,
+      "basis": "mg",
+      "stackId": "job_ui_machine_b14f531ac9fd4822a38082214508b067_output_1",
+      "recipeRef": {
+        "digest": "fnv1a:cc0cefe6",
+        "sourceId": "REC-01-CUT",
+        "version": 1
+      }
+    },
+    {
+      "containerId": "installed_facility_fp02_comp_small_brace_74",
+      "resourceId": "fp02_comp_small_brace",
+      "quantityUnits": 1,
+      "basis": "piece",
+      "stackId": "job_ui_machine_ac4f320056e44485af7a106c8a755748_output_0",
+      "recipeRef": {
+        "digest": "fnv1a:3531c19d",
+        "sourceId": "REC-05-BRACE",
+        "version": 1
+      }
+    }
+  ],
+  "installedBrace": {
+    "boundsMm": {
+      "max": [
+        -8250,
+        1750,
+        7625
+      ],
+      "min": [
+        -9250,
+        1500,
+        7375
+      ]
+    },
+    "centerMm": [
+      -8750,
+      1500,
+      7500
+    ],
+    "definitionSourceId": "fp02.comp.small_brace",
+    "instanceId": "facility_fp02_comp_small_brace_74",
+    "massMg": 5800000,
+    "materialContainerId": "installed_facility_fp02_comp_small_brace_74",
+    "profileDigest": "fd2561ec",
+    "quarterTurns": 2,
+    "serviceBoundsMm": {
+      "max": [
+        -8250,
+        2500,
+        7375
+      ],
+      "min": [
+        -9250,
+        1500,
+        6375
+      ]
+    },
+    "sourceDigest": "17bbdd8c"
+  },
+  "nativeBrace": {
+    "instanceId": "facility_fp02_comp_small_brace_74",
+    "massMg": 5800000,
+    "centerMm": [
+      -8750,
+      1500,
+      7500
+    ],
+    "quarterTurns": 2
+  },
+  "wipReservations": [],
+  "cutJobs": [
+    {
+      "machineId": "facility_b05_14",
+      "jobId": "job_ui_machine_ac4f320056e44485af7a106c8a755748",
+      "recipe": "REC-05-BRACE",
+      "inputLots": [
+        {
+          "containerId": "input_facility_b05_14",
+          "itemId": "fp02.bulk.steel_profile",
+          "stackId": "ui_cargo_76019eb40deb4bbda0f8fc10c0197556_lot_0"
+        },
+        {
+          "containerId": "input_facility_b05_14",
+          "itemId": "fp02.bulk.steel_sheet",
+          "stackId": "ui_cargo_76019eb40deb4bbda0f8fc10c0197556_lot_1"
+        }
+      ]
+    },
+    {
+      "machineId": "facility_b06_16",
+      "jobId": "job_ui_machine_b14f531ac9fd4822a38082214508b067",
+      "recipe": "REC-01-CUT",
+      "inputLots": [
+        {
+          "containerId": "input_facility_b06_16",
+          "itemId": "fp02.bulk.steel_known",
+          "stackId": "line_ui_power_7a380a75a3a647859de973bc834287be_packet_1"
+        }
+      ]
+    },
+    {
+      "machineId": "facility_b06_16",
+      "jobId": "job_ui_machine_46b738f1c1744ca3801dc01dd47ad4f2",
+      "recipe": "REC-01-CUT",
+      "inputLots": [
+        {
+          "containerId": "input_facility_b06_16",
+          "itemId": "fp02.bulk.steel_known",
+          "stackId": "line_ui_power_7a380a75a3a647859de973bc834287be_packet_2"
+        }
+      ]
+    },
+    {
+      "machineId": "facility_b07_5",
+      "jobId": "job_ui_machine_cb16aa834b844089b5045b5d0b6c8c0b",
+      "recipe": "REC-02-PROFILE",
+      "inputLots": [
+        {
+          "containerId": "input_facility_b07_5",
+          "itemId": "fp02.bulk.steel_semi",
+          "stackId": "line_ui_power_eaaa69871aab4921ae39292cb526db68_packet_1"
+        }
+      ]
+    },
+    {
+      "machineId": "facility_b07_5",
+      "jobId": "job_ui_machine_9f543123641849ae8ca42e64b62fa35c",
+      "recipe": "REC-03-SHEET",
+      "inputLots": [
+        {
+          "containerId": "input_facility_b07_5",
+          "itemId": "fp02.bulk.steel_semi",
+          "stackId": "line_ui_power_eaaa69871aab4921ae39292cb526db68_packet_2"
+        }
+      ]
+    }
+  ],
+  "continueBeforeExplicitSave10": {
+    "fullRecordExactlyUnchanged": true,
+    "beforeCloseSlot": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 9,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 62314,
+      "payloadBytes": 12299962,
+      "contentHash": "sha256:c417e0e8fddab03279ae0a77b6ad70648a3720a53bf5f60624d9c6efd309e755",
+      "lastWriteReason": "ManualSave"
+    },
+    "afterContinueBeforeExplicitSave10": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 9,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 62314,
+      "payloadBytes": 12299962,
+      "contentHash": "sha256:c417e0e8fddab03279ae0a77b6ad70648a3720a53bf5f60624d9c6efd309e755",
+      "lastWriteReason": "ManualSave"
+    }
+  }
+}

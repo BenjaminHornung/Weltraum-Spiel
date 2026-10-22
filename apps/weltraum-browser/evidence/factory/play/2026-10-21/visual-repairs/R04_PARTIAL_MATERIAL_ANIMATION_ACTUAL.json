@@ -1,0 +1,1962 @@
+{
+  "atUtc": "2026-10-21T19:42:21.287Z",
+  "profile": "E:/DEV/Weltraum-Spiel/FP06-V6-FullFlow-20261021-R78",
+  "sourceCopy": "FP06-Ready-2026-10-21-v6",
+  "bootstrapSha": "801574ECD245366A9DE7584A04DEC3A21DF97797D0803E50602D811A531F06EB",
+  "status": "PARTIAL_VISUAL_AND_ANIMATION_PASS_B09_FIX_AND_FINAL_FULL_CYCLE_PENDING",
+  "slot": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 19,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 97094,
+      "payloadBytes": 13199495,
+      "contentHash": "sha256:a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0"
+  },
+  "current": {
+    "tick": 62520,
+    "status": "Paused",
+    "player": {
+      "x": -5.864264965057373,
+      "y": 2.4000072479248047,
+      "z": 0.8464045524597168
+    },
+    "bodies": 15,
+    "colliders": 200
+  },
+  "shots": [
+    {
+      "name": "R04_HULL_INSIDE_INITIAL",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_HULL_INSIDE_INITIAL.png",
+      "tick": 48562,
+      "status": "Paused",
+      "player": {
+        "x": 6.582930088043213,
+        "y": 3.525001287460327,
+        "z": 8.5822114944458
+      },
+      "camera": {
+        "position": [
+          6.582930088043213,
+          4.275001287460327,
+          8.5822114944458
+        ],
+        "orientation": [
+          1.1102229406335997e-16,
+          -0.0003889803748751184,
+          -4.318549683136812e-20,
+          -0.9999999243471311
+        ],
+        "visualBody": [
+          6.582930088043213,
+          3.525001287460327,
+          8.5822114944458
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 25950684,
+        "mesh": 3948048,
+        "triangles": 25308,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_HULL_INSIDE_ENTRANCE_RUNNING",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_HULL_INSIDE_ENTRANCE_RUNNING.png",
+      "tick": 48654,
+      "status": "Running",
+      "player": {
+        "x": 6.582930088043213,
+        "y": 3.525001287460327,
+        "z": 8.5822114944458
+      },
+      "camera": {
+        "position": [
+          6.582930088043213,
+          4.275001287460327,
+          8.5822114944458
+        ],
+        "orientation": [
+          0.00013625725062925783,
+          -0.9991943063051948,
+          -0.0399891020485828,
+          -0.003404614308572087
+        ],
+        "visualBody": [
+          6.582930088043213,
+          3.525001287460327,
+          8.5822114944458
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 25950684,
+        "mesh": 3948048,
+        "triangles": 25308,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_HULL_OUTSIDE_AND_APRON",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_HULL_OUTSIDE_AND_APRON.png",
+      "tick": 49280,
+      "status": "Paused",
+      "player": {
+        "x": -1.598923683166504,
+        "y": 2.400038719177246,
+        "z": 13.273296356201172
+      },
+      "camera": {
+        "position": [
+          -1.5222474433798494,
+          3.1500390750765717,
+          13.273818474411325
+        ],
+        "orientation": [
+          0.00013625725062925783,
+          -0.9991943063051948,
+          -0.0399891020485828,
+          -0.003404614308572087
+        ],
+        "visualBody": [
+          -1.5222474433798494,
+          2.4000390750765717,
+          13.273818474411325
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 25950684,
+        "mesh": 3948048,
+        "triangles": 25308,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_HULL_SIDE_AND_GROUNDED_DECOR_RUNNING",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_HULL_SIDE_AND_GROUNDED_DECOR_RUNNING.png",
+      "tick": 49371,
+      "status": "Running",
+      "player": {
+        "x": -1.598923683166504,
+        "y": 2.400038719177246,
+        "z": 13.273296356201172
+      },
+      "camera": {
+        "position": [
+          -1.598923683166504,
+          3.150038719177246,
+          13.273296356201172
+        ],
+        "orientation": [
+          0.012962773859721393,
+          -0.5030620775356961,
+          0.007546497158812279,
+          0.864120109139906
+        ],
+        "visualBody": [
+          -1.598923683166504,
+          2.400038719177246,
+          13.273296356201172
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 25950684,
+        "mesh": 3948048,
+        "triangles": 25308,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_CUTTER_READABILITY_CABLE_OFFCUT",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_CUTTER_READABILITY_CABLE_OFFCUT.png",
+      "tick": 50198,
+      "status": "Running",
+      "player": {
+        "x": -5.894506931304932,
+        "y": 2.4000372886657715,
+        "z": 6.90662145614624
+      },
+      "camera": {
+        "position": [
+          -5.894506931304932,
+          3.1500372886657715,
+          6.90662145614624
+        ],
+        "orientation": [
+          -0.023933519598772414,
+          0.2885404742592869,
+          0.007215015047251122,
+          0.9571413296434905
+        ],
+        "visualBody": [
+          -5.894506931304932,
+          2.4000372886657715,
+          6.90662145614624
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 27330508,
+        "mesh": 3994848,
+        "triangles": 25308,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_FORMER_READABILITY_PRODUCT_TRAYS",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_FORMER_READABILITY_PRODUCT_TRAYS.png",
+      "tick": 50591,
+      "status": "Running",
+      "player": {
+        "x": -5.860226631164551,
+        "y": 2.4000184535980225,
+        "z": 0.4930908977985382
+      },
+      "camera": {
+        "position": [
+          -5.860226631164551,
+          3.1500184535980225,
+          0.4930908977985382
+        ],
+        "orientation": [
+          0.00971132192195664,
+          0.23846412973041106,
+          -0.002384720788526975,
+          0.9710998209067936
+        ],
+        "visualBody": [
+          -5.860226631164551,
+          2.4000184535980225,
+          0.4930908977985382
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 27330508,
+        "mesh": 3994848,
+        "triangles": 25308,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_B09_CLOSED_WITH_OLD_PRODUCTS",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_B09_CLOSED_WITH_OLD_PRODUCTS.png",
+      "tick": 51009,
+      "status": "Running",
+      "player": {
+        "x": -5.0861496925354,
+        "y": 2.400038480758667,
+        "z": -3.451472520828247
+      },
+      "camera": {
+        "position": [
+          -5.0861496925354,
+          3.150038480758667,
+          -3.451472520828247
+        ],
+        "orientation": [
+          -0.055117873131076627,
+          0.39312287151184344,
+          0.02361571795591726,
+          0.9175285967321214
+        ],
+        "visualBody": [
+          -5.0861496925354,
+          2.400038480758667,
+          -3.451472520828247
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28679444,
+        "mesh": 4021056,
+        "triangles": 25176,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_B09_OPEN_CARGO_INSPECTION",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_B09_OPEN_CARGO_INSPECTION.png",
+      "tick": 57114,
+      "status": "Paused",
+      "player": {
+        "x": -5.0861496925354,
+        "y": 2.400038480758667,
+        "z": -3.451472520828247
+      },
+      "camera": {
+        "position": [
+          -5.0861496925354,
+          3.150038480758667,
+          -3.451472520828247
+        ],
+        "orientation": [
+          -0.055117873131076627,
+          0.39312287151184344,
+          0.02361571795591726,
+          0.9175285967321214
+        ],
+        "visualBody": [
+          -5.0861496925354,
+          2.400038480758667,
+          -3.451472520828247
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28710332,
+        "mesh": 4041648,
+        "triangles": 25308,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_B09_OPEN_RAW8_ACTUAL_STOCK",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_B09_OPEN_RAW8_ACTUAL_STOCK.png",
+      "tick": 58554,
+      "status": "Paused",
+      "player": {
+        "x": -5.932201385498047,
+        "y": 2.4000000953674316,
+        "z": 10.092656135559082
+      },
+      "camera": {
+        "position": [
+          -5.932201385498047,
+          3.1500000953674316,
+          10.092656135559082
+        ],
+        "orientation": [
+          -0.0396975276776152,
+          0.9266924504568964,
+          0.10234931182466381,
+          0.35942986371682467
+        ],
+        "visualBody": [
+          -5.932201385498047,
+          2.4000000953674316,
+          10.092656135559082
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28679444,
+        "mesh": 4021056,
+        "triangles": 25176,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_B09_OPEN_RAW16_ACTUAL_STOCK",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_B09_OPEN_RAW16_ACTUAL_STOCK.png",
+      "tick": 58554,
+      "status": "Paused",
+      "player": {
+        "x": -5.932201385498047,
+        "y": 2.4000000953674316,
+        "z": 10.092656135559082
+      },
+      "camera": {
+        "position": [
+          -5.932201385498047,
+          3.1500000953674316,
+          10.092656135559082
+        ],
+        "orientation": [
+          -0.0396975276776152,
+          0.9266924504568964,
+          0.10234931182466381,
+          0.35942986371682467
+        ],
+        "visualBody": [
+          -5.932201385498047,
+          2.4000000953674316,
+          10.092656135559082
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28687284,
+        "mesh": 4021056,
+        "triangles": 25176,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_RAW8_BELT_PACKET_POSITION_A",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_RAW8_BELT_PACKET_POSITION_A.png",
+      "tick": 58652,
+      "status": "Running",
+      "player": {
+        "x": -5.932201385498047,
+        "y": 2.4000000953674316,
+        "z": 10.092656135559082
+      },
+      "camera": {
+        "position": [
+          -5.932201385498047,
+          3.1500000953674316,
+          10.092656135559082
+        ],
+        "orientation": [
+          -0.09758159103807758,
+          0.21013888512032028,
+          0.021084216130949532,
+          0.972561020132418
+        ],
+        "visualBody": [
+          -5.932201385498047,
+          2.4000000953674316,
+          10.092656135559082
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28698516,
+        "mesh": 4028544,
+        "triangles": 25224,
+        "draws": 82
+      }
+    },
+    {
+      "name": "R04_RAW8_BELT_PACKET_POSITION_B",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_RAW8_BELT_PACKET_POSITION_B.png",
+      "tick": 58682,
+      "status": "Running",
+      "player": {
+        "x": -5.932201385498047,
+        "y": 2.4000000953674316,
+        "z": 10.092656135559082
+      },
+      "camera": {
+        "position": [
+          -5.932201385498047,
+          3.1500000953674316,
+          10.092656135559082
+        ],
+        "orientation": [
+          -0.09758159103807758,
+          0.21013888512032028,
+          0.021084216130949532,
+          0.972561020132418
+        ],
+        "visualBody": [
+          -5.932201385498047,
+          2.4000000953674316,
+          10.092656135559082
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28698516,
+        "mesh": 4028544,
+        "triangles": 25224,
+        "draws": 82
+      }
+    },
+    {
+      "name": "R04_RAW8_PACKET_VISIBLE_ON_BELT",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_RAW8_PACKET_VISIBLE_ON_BELT.png",
+      "tick": 58787,
+      "status": "Running",
+      "player": {
+        "x": -5.932201385498047,
+        "y": 2.4000000953674316,
+        "z": 10.092656135559082
+      },
+      "camera": {
+        "position": [
+          -5.932201385498047,
+          3.1500000953674316,
+          10.092656135559082
+        ],
+        "orientation": [
+          -0.10403862376782212,
+          0.3171870637313336,
+          0.03503198680056343,
+          0.9419878402966769
+        ],
+        "visualBody": [
+          -5.932201385498047,
+          2.4000000953674316,
+          10.092656135559082
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28698516,
+        "mesh": 4028544,
+        "triangles": 25224,
+        "draws": 82
+      }
+    },
+    {
+      "name": "R04_CUTTER_ACTIVE_POSE_A",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_CUTTER_ACTIVE_POSE_A.png",
+      "tick": 59488,
+      "status": "Running",
+      "player": {
+        "x": -5.851046085357666,
+        "y": 2.4000329971313477,
+        "z": 9.14637279510498
+      },
+      "camera": {
+        "position": [
+          -5.851046085357666,
+          3.1500329971313477,
+          9.14637279510498
+        ],
+        "orientation": [
+          -0.01467055012194003,
+          0.20823726794353375,
+          0.003123793307165416,
+          0.9779633209450683
+        ],
+        "visualBody": [
+          -5.851046085357666,
+          2.4000329971313477,
+          9.14637279510498
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28709748,
+        "mesh": 4036032,
+        "triangles": 25272,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_CUTTER_ACTIVE_POSE_B",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_CUTTER_ACTIVE_POSE_B.png",
+      "tick": 59978,
+      "status": "Running",
+      "player": {
+        "x": -5.851046085357666,
+        "y": 2.4000329971313477,
+        "z": 9.14637279510498
+      },
+      "camera": {
+        "position": [
+          -5.851046085357666,
+          3.1500329971313477,
+          9.14637279510498
+        ],
+        "orientation": [
+          -0.01467055012194003,
+          0.20823726794353375,
+          0.003123793307165416,
+          0.9779633209450683
+        ],
+        "visualBody": [
+          -5.851046085357666,
+          2.4000329971313477,
+          9.14637279510498
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28709748,
+        "mesh": 4036032,
+        "triangles": 25272,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_CUTTER_ACTIVE_MAX_TOOL",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_CUTTER_ACTIVE_MAX_TOOL.png",
+      "tick": 60488,
+      "status": "Running",
+      "player": {
+        "x": -5.851046085357666,
+        "y": 2.4000329971313477,
+        "z": 9.14637279510498
+      },
+      "camera": {
+        "position": [
+          -5.851046085357666,
+          3.1500329971313477,
+          9.14637279510498
+        ],
+        "orientation": [
+          -0.01467055012194003,
+          0.20823726794353375,
+          0.003123793307165416,
+          0.9779633209450683
+        ],
+        "visualBody": [
+          -5.851046085357666,
+          2.4000329971313477,
+          9.14637279510498
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28709748,
+        "mesh": 4036032,
+        "triangles": 25272,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_FORMER_ACTIVE_RAISED_TOOL",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_FORMER_ACTIVE_RAISED_TOOL.png",
+      "tick": 62200,
+      "status": "Running",
+      "player": {
+        "x": -5.864264965057373,
+        "y": 2.4000072479248047,
+        "z": 0.8464045524597168
+      },
+      "camera": {
+        "position": [
+          -5.864264965057373,
+          3.1500072479248047,
+          0.8464045524597168
+        ],
+        "orientation": [
+          0.009847455670249028,
+          0.17389887626728534,
+          -0.0017390467312836647,
+          0.9847127419538473
+        ],
+        "visualBody": [
+          -5.864264965057373,
+          2.4000072479248047,
+          0.8464045524597168
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28717588,
+        "mesh": 4036032,
+        "triangles": 25272,
+        "draws": 81
+      }
+    },
+    {
+      "name": "R04_FORMER_ACTIVE_LOWERED_TOOL",
+      "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-21/visual-repairs/R04_FORMER_ACTIVE_LOWERED_TOOL.png",
+      "tick": 62499,
+      "status": "Running",
+      "player": {
+        "x": -5.864264965057373,
+        "y": 2.4000072479248047,
+        "z": 0.8464045524597168
+      },
+      "camera": {
+        "position": [
+          -5.864264965057373,
+          3.1500072479248047,
+          0.8464045524597168
+        ],
+        "orientation": [
+          0.009847455670249028,
+          0.17389887626728534,
+          -0.0017390467312836647,
+          0.9847127419538473
+        ],
+        "visualBody": [
+          -5.864264965057373,
+          2.4000072479248047,
+          0.8464045524597168
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "cost": {
+        "cpu": 28717588,
+        "mesh": 4036032,
+        "triangles": 25272,
+        "draws": 81
+      }
+    }
+  ],
+  "errors": [],
+  "initialRaw16": {
+    "status": "Paused",
+    "player": {
+      "x": -5.932201385498047,
+      "y": 2.4000000953674316,
+      "z": 10.092656135559082
+    },
+    "bodies": 15,
+    "colliders": 200,
+    "cargoSteel": 64000000,
+    "rawStorage": 16000000,
+    "material": [
+      [
+        "facility_b09_18",
+        "storage",
+        "storage_facility_b09_18",
+        6,
+        "fp02.bulk.steel_known",
+        1,
+        "ui_cargo_4d1e383e7f814ea2bf72c2bb2d6b1f1a_lot_0",
+        2,
+        16000000
+      ]
+    ],
+    "storageScene": [
+      {
+        "id": "facility_b09_18",
+        "visible": 0
+      },
+      {
+        "id": "factory:storage-inspection:facility_b09_18",
+        "visible": 5
+      }
+    ]
+  },
+  "packetMovement": {
+    "before": {
+      "tick": 58652,
+      "packets": [
+        [
+          "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d",
+          "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d_packet_3",
+          "belt_line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d",
+          5,
+          "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d_packet_3",
+          "fp02.bulk.steel_known",
+          1,
+          8000000,
+          1125,
+          [
+            -7250,
+            2500,
+            9375
+          ]
+        ]
+      ],
+      "scenes": [
+        {
+          "instanceId": "factory:material:packet:line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d:line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d_packet_3:70",
+          "published": true,
+          "assetId": null,
+          "glbSha256": null,
+          "sourceFileSha256": null,
+          "s1": false,
+          "modelError": null,
+          "visibleKeys": [
+            "factory:material:packet:70:0:9e269010"
+          ],
+          "transforms": [
+            {
+              "representationKey": "factory:material:packet:70:0:9e269010",
+              "positionRelative": {
+                "x": -7.25,
+                "y": 2.5,
+                "z": 9.375
+              },
+              "orientation": {
+                "x": 0,
+                "y": 1,
+                "z": 0,
+                "w": 0
+              },
+              "scale": {
+                "x": 0.4,
+                "y": 0.4,
+                "z": 0.4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "after": {
+      "tick": 58682,
+      "packets": [
+        [
+          "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d",
+          "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d_packet_3",
+          "belt_line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d",
+          5,
+          "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d_packet_3",
+          "fp02.bulk.steel_known",
+          1,
+          8000000,
+          1500,
+          [
+            -7250,
+            2500,
+            9000
+          ]
+        ]
+      ],
+      "scenes": [
+        {
+          "instanceId": "factory:material:packet:line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d:line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d_packet_3:70",
+          "published": true,
+          "assetId": null,
+          "glbSha256": null,
+          "sourceFileSha256": null,
+          "s1": false,
+          "modelError": null,
+          "visibleKeys": [
+            "factory:material:packet:70:0:9e269010"
+          ],
+          "transforms": [
+            {
+              "representationKey": "factory:material:packet:70:0:9e269010",
+              "positionRelative": {
+                "x": -7.25,
+                "y": 2.5,
+                "z": 9
+              },
+              "orientation": {
+                "x": 0,
+                "y": 1,
+                "z": 0,
+                "w": 0
+              },
+              "scale": {
+                "x": 0.4,
+                "y": 0.4,
+                "z": 0.4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "pausedFrozen": true,
+    "freezeTick": 58698
+  },
+  "cutterTwoPhases": {
+    "first": {
+      "tick": 59485,
+      "status": "Running",
+      "work": 7300,
+      "machineStatus": "RUNNING",
+      "transforms": [
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_feet",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_frame",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_infeed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_chamber",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_clamp",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.25,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_tool",
+          "positionRelative": {
+            "x": -7.491176470588235,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_outfeed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_service",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_power",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_offcut",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_infeed_carriage",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 4.75
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_outfeed_carriage",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        }
+      ],
+      "lots": [
+        [
+          "facility_b06_12",
+          "input",
+          "input_facility_b06_12",
+          17,
+          "fp02.bulk.steel_known",
+          1,
+          "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d_packet_4",
+          1,
+          8000000
+        ],
+        [
+          "facility_b06_12",
+          "wip",
+          "wip_facility_b06_12",
+          9,
+          "fp02.bulk.steel_known",
+          1,
+          "job_ui_machine_e44447569a6a4e33b42a2c8d3ce09c37_input_0",
+          1,
+          8000000
+        ],
+        [
+          "facility_b06_12",
+          "offcut",
+          "offcut_facility_b06_12",
+          2,
+          "fp02.bulk.steel_offcut",
+          1,
+          "job_ui_machine_525c53f9427448f88b3c3047f6fe56e8_output_1",
+          2,
+          1000000
+        ]
+      ]
+    },
+    "second": {
+      "tick": 59978,
+      "status": "Running",
+      "work": 15500,
+      "machineStatus": "RUNNING",
+      "transforms": [
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_feet",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_frame",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_infeed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_chamber",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_clamp",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.25,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_tool",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_outfeed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_service",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_power",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_offcut",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_infeed_carriage",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 4.75
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b06_12:play_cutter_v2:cutter_outfeed_carriage",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": 5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        }
+      ],
+      "lots": [
+        [
+          "facility_b06_12",
+          "input",
+          "input_facility_b06_12",
+          17,
+          "fp02.bulk.steel_known",
+          1,
+          "line_ui_power_3688099798a84a74b1cfc4bfbfc4d02d_packet_4",
+          1,
+          8000000
+        ],
+        [
+          "facility_b06_12",
+          "wip",
+          "wip_facility_b06_12",
+          9,
+          "fp02.bulk.steel_known",
+          1,
+          "job_ui_machine_e44447569a6a4e33b42a2c8d3ce09c37_input_0",
+          1,
+          8000000
+        ],
+        [
+          "facility_b06_12",
+          "offcut",
+          "offcut_facility_b06_12",
+          2,
+          "fp02.bulk.steel_offcut",
+          1,
+          "job_ui_machine_525c53f9427448f88b3c3047f6fe56e8_output_1",
+          2,
+          1000000
+        ]
+      ]
+    },
+    "distinctTransforms": true,
+    "pauseFrozen": true,
+    "pausedWork": 15800
+  },
+  "formerTwoPhases": {
+    "first": {
+      "tick": 62194,
+      "status": "Running",
+      "work": 10000,
+      "machineStatus": "RUNNING",
+      "transforms": [
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_feet",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_frame",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_infeed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_bed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_tool",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_actuators",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_outfeed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_service",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_power",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_offcut",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_clamp",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.25,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_infeed_carriage",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -3
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_outfeed_carriage",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        }
+      ],
+      "lots": [
+        [
+          "facility_b07_3",
+          "wip",
+          "wip_facility_b07_3",
+          9,
+          "fp02.bulk.steel_semi",
+          1,
+          "job_ui_machine_a1fe8bd3d177404092d7dbf4e68448ce_input_0",
+          1,
+          7500000
+        ],
+        [
+          "facility_b07_3",
+          "offcut",
+          "offcut_facility_b07_3",
+          2,
+          "fp02.bulk.steel_offcut",
+          1,
+          "job_ui_machine_f52894eaf3da4627a5ddb2f8e574e26c_output_1",
+          2,
+          1000000
+        ]
+      ]
+    },
+    "second": {
+      "tick": 62495,
+      "status": "Running",
+      "work": 15000,
+      "machineStatus": "RUNNING",
+      "transforms": [
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_feet",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_frame",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_infeed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_bed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_tool",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_actuators",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_outfeed",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_service",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_power",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_offcut",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_clamp",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.25,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_infeed_carriage",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -3
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        {
+          "representationKey": "factory-play:facility_b07_3:play_former_v2:former_outfeed_carriage",
+          "positionRelative": {
+            "x": -7.25,
+            "y": 1.5,
+            "z": -2.5
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0.7071067811865475,
+            "z": 0,
+            "w": 0.7071067811865476
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        }
+      ],
+      "lots": [
+        [
+          "facility_b07_3",
+          "wip",
+          "wip_facility_b07_3",
+          9,
+          "fp02.bulk.steel_semi",
+          1,
+          "job_ui_machine_a1fe8bd3d177404092d7dbf4e68448ce_input_0",
+          1,
+          7500000
+        ],
+        [
+          "facility_b07_3",
+          "offcut",
+          "offcut_facility_b07_3",
+          2,
+          "fp02.bulk.steel_offcut",
+          1,
+          "job_ui_machine_f52894eaf3da4627a5ddb2f8e574e26c_output_1",
+          2,
+          1000000
+        ]
+      ]
+    },
+    "distinctTransforms": true,
+    "pauseFrozen": true,
+    "pausedWork": 15500
+  }
+}

@@ -4,6 +4,8 @@ import { createHvpTick, HVP_PHYSICS_DT } from "../../src/hestia-prototype/physic
 import { collisionSectors } from "../../src/hestia-prototype/physics/terrainColliders";
 import { createHvpPhysicsSession, resolveHvpGravity } from "../../src/hestia-prototype/physics/session";
 import { chooseHvpParallelism } from "../../src/hestia-prototype/physics/client";
+import {createFactoryCargoSite} from "../../src/factory/fixtures/cargoSite";
+import {materializeFactoryStartSite} from "../../src/factory/fixtures/startSite";
 
 beforeAll(initializeHvpRapier);
 const floor = { sizeX: 16, sizeY: 8, sizeZ: 16, cellMeters: 0.125,
@@ -208,6 +210,106 @@ it("PLAY04 actual worker rejects stale clock recovery nonterminally and recovers
  }finally{
   await (globalThis as any).onmessage?.({data:{id:99,kind:"Dispose"}});clock.mockRestore();interval.mockRestore();clear.mockRestore();vi.unstubAllGlobals();
   if(prior)Object.defineProperty(globalThis,"onmessage",prior);else delete (globalThis as any).onmessage;
+  vi.resetModules();
+ }
+});
+
+it("FactoryCheckpoint rejection while running preserves the Worker and succeeds after Pause",async()=>{
+ const replies:unknown[]=[];const prior=Object.getOwnPropertyDescriptor(globalThis,"onmessage");
+ const site=createFactoryCargoSite(materializeFactoryStartSite());
+ const ground={vertices:new Float32Array([-16,1.25,-16,-16,1.25,16,16,1.25,16,16,1.25,-16]),indices:new Uint32Array([0,1,2,0,2,3])};
+ vi.stubGlobal("postMessage",(reply:unknown)=>replies.push(reply));
+ const clock=vi.spyOn(performance,"now").mockReturnValue(0);
+ const interval=vi.spyOn(globalThis,"setInterval").mockImplementation((()=>777) as unknown as typeof setInterval);
+ const clear=vi.spyOn(globalThis,"clearInterval").mockImplementation(()=>{});
+ vi.resetModules();
+ try{
+  await import("../../src/hestia-prototype/physics/physicsWorker");
+  const send=(data:unknown)=>(globalThis as any).onmessage({data});
+  await send({id:1,kind:"Initialize",sectors:[ground],spawn:{x:10,y:4,z:10},gravity:9.81,sessionId:"factory_checkpoint_worker",factoryEnabled:true,initialFactoryCargo:site});
+  expect((replies.at(-1) as any).snapshot.status).toBe("Paused");
+  await send({id:2,kind:"Resume"});expect((replies.at(-1) as any).snapshot.status).toBe("Running");
+  await send({id:3,kind:"FactoryCheckpoint"});
+  expect(replies.at(-1)).toMatchObject({id:3,rejected:"World checkpoint requires a confirmed paused generation",snapshot:{status:"Running"}});
+  expect(clear).not.toHaveBeenCalled();
+  await send({id:4,kind:"Pause"});
+  await send({id:5,kind:"Checkpoint"});expect(replies.at(-1)).toMatchObject({id:5,rejected:"Installed Factory facilities require a combined checkpoint"});
+  expect(clear).not.toHaveBeenCalled();
+  await send({id:6,kind:"FactoryCheckpoint"});
+  expect(replies.at(-1)).toMatchObject({id:6,snapshot:{status:"Paused",factoryFacilities:{state:"Idle"}},factoryCheckpoint:{world:{sessionId:"factory_checkpoint_worker"},facilities:{version:"fp06-native-factory-parts-v1",cargo:{ownerId:"fp02_wreck_owner"}}}});
+  expect(clear).not.toHaveBeenCalled();
+ }finally{
+  await (globalThis as any).onmessage?.({data:{id:99,kind:"Dispose"}});clock.mockRestore();interval.mockRestore();clear.mockRestore();vi.unstubAllGlobals();
+  if(prior)Object.defineProperty(globalThis,"onmessage",prior);else delete (globalThis as any).onmessage;vi.resetModules();
+ }
+});
+
+it("worker Read timing stays absent by default and reports opt-in post time on a later bounded clock reply",async()=>{
+ const replies:any[]=[];let now=0,postCost=0,timer:(()=>void)|undefined;
+ const prior=Object.getOwnPropertyDescriptor(globalThis,"onmessage");
+ vi.stubGlobal("postMessage",(reply:unknown)=>{replies.push(reply);if(postCost){now+=postCost;postCost=0;}});
+ const clock=vi.spyOn(performance,"now").mockImplementation(()=>{now+=.1;return now;});
+ const interval=vi.spyOn(globalThis,"setInterval").mockImplementation(((callback:()=>void)=>{timer=callback;return 777;}) as typeof setInterval);
+ const clear=vi.spyOn(globalThis,"clearInterval").mockImplementation(()=>{});
+ vi.resetModules();
+ try{
+  await import("../../src/hestia-prototype/physics/physicsWorker");
+  const send=(data:unknown)=>(globalThis as any).onmessage({data});
+  await send({id:1,kind:"Initialize",sectors:[],spawn:{x:0,y:2,z:0},gravity:9.81,sessionId:"worker_read_measure_false",factoryEnabled:true,measure:false});
+  await send({id:2,kind:"Read"});
+  expect(replies.at(-1).clock).not.toHaveProperty("readWindow");
+  expect(replies.at(-1).clock).not.toHaveProperty("lastReadPost");
+  await send({id:3,kind:"Dispose"});
+ }finally{
+  clock.mockRestore();interval.mockRestore();clear.mockRestore();vi.unstubAllGlobals();
+  if(prior)Object.defineProperty(globalThis,"onmessage",prior);else delete (globalThis as any).onmessage;
+  vi.resetModules();
+ }
+
+ const measuredReplies:any[]=[];now=0;postCost=0;timer=undefined;
+ const measuredPrior=Object.getOwnPropertyDescriptor(globalThis,"onmessage");
+ vi.stubGlobal("postMessage",(reply:unknown)=>{measuredReplies.push(reply);if(postCost){now+=postCost;postCost=0;}});
+ const measuredClock=vi.spyOn(performance,"now").mockImplementation(()=>{now+=.1;return now;});
+ const measuredInterval=vi.spyOn(globalThis,"setInterval").mockImplementation(((callback:()=>void)=>{timer=callback;return 778;}) as typeof setInterval);
+ const measuredClear=vi.spyOn(globalThis,"clearInterval").mockImplementation(()=>{});
+ vi.resetModules();
+ try{
+  await import("../../src/hestia-prototype/physics/physicsWorker");
+  const send=(data:unknown)=>(globalThis as any).onmessage({data});
+  await send({id:1,kind:"Initialize",sectors:[],spawn:{x:0,y:2,z:0},gravity:9.81,sessionId:"worker_read_measure_true",factoryEnabled:true,measure:true});
+  postCost=5;await send({id:2,kind:"Read"});
+  const read2=measuredReplies.at(-1);
+  expect(read2.clock.readWindow).toMatchObject({count:1,firstReadId:2,lastReadId:2,firstTick:read2.snapshot.ticks,lastTick:read2.snapshot.ticks,
+    carrierBindingChars:0,ownerBindingChars:0,postMs:0});
+  expect(read2.clock.readWindow.buildMs).toBeGreaterThan(0);
+  expect(read2.clock).not.toHaveProperty("lastReadPost");
+
+  postCost=7;await send({id:3,kind:"Read"});
+  const read3=measuredReplies.at(-1);
+  expect(read3.clock.lastReadPost).toMatchObject({readId:2,tick:read2.snapshot.ticks,reportedByReplyId:3});
+  expect(read3.clock.lastReadPost.postMs).toBeGreaterThan(5);
+  expect(read3.clock.readWindow).toMatchObject({count:2,firstReadId:2,lastReadId:3,postMs:read3.clock.lastReadPost.postMs});
+
+  now+=100;timer!();await send({id:4,kind:"Read"});
+  const firstHold=measuredReplies.at(-1).clock;
+  expect(firstHold.simulationHold.readWindow).toMatchObject({count:2,firstReadId:2,lastReadId:3,priorAdvanceMs:null});
+  expect(firstHold.delayedCallbacks.at(-1).readWindow).toMatchObject({count:2,firstReadId:2,lastReadId:3});
+  expect(firstHold.simulationHold.advanceMs).toBeGreaterThanOrEqual(0);
+
+  await send({id:5,kind:"Read"});now+=100;timer!();await send({id:6,kind:"Read"});
+  expect(measuredReplies.at(-1).clock.delayedCallbacks.at(-1).readWindow).toMatchObject({count:2,firstReadId:4,lastReadId:5,
+    priorAdvanceMs:firstHold.simulationHold.advanceMs});
+  for(let id=7;id<=15;id+=1){await send({id,kind:"Read"});now+=100;timer!();}
+  await send({id:16,kind:"Read"});
+  const bounded=measuredReplies.at(-1).clock;
+  expect(bounded.delayedCallbacks).toHaveLength(8);
+  expect(bounded.simulationHold.readWindow).toMatchObject({firstReadId:2,lastReadId:3});
+  expect(bounded.lastReadPost).toMatchObject({readId:15,reportedByReplyId:16});
+  expect(JSON.stringify(bounded)).not.toContain("materialBinding");
+ }finally{
+  await (globalThis as any).onmessage?.({data:{id:99,kind:"Dispose"}});
+  measuredClock.mockRestore();measuredInterval.mockRestore();measuredClear.mockRestore();vi.unstubAllGlobals();
+  if(measuredPrior)Object.defineProperty(globalThis,"onmessage",measuredPrior);else delete (globalThis as any).onmessage;
   vi.resetModules();
  }
 });

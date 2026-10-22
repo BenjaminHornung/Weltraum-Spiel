@@ -5,7 +5,8 @@ import { createFactoryMaterialView } from "../../../src/factory/material/reserva
 import { readMaterialMassMg } from "../../../src/factory/material/resourcesAdapter";
 import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
 import { canonicalJson } from "../../../src/resources/serialization";
-import { createFactoryInstallationProfile, transformFactoryPoint } from "../../../src/factory/construction/installationProfile";
+import { createFactoryInstallationProfile, readRuntimeFactoryInstallationProfile, FACTORY_RUNTIME_INSTALLATION_PROFILE_CACHE_RESERVE_BYTES, transformFactoryPoint } from "../../../src/factory/construction/installationProfile";
+import { inspectFactoryCheckpointMemoryTree } from "../../../src/factory/persistence/factoryCheckpoint";
 import { prepareFactoryPlacement } from "../../../src/factory/construction/placement";
 import { createFactoryConstruction } from "../../../src/factory/construction/buildStep";
 import { createFactoryBuildTool } from "../../../src/factory/ui/buildTool";
@@ -16,6 +17,8 @@ const material = () => createFactoryMaterialView(fixture.catalog, [createResourc
 const materialBytes = (value: ReturnType<typeof material>) => canonicalJson({ catalogBytes: value.catalog.canonicalJson, revision: value.revision,
   containers: value.containers.map(s => ({ definitionBytes: s.definition.canonicalJson, stateBytes: s.state.canonicalJson })), reservations: value.reservations, receipts: value.receipts });
 const request = { transactionId: "build_cut_1", instanceId: "factory_cut_1", definitionSourceId: "B06", centerMm: [-6250, 1500, 5000], quarterTurns: 1 };
+const runtimeProfileSources = ["B06", "B07", "fp02.device.battery_4kwh", "fp02.device.distribution_40kw", "fp02.device.pv_pack_2kwp",
+  "fp02.device.wind_pack_6kw", "B05", "B09", "fp02.comp.small_brace", "fp06.line.belt_4m"] as const;
 /** Explicit headless terrain/read/actor fixture; native Browser evidence is separate. */
 const view = () => ({ binding: { sessionId: "factory_test", epoch: 1, terrainRevision: 0, sourceDigest: "fixture-flat-limestone-v1", baseDigest: "fixture-flat-limestone-v1", facilityRevision: 0 },
   cargoAccess:{ownerId:"fp02_wreck_owner",containerId:"fp02_wreck_cargo",opened:true,sourceDigest:"fixture-flat-limestone-v1",profileDigest:"explicit-synthetic-headless-access-v1",positionMm:[-4750,1500,5000],accessBoundsMm:{min:[-5000,1500,4750] as const,max:[-4500,3000,5250] as const},bodyHandle:0},
@@ -61,6 +64,44 @@ describe("W07 source-bound paid placement", () => {
     const unknown = { ...initial, terrain: { ...initial.terrain, readSlot: () => undefined } };
     expect(prepareFactoryPlacement(unknown, request)).toMatchObject({ status: "Rejected", reason: "TERRAIN_UNKNOWN" });
     expect(materialBytes(unknown.material)).toBe(before);
+  });
+});
+
+describe("FP06 runtime installation-profile reuse", () => {
+  it("reuses only exact immutable profiles for all ten closed sources within the fixed reserve", () => {
+    const profiles = runtimeProfileSources.map(sourceId => {
+      const expected = createFactoryInstallationProfile(sourceId);
+      const cached = readRuntimeFactoryInstallationProfile(sourceId);
+      const fresh = createFactoryInstallationProfile(sourceId);
+      expect(cached).toEqual(expected);
+      expect(cached.canonicalJson).toBe(expected.canonicalJson);
+      expect(cached.sourceDigest).toBe(expected.sourceDigest);
+      expect(cached.profileDigest).toBe(expected.profileDigest);
+      expect(readRuntimeFactoryInstallationProfile(sourceId)).toBe(cached);
+      expect(fresh).not.toBe(expected);
+      expect(Object.isFrozen(cached)).toBe(true);
+      return cached;
+    });
+    const retainedProfileBytes = profiles.reduce((total, profile) => {
+      const tree = inspectFactoryCheckpointMemoryTree(profile);
+      return total + tree.utf16Bytes + 64 * (tree.objectCount + tree.arrayCount) + 16 * Math.max(0, tree.nodeCount - 1);
+    }, 0);
+    const cacheAndEntryBytes = retainedProfileBytes + 64 + 16 * profiles.length;
+    expect(cacheAndEntryBytes).toBeLessThanOrEqual(FACTORY_RUNTIME_INSTALLATION_PROFILE_CACHE_RESERVE_BYTES);
+  });
+
+  it("keeps fresh public identities and the original invalid/non-string errors", () => {
+    const first = createFactoryInstallationProfile("B06"), second = createFactoryInstallationProfile("B06");
+    expect(second).not.toBe(first);
+    expect(second.canonicalJson).toBe(first.canonicalJson);
+    expect(() => createFactoryInstallationProfile("unknown-runtime-profile")).toThrow("Unknown Factory installation definition");
+    expect(() => readRuntimeFactoryInstallationProfile("unknown-runtime-profile")).toThrow("Unknown Factory installation definition");
+
+    let getterObserved = false;
+    const nonString = new Proxy(new String("B06"), { get() { getterObserved = true; throw new Error("unexpected sourceId coercion"); } });
+    expect(() => createFactoryInstallationProfile(nonString as unknown as string)).toThrow("Unknown Factory installation definition");
+    expect(() => readRuntimeFactoryInstallationProfile(nonString as unknown as string)).toThrow("Unknown Factory installation definition");
+    expect(getterObserved).toBe(false);
   });
 });
 

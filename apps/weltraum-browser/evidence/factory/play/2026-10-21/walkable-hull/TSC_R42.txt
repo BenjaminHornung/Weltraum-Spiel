@@ -1,0 +1,1 @@
+tests/unit/factory/facilitySession.test.ts(518,74): error TS2339: Property 'halfExtents' does not exist on type 'Shape'.

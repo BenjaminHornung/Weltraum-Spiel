@@ -4,7 +4,8 @@ import { buildHvpPlant, planHvpVegetation, measureHvpWood, meshHvpVegetation, pr
 import { readHvpSourceColumnWorld } from "../../src/hvp/hvpCoastSource";
 import { ThreeRenderBackend } from "../../src/render/three/backend/threeRenderBackend";
 import { createHvpPresentationBackend } from "../../src/hvp/hvpBootstrap";
-import { backendRevision, createRenderCommand, representationKey } from "../../src/presentation";
+import { backendRevision, createMeshArtifact, createRenderCommand, frameId, renderCommandResult, representationKey } from "../../src/presentation";
+import { createFactoryDecorFootprints, createFactoryDecorProjection } from "../../src/factory/presentation/factoryDecorProjection";
 
 describe("HVP-03 authored vegetation", () => {
   it("keeps non-woody understorey below the player and broad leaves rooted near the ground", () => {
@@ -179,6 +180,37 @@ describe("HVP-03 authored vegetation", () => {
     expect(source.attachments.every((a) => a.ownerId === plant.id)).toBe(true);
   });
 
+  it("keeps Factory ground offsets and paid-footprint masks render-only", () => {
+    const plant=planHvpVegetation().find(value=>value.kind!=="tree")!,source=buildHvpPlant(plant),volume=source.decoration;
+    let target:{x:number;y:number;z:number}|undefined;
+    for(let z=0;z<volume.sizeZ&&!target;z++)for(let y=0;y<volume.sizeY&&!target;y++)for(let x=0;x<volume.sizeX;x++){
+      if(volume.slotAt(x,y,z)!==0){target={x,y,z};break;}
+    }
+    expect(target).toBeDefined();
+    const rawSlots=volume.copySlots(),sourceDigest=source.digest,cell=volume.cellMeters;
+    const shiftedProfile={version:"hvp-factory-vegetation-v1" as const,readColumn:(x:number,z:number)=>{
+      const column=readHvpSourceColumnWorld(x,z);return {...column,topMeters:column.topMeters+cell};
+    }};
+    const empty=createFactoryDecorFootprints([]),shifted=createFactoryDecorProjection(source,shiftedProfile,empty);
+    expect(shifted.occupancy.originMeters.y).toBe(volume.originMeters.y+cell);
+    expect(shifted.occupancy.sizeY).toBe(volume.sizeY);
+    expect(shifted.occupancy.slotAt(target!.x,target!.y,target!.z)).toBe(volume.slotAt(target!.x,target!.y,target!.z));
+
+    const minX=source.instance.position.x+volume.originMeters.x+target!.x*cell;
+    const minZ=source.instance.position.z+volume.originMeters.z+target!.z*cell;
+    const footprints=createFactoryDecorFootprints([{instanceId:"paid-fixture",ownerWitness:"confirmed-owner-r1",
+      boundsMm:{min:[Math.floor(minX*1000),-100_000,Math.floor(minZ*1000)],
+        max:[Math.ceil((minX+cell)*1000),100_000,Math.ceil((minZ+cell)*1000)]}}]);
+    const masked=createFactoryDecorProjection(source,shiftedProfile,footprints);
+    expect(masked.occupancy.slotAt(target!.x,target!.y,target!.z)).toBe(0);
+    expect(masked.occupancy.slotAt(Math.min(volume.sizeX-1,target!.x+1),target!.y,target!.z)).toBe(
+      shifted.occupancy.slotAt(Math.min(volume.sizeX-1,target!.x+1),target!.y,target!.z));
+    const standard=meshHvpVegetation(source)[0]!,projected=meshHvpVegetation(source,undefined,{decoration:masked.occupancy})[0]!;
+    expect(projected.artifact.contentHash).not.toBe(standard.artifact.contentHash);
+    expect(source.digest).toBe(sourceDigest);
+    expect(volume.copySlots()).toEqual(rawSlots);
+  });
+
   it("T06/T08 projects wood and decor from one owner and releases actual shared mesh handles over 20 cycles", () => {
     const plant = planHvpVegetation().find((p) => p.kind === "tree")!;
     const products = meshHvpVegetation(buildHvpPlant(plant));
@@ -217,6 +249,142 @@ describe("HVP-03 authored vegetation", () => {
       expect(rendererDispose).toHaveBeenCalledTimes(1);
     }
   }, 120_000);
+
+  it("reuses only an accepted identical projection core while refreshing visibility and invalidating uncertain references", () => {
+    const plant = planHvpVegetation().find((p) => p.kind === "tree")!;
+    const product = meshHvpVegetation(buildHvpPlant(plant))[0]!;
+    const rendererDispose = vi.fn();
+    const backend = new ThreeRenderBackend({canvas:{} as HTMLCanvasElement,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:rendererDispose})});
+    const originalDispatch = backend.dispatch.bind(backend);
+    let alreadyAppliedNext = false, rejectProjectionNext = false;
+    const dispatch = vi.spyOn(backend,"dispatch").mockImplementation(command=>{
+      if(command.kind==="ApplyFrameProjection"&&alreadyAppliedNext){alreadyAppliedNext=false;return renderCommandResult("AlreadyApplied");}
+      if(command.kind==="ApplyFrameProjection"&&rejectProjectionNext){rejectProjectionNext=false;return renderCommandResult("RejectedContentConflict","NotApplicable","InjectedProjectionFailure");}
+      return originalDispatch(command);
+    });
+    const camera={position:{x:0,y:0,z:0},orientation:{x:0,y:0,z:0,w:1},verticalFovDegrees:60,aspect:1,near:.1,far:100};
+    const transform={representationKey:product.artifact.representationKey,positionRelative:{x:0,y:1,z:2},orientation:{x:0,y:0,z:0,w:1},scale:{x:1,y:1,z:1}};
+    let transforms=[transform],cameraReads=0,transformReads=0;
+    const adapter=createHvpPresentationBackend(backend,()=>{cameraReads++;return camera;},product.artifact.representationKey,()=>{transformReads++;return transforms;});
+    const projectionCalls=()=>dispatch.mock.calls.filter(([command])=>command.kind==="ApplyFrameProjection");
+    const visibilityCalls=()=>dispatch.mock.calls.filter(([command])=>command.kind==="ApplyVisibilityPlan");
+    const publishAfter=(mutate:()=>void)=>{const before=projectionCalls().length;mutate();adapter.updateProjection();expect(projectionCalls()).toHaveLength(before+1);};
+    try{
+      adapter.dispatch(createRenderCommand({kind:"InitializeBackend",backendRevision:backendRevision(0)}));
+      adapter.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact:product.artifact,materialProfiles:product.profiles}));
+      const initialProjectionCount=projectionCalls().length,initialVisibilityCount=visibilityCalls().length;
+      const readsBeforeNoop={camera:cameraReads,transforms:transformReads};
+      adapter.updateProjection();
+      expect(projectionCalls()).toHaveLength(initialProjectionCount);
+      expect(visibilityCalls()).toHaveLength(initialVisibilityCount+1);
+      expect(cameraReads).toBe(readsBeforeNoop.camera+1);
+      expect(transformReads).toBe(readsBeforeNoop.transforms+1);
+      const firstPlan=visibilityCalls().at(-1)![0];
+      adapter.setWaterEnabled(false);
+      expect(projectionCalls()).toHaveLength(initialProjectionCount);
+      const hiddenPlan=visibilityCalls().at(-1)![0];
+      if(firstPlan.kind!=="ApplyVisibilityPlan"||hiddenPlan.kind!=="ApplyVisibilityPlan")throw new Error("Visibility fixture did not publish plans");
+      expect(hiddenPlan.plan.planRevision).toBeGreaterThan(firstPlan.plan.planRevision);
+      expect(hiddenPlan.plan.hiddenRepresentationKeys).toContain(product.artifact.representationKey);
+      adapter.setWaterEnabled(true);
+      expect(projectionCalls()).toHaveLength(initialProjectionCount);
+
+      publishAfter(()=>{camera.position.x=1;});
+      publishAfter(()=>{camera.position.x=0;});
+      publishAfter(()=>{camera.position.x=-0;});
+      publishAfter(()=>{camera.position.y=1;});
+      publishAfter(()=>{camera.position.z=2;});
+      publishAfter(()=>{camera.orientation={x:Math.SQRT1_2,y:0,z:0,w:Math.SQRT1_2};});
+      publishAfter(()=>{camera.orientation={x:Math.SQRT1_2,y:0,z:0,w:-Math.SQRT1_2};});
+      publishAfter(()=>{camera.orientation={x:0,y:Math.SQRT1_2,z:0,w:Math.SQRT1_2};});
+      publishAfter(()=>{camera.orientation={x:0,y:0,z:Math.SQRT1_2,w:Math.SQRT1_2};});
+      publishAfter(()=>{camera.verticalFovDegrees=61;});
+      publishAfter(()=>{camera.aspect=1.1;});
+      publishAfter(()=>{camera.near=.2;});
+      publishAfter(()=>{camera.far=101;});
+      publishAfter(()=>{transform.positionRelative.x=3;});
+      publishAfter(()=>{transform.positionRelative.y=4;});
+      publishAfter(()=>{transform.positionRelative.z=5;});
+      publishAfter(()=>{transform.orientation={x:Math.SQRT1_2,y:0,z:0,w:Math.SQRT1_2};});
+      publishAfter(()=>{transform.orientation={x:Math.SQRT1_2,y:0,z:0,w:-Math.SQRT1_2};});
+      publishAfter(()=>{transform.orientation={x:0,y:Math.SQRT1_2,z:0,w:Math.SQRT1_2};});
+      publishAfter(()=>{transform.orientation={x:0,y:0,z:Math.SQRT1_2,w:Math.SQRT1_2};});
+      publishAfter(()=>{transform.scale.x=2;});
+      publishAfter(()=>{transform.scale.y=3;});
+      publishAfter(()=>{transform.scale.z=4;});
+      const heldSnapshot=projectionCalls().at(-1)![0];
+      if(heldSnapshot.kind!=="ApplyFrameProjection")throw new Error("Projection fixture did not publish a snapshot");
+      const heldX=heldSnapshot.snapshot.representationTransforms[0]!.positionRelative.x;
+      publishAfter(()=>{transform.positionRelative.x=6;});
+      expect(heldSnapshot.snapshot.representationTransforms[0]!.positionRelative.x).toBe(heldX);
+      const savedKey=transform.representationKey;
+      publishAfter(()=>{transform.representationKey=representationKey("hvp:vegetation:other");});
+      publishAfter(()=>{transform.representationKey=savedKey;});
+
+      const memberArtifact=createMeshArtifact({...product.artifact,representationKey:representationKey("hvp:vegetation:extra-member")});
+      const beforeMembership=projectionCalls().length;
+      adapter.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact:memberArtifact,materialProfiles:product.profiles}));
+      expect(projectionCalls()).toHaveLength(beforeMembership+1);
+      adapter.dispatch(createRenderCommand({kind:"RemoveRepresentation",backendRevision:backendRevision(0),representationKey:memberArtifact.representationKey,
+        expectedSourceRevision:memberArtifact.sourceRevision,expectedArtifactRevision:memberArtifact.artifactRevision,expectedContentHash:memberArtifact.contentHash}));
+      expect(projectionCalls()).toHaveLength(beforeMembership+2);
+
+      const validX=camera.position.x,invalidCount=projectionCalls().length;
+      camera.position.x=Number.NaN;
+      expect(()=>adapter.updateProjection()).toThrow(/FrameProjectionSnapshot is invalid/);
+      expect(projectionCalls()).toHaveLength(invalidCount);
+      camera.position.x=validX;
+      publishAfter(()=>{});
+
+      alreadyAppliedNext=true;
+      const beforeAlreadyApplied=projectionCalls().length;
+      camera.position.z+=1;
+      adapter.updateProjection();
+      expect(projectionCalls()).toHaveLength(beforeAlreadyApplied+1);
+      publishAfter(()=>{});
+      rejectProjectionNext=true;
+      const beforeRejected=projectionCalls().length;
+      camera.position.z+=1;
+      expect(()=>adapter.updateProjection()).toThrow(/HVP frame projection failed/);
+      expect(projectionCalls()).toHaveLength(beforeRejected+1);
+      publishAfter(()=>{});
+
+      const acceptedProjection=projectionCalls().at(-1)![0];
+      const forwardedCallIndex=projectionCalls().length;
+      expect(adapter.dispatch(acceptedProjection).status).toBe("AlreadyApplied");
+      const afterForwarded=projectionCalls().length;
+      publishAfter(()=>{});
+      expect(projectionCalls()).toHaveLength(afterForwarded+1);
+
+      const beforeExplicitRelease=projectionCalls().length;
+      adapter.releaseProjectionReference();
+      publishAfter(()=>{});
+      expect(projectionCalls()).toHaveLength(beforeExplicitRelease+1);
+
+      const lastFrame=frameId("hvp:test:alternate-frame");
+      const frameChangedArtifact=createMeshArtifact({...product.artifact,frameId:lastFrame,representationKey:representationKey("hvp:test:alternate-frame")});
+      adapter.dispatch(createRenderCommand({kind:"RemoveRepresentation",backendRevision:backendRevision(0),representationKey:product.artifact.representationKey,
+        expectedSourceRevision:product.artifact.sourceRevision,expectedArtifactRevision:product.artifact.artifactRevision,expectedContentHash:product.artifact.contentHash}));
+      const beforeFrameChange=projectionCalls().length;
+      adapter.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact:frameChangedArtifact,materialProfiles:product.profiles}));
+      expect(projectionCalls()).toHaveLength(beforeFrameChange+1);
+      const currentProjection=projectionCalls().at(-1)![0];
+      if(currentProjection.kind!=="ApplyFrameProjection")throw new Error("Frame change did not publish a projection");
+      expect(currentProjection.snapshot.frameId).toBe(lastFrame);
+      const revisions=projectionCalls().filter((_,index)=>index!==forwardedCallIndex)
+        .map(([command])=>command.kind==="ApplyFrameProjection"?command.snapshot.frameRevision:0);
+      expect(revisions.every((revision,index)=>index===0||revision>revisions[index-1]!)).toBe(true);
+      adapter.dispatch(createRenderCommand({kind:"ResetBackend",backendRevision:backendRevision(0),nextBackendRevision:backendRevision(1)}));
+      const beforeResetRestore=projectionCalls().length;
+      adapter.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(1),artifact:frameChangedArtifact,materialProfiles:product.profiles}));
+      expect(projectionCalls()).toHaveLength(beforeResetRestore+1);
+    }finally{
+      adapter.releaseProjectionReference();
+      const revision=backend.readDiagnostics().backendRevision;
+      if(backend.readDiagnostics().backendState!=="Disposed")backend.dispatch(createRenderCommand({kind:"DisposeBackend",backendRevision:revision}));
+    }
+    expect(rendererDispose).toHaveBeenCalled();
+  });
 
   it("T08 generates, admits and disposes the complete vegetation set over 20 cycles", () => {
     for (let cycle=0;cycle<20;cycle+=1) {

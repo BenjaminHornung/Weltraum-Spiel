@@ -1,0 +1,172 @@
+{
+  "schema": "fp06-ordinary-read-telemetry-v1",
+  "run": "R03-before-NATIVE_READ_R01",
+  "phase": "ordinary keys after sixth paid installation (Cutter), two paid power links; no profiler running",
+  "samples": [
+    {
+      "key": "w",
+      "ms": 1000,
+      "tick": 12103,
+      "handlerMs": 10.899999991059303,
+      "carrier": null
+    },
+    {
+      "key": "w",
+      "ms": 853,
+      "tick": 12238,
+      "handlerMs": 10.200000002980232,
+      "carrier": null
+    },
+    {
+      "key": "s",
+      "ms": 63,
+      "tick": 12321,
+      "handlerMs": 9.299999997019768,
+      "carrier": null
+    },
+    {
+      "key": "w",
+      "ms": 37,
+      "tick": 12398,
+      "handlerMs": 11.100000008940697,
+      "carrier": null
+    },
+    {
+      "key": "s",
+      "ms": 80,
+      "tick": 12478,
+      "handlerMs": 9,
+      "carrier": null
+    },
+    {
+      "key": "w",
+      "ms": 220,
+      "tick": 12560,
+      "handlerMs": 9.699999988079071,
+      "carrier": null
+    },
+    {
+      "key": "s",
+      "ms": 97,
+      "tick": 12637,
+      "handlerMs": 10.200000002980232,
+      "carrier": null
+    },
+    {
+      "key": "w",
+      "ms": 120,
+      "tick": 12750,
+      "handlerMs": 11.200000002980232,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 12844,
+      "handlerMs": 12.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 120,
+      "tick": 12932,
+      "handlerMs": 10.700000002980232,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 13017,
+      "handlerMs": 12,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 87,
+      "tick": 13096,
+      "handlerMs": 9.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 34,
+      "tick": 13183,
+      "handlerMs": 8.699999988079071,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 87,
+      "tick": 13282,
+      "handlerMs": 13.099999994039536,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 13383,
+      "handlerMs": 10.099999994039536,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 70,
+      "tick": 13482,
+      "handlerMs": 12.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 13556,
+      "handlerMs": 9.200000002980232,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 103,
+      "tick": 13625,
+      "handlerMs": 9.900000005960464,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 47,
+      "tick": 13708,
+      "handlerMs": 11,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "w",
+      "ms": 87,
+      "tick": 13785,
+      "handlerMs": 11.600000008940697,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "d",
+      "ms": 772,
+      "tick": 13910,
+      "handlerMs": 9.5,
+      "carrier": "Carrying"
+    },
+    {
+      "key": "s",
+      "ms": 225,
+      "tick": 14007,
+      "handlerMs": 9.399999991059303,
+      "carrier": "Carrying"
+    }
+  ],
+  "pickNames": [
+    "Battery",
+    "Distributor",
+    "Former kit",
+    "Cable · 8.5 m",
+    "Cable · 5.25 m",
+    "Material container",
+    "Workbench",
+    "Cutter kit",
+    "Belt line · 4 m"
+  ]
+}

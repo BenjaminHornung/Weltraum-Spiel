@@ -35,7 +35,7 @@ export interface FactoryS1Sample {
 }
 const owned=new WeakSet<FactoryS1Assets>(),disposed=new WeakSet<FactoryS1Assets>();
 const assetIds=Object.freeze({B06:"play_cutter_v2",B07:"play_former_v2"});
-const bytes=(artifact:import("../../presentation").MeshArtifact)=>artifact.positions.byteLength+(artifact.normals?.byteLength??0)+artifact.indices.byteLength;
+const bytes=(artifact:import("../../presentation").MeshArtifact)=>artifact.positions.byteLength+(artifact.normals?.byteLength??0)+artifact.indices.byteLength+(artifact.attributes?.color?.byteLength??0);
 const sameRef=(a:FactoryAssetDefinitionRef,b:FactoryAssetDefinitionRef)=>a.sourceId===b.sourceId&&a.version===b.version&&a.digest===b.digest;
 function invalid(reason:string):never{throw Error(`FactoryS1 ${reason}`);}
 const heldPose:MachinePose=deepFreezeMetadata({status:"FAULT",phase:"held",paused:true,partPoses:[]});
@@ -43,11 +43,11 @@ const heldPose:MachinePose=deepFreezeMetadata({status:"FAULT",phase:"held",pause
 /** Closed cell/native geometry derivative plus an actual hash-checked GLB.
  * No World, work, inventory, GPU scene or physical material authority is created.
  */
-export const loadFactoryS1Assets=async(ref:FactoryAssetDefinitionRef&{instanceId:string},options:Pick<LoadPlayAssetInput,"fetch"|"signal">={}):Promise<FactoryS1Assets>=>{
+export const loadFactoryS1Assets=async(ref:FactoryAssetDefinitionRef&{instanceId:string},options:Pick<LoadPlayAssetInput,"fetch"|"signal"|"renderMode">={}):Promise<FactoryS1Assets>=>{
  const definitionRef=Object.freeze({sourceId:ref.sourceId,version:ref.version,digest:ref.digest}),instanceId=ref.instanceId;
- const {fetch,signal}=options;if(definitionRef.sourceId!=="B06"&&definitionRef.sourceId!=="B07")invalid("closed definition binding mismatch");
+ const {fetch,signal,renderMode}=options;if(definitionRef.sourceId!=="B06"&&definitionRef.sourceId!=="B07")invalid("closed definition binding mismatch");
  const cells=createFactoryPartCellProjection({...definitionRef,instanceId});
- const render=await loadPlayAssetProjection({assetId:assetIds[definitionRef.sourceId],instanceId,expectedBinding:{definitionRef},fetch,signal});
+ const render=await loadPlayAssetProjection({assetId:assetIds[definitionRef.sourceId],instanceId,expectedBinding:{definitionRef},fetch,signal,renderMode});
  if(signal?.aborted)throw new DOMException("FactoryS1 load aborted","AbortError");
  if(!render.definitionRef||!sameRef(render.definitionRef,definitionRef)||render.frameId!==cells.frameId||render.sourceFileSha256!==cells.sourceFileSha256
   ||render.parts.length!==cells.parts.length||render.parts.some(p=>!cells.parts.some(c=>c.partId===p.partId)))invalid("render/cell binding mismatch");

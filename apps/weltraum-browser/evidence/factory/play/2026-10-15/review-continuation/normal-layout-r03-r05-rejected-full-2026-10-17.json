@@ -1,0 +1,6775 @@
+{
+  "run": "R05-NORMAL_LAYOUT_R03",
+  "events": [
+    {
+      "kind": "play",
+      "state": {
+        "at": 6523.600000008941,
+        "tick": 10,
+        "status": "Running",
+        "player": {
+          "x": -5.5,
+          "y": 2.41003680229187,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 4,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.5,
+            3.1612650301927983,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.5,
+            2.4112650301927983,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 17.80000001192093,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7999999970197678,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 1,
+        "hostConfirmed": true,
+        "receipt": {},
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 133,
+      "before": {
+        "at": 6536,
+        "tick": 11,
+        "status": "Running",
+        "player": {
+          "x": -5.5,
+          "y": 2.41003680229187,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 4,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.5,
+            3.160914912513402,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.5,
+            2.410914912513402,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 17.80000001192093,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000894069672,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 1,
+        "hostConfirmed": true,
+        "receipt": {},
+        "testBridge": false
+      },
+      "after": {
+        "at": 6720.5,
+        "tick": 22,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 4,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.8109699778019825,
+            3.1505625622215248,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.8109699778019825,
+            2.4005625622215248,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 17.80000001192093,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000001192092896,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 3,
+        "hostConfirmed": true,
+        "receipt": {},
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -5.9,
+      "state": {
+        "at": 6726.4000000059605,
+        "tick": 22,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 4,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.8241338451681335,
+            3.150486413085499,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.8241338451681335,
+            2.400486413085499,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 17.80000001192093,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 3,
+        "hostConfirmed": true,
+        "receipt": {},
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pickup",
+      "name": "Battery",
+      "state": {
+        "at": 7068.800000011921,
+        "tick": 23,
+        "status": "Paused",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 8,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.833456442175383,
+            3.150432484578938,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.833456442175383,
+            2.400432484578938,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 17.80000001192093,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "FinalizeFactoryCarrier",
+          "lastHandlerMs": 1.0999999940395355,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -5900.001525878906,
+            1500,
+            10875
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 3,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 28115.10000000894,
+        "tick": 28,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.900001525878906,
+            3.150047540664673,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.900001525878906,
+            2.400047540664673,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999910593033,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -5900.001525878906,
+            1500,
+            10875
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 4,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "w",
+      "ms": 100,
+      "before": {
+        "at": 28140.30000001192,
+        "tick": 32,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.400047540664673,
+          "z": 11.875
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.900001525878906,
+            3.150047540664673,
+            11.875
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.900001525878906,
+            2.400047540664673,
+            11.875
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999403953552,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -5900.001525878906,
+            1500,
+            10875
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 5,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 28329.80000001192,
+        "tick": 42,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.4000401496887207,
+          "z": 12.17500114440918
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.900001525878906,
+            3.1500414520319078,
+            12.139677129729975
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.900001525878906,
+            2.4000414520319078,
+            12.139677129729975
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999403953552,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -5900.001525878906,
+            1500,
+            11175.00114440918
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 7,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "z",
+      "target": 12.175,
+      "state": {
+        "at": 28338.70000000298,
+        "tick": 44,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.4000401496887207,
+          "z": 12.17500114440918
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.900001525878906,
+            3.150041276870649,
+            12.144428103924193
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.900001525878906,
+            2.400041276870649,
+            12.144428103924193
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999998807907104,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -5900.001525878906,
+            1500,
+            11175.00114440918
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 7,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 742,
+      "before": {
+        "at": 28357.10000000894,
+        "tick": 45,
+        "status": "Running",
+        "player": {
+          "x": -5.900001525878906,
+          "y": 2.4000401496887207,
+          "z": 12.17500114440918
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.900001525878906,
+            3.1500408952539254,
+            12.15477885853176
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.900001525878906,
+            2.4000408952539254,
+            12.15477885853176
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000894069672,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -5900.001525878906,
+            1500,
+            11175.00114440918
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 7,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 29195.70000000298,
+        "tick": 95,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.400024890899658,
+          "z": 12.17500114440918
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.145770329628336,
+            3.1500246084585237,
+            12.175001144248577
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.145770329628336,
+            2.4000246084585237,
+            12.175001144248577
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000894069672,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1500,
+            11175.00114440918
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 15,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -8.125,
+      "state": {
+        "at": 29212.10000000894,
+        "tick": 96,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.400024890899658,
+          "z": 12.17500114440918
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.154300761899142,
+            3.150024652878625,
+            12.175001144273836
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.154300761899142,
+            2.400024652878625,
+            12.175001144273836
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999998807907104,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1500,
+            11175.00114440918
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 16,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "s",
+      "ms": 1000,
+      "before": {
+        "at": 29226.60000000894,
+        "tick": 97,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.400024890899658,
+          "z": 12.17500114440918
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.17247027708722,
+            3.15002474749185,
+            12.175001144327634
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.17247027708722,
+            2.40002474749185,
+            12.175001144327634
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999403953552,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1500,
+            11175.00114440918
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 16,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 30324.5,
+        "tick": 162,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4002764225006104,
+          "z": 9.174989700317383
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299681663,
+            3.150268690652726,
+            9.234219860497639
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299681663,
+            2.400268690652726,
+            9.234219860497639
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999403953552,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1499.9998807907104,
+            8174.989700317383
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 27,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "s",
+      "ms": 1000,
+      "before": {
+        "at": 30339.20000000298,
+        "tick": 164,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4002764225006104,
+          "z": 9.174989700317383
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299682107,
+            3.1502722908325222,
+            9.206640525106216
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299682107,
+            2.4002722908325222,
+            9.206640525106216
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999403953552,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1499.9998807907104,
+            8174.989700317383
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 27,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 31418.80000001192,
+        "tick": 228,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4000000953674316,
+          "z": 6.174978256225586
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299682617,
+            3.1500000954672887,
+            6.224393388657682
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299682617,
+            2.4000000954672887,
+            6.224393388657682
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999403953552,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1500,
+            5174.978256225586
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 38,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "s",
+      "ms": 1000,
+      "before": {
+        "at": 31431.90000000596,
+        "tick": 229,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4000000953674316,
+          "z": 6.174978256225586
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299682617,
+            3.150000095429084,
+            6.205487645446073
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299682617,
+            2.400000095429084,
+            6.205487645446073
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1500,
+            5174.978256225586
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 38,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 32529.80000001192,
+        "tick": 295,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4000210762023926,
+          "z": 3.1249709129333496
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299682617,
+            3.150021018147832,
+            3.1676921156852105
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299682617,
+            2.400021018147832,
+            3.1676921156852105
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1499.9998807907104,
+            2124.9709129333496
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 49,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "s",
+      "ms": 42,
+      "before": {
+        "at": 32546.5,
+        "tick": 296,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4000210762023926,
+          "z": 3.1249709129333496
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299682617,
+            3.1500210366771775,
+            3.1540567368305354
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299682617,
+            2.4000210366771775,
+            3.1540567368305354
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1499.9998807907104,
+            2124.9709129333496
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 49,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 32681.70000000298,
+        "tick": 304,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4000210762023926,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299682617,
+            3.1500210740988868,
+            3.003073205878725
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299682617,
+            2.4000210740988868,
+            3.003073205878725
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.09999999403953552,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1499.9998807907104,
+            1974.971055984497
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 50,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "z",
+      "target": 3,
+      "state": {
+        "at": 32688.60000000894,
+        "tick": 304,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4000210762023926,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299682617,
+            3.150021074536648,
+            2.997224855277368
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299682617,
+            2.400021074536648,
+            2.997224855277368
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1499.9998807907104,
+            1974.971055984497
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 50,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 1000,
+      "before": {
+        "at": 32705.10000000894,
+        "tick": 305,
+        "status": "Running",
+        "player": {
+          "x": -8.200010299682617,
+          "y": 2.4000210762023926,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.200010299682617,
+            3.1500210750657827,
+            2.990155789155793
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.200010299682617,
+            2.4000210750657827,
+            2.990155789155793
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.10000000894069672,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -8200.010299682617,
+            1499.9998807907104,
+            1974.971055984497
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 50,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 33815.10000000894,
+        "tick": 371,
+        "status": "Running",
+        "player": {
+          "x": -5.19999885559082,
+          "y": 2.4000418186187744,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.236704486089126,
+            3.1500423480047286,
+            2.9749710559848035
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.236704486089126,
+            2.4000423480047286,
+            2.9749710559848035
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -5199.99885559082,
+            1499.9998807907104,
+            1974.971055984497
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 61,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 983,
+      "before": {
+        "at": 33846.60000000894,
+        "tick": 373,
+        "status": "Running",
+        "player": {
+          "x": -5.19999885559082,
+          "y": 2.4000418186187744,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.218145501018107,
+            3.150042080338273,
+            2.9749710559846485
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.218145501018107,
+            2.400042080338273,
+            2.9749710559846485
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -5199.99885559082,
+            1499.9998807907104,
+            1974.971055984497
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 62,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 34941.70000000298,
+        "tick": 439,
+        "status": "Running",
+        "player": {
+          "x": -2.19999623298645,
+          "y": 2.400019645690918,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -2.238304995614188,
+            3.150026555592652,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -2.238304995614188,
+            2.400026555592652,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -2199.99623298645,
+            1500,
+            1974.971055984497
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 73,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -2.25,
+      "state": {
+        "at": 34958.20000000298,
+        "tick": 440,
+        "status": "Running",
+        "player": {
+          "x": -2.19999623298645,
+          "y": 2.400019645690918,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 10,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -2.226545761592722,
+            3.1500244345335005,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -2.226545761592722,
+            2.4000244345335005,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 50,
+          "position": [
+            -2199.99623298645,
+            1500,
+            1974.971055984497
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 73,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "deposit",
+      "state": {
+        "at": 35178.10000000894,
+        "tick": 442,
+        "status": "Paused",
+        "player": {
+          "x": -2.19999623298645,
+          "y": 2.400019645690918,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 14,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -2.2183552914787215,
+            3.1500229571862888,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -2.2183552914787215,
+            2.4000229571862888,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "FinalizeFactoryCarrier",
+          "lastHandlerMs": 1.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 50,
+          "position": [
+            -2250,
+            1500,
+            2000
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 73,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 35347.20000000298,
+        "tick": 445,
+        "status": "Running",
+        "player": {
+          "x": -2.19999623298645,
+          "y": 2.400019645690918,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 16,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -2.19999623298645,
+            3.150019645690918,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -2.19999623298645,
+            2.400019645690918,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 50,
+          "position": [
+            -2250,
+            1500,
+            2000
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 74,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 683,
+      "before": {
+        "at": 35365.20000000298,
+        "tick": 446,
+        "status": "Running",
+        "player": {
+          "x": -2.19999623298645,
+          "y": 2.400019645690918,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 16,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -2.19999623298645,
+            3.150019645690918,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -2.19999623298645,
+            2.400019645690918,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 18.200000002980232,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.19999998807907104,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 50,
+          "position": [
+            -2250,
+            1500,
+            2000
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 74,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 36117.70000000298,
+        "tick": 491,
+        "status": "Running",
+        "player": {
+          "x": -4.249995231628418,
+          "y": 2.400021553039551,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 16,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.188980397957092,
+            3.150021576723902,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.188980397957092,
+            2.400021576723902,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 50,
+          "position": [
+            -2250,
+            1500,
+            2000
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 81,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -4.25,
+      "state": {
+        "at": 36138.30000001192,
+        "tick": 492,
+        "status": "Running",
+        "player": {
+          "x": -4.249995231628418,
+          "y": 2.400021553039551,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 16,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.199031358601796,
+            3.150021572822384,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.199031358601796,
+            2.400021572822384,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 50,
+          "position": [
+            -2250,
+            1500,
+            2000
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 82,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "build",
+      "name": "battery",
+      "state": {
+        "at": 36671.5,
+        "tick": 494,
+        "status": "Paused",
+        "player": {
+          "x": -4.249995231628418,
+          "y": 2.400021553039551,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 21,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.2177509977742,
+            3.150021565555913,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.2177509977742,
+            2.400021565555913,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 82,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 36847.20000000298,
+        "tick": 497,
+        "status": "Running",
+        "player": {
+          "x": -4.249995231628418,
+          "y": 2.400021553039551,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.249995231628418,
+            3.150021553039551,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.249995231628418,
+            2.400021553039551,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 82,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 1000,
+      "before": {
+        "at": 36894.40000000596,
+        "tick": 498,
+        "status": "Running",
+        "player": {
+          "x": -4.249995231628418,
+          "y": 2.400021553039551,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.249995231628418,
+            3.150021553039551,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.249995231628418,
+            2.400021553039551,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.6000000089406967,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 83,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 38001.90000000596,
+        "tick": 566,
+        "status": "Running",
+        "player": {
+          "x": -7.250006675720215,
+          "y": 2.4002232551574707,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -7.22773780178865,
+            3.1502080292807695,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -7.22773780178865,
+            2.4002080292807695,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 94,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 292,
+      "before": {
+        "at": 38023.90000000596,
+        "tick": 567,
+        "status": "Running",
+        "player": {
+          "x": -7.250006675720215,
+          "y": 2.4002232551574707,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -7.2381596267477,
+            3.1502151549855677,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -7.2381596267477,
+            2.4002151549855677,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 94,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 38393.20000000298,
+        "tick": 590,
+        "status": "Running",
+        "player": {
+          "x": -8.10000991821289,
+          "y": 2.4000372886657715,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.064927131552441,
+            3.150038195749312,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.064927131552441,
+            2.400038195749312,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7999999970197678,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 98,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -8.125,
+      "state": {
+        "at": 38398.80000001192,
+        "tick": 590,
+        "status": "Running",
+        "player": {
+          "x": -8.10000991821289,
+          "y": 2.4000372886657715,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.07096563383469,
+            3.1500380396207217,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.07096563383469,
+            2.4000380396207217,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 98,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "w",
+      "ms": 1000,
+      "before": {
+        "at": 38414,
+        "tick": 591,
+        "status": "Running",
+        "player": {
+          "x": -8.10000991821289,
+          "y": 2.4000372886657715,
+          "z": 2.974971055984497
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.078825495000771,
+            3.150037836399958,
+            2.974971055984497
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.078825495000771,
+            2.400037836399958,
+            2.974971055984497
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999910593033,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 98,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 39527.70000000298,
+        "tick": 658,
+        "status": "Running",
+        "player": {
+          "x": -8.10000991821289,
+          "y": 2.400005578994751,
+          "z": 6.024977684020996
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.100009918212509,
+            3.150006301456988,
+            5.996819804867598
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.100009918212509,
+            2.400006301456988,
+            5.996819804867598
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 109,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "w",
+      "ms": 1000,
+      "before": {
+        "at": 39564,
+        "tick": 660,
+        "status": "Running",
+        "player": {
+          "x": -8.10000991821289,
+          "y": 2.400005578994751,
+          "z": 6.024977684020996
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.100009918212647,
+            3.1500060401691434,
+            6.007003467317264
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.100009918212647,
+            2.4000060401691434,
+            6.007003467317264
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 110,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 40647.5,
+        "tick": 725,
+        "status": "Running",
+        "player": {
+          "x": -8.100013732910156,
+          "y": 2.400042772293091,
+          "z": 9.074979782104492
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.10001373291007,
+            3.1500457216082194,
+            9.019162188775729
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.10001373291007,
+            2.4000457216082194,
+            9.019162188775729
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7999999970197678,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 120,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "w",
+      "ms": 933,
+      "before": {
+        "at": 40676.5,
+        "tick": 727,
+        "status": "Running",
+        "player": {
+          "x": -8.100013732910156,
+          "y": 2.400042772293091,
+          "z": 9.074979782104492
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.10001373291011,
+            3.150044330904349,
+            9.045482110414172
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.10001373291011,
+            2.400044330904349,
+            9.045482110414172
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 121,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 41694.5,
+        "tick": 788,
+        "status": "Running",
+        "player": {
+          "x": -8.10001277923584,
+          "y": 2.400028705596924,
+          "z": 11.875000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.100012779236899,
+            3.150028719223714,
+            11.833880928435198
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.100012779236899,
+            2.400028719223714,
+            11.833880928435198
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 131,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "z",
+      "target": 11.875,
+      "state": {
+        "at": 41704.5,
+        "tick": 789,
+        "status": "Running",
+        "player": {
+          "x": -8.10001277923584,
+          "y": 2.400028705596924,
+          "z": 11.875000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.100012779236733,
+            3.1500287171061485,
+            11.840270867563742
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.100012779236733,
+            2.4000287171061485,
+            11.840270867563742
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 131,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 733,
+      "before": {
+        "at": 41724.30000001192,
+        "tick": 790,
+        "status": "Running",
+        "player": {
+          "x": -8.10001277923584,
+          "y": 2.400028705596924,
+          "z": 11.875000953674316
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.100012779236401,
+            3.150028712814233,
+            11.853222095743781
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.100012779236401,
+            2.400028712814233,
+            11.853222095743781
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.699999988079071,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 131,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 42575.5,
+        "tick": 840,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000096321105957,
+          "z": 11.87500286102295
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.910098112756568,
+            3.1500138120499743,
+            11.875002860205075
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.910098112756568,
+            2.4000138120499743,
+            11.875002860205075
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 140,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -5.9,
+      "state": {
+        "at": 42590.70000000298,
+        "tick": 841,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000096321105957,
+          "z": 11.87500286102295
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 23,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.88493770377476,
+            3.150012062555968,
+            11.875002860547392
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.88493770377476,
+            2.400012062555968,
+            11.875002860547392
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.800000011920929,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": null,
+        "massMg": 2984400000,
+        "factorySteps": 140,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "pickup",
+      "name": "Distributor",
+      "state": {
+        "at": 42953.60000000894,
+        "tick": 844,
+        "status": "Paused",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000096321105957,
+          "z": 11.87500286102295
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 27,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.874918405631029,
+            3.150011365878022,
+            11.875002860683708
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.874918405631029,
+            2.400011365878022,
+            11.875002860683708
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -5849.984169006348,
+            1500,
+            10875.00286102295
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 140,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 43231.20000000298,
+        "tick": 850,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000096321105957,
+          "z": 11.87500286102295
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.849984169006348,
+            3.1500096321105957,
+            11.87500286102295
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849984169006348,
+            2.4000096321105957,
+            11.87500286102295
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -5849.984169006348,
+            1500,
+            10875.00286102295
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 141,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "w",
+      "ms": 100,
+      "before": {
+        "at": 43257.60000000894,
+        "tick": 853,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000096321105957,
+          "z": 11.87500286102295
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.849984169006348,
+            3.1500096321105957,
+            11.87500286102295
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849984169006348,
+            2.4000096321105957,
+            11.87500286102295
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.9000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -5849.984169006348,
+            1500,
+            10875.00286102295
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 142,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 43445.40000000596,
+        "tick": 864,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000096321105957,
+          "z": 12.125003814697266
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.849984169006348,
+            3.1500096321105957,
+            12.083055880083037
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849984169006348,
+            2.4000096321105957,
+            12.083055880083037
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -5849.984169006348,
+            1500,
+            11125.003814697266
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 144,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "z",
+      "target": 12.175,
+      "state": {
+        "at": 43454.20000000298,
+        "tick": 865,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000096321105957,
+          "z": 12.125003814697266
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.849984169006348,
+            3.1500096321105957,
+            12.097195972172331
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849984169006348,
+            2.4000096321105957,
+            12.097195972172331
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -5849.984169006348,
+            1500,
+            11125.003814697266
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 144,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 758,
+      "before": {
+        "at": 43469.70000000298,
+        "tick": 866,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000096321105957,
+          "z": 12.125003814697266
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.849984169006348,
+            3.1500096321105957,
+            12.106238977574144
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.849984169006348,
+            2.4000096321105957,
+            12.106238977574144
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7999999970197678,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -5849.984169006348,
+            1500,
+            11125.003814697266
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 144,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 44367.30000001192,
+        "tick": 919,
+        "status": "Running",
+        "player": {
+          "x": -8.199993133544922,
+          "y": 2.400017738342285,
+          "z": 12.125003814697266
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.169820787753432,
+            3.1500176507404736,
+            12.125003814653947
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.169820787753432,
+            2.4000176507404736,
+            12.125003814653947
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -8199.993133544922,
+            1500,
+            11125.003814697266
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 153,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -8.125,
+      "state": {
+        "at": 44386,
+        "tick": 921,
+        "status": "Running",
+        "player": {
+          "x": -8.199993133544922,
+          "y": 2.400017738342285,
+          "z": 12.125003814697266
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.175508715585012,
+            3.1500176672546942,
+            12.125003814662113
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.175508715585012,
+            2.4000176672546942,
+            12.125003814662113
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999910593033,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -8199.993133544922,
+            1500,
+            11125.003814697266
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 153,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "s",
+      "ms": 1000,
+      "before": {
+        "at": 44408.80000001192,
+        "tick": 922,
+        "status": "Running",
+        "player": {
+          "x": -8.199993133544922,
+          "y": 2.400017738342285,
+          "z": 12.125003814697266
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.186038456956181,
+            3.150017697826544,
+            12.125003814677232
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.186038456956181,
+            2.400017697826544,
+            12.125003814677232
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -8199.993133544922,
+            1500,
+            11125.003814697266
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 153,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 45551.5,
+        "tick": 990,
+        "status": "Running",
+        "player": {
+          "x": -8.199993133544922,
+          "y": 2.4000351428985596,
+          "z": 9.12500286102295
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.19999313354473,
+            3.1500381198537224,
+            9.15577632942439
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.19999313354473,
+            2.4000381198537224,
+            9.15577632942439
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -8199.993133544922,
+            1499.9998807907104,
+            8125.002861022949
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 165,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "s",
+      "ms": 958,
+      "before": {
+        "at": 45573.70000000298,
+        "tick": 992,
+        "status": "Running",
+        "player": {
+          "x": -8.199993133544922,
+          "y": 2.4000351428985596,
+          "z": 9.12500286102295
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.199993133544842,
+            3.1500363749477582,
+            9.13773883621095
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.199993133544842,
+            2.4000363749477582,
+            9.13773883621095
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5999999940395355,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -8199.993133544922,
+            1499.9998807907104,
+            8125.002861022949
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 165,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 46645.80000001192,
+        "tick": 1056,
+        "status": "Running",
+        "player": {
+          "x": -8.199993133544922,
+          "y": 2.400038003921509,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.199993133544922,
+            3.1500380038115177,
+            6.22731026397023
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.199993133544922,
+            2.4000380038115177,
+            6.22731026397023
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000001192092896,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -8199.993133544922,
+            1500,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 176,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "z",
+      "target": 6.25,
+      "state": {
+        "at": 46654.60000000894,
+        "tick": 1057,
+        "status": "Running",
+        "player": {
+          "x": -8.199993133544922,
+          "y": 2.400038003921509,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.199993133544922,
+            3.1500380038477793,
+            6.21005855049168
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.199993133544922,
+            2.4000380038477793,
+            6.21005855049168
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -8199.993133544922,
+            1500,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 176,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 1000,
+      "before": {
+        "at": 46674.60000000894,
+        "tick": 1058,
+        "status": "Running",
+        "player": {
+          "x": -8.199993133544922,
+          "y": 2.400038003921509,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -8.199993133544922,
+            3.1500380038765905,
+            6.1963516106917185
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -8.199993133544922,
+            2.4000380038765905,
+            6.1963516106917185
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5999999940395355,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -8199.993133544922,
+            1500,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 176,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 47800.20000000298,
+        "tick": 1125,
+        "status": "Running",
+        "player": {
+          "x": -5.099981307983398,
+          "y": 2.400014638900757,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.12677828881005,
+            3.1500151474658726,
+            6.17498159408599
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.12677828881005,
+            2.4000151474658726,
+            6.17498159408599
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 1.3999999910593033,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -5099.981307983398,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 187,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 200,
+      "before": {
+        "at": 47824.30000001192,
+        "tick": 1127,
+        "status": "Running",
+        "player": {
+          "x": -5.099981307983398,
+          "y": 2.400014638900757,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.11739362994899,
+            3.150014969359609,
+            6.174981594085886
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.11739362994899,
+            2.400014969359609,
+            6.174981594085886
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -5099.981307983398,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 187,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 48138.90000000596,
+        "tick": 1146,
+        "status": "Running",
+        "player": {
+          "x": -4.599979400634766,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.617729184789333,
+            3.150001685900876,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.617729184789333,
+            2.400001685900876,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.9000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4599.979400634766,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 191,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 34,
+      "before": {
+        "at": 48156.20000000298,
+        "tick": 1147,
+        "status": "Running",
+        "player": {
+          "x": -4.599979400634766,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.608696288207119,
+            3.1500008764755902,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.608696288207119,
+            2.4000008764755902,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7999999970197678,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4599.979400634766,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 191,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 48295.80000001192,
+        "tick": 1155,
+        "status": "Running",
+        "player": {
+          "x": -4.599979400634766,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.600361756154865,
+            3.1500001296297775,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.600361756154865,
+            2.4000001296297775,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.6000000089406967,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4599.979400634766,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 192,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 34,
+      "before": {
+        "at": 48317,
+        "tick": 1157,
+        "status": "Running",
+        "player": {
+          "x": -4.599979400634766,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.600225104898958,
+            3.150000117384649,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.600225104898958,
+            2.400000117384649,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4599.979400634766,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 192,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 48451.80000001192,
+        "tick": 1164,
+        "status": "Running",
+        "player": {
+          "x": -4.599979400634766,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 29,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.599990693020101,
+            3.1500000963793267,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.599990693020101,
+            2.4000000963793267,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 19.099999994039536,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4599.979400634766,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 194,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 334005.5,
+        "tick": 2863,
+        "status": "Running",
+        "player": {
+          "x": -4.599979400634766,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 34,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.599979400634766,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.599979400634766,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7999999970197678,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4599.979400634766,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 477,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 67,
+      "before": {
+        "at": 334024.40000000596,
+        "tick": 2866,
+        "status": "Running",
+        "player": {
+          "x": -4.599979400634766,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 34,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.599979400634766,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.599979400634766,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4599.979400634766,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 477,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 334177.700000003,
+        "tick": 2874,
+        "status": "Running",
+        "player": {
+          "x": -4.799980163574219,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 34,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.759601158284875,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.759601158284875,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4799.980163574219,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 479,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -4.8,
+      "state": {
+        "at": 334183.8000000119,
+        "tick": 2874,
+        "status": "Running",
+        "player": {
+          "x": -4.799980163574219,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 34,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.773449266556288,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.773449266556288,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Carrying",
+          "mass": 25,
+          "position": [
+            -4799.980163574219,
+            1499.9998807907104,
+            5174.981594085693
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 479,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "deposit",
+      "state": {
+        "at": 334368.60000000894,
+        "tick": 2876,
+        "status": "Paused",
+        "player": {
+          "x": -4.799980163574219,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 38,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.773449266556288,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.773449266556288,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "FinalizeFactoryCarrier",
+          "lastHandlerMs": 1.7999999970197678,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 25,
+          "position": [
+            -4750,
+            1499.9998807907104,
+            5250
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 479,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "R03-distributor-probe",
+      "enabled": false,
+      "preview": {
+        "state": "Ready",
+        "ghost": {
+          "centerMm": [
+            -4500,
+            1500,
+            5500
+          ]
+        },
+        "count": 1
+      },
+      "state": {
+        "at": 334507.200000003,
+        "tick": 2876,
+        "status": "Paused",
+        "player": {
+          "x": -4.799980163574219,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Inspection",
+          "locked": false,
+          "jumpEdges": 0,
+          "neutralizations": 39,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.773449266556288,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.773449266556288,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 25,
+          "position": [
+            -4750,
+            1499.9998807907104,
+            5250
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 479,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "play",
+      "state": {
+        "at": 368340.10000000894,
+        "tick": 2879,
+        "status": "Running",
+        "player": {
+          "x": -4.799980163574219,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 39,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.799980163574219,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.799980163574219,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999910593033,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 25,
+          "position": [
+            -4750,
+            1499.9998807907104,
+            5250
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 479,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "d",
+      "ms": 317,
+      "before": {
+        "at": 368366.700000003,
+        "tick": 2880,
+        "status": "Running",
+        "player": {
+          "x": -4.799980163574219,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 39,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -4.799980163574219,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -4.799980163574219,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 25,
+          "position": [
+            -4750,
+            1499.9998807907104,
+            5250
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 480,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 368786.8000000119,
+        "tick": 2905,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 39,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.801184699792641,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.801184699792641,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7000000029802322,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 25,
+          "position": [
+            -4750,
+            1499.9998807907104,
+            5250
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 484,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "press",
+      "key": "a",
+      "ms": 34,
+      "before": {
+        "at": 368811.10000000894,
+        "tick": 2907,
+        "status": "Running",
+        "player": {
+          "x": -5.849984169006348,
+          "y": 2.4000000953674316,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 39,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.822109469882313,
+            3.1500000953674316,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.822109469882313,
+            2.4000000953674316,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999910593033,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 25,
+          "position": [
+            -4750,
+            1499.9998807907104,
+            5250
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 484,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      },
+      "after": {
+        "at": 368935.5,
+        "tick": 2915,
+        "status": "Running",
+        "player": {
+          "x": -5.699983596801758,
+          "y": 2.400052070617676,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 39,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.745386239104106,
+            3.1500595666327964,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.745386239104106,
+            2.4000595666327964,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 25,
+          "position": [
+            -4750,
+            1499.9998807907104,
+            5250
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 485,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "waypoint",
+      "axis": "x",
+      "target": -5.75,
+      "state": {
+        "at": 368942.200000003,
+        "tick": 2915,
+        "status": "Running",
+        "player": {
+          "x": -5.699983596801758,
+          "y": 2.400052070617676,
+          "z": 6.174981594085693
+        },
+        "input": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 39,
+          "pressedKeys": []
+        },
+        "camera": {
+          "position": [
+            -5.737073622391032,
+            3.1500581942126593,
+            6.174981594085693
+          ],
+          "orientation": [
+            0,
+            1,
+            0,
+            6.123233995736766e-17
+          ],
+          "visualBody": [
+            -5.737073622391032,
+            2.4000581942126593,
+            6.174981594085693
+          ],
+          "heightMeters": 1.8,
+          "view": "FirstPerson"
+        },
+        "clock": {
+          "maxTimerGapMs": 31.899999991059303,
+          "maxAdvanceMs": 9.800000011920929,
+          "maxHandlerMs": 762.7000000029802,
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5999999940395355,
+          "delayedCallbacks": [],
+          "timers": 1
+        },
+        "carrier": {
+          "phase": "Deposited",
+          "mass": 25,
+          "position": [
+            -4750,
+            1499.9998807907104,
+            5250
+          ]
+        },
+        "massMg": 2984400000,
+        "factorySteps": 485,
+        "hostConfirmed": true,
+        "receipt": {
+          "status": "Committed",
+          "reason": null
+        },
+        "testBridge": false
+      }
+    }
+  ],
+  "errors": [],
+  "final": {
+    "at": 1452224.400000006,
+    "tick": 2918,
+    "status": "Paused",
+    "player": {
+      "x": -5.699983596801758,
+      "y": 2.400052070617676,
+      "z": 6.174981594085693
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 43,
+      "pressedKeys": []
+    },
+    "camera": {
+      "position": [
+        -5.732013867497073,
+        3.150057358842794,
+        6.174981594085693
+      ],
+      "orientation": [
+        0,
+        1,
+        0,
+        6.123233995736766e-17
+      ],
+      "visualBody": [
+        -5.732013867497073,
+        2.400057358842794,
+        6.174981594085693
+      ],
+      "heightMeters": 1.8,
+      "view": "FirstPerson"
+    },
+    "clock": {
+      "maxTimerGapMs": 35,
+      "maxAdvanceMs": 9.800000011920929,
+      "maxHandlerMs": 762.7000000029802,
+      "lastCommand": "Read",
+      "lastHandlerMs": 0.4000000059604645,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "carrier": {
+      "phase": "Deposited",
+      "mass": 25,
+      "position": [
+        -4750,
+        1499.9998807907104,
+        5250
+      ]
+    },
+    "massMg": 2984400000,
+    "factorySteps": 486,
+    "hostConfirmed": true,
+    "receipt": {
+      "status": "Committed",
+      "reason": null
+    },
+    "testBridge": false
+  },
+  "decision": "REJECTED NORMAL_LAYOUT_R03: actual paid Distributor preview SUPPORT_MISSING; no Confirm, no world/material change; actor exit used normal input.",
+  "construction": {
+    "cargo": {
+      "ownerId": "fp02_wreck_owner",
+      "containerId": "fp02_wreck_cargo",
+      "sourceDigest": "0e2a0bcb",
+      "profileDigest": "397e6216",
+      "opened": true,
+      "positionMm": [
+        -5500,
+        2000,
+        13125
+      ],
+      "accessBoundsMm": {
+        "min": [
+          -6250,
+          1500,
+          11625
+        ],
+        "max": [
+          -4750,
+          3500,
+          12625
+        ]
+      },
+      "bodyHandle": 2e-323,
+      "colliderHandles": [
+        3.95e-322
+      ],
+      "site": {
+        "version": "fp06-initial-cargo-s0-v1",
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "sourceDigest": "0e2a0bcb",
+        "sourceRefs": [
+          "FP01:5.5:source-access",
+          "FP01:E00:permanently-grounded-cargo",
+          "FP02:6.4:finite-reachable-depot",
+          "FP02:9.1:cargo-outside-machine-zone"
+        ],
+        "centerMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "sizeMm": [
+          1500,
+          1500,
+          1000
+        ],
+        "boundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        },
+        "accessPointMm": [
+          -5500,
+          2250,
+          12625
+        ],
+        "accessBoundsMm": {
+          "min": [
+            -6250,
+            1500,
+            11625
+          ],
+          "max": [
+            -4750,
+            3500,
+            12625
+          ]
+        },
+        "spawnMm": [
+          -5500,
+          2420,
+          11875
+        ],
+        "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+        "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"0e2a0bcb\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+        "profileDigest": "397e6216"
+      },
+      "accessible": false,
+      "openReceipt": {
+        "ownerId": "fp02_wreck_owner",
+        "profileDigest": "397e6216",
+        "expectedTerrainRevision": 0,
+        "expectedRevision": 0
+      }
+    },
+    "state": "Ready",
+    "installations": [
+      {
+        "instanceId": "facility_fp02_device_battery_4kwh_1",
+        "definitionSourceId": "fp02.device.battery_4kwh",
+        "profileDigest": "04958937",
+        "sourceDigest": "658cb4f4",
+        "massMg": 50000000,
+        "materialContainerId": "installed_facility_fp02_device_battery_4kwh_1",
+        "centerMm": [
+          -2250,
+          1500,
+          2500
+        ],
+        "quarterTurns": 1,
+        "boundsMm": {
+          "min": [
+            -2750,
+            1500,
+            1500
+          ],
+          "max": [
+            -1750,
+            3000,
+            3500
+          ]
+        },
+        "serviceBoundsMm": {
+          "min": [
+            -1500,
+            1500,
+            1500
+          ],
+          "max": [
+            -500,
+            2500,
+            3500
+          ]
+        }
+      }
+    ],
+    "revision": 3,
+    "massMg": 2984400000,
+    "containers": [
+      {
+        "containerId": "fp02_wreck_cargo",
+        "massKg": 2909.3999999999996,
+        "contents": [
+          {
+            "stackId": "fp02_cargo_c01_unit_1",
+            "resourceId": "fp02_device_wind_pack_6kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C01",
+                "definitionDigest": "fnv1a:f343dc84",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c01_unit_1",
+                "itemId": "fp02.device.wind_pack_6kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c01_unit_2",
+            "resourceId": "fp02_device_wind_pack_6kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C01",
+                "definitionDigest": "fnv1a:f343dc84",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c01_unit_2",
+                "itemId": "fp02.device.wind_pack_6kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_1",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_1",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_2",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_2",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_3",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_3",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_4",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_4",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c05_unit_1",
+            "resourceId": "fp02_device_field_workbench",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C05",
+                "definitionDigest": "fnv1a:d93cb131",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c05_unit_1",
+                "itemId": "fp02.device.field_workbench",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c06_unit_1",
+            "resourceId": "fp02_device_thermal_generator_core",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C06",
+                "definitionDigest": "fnv1a:bb76b461",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c06_unit_1",
+                "itemId": "fp02.device.thermal_generator_core",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c07_lot_1",
+            "resourceId": "fp02_comp_field_cable",
+            "quantity": 40000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C07",
+                "definitionDigest": "fnv1a:f02fd7a7",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c07_lot_1",
+                "itemId": "fp02.comp.field_cable",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_1",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_1",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_2",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_2",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_3",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_3",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_1",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_1",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_2",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_2",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_3",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_3",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_4",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_4",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_5",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_5",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_6",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_6",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c10_lot_1",
+            "resourceId": "fp02_bulk_steel_known",
+            "quantity": 96000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C10",
+                "definitionDigest": "fnv1a:e6cd3ae3",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c10_lot_1",
+                "itemId": "fp02.bulk.steel_known",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c11_lot_1",
+            "resourceId": "fp02_bulk_steel_profile",
+            "quantity": 80000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C11",
+                "definitionDigest": "fnv1a:c76030aa",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c11_lot_1",
+                "itemId": "fp02.bulk.steel_profile",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c12_lot_1",
+            "resourceId": "fp02_bulk_steel_sheet",
+            "quantity": 60000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C12",
+                "definitionDigest": "fnv1a:7d581c64",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c12_lot_1",
+                "itemId": "fp02.bulk.steel_sheet",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c13_lot_1",
+            "resourceId": "fp02_bulk_elastomer_reclaimed",
+            "quantity": 16000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C13",
+                "definitionDigest": "fnv1a:6138d7c0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c13_lot_1",
+                "itemId": "fp02.bulk.elastomer_reclaimed",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_1",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_1",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_10",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_10",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_11",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_11",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_12",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_12",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_13",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_13",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_14",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_14",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_15",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_15",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_16",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_16",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_17",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_17",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_18",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_18",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_19",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_19",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_2",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_2",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_20",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_20",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_21",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_21",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_22",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_22",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_23",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_23",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_24",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_24",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_3",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_3",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_4",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_4",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_5",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_5",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_6",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_6",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_7",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_7",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_8",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_8",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_9",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_9",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_1",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_1",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_2",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_2",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_3",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_3",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_4",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_4",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_1",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_1",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_2",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_2",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_3",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_3",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_4",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_4",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_5",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_5",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_1",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_1",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_2",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_2",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_3",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_3",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_4",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_4",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_5",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_5",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_6",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_6",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_7",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_7",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_8",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_8",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c18_unit_1",
+            "resourceId": "fp02_tool_cutter_head",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C18",
+                "definitionDigest": "fnv1a:ef4fdde1",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c18_unit_1",
+                "itemId": "fp02.tool.cutter_head",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c19_unit_1",
+            "resourceId": "fp02_tool_forming_die",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C19",
+                "definitionDigest": "fnv1a:e41c7ec9",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c19_unit_1",
+                "itemId": "fp02.tool.forming_die",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c20_unit_1",
+            "resourceId": "fp02_tool_crusher_jaw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C20",
+                "definitionDigest": "fnv1a:e67a5c56",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c20_unit_1",
+                "itemId": "fp02.tool.crusher_jaw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c21_unit_1",
+            "resourceId": "fp02_tool_assembly_fixture",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C21",
+                "definitionDigest": "fnv1a:e76a582c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c21_unit_1",
+                "itemId": "fp02.tool.assembly_fixture",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c22_unit_1",
+            "resourceId": "fp02_tool_pit_head",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C22",
+                "definitionDigest": "fnv1a:9b50a867",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c22_unit_1",
+                "itemId": "fp02.tool.pit_head",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_1",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_1",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_2",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_2",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_3",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_3",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_4",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_4",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c24_unit_1",
+            "resourceId": "fp02_comp_field_generator_core",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C24",
+                "definitionDigest": "fnv1a:14f5c3e8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c24_unit_1",
+                "itemId": "fp02.comp.field_generator_core",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c25_unit_1",
+            "resourceId": "fp02_comp_rotor_hub_kit",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C25",
+                "definitionDigest": "fnv1a:a4652fa0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c25_unit_1",
+                "itemId": "fp02.comp.rotor_hub_kit",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c26_unit_1",
+            "resourceId": "fp02_chassis_cutter",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C26",
+                "definitionDigest": "fnv1a:92e666eb",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c26_unit_1",
+                "itemId": "fp02.chassis.cutter",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c27_unit_1",
+            "resourceId": "fp02_chassis_former",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C27",
+                "definitionDigest": "fnv1a:864b3a1d",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c27_unit_1",
+                "itemId": "fp02.chassis.former",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c28_unit_1",
+            "resourceId": "fp02_chassis_crusher",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C28",
+                "definitionDigest": "fnv1a:f12324e0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c28_unit_1",
+                "itemId": "fp02.chassis.crusher",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "containerId": "carrier_ui_cargo_4f48751d7f4e427aa94fdc9fa08ad2b3",
+        "massKg": 0,
+        "contents": []
+      },
+      {
+        "containerId": "installed_facility_fp02_device_battery_4kwh_1",
+        "massKg": 50,
+        "contents": [
+          {
+            "stackId": "fp02_cargo_c03_unit_1",
+            "resourceId": "fp02_device_battery_4kwh",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C03",
+                "definitionDigest": "fnv1a:58bffb41",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c03_unit_1",
+                "itemId": "fp02.device.battery_4kwh",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "containerId": "carrier_ui_cargo_178de27adb1d4c0d834cea604d94ecfa",
+        "massKg": 25,
+        "contents": [
+          {
+            "stackId": "fp02_cargo_c04_unit_1",
+            "resourceId": "fp02_device_distribution_40kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C04",
+                "definitionDigest": "fnv1a:006549f4",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c04_unit_1",
+                "itemId": "fp02.device.distribution_40kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "reservations": 0,
+    "ghost": {
+      "request": {
+        "transactionId": "build_fp02_device_distribution_40kw_3",
+        "instanceId": "facility_fp02_device_distribution_40kw_3",
+        "definitionSourceId": "fp02.device.distribution_40kw",
+        "centerMm": [
+          -4500,
+          1500,
+          5500
+        ],
+        "quarterTurns": 1
+      },
+      "status": "Rejected",
+      "reason": "SUPPORT_MISSING"
+    }
+  }
+}

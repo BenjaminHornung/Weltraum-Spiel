@@ -1,0 +1,9 @@
+# Existing Pi / DeepSeek contact-plan review
+
+Existing authorized advisor eb04a70c-fd51-4110-b1e4-480d5c08d8ab, providerPi, modelopencode-go/deepseek-v4.1-flash, inspected idle before the bounded follow-up. No new agent/provider, source writes or runtime requested. Local sandbox daemon access EACCES was handled through the existing authorized escalation; no daemon installation/restart. The final delimited report returned idle.
+
+Pi's recommendation is source-supported: omit the complete exact Hero instance inside Bootstrap's NewGame selection before source estimation/build, so Render, Native collision and saved plant sources stay joint. Do not filter Cold Restore. Pin exact identity and uniqueness, preserve V5 and all other plant instances. Runtime traversal, actual cold Save/restore and complete paid16kg remain required; this static review is not acceptance.
+
+Root adjudication, corrected after checking the actual Bootstrap boundary: unfiltered planning count97 and the admitted Bootstrap count are distinct. The existing V5 Bootstrap test expects96 and passed R10; Pi's96 is correct at that boundary. Root's earlier assertion that Pi's96 was wrong was itself incorrect. Preserve the actual V5 assertion96. The pre-correction V6 Bootstrap also admits96, and the now-proposed Hero omission produces95. The complete Hero source consumes2211840B, so5227968−2211840=3016128B. Native reviewers independently trace the actual collider witness/bounds to Hero. No geometry/solver/Clock/representation/schema/cap change is needed.
+
+Source plan and exact authorized inputs: `FP06-Pi/deepseek-v6-hero-contact-plan-20261021.txt`. Original R77 contact evidence, R10 test failures, historical probes and existing V5 proof remain retained. Root releases the existing V6 Bootstrap regression first, demonstrates RED, then the bounded product correction and fresh checks/normal play.

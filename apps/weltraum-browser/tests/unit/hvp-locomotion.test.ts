@@ -15,6 +15,11 @@ const rig = (ground = true, covered = (_x: number, _z: number) => true) => {
   player.setEnabled(true); ticks(10);
   return { world, player, ticks, dispose };
 };
+const groundedCheckpoint=(world:R.World)=>{
+  const player=createHvpLocomotion(world,{x:0,y:.92,z:0},9.81,()=>true);player.setEnabled(true);
+  for(let i=0;i<10;i++){player.step();world.step();}
+  player.setEnabled(false);const saved=player.checkpoint();player.dispose();return saved;
+};
 
 describe("HVP solver-owned locomotion", () => {
   it("preserves vertical motion when pausing and restores it in a fresh neutral-input capsule", () => {
@@ -172,22 +177,26 @@ import { createFactoryFacilitySession } from "../../src/hestia-prototype/physics
 import { createFactoryCargoSite } from "../../src/factory/fixtures/cargoSite";
 import { materializeFactoryStartSite } from "../../src/factory/fixtures/startSite";
 import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
+import { createFactoryInstallationProfile } from "../../src/factory/construction/installationProfile";
 import { readCargoHandlingProfile } from "../../src/factory/construction/cargoHandlingProfile";
-const pairedCarrierRig = () => {
+const pairedCarrierRig = (withLimiter=false, factoryCovered:(x:number,z:number)=>boolean=()=>true) => {
   const world = new R.World({ x: 0, y: -9.81, z: 0 }); world.timestep = 1 / 60;
-  world.createCollider(R.ColliderDesc.cuboid(16, .125, 16).setTranslation(0, 1.125, 0));
+  const support=world.createCollider(R.ColliderDesc.cuboid(16, .125, 16).setTranslation(0, 1.125, 0));
   let facilities: ReturnType<typeof createFactoryFacilitySession> | undefined;
   const player = createHvpLocomotion(world, { x: -5.75, y: 2.17, z: 11.875 }, 9.81, () => true, undefined,
-    (from, to) => facilities?.preparePlayerMove(from, to) ?? (() => {}));
+    (from, to) => facilities?.preparePlayerMove(from, to) ?? (() => {}),
+    withLimiter ? (from, to) => facilities?.limitPlayerMove(from, to) ?? 0 : undefined,
+    withLimiter ? (from, to) => facilities?.canSlidePlayerMove(from, to) ?? false : undefined);
   let playerHandle: number | undefined; world.forEachRigidBody(body => { if (body.isKinematic()) playerHandle = body.handle; });
   player.setEnabled(true); const ticks = (n: number) => { for (let i = 0; i < n; i++) { player.step(); world.step(); } }; ticks(10);
-  facilities = createFactoryFacilitySession(world, () => true, () => 0, () => 0, createFactoryCargoSite(materializeFactoryStartSite()), () => player.read().position, () => playerHandle);
+  facilities = createFactoryFacilitySession(world, () => true, () => 0, () => 0, createFactoryCargoSite(materializeFactoryStartSite()),
+    () => player.read().position, () => playerHandle, factoryCovered);
   const cargo = facilities.read().cargo!; facilities.openCargo({ ownerId: cargo.ownerId, profileDigest: cargo.profileDigest, expectedRevision: 0, expectedTerrainRevision: 0 });
   const profile = readCargoHandlingProfile(createFp02Fixture("cargo").catalog, "C27-PACK")!;
   const request = { transactionId: "pair_carrier", ownerId: "factory_carrier", profileId: profile.profileId, profileDigest: profile.digest,
     expectedRevision: facilities.read().revision, expectedTerrainRevision: 0, sourceContainerId: cargo.containerId, materialBinding: "synthetic-native-paired-c27-custody" };
   facilities.prepareCarrier(request); facilities.commitCarrier(request.transactionId); facilities.publishCarrier(request.transactionId); facilities.finalizeCarrier(request.transactionId);
-  return { world, player, ticks, facilities, dispose: () => { player.dispose(); world.free(); } };
+  return { world, player, ticks, facilities, support, dispose: () => { player.dispose(); world.free(); } };
 };
 describe("W09 paired actual Native carrier locomotion", () => {
   it("checks the full final grounded jump move before either pose and never replays a vetoed jump edge", () => {
@@ -227,5 +236,198 @@ describe("W09 paired actual Native carrier locomotion", () => {
       expect(r.player.read().position).toEqual(before.position); expect(carrier.translation()).toEqual(carrierBefore);
       expect(r.player.read().jumpCount).toBe(before.jumpCount); expect(r.player.read().grounded).toBe(true);
     } finally { r.dispose(); }
+  });
+  it("adopts an off-grid collision-free prefix and commits both actual poses in the same World step", () => {
+    const r=pairedCarrierRig(true);try{
+      r.world.createCollider(R.ColliderDesc.cuboid(.006,.2,.1).setTranslation(-9.497,2,10.875));r.world.updateSceneQueries();
+      r.player.setInput({x:-1,z:0,sprint:false,jump:false});r.ticks(59);
+      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
+      expect(before.x).toBeLessThan(-8.68);expect(before.x).toBeGreaterThan(-8.72);
+      r.player.step();
+      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
+      r.world.step();
+      const after=r.player.read().position,carrierAfter=carrier.translation();
+      expect(after.x).toBeLessThan(before.x-.02);expect(after.x).toBeGreaterThan(-8.742);
+      expect(carrierAfter.x).toBeCloseTo(after.x,4);expect(carrierAfter.z).toBeCloseTo(after.z-1,4);
+      expect(r.player.read().grounded).toBe(true);
+    }finally{r.dispose();}
+  });
+  it("slides an oblique actual carrier move along the free original axis in one World step",()=>{
+    const r=pairedCarrierRig(true);try{
+      r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,3).setTranslation(-7.27,2,10.875));r.world.updateSceneQueries();
+      r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.ticks(60);
+      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
+      expect(before.x).toBeLessThan(-6.45);expect(before.z).toBeLessThan(10);
+      r.player.step();
+      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
+      r.world.step();
+      const after=r.player.read().position,carrierAfter=carrier.translation();
+      expect(after.x).toBeCloseTo(before.x,3);expect(after.z).toBeLessThan(before.z-.02);
+      expect(carrierAfter.x).toBeCloseTo(carrierBefore.x,3);expect(carrierAfter.x).toBeCloseTo(after.x,4);
+      expect(carrierAfter.z).toBeCloseTo(after.z-1,4);
+    }finally{r.dispose();}
+  });
+  it("uses a clipped west prefix before continuing through the narrow two-wall carrier corner",()=>{
+    const r=pairedCarrierRig(true);try{
+      r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,3).setTranslation(-7.27,2,10.875));
+      r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,1.625).setTranslation(-5.73,2,8.625));
+      r.world.updateSceneQueries();
+      const before=r.player.read().position;
+      r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.ticks(90);
+      const after=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle).translation();
+      expect(after.x).toBeCloseTo(-6.5,1);expect(after.z).toBeLessThan(10);expect(after.x).toBeLessThan(before.x);
+      expect(carrier.x).toBeCloseTo(after.x,4);expect(carrier.z).toBeCloseTo(after.z-1,4);
+      expect(r.player.read().grounded).toBe(true);
+    }finally{r.dispose();}
+  });
+  it("keeps an axis-one carrier coverage veto hard when the other axis is available",()=>{
+    let rejectXAxis=false;
+    const r=pairedCarrierRig(true,(_x,z)=>!rejectXAxis||z<11.36);try{
+      r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,.3).setTranslation(-6.52,2,10.875));r.world.updateSceneQueries();
+      r.facilities.limitPlayerMove=()=>0;
+      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
+      const zOnly=r.facilities.preparePlayerMove(before,{x:before.x,y:before.y,z:before.z-Math.SQRT1_2*.05});
+      expect(zOnly).not.toBe(false);
+      rejectXAxis=true;r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.player.step();
+      r.world.step();
+      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
+      expect(r.facilities.read().lastCarrierVeto?.reason).toBe("CarrierCoverage");
+    }finally{r.dispose();}
+  });
+  it("keeps a hard mid-bisection coverage veto from authorizing an otherwise clear axis",()=>{
+    let rejectMidpoint=false;
+    const r=pairedCarrierRig(true,(x,z)=>!rejectMidpoint||x<=-5.773||x>=-5.762||z<=10.852||z>=10.862);try{
+      r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,.02).setTranslation(-6.5201,2,11.385));r.world.updateSceneQueries();
+      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
+      const zOnly=r.facilities.preparePlayerMove(before,{x:before.x,y:before.y,z:before.z-Math.SQRT1_2*.05});
+      expect(zOnly).not.toBe(false);
+      rejectMidpoint=true;r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.player.step();
+      r.world.step();
+      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
+      expect(r.facilities.read().lastCarrierVeto?.reason).toBe("CarrierCoverage");
+      rejectMidpoint=false;
+      for(let attempt=0;attempt<4;attempt++){r.player.step();r.world.step();}
+      const resumed=r.player.read().position,resumedCarrier=carrier.translation();
+      expect(Math.hypot(resumed.x-before.x,resumed.z-before.z)).toBeGreaterThan(.01);
+      expect(resumedCarrier.x).toBeCloseTo(resumed.x,4);expect(resumedCarrier.z).toBeCloseTo(resumed.z-1,4);
+    }finally{r.dispose();}
+  });
+  it("does not let a stale contact veto authorize motion while a real Native owner is pending",()=>{
+    const r=pairedCarrierRig(true);try{
+      const wall=r.world.createCollider(R.ColliderDesc.cuboid(.02,.5,.3).setTranslation(-6.5201,2,10.875));r.world.updateSceneQueries();
+      const before=r.player.read().position,target={x:before.x-.05/Math.SQRT2,y:before.y,z:before.z-.05/Math.SQRT2};
+      expect(r.facilities.preparePlayerMove(before,target)).toBe(false);
+      expect(r.facilities.read().lastCarrierVeto?.reason).toBe("CarrierOverlap");
+      r.world.removeCollider(wall,false);r.world.updateSceneQueries();
+      const profile=createFactoryInstallationProfile("B06");
+      r.facilities.prepare({transactionId:"pending_slide_build",ownerId:"pending_slide_build",instanceId:"pending_slide_build",
+        definitionRef:profile.definitionRef,profileDigest:profile.profileDigest,expectedRevision:r.facilities.read().revision,
+        expectedTerrainRevision:0,materialBinding:"pending-carrier-slide-fixture",centerMm:[-6250,1500,5000],quarterTurns:1});
+      const carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
+      expect(r.facilities.canSlidePlayerMove(before,target)).toBe(false);
+      r.player.setInput({x:-1,z:-1,sprint:false,jump:false});r.player.step();r.world.step();
+      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
+      expect(r.facilities.read().state).toBe("PreparedHeld");
+    }finally{r.dispose();}
+  });
+  it("keeps support-coverage rejection hard instead of bisecting it", () => {
+    let rejectCoverage=false;const r=pairedCarrierRig(true,(x)=>!rejectCoverage||x>-5.76);try{
+      const prepare=r.facilities.preparePlayerMove.bind(r.facilities);let preparations=0;
+      r.facilities.preparePlayerMove=(from,to)=>{preparations++;return prepare(from,to);};
+      rejectCoverage=true;
+      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
+      r.player.setInput({x:-1,z:0,sprint:false,jump:false});r.ticks(1);
+      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
+      expect(r.facilities.read().lastCarrierVeto?.reason).toBe("CarrierCoverage");expect(preparations).toBe(2);
+    }finally{r.dispose();}
+  });
+  it("keeps a real carrier-support loss hard instead of bisecting it",()=>{
+    const r=pairedCarrierRig(true);try{
+      r.world.removeCollider(r.support,false);
+      r.world.createCollider(R.ColliderDesc.cuboid(5.09,.125,16).setTranslation(-10.91,1.125,0));
+      r.world.createCollider(R.ColliderDesc.cuboid(10.89,.125,16).setTranslation(5.11,1.125,0));r.world.updateSceneQueries();
+      const prepare=r.facilities.preparePlayerMove.bind(r.facilities);let preparations=0;
+      r.facilities.preparePlayerMove=(from,to)=>{preparations++;return prepare(from,to);};
+      const before=r.player.read().position,carrier=r.world.getRigidBody(r.facilities.read().carrier!.bodyHandle),carrierBefore=carrier.translation();
+      expect(r.facilities.read().carrier?.phase).toBe("Carrying");
+      const supportHit=r.world.castRayAndGetNormal(new R.Ray({x:before.x-.05,y:before.y+1,z:before.z-1},{x:0,y:-1,z:0}),6,true,
+        undefined,undefined,undefined,undefined,c=>c.isEnabled()&&!c.isSensor()&&c.parent()?.handle!==carrier.handle&&c.parent()?.handle!==r.player.readonlyBodyHandle);
+      expect(supportHit).toBeNull();
+      r.player.setInput({x:-1,z:0,sprint:false,jump:false});r.ticks(1);
+      expect(r.player.read().position).toEqual(before);expect(carrier.translation()).toEqual(carrierBefore);
+      expect(r.facilities.read().lastCarrierVeto?.reason).toBe("CarrierSupport");expect(preparations).toBe(2);
+    }finally{r.dispose();}
+  });
+});
+
+describe("Factory paired-prefix rollback",()=>{
+  it("rechecks the recomputed endpoint and restores prior movement state when that guard vetoes",()=>{
+    const world=new R.World({x:0,y:-9.81,z:0});world.timestep=1/60;
+    world.createCollider(R.ColliderDesc.cuboid(10,.5,10).setTranslation(0,-.5,0));
+    const saved=groundedCheckpoint(world);
+    let guardCalls=0,limiterCalls=0;
+    const player=createHvpLocomotion(world,saved.position,9.81,()=>true,saved,()=>{guardCalls++;return false;},()=>{limiterCalls++;return .5;});
+    try{
+      player.setEnabled(true);const before=player.read();player.setInput({x:1,z:0,sprint:false,jump:true});
+      player.step();expect(player.read().position).toEqual(before.position);expect(player.read().grounded).toBe(before.grounded);
+      expect(player.read().velocityY).toBe(before.velocityY);expect(player.read().jumpCount).toBe(before.jumpCount);
+      expect(guardCalls).toBe(2);expect(limiterCalls).toBe(1);
+    }finally{player.dispose();world.free();}
+  });
+  it("commits a successful horizontal retry with the original single jump and gravity integration",()=>{
+    const world=new R.World({x:0,y:-9.81,z:0});world.timestep=1/60;
+    world.createCollider(R.ColliderDesc.cuboid(10,.5,10).setTranslation(0,-.5,0));
+    const saved=groundedCheckpoint(world);let guardCalls=0,limiterCalls=0;
+    const player=createHvpLocomotion(world,saved.position,9.81,()=>true,saved,()=>++guardCalls===1?false:()=>{},()=>{limiterCalls++;return .5;});
+    try{
+      player.setEnabled(true);const before=player.read(),dt=1/60,expectedVelocity=Math.sqrt(2*9.81*HVP_PLAYER_PROFILE.jumpHeight)-9.81*dt;
+      player.setInput({x:1,z:0,sprint:false,jump:true});player.step();world.step();
+      const after=player.read();
+      expect(after.position.x).toBeCloseTo(before.position.x+.025,5);
+      expect(after.position.y).toBeCloseTo(before.position.y+expectedVelocity*dt,5);
+      expect(after.velocityY).toBeCloseTo(expectedVelocity,5);expect(after.jumpCount).toBe(before.jumpCount+1);expect(after.grounded).toBe(false);
+      expect(guardCalls).toBe(2);expect(limiterCalls).toBe(1);
+    }finally{player.dispose();world.free();}
+  });
+  it("rechecks Avatar capsule coverage for a scaled endpoint in nonconvex coverage",()=>{
+    const world=new R.World({x:0,y:-9.81,z:0});world.timestep=1/60;
+    world.createCollider(R.ColliderDesc.cuboid(10,.5,10).setTranslation(0,-.5,0));
+    const saved=groundedCheckpoint(world),radius=HVP_PLAYER_PROFILE.radius+HVP_PLAYER_PROFILE.offset;
+    const covered=(x:number)=>!(x>.33&&x<.35);
+    expect(covered(.05+radius)).toBe(true);expect(covered(.025+radius)).toBe(false);
+    let guardCalls=0,limiterCalls=0;
+    const player=createHvpLocomotion(world,saved.position,9.81,covered,saved,()=>{guardCalls++;return false;},()=>{limiterCalls++;return .5;});
+    try{
+      player.setEnabled(true);const before=player.read();player.setInput({x:1,z:0,sprint:false,jump:false});player.step();world.step();
+      const after=player.read();expect(after.position).toEqual(before.position);expect(after.status).toBe("CoverageHold");
+      expect(after.grounded).toBe(before.grounded);expect(after.velocityY).toBe(0);expect(after.jumpCount).toBe(before.jumpCount);
+      expect(guardCalls).toBe(1);expect(limiterCalls).toBe(1);
+    }finally{player.dispose();world.free();}
+  });
+  it("holds when Rapier projects a covered intent into an uncovered Avatar corner",()=>{
+    const radius=HVP_PLAYER_PROFILE.radius+HVP_PLAYER_PROFILE.offset,fullAxis=.05/Math.SQRT2;
+    for(const limited of [false,true]){
+      const world=new R.World({x:0,y:-9.81,z:0});world.timestep=1/60;
+      world.createCollider(R.ColliderDesc.cuboid(10,.5,10).setTranslation(0,-.5,0));
+      const saved=groundedCheckpoint(world),axis=fullAxis*(limited?.5:1);
+      const coverageHole={minX:radius+axis-.007,maxX:radius+axis+.007,minZ:-radius+.005,maxZ:-radius+.015};
+      const covered=(x:number,z:number)=>!(x>coverageHole.minX&&x<coverageHole.maxX&&z>coverageHole.minZ&&z<coverageHole.maxZ);
+      world.createCollider(R.ColliderDesc.cuboid(2,2,.005).setTranslation(0,2,radius+.007));world.updateSceneQueries();
+      for(const requestedScale of limited?[1,.5]:[1]){
+        const requested=fullAxis*requestedScale;
+        expect([-radius,radius].every(x=>[-radius,radius].every(z=>covered(requested+x,requested+z)))).toBe(true);
+      }
+      let guardCalls=0,limiterCalls=0,commits=0;
+      const player=createHvpLocomotion(world,saved.position,9.81,covered,saved,()=>{
+        guardCalls++;return limited&&guardCalls===1?false:()=>{commits++;};
+      },limited?()=>{limiterCalls++;return .5;}:undefined);
+      try{
+        player.setEnabled(true);const before=player.read();player.setInput({x:1,z:1,sprint:false,jump:false});player.step();world.step();
+        const after=player.read();
+        expect(after.position).toEqual(before.position);expect(after.status).toBe("CoverageHold");
+        expect(after.grounded).toBe(before.grounded);expect(after.velocityY).toBe(0);expect(after.jumpCount).toBe(before.jumpCount);
+        expect(guardCalls).toBe(limited?1:0);expect(limiterCalls).toBe(limited?1:0);expect(commits).toBe(0);
+      }finally{player.dispose();world.free();}
+    }
   });
 });

@@ -1,0 +1,162 @@
+{
+  "atUtc": "2026-10-21T16:20:21.1815927+00:00",
+  "plantAndSavedContracts": [
+    {
+      "path": "apps/weltraum-browser/src/factory/persistence/factoryCheckpoint.ts",
+      "bytes": 109000,
+      "sha256": "b32bcecf16945eff842a59e73f7f0c9d4ad5a38ab7f2c1e03adeb99a275a1b37"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/persistence/factorySaveStore.ts",
+      "bytes": 2853,
+      "sha256": "5d85adfe79c0f2e450f79381f09946e57e66d21ab526e5511d0cb26a1eb9b61f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/persistence/restoreFactorySession.ts",
+      "bytes": 8077,
+      "sha256": "ec701463878b6077eeae6f5ca026a97a2c3f67af7a7d76ee7fd1427622b732d3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/plantCheckpoint.ts",
+      "bytes": 6683,
+      "sha256": "78df5a1d7329b0fe7ab2c3709ee4e89da1ce04695486891b00410c41b424806e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 22422,
+      "sha256": "a6c6996706591f5fd77f31ea9a445fa421f6e1e02ee7162904a58834b5008dd3"
+    }
+  ],
+  "originalNativeAssets": [
+    {
+      "path": "art/factory/play-cargo-surface-v2-2026-10-19/cargoSite-v1.native-owner-source.blob",
+      "bytes": 4071,
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/former/former/native-owner-source.blob",
+      "bytes": 20416,
+      "sha256": "e2c056be5b4fda43c22bae6277b07c00cbaa4e28bb03e022b33f42aaa62a8af4"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo/native-owner-source.blob",
+      "bytes": 4109,
+      "sha256": "885ff35a1b34c0d0675248432035c66554539481d3488eabbef51a1d5b1d9c2f"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/wind/native-owner-source.blob",
+      "bytes": 28347,
+      "sha256": "3ac976e37bf48ccadfd0755a2393198c8ff28837c98b9b40392b7aaa667a208d"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-end/native-owner-source.blob",
+      "bytes": 4825,
+      "sha256": "a621d4ef26a6317f3ffbb1802bad275381d96a6d34881dff20b7b18cbd25737e"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/workbench/workbench/native-owner-source.blob",
+      "bytes": 14206,
+      "sha256": "1a95ec78469b0501e4a7095bd4bffd61ba5bfa78859bdcde387b18ac3104e3ee"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/pv/native-owner-source.blob",
+      "bytes": 28347,
+      "sha256": "3ac976e37bf48ccadfd0755a2393198c8ff28837c98b9b40392b7aaa667a208d"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/battery/native-owner-source.blob",
+      "bytes": 28347,
+      "sha256": "3ac976e37bf48ccadfd0755a2393198c8ff28837c98b9b40392b7aaa667a208d"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+      "bytes": 14206,
+      "sha256": "1a95ec78469b0501e4a7095bd4bffd61ba5bfa78859bdcde387b18ac3104e3ee"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/cutter/cutter/native-owner-source.blob",
+      "bytes": 20133,
+      "sha256": "4956eccc08516db07b55b774477f27425f9b111fec2838d7dfb7d9a80be7e16b"
+    },
+    {
+      "path": "art/factory/play-surface-v2-2026-10-12/former/former-v2/native-owner-source.blob",
+      "bytes": 20416,
+      "sha256": "e2c056be5b4fda43c22bae6277b07c00cbaa4e28bb03e022b33f42aaa62a8af4"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage/native-owner-source.blob",
+      "bytes": 14206,
+      "sha256": "1a95ec78469b0501e4a7095bd4bffd61ba5bfa78859bdcde387b18ac3104e3ee"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/brace/brace/native-owner-source.blob",
+      "bytes": 14206,
+      "sha256": "1a95ec78469b0501e4a7095bd4bffd61ba5bfa78859bdcde387b18ac3104e3ee"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-medium/native-owner-source.blob",
+      "bytes": 14206,
+      "sha256": "1a95ec78469b0501e4a7095bd4bffd61ba5bfa78859bdcde387b18ac3104e3ee"
+    },
+    {
+      "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-owner-source.blob",
+      "bytes": 20133,
+      "sha256": "4956eccc08516db07b55b774477f27425f9b111fec2838d7dfb7d9a80be7e16b"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-heavy/native-owner-source.blob",
+      "bytes": 14206,
+      "sha256": "1a95ec78469b0501e4a7095bd4bffd61ba5bfa78859bdcde387b18ac3104e3ee"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/cable-link/native-owner-source.blob",
+      "bytes": 4825,
+      "sha256": "a621d4ef26a6317f3ffbb1802bad275381d96a6d34881dff20b7b18cbd25737e"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/wreck-cargo/wreck-cargo-open/native-owner-source.blob",
+      "bytes": 4109,
+      "sha256": "885ff35a1b34c0d0675248432035c66554539481d3488eabbef51a1d5b1d9c2f"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/power-kit/distribution/native-owner-source.blob",
+      "bytes": 28347,
+      "sha256": "3ac976e37bf48ccadfd0755a2393198c8ff28837c98b9b40392b7aaa667a208d"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/belt/belt/native-owner-source.blob",
+      "bytes": 14206,
+      "sha256": "1a95ec78469b0501e4a7095bd4bffd61ba5bfa78859bdcde387b18ac3104e3ee"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/carrier/carrier-light/native-owner-source.blob",
+      "bytes": 14206,
+      "sha256": "1a95ec78469b0501e4a7095bd4bffd61ba5bfa78859bdcde387b18ac3104e3ee"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/steel/native-owner-source.blob",
+      "bytes": 23566,
+      "sha256": "b4859366010e40317014d9dd0097819f3d0e311abee2355e6e95dbfe38d99099"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/offcut/native-owner-source.blob",
+      "bytes": 23566,
+      "sha256": "b4859366010e40317014d9dd0097819f3d0e311abee2355e6e95dbfe38d99099"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/profile/native-owner-source.blob",
+      "bytes": 23566,
+      "sha256": "b4859366010e40317014d9dd0097819f3d0e311abee2355e6e95dbfe38d99099"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/sheet/native-owner-source.blob",
+      "bytes": 23566,
+      "sha256": "b4859366010e40317014d9dd0097819f3d0e311abee2355e6e95dbfe38d99099"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/materials/semi/native-owner-source.blob",
+      "bytes": 23566,
+      "sha256": "b4859366010e40317014d9dd0097819f3d0e311abee2355e6e95dbfe38d99099"
+    }
+  ]
+}

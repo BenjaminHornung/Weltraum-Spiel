@@ -1,0 +1,88 @@
+{
+  "atUtc": "2026-10-21T15:03:45.586Z",
+  "state": {
+    "at": 11339.699999988079,
+    "status": "Paused",
+    "tick": 48547,
+    "player": {
+      "x": 6.582930088043213,
+      "y": 3.525001287460327,
+      "z": 8.5822114944458
+    },
+    "camera": null,
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 1,
+      "pressedKeys": []
+    },
+    "transport": {
+      "enabled": true,
+      "lastSentId": 2,
+      "lastAckId": 2,
+      "pendingIds": [],
+      "desiredLevel": {
+        "x": 0,
+        "z": 0,
+        "sprint": false,
+        "jump": false
+      },
+      "commandDepth": 0,
+      "closing": false,
+      "canDispatch": false
+    },
+    "clock": {
+      "maxTimerGapMs": 18,
+      "maxAdvanceMs": 0.20000000298023224,
+      "maxHandlerMs": 905.8999999910593,
+      "lastCommand": "Read",
+      "lastHandlerMs": 5.399999991059303,
+      "delayedCallbacks": [],
+      "timers": 1
+    },
+    "factorySteps": 8091,
+    "epoch": 1,
+    "confirmed": true,
+    "sourceDigest": "360b00fa",
+    "profile": "hvp-factory-startsite-v6",
+    "owners": 10,
+    "massMg": 2984400000,
+    "physicsBodies": 15,
+    "physicsColliders": 200,
+    "measurementHealth": null,
+    "render": null,
+    "persistence": {
+      "state": "Saved",
+      "message": "Combined Factory checkpoint loaded and paused; Save checks memory before writing",
+      "revision": 19,
+      "saveAvailable": true,
+      "continueAvailable": true
+    },
+    "visibility": "visible",
+    "focused": true,
+    "viewport": [
+      1249,
+      1221,
+      1
+    ],
+    "testBridge": false
+  },
+  "slot": {
+    "metadata": {
+      "slotId": "factory-primary",
+      "displayName": "factory-primary",
+      "recordRevision": 19,
+      "saveSchemaVersion": 1,
+      "gameVersion": "hestia-factory-play-v1",
+      "universeTick": 97094,
+      "payloadBytes": 13199495,
+      "contentHash": "sha256:a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0",
+      "lastWriteReason": "ManualSave"
+    },
+    "payloadSha256": "a2eccec1b71b982b45f069fbfde282c04aa8533d060191bc133672dc8121ecc0"
+  },
+  "errors": [],
+  "measuredAdmissions": [],
+  "url": "http://127.0.0.1:5197/factory.html?factoryLoad=primary"
+}

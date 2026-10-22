@@ -1,0 +1,258 @@
+{
+  "kind": "ISOLATED_EXACT_GEOMETRY_PREFLIGHT_NOT_GAMEPLAY_ACCEPTANCE",
+  "assetSha256": "da2f2ad01934c5b58b13659c9789b43dcbd6f4447a292cdc0d120a4473acc610",
+  "anchor": {
+    "x": 6.5,
+    "y": 1.5,
+    "z": 7.5
+  },
+  "proposedApron": {
+    "minX": -2,
+    "maxX": 14.5,
+    "minZ": 3.5,
+    "maxZ": 13.75,
+    "topY": 1.5
+  },
+  "playerProfile": {
+    "height": 1.8,
+    "radius": 0.3,
+    "eyeHeight": 1.65,
+    "walkSpeed": 3,
+    "sprintSpeed": 5,
+    "stepHeight": 0.26,
+    "stepWidth": 0.125,
+    "offset": 0.01,
+    "slopeRadians": 0.7853981633974483,
+    "jumpHeight": 0.8,
+    "terminalSpeed": 35
+  },
+  "gravity": 11.794460201817357,
+  "vertices": 39104,
+  "triangles": 19552,
+  "trianglePayloadBytes": 703872,
+  "start": {
+    "ownerId": "hvp:player",
+    "position": {
+      "x": 6.5,
+      "y": 2.406723737716675,
+      "z": 13.5
+    },
+    "grounded": true,
+    "velocityY": 0,
+    "jumpCount": 0,
+    "cameraFraction": 1,
+    "status": "Walking"
+  },
+  "inside": {
+    "ownerId": "hvp:player",
+    "position": {
+      "x": 6.500003337860107,
+      "y": 3.400007963180542,
+      "z": 10.046360969543457
+    },
+    "grounded": true,
+    "velocityY": 0,
+    "jumpCount": 0,
+    "cameraFraction": 1,
+    "status": "Walking"
+  },
+  "outside": {
+    "ownerId": "hvp:player",
+    "position": {
+      "x": 6.500003337860107,
+      "y": 0.4434879720211029,
+      "z": 15.646382331848145
+    },
+    "grounded": false,
+    "velocityY": 0,
+    "jumpCount": 0,
+    "cameraFraction": 1,
+    "status": "CoverageHold"
+  },
+  "entered": false,
+  "exited": true,
+  "samples": [
+    {
+      "label": "settle",
+      "frame": 30,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.5,
+        "y": 2.406723737716675,
+        "z": 13.5
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "settle",
+      "frame": 60,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.5,
+        "y": 2.406723737716675,
+        "z": 13.5
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "settle",
+      "frame": 90,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.5,
+        "y": 2.406723737716675,
+        "z": 13.5
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "settle",
+      "frame": 120,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.5,
+        "y": 2.406723737716675,
+        "z": 13.5
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "enter",
+      "frame": 30,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.499998092651367,
+        "y": 2.7850191593170166,
+        "z": 12.030527114868164
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "enter",
+      "frame": 60,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.500003814697266,
+        "y": 3.275094747543335,
+        "z": 10.564202308654785
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "enter",
+      "frame": 90,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.500003337860107,
+        "y": 3.400007963180542,
+        "z": 10.046360969543457
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "enter",
+      "frame": 120,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.500003337860107,
+        "y": 3.400007963180542,
+        "z": 10.046360969543457
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "exit",
+      "frame": 30,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.500003337860107,
+        "y": 2.9812395572662354,
+        "z": 11.546366691589355
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "exit",
+      "frame": 60,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.500003337860107,
+        "y": 2.481565475463867,
+        "z": 13.046372413635254
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "exit",
+      "frame": 90,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.500003337860107,
+        "y": 2.0652263164520264,
+        "z": 14.546378135681152
+      },
+      "grounded": false,
+      "velocityY": -2.162317703666515,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    {
+      "label": "exit",
+      "frame": 120,
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 6.500003337860107,
+        "y": 0.4434879720211029,
+        "z": 15.646382331848145
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "CoverageHold"
+    }
+  ],
+  "disposition": "BLOCKED at doorway, entered=false. Diagnostic exited=true is insufficient and not accepted because fixed duration overshot the finite support plane and ended CoverageHold/falling. No gameplay acceptance.",
+  "helperSetupFailure": "First attempted TypeScript7 require-based transpile helper failed before any World creation: Cannot read properties of undefined (reading CommonJS). Replaced diagnostic loading with installed Vite SSR; no dependency or product edit."
+}

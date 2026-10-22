@@ -1,0 +1,83 @@
+{
+  "version": "fp06-combined-checkpoint-v1",
+  "unchanged": true,
+  "metadata": {
+    "slotId": "factory-primary",
+    "displayName": "factory-primary",
+    "recordRevision": 2,
+    "saveSchemaVersion": 1,
+    "gameVersion": "hestia-factory-play-v1",
+    "universeTick": 10002,
+    "payloadBytes": 1077297,
+    "contentHash": "sha256:1b918d052d532d0876a4e1f170f99033dccf7bee2a6994f1231c3291da6d0f13",
+    "lastWriteReason": "ManualSave"
+  },
+  "live": {
+    "tick": 5001,
+    "status": "Paused",
+    "player": {
+      "x": -3.572105646133423,
+      "y": 2.4000043869018555,
+      "z": 3.099496364593506
+    },
+    "factorySteps": 833,
+    "hostConfirmed": true,
+    "massMg": 2984400000,
+    "installationCount": 3,
+    "power": {
+      "allocationConfirmed": false,
+      "devices": [
+        {
+          "id": "facility_fp02_device_battery_4kwh_1",
+          "revision": 4,
+          "name": "Expeditionsbatterie",
+          "enabled": true,
+          "capability": {
+            "enabled": true,
+            "reason": null
+          }
+        },
+        {
+          "id": "facility_fp02_device_distribution_40kw_3",
+          "revision": 7,
+          "name": "Verteiler",
+          "enabled": true,
+          "capability": {
+            "enabled": true,
+            "reason": null
+          }
+        },
+        {
+          "id": "facility_b07_5",
+          "revision": 488,
+          "name": "Umformwerk",
+          "enabled": true,
+          "capability": {
+            "enabled": false,
+            "reason": "Anlage oder Stromanschluss nicht erreichbar"
+          }
+        }
+      ],
+      "status": "CONNECTED",
+      "generationWatts": 0,
+      "allocatedWatts": 0,
+      "batteryEnergyJ": 12960000,
+      "batteryCapacityJ": 14400000,
+      "reserveEnergyJ": 3600000,
+      "sourceQuality": "unsupported",
+      "consumers": []
+    },
+    "input": {
+      "owner": "Inspection",
+      "locked": false,
+      "jumpEdges": 0,
+      "neutralizations": 1,
+      "pressedKeys": []
+    },
+    "testBridge": false
+  },
+  "errors": [],
+  "disconnected": true,
+  "path": "E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser/evidence/factory/play/2026-10-15/review-continuation/r09-v1-compatibility-under-v2-loader.png",
+  "videoPath": "E:\\DEV\\Weltraum-Spiel\\FP06-Candidate\\apps\\weltraum-browser\\evidence\\factory\\play\\2026-10-15\\review-continuation\\legacy-r09-v2loader-20261018-video\\page@2d78d4aaf11ad103388f1e3988bc06b1.webm"
+}

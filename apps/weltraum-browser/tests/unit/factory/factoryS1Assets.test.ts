@@ -6,6 +6,7 @@ import {createFactoryInstallationProfile} from "../../../src/factory/constructio
 import {createFp02Fixture} from "../../../src/factory/catalog/fp02Catalog";
 import {deepFreezeMetadata,validateMeshArtifact} from "../../../src/presentation";
 import {canonicalSignature} from "../../../src/resources/serialization";
+import type {PlayAssetRenderMode} from "../../../src/factory/presentation/playAssetLoader";
 import type {FactoryNativePartObservation,FactoryFacilityOwner} from "../../../src/hestia-prototype/physics/factoryFacilitySession";
 import type {HvpPhysicsSnapshot} from "../../../src/hestia-prototype/physics/physicsWorker";
 // Tests-only bridge scaffolding retains the legacy flat fields for the unchanged
@@ -22,9 +23,9 @@ const withNative=(read:BoundSample,patch:Partial<FactoryNativePartObservation>):
 const actualFetch:typeof fetch=async input=>{
  const url=String(input);const bytes=await readFile(path.resolve("public",url.replace(/^\//,"")));return new Response(new Uint8Array(bytes));
 };
-const fixture=async(sourceId="B06")=>{
+const fixture=async(sourceId="B06",renderMode?:PlayAssetRenderMode)=>{
  const catalog=createFp02Fixture("cargo").catalog,recipe=catalog.recipes.find(r=>r.sourceId===(sourceId==="B06"?"REC-01-CUT":"REC-02-PROFILE"))!,profile=createFactoryInstallationProfile(sourceId),instanceId=`actual_asset_${sourceId.toLowerCase()}`;
- const assets=await loadFactoryS1Assets({...profile.definitionRef,instanceId},{fetch:actualFetch});
+ const assets=await loadFactoryS1Assets({...profile.definitionRef,instanceId},{fetch:actualFetch,renderMode});
  // Native/work record is an explicitly synthetic readonly controller fixture.
  // Actual Rapier membership/removal is verified separately in facilitySession.
  const read:Omit<FactoryS1Sample,"native"|"currentPhysicsSnapshot">&{native:FactoryNativePartObservation}={sessionId:"s1_unit",epoch:3,nativeTick:120,terrainRevision:0,facilityRevision:1,native:{instanceId,definitionRef:profile.definitionRef,sourceDigest:profile.sourceDigest,profileDigest:profile.profileDigest,installationRevision:1,terrainRevision:0,facilityRevision:1,published:true,confirmed:true,complete:true,observationDigest:"synthetic_fixture_v1",parts:profile.source.parts.map(p=>({partId:p.partId,status:"Present",colliderHandles:profile.colliders.flatMap((c,i)=>c.partId===p.partId?[i]:[])}))},work:{sessionId:"s1_unit",epoch:3,publicationRevision:8,nativeTick:120,catalogDigest:catalog.catalogDigest,instanceId,definitionRef:profile.definitionRef,sourceDigest:profile.sourceDigest,profileDigest:profile.profileDigest,installationRevision:1,terrainRevision:0,facilityRevision:1,confirmed:true,status:"RUNNING",confirmedWorkMs:15000,jobId:"paid_unit_job",recipeRef:{sourceId:recipe.sourceId,version:recipe.version,digest:recipe.digest},custody:{inputContainerId:`input_${instanceId}`,wipContainerId:`wip_${instanceId}`,outputContainerId:`output_${instanceId}`,offcutContainerId:`offcut_${instanceId}`,installedContainerId:`installed_${instanceId}`}}};
@@ -42,8 +43,28 @@ describe("PLAY02 closed S1 source/cell/native/work/render join",()=>{
   expect(f.assets.cost.triangles).toBe(f.assets.render.parts.reduce((n,p)=>n+p.artifact.indices.length/3,0));
   expect(f.assets.cost.draws).toBe(f.assets.render.parts.reduce((n,p)=>n+p.artifact.materialRanges.length,0));
   expect(f.assets.cost.cpu).toBeGreaterThan(f.assets.cost.mesh/2);
+  expect(f.assets.render.parts.every(p=>p.artifact.attributes?.color===undefined)).toBe(true);
   expect(f.profile.massMg).toBe(sourceId==="B06"?208000000:341000000);
   const pose=sampleFactoryS1Assets(f.assets,f.read);expect(pose.status).toBe("RUNNING");expect(pose.paused).toBe(false);expect(pose.partPoses).toHaveLength(f.profile.source.parts.length);
+ });
+ it.each(["B06","B07"]) ("opts %s S1 render into vertex colors without changing its profile, geometry or motion",async sourceId=>{
+  const plain=await fixture(sourceId),colored=await fixture(sourceId,"vertex-colors");
+  expect(colored.assets.render.parts.map(p=>p.partId)).toEqual(plain.assets.render.parts.map(p=>p.partId));
+  expect(colored.assets.render.parts.every(p=>p.artifact.materialRanges.length===1&&p.materialProfiles.length===1&&p.materialProfiles[0]!.id==="fp06_vertex_color")).toBe(true);
+  const colorBytes=colored.assets.render.parts.reduce((n,p)=>n+(p.artifact.attributes?.color?.byteLength??0),0);
+  expect(colorBytes).toBeGreaterThan(0);
+  for(const part of plain.assets.render.parts){
+   const converted=colored.assets.render.parts.find(value=>value.partId===part.partId)!;
+   expect(converted.artifact.positions).toEqual(part.artifact.positions);expect(converted.artifact.normals).toEqual(part.artifact.normals);
+   expect(converted.artifact.indices).toEqual(part.artifact.indices);expect(converted.artifact.bounds).toEqual(part.artifact.bounds);
+   expect(converted.artifact.attributes!.color!.length).toBe(converted.artifact.positions.length);
+  }
+  expect(colored.assets.cost.mesh-plain.assets.cost.mesh).toBe(colorBytes*2);
+  expect(colored.assets.cost.cpu-plain.assets.cost.cpu).toBe(colorBytes*2);
+  expect(colored.assets.cost.draws).toBe(colored.assets.render.parts.length);
+  expect(colored.assets.cost.draws).toBeLessThan(plain.assets.cost.draws);
+  const plainPose=sampleFactoryS1Assets(plain.assets,plain.read),coloredPose=sampleFactoryS1Assets(colored.assets,colored.read);
+  expect(coloredPose).toEqual(plainPose);
  });
  it.each(["instanceId","sourceDigest","profileDigest"] as const)("rejects wrong native %s instead of accepting render provenance",async key=>{
   const f=await fixture();expect(()=>sampleFactoryS1Assets(f.assets,withNative(f.read,{[key]:"wrong"}))).toThrow(/binding/i);

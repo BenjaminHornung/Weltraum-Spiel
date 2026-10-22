@@ -1,0 +1,86 @@
+{
+  "kind": "ACTUAL_CANONICAL_HULL_NATIVE_BYTE_PINS",
+  "glbSha256": "91d27929383cf3d3edfee3a2e44ab6d722de026837336e5dd6313c51bca7a2ed",
+  "anchorMeters": [
+    6.5,
+    1.5,
+    7.5
+  ],
+  "sectorCount": 8,
+  "collisionDigest": "7a63fed9",
+  "totalBytes": 703296,
+  "parts": [
+    {
+      "partId": "cargo_bay",
+      "vertexElements": 7596,
+      "indexElements": 3798,
+      "vertexBytes": 30384,
+      "indexBytes": 15192,
+      "verticesSha256": "sha256:f2ebd2c8882c4628cca679afc5892197daa35ca1bacab3620fa0b2c4b5474de6",
+      "indicesSha256": "sha256:7d06412b6af208efc956b7d8c423a7c61c4b03f4f15607caf8c23b181a6ed0b2"
+    },
+    {
+      "partId": "cockpit",
+      "vertexElements": 8712,
+      "indexElements": 4356,
+      "vertexBytes": 34848,
+      "indexBytes": 17424,
+      "verticesSha256": "sha256:e659c9840c039126d3587c1fd5d091255432b5f3e9bf1ac52947a4fead5eb626",
+      "indicesSha256": "sha256:ede2f5d2d0b536956cb3f353fc72313e9d9935d8d9f496574a9d1fad2639bdaa"
+    },
+    {
+      "partId": "debris",
+      "vertexElements": 6516,
+      "indexElements": 3258,
+      "vertexBytes": 26064,
+      "indexBytes": 13032,
+      "verticesSha256": "sha256:dc5c11b4f4e044e4265e4474c3e13079701783000e19c5819577bf66ff53a121",
+      "indicesSha256": "sha256:3c170eb2a3bfee954bcdfddc816bf24be54beb778d9cc738263b3bac64b4ce40"
+    },
+    {
+      "partId": "hull",
+      "vertexElements": 54948,
+      "indexElements": 27474,
+      "vertexBytes": 219792,
+      "indexBytes": 109896,
+      "verticesSha256": "sha256:cabe51cc9f7da3714b71c984f91efd8ffd70c63ac8417234aba66fc52d26fef7",
+      "indicesSha256": "sha256:294536eb7557215834746e65e218c1b31268dc08b5538221fa0e6397f6e781c6"
+    },
+    {
+      "partId": "rear",
+      "vertexElements": 11628,
+      "indexElements": 5814,
+      "vertexBytes": 46512,
+      "indexBytes": 23256,
+      "verticesSha256": "sha256:75f606a09df266c1375427779876373641fcbeb9580e79c32fe0da303ef221f6",
+      "indicesSha256": "sha256:0a15f33a20c5b23ab5d6e7d0ad735cd64a5318b658098ab5d79256e06c6c7c0b"
+    },
+    {
+      "partId": "spine",
+      "vertexElements": 16152,
+      "indexElements": 8076,
+      "vertexBytes": 64608,
+      "indexBytes": 32304,
+      "verticesSha256": "sha256:b5a0aeeb63422f3f399c7854aa72d3030a88b31f70b8820f8541ae73bc569b12",
+      "indicesSha256": "sha256:a4410c3e8e35b03c7d53c48220ff8b056f6fa1621083606e428e262645e83f44"
+    },
+    {
+      "partId": "turret_aft",
+      "vertexElements": 5892,
+      "indexElements": 2946,
+      "vertexBytes": 23568,
+      "indexBytes": 11784,
+      "verticesSha256": "sha256:1f4a22e4822da7c464b19097336dd9184f7f11d9eefa0d30a078e63aaff83830",
+      "indicesSha256": "sha256:429e713789850e6a493da4b43a4cdcd10f3593f194c2d3ca726998c3b846035a"
+    },
+    {
+      "partId": "turret_fore",
+      "vertexElements": 5772,
+      "indexElements": 2886,
+      "vertexBytes": 23088,
+      "indexBytes": 11544,
+      "verticesSha256": "sha256:b0abbe8db4a7b8a40a2a1e45ee45abe2a8dfcdaf7517e4a2c02d54f0f4e91137",
+      "indicesSha256": "sha256:b12a6b76680e67eec08736e51b7b91df86e30ab847819d6e7cacf0a280f8bd82"
+    }
+  ]
+}

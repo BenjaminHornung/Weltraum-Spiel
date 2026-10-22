@@ -1,0 +1,12 @@
+{
+  "recordedAtUtc": "2026-10-19T15:06:54.927Z",
+  "action": "Send prepared walkable-hull V6 plan brief to existing Pi advisor eb04a70c-fd51-4110-b1e4-480d5c08d8ab",
+  "provider": "pi",
+  "model": "opencode-go/deepseek-v4.1-flash",
+  "outcome": "REJECTED_BEFORE_SEND",
+  "reason": "Automatic approval review: non-public project details, hashes, paths, geometry and runtime findings would be sent externally. Explicit earlier egress approval named Gemini Argon, not this DeepSeek payload and destination.",
+  "payloadFile": "E:/DEV/Weltraum-Spiel/FP06-Pi/deepseek-walkable-hull-v6-plan-20261019.txt",
+  "response": "No retry, indirect execution or other external provider. Separate explicit user approval requested; unaffected native local plan reviews completed.",
+  "secrets": "None included or requested"
+}
+

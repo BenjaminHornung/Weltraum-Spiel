@@ -1,0 +1,502 @@
+{
+  "source": "Read-only saved grid dimensions, one uint8 per cell; not heap sampling",
+  "slot": {
+    "slotId": "factory-primary",
+    "displayName": "factory-primary",
+    "recordRevision": 11,
+    "saveSchemaVersion": 1,
+    "gameVersion": "hestia-factory-play-v1",
+    "universeTick": 96076,
+    "payloadBytes": 13535070,
+    "contentHash": "sha256:01d41d286e21f463e536d2d3e61e24a0ad200f0204f4e2f48c12ef45a3e4576a",
+    "lastWriteReason": "ManualSave"
+  },
+  "plantCount": 96,
+  "woodCount": 2,
+  "plantGridBytes": 5227968,
+  "volumes": [
+    {
+      "id": "hvp:flora:hero",
+      "woodBytes": 1105920,
+      "decorationBytes": 1105920
+    },
+    {
+      "id": "hvp:flora:east-young",
+      "woodBytes": 416160,
+      "decorationBytes": 416160
+    },
+    {
+      "id": "hvp:flora:bed-136-16",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-148-16",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-16",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-16",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-184-16",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-64-28",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-136-28",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-148-28",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-28",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-28",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-184-28",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-136-40",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-148-40",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-40",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-40",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-184-40",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-136-52",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-148-52",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-52",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-52",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-184-52",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-52",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-64",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-64",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-184-64",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-64",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-208-64",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-28-76",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-76",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-16-88",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-88-88",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-100-88",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-184-88",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-88",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-16-100",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-88-100",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-100-100",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-16-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-28-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-64-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-76-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-88-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-100-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-208-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-220-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-232-112",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-52-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-64-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-76-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-88-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-100-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-208-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-220-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-232-124",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-64-136",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-76-136",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-88-136",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-100-136",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-136",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-220-136",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-232-136",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-220-148",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-232-148",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-160",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-208-160",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-220-160",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-232-160",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-172",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-40-184",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-76-184",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-184",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-184",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-148-196",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-196",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-196",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-28-208",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-136-208",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-148-208",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-208",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-208",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-184-208",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-208",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-28-220",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-40-220",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-148-220",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-160-220",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-172-220",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-184-220",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-196-220",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-40-232",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-52-232",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    },
+    {
+      "id": "hvp:flora:bed-148-232",
+      "woodBytes": 0,
+      "decorationBytes": 23232
+    }
+  ],
+  "earlyColdAdmissionBefore": 270168482,
+  "identityDedupCandidateAfter": 264940514,
+  "cap": 268435456
+}

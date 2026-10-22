@@ -1,0 +1,12 @@
+{
+  "schema": "hestia.fp06.material-size-only/v1",
+  "createdAtUtc": "2026-10-18T16:35:18.265Z",
+  "source": "Legitimate retained Save18, frozenReady public decoder, transient page closed, no Play/no Save/no raw material returned or archived",
+  "containers": 52,
+  "receipts": 75,
+  "reservations": 0,
+  "revision": 75,
+  "fullBeltMaterialProjectionCharacters": 692408,
+  "fullBeltMaterialProjectionUtf16Bytes": 1384816,
+  "method": "Existing frozenReady public V2 decoder; exact unchanged belt material projection, JSON length only on decoded plain finite data; no raw data returned or archived"
+}

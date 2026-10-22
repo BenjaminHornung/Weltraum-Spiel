@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 E:/DEV/Weltraum-Spiel/FP06-Candidate/apps/weltraum-browser
+
+stdout | tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+CARRIER_SWEEP_SEGMENT_DIAGNOSTIC {"original":{"reason":"CarrierSweep","colliderHandle":4e-323,"timeOfImpact":0.03201565518975258,"from":{"x":-6.500476837158203,"y":2,"z":10.089166641235352},"delta":{"x":0,"y":0,"z":-0.0353553406894207},"to":{"x":-6.500476837158203,"y":2,"z":10.05381130054593},"maxToi":1,"stopAtPenetration":true},"canonical":{"start":{"x":-6.500476837158203,"y":2,"z":10.089166641235352},"delta":{"x":0,"y":0,"z":-0.0353553406894207},"end":{"x":-6.500476837158203,"y":2,"z":10.053811073303223},"deltaIsFloat32":true,"forwardReversible":{"x":true,"y":true,"z":true},"reverseReversible":{"x":true,"y":true,"z":true},"forwardHit":{"colliderHandle":4e-323,"timeOfImpact":0.03201545029878616},"reverseHit":{"colliderHandle":4e-323,"timeOfImpact":0.10240933299064636},"endpointOverlaps":{"start":[],"end":[]}}}
+
+----------------------x---------
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-locomotion.test.ts > W09 paired actual Native carrier locomotion > slides an oblique actual carrier move along the free original axis in one World step
+AssertionError: expected 11.089166641235352 to be less than 10
+ ❯ tests/unit/hvp-locomotion.test.ts:309:61
+    307|       }
+    308|       const before=r.player.read().position,carrier=r.world.getRigidBo…
+    309|       expect(before.x).toBeLessThan(-6.45);expect(before.z).toBeLessTh…
+       |                                                             ^
+    310|       r.player.step();
+    311|       expect(r.player.read().position).toEqual(before);expect(carrier.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 31 skipped (32)
+   Start at  12:36:13
+   Duration  904ms (transform 243ms, setup 0ms, import 324ms, tests 449ms, environment 0ms)
+
