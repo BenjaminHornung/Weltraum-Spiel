@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { R, initializeHvpRapier } from "../../src/hestia-prototype/physics/rapierPort";
 import { createHvpLocomotion, HVP_PLAYER_PROFILE } from "../../src/hestia-prototype/player/locomotion";
 import { collisionSectors } from "../../src/hestia-prototype/physics/terrainColliders";
@@ -140,6 +140,21 @@ describe("HVP solver-owned locomotion", () => {
       expect(r.player.read().status).toBe("CoverageHold");
       expect(r.player.read().position.x).toBeLessThan(0.71);
     } finally { r.dispose(); }
+  });
+
+  it("holds without consuming a jump when KCC moves beyond the prepared coverage", () => {
+    const r = rig(true, (x, z) => Math.abs(x) < 0.5 && Math.abs(z) < 0.5);
+    const movement = vi.spyOn(R.KinematicCharacterController.prototype, "computedMovement")
+      .mockReturnValueOnce({ x: 1, y: 0.2, z: 0 });
+    try {
+      const before = r.player.read();
+      expect(before.grounded).toBe(true);
+      r.player.setInput({ x: 1, z: 0, sprint: false, jump: true }); r.ticks(1);
+      expect(r.player.read()).toMatchObject({ status: "CoverageHold", position: before.position,
+        grounded: before.grounded, jumpCount: before.jumpCount, velocityY: 0 });
+      r.player.setInput({ x: 0, z: 0, sprint: false, jump: false }); r.ticks(1);
+      expect(r.player.read().jumpCount).toBe(before.jumpCount);
+    } finally { movement.mockRestore(); r.dispose(); }
   });
 
   it("freezes the real avatar in inspection and never carries stale input across resume", () => {

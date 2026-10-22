@@ -1,0 +1,29 @@
+{
+  "schema": "pmd.normal-core-continue-freeze/v1",
+  "status": "NORMAL_CORE_SOURCE_PENDING_ROOT_REVIEW",
+  "freezeUtc": "2026-10-20T17:06:40.3182938+00:00",
+  "freezeIsActualAppEnd": false,
+  "manifestSha256": "2284954d8e1be5f549fa753e930bcf3ce12c522733f1392ee0b6d72518cfeb55",
+  "manifestFiles": 330,
+  "manifestReadbackAllMatch": true,
+  "originalProtected28": true,
+  "frozen319Preserved": true,
+  "historicalP296Preserved": true,
+  "report": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\PMD_NORMAL_CORE_CONTINUE-20261020.md",
+    "bytes": 11650,
+    "sha256": "f3efe49a6fa46c83837f09a90c28e5e917c17ff198d5a393b91eeb7c109c4afa"
+  },
+  "currentChecks": "21distinct existing V1 cases resolved; WXG12PASS/1WorkerSKIP; first resolver failure preserved",
+  "noDuplicatePassingGroupRuns": true,
+  "retainedChecks": [
+    "NORMAL_GEOMETRY_R03",
+    "NORMAL_CLIMATE_R02",
+    "NORMAL_TSC_R04"
+  ],
+  "actualStartUtc": "2026-10-20T16:54:58Z",
+  "effectiveEarlierEndUtc": "2026-10-20T17:19:54Z",
+  "oldTurnActualEnd": "UNKNOWN",
+  "productActivation": "NONE",
+  "noAutomaticContinuation": true
+}

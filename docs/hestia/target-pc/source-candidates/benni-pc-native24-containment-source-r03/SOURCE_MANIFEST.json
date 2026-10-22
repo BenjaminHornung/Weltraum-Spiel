@@ -1,0 +1,47 @@
+{
+  "schema": "hestia.native24.containment-r03.source.v1",
+  "rowOrder": "StringComparer.Ordinal slash-relative",
+  "files": [
+    {
+      "relative": "BRIDGE_BINDINGS.json",
+      "bytes": 4665,
+      "sha256": "2fb2a1588ef4ce78597a74fb0b3017bc35ef38c1d559f084170099fbd05c55c9"
+    },
+    {
+      "relative": "BRIDGE_SOURCE_PINS.tsv",
+      "bytes": 303784,
+      "sha256": "0624160f991b8915ed8b98b8638773f8d45f1d5e6207192044399c40a5a2eb04"
+    },
+    {
+      "relative": "Native24Family.cs",
+      "bytes": 53942,
+      "sha256": "73a6dab119c44b9b66e3938e98e769e2e7e19e4ad0c23f8a42e13020d96bf6ab"
+    },
+    {
+      "relative": "bridge-contract.mjs",
+      "bytes": 12454,
+      "sha256": "888c4198a40bf5d459e806ad513f67270b341fcf9fdb030e631d014eeb30bec0"
+    },
+    {
+      "relative": "diagnostic-child.mjs",
+      "bytes": 2495,
+      "sha256": "2d81279b182a55e7c10ad20cebd10e122e0ca345c8295586ccc99d8d3f01cfff"
+    },
+    {
+      "relative": "diagnostic.mjs",
+      "bytes": 16242,
+      "sha256": "67f6b519586ce2208059c07f8440241524766620a5e7791dd6ff7e64413821fb"
+    },
+    {
+      "relative": "supervise.ps1",
+      "bytes": 73,
+      "sha256": "b77c5ae4df47534b70831729054884206ca10c1457e7c6be4e001857eb5d9b06"
+    }
+  ],
+  "fileCount": 7,
+  "canonicalBinding": "BRIDGE_BINDINGS.json",
+  "canonicalPins": "BRIDGE_SOURCE_PINS.tsv",
+  "requestFields": 16,
+  "receiptFields": 13,
+  "runtimeGrant": "NONE_HOLD"
+}

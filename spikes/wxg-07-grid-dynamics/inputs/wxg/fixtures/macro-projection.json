@@ -1,0 +1,6545 @@
+{
+  "bodyId": "planet.hestia",
+  "cells": [
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 0,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3589,
+      "sample": {
+        "elevationMeters": 643.0171017298146,
+        "landFraction": 0.982262826297361,
+        "openLiquidFraction": 0.017737173702639053,
+        "reservoir": null,
+        "roughness": 0.3929051305189444
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 1,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 648.6437740943884,
+        "landFraction": 0.9864828305707913,
+        "openLiquidFraction": 0.013517169429208664,
+        "reservoir": null,
+        "roughness": 0.39459313222831655
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 2,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 638.7664922765617,
+        "landFraction": 0.9790748692074213,
+        "openLiquidFraction": 0.02092513079257874,
+        "reservoir": null,
+        "roughness": 0.39162994768296855
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 3,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 607.9354144109524,
+        "landFraction": 0.9559515608082143,
+        "openLiquidFraction": 0.04404843919178569,
+        "reservoir": null,
+        "roughness": 0.38238062432328573
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 4,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 555.071465331739,
+        "landFraction": 0.9163035989988042,
+        "openLiquidFraction": 0.0836964010011958,
+        "reservoir": null,
+        "roughness": 0.3665214395995217
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 5,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 485.46253413018684,
+        "landFraction": 0.8640969005976402,
+        "openLiquidFraction": 0.13590309940235978,
+        "reservoir": null,
+        "roughness": 0.3456387602390561
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 6,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 408.405339244615,
+        "landFraction": 0.8063040044334613,
+        "openLiquidFraction": 0.19369599556653871,
+        "reservoir": null,
+        "roughness": 0.3225216017733845
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 7,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 332.59505261886966,
+        "landFraction": 0.7494462894641523,
+        "openLiquidFraction": 0.25055371053584774,
+        "reservoir": null,
+        "roughness": 0.2997785157856609
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 0,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 728.7232523776463,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 1,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 748.9059452888542,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 2,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 750.7145473397344,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 3,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 723.8730093922877,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 4,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 664.3765976614147,
+        "landFraction": 0.998282448246061,
+        "openLiquidFraction": 0.0017175517539389507,
+        "reservoir": null,
+        "roughness": 0.39931297929842446
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 5,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 579.6656631357444,
+        "landFraction": 0.9347492473518082,
+        "openLiquidFraction": 0.0652507526481918,
+        "reservoir": null,
+        "roughness": 0.3738996989407233
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 6,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 484.58619989278804,
+        "landFraction": 0.8634396499195911,
+        "openLiquidFraction": 0.1365603500804089,
+        "reservoir": null,
+        "roughness": 0.3453758599678365
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 7,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 392.38944358796334,
+        "landFraction": 0.7942920826909725,
+        "openLiquidFraction": 0.2057079173090275,
+        "reservoir": null,
+        "roughness": 0.31771683307638904
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 0,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 809.1042235503113,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 1,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 845.74170523084,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 2,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7954,
+      "sample": {
+        "elevationMeters": 862.2475011802607,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 3,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 842.0456634330386,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 4,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 776.4317156330616,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 5,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 675.2540671893607,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 6,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 560.660231557523,
+        "landFraction": 0.9204951736681424,
+        "openLiquidFraction": 0.07950482633185763,
+        "reservoir": null,
+        "roughness": 0.36819806946725697
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 7,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 451.394987875437,
+        "landFraction": 0.8385462409065777,
+        "openLiquidFraction": 0.1614537590934223,
+        "reservoir": null,
+        "roughness": 0.3354184963626311
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 0,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 872.2551598070185,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 1,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 922.1943818285309,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 2,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 951.4022430996671,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 3,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 937.9373477061479,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 4,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 868.4605071353222,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 5,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 754.560399699736,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 6,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 624.712323174166,
+        "landFraction": 0.9685342423806245,
+        "openLiquidFraction": 0.031465757619375534,
+        "reservoir": null,
+        "roughness": 0.3874136969522498
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 7,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 502.2075162525259,
+        "landFraction": 0.8766556371893944,
+        "openLiquidFraction": 0.12334436281060557,
+        "reservoir": null,
+        "roughness": 0.3506622548757578
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 0,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 907.497792526494,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 1,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 961.8586563157796,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 2,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 995.1448749663184,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 3,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 984.2552414200319,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 4,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 914.7784008492062,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 5,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 798.3030315663874,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 6,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 664.3765976614146,
+        "landFraction": 0.998282448246061,
+        "openLiquidFraction": 0.0017175517539389507,
+        "reservoir": null,
+        "roughness": 0.39931297929842446
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 7,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 537.4501489720013,
+        "landFraction": 0.903087611729001,
+        "openLiquidFraction": 0.09691238827099902,
+        "reservoir": null,
+        "roughness": 0.3612350446916004
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 0,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 911.3068623145612,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 1,
+        "y": 5
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 959.7742947001668,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 2,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 986.9097905075273,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 3,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 973.2735590329928,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 4,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 907.6596112330158,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 5,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 799.9163565166274,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 6,
+        "y": 5
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 674.6928210268499,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 7,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 553.5976266396868,
+        "landFraction": 0.9151982199797651,
+        "openLiquidFraction": 0.08480178002023486,
+        "reservoir": null,
+        "roughness": 0.3660792879919061
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 0,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 888.8822089441621,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 1,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 925.1191088862319,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 2,
+        "y": 6
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 940.7688631219456,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 3,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 922.1943818285308,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 4,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 862.697970097658,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 5,
+        "y": 6
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 769.7199789179555,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 6,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 660.7993634901657,
+        "landFraction": 0.9955995226176242,
+        "openLiquidFraction": 0.004400477382375811,
+        "reservoir": null,
+        "roughness": 0.3982398090470497
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 7,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 552.5484001544792,
+        "landFraction": 0.9144113001158594,
+        "openLiquidFraction": 0.08558869988414064,
+        "reservoir": null,
+        "roughness": 0.36576452004634374
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 0,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 849.9651344704447,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 1,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 872.8663132875105,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 2,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 877.2393160598114,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 3,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 854.6338434472809,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 4,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 801.7698943680675,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 5,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 723.9353579134364,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 6,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 632.6278784377371,
+        "landFraction": 0.9744709088283028,
+        "openLiquidFraction": 0.025529091171697216,
+        "reservoir": null,
+        "roughness": 0.3897883635313211
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "px",
+        "level": 3,
+        "x": 7,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 539.5430853594997,
+        "landFraction": 0.9046573140196248,
+        "openLiquidFraction": 0.09534268598037521,
+        "reservoir": null,
+        "roughness": 0.36186292560784994
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 0,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3589,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 1,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 2,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 3,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 4,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 5,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 6,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.025529091171697216,
+        "openLiquidFraction": 0.9744709088283028,
+        "reservoir": null,
+        "roughness": 0.010211636468678887
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 7,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.09534268598037521,
+        "openLiquidFraction": 0.9046573140196248,
+        "reservoir": null,
+        "roughness": 0.03813707439215008
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 0,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 1,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 2,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 3,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 4,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 5,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 6,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.004400477382375756,
+        "openLiquidFraction": 0.9955995226176242,
+        "reservoir": null,
+        "roughness": 0.0017601909529503025
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 7,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.08558869988414064,
+        "openLiquidFraction": 0.9144113001158594,
+        "reservoir": null,
+        "roughness": 0.03423547995365626
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 0,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 1,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 2,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7954,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 3,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 4,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 5,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 6,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 7,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.08480178002023486,
+        "openLiquidFraction": 0.9151982199797651,
+        "reservoir": null,
+        "roughness": 0.03392071200809395
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 0,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 1,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 2,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 3,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 4,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 5,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 6,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.0017175517539390062,
+        "openLiquidFraction": 0.998282448246061,
+        "reservoir": null,
+        "roughness": 0.0006870207015756025
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 7,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.09691238827099896,
+        "openLiquidFraction": 0.903087611729001,
+        "reservoir": null,
+        "roughness": 0.03876495530839959
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 0,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 1,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 2,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 3,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 4,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 5,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 6,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.03146575761937548,
+        "openLiquidFraction": 0.9685342423806245,
+        "reservoir": null,
+        "roughness": 0.012586303047750193
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 7,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.12334436281060557,
+        "openLiquidFraction": 0.8766556371893944,
+        "reservoir": null,
+        "roughness": 0.04933774512424223
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 0,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 1,
+        "y": 5
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 2,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 3,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 4,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 5,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 6,
+        "y": 5
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.07950482633185768,
+        "openLiquidFraction": 0.9204951736681424,
+        "reservoir": null,
+        "roughness": 0.03180193053274307
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 7,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.1614537590934223,
+        "openLiquidFraction": 0.8385462409065777,
+        "reservoir": null,
+        "roughness": 0.06458150363736892
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 0,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 1,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 2,
+        "y": 6
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 3,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 4,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.0017175517539389507,
+        "openLiquidFraction": 0.998282448246061,
+        "reservoir": null,
+        "roughness": 0.0006870207015755803
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 5,
+        "y": 6
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.0652507526481918,
+        "openLiquidFraction": 0.9347492473518082,
+        "reservoir": null,
+        "roughness": 0.026100301059276722
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 6,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.13656035008040895,
+        "openLiquidFraction": 0.8634396499195911,
+        "reservoir": null,
+        "roughness": 0.054624140032163586
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 7,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2057079173090275,
+        "openLiquidFraction": 0.7942920826909725,
+        "reservoir": null,
+        "roughness": 0.082283166923611
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 0,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.017737173702639053,
+        "openLiquidFraction": 0.982262826297361,
+        "reservoir": null,
+        "roughness": 0.007094869481055622
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 1,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.013517169429208664,
+        "openLiquidFraction": 0.9864828305707913,
+        "reservoir": null,
+        "roughness": 0.005406867771683466
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 2,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.02092513079257874,
+        "openLiquidFraction": 0.9790748692074213,
+        "reservoir": null,
+        "roughness": 0.008370052317031496
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 3,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.04404843919178575,
+        "openLiquidFraction": 0.9559515608082143,
+        "reservoir": null,
+        "roughness": 0.0176193756767143
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 4,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.08369640100119574,
+        "openLiquidFraction": 0.9163035989988042,
+        "reservoir": null,
+        "roughness": 0.0334785604004783
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 5,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.13590309940235984,
+        "openLiquidFraction": 0.8640969005976402,
+        "reservoir": null,
+        "roughness": 0.05436123976094394
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 6,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.19369599556653877,
+        "openLiquidFraction": 0.8063040044334613,
+        "reservoir": null,
+        "roughness": 0.07747839822661551
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nx",
+        "level": 3,
+        "x": 7,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.25055371053584774,
+        "openLiquidFraction": 0.7494462894641523,
+        "reservoir": null,
+        "roughness": 0.1002214842143391
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 0,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3589,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.31707272105962164,
+        "openLiquidFraction": 0.6829272789403784,
+        "reservoir": null,
+        "roughness": 0.12682908842384866
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 1,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.42192250867382364,
+        "openLiquidFraction": 0.5780774913261764,
+        "reservoir": null,
+        "roughness": 0.16876900346952947
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 2,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 59.618205945812406,
+        "landFraction": 0.5447136544593593,
+        "openLiquidFraction": 0.45528634554064074,
+        "reservoir": null,
+        "roughness": 0.2178854617837437
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 3,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 237.8877708564596,
+        "landFraction": 0.6784158281423447,
+        "openLiquidFraction": 0.3215841718576553,
+        "reservoir": null,
+        "roughness": 0.2713663312569379
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 4,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 414.1009344538371,
+        "landFraction": 0.8105757008403778,
+        "openLiquidFraction": 0.18942429915962222,
+        "reservoir": null,
+        "roughness": 0.32423028033615114
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 5,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 570.6313997670616,
+        "landFraction": 0.9279735498252961,
+        "openLiquidFraction": 0.07202645017470388,
+        "reservoir": null,
+        "roughness": 0.37118941993011845
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 6,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 696.6914610643433,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 7,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 790.837125115979,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 0,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.26576752602147075,
+        "openLiquidFraction": 0.7342324739785293,
+        "reservoir": null,
+        "roughness": 0.10630701040858831
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 1,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3744481209368685,
+        "openLiquidFraction": 0.6255518790631315,
+        "reservoir": null,
+        "roughness": 0.1497792483747474
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 2,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 9.50271578911055,
+        "landFraction": 0.5071270368418329,
+        "openLiquidFraction": 0.4928729631581671,
+        "reservoir": null,
+        "roughness": 0.20285081473673316
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 3,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 208.2374410580554,
+        "landFraction": 0.6561780807935416,
+        "openLiquidFraction": 0.34382191920645844,
+        "reservoir": null,
+        "roughness": 0.26247123231741665
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 4,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 406.55881349429865,
+        "landFraction": 0.804919110120724,
+        "openLiquidFraction": 0.19508088987927596,
+        "reservoir": null,
+        "roughness": 0.32196764404828965
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 5,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 579.6656631357444,
+        "landFraction": 0.9347492473518082,
+        "openLiquidFraction": 0.0652507526481918,
+        "reservoir": null,
+        "roughness": 0.3738996989407233
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 6,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 713.6633125693787,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 7,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 808.8027306609042,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 0,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.21255507847554733,
+        "openLiquidFraction": 0.7874449215244527,
+        "reservoir": null,
+        "roughness": 0.08502203139021894
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 1,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.321824078954177,
+        "openLiquidFraction": 0.678175921045823,
+        "reservoir": null,
+        "roughness": 0.1287296315816708
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 2,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7954,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.46104303458522916,
+        "openLiquidFraction": 0.5389569654147708,
+        "reservoir": null,
+        "roughness": 0.18441721383409168
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 3,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 164.03486949994257,
+        "landFraction": 0.6230261521249569,
+        "openLiquidFraction": 0.37697384787504307,
+        "reservoir": null,
+        "roughness": 0.24921046084998277
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 4,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 382.7480288331994,
+        "landFraction": 0.7870610216248995,
+        "openLiquidFraction": 0.21293897837510045,
+        "reservoir": null,
+        "roughness": 0.31482440864995986
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 5,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 571.3688260833053,
+        "landFraction": 0.928526619562479,
+        "openLiquidFraction": 0.07147338043752105,
+        "reservoir": null,
+        "roughness": 0.3714106478249916
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 6,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 712.7036841832922,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 7,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 809.1042235503112,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 0,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.1629923246200155,
+        "openLiquidFraction": 0.8370076753799844,
+        "reservoir": null,
+        "roughness": 0.06519692984800621
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 1,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.26945140454286726,
+        "openLiquidFraction": 0.7305485954571327,
+        "reservoir": null,
+        "roughness": 0.1077805618171469
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 2,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4097808217750316,
+        "openLiquidFraction": 0.5902191782249684,
+        "reservoir": null,
+        "roughness": 0.16391232871001266
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 3,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 104.21526085623867,
+        "landFraction": 0.578161445642179,
+        "openLiquidFraction": 0.421838554357821,
+        "reservoir": null,
+        "roughness": 0.2312645782568716
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 4,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 335.8047294256579,
+        "landFraction": 0.7518535470692435,
+        "openLiquidFraction": 0.24814645293075654,
+        "reservoir": null,
+        "roughness": 0.3007414188276974
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 5,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 535.8472403664791,
+        "landFraction": 0.9018854302748593,
+        "openLiquidFraction": 0.09811456972514065,
+        "reservoir": null,
+        "roughness": 0.36075417210994376
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 6,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 684.2087349050391,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 7,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 784.1485780083299,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 0,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.12334436281060557,
+        "openLiquidFraction": 0.8766556371893944,
+        "reservoir": null,
+        "roughness": 0.04933774512424223
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 1,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.22482909574471255,
+        "openLiquidFraction": 0.7751709042552875,
+        "reservoir": null,
+        "roughness": 0.08993163829788503
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 2,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3605703609250488,
+        "openLiquidFraction": 0.6394296390749512,
+        "reservoir": null,
+        "roughness": 0.14422814437001952
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 3,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 34.7384202854129,
+        "landFraction": 0.5260538152140597,
+        "openLiquidFraction": 0.4739461847859403,
+        "reservoir": null,
+        "roughness": 0.2104215260856239
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 4,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 266.3278888548321,
+        "landFraction": 0.6997459166411241,
+        "openLiquidFraction": 0.30025408335887593,
+        "reservoir": null,
+        "roughness": 0.2798983666564496
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 5,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 470.23329256650203,
+        "landFraction": 0.8526749694248765,
+        "openLiquidFraction": 0.14732503057512347,
+        "reservoir": null,
+        "roughness": 0.3410699877699506
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 6,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 624.7123231741662,
+        "landFraction": 0.9685342423806246,
+        "openLiquidFraction": 0.03146575761937542,
+        "reservoir": null,
+        "roughness": 0.38741369695224986
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 7,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 731.2846289291166,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 0,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.09757710986576629,
+        "openLiquidFraction": 0.9024228901342337,
+        "reservoir": null,
+        "roughness": 0.039030843946306515
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 1,
+        "y": 5
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.19353741580118433,
+        "openLiquidFraction": 0.8064625841988157,
+        "reservoir": null,
+        "roughness": 0.07741496632047373
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 2,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3207979590920542,
+        "openLiquidFraction": 0.6792020409079458,
+        "reservoir": null,
+        "roughness": 0.12831918363682168
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 3,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4753947695750086,
+        "openLiquidFraction": 0.5246052304249914,
+        "reservoir": null,
+        "roughness": 0.19015790783000344
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 4,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 185.9061854332683,
+        "landFraction": 0.6394296390749512,
+        "openLiquidFraction": 0.3605703609250488,
+        "reservoir": null,
+        "roughness": 0.2557718556299805
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 5,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 384.37539209240543,
+        "landFraction": 0.7882815440693041,
+        "openLiquidFraction": 0.21171845593069594,
+        "reservoir": null,
+        "roughness": 0.31531261762772167
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 6,
+        "y": 5
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 541.6547999793021,
+        "landFraction": 0.9062410999844766,
+        "openLiquidFraction": 0.09375890001552345,
+        "reservoir": null,
+        "roughness": 0.36249643999379066
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 7,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 655.8002654039366,
+        "landFraction": 0.9918501990529525,
+        "openLiquidFraction": 0.008149800947047536,
+        "reservoir": null,
+        "roughness": 0.396740079621181
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 0,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.08558869988414064,
+        "openLiquidFraction": 0.9144113001158594,
+        "reservoir": null,
+        "roughness": 0.03423547995365626
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 1,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.1762083118898189,
+        "openLiquidFraction": 0.8237916881101811,
+        "reservoir": null,
+        "roughness": 0.07048332475592756
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 2,
+        "y": 6
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.29331593158684527,
+        "openLiquidFraction": 0.7066840684131548,
+        "reservoir": null,
+        "roughness": 0.11732637263473811
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 3,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4330665368027679,
+        "openLiquidFraction": 0.566933463197232,
+        "reservoir": null,
+        "roughness": 0.17322661472110717
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 4,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 109.07675483993378,
+        "landFraction": 0.5818075661299503,
+        "openLiquidFraction": 0.4181924338700497,
+        "reservoir": null,
+        "roughness": 0.23272302645198015
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 5,
+        "y": 6
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 294.5841894624274,
+        "landFraction": 0.7209381420968205,
+        "openLiquidFraction": 0.2790618579031795,
+        "reservoir": null,
+        "roughness": 0.2883752568387282
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 6,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 449.3435671733126,
+        "landFraction": 0.8370076753799844,
+        "openLiquidFraction": 0.16299232462001556,
+        "reservoir": null,
+        "roughness": 0.3348030701519938
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 7,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 568.5642958111308,
+        "landFraction": 0.9264232218583481,
+        "openLiquidFraction": 0.07357677814165187,
+        "reservoir": null,
+        "roughness": 0.3705692887433393
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 0,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.0842561842264129,
+        "openLiquidFraction": 0.9157438157735871,
+        "reservoir": null,
+        "roughness": 0.033702473690565164
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 1,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.1696721520815614,
+        "openLiquidFraction": 0.8303278479184386,
+        "reservoir": null,
+        "roughness": 0.06786886083262456
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 2,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2764317277032035,
+        "openLiquidFraction": 0.7235682722967964,
+        "reservoir": null,
+        "roughness": 0.11057269108128141
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 3,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4008800954764752,
+        "openLiquidFraction": 0.5991199045235248,
+        "reservoir": null,
+        "roughness": 0.16035203819059007
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 4,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 44.0532908993444,
+        "landFraction": 0.5330399681745083,
+        "openLiquidFraction": 0.46696003182549173,
+        "reservoir": null,
+        "roughness": 0.21321598726980331
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 5,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 212.9221640921872,
+        "landFraction": 0.6596916230691404,
+        "openLiquidFraction": 0.3403083769308596,
+        "reservoir": null,
+        "roughness": 0.2638766492276562
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 6,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 360.3576522746603,
+        "landFraction": 0.7702682392059952,
+        "openLiquidFraction": 0.2297317607940048,
+        "reservoir": null,
+        "roughness": 0.3081072956823981
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "py",
+        "level": 3,
+        "x": 7,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 480.415076005034,
+        "landFraction": 0.8603113070037754,
+        "openLiquidFraction": 0.13968869299622455,
+        "reservoir": null,
+        "roughness": 0.3441245228015102
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 0,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3589,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 1,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 2,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.07202645017470383,
+        "openLiquidFraction": 0.9279735498252961,
+        "reservoir": null,
+        "roughness": 0.028810580069881533
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 3,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.18942429915962217,
+        "openLiquidFraction": 0.8105757008403778,
+        "reservoir": null,
+        "roughness": 0.07576971966384888
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 4,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3215841718576553,
+        "openLiquidFraction": 0.6784158281423447,
+        "reservoir": null,
+        "roughness": 0.12863366874306212
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 5,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4552863455406407,
+        "openLiquidFraction": 0.5447136544593594,
+        "reservoir": null,
+        "roughness": 0.18211453821625628
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 6,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 104.10332176823519,
+        "landFraction": 0.5780774913261764,
+        "openLiquidFraction": 0.42192250867382364,
+        "reservoir": null,
+        "roughness": 0.23123099653047055
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 7,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 243.90303858717112,
+        "landFraction": 0.6829272789403784,
+        "openLiquidFraction": 0.3170727210596216,
+        "reservoir": null,
+        "roughness": 0.27317091157615137
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 0,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 1,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 2,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.0652507526481918,
+        "openLiquidFraction": 0.9347492473518082,
+        "reservoir": null,
+        "roughness": 0.026100301059276722
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 3,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.19508088987927602,
+        "openLiquidFraction": 0.804919110120724,
+        "reservoir": null,
+        "roughness": 0.07803235595171042
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 4,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.34382191920645844,
+        "openLiquidFraction": 0.6561780807935416,
+        "reservoir": null,
+        "roughness": 0.13752876768258337
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 5,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4928729631581671,
+        "openLiquidFraction": 0.5071270368418329,
+        "reservoir": null,
+        "roughness": 0.19714918526326686
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 6,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 167.4025054175086,
+        "landFraction": 0.6255518790631315,
+        "openLiquidFraction": 0.3744481209368685,
+        "reservoir": null,
+        "roughness": 0.2502207516252526
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 7,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 312.30996530470566,
+        "landFraction": 0.7342324739785293,
+        "openLiquidFraction": 0.2657675260214707,
+        "reservoir": null,
+        "roughness": 0.2936929895914117
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 0,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 1,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 2,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7954,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.07147338043752105,
+        "openLiquidFraction": 0.928526619562479,
+        "reservoir": null,
+        "roughness": 0.028589352175008423
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 3,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.21293897837510045,
+        "openLiquidFraction": 0.7870610216248995,
+        "reservoir": null,
+        "roughness": 0.08517559135004019
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 4,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.37697384787504307,
+        "openLiquidFraction": 0.6230261521249569,
+        "reservoir": null,
+        "roughness": 0.15078953915001725
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 5,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 51.94262055302779,
+        "landFraction": 0.5389569654147708,
+        "openLiquidFraction": 0.4610430345852292,
+        "reservoir": null,
+        "roughness": 0.2155827861659083
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 6,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 237.56789472776407,
+        "landFraction": 0.678175921045823,
+        "openLiquidFraction": 0.321824078954177,
+        "reservoir": null,
+        "roughness": 0.27127036841832924
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 7,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 383.2598953659369,
+        "landFraction": 0.7874449215244527,
+        "openLiquidFraction": 0.21255507847554733,
+        "reservoir": null,
+        "roughness": 0.3149779686097811
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 0,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 1,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 2,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.09811456972514065,
+        "openLiquidFraction": 0.9018854302748593,
+        "reservoir": null,
+        "roughness": 0.03924582789005626
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 3,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.24814645293075654,
+        "openLiquidFraction": 0.7518535470692435,
+        "reservoir": null,
+        "roughness": 0.09925858117230263
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 4,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.421838554357821,
+        "openLiquidFraction": 0.578161445642179,
+        "reservoir": null,
+        "roughness": 0.16873542174312842
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 5,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 120.29223763329122,
+        "landFraction": 0.5902191782249684,
+        "openLiquidFraction": 0.4097808217750316,
+        "reservoir": null,
+        "roughness": 0.23608767128998737
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 6,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 307.398127276177,
+        "landFraction": 0.7305485954571327,
+        "openLiquidFraction": 0.2694514045428673,
+        "reservoir": null,
+        "roughness": 0.29221943818285306
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 7,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 449.34356717331264,
+        "landFraction": 0.8370076753799844,
+        "openLiquidFraction": 0.16299232462001556,
+        "reservoir": null,
+        "roughness": 0.3348030701519938
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 0,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 1,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.03146575761937542,
+        "openLiquidFraction": 0.9685342423806246,
+        "reservoir": null,
+        "roughness": 0.01258630304775017
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 2,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.14732503057512347,
+        "openLiquidFraction": 0.8526749694248765,
+        "reservoir": null,
+        "roughness": 0.05893001223004939
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 3,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.30025408335887593,
+        "openLiquidFraction": 0.6997459166411241,
+        "reservoir": null,
+        "roughness": 0.12010163334355038
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 4,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4739461847859403,
+        "openLiquidFraction": 0.5260538152140597,
+        "reservoir": null,
+        "roughness": 0.18957847391437613
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 5,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 185.90618543326826,
+        "landFraction": 0.6394296390749512,
+        "openLiquidFraction": 0.3605703609250488,
+        "reservoir": null,
+        "roughness": 0.2557718556299805
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 6,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 366.89453900704996,
+        "landFraction": 0.7751709042552875,
+        "openLiquidFraction": 0.22482909574471255,
+        "reservoir": null,
+        "roughness": 0.310068361702115
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 7,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 502.2075162525259,
+        "landFraction": 0.8766556371893944,
+        "openLiquidFraction": 0.12334436281060557,
+        "reservoir": null,
+        "roughness": 0.3506622548757578
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 0,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.008149800947047592,
+        "openLiquidFraction": 0.9918501990529525,
+        "reservoir": null,
+        "roughness": 0.003259920378819037
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 1,
+        "y": 5
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.09375890001552345,
+        "openLiquidFraction": 0.9062410999844766,
+        "reservoir": null,
+        "roughness": 0.037503560006209385
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 2,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.21171845593069594,
+        "openLiquidFraction": 0.7882815440693041,
+        "reservoir": null,
+        "roughness": 0.08468738237227838
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 3,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3605703609250488,
+        "openLiquidFraction": 0.6394296390749512,
+        "reservoir": null,
+        "roughness": 0.14422814437001952
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 4,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 32.80697389998852,
+        "landFraction": 0.5246052304249914,
+        "openLiquidFraction": 0.4753947695750086,
+        "reservoir": null,
+        "roughness": 0.20984209216999658
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 5,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 238.9360545439277,
+        "landFraction": 0.6792020409079458,
+        "openLiquidFraction": 0.3207979590920542,
+        "reservoir": null,
+        "roughness": 0.2716808163631783
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 6,
+        "y": 5
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 408.6167789317542,
+        "landFraction": 0.8064625841988157,
+        "openLiquidFraction": 0.19353741580118433,
+        "reservoir": null,
+        "roughness": 0.3225850336795263
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 7,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 536.5638535123117,
+        "landFraction": 0.9024228901342337,
+        "openLiquidFraction": 0.09757710986576629,
+        "reservoir": null,
+        "roughness": 0.3609691560536935
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 0,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.07357677814165192,
+        "openLiquidFraction": 0.9264232218583481,
+        "reservoir": null,
+        "roughness": 0.02943071125666077
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 1,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.16299232462001556,
+        "openLiquidFraction": 0.8370076753799844,
+        "reservoir": null,
+        "roughness": 0.06519692984800622
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 2,
+        "y": 6
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2790618579031795,
+        "openLiquidFraction": 0.7209381420968205,
+        "reservoir": null,
+        "roughness": 0.1116247431612718
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 3,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4181924338700497,
+        "openLiquidFraction": 0.5818075661299503,
+        "reservoir": null,
+        "roughness": 0.16727697354801987
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 4,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 89.24461759630944,
+        "landFraction": 0.566933463197232,
+        "openLiquidFraction": 0.43306653680276797,
+        "reservoir": null,
+        "roughness": 0.22677338527889282
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 5,
+        "y": 6
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 275.5787578842063,
+        "landFraction": 0.7066840684131548,
+        "openLiquidFraction": 0.2933159315868452,
+        "reservoir": null,
+        "roughness": 0.2826736273652619
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 6,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 431.7222508135749,
+        "landFraction": 0.8237916881101811,
+        "openLiquidFraction": 0.1762083118898189,
+        "reservoir": null,
+        "roughness": 0.32951667524407247
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 7,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 552.5484001544792,
+        "landFraction": 0.9144113001158594,
+        "openLiquidFraction": 0.08558869988414064,
+        "reservoir": null,
+        "roughness": 0.36576452004634374
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 0,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.13968869299622455,
+        "openLiquidFraction": 0.8603113070037754,
+        "reservoir": null,
+        "roughness": 0.05587547719848982
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 1,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.22973176079400476,
+        "openLiquidFraction": 0.7702682392059952,
+        "reservoir": null,
+        "roughness": 0.09189270431760191
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 2,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3403083769308596,
+        "openLiquidFraction": 0.6596916230691404,
+        "reservoir": null,
+        "roughness": 0.13612335077234383
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 3,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.46696003182549173,
+        "openLiquidFraction": 0.5330399681745083,
+        "reservoir": null,
+        "roughness": 0.1867840127301967
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 4,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 132.1598726980331,
+        "landFraction": 0.5991199045235248,
+        "openLiquidFraction": 0.4008800954764752,
+        "reservoir": null,
+        "roughness": 0.23964796180940995
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 5,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 298.091029729062,
+        "landFraction": 0.7235682722967964,
+        "openLiquidFraction": 0.27643172770320357,
+        "reservoir": null,
+        "roughness": 0.2894273089187186
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 6,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 440.4371305579181,
+        "landFraction": 0.8303278479184386,
+        "openLiquidFraction": 0.1696721520815614,
+        "reservoir": null,
+        "roughness": 0.33213113916737547
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "ny",
+        "level": 3,
+        "x": 7,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 554.3250876981161,
+        "landFraction": 0.9157438157735871,
+        "openLiquidFraction": 0.0842561842264129,
+        "reservoir": null,
+        "roughness": 0.36629752630943485
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 0,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3589,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.16740494738113026,
+        "openLiquidFraction": 0.8325950526188697,
+        "reservoir": null,
+        "roughness": 0.06696197895245211
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 1,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.25976156515022647,
+        "openLiquidFraction": 0.7402384348497735,
+        "reservoir": null,
+        "roughness": 0.1039046260600906
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 2,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.37224670154468775,
+        "openLiquidFraction": 0.6277532984553122,
+        "reservoir": null,
+        "roughness": 0.14889868061787512
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 3,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.5,
+        "openLiquidFraction": 0.5,
+        "reservoir": null,
+        "roughness": 0.2
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 4,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 176.21316359737747,
+        "landFraction": 0.6321598726980331,
+        "openLiquidFraction": 0.3678401273019669,
+        "reservoir": null,
+        "roughness": 0.2528639490792132
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 5,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 340.6754625474995,
+        "landFraction": 0.7555065969106246,
+        "openLiquidFraction": 0.2444934030893754,
+        "reservoir": null,
+        "roughness": 0.30220263876424985
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 6,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 480.4768696995471,
+        "landFraction": 0.8603576522746603,
+        "openLiquidFraction": 0.13964234772533968,
+        "reservoir": null,
+        "roughness": 0.34414306090986413
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 7,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 591.2800935446571,
+        "landFraction": 0.9434600701584929,
+        "openLiquidFraction": 0.05653992984150713,
+        "reservoir": null,
+        "roughness": 0.37738402806339716
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 0,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.163666191210317,
+        "openLiquidFraction": 0.836333808789683,
+        "reservoir": null,
+        "roughness": 0.0654664764841268
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 1,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2621122291435404,
+        "openLiquidFraction": 0.7378877708564596,
+        "reservoir": null,
+        "roughness": 0.10484489165741616
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 2,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3859674105306732,
+        "openLiquidFraction": 0.6140325894693268,
+        "reservoir": null,
+        "roughness": 0.15438696421226927
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 3,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 39.66427448724863,
+        "landFraction": 0.5297482058654365,
+        "openLiquidFraction": 0.4702517941345635,
+        "reservoir": null,
+        "roughness": 0.2118992823461746
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 4,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 237.98564692349183,
+        "landFraction": 0.6784892351926188,
+        "openLiquidFraction": 0.32151076480738117,
+        "reservoir": null,
+        "roughness": 0.27139569407704756
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 5,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 418.11949472086474,
+        "landFraction": 0.8135896210406486,
+        "openLiquidFraction": 0.18641037895935142,
+        "reservoir": null,
+        "roughness": 0.32543584841625944
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 6,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 563.8821235116079,
+        "landFraction": 0.9229115926337059,
+        "openLiquidFraction": 0.07708840736629408,
+        "reservoir": null,
+        "roughness": 0.3691646370534824
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 7,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 672.667617579366,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 0,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.167841424016188,
+        "openLiquidFraction": 0.8321585759838119,
+        "reservoir": null,
+        "roughness": 0.06713656960647521
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 1,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2719348210613464,
+        "openLiquidFraction": 0.7280651789386536,
+        "reservoir": null,
+        "roughness": 0.10877392842453858
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 2,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7954,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.40650328300454996,
+        "openLiquidFraction": 0.59349671699545,
+        "reservoir": null,
+        "roughness": 0.16260131320182
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 3,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 87.48526373330267,
+        "landFraction": 0.565613947799977,
+        "openLiquidFraction": 0.434386052200023,
+        "reservoir": null,
+        "roughness": 0.2262455791199908
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 4,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 306.1984230665595,
+        "landFraction": 0.7296488172999196,
+        "openLiquidFraction": 0.2703511827000804,
+        "reservoir": null,
+        "roughness": 0.29185952691996786
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 5,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 498.6491573090664,
+        "landFraction": 0.8739868679817998,
+        "openLiquidFraction": 0.1260131320182002,
+        "reservoir": null,
+        "roughness": 0.34959474719271993
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 6,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 646.1846736595182,
+        "landFraction": 0.9846385052446387,
+        "openLiquidFraction": 0.015361494755361305,
+        "reservoir": null,
+        "roughness": 0.3938554020978555
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 7,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 749.4860176044989,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 0,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.1828163055247205,
+        "openLiquidFraction": 0.8171836944752795,
+        "reservoir": null,
+        "roughness": 0.0731265222098882
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 1,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2917625589419446,
+        "openLiquidFraction": 0.7082374410580554,
+        "reservoir": null,
+        "roughness": 0.11670502357677784
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 2,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.43438605220002297,
+        "openLiquidFraction": 0.5656139477999771,
+        "reservoir": null,
+        "roughness": 0.1737544208800092
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 3,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 138.95368114165154,
+        "landFraction": 0.6042152608562387,
+        "openLiquidFraction": 0.39578473914376133,
+        "reservoir": null,
+        "roughness": 0.2416861043424955
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 4,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 370.54314971107084,
+        "landFraction": 0.7779073622833031,
+        "openLiquidFraction": 0.22209263771669685,
+        "reservoir": null,
+        "roughness": 0.3111629449133213
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 5,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 568.6542142664676,
+        "landFraction": 0.9264906606998508,
+        "openLiquidFraction": 0.07350933930014925,
+        "reservoir": null,
+        "roughness": 0.3705962642799403
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 6,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 713.9569407704755,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 7,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 810.5805525479365,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 0,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.20924828006432705,
+        "openLiquidFraction": 0.790751719935673,
+        "reservoir": null,
+        "roughness": 0.08369931202573083
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 1,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.32151076480738106,
+        "openLiquidFraction": 0.678489235192619,
+        "reservoir": null,
+        "roughness": 0.12860430592295244
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 2,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4671930261000115,
+        "openLiquidFraction": 0.5328069738999885,
+        "reservoir": null,
+        "roughness": 0.1868772104400046
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 3,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 185.2715748555354,
+        "landFraction": 0.6389536811416515,
+        "openLiquidFraction": 0.3610463188583485,
+        "reservoir": null,
+        "roughness": 0.25558147245666063
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 4,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 416.8610434249547,
+        "landFraction": 0.812645782568716,
+        "openLiquidFraction": 0.187354217431284,
+        "reservoir": null,
+        "roughness": 0.32505831302748645
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 5,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 612.3968461331191,
+        "landFraction": 0.9592976345998393,
+        "openLiquidFraction": 0.0407023654001607,
+        "reservoir": null,
+        "roughness": 0.38371905383993576
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 6,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 753.6212152577242,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 7,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 845.823185267412,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 0,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2444934030893754,
+        "openLiquidFraction": 0.7555065969106246,
+        "reservoir": null,
+        "roughness": 0.09779736123575017
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 1,
+        "y": 5
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.35745926316334153,
+        "openLiquidFraction": 0.6425407368366585,
+        "reservoir": null,
+        "roughness": 0.14298370526533663
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 2,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.5,
+        "openLiquidFraction": 0.5,
+        "reservoir": null,
+        "roughness": 0.2
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 3,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 218.7131593332568,
+        "landFraction": 0.6640348694999426,
+        "openLiquidFraction": 0.3359651305000574,
+        "reservoir": null,
+        "roughness": 0.26561394779997705
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 4,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 437.4263186665136,
+        "landFraction": 0.8280697389998852,
+        "openLiquidFraction": 0.17193026100011477,
+        "reservoir": null,
+        "roughness": 0.33122789559995414
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 5,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 623.3114466363331,
+        "landFraction": 0.9674835849772498,
+        "openLiquidFraction": 0.032516415022750156,
+        "reservoir": null,
+        "roughness": 0.38699343399089997
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 6,
+        "y": 5
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 760.217263128845,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 7,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 851.6886563687486,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 0,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2837854086352038,
+        "openLiquidFraction": 0.7162145913647961,
+        "reservoir": null,
+        "roughness": 0.11351416345408152
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 1,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3942721018415735,
+        "openLiquidFraction": 0.6057278981584264,
+        "reservoir": null,
+        "roughness": 0.1577088407366294
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 2,
+        "y": 6
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 38.01086315644223,
+        "landFraction": 0.5285081473673316,
+        "openLiquidFraction": 0.47149185263266835,
+        "reservoir": null,
+        "roughness": 0.21140325894693268
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 3,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 237.98564692349183,
+        "landFraction": 0.6784892351926188,
+        "openLiquidFraction": 0.32151076480738117,
+        "reservoir": null,
+        "roughness": 0.27139569407704756
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 4,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 436.307019359735,
+        "landFraction": 0.8272302645198013,
+        "openLiquidFraction": 0.1727697354801987,
+        "reservoir": null,
+        "roughness": 0.33089210580792056
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 5,
+        "y": 6
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 608.1738105030761,
+        "landFraction": 0.956130357877307,
+        "openLiquidFraction": 0.04386964212269295,
+        "reservoir": null,
+        "roughness": 0.38245214315092285
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 6,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 740.0952871089854,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 7,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 832.8265741458816,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 0,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3226159719366028,
+        "openLiquidFraction": 0.6773840280633971,
+        "reservoir": null,
+        "roughness": 0.1290463887746411
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 1,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4279284695450679,
+        "openLiquidFraction": 0.5720715304549321,
+        "reservoir": null,
+        "roughness": 0.17117138781802718
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 2,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 68.13509250949993,
+        "landFraction": 0.5511013193821249,
+        "openLiquidFraction": 0.4488986806178751,
+        "reservoir": null,
+        "roughness": 0.22044052775284997
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 3,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 246.6984290363285,
+        "landFraction": 0.6850238217772464,
+        "openLiquidFraction": 0.3149761782227536,
+        "reservoir": null,
+        "roughness": 0.27400952871089856
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 4,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 422.91159263370605,
+        "landFraction": 0.8171836944752795,
+        "openLiquidFraction": 0.1828163055247205,
+        "reservoir": null,
+        "roughness": 0.32687347779011183
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 5,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 579.1482863307491,
+        "landFraction": 0.9343612147480618,
+        "openLiquidFraction": 0.06563878525193823,
+        "reservoir": null,
+        "roughness": 0.3737444858992247
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 6,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 704.699408892669,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "pz",
+        "level": 3,
+        "x": 7,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 798.2281262852873,
+        "landFraction": 1,
+        "openLiquidFraction": 0,
+        "reservoir": null,
+        "roughness": 0.4
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 0,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3589,
+      "sample": {
+        "elevationMeters": 236.51203741786293,
+        "landFraction": 0.6773840280633971,
+        "openLiquidFraction": 0.32261597193660285,
+        "reservoir": null,
+        "roughness": 0.2709536112253589
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 1,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 96.09537393990941,
+        "landFraction": 0.5720715304549321,
+        "openLiquidFraction": 0.4279284695450679,
+        "reservoir": null,
+        "roughness": 0.22882861218197284
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 2,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4488986806178751,
+        "openLiquidFraction": 0.5511013193821249,
+        "reservoir": null,
+        "roughness": 0.17955947224715005
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 3,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.31497617822275364,
+        "openLiquidFraction": 0.6850238217772464,
+        "reservoir": null,
+        "roughness": 0.12599047128910146
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 4,
+        "y": 0
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.1828163055247205,
+        "openLiquidFraction": 0.8171836944752795,
+        "reservoir": null,
+        "roughness": 0.0731265222098882
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 5,
+        "y": 0
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.06563878525193817,
+        "openLiquidFraction": 0.9343612147480618,
+        "reservoir": null,
+        "roughness": 0.02625551410077527
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 6,
+        "y": 0
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 7,
+        "y": 0
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 0,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 288.2861218197283,
+        "landFraction": 0.7162145913647961,
+        "openLiquidFraction": 0.28378540863520385,
+        "reservoir": null,
+        "roughness": 0.28648583654591847
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 1,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 140.97053087790198,
+        "landFraction": 0.6057278981584264,
+        "openLiquidFraction": 0.3942721018415736,
+        "reservoir": null,
+        "roughness": 0.24229115926337058
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 2,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.47149185263266835,
+        "openLiquidFraction": 0.5285081473673316,
+        "reservoir": null,
+        "roughness": 0.18859674105306734
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 3,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3215107648073811,
+        "openLiquidFraction": 0.6784892351926188,
+        "reservoir": null,
+        "roughness": 0.12860430592295244
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 4,
+        "y": 1
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.1727697354801987,
+        "openLiquidFraction": 0.8272302645198013,
+        "reservoir": null,
+        "roughness": 0.06910789419207948
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 5,
+        "y": 1
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.04386964212269295,
+        "openLiquidFraction": 0.956130357877307,
+        "reservoir": null,
+        "roughness": 0.01754785684907718
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 6,
+        "y": 1
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 7,
+        "y": 1
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 0,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 340.6754625474995,
+        "landFraction": 0.7555065969106246,
+        "openLiquidFraction": 0.2444934030893754,
+        "reservoir": null,
+        "roughness": 0.30220263876424985
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 1,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 190.05431578221126,
+        "landFraction": 0.6425407368366585,
+        "openLiquidFraction": 0.35745926316334153,
+        "reservoir": null,
+        "roughness": 0.2570162947346634
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 2,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7954,
+      "sample": {
+        "elevationMeters": 2.7755575615628914e-14,
+        "landFraction": 0.5,
+        "openLiquidFraction": 0.5,
+        "reservoir": null,
+        "roughness": 0.2
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 3,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3359651305000574,
+        "openLiquidFraction": 0.6640348694999426,
+        "reservoir": null,
+        "roughness": 0.13438605220002295
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 4,
+        "y": 2
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.17193026100011477,
+        "openLiquidFraction": 0.8280697389998852,
+        "reservoir": null,
+        "roughness": 0.06877210440004591
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 5,
+        "y": 2
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.032516415022750156,
+        "openLiquidFraction": 0.9674835849772498,
+        "reservoir": null,
+        "roughness": 0.013006566009100063
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 6,
+        "y": 2
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 7,
+        "y": 2
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 0,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 387.6689599142306,
+        "landFraction": 0.790751719935673,
+        "openLiquidFraction": 0.20924828006432705,
+        "reservoir": null,
+        "roughness": 0.3163006879742692
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 1,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 237.98564692349188,
+        "landFraction": 0.678489235192619,
+        "openLiquidFraction": 0.32151076480738106,
+        "reservoir": null,
+        "roughness": 0.2713956940770476
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 2,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 43.74263186665134,
+        "landFraction": 0.5328069738999885,
+        "openLiquidFraction": 0.46719302610001145,
+        "reservoir": null,
+        "roughness": 0.21312278955999542
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 3,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3610463188583485,
+        "openLiquidFraction": 0.6389536811416515,
+        "reservoir": null,
+        "roughness": 0.1444185275433394
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 4,
+        "y": 3
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.187354217431284,
+        "openLiquidFraction": 0.812645782568716,
+        "reservoir": null,
+        "roughness": 0.0749416869725136
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 5,
+        "y": 3
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.0407023654001607,
+        "openLiquidFraction": 0.9592976345998393,
+        "reservoir": null,
+        "roughness": 0.016280946160064282
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 6,
+        "y": 3
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 7,
+        "y": 3
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 0,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 422.91159263370605,
+        "landFraction": 0.8171836944752795,
+        "openLiquidFraction": 0.1828163055247205,
+        "reservoir": null,
+        "roughness": 0.32687347779011183
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 1,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 277.64992141074055,
+        "landFraction": 0.7082374410580554,
+        "openLiquidFraction": 0.2917625589419446,
+        "reservoir": null,
+        "roughness": 0.28329497642322216
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 2,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 87.48526373330273,
+        "landFraction": 0.5656139477999771,
+        "openLiquidFraction": 0.4343860522000229,
+        "reservoir": null,
+        "roughness": 0.22624557911999085
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 3,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.39578473914376133,
+        "openLiquidFraction": 0.6042152608562387,
+        "reservoir": null,
+        "roughness": 0.15831389565750453
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 4,
+        "y": 4
+      },
+      "areaM2": 4037126031749.365,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.22209263771669685,
+        "openLiquidFraction": 0.7779073622833031,
+        "reservoir": null,
+        "roughness": 0.08883705508667875
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 5,
+        "y": 4
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.07350933930014925,
+        "openLiquidFraction": 0.9264906606998508,
+        "reservoir": null,
+        "roughness": 0.0294037357200597
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 6,
+        "y": 4
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 7,
+        "y": 4
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 0,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 442.87810131174933,
+        "landFraction": 0.8321585759838119,
+        "openLiquidFraction": 0.16784142401618807,
+        "reservoir": null,
+        "roughness": 0.3328634303935248
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 1,
+        "y": 5
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 304.0869052515381,
+        "landFraction": 0.7280651789386536,
+        "openLiquidFraction": 0.27193482106134637,
+        "reservoir": null,
+        "roughness": 0.2912260715754615
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 2,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 124.66228932726666,
+        "landFraction": 0.59349671699545,
+        "openLiquidFraction": 0.40650328300454996,
+        "reservoir": null,
+        "roughness": 0.23739868679818002
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 3,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.434386052200023,
+        "openLiquidFraction": 0.565613947799977,
+        "reservoir": null,
+        "roughness": 0.17375442088000922
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 4,
+        "y": 5
+      },
+      "areaM2": 3417334929075.458,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2703511827000804,
+        "openLiquidFraction": 0.7296488172999196,
+        "reservoir": null,
+        "roughness": 0.10814047308003216
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 5,
+        "y": 5
+      },
+      "areaM2": 2939650766579.7944,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.1260131320182002,
+        "openLiquidFraction": 0.8739868679817998,
+        "reservoir": null,
+        "roughness": 0.05040525280728008
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 6,
+        "y": 5
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.015361494755361305,
+        "openLiquidFraction": 0.9846385052446387,
+        "reservoir": null,
+        "roughness": 0.006144597902144522
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 7,
+        "y": 5
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 0,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 448.445078386244,
+        "landFraction": 0.836333808789683,
+        "openLiquidFraction": 0.163666191210317,
+        "reservoir": null,
+        "roughness": 0.33453352351587323
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 1,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 317.1836944752795,
+        "landFraction": 0.7378877708564596,
+        "openLiquidFraction": 0.2621122291435404,
+        "reservoir": null,
+        "roughness": 0.29515510834258385
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 2,
+        "y": 6
+      },
+      "areaM2": 2259288591246.831,
+      "sample": {
+        "elevationMeters": 152.04345262576908,
+        "landFraction": 0.6140325894693268,
+        "openLiquidFraction": 0.3859674105306732,
+        "reservoir": null,
+        "roughness": 0.24561303578773075
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 3,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.4702517941345635,
+        "openLiquidFraction": 0.5297482058654365,
+        "reservoir": null,
+        "roughness": 0.1881007176538254
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 4,
+        "y": 6
+      },
+      "areaM2": 2562640870774.3833,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3215107648073811,
+        "openLiquidFraction": 0.6784892351926188,
+        "reservoir": null,
+        "roughness": 0.12860430592295244
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 5,
+        "y": 6
+      },
+      "areaM2": 2259288591246.83,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.18641037895935142,
+        "openLiquidFraction": 0.8135896210406486,
+        "reservoir": null,
+        "roughness": 0.07456415158374056
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 6,
+        "y": 6
+      },
+      "areaM2": 1804750470566.2302,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.07708840736629408,
+        "openLiquidFraction": 0.9229115926337059,
+        "reservoir": null,
+        "roughness": 0.030835362946517633
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 7,
+        "y": 6
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0,
+        "openLiquidFraction": 1,
+        "reservoir": null,
+        "roughness": 0
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 0,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 443.46007015849295,
+        "landFraction": 0.8325950526188697,
+        "openLiquidFraction": 0.16740494738113032,
+        "reservoir": null,
+        "roughness": 0.33303802104754787
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 1,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 320.31791313303137,
+        "landFraction": 0.7402384348497735,
+        "openLiquidFraction": 0.2597615651502265,
+        "reservoir": null,
+        "roughness": 0.2960953739399094
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 2,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9343,
+      "sample": {
+        "elevationMeters": 170.3377312737497,
+        "landFraction": 0.6277532984553122,
+        "openLiquidFraction": 0.37224670154468775,
+        "reservoir": null,
+        "roughness": 0.25110131938212493
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 3,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 2.7755575615628914e-14,
+        "landFraction": 0.5,
+        "openLiquidFraction": 0.5,
+        "reservoir": null,
+        "roughness": 0.2
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 4,
+        "y": 7
+      },
+      "areaM2": 1804687791894.3667,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.3678401273019669,
+        "openLiquidFraction": 0.6321598726980331,
+        "reservoir": null,
+        "roughness": 0.14713605092078677
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 5,
+        "y": 7
+      },
+      "areaM2": 1631296963514.9324,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.2444934030893754,
+        "openLiquidFraction": 0.7555065969106246,
+        "reservoir": null,
+        "roughness": 0.09779736123575017
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 6,
+        "y": 7
+      },
+      "areaM2": 1357268940392.821,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.13964234772533968,
+        "openLiquidFraction": 0.8603576522746603,
+        "reservoir": null,
+        "roughness": 0.05585693909013587
+      },
+      "status": "Known"
+    },
+    {
+      "address": {
+        "face": "nz",
+        "level": 3,
+        "x": 7,
+        "y": 7
+      },
+      "areaM2": 1067874540128.3627,
+      "sample": {
+        "elevationMeters": 0,
+        "landFraction": 0.05653992984150713,
+        "openLiquidFraction": 0.9434600701584929,
+        "reservoir": null,
+        "roughness": 0.022615971936602853
+      },
+      "status": "Known"
+    }
+  ],
+  "digest": "sha256:0081847ba40a2fbec5455ac438f1806343586049c1498965dd0a33c94acd3570",
+  "level": 3,
+  "provenance": {
+    "kind": "TestAssumption",
+    "note": "Synthetic authoring constants, not accepted planetary climate or natural atmosphere data."
+  },
+  "schema": "wxg.macro-projection/v1",
+  "source": {
+    "digest": "sha256:73923b0087f7fced33d426abdbfb75089ef0b16bc748cf9e3a0a340da1d5ff16",
+    "id": "wxg.macro.HestiaAuthoring",
+    "version": 1
+  }
+}

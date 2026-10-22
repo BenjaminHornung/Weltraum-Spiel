@@ -1,0 +1,136 @@
+{
+  "status": "PRIVATE_PROFILE_SOURCE_PREPARED_PENDING_ROOT_REVIEW_NOT_RUN_READY",
+  "files": [
+    {
+      "path": "ACTUAL_TURN.json",
+      "bytes": 264,
+      "sha256": "6479f9aa5943d710249d3b815cd705b8fd9294eecf89df3a35ca6719f9c68142"
+    },
+    {
+      "path": "BEFORE_BINDINGS.json",
+      "bytes": 16677,
+      "sha256": "6846dd75245eb12bb7061ae0e1244656df27e558e6148a5f2c62f2cec953be16"
+    },
+    {
+      "path": "EXACT_THREE_LINE_DIFF.patch",
+      "bytes": 4204,
+      "sha256": "0e868df92fa942e9f24abcec9555cef7c0e9693054674288efb56cb7b690432a"
+    },
+    {
+      "path": "OLD_MEMBERSHIP_FINAL.json",
+      "bytes": 376,
+      "sha256": "d0f172c733fa0eda17358ed2a894f07841c8de42e33f8768e2b5c41b5b37bd31"
+    },
+    {
+      "path": "PRESERVATION_FINAL.json",
+      "bytes": 449,
+      "sha256": "b6463ee7833e01d9955b5f21460822410dbe539f4b506ce9ee1c9510fccb8a67"
+    },
+    {
+      "path": "PRODUCER_REPORT_STATE_BEFORE.json",
+      "bytes": 1522,
+      "sha256": "0eb42942e45be396c6840c76558982f75c2289640e15dd69bacd6e23c31a95e1"
+    },
+    {
+      "path": "PROFILE_ARGS_TEMPLATE.json",
+      "bytes": 363,
+      "sha256": "42c345d34dc87bae2a8f6528c747a1475e7caa25f9df2a2ced9cbdd346ed352d"
+    },
+    {
+      "path": "QUALIFIED_INPUTS.json",
+      "bytes": 290,
+      "sha256": "e7b5c929602d13402ca50eef13f6536f11cd22dd97089f698b77f84a3e0bf742"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 3985,
+      "sha256": "57925e3748199ccdb9fccfebe3d81825cfd258488621feb49a2de5f36c6a556e"
+    },
+    {
+      "path": "Run-BoundedProfile.ps1",
+      "bytes": 4456,
+      "sha256": "b26fb35094f10a06254f83b2cd4efaedccbd1983f59fb1c8cafaac861f92ffe8"
+    },
+    {
+      "path": "RUNTIME_COPY_BINDINGS.json",
+      "bytes": 5178,
+      "sha256": "17484ea51559b210d1b72e68960e143d02fe1effca7947f6bfd499c49493444f"
+    },
+    {
+      "path": "runtime/build-binding.json",
+      "bytes": 542,
+      "sha256": "b1bb01ac16438ff3bd27d206f90ade47bfb5e06434337e9abaf59096b16ba379"
+    },
+    {
+      "path": "runtime/dist/adapter.mjs",
+      "bytes": 75162,
+      "sha256": "d95b33851ca4e7f942f3c6817844a8e337a94eecb10ffeedd5ae036e415004bc"
+    },
+    {
+      "path": "runtime/dist/oracle.mjs",
+      "bytes": 95417,
+      "sha256": "ce0f46e58ce8edfea4cda6ca4076328da81a8d1adb4427e180b97d9a38ad7896"
+    },
+    {
+      "path": "runtime/dist/scalar.wasm",
+      "bytes": 36261,
+      "sha256": "452d01866636a09a05903041b766b5794e629d8560742391826414063e6a7bab"
+    },
+    {
+      "path": "runtime/fixtures/saved.json",
+      "bytes": 697368,
+      "sha256": "326b325a7c5f4027316bbe4a9f1f967666e05407620330726d538eb49d9a51a0"
+    },
+    {
+      "path": "runtime/runner-profile.json",
+      "bytes": 1715,
+      "sha256": "8f530ec4f95df9c2a0253b21d71086aa17082fef2475e380202712a7db9a9ac7"
+    },
+    {
+      "path": "runtime/scripts/profile-worker.mjs",
+      "bytes": 2928,
+      "sha256": "58231cb16fde3a87b84e0a776d6b0b3597edc00984c224d4fa1f85475a782abc"
+    },
+    {
+      "path": "runtime/scripts/profile.mjs",
+      "bytes": 8040,
+      "sha256": "5d76b24035207645a5f67a5d9810b1190c513264c39c41a23bdca317fd86cc73"
+    },
+    {
+      "path": "runtime/src/fixtures.mjs",
+      "bytes": 3250,
+      "sha256": "dc1c3651de8f09e11a22aca9ca60a20dc5270b3926100face17a892344379d8b"
+    },
+    {
+      "path": "runtime/src/saved-fixture.mjs",
+      "bytes": 2128,
+      "sha256": "990ca032b4a851f2cb15ae61c5a2cfc35e81ede09600d35ec7efe78e104fb547"
+    },
+    {
+      "path": "STATIC_REVIEW.json",
+      "bytes": 3420,
+      "sha256": "7a1c60f6f9d9dc88b139536a540f17334a5bd977fc80c138b5f7ffe815daeffb"
+    },
+    {
+      "path": "USAGE.md",
+      "bytes": 2203,
+      "sha256": "62524bd22c24f0fb0ad7c45e9f8cb33bfd0eae50e6f95cee37b2f3e8b8226803"
+    }
+  ],
+  "rows": 23,
+  "physicalAfterClosure": 26,
+  "exclusions": [
+    "SOURCE_MANIFEST_FINAL.json",
+    "FREEZE.json",
+    "APP_TURN_CLOSE.json"
+  ],
+  "byteIdenticalRuntimeCopies": 10,
+  "controllerChangedLines": [
+    9,
+    20,
+    47
+  ],
+  "runtimeExecutions": 0,
+  "newLeaseSlotRunnerWindowOrGrant": false,
+  "currentReferenceAuthority": false
+}

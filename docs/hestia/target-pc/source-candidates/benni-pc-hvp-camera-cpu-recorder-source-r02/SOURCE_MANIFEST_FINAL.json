@@ -1,0 +1,54 @@
+{
+  "status": "SOURCE_FIX_PENDING_ROOT_REVIEW",
+  "files": [
+    {
+      "path": "ACTUAL_TURN.json",
+      "bytes": 173,
+      "sha256": "60af3313652898dc1dc934f192a8c73585c8ef18dcf0cc5a0f57042bb6150d05"
+    },
+    {
+      "path": "BEFORE_BINDINGS.json",
+      "bytes": 7009,
+      "sha256": "a27804d5ef5e355c1fd69a9983c408ff725f40c9c322874940aac5ac50285df9"
+    },
+    {
+      "path": "EXACT_ONE_FIELD_DIFF.patch",
+      "bytes": 2018,
+      "sha256": "21dc2b8d8a97df2349ebb08d7970a915343864b56b8ab31d7019c623a7110b19"
+    },
+    {
+      "path": "NEXT_INVOCATION.json",
+      "bytes": 124,
+      "sha256": "fb74dbf34ac8596eafce69b0e8fa933e52fb5ff01ada9b803e18861d49985549"
+    },
+    {
+      "path": "PRESERVATION_FINAL.json",
+      "bytes": 308,
+      "sha256": "b79d2267ed8f0c3918fbe687ce9ad72c2de9f4279979ff7514f51362e8f67c5f"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 2497,
+      "sha256": "a6bb81a0a48eb33a59e87e07240cb6844569860f88bf80fc0d838d58a0ee6317"
+    },
+    {
+      "path": "Run-BoundedCpu.ps1",
+      "bytes": 4446,
+      "sha256": "db560f28d85f341e6a68ca2069e63a551569d581d6326d4c97bfc77ff4d545c3"
+    },
+    {
+      "path": "STATIC_VERIFICATION.json",
+      "bytes": 881,
+      "sha256": "efebcc04289b4206efc9fc6fb09ded6f336259c2b9d24d6ce87d3b8de698e95e"
+    }
+  ],
+  "rows": 8,
+  "physicalAfterClosure": 11,
+  "exclusions": [
+    "SOURCE_MANIFEST_FINAL.json",
+    "FREEZE.json",
+    "APP_TURN_CLOSE.json"
+  ],
+  "helperOrTestRuns": 0,
+  "runtimeAuthority": false
+}

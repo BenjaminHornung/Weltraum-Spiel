@@ -1,0 +1,153 @@
+{
+  "status": "FINITE_PRIVATE_CONSUMER_SOURCE_BOUND_PENDING_ROOT_REVIEW",
+  "selfExclusion": "SOURCE_MANIFEST_FINAL.json only",
+  "rows": 29,
+  "physical": 30,
+  "files": [
+    {
+      "path": "ACTUAL_SELECTION_RESULT.json",
+      "bytes": 861,
+      "sha256": "69a1de9255233f6f323cfdbaaa2c57644283fa317156de312f10d5a04f39d082"
+    },
+    {
+      "path": "ADMIN_REPORT_REFERENCE.json",
+      "bytes": 326,
+      "sha256": "8c8be2408a655e2c536812f6d22ef96826ea013e03bed66da18020c76e72ff0a"
+    },
+    {
+      "path": "CHECK_SELECTION.json",
+      "bytes": 929,
+      "sha256": "0831550c70216bcb2e3ce68e4d5417eafdc8c2b72c755a7627cd3fa205aa4d39"
+    },
+    {
+      "path": "CHECK_SUMMARY.json",
+      "bytes": 1644,
+      "sha256": "39e1db70501fedc0d3a35ec6541568e6fcc0fac71a763b06099a085d51a2f4d5"
+    },
+    {
+      "path": "dist/optics.js",
+      "bytes": 8318,
+      "sha256": "262efa7a3a3f5d120e7cb59472cdf3c968d79bdeb55c4b3686f3b164ef5ea993"
+    },
+    {
+      "path": "dist/weather-port.js",
+      "bytes": 2607,
+      "sha256": "86b22d0e11bfdc3dcf92e2d45eba6eb84589d95e5732c48a47532966134f3ce7"
+    },
+    {
+      "path": "EMIT_BINDINGS_FINAL.json",
+      "bytes": 5460,
+      "sha256": "5e62e51ac1d466141651cd2f99508c889a053c788d8961cd7da3883eac60275b"
+    },
+    {
+      "path": "EMIT_BINDINGS.json",
+      "bytes": 4161,
+      "sha256": "904d9e9e92b5e120175e5c811193601994facdbd24823a513de6dd6577b91120"
+    },
+    {
+      "path": "evidence/consumer-strict-emit.json",
+      "bytes": 1035,
+      "sha256": "2f9d090f874d17c35d9ba87d38018241944139dc284ac1af20337dcdec291e85"
+    },
+    {
+      "path": "evidence/consumer-strict-js-emit.json",
+      "bytes": 723,
+      "sha256": "ad2b33bb9310cebd756e0c520944dfee0d8daa3c075506b27e427de887f484b4"
+    },
+    {
+      "path": "evidence/finite-pure-caller-data.json",
+      "bytes": 1737,
+      "sha256": "2c2b8905cb400b15858791edcd88044aa51a6349cdc9657a1a3459c098631539"
+    },
+    {
+      "path": "evidence/finite-pure-caller.json",
+      "bytes": 6109,
+      "sha256": "299024680d6b10c143161bde016c3f4126cd6b796fdc8a5807167be5599903d5"
+    },
+    {
+      "path": "EXACT_CHANGES.patch",
+      "bytes": 8059,
+      "sha256": "c07625e2f172d4fef898b33bf278841a18304072e875182d1a6faf7c35618909"
+    },
+    {
+      "path": "fixtures/authoring-inputs.json",
+      "bytes": 479176,
+      "sha256": "83912d65b7be07e3fb501d1bfb68e6d2c08020f72b2af455d4e73fcada6d3f8c"
+    },
+    {
+      "path": "fixtures/chosen-weather-input.json",
+      "bytes": 65740,
+      "sha256": "4c4348d8afa2b7fe4969016a0b29cc3db00896f0aff023fe9bf438fa70f52364"
+    },
+    {
+      "path": "fixtures/chosen-weather-query.json",
+      "bytes": 363,
+      "sha256": "adb5ddbe99c6202f0481af6ece4caca2845d35fe208512ac52a587ba48e7e28f"
+    },
+    {
+      "path": "fixtures/chosen-weather-result.json",
+      "bytes": 2458,
+      "sha256": "451d814f4d04b115ed7296095a7593292c8cde5bbef084fd3f7a9807b31b0c00"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 846,
+      "sha256": "05823e6768cba9c6fda39142b83daee28c508494342b89ca16deb222f7aace45"
+    },
+    {
+      "path": "INPUT_REFERENCES.json",
+      "bytes": 6998,
+      "sha256": "c41b2245e1dc50a4f53037b69ca16e8a08155a0a3f318716b582965537bd6f8c"
+    },
+    {
+      "path": "package.json",
+      "bytes": 74,
+      "sha256": "35ed6c7edc1c62e80361903b621da4fa082fb64995ea933a383ab2ebad5d4de7"
+    },
+    {
+      "path": "PRESERVATION_AFTER.json",
+      "bytes": 762,
+      "sha256": "2e7765bd2cd1c09fc89ff679f8e20542a166aa0001eb42f4ef30c585eecfc749"
+    },
+    {
+      "path": "PRESERVATION_BEFORE.json",
+      "bytes": 13057,
+      "sha256": "cdb466572301b1d06f91678c825abcb64a59a2d80114fc0d7c02037827c85b62"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 4111,
+      "sha256": "d74e8cffc06a920c8ef4556a903f4baf5c551cb249785f79da3e6d9a623e2768"
+    },
+    {
+      "path": "Run-Check.ps1",
+      "bytes": 3295,
+      "sha256": "e5d5f7ee00e7a6d3b7f14d240c5ff133c44e4230b87a99a3a543efdc8a8f6abe"
+    },
+    {
+      "path": "SCOPE_CHECK.json",
+      "bytes": 379,
+      "sha256": "571477b79efde79161ec22bde061d8b13d57db2ccf96546020216c64c34e9a36"
+    },
+    {
+      "path": "src/optics.ts",
+      "bytes": 7952,
+      "sha256": "aeffabae342f75f764687e47d9c1824ebae6fa548a4345535d7281c51a6fbda6"
+    },
+    {
+      "path": "src/weather-port.ts",
+      "bytes": 2752,
+      "sha256": "6f1933ab2aa3fed418355fe57aa70545fca7d1fbc732133ce900fedb990e8347"
+    },
+    {
+      "path": "tests/r12-pure-weather-caller.test.mjs",
+      "bytes": 4985,
+      "sha256": "ebdc16332e073ba219714c2d65adb28856fee5a1a975026f81f9f3471a841385"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 333,
+      "sha256": "ec4f9090ab5df14ffdc33991c92ec58578de38653dcace4bdd073e700be7b572"
+    }
+  ]
+}

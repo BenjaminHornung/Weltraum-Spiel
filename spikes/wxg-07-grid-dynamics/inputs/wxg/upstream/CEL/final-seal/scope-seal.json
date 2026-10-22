@@ -1,0 +1,479 @@
+{
+  "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "branch": "feature/cel-01-wxg-00-2026-10-09",
+  "scope": "PASS",
+  "changedFiles": [
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/EXECPLAN.md",
+      "bytes": 2569,
+      "digest": "sha256:0a4dba39a6c8144453e128ead1f1d463a1eda71e982560d9dcabd4062174e2ee"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/design.md",
+      "bytes": 1816,
+      "digest": "sha256:c6ceb9787fc6b8ab95af769e4dee5d2ebf032fb58f9b7622d081d2d315648d52"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/proposal.md",
+      "bytes": 887,
+      "digest": "sha256:6db02a13dd6da2b4b7922a87ab018761414ee02414ae0d27b3dc26c7334cd6a8"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/specs/default/spec.md",
+      "bytes": 2313,
+      "digest": "sha256:9e93094bc9342eda365a41e6bcb313a282da4dd4acbd425615f42ec3a640c667"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tasks.md",
+      "bytes": 503,
+      "digest": "sha256:946d8ba845b4f99ec34a5f0f9f5f928e12b0de2ed4bbac79b1cf7e46eb18ab12"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/completion-final.json",
+      "bytes": 5722,
+      "digest": "sha256:4b0f366b4a90be63cbf001fd592c9933c62188b802452a613c70684bec173005"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/completion-preflights.json",
+      "bytes": 23391,
+      "digest": "sha256:e631bc7b1507d991b72c80751d7e5d094af11a52d0a72198efac1adc0d1927fa"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/devtoolbox-verification.json",
+      "bytes": 3579,
+      "digest": "sha256:c57a6dd69022cac63bb6f87e8709b210363d990c66c9df40d9fa097f2b1bcab0"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/historical-bindings.json",
+      "bytes": 9290,
+      "digest": "sha256:c3ab1318f40918cc9e3d91384c0659c32efea853956da919e1056a7eb3ccd852"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/review-initial.json",
+      "bytes": 752,
+      "digest": "sha256:ecb38a99ece5822e4e95e8deca0ed41ffd1014f6c5dbb5d23df7ce8c0f43d4b9"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/review.json",
+      "bytes": 837,
+      "digest": "sha256:d924399c7b8bfa3818ee47bc21e8dbc7c92fce03b9e61a36e35718e7d98f75af"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/runs/initial-full-01/profiles.json",
+      "bytes": 47412,
+      "digest": "sha256:2c98c3c6c6bf548986fd8fb890ce8f97ef6557fdf9ec4fcc9b47445932828035"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/runs/initial-full-01/read-goldens-input.json",
+      "bytes": 12487,
+      "digest": "sha256:245fb5239110a63bf75085fe2ec347f613d13f87f54a646f08d384b630b09cc7"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/runs/initial-full-01/schema-goldens.json",
+      "bytes": 3541,
+      "digest": "sha256:f4c5ae04345af4f87a2e556ae1ca09bacc25bf4f5667450c44fa6fc78869d870"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/runs/initial-full-01/summary.json",
+      "bytes": 16044,
+      "digest": "sha256:644023e98feefc28593b21733ff8348bb508d11f9404d6dd014ab18c87505b64"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/runs/local-functional-02/summary.json",
+      "bytes": 17416,
+      "digest": "sha256:b6d45e806994955cc5cd99fa22090caf0fe7694b7be9b7fc6d90d0a8a626ba28"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/runs/local-functional-03/summary.json",
+      "bytes": 40252,
+      "digest": "sha256:66ca0ab8c8c4b7383f0a64f6f02f0cccbd3765ae8598aa5b2ac8b01c9e7eaa44"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/runs/local-functional-04/summary.json",
+      "bytes": 46417,
+      "digest": "sha256:42e945a8d9c2b380b1afeae7efa993a6084aaeffe76b539b2f1944802362ce0c"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/cel-01-wxg-00-2026-10-09/tests/test-protocol.md",
+      "bytes": 1762,
+      "digest": "sha256:d57dace11c469c2ef0f9d428cd9b9ba75f8f8d2cb79cde8d6934fa9ab5757a7d"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/.gitignore",
+      "bytes": 30,
+      "digest": "sha256:65a35e814e30195618410351f3cd7dcf7978efd2b406b0d0fce4d6a66dbd0769"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/DependencyBindings.json",
+      "bytes": 104153,
+      "digest": "sha256:287e4e6de6804961b1ef7afd60e80f80e3c2be1fa36298566a59d3cf3459ea1f"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/HANDOFF.md",
+      "bytes": 3655,
+      "digest": "sha256:066e2152a772af9e69e9080b946ccddee2311b5356a0ca200dc63faca11c4748"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/PRODUCT_PATCH_CANDIDATE.md",
+      "bytes": 1226,
+      "digest": "sha256:03f765f3f03f64f2e85ff0051c3aef61baa50898be52c185f7285bf9bc328364"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/README.md",
+      "bytes": 6620,
+      "digest": "sha256:5d8ce448ac949b534c6ed2fd304c4c95521d00cc86d68c4723f42902fec1960a"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/REPORT.md",
+      "bytes": 5140,
+      "digest": "sha256:5132e6746456262acd3cae3913b2f653453dd210ec13dcf88c89eb4ce8594128"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/SourceBindings.json",
+      "bytes": 15639,
+      "digest": "sha256:8a6d1ee2faf07801c3eb48bad0b834f4af2c05251e7d0443a28debaf7812cd4d"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/dependencies.lock.json",
+      "bytes": 5977,
+      "digest": "sha256:b56c265b90d4253aed797056057292628f6293280522c8a98647ff5117a0bbac"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/fixtures/profiles.json",
+      "bytes": 47572,
+      "digest": "sha256:5af02698c4f1f12ad7d7fff36c7a7e75b8483af1bc3406c7812fd4238123cf1b"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/fixtures/read-goldens-input.json",
+      "bytes": 12487,
+      "digest": "sha256:2783eb63e04436fcf6c8b3c5441d984f5e22d3aee7b5f2d2ae1d206f1ed30c74"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/fixtures/schema-goldens.json",
+      "bytes": 3541,
+      "digest": "sha256:440055a05cdbeba03d7acab8ecb5b95e8bccc6beafd9a953a9bfd663981de156"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/package-lock.json",
+      "bytes": 12520,
+      "digest": "sha256:473c3eef1d41041b115ce9e212bc1910186856d4dfabee72ee9120722beaa166"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/package.json",
+      "bytes": 311,
+      "digest": "sha256:b45b1e33d6dc25f1ebf7af2093046835db0fb99af550e4b475e85d78484c88d5"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/receipt.json",
+      "bytes": 72216,
+      "digest": "sha256:3b255ee3e75a272823aa01c734e14baa1157c663625c91254fd6101b6332c67c"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/runner-profile.json",
+      "bytes": 1451,
+      "digest": "sha256:20fcbdf8a4571033959f720a7ccd216b58771e8c4033e99141f74ac8dbbb978d"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/bind-inputs.mjs",
+      "bytes": 8846,
+      "digest": "sha256:4172f8add898693e7a535b86c47fb0a7f161cf1d7f6d36500ddd23b627c4c76b"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/build.mjs",
+      "bytes": 3124,
+      "digest": "sha256:dd14c84d51048769a5ad30ed533866e7ff72753baf1e4d6d958d2ce58c93ada0"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/export-fixtures.mjs",
+      "bytes": 878,
+      "digest": "sha256:625f37eab8547271dcf41e521dcc361995db6ee0efc2db894d9e5c449e50c86c"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/oracle.py",
+      "bytes": 3035,
+      "digest": "sha256:fc92215f4d2cddff1ebabdc6cbbd82aa361d98db8cb5fb75a854ca581113d8e2"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/receipt.mjs",
+      "bytes": 4304,
+      "digest": "sha256:b62e3ae488fea5c53f1a4bf32438a01d537d7c4cfbb6b410856136045f094279"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/repro.mjs",
+      "bytes": 4095,
+      "digest": "sha256:6a07d7bf36c7ee7ae11e90cd5260d9e55e0a7700e6ab87d76149e6df979ab2e4"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/run-bindings.mjs",
+      "bytes": 1989,
+      "digest": "sha256:b1e7ed31fa2132fb00ae49459360b43a75d88bc26e71b94978a6df7bd8428732"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/seal.mjs",
+      "bytes": 3824,
+      "digest": "sha256:77c4daa04350759a680321702805740f43fd0493f80d429cc4b6fb3cfc49a840"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/scripts/tool-bindings.mjs",
+      "bytes": 7314,
+      "digest": "sha256:c4269af1b7be0c4301748a1df19c28d2b937b5071c0fea78681776d18ac55067"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/celestial/canonical.ts",
+      "bytes": 3824,
+      "digest": "sha256:20b5d53ffab98ab87f8ab19db730d381db7ceba4028a8c26b50b61e89bd9bf4a"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/celestial/catalog.ts",
+      "bytes": 6861,
+      "digest": "sha256:d06073a382dbfb57123566c95a0bd32bbcb009491cb11b29464e72fd506b184e"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/celestial/errors.ts",
+      "bytes": 1033,
+      "digest": "sha256:6a3af7a96d0a11a6271a9d4a088f622abb34fc69f79ea981153b2e8486ae5524"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/celestial/ids.ts",
+      "bytes": 1210,
+      "digest": "sha256:67d674f7ca89569a175185ae3c38ce2a1092e06d9e534e7feaa93740a327fbe9"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/celestial/kepler.ts",
+      "bytes": 7687,
+      "digest": "sha256:4f9176810c9bbf22b12b781b45684b09b2afdf66cdfa65919c6f5c8918f0d5dd"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/celestial/starterSystem.ts",
+      "bytes": 9262,
+      "digest": "sha256:d6a1bff618e4b47ebedbff9c69aa4f283caa14e604fac182ddb8b16c99e9da43"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/celestial/types.ts",
+      "bytes": 8603,
+      "digest": "sha256:a32286f52c579016c3b73e1e00b3dbc9a08a588e7c1f7ed3d6fe36a2b03a82a0"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/celestial/validation.ts",
+      "bytes": 12761,
+      "digest": "sha256:19e52d974efd95c892d02cf3f24fd18711e263369af17bd26a19150a077d0bf8"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/core/hash.ts",
+      "bytes": 3099,
+      "digest": "sha256:7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/core/vector.ts",
+      "bytes": 1587,
+      "digest": "sha256:bcd1ce4c43a5a79f82f4410c16e528a3b4a2794dd6526a5f7c9393c10d068ad9"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/persistence/canonical.ts",
+      "bytes": 5830,
+      "digest": "sha256:e21ef6b4ecb2e60663b9d5e1e42327d1dce0e147b3eeb1edf99c2b1d70834ead"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/persistence/ids.ts",
+      "bytes": 9345,
+      "digest": "sha256:db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/persistence/saveSchema.ts",
+      "bytes": 32871,
+      "digest": "sha256:821c3f600a7ace426a5e26a47143b7c9eac1c594990df7d12fc33ec2ee6a79f3"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/persistence/simulationMode.ts",
+      "bytes": 2398,
+      "digest": "sha256:cee8dd7c34023cd532dfc209845291762dd12685030159a3baba196dc3e8c6df"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/persistence/time.ts",
+      "bytes": 5468,
+      "digest": "sha256:fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/persistence/types.ts",
+      "bytes": 5643,
+      "digest": "sha256:93575ab700e3c42e98d1915daa82fb702be649b5c16c3646189219a293241454"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/persistence/validation.ts",
+      "bytes": 10972,
+      "digest": "sha256:101c0ae7b122e5ff4d468c42c9acc0caca96f627b081f2605833f87c7958f1ef"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/bodyFrames.ts",
+      "bytes": 12011,
+      "digest": "sha256:129ab6e093351465d1766b0fa63cfbae040f2f48e3ee2c5aebf17aafa7a40451"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/canonical.ts",
+      "bytes": 577,
+      "digest": "sha256:4821116410203880dadc200ccb13c91fed4d6f5101e52f884462091e1baa0729"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/errors.ts",
+      "bytes": 815,
+      "digest": "sha256:47f48d65467970f3db4ba5e2ab1a3059d10e77999d465af71b9fe26aaa39b146"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/frameGraph.ts",
+      "bytes": 5366,
+      "digest": "sha256:8553854de09b1d069a654b89482c914b01a0ba5bb45458e7498d7f14fa068a7f"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/frameValidation.ts",
+      "bytes": 6672,
+      "digest": "sha256:72b4c3a0472ecfab8d9ccf1708e711f0ec2fc807c2c4dd0e4225718a670cf2f0"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/ids.ts",
+      "bytes": 1066,
+      "digest": "sha256:ab208880b05067f0ef06108cfc5d019e3f482a44485465bb863ddc516f7433b9"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/quaternion.ts",
+      "bytes": 7014,
+      "digest": "sha256:5036273dae402fa1b9b25e1c35d8b50bee1236b2c70b57691f3f7e9c4e133c3f"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/surfaceLocalFrame.ts",
+      "bytes": 7923,
+      "digest": "sha256:2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/types.ts",
+      "bytes": 2783,
+      "digest": "sha256:f19cb96cc08e1b7922178c84a420f7efb9f83f2b15ad114c72eba53b02a622ac"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/snapshot/product/spatial/universeClock.ts",
+      "bytes": 2022,
+      "digest": "sha256:729e06cb50a01c41b9d61067483082b5c12fb091f4ef6748fcc224c90f0d1b73"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/src/contracts.ts",
+      "bytes": 21057,
+      "digest": "sha256:93491833829e131d3bcc837cafff596e5312018baf7ed7176cd1136a8aaca2a5"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/src/fixtures.ts",
+      "bytes": 6399,
+      "digest": "sha256:516e89182d793472adaa0301c6ebd4890452497ed631f74e05a878152d527c1e"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/src/model-pin.ts",
+      "bytes": 186,
+      "digest": "sha256:a4ccacfa404a2314d5837e24e691940126506e7a4918831d7f73295d7e25c845"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/src/types.ts",
+      "bytes": 5739,
+      "digest": "sha256:d65a05b7bbb1214b7e1f7c8de5e7c7861edc30e112ec156433f20b4a8a969a96"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/byteproof.test.mjs",
+      "bytes": 3224,
+      "digest": "sha256:a0ff98fe1bf404c1ae2a36098390a58f63c27a51da45c5af4eb117094766a385"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/contracts.test.mjs",
+      "bytes": 762,
+      "digest": "sha256:0deca54ec5ddeaa190017e193978fd2580a8c1f7debb683ab02157bccd69eb4a"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/control.test.mjs",
+      "bytes": 1158,
+      "digest": "sha256:ce36922dd7bc5cdfcfa3ae6e4811c9d9cb980e1610bcaf9a2ef9235d49993852"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/goldens.test.mjs",
+      "bytes": 2239,
+      "digest": "sha256:355e1cf387c663a858a36ce557adca86020235a548dad9f9085ce5fd07f04301"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/helpers.mjs",
+      "bytes": 1143,
+      "digest": "sha256:5998f081e39b98a52e0d2dd7961bb948898a4dcff954bb1a6baed44c906c30cc"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/negative.test.mjs",
+      "bytes": 5688,
+      "digest": "sha256:a3915e62bbaf6adf1869035ab79e47ee095ec84495026f6b3a792d92237e149b"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/read-worker.mjs",
+      "bytes": 430,
+      "digest": "sha256:e11744ed1de219bc8eab55320992f0935aab6a3b6a292d39cd1d068b0618213c"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/read.test.mjs",
+      "bytes": 8077,
+      "digest": "sha256:a91cab2aef302872b6c1e69573319e5d2fcce5b7aef3140c2105d682411b1aca"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tests/receipt-boundary.test.mjs",
+      "bytes": 2100,
+      "digest": "sha256:a856080aed8508b3eec0c4d52f21ca5ca90de0ea46a4a42baeb3da6637df97a9"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/tsconfig.json",
+      "bytes": 352,
+      "digest": "sha256:d51f556ec740e6a2e8ea4bef80c67ad168211264108f936da3b30cb0917e665a"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/vendor/plt/NumericsProfile.json",
+      "bytes": 1386,
+      "digest": "sha256:c7652cc948a0f213a8a29ff75bdb0a76ede71344c315f924fcc541e6f7ead551"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/vendor/plt/fixtures/queries.json",
+      "bytes": 346,
+      "digest": "sha256:df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/vendor/plt/fixtures/smoothstep-goldens.json",
+      "bytes": 2201,
+      "digest": "sha256:74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/vendor/plt/licenses/Random123.txt",
+      "bytes": 1497,
+      "digest": "sha256:613a52307188093b64a0767167576b432fcec41d0cb6a6a16a4cba922c4fe199"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/vendor/plt/snapshot/time.mjs",
+      "bytes": 5468,
+      "digest": "sha256:dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/vendor/plt/src/fixture.mjs",
+      "bytes": 3028,
+      "digest": "sha256:55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/vendor/plt/src/numerics.d.mts",
+      "bytes": 444,
+      "digest": "sha256:b0ad665b15b9e6a34dc19d0d967e4dc8518b437d7c62d24f7e7c43fd6698c7da"
+    },
+    {
+      "path": "spikes/cel-01-wxg-00-contracts/vendor/plt/src/numerics.mjs",
+      "bytes": 4458,
+      "digest": "sha256:bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    }
+  ],
+  "dirtyTreeDigest": "sha256:7029d7de6f9bc100a74315be5c567036a2fbe234d6e0c1c91d3aa022bcd3aae6",
+  "indexBinding": {
+    "definition": "Complete semantic index: git ls-files --stage -z; includes all modes, blob ids and stages, omits mutable stat cache",
+    "digest": "sha256:1df285ebc14c4556ada68bf539cd2a0b4ac534fffca4c62f34f508afbd4d51a8"
+  },
+  "stagedDiffDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "unstagedDiffDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "fullTrackedDiffDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "statusDigest": "sha256:0b130c5c6976e9bf407c8a926ad63d6ef49b6b73abd72c1c568d92d5da059674",
+  "reviewPatchDigest": "sha256:fe8be00fbc8d4e533307369652cae579ac0b55e90600c963b71c97feae9b08d4",
+  "reviewPatchBytes": 865967,
+  "definition": "Every baseline-changed tracked/staged/unstaged and nonignored-untracked file. Normal LFS filters retained; no hydrated PNG false diffs. Ignored own dependencies/dist/runtime are bound separately in DependencyBindings/receipt/build manifests. This detached ignored seal avoids self-reference. No human approval implied."
+}

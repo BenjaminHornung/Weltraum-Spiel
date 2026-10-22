@@ -1,0 +1,17 @@
+{
+  "status": "SOURCE_CHECKED_PENDING_ROOT_REVIEW_RUNTIME_NONE",
+  "actualThread": "01a13648-c55b-7250-bf07-34921d70b43b",
+  "actualTurn": "01a15309-75c9-7553-9f33-be1d39b9c7f2",
+  "actualAppStartUtc": "2026-10-19T07:21:31Z",
+  "fixedDeadlineUtc": "2026-10-19T07:26:31Z",
+  "freezeCapturedAtUtc": "2026-10-19T07:24:42.5776133Z",
+  "elapsedStartToFreezeSeconds": 191.5776133,
+  "fullAppTurnEnd": "NOT_OBSERVABLE_UNTIL_AFTER_FINAL_RESPONSE_NEVER_EQUAL_FREEZE",
+  "actualM5HostStarts": 0,
+  "actualPayloadStarts": 0,
+  "rootBodyExecutions": 0,
+  "rootRecordsCreated": 0,
+  "subagents": 0,
+  "newRuntimeCopies": 0,
+  "oldTimingHoldUnchanged": true
+}

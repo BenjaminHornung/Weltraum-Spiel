@@ -54,6 +54,7 @@ import {
   type StructuralJointEndpoint,
   type StructuralMaterialDefinition,
   type StructuralObject,
+  type StructuralSemanticKey,
   type StructuralVoxelState
 } from "./types";
 import {
@@ -608,7 +609,7 @@ function* structuralBrickFromAdaptiveSteps(brickValue: unknown, materialBindings
     const state: StructuralVoxelState = freezeStructuralProduced({
       materialId: structuralMaterialId(materialId, `${path}/material/${index}`, false),
       partId: null,
-      semanticKey: semantic === null ? null : structuralCanonicalString(semantic, `${path}/semantic/${index}`),
+      semanticKey: semantic === null ? null : structuralCanonicalString<StructuralSemanticKey>(semantic, `${path}/semantic/${index}`),
       damageKey: null
     }, reserve);
     cells.push(freezeStructuralProduced({ localIndex: structuralLocalCellIndex(index), state }, reserve));

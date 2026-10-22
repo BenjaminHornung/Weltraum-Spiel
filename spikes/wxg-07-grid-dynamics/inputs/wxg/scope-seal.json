@@ -1,0 +1,764 @@
+{
+  "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "branch": "feature/wxg-01-04-2026-10-09",
+  "scope": "PASS",
+  "changedFiles": [
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/EXECPLAN.md",
+      "bytes": 3615,
+      "digest": "sha256:489f7ad2361671acd07574c09fefdbdb5c15841bd20c143dbd22d3da12f2c496"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/design.md",
+      "bytes": 1414,
+      "digest": "sha256:4ea4e8b8c8789673d9b3b3bcca1027bde5819ee3fa6e44ce6d9f1dbe049c1956"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/proposal.md",
+      "bytes": 919,
+      "digest": "sha256:cb31525192809c271ba30c5178e500a8ee1a19e31abd960af1b103dd5193cc5c"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/specs/analytic-weather/spec.md",
+      "bytes": 2129,
+      "digest": "sha256:9587eae364a77a9b94135e82af5fc0f53a72e0b5e1850445df71a53a70944bde"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tasks.md",
+      "bytes": 571,
+      "digest": "sha256:7b876a305730f2247ff09aed2d26ca1085353c0f63cdea26255fa4dbbeeb2fd9"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/cache-race-red/command.json",
+      "bytes": 134,
+      "digest": "sha256:ab95cb252b118d35861f2ca4ba138ba78e36a47dcce55dbd5f610f98e8e4db70"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/control/summary.json",
+      "bytes": 1793,
+      "digest": "sha256:3ec271ad0382b7f82b243ea33db66ea2aa2ef7c69994c7df9cd16642cd4b35cd"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/devtoolbox-verification.json",
+      "bytes": 2254,
+      "digest": "sha256:11f482f9e8659377bd2fe054e0553e9b7f4b2c989fd8eaf4a437b4db432d2a63"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/fixture-history/local-functional-03/authoring-inputs.json",
+      "bytes": 479176,
+      "digest": "sha256:83912d65b7be07e3fb501d1bfb68e6d2c08020f72b2af455d4e73fcada6d3f8c"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/fixture-history/local-functional-03/climate-weather-goldens.json",
+      "bytes": 79767,
+      "digest": "sha256:2652911446802a42b819596624907d3d08aec7b1868486396d610a59cd9209d3"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/fixture-history/local-functional-03/corridor-800km.json",
+      "bytes": 23414,
+      "digest": "sha256:212356dcf86a37c33702aafae63322f7d5975736dbd0a2c6f6da40e091de03c7"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/fixture-history/local-functional-03/geometry-goldens.json",
+      "bytes": 1496,
+      "digest": "sha256:96a1f75569da503c67be0ab7279c16bdde0af67354033a04c6723c5a9fec7761"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/fixture-history/local-functional-03/macro-projection.json",
+      "bytes": 147894,
+      "digest": "sha256:a618144cafd121ca0ec303705575f423a915e636f6222a3ce612fa4ca0b454af"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/initial-build.txt",
+      "bytes": 897,
+      "digest": "sha256:bfea8e4bc75647335935403a3970ad232bc985e03f9a35caeaf3feaaafdc6a2b"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/original-assertions/geometry.test.mjs",
+      "bytes": 11451,
+      "digest": "sha256:70f9a32a43cda7b7edcd561d28d242efcb90e42ff55b12433698cb60b63540e3"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/original-assertions/wxg.test.mjs",
+      "bytes": 13573,
+      "digest": "sha256:465a8ba2bbc76f86fcc145f408142663992c057c9645cd25c437f5cb7fb5c2f2"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/read-entry-check.json",
+      "bytes": 813,
+      "digest": "sha256:e741459fddad773a535f8a0dd98acd5ccd7155013cc133551a6706ce55e8cb4e"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/runs/initial-functional-01/summary.json",
+      "bytes": 33702,
+      "digest": "sha256:b41d8b2178f6a90daa65f1463e180452ab08a2c7232d56950df0af799d4da23e"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/runs/local-functional-02/summary.json",
+      "bytes": 37708,
+      "digest": "sha256:aabbda38de7a38e59b638a8d4aad31aa539ca185c90f931625692d824496746e"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/runs/local-functional-03/summary.json",
+      "bytes": 41325,
+      "digest": "sha256:63f2103bbd68b396522dd48c5d2e89d1b682cf0dc316ee1e9853413e1617c4f2"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/runs/local-functional-04/summary.json",
+      "bytes": 41511,
+      "digest": "sha256:2ce6b36229489f41a0fef38e3fbb0c131ff0961eab0e8f8eea935626e11c9bf2"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/runs/local-functional-05/summary.json",
+      "bytes": 41543,
+      "digest": "sha256:8ae233d2a01c617995c4a4f000f0bfdf1aeb6bddd93449333f78bcd7302d9ff7"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/runs/local-functional-06/summary.json",
+      "bytes": 41533,
+      "digest": "sha256:30de7e7ea6cfe34c234c78b593478356582bd939df943717d02605898cb2c884"
+    },
+    {
+      "path": ".devtoolbox/specs/changes/wxg-01-04-2026-10-09/tests/test-protocol.md",
+      "bytes": 3302,
+      "digest": "sha256:8344e02b977929a51bb853d3d04c80e3ee72bff6b1a43e048835bdb0de68ad7b"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/.gitignore",
+      "bytes": 30,
+      "digest": "sha256:65a35e814e30195618410351f3cd7dcf7978efd2b406b0d0fce4d6a66dbd0769"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/ConsumerBindings.json",
+      "bytes": 345922,
+      "digest": "sha256:403cdb0ed02c0d0fd2139f0aadae53f94af8411eddc8fa8216ab5425a9e7753c"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/HANDOFF.md",
+      "bytes": 3715,
+      "digest": "sha256:07eb29d3470172766efeae33b54d2be0edd7d25973b19a2c0ff9f4c88342ee4f"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/README.md",
+      "bytes": 8095,
+      "digest": "sha256:a914fda7b54f8945fa5e9ffd62d62028e5014eec000aa8468991c5a9ad976855"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/REPORT.md",
+      "bytes": 7331,
+      "digest": "sha256:c37a3dc9a931fafa8c1eb4bddc0b94605ae549632d4b06c9eaf89083e4795556"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/SourceBindings.json",
+      "bytes": 7734,
+      "digest": "sha256:b9a84a58570f22f8e1954d86509884a938f42a4e6a6dbb0358c8c2deca8d6290"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/fixtures/authoring-config.json",
+      "bytes": 555,
+      "digest": "sha256:3b684223432953c0fd60a9b1f27a10efea55f6dee175ccc3a70371fe575eafb8"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/fixtures/authoring-inputs.json",
+      "bytes": 479176,
+      "digest": "sha256:83912d65b7be07e3fb501d1bfb68e6d2c08020f72b2af455d4e73fcada6d3f8c"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/fixtures/climate-weather-goldens.json",
+      "bytes": 79880,
+      "digest": "sha256:f2d5b515c95aee63a4abae0d233a9e8810e4eebd624e17a47ecf672632da43fb"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/fixtures/corridor-800km.json",
+      "bytes": 24804,
+      "digest": "sha256:8bad529dce9595c8fded5196a82f9ed3ff6f9c201ec9a3b7b9be166bf4ee4f63"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/fixtures/geometry-goldens.json",
+      "bytes": 1496,
+      "digest": "sha256:96a1f75569da503c67be0ab7279c16bdde0af67354033a04c6723c5a9fec7761"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/fixtures/macro-projection.json",
+      "bytes": 147894,
+      "digest": "sha256:a618144cafd121ca0ec303705575f423a915e636f6222a3ce612fa4ca0b454af"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/package-lock.json",
+      "bytes": 12510,
+      "digest": "sha256:bed36ac9c152e0ffc66a9be53f17dc6bcb1f8198088b5474433633c843ae607c"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/package.json",
+      "bytes": 313,
+      "digest": "sha256:1016f5d3d4de3838141e6d608c4158a0bd62ebaaaf7947051c9b478019788432"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/receipt.json",
+      "bytes": 83288,
+      "digest": "sha256:1bc3442c6d068ed42b207857949dd168f3e7f6da64d0842b99228df4608c7106"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/review.json",
+      "bytes": 3208,
+      "digest": "sha256:e9f6b6d772311aeecdef2d733c89266df20f2d0cd86e60511cf0b232a5b011fe"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/runner-profile.json",
+      "bytes": 1797,
+      "digest": "sha256:8dbab8488851a8bfb3dc6b3fb3b4fba04b6c92a3cddb5901985e239006d17502"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/bindings.mjs",
+      "bytes": 4463,
+      "digest": "sha256:944781c7932681f54162a55fd4b34cb81df2d7a9ec05d0bb1dde4306deb1ebc5"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/build.mjs",
+      "bytes": 2042,
+      "digest": "sha256:093e8a58603817b944dfbe2ea7dc53bb6f0757d2e86328a6c657113a0e248b2b"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/check-bindings.mjs",
+      "bytes": 1399,
+      "digest": "sha256:f44c93af975e49f25fe85fec3d5b02c01cca27e7b4d9c9e4a4dbb3928b01ee54"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/control.mjs",
+      "bytes": 1358,
+      "digest": "sha256:d2ff92d4ca31f047f71240f91428df90d49f9472b3bce7b131a45398537bbe30"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/export-fixtures.mjs",
+      "bytes": 3624,
+      "digest": "sha256:14522f9614957e27a058e8ce588729f2e33c2f89a46c126ff05bea880086acf7"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/freeze-inputs.mjs",
+      "bytes": 5748,
+      "digest": "sha256:de27a17e817213295ec5075c293ee99b5445b2a8b6074daaac42d3791c404011"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/oracle.py",
+      "bytes": 4088,
+      "digest": "sha256:8e8376fa7275aadd72ec04e4d6251318d2102ac2abf8e345e798ce8a230228dc"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/read-port.mjs",
+      "bytes": 1512,
+      "digest": "sha256:93228719d98e0dec6946c1dd30f96b8e306be6090fe6866e0d1c46c485b103e4"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/receipt.mjs",
+      "bytes": 4482,
+      "digest": "sha256:7cdb3b0c200ac84901f5ba69063d72dd88cc625346b8e1535fcd2c9b5b7011f3"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/repro.mjs",
+      "bytes": 3827,
+      "digest": "sha256:b3b56895963f02a966bd8197361788c3aad4f999b7cfc7912b38074ec6ad29b8"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/seal.mjs",
+      "bytes": 3122,
+      "digest": "sha256:2e46e58467a820644043942eaea2093ccfdebd3bdc01211646027b3eefc6d9d5"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/scripts/source-bindings.mjs",
+      "bytes": 2632,
+      "digest": "sha256:f279d1878e167ee009189570f71953790ea2a954db3bbd31de3c2302216b6bcb"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/00_START_HIER.md",
+      "bytes": 3243,
+      "digest": "sha256:31d831cf18a99442acabf4f424bb43030fc72f767926385e9c4c94a4a23689d1"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/01_PRUEFUNG_UND_ENTSCHEIDUNG.md",
+      "bytes": 8005,
+      "digest": "sha256:8c866c78f516ffc4134dfec1292bbbeb55995335915768e016e54e523a325e09"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/03_SCHNITTSTELLEN_UND_UEBERNAHME.md",
+      "bytes": 6579,
+      "digest": "sha256:7f3d2f477819e9f7209a45c16fd46456ddf60ef569532d6bdc438790773cf047"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/Auftraege/WXG-01-04.md",
+      "bytes": 3552,
+      "digest": "sha256:36d08b8f506d42d023ec2ceeb9140c73da1f3df9d3d269b56386bbc1648b626e"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/Cloud/00_GEMEINSAMER_VERTRAG.md",
+      "bytes": 5908,
+      "digest": "sha256:0b9a13ebe3929b4d5d48fa77a7483d0e7ba32fe82dd6c6c61e1cabaa9c1e27b2"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/Goals/WXG-01-04.txt",
+      "bytes": 425,
+      "digest": "sha256:3e1f3af2e0562aee8853d34dbe8182bbcf6a91d2c6b18b86146da46932796543"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/Quellen/hestia-konzeptpaket-review-und-arbeitspaket-registry-2026-10-09.md",
+      "bytes": 90628,
+      "digest": "sha256:9d1fd7f751a2264acbb0214f0491825d4e71192ff6f518c69802fd03bf4074f2"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/Quellen/weltraum-universeller-planeten-wetter-climate-core-architektur-v2-2026-10-09.md",
+      "bytes": 49044,
+      "digest": "sha256:7a35fe03f6d85e7ba8870794c161332bc7671f232faf0669fe9359b2ac64d3ed"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/card-inputs/SOURCE_DOCS.json",
+      "bytes": 473,
+      "digest": "sha256:18fd0f85e13e13729acead902af925342d2ea4a7b920cdd4f74533e0ca158f0e"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/read-only-product/apps/weltraum-browser/src/persistence/time.ts",
+      "bytes": 5468,
+      "digest": "sha256:fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/read-only-product/apps/weltraum-browser/src/spatial/surfaceLocalFrame.ts",
+      "bytes": 7923,
+      "digest": "sha256:2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/snapshot/read-only-product/apps/weltraum-browser/src/world-generation/hestia/seed.ts",
+      "bytes": 6774,
+      "digest": "sha256:20ac280c0503e9c92089f30d7053f5ac084aaeddd286f7a656de9a35c44e16c0"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/climate.ts",
+      "bytes": 7951,
+      "digest": "sha256:0b5aaf28ee57f6a0d199268f81bceaefaf393d69400d587489b8c580f1b4ccfe"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/common.ts",
+      "bytes": 1406,
+      "digest": "sha256:bb4f5e9a534b343b4d802da4404d6be39c32db42d0e451ef9291d4f93efdf6ca"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/fixtures.ts",
+      "bytes": 2247,
+      "digest": "sha256:105ed0d1fce5f805831011d3c15131e48f0af8130638b07ad69c3f7f4ace6ca0"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/geometry.ts",
+      "bytes": 8688,
+      "digest": "sha256:4f1db9da5e5a569c095d04c8ac50bfaf7608c21e44f9b080177f39ca0df8dd48"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/macro.ts",
+      "bytes": 3538,
+      "digest": "sha256:6ce65d29f8ec616edecf8221cb5a478746d1f301c9770497ca1b18b644c3c86d"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/model-pin.ts",
+      "bytes": 179,
+      "digest": "sha256:766367ececedff91445eaa82ee9cf7fd07ee5758c5375eadc38b87bc6dda623a"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/regional.ts",
+      "bytes": 5214,
+      "digest": "sha256:300925829f229e363bd0ef6c603214a78e70bcfe1d814b99642fd5a7d585d698"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/synoptic.ts",
+      "bytes": 3785,
+      "digest": "sha256:7a9fe541c1a301705ebc266a9c8874dc2bb4ed4f5180589f01c216f72c2de641"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/src/weather.ts",
+      "bytes": 5799,
+      "digest": "sha256:56a3957f1366570a378419a999dd8dc8a53ab92d3bccf6719ac2a0bf061980fd"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/tests/bindings.test.mjs",
+      "bytes": 3005,
+      "digest": "sha256:9059186107d73a319660d04b7841d2315ce37e114e9de40fa37d26375a257e2f"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/tests/cache-race.test.mjs",
+      "bytes": 1273,
+      "digest": "sha256:0556f00691c38b277c7e305a49202ac97a0066995cd09e71062255328a2e24b5"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/tests/climate.test.mjs",
+      "bytes": 4136,
+      "digest": "sha256:34eb733d48b8bba34c5143f3202077314282e1a2e9d692d57a9b241ceee23b62"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/tests/geometry.test.mjs",
+      "bytes": 11611,
+      "digest": "sha256:77e09946420e98c2fba52eda9fdf251dd50869d8f7432726f5c7a831b5ea1da6"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/tests/helpers.mjs",
+      "bytes": 1946,
+      "digest": "sha256:69cf8759df8cf4ffe4e5c6f8c13edd5af5066909dfa43d1e78d14921f986f064"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/tests/worker.mjs",
+      "bytes": 474,
+      "digest": "sha256:5fec650a7791c4f1f162684b6cce57ea7d42e6f79180349d37658f8749e04a10"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/tests/wxg.test.mjs",
+      "bytes": 13591,
+      "digest": "sha256:29cc107449296474292dd9e6ef262f6c6d0aee06f084676a2a86286bb10df29c"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/tsconfig.json",
+      "bytes": 252,
+      "digest": "sha256:0b7e201d81232c4ea94aca8d1605387fb33969b5d706b6a993111e427007a6f8"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/upstream/CEL/final-seal/review.patch",
+      "bytes": 865967,
+      "digest": "sha256:fe8be00fbc8d4e533307369652cae579ac0b55e90600c963b71c97feae9b08d4"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/upstream/CEL/final-seal/scope-seal.json",
+      "bytes": 20200,
+      "digest": "sha256:c5796096462abb45e99740cb7e74620e0f5df46d64691ae631512403c603a0d2"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/upstream/PLT/final-seal/scope-seal.json",
+      "bytes": 21203,
+      "digest": "sha256:b4c0daf90e5c91e4f6811e47b08f32dcfc39b2e932b1e9f34fc53c4009586c6d"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/upstream/PLT/receipt.json",
+      "bytes": 13793,
+      "digest": "sha256:5842f1c2b781c1ce65a347ec45c28da0717215537ebd45ee100b3a255429555a"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/DependencyBindings.json",
+      "bytes": 104153,
+      "digest": "sha256:287e4e6de6804961b1ef7afd60e80f80e3c2be1fa36298566a59d3cf3459ea1f"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/HANDOFF.md",
+      "bytes": 3655,
+      "digest": "sha256:066e2152a772af9e69e9080b946ccddee2311b5356a0ca200dc63faca11c4748"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/PRODUCT_PATCH_CANDIDATE.md",
+      "bytes": 1226,
+      "digest": "sha256:03f765f3f03f64f2e85ff0051c3aef61baa50898be52c185f7285bf9bc328364"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/README.md",
+      "bytes": 6620,
+      "digest": "sha256:5d8ce448ac949b534c6ed2fd304c4c95521d00cc86d68c4723f42902fec1960a"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/REPORT.md",
+      "bytes": 5140,
+      "digest": "sha256:5132e6746456262acd3cae3913b2f653453dd210ec13dcf88c89eb4ce8594128"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/SourceBindings.json",
+      "bytes": 15639,
+      "digest": "sha256:8a6d1ee2faf07801c3eb48bad0b834f4af2c05251e7d0443a28debaf7812cd4d"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/dependencies.lock.json",
+      "bytes": 5977,
+      "digest": "sha256:b56c265b90d4253aed797056057292628f6293280522c8a98647ff5117a0bbac"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/fixtures/profiles.json",
+      "bytes": 47572,
+      "digest": "sha256:5af02698c4f1f12ad7d7fff36c7a7e75b8483af1bc3406c7812fd4238123cf1b"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/fixtures/read-goldens-input.json",
+      "bytes": 12487,
+      "digest": "sha256:2783eb63e04436fcf6c8b3c5441d984f5e22d3aee7b5f2d2ae1d206f1ed30c74"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/fixtures/schema-goldens.json",
+      "bytes": 3541,
+      "digest": "sha256:440055a05cdbeba03d7acab8ecb5b95e8bccc6beafd9a953a9bfd663981de156"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/package-lock.json",
+      "bytes": 12520,
+      "digest": "sha256:473c3eef1d41041b115ce9e212bc1910186856d4dfabee72ee9120722beaa166"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/package.json",
+      "bytes": 311,
+      "digest": "sha256:b45b1e33d6dc25f1ebf7af2093046835db0fb99af550e4b475e85d78484c88d5"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/receipt.json",
+      "bytes": 72216,
+      "digest": "sha256:3b255ee3e75a272823aa01c734e14baa1157c663625c91254fd6101b6332c67c"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/runner-profile.json",
+      "bytes": 1451,
+      "digest": "sha256:20fcbdf8a4571033959f720a7ccd216b58771e8c4033e99141f74ac8dbbb978d"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/celestial/canonical.ts",
+      "bytes": 3824,
+      "digest": "sha256:20b5d53ffab98ab87f8ab19db730d381db7ceba4028a8c26b50b61e89bd9bf4a"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/celestial/catalog.ts",
+      "bytes": 6861,
+      "digest": "sha256:d06073a382dbfb57123566c95a0bd32bbcb009491cb11b29464e72fd506b184e"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/celestial/errors.ts",
+      "bytes": 1033,
+      "digest": "sha256:6a3af7a96d0a11a6271a9d4a088f622abb34fc69f79ea981153b2e8486ae5524"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/celestial/ids.ts",
+      "bytes": 1210,
+      "digest": "sha256:67d674f7ca89569a175185ae3c38ce2a1092e06d9e534e7feaa93740a327fbe9"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/celestial/kepler.ts",
+      "bytes": 7687,
+      "digest": "sha256:4f9176810c9bbf22b12b781b45684b09b2afdf66cdfa65919c6f5c8918f0d5dd"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/celestial/starterSystem.ts",
+      "bytes": 9262,
+      "digest": "sha256:d6a1bff618e4b47ebedbff9c69aa4f283caa14e604fac182ddb8b16c99e9da43"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/celestial/types.ts",
+      "bytes": 8603,
+      "digest": "sha256:a32286f52c579016c3b73e1e00b3dbc9a08a588e7c1f7ed3d6fe36a2b03a82a0"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/celestial/validation.ts",
+      "bytes": 12761,
+      "digest": "sha256:19e52d974efd95c892d02cf3f24fd18711e263369af17bd26a19150a077d0bf8"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/core/hash.ts",
+      "bytes": 3099,
+      "digest": "sha256:7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/core/vector.ts",
+      "bytes": 1587,
+      "digest": "sha256:bcd1ce4c43a5a79f82f4410c16e528a3b4a2794dd6526a5f7c9393c10d068ad9"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/persistence/canonical.ts",
+      "bytes": 5830,
+      "digest": "sha256:e21ef6b4ecb2e60663b9d5e1e42327d1dce0e147b3eeb1edf99c2b1d70834ead"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/persistence/ids.ts",
+      "bytes": 9345,
+      "digest": "sha256:db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/persistence/saveSchema.ts",
+      "bytes": 32871,
+      "digest": "sha256:821c3f600a7ace426a5e26a47143b7c9eac1c594990df7d12fc33ec2ee6a79f3"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/persistence/simulationMode.ts",
+      "bytes": 2398,
+      "digest": "sha256:cee8dd7c34023cd532dfc209845291762dd12685030159a3baba196dc3e8c6df"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/persistence/time.ts",
+      "bytes": 5468,
+      "digest": "sha256:fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/persistence/types.ts",
+      "bytes": 5643,
+      "digest": "sha256:93575ab700e3c42e98d1915daa82fb702be649b5c16c3646189219a293241454"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/persistence/validation.ts",
+      "bytes": 10972,
+      "digest": "sha256:101c0ae7b122e5ff4d468c42c9acc0caca96f627b081f2605833f87c7958f1ef"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/bodyFrames.ts",
+      "bytes": 12011,
+      "digest": "sha256:129ab6e093351465d1766b0fa63cfbae040f2f48e3ee2c5aebf17aafa7a40451"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/canonical.ts",
+      "bytes": 577,
+      "digest": "sha256:4821116410203880dadc200ccb13c91fed4d6f5101e52f884462091e1baa0729"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/errors.ts",
+      "bytes": 815,
+      "digest": "sha256:47f48d65467970f3db4ba5e2ab1a3059d10e77999d465af71b9fe26aaa39b146"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/frameGraph.ts",
+      "bytes": 5366,
+      "digest": "sha256:8553854de09b1d069a654b89482c914b01a0ba5bb45458e7498d7f14fa068a7f"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/frameValidation.ts",
+      "bytes": 6672,
+      "digest": "sha256:72b4c3a0472ecfab8d9ccf1708e711f0ec2fc807c2c4dd0e4225718a670cf2f0"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/ids.ts",
+      "bytes": 1066,
+      "digest": "sha256:ab208880b05067f0ef06108cfc5d019e3f482a44485465bb863ddc516f7433b9"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/quaternion.ts",
+      "bytes": 7014,
+      "digest": "sha256:5036273dae402fa1b9b25e1c35d8b50bee1236b2c70b57691f3f7e9c4e133c3f"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/surfaceLocalFrame.ts",
+      "bytes": 7923,
+      "digest": "sha256:2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/types.ts",
+      "bytes": 2783,
+      "digest": "sha256:f19cb96cc08e1b7922178c84a420f7efb9f83f2b15ad114c72eba53b02a622ac"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/snapshot/product/spatial/universeClock.ts",
+      "bytes": 2022,
+      "digest": "sha256:729e06cb50a01c41b9d61067483082b5c12fb091f4ef6748fcc224c90f0d1b73"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/src/contracts.ts",
+      "bytes": 21057,
+      "digest": "sha256:93491833829e131d3bcc837cafff596e5312018baf7ed7176cd1136a8aaca2a5"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/src/fixtures.ts",
+      "bytes": 6399,
+      "digest": "sha256:516e89182d793472adaa0301c6ebd4890452497ed631f74e05a878152d527c1e"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/src/model-pin.ts",
+      "bytes": 186,
+      "digest": "sha256:a4ccacfa404a2314d5837e24e691940126506e7a4918831d7f73295d7e25c845"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/src/types.ts",
+      "bytes": 5739,
+      "digest": "sha256:d65a05b7bbb1214b7e1f7c8de5e7c7861edc30e112ec156433f20b4a8a969a96"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/byteproof.test.mjs",
+      "bytes": 3224,
+      "digest": "sha256:a0ff98fe1bf404c1ae2a36098390a58f63c27a51da45c5af4eb117094766a385"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/contracts.test.mjs",
+      "bytes": 762,
+      "digest": "sha256:0deca54ec5ddeaa190017e193978fd2580a8c1f7debb683ab02157bccd69eb4a"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/control.test.mjs",
+      "bytes": 1158,
+      "digest": "sha256:ce36922dd7bc5cdfcfa3ae6e4811c9d9cb980e1610bcaf9a2ef9235d49993852"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/goldens.test.mjs",
+      "bytes": 2239,
+      "digest": "sha256:355e1cf387c663a858a36ce557adca86020235a548dad9f9085ce5fd07f04301"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/helpers.mjs",
+      "bytes": 1143,
+      "digest": "sha256:5998f081e39b98a52e0d2dd7961bb948898a4dcff954bb1a6baed44c906c30cc"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/negative.test.mjs",
+      "bytes": 5688,
+      "digest": "sha256:a3915e62bbaf6adf1869035ab79e47ee095ec84495026f6b3a792d92237e149b"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/read-worker.mjs",
+      "bytes": 430,
+      "digest": "sha256:e11744ed1de219bc8eab55320992f0935aab6a3b6a292d39cd1d068b0618213c"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/read.test.mjs",
+      "bytes": 8077,
+      "digest": "sha256:a91cab2aef302872b6c1e69573319e5d2fcce5b7aef3140c2105d682411b1aca"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tests/receipt-boundary.test.mjs",
+      "bytes": 2100,
+      "digest": "sha256:a856080aed8508b3eec0c4d52f21ca5ca90de0ea46a4a42baeb3da6637df97a9"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/tsconfig.json",
+      "bytes": 352,
+      "digest": "sha256:d51f556ec740e6a2e8ea4bef80c67ad168211264108f936da3b30cb0917e665a"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/vendor/plt/NumericsProfile.json",
+      "bytes": 1386,
+      "digest": "sha256:c7652cc948a0f213a8a29ff75bdb0a76ede71344c315f924fcc541e6f7ead551"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/vendor/plt/fixtures/queries.json",
+      "bytes": 346,
+      "digest": "sha256:df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/vendor/plt/fixtures/smoothstep-goldens.json",
+      "bytes": 2201,
+      "digest": "sha256:74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/vendor/plt/licenses/Random123.txt",
+      "bytes": 1497,
+      "digest": "sha256:613a52307188093b64a0767167576b432fcec41d0cb6a6a16a4cba922c4fe199"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/vendor/plt/snapshot/time.mjs",
+      "bytes": 5468,
+      "digest": "sha256:dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/vendor/plt/src/fixture.mjs",
+      "bytes": 3028,
+      "digest": "sha256:55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/vendor/plt/src/numerics.d.mts",
+      "bytes": 444,
+      "digest": "sha256:b0ad665b15b9e6a34dc19d0d967e4dc8518b437d7c62d24f7e7c43fd6698c7da"
+    },
+    {
+      "path": "spikes/wxg-01-04-analytic/vendor/cel/vendor/plt/src/numerics.mjs",
+      "bytes": 4458,
+      "digest": "sha256:bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    }
+  ],
+  "dirtyTreeDigest": "sha256:19ba491c3da4e566f63045a0d6105715d65e46bef635ff4b20442ba346ead2f1",
+  "indexBinding": {
+    "definition": "Complete semantic git ls-files --stage -z, including blob IDs/modes/stages",
+    "digest": "sha256:1df285ebc14c4556ada68bf539cd2a0b4ac534fffca4c62f34f508afbd4d51a8"
+  },
+  "stagedDiffDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "unstagedDiffDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "fullTrackedDiffDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "statusDigest": "sha256:ab7b5057aacec6f9c3e963e9d75fb2e71a5c32a9c1467d27d8ee2d45d757db66",
+  "reviewPatchDigest": "sha256:c129094276748043995592f64b2562d3b2df6fc36bb0277bfd29a3dafe2a464e",
+  "reviewPatchBytes": 4129977,
+  "definition": "Every changed tracked/staged/unstaged/nonignored-untracked file including receipt/docs/spec/evidence. Normal LFS filters retained. Ignored own compiler/dist/runtime separately bound by consumer/build/receipt. Detached seal avoids self-reference. Human Plannotator NOT_REQUESTED."
+}

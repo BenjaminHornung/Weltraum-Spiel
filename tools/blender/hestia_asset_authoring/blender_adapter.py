@@ -696,6 +696,10 @@ def extract_asset(
             raise HestiaContractError(
                 f"{name} combines multiple Hestia roles: {', '.join(active_roles)}"
             )
+        if getattr(obj, "type", None) == "MESH" and not is_part:
+            raise HestiaContractError(
+                f"{name} is an export mesh but has no Hestia part role"
+            )
         if not active_roles:
             if properties:
                 raise HestiaContractError(

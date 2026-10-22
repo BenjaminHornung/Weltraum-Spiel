@@ -1,0 +1,58 @@
+{
+  "inputs": [
+    {
+      "path": "00_START_HIER.md",
+      "bytes": 3243,
+      "sha256": "31d831cf18a99442acabf4f424bb43030fc72f767926385e9c4c94a4a23689d1"
+    },
+    {
+      "path": "01_PRUEFUNG_UND_ENTSCHEIDUNG.md",
+      "bytes": 8005,
+      "sha256": "8c866c78f516ffc4134dfec1292bbbeb55995335915768e016e54e523a325e09"
+    },
+    {
+      "path": "03_SCHNITTSTELLEN_UND_UEBERNAHME.md",
+      "bytes": 6579,
+      "sha256": "7f3d2f477819e9f7209a45c16fd46456ddf60ef569532d6bdc438790773cf047"
+    },
+    {
+      "path": "Cloud/00_GEMEINSAMER_VERTRAG.md",
+      "bytes": 5908,
+      "sha256": "0b9a13ebe3929b4d5d48fa77a7483d0e7ba32fe82dd6c6c61e1cabaa9c1e27b2"
+    },
+    {
+      "path": "Auftraege/PLT-01-02.md",
+      "bytes": 3725,
+      "sha256": "697aa908c5386a8c8580963f7dccb88f5494c82d8294afdc930e6627ecf8b7e5"
+    },
+    {
+      "path": "Goals/PLT-01-02.txt",
+      "bytes": 546,
+      "sha256": "aa31b7adb2902310d6bd92e772359d0ad0f926e2662bfcba84df7652f0a1f779"
+    },
+    {
+      "path": "SOURCE_DOCS.json",
+      "bytes": 473,
+      "sha256": "18fd0f85e13e13729acead902af925342d2ea4a7b920cdd4f74533e0ca158f0e"
+    },
+    {
+      "path": "Quellen/hestia-konzeptpaket-review-und-arbeitspaket-registry-2026-10-09.md",
+      "bytes": 90628,
+      "sha256": "9d1fd7f751a2264acbb0214f0491825d4e71192ff6f518c69802fd03bf4074f2"
+    },
+    {
+      "path": "Quellen/weltraum-universeller-planeten-wetter-climate-core-architektur-v2-2026-10-09.md",
+      "bytes": 49044,
+      "sha256": "7a35fe03f6d85e7ba8870794c161332bc7671f232faf0669fe9359b2ac64d3ed"
+    },
+    {
+      "path": "Quellen/hestia-adaptive-shader-grafikarchitektur-threejs-webgpu-wasm-2026-10-09.md",
+      "bytes": 52337,
+      "sha256": "3a461d02230010e91b778ec4a3d8dd4f73174d9d7547d0843cf011b770860e5f"
+    }
+  ],
+  "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "originalZipSha256": "0136d515ce6c86e3110bfb7fb91e1ccf1ceb8536cbef56dad9b4d6e4a6dd3d4d",
+  "originalPackage": "Hestia_Cloud_Spikes_und_ProgrammAmendment_2026-10-09",
+  "scopeOverride": "LOCAL_WINDOWS_ISOLATED; feature branch; explicit local instruction supersedes cloud preference"
+}

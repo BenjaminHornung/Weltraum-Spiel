@@ -1,0 +1,1 @@
+{"name":"wxg-07-grid-dynamics","version":"1.0.0","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","test":"node --experimental-test-isolation=none --test --test-concurrency=1 tests/*.test.mjs","repro":"node scripts/repro.mjs"},"devDependencies":{"typescript":"7.0.2"}}

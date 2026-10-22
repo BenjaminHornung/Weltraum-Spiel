@@ -1,0 +1,144 @@
+{
+  "schema": "hestia.root-controller-source-readonly.v1",
+  "status": "PASS_READONLY_PRELOAD_NO_RUNTIME_AUTHORITY",
+  "observedUtc": "2026-10-22T08:24:49.7276915+00:00",
+  "gate": {
+    "schema": "hestia.root-ast-preparation.readiness.v1",
+    "status": "SOURCE_PREPARATION_ONLY_NO_RUNTIME_AUTHORITY",
+    "observedUtc": "2026-10-22T08:24:49.7276915+00:00",
+    "pinnedInputsChecked": 6,
+    "nodeBytesChecked": 86997320,
+    "compilerBytesChecked": 9112572,
+    "powershellHost": {
+      "path": "C:\\IFI_SourceCode\\Utils\\PowerShell\\pwsh.exe",
+      "bytes": 301368,
+      "version": "7.6.4.500",
+      "sha256": "db6dd81183fe57d22e03b911ec9a30a2fd7c40542e97743615355a6fb44f458f"
+    },
+    "g01Baseline": "ACCEPTED_COMPLETED_APP_TURN_INSTALL_TARGETS_PRESENT",
+    "previousAstOutputsAbsent": 4,
+    "recorderAndCheckerPins": "PASS",
+    "r02TaskSha256": "97216b3fd6e13e80637a7b62079e092311c5f5360d20faf15c78158ca1a90d3c",
+    "r04TemplateSha256": "4955f76a7b6cb2981533451c2044020d4891ed3e1eae1726d73263abb808968a",
+    "worksheetTemplateHashBinding": "PASS",
+    "currentA0Head": "6ac0f61947c5a6aa3e5b156831542d8188c75c0a",
+    "readOnlyGit": {
+      "path": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "bytes": 43352,
+      "sha256": "78211c7ed73988da93a6d8a33d47ec6187f464d7ea2a9a00c182bbd7a1ecf30f",
+      "noOptionalLocks": true
+    },
+    "m5CopyPinsChecked": 5,
+    "m5AbsentSlotsChecked": 8,
+    "r04FutureControlFilesAbsent": 6,
+    "ownerTurnDeadline": "FUTURE_ACTUAL_READ_ONLY_BINDING_REQUIRED",
+    "freshHumanAuthority": "NONE",
+    "nodeProcesses": 0,
+    "payloadExecutions": 0,
+    "testStarts": 0
+  },
+  "owner": {
+    "kind": "read_thread",
+    "isError": false,
+    "thread": {
+      "id": "01a13648-c55b-7250-bf07-34921d70b43b",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13",
+      "hostId": "local",
+      "status": {
+        "type": "notLoaded"
+      }
+    },
+    "turns": [
+      {
+        "id": "01a15ecc-d7fc-7f23-8d7d-466bfe7f560f",
+        "status": "completed",
+        "startedAt": 1792591845,
+        "completedAt": 1792592552,
+        "durationMs": 707314
+      }
+    ]
+  },
+  "sourcePins": [
+    {
+      "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_CONTROLLER.js",
+      "bytes": 16113,
+      "sha256": "78bda572c71c549fadb82a633f6a737aebfd2740075a7427292a0bf51510f7a1"
+    },
+    {
+      "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_TEMPLATE.json",
+      "bytes": 9400,
+      "sha256": "4955f76a7b6cb2981533451c2044020d4891ed3e1eae1726d73263abb808968a"
+    },
+    {
+      "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_A0_RUN_ONCE.ps1",
+      "bytes": 12926,
+      "sha256": "e8a65aca5845b8a042a8e1908eef03d5e04fc59c68504ca4a1fffc88b6964bfd"
+    },
+    {
+      "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_PREPARED_CACHE.json",
+      "bytes": 6776,
+      "sha256": "d6ecab29e0f92089274df6d4615935a59927ce82116e610d77f1d4a3a8b1cad9"
+    },
+    {
+      "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_VERIFY_PREPARATION.ps1",
+      "bytes": 17313,
+      "sha256": "f9f79d5c6fc4a1a7deff3258392653efa8af63ef06a4fb529535c561ed7f603a"
+    },
+    {
+      "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R03_INITIAL_CONSUMED-20261021.json",
+      "bytes": 887,
+      "sha256": "599a312eac120fd67fbde34a0764be372571801eacaea31eec5fc285eba6ab67"
+    },
+    {
+      "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R03_ROOT_STOP-20261021.json",
+      "bytes": 1773,
+      "sha256": "684820da0cb3940b1e7f6439d8db63394af3d9a3ec5d295716d8b0f9e0c09623"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\src\\render\\three\\backend\\threeMaterialFactory.ts",
+      "bytes": 5172,
+      "sha256": "fd0658244e613c684b1ecced904ad9ec4d6b823953490bd322cf12a572295542"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\tests\\unit\\renderBackendLifecycle.test.ts",
+      "bytes": 44944,
+      "sha256": "6ab4b4d0acb0160411e651106ac8ee1a60cd13c960d5f3ea8a8cbd18ab2473d1"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-source-r01\\ast-check.cjs",
+      "bytes": 3458,
+      "sha256": "bba66c6a51ba19aea9c848251f7122e5ca883333dde103d273b3c4778abe0cd7"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-source-r01\\Run-Check.ps1",
+      "bytes": 3295,
+      "sha256": "e5d5f7ee00e7a6d3b7f14d240c5ff133c44e4230b87a99a3a543efdc8a8f6abe"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-source-r01\\before\\threeMaterialFactory.ts",
+      "bytes": 5114,
+      "sha256": "9b259862c6534691773e2a7f7df7ed5c4696491243535844f69af84240fb1a6d"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-source-r01\\before\\renderBackendLifecycle.test.ts",
+      "bytes": 44455,
+      "sha256": "23c796f32c182cc5ec0ca5ad3b200911d40dfe97d5f2ec430b3f8e9f73d651c9"
+    }
+  ],
+  "controller": {
+    "bytes": 16113,
+    "sha256": "78bda572c71c549fadb82a633f6a737aebfd2740075a7427292a0bf51510f7a1"
+  },
+  "preparedPayload": {
+    "bytes": 9410,
+    "sha256": "65d5be881ee1318c1f23ce84ba89801c170760ef1a18fc6bf5873353199d2c58"
+  },
+  "powershellCalls": 3,
+  "allExitZero": true,
+  "newQuestion": false,
+  "newReply": false,
+  "newT0": false,
+  "a0Sends": 0,
+  "nodeAstStarts": 0,
+  "liveQualification": "NOT_RUN"
+}

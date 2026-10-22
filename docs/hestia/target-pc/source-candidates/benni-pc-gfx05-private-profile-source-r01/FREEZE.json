@@ -1,0 +1,12 @@
+{
+  "status": "PRIVATE_PROFILE_SOURCE_PREPARED_PENDING_ROOT_REVIEW_NOT_RUN_READY",
+  "freezeUtc": "2026-10-19T15:36:22.6459213Z",
+  "manifestSha256": "25da53aa0ccc431dc89512c9aaeb814eec168160c051437b0bc673a19ef20462",
+  "manifestRows": 23,
+  "reportSha256": "57925e3748199ccdb9fccfebe3d81825cfd258488621feb49a2de5f36c6a556e",
+  "freezeIsFullAppEnd": false,
+  "effectiveEarlierDeadlineUtc": "2026-10-19T15:38:29Z",
+  "prospectiveWorkBudgetMs": 1500000,
+  "prospectiveTotalBudgetMs": 1560000,
+  "actualRunOrDurationMeasurement": false
+}

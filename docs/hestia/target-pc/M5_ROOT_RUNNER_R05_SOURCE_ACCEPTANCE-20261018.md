@@ -1,0 +1,11 @@
+# Root-R05: Quellenvorbereitung angenommen, Laufzeitprofil weiter HOLD
+
+18.10.2026. Status: **SOURCE_PREPARATION_ACCEPTED_PROFILE_HOLD_NO_RUNTIME**. Derselbe A0; 13 Dateien / 12 Manifestzeilen, Manifest `26ff03d4f6493a9d557d3271309d23a8c409b0885669bbb94a81e7a3f2371dde`. Beide Native-Befunde sind geschlossen: nur der Ursprung wird abgerundet; spätere Werte werden konservativ aufgerundet. Der Abschluss bindet auch den ursprünglichen Work-Endpunkt exakt.
+
+Native-Finalreview und gezielter Generalreview bestehen. A0: 215/215, einschließlich aller 158 R04-Prädikate, Syntax und AST fehlerfrei. Unabhängig genau ein korrigierter direkter Node-Aufruf: 215/215, Exit0, PID42956, Terminal/Streams/Handle geschlossen, 20 Eingabepfade und 14 Closure-Dateien unverändert. 703ms bis vor Ergebnisveröffentlichung; Host meldet 719ms einschließlich Veröffentlichung. Der erste Prüfhost-HOLD bleibt erhalten: sein Scanner erkannte eine verbietende Regex fälschlich als Import; null Node-Starts. Nur diese exakt gepinnte Guardzeile wurde im korrigierten Host aus dem Textscan ausgenommen, der Checker bleibt unverändert.
+
+Root bestätigt 304 physische Dateien einschließlich aller 291 älteren; sämtliche Manifestbytes stimmen. C#, DLL und Compilerhelper bleiben gleich. Voller A0-Turn1206652ms endete20:00:20UTC vor20:02; Freeze19:59:44UTC wird getrennt geführt.
+
+Das signierte CUA-Node-Image ist identifiziert. Die für den Vergleich mit .NET TickCount64 notwendige Uhrdomäne ist weiterhin unbelegt; ein vollständiges SBOM ist dafür nicht erforderlich. Producer und alle drei PS-Einstiege sperren deshalb weiterhin. Kein Issuer-Aufruf, keine tatsächlichen Root-Records, kein DLL-Load oder Kandidaten-Interop, kein Familien-, Native24-, Physik-, GPU-, Save-, Browser- oder Produktlauf. Referenz und Produktadoption bleiben offen.
+
+[Vollständige Root-Belege](M5_ROOT_RUNNER_R05_ROOT_ACCEPTANCE-20261018.json). Als nächster technischer Schritt wird ausschließlich das Start-/STDIN-/Beendigungsprotokoll eines leeren qualifizierten PowerShell-Werkzeughosts geprüft. Ein späterer M5-Warmhostversuch braucht eine neue ausdrückliche Freigabe der ausgeschlossenen Infrastruktur-Startupzeit; die bisherige 60-Sekunden-Grenze wird nicht still geändert.

@@ -1,0 +1,58 @@
+{
+  "schema": "hestia.ast-r04.prepared-cache.v1",
+  "status": "PRELOADED_SOURCE_ONLY_NO_AUTHORITY",
+  "integrityVerified": false,
+  "scope": "ONE_QUALIFIED_NODE_PROCESS_STATIC_AST_PARSING_AND_SCOPE_DIFF_ONLY_NO_PRODUCT_IMPORT_METHOD_OR_TEST_EXECUTION",
+  "pwsh": "C:\\IFI_SourceCode\\Utils\\PowerShell\\pwsh.exe",
+  "owner": {
+    "app": "01a13648-c55b-7250-bf07-34921d70b43b",
+    "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13",
+    "head": "6ac0f61947c5a6aa3e5b156831542d8188c75c0a"
+  },
+  "template": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_TEMPLATE.json",
+    "bytes": 9400,
+    "sha256": "4955f76a7b6cb2981533451c2044020d4891ed3e1eae1726d73263abb808968a"
+  },
+  "runner": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_A0_RUN_ONCE.ps1",
+    "bytes": 12926,
+    "sha256": "e8a65aca5845b8a042a8e1908eef03d5e04fc59c68504ca4a1fffc88b6964bfd"
+  },
+  "controller": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_CONTROLLER.js",
+    "bytes": 16113,
+    "sha256": "78bda572c71c549fadb82a633f6a737aebfd2740075a7427292a0bf51510f7a1"
+  },
+  "verifier": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_VERIFY_PREPARATION.ps1",
+    "bytes": 17313,
+    "sha256": "f9f79d5c6fc4a1a7deff3258392653efa8af63ef06a4fb529535c561ed7f603a"
+  },
+  "spentR03": {
+    "initial": { "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R03_INITIAL_CONSUMED-20261021.json", "bytes": 887, "sha256": "599a312eac120fd67fbde34a0764be372571801eacaea31eec5fc285eba6ab67" },
+    "stop": { "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R03_ROOT_STOP-20261021.json", "bytes": 1773, "sha256": "684820da0cb3940b1e7f6439d8db63394af3d9a3ec5d295716d8b0f9e0c09623" },
+    "questionCallId": "call_cf1f33842b8b4ec0ab389519c038342b",
+    "answer": "JA_CORE_MATERIAL_POISON_AST_R03_ONCE",
+    "previousTurnId": "01a15ecc-d7fc-7f23-8d7d-466bfe7f560f"
+  },
+  "controls": {
+    "initial": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_INITIAL_CONSUMED-20261021.json",
+    "task": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_FINAL_EXECUTION_TASK-20261021.json",
+    "approval": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_HUMAN_APPROVAL-20261021.json",
+    "consumption": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_GRANT_CONSUMED-20261021.json",
+    "readyPending": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_ROOT_READY-20261021.json.pending",
+    "ready": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_ROOT_READY-20261021.json"
+  },
+  "headCommand": "$ErrorActionPreference='Stop';$g='C:\\Program Files\\Git\\cmd\\git.exe';$h=& $g --no-optional-locks -C 'C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13' rev-parse HEAD;if($LASTEXITCODE -ne 0){throw 'HEAD_READ_FAILED'};$h.Trim()",
+  "a0Prompt": "```javascript\nconst read=await tools.mcp__codex_app__read_thread({threadId:'01a13648-c55b-7250-bf07-34921d70b43b',hostId:'local',turnLimit:1,includeOutputs:false,maxOutputCharsPerItem:200});\nif(read.isError)throw new Error('A0_R04_READ_THREAD_FAILED');\nconst rt=JSON.parse(read.content.find(x=>x.type==='text')?.text||'null'),thread=rt?.thread,turn=rt?.turns?.[0];\nif(thread?.id!=='01a13648-c55b-7250-bf07-34921d70b43b'||thread?.hostId!=='local'||thread?.cwd!=='C:\\\\IFI_SourceCode\\\\Temp\\\\WeltraumSpiel\\\\.worktrees\\\\Hestia-A0-BenniPC-2026-10-13'||thread?.status?.type!=='active'||turn?.status!=='inProgress'||!/^[0-9a-f-]{36}$/.test(turn?.id||'')||!Number.isSafeInteger(turn?.startedAt))throw new Error('A0_R04_OWNER_OR_TURN_INVALID');\nconst actualStartMs=turn.startedAt*1000,appDeadlineEpochMs=actualStartMs+600000,now=Date.parse((await tools.clock__curr_time({})).current_time);\nif(!Number.isSafeInteger(actualStartMs)||!Number.isSafeInteger(appDeadlineEpochMs)||!Number.isFinite(now)||actualStartMs>now||now>=appDeadlineEpochMs)throw new Error('A0_R04_CLOCK_INVALID');\nconst cmd=\"$ErrorActionPreference='Stop';$entry='E:\\\\DEV\\\\Weltraum-Spiel\\\\TARGET_PC\\\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\\\R04_A0_RUN_ONCE.ps1';$b=[IO.File]::ReadAllBytes($entry);$h=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($b)).ToLowerInvariant();if($b.Length -ne 12926 -or $h -cne 'e8a65aca5845b8a042a8e1908eef03d5e04fc59c68504ca4a1fffc88b6964bfd'){throw 'A0_R04_RUNNER_PIN'};& $entry -TurnId '\"+turn.id+\"' -StartedAtUnixSeconds \"+turn.startedAt;\nlet run=await tools.exec_command({shell:'C:\\\\IFI_SourceCode\\\\Utils\\\\PowerShell\\\\pwsh.exe',login:false,cmd,sandbox_permissions:'require_escalated',justification:'Run the reviewed one-shot R04 A0 source; it waits for the fixed Ready chain and stops on the first mismatch.',yield_time_ms:10000,max_output_tokens:5000});\nwhile(run.session_id!==undefined&&run.exit_code===undefined){const n=Date.parse((await tools.clock__curr_time({})).current_time);if(!Number.isFinite(n)||n>=appDeadlineEpochMs)throw new Error('A0_R04_HOST_DEADLINE');run=await tools.write_stdin({session_id:run.session_id,chars:'',yield_time_ms:Math.min(10000,appDeadlineEpochMs-n),max_output_tokens:5000});}\nif(run.exit_code!==0)throw new Error('A0_R04_TERMINAL_FAILURE:'+String(run.output||''));\ntext(JSON.stringify({status:'A0_R04_TERMINAL_EXIT_0',turnId:turn.id,appDeadlineEpochMs,output:run.output}));\n```",
+  "sixInputs": [
+    { "relative": "apps/weltraum-browser/src/render/three/backend/threeMaterialFactory.ts", "bytes": 5172, "sha256": "fd0658244e613c684b1ecced904ad9ec4d6b823953490bd322cf12a572295542" },
+    { "relative": "apps/weltraum-browser/tests/unit/renderBackendLifecycle.test.ts", "bytes": 44944, "sha256": "6ab4b4d0acb0160411e651106ac8ee1a60cd13c960d5f3ea8a8cbd18ab2473d1" },
+    { "relative": ".a0-runtime/benni-pc-core-material-poison-source-r01/ast-check.cjs", "bytes": 3458, "sha256": "bba66c6a51ba19aea9c848251f7122e5ca883333dde103d273b3c4778abe0cd7" },
+    { "relative": ".a0-runtime/benni-pc-core-material-poison-source-r01/Run-Check.ps1", "bytes": 3295, "sha256": "e5d5f7ee00e7a6d3b7f14d240c5ff133c44e4230b87a99a3a543efdc8a8f6abe" },
+    { "relative": ".a0-runtime/benni-pc-core-material-poison-source-r01/before/threeMaterialFactory.ts", "bytes": 5114, "sha256": "9b259862c6534691773e2a7f7df7ed5c4696491243535844f69af84240fb1a6d" },
+    { "relative": ".a0-runtime/benni-pc-core-material-poison-source-r01/before/renderBackendLifecycle.test.ts", "bytes": 44455, "sha256": "23c796f32c182cc5ec0ca5ad3b200911d40dfe97d5f2ec430b3f8e9f73d651c9" }
+  ],
+  "sourcePins": []
+}

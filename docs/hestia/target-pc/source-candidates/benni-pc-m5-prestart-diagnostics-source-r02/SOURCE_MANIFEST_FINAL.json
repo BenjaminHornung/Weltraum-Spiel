@@ -1,0 +1,71 @@
+{
+  "observedUtc": "2026-10-21T07:58:52.7180379+00:00",
+  "checks": "NOT_RUN_LAUNCHER_PREFLIGHT_REJECTED_EXE_STRING",
+  "rows": 11,
+  "cycleExclusions": [
+    "SOURCE_MANIFEST_FINAL.json",
+    "FREEZE.json",
+    "RETURN_CHECKPOINT.json"
+  ],
+  "status": "HOLD_SOURCE_IMPLEMENTED_CHECK_LAUNCH_REJECTED_RUNTIME_NONE",
+  "schema": "hestia.m5.snapshot-retention-source-r02.manifest.v1",
+  "preservationReference": "PRESERVATION_BEFORE.json/PRESERVATION_AFTER.json",
+  "noRuntime": true,
+  "files": [
+    {
+      "path": "ACTUAL_TURN.json",
+      "sha256": "e8553518397b6ccbfaa49d44bca73aef2d312f0fdf9d83dcc2a0d0ea8215d917",
+      "bytes": 413
+    },
+    {
+      "path": "ADMIN_REPORT_REFERENCE.json",
+      "sha256": "e45506eeee94b7d6996696643efbbe439d4c44f4ce154436f063599c44942578",
+      "bytes": 595
+    },
+    {
+      "path": "DIFF_REVIEW.json",
+      "sha256": "c166e9793097c5e6c7ccd9869d07a24627ba687a07ec2cd10b7b39a822412858",
+      "bytes": 885
+    },
+    {
+      "path": "EXACT_CHANGES.patch",
+      "sha256": "390f5e8bd0b73e3487d54938da2fc567fd52b6f5da327061824f4bdcd692e480",
+      "bytes": 9065
+    },
+    {
+      "path": "FIRST_FAILURE.json",
+      "sha256": "5bb1ec244194aa3bdee2caff15937748b86126d8f096022da8b3e0ae584a01d2",
+      "bytes": 1172
+    },
+    {
+      "path": "PRESERVATION_AFTER.json",
+      "sha256": "5b829290421c04ed82a18fcfea6abda557bc32bf416ccbd9e452fb450fdd1566",
+      "bytes": 14122
+    },
+    {
+      "path": "PRESERVATION_BEFORE.json",
+      "sha256": "6a3a32657e1b2d6ab3687f3cac13055061d30cf4b9a157661983ca0629874985",
+      "bytes": 16717
+    },
+    {
+      "path": "REPORT.md",
+      "sha256": "a3e10b241c54fc185875416c5cf7dee579b8778155537690af0e0c3d5891f470",
+      "bytes": 4769
+    },
+    {
+      "path": "Root.cell.mjs",
+      "sha256": "828e8708f4871149b7affd745eca7b1f6e7b91117c465b99a675f3aaad02dc68",
+      "bytes": 4930
+    },
+    {
+      "path": "Run-Check.ps1",
+      "sha256": "e5d5f7ee00e7a6d3b7f14d240c5ff133c44e4230b87a99a3a543efdc8a8f6abe",
+      "bytes": 3295
+    },
+    {
+      "path": "replay.mjs",
+      "sha256": "1fcd8b9855045ef05c9a329733dbd73d97e2a053a137d55ff2b73efd1f395ed5",
+      "bytes": 5893
+    }
+  ]
+}

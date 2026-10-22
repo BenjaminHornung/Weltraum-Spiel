@@ -62,6 +62,7 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
       const radius = profile.radius + profile.offset;
       coverageHold = [-radius, radius].some(x => [-radius, radius].some(z => !covered(position.x + dx + x, position.z + dz + z)));
       if (coverageHold) { velocityY = 0; jumpPending = false; return; }
+      const previousGrounded = grounded, previousJumpCount = jumpCount;
       if (jumpPending && grounded) { velocityY = Math.sqrt(2 * gravity * profile.jumpHeight); grounded = false; jumpCount += 1; }
       jumpPending = false;
       velocityY = Math.max(-profile.terminalSpeed, velocityY - gravity * dt);
@@ -97,6 +98,11 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
             }
           }
         }
+      }
+      coverageHold = [-radius, radius].some(x => [-radius, radius].some(z => !covered(position.x + movement.x + x, position.z + movement.z + z)));
+      if (coverageHold) {
+        grounded = previousGrounded; jumpCount = previousJumpCount;
+        velocityY = 0; jumpPending = false; return;
       }
       grounded = controller.computedGrounded();
       if ((grounded && velocityY < 0) || (velocityY > 0 && movement.y < desired.y - 0.0001)) { velocityY = 0; }

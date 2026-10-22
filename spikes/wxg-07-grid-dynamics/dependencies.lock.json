@@ -1,0 +1,36 @@
+{
+  "schema": "wxg07.scoped-dependencies/v1",
+  "installation": "NO_INSTALL_FROZEN_LOCAL_COPY",
+  "compiler": {
+    "name": "typescript",
+    "version": "7.0.2",
+    "license": "Apache-2.0",
+    "lock": {
+      "path": "inputs/wxg/package-lock.json",
+      "bytes": 12510,
+      "sha256": "bed36ac9c152e0ffc66a9be53f17dc6bcb1f8198088b5474433633c843ae607c"
+    },
+    "package": {
+      "path": "inputs/wxg/node_modules/typescript/package.json",
+      "bytes": 3087,
+      "sha256": "3722b30210616a13a3213ded11575ba6b2dbab10c32a5ef67afca8513e27017e"
+    },
+    "native": {
+      "path": "inputs/wxg/node_modules/@typescript/typescript-win32-x64/lib/tsc.exe",
+      "bytes": 24520544,
+      "sha256": "f9ecfbdc93753d2c972d66a8d0d75f5bd737fd4a5f88b422d9091ea282bcb2c7"
+    },
+    "closureAuthority": {
+      "path": "InputBindings.json",
+      "bytes": 743400,
+      "sha256": "e82e59a57933756278b4a0e61f2c75d1eb52c801448671098e4b56ea0c74c80b"
+    }
+  },
+  "runtime": {
+    "node": "22.23.2",
+    "npmObserved": "10.9.8"
+  },
+  "newProductDependencies": [],
+  "rapier": "NOT_USED",
+  "three": "NOT_USED"
+}

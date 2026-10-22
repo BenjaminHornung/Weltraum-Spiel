@@ -1,0 +1,330 @@
+{
+  "schema": "wxg07.source-binding/v1",
+  "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "inputManifest": {
+    "path": "InputBindings.json",
+    "bytes": 743400,
+    "sha256": "e82e59a57933756278b4a0e61f2c75d1eb52c801448671098e4b56ea0c74c80b"
+  },
+  "implementation": {
+    "implementation": {
+      "sources": [
+        {
+          "path": "src/checkpoint.mjs",
+          "bytes": 3724,
+          "sha256": "7e824af06c0bea8a118752cc84c23d83d20d53ab8f5f0ce487ff733c4f9db645"
+        },
+        {
+          "path": "src/fixture.mjs",
+          "bytes": 5839,
+          "sha256": "7308784b84ffdbecf9f901031885f9bc76ffaa589cda23eeeffeafb5218cc209"
+        },
+        {
+          "path": "src/grid.ts",
+          "bytes": 4646,
+          "sha256": "95dc9262d6788ed54d0601325f6b773fda1b6a1e2ceeaf8d40ddbc35c97dd886"
+        },
+        {
+          "path": "src/transport.ts",
+          "bytes": 7287,
+          "sha256": "b9205fd4db9c18d93d09e5aa6ecb40ac3d98d48d92ef64edcc72bc82f2fa6af3"
+        }
+      ],
+      "compiled": [
+        {
+          "path": "dist/grid.d.ts",
+          "bytes": 1132,
+          "sha256": "cfc323fcca0c7a002c8686214d2da20c47e2238c548fc25ca436d1e16aa77c58"
+        },
+        {
+          "path": "dist/grid.js",
+          "bytes": 4639,
+          "sha256": "a597dc074c78f62c00b79ec9e2c26f92bee6888820ea34e0aee7f633aaa0a42b"
+        },
+        {
+          "path": "dist/transport.d.ts",
+          "bytes": 1639,
+          "sha256": "9bf906bab83e5f7199f293e241043a65db22235e2918a5f7d5ae8e17baf1e5f6"
+        },
+        {
+          "path": "dist/transport.js",
+          "bytes": 8091,
+          "sha256": "0684f8405e6b812ac3bad8691c9e23138dbaf8f53513bc3b70daa3a5ac50d530"
+        }
+      ],
+      "buildScript": {
+        "path": "scripts/build.mjs",
+        "bytes": 901,
+        "sha256": "a682a2e303caf33f97598ff169a316d2b6b641b95df53fa2f54e859ea52ccadd"
+      },
+      "inputs": {
+        "path": "InputBindings.json",
+        "bytes": 743400,
+        "sha256": "e82e59a57933756278b4a0e61f2c75d1eb52c801448671098e4b56ea0c74c80b"
+      },
+      "compilerLock": {
+        "path": "inputs/wxg/package-lock.json",
+        "bytes": 12510,
+        "sha256": "bed36ac9c152e0ffc66a9be53f17dc6bcb1f8198088b5474433633c843ae607c"
+      }
+    },
+    "implementationDigest": "sha256:88c28c3112c35870b95a315bd5e922715679aaac9e1b8252ee0567c191567d2d",
+    "profiles": [
+      {
+        "path": "fixtures/grid-32.profile-r03.json",
+        "bytes": 2570,
+        "sha256": "dfc9b2c82856919badd3af2d45f4423802c5a692457893932da34873b99e75c5"
+      },
+      {
+        "path": "fixtures/grid-48.profile-r03.json",
+        "bytes": 2571,
+        "sha256": "145349f91776ced7b414a057aabcbb4eeee46db09dd3cab0d5bf0895819c6efc"
+      },
+      {
+        "path": "fixtures/grid-64.profile-r03.json",
+        "bytes": 2571,
+        "sha256": "c04847268119d3ddcb8dee7fb82bfd48dc79f7568271a9d5996d54a84237899c"
+      }
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "src/checkpoint.mjs",
+      "bytes": 3724,
+      "sha256": "7e824af06c0bea8a118752cc84c23d83d20d53ab8f5f0ce487ff733c4f9db645"
+    },
+    {
+      "path": "src/fixture.mjs",
+      "bytes": 5839,
+      "sha256": "7308784b84ffdbecf9f901031885f9bc76ffaa589cda23eeeffeafb5218cc209"
+    },
+    {
+      "path": "src/grid.ts",
+      "bytes": 4646,
+      "sha256": "95dc9262d6788ed54d0601325f6b773fda1b6a1e2ceeaf8d40ddbc35c97dd886"
+    },
+    {
+      "path": "src/transport.ts",
+      "bytes": 7287,
+      "sha256": "b9205fd4db9c18d93d09e5aa6ecb40ac3d98d48d92ef64edcc72bc82f2fa6af3"
+    }
+  ],
+  "testFiles": [
+    {
+      "path": "tests/control.test.mjs",
+      "bytes": 714,
+      "sha256": "9dfaf810b0e4e1d9cc8f79929a1543d34d3e2ec646980cecf68a6fd83683b827"
+    },
+    {
+      "path": "tests/first-oracle.test.mjs",
+      "bytes": 350,
+      "sha256": "0850288702de91bdd2f902a13b814f193c0bad9022d144ba0910930ca96a067f"
+    },
+    {
+      "path": "tests/geometry-flux.test.mjs",
+      "bytes": 8952,
+      "sha256": "d06aa525ff8e21d2e9eabb13480026e2fc4fffca4f9fff22d08a6b79ec012796"
+    },
+    {
+      "path": "tests/replay.test.mjs",
+      "bytes": 6412,
+      "sha256": "9caa92cf3593b4263da07ba710d130d37ff8864b7ee7069ce6859a89a1284d15"
+    },
+    {
+      "path": "tests/transport.test.mjs",
+      "bytes": 5055,
+      "sha256": "0527290c45625a8fd0c79b6339936c1d92b95c58f0587bb81b96cd72e3a61b0d"
+    },
+    {
+      "path": "tests/worker.mjs",
+      "bytes": 500,
+      "sha256": "446001dc38f5d2b53cc2eeb63d516bd1705cddb72dcb590968993297fb6b01aa"
+    }
+  ],
+  "scripts": [
+    {
+      "path": "scripts/bindings.mjs",
+      "bytes": 1305,
+      "sha256": "c1490802e3690c4624bcaadcdf11bc6ae5d2ba0d4aff6a6767582f0cf6c22630"
+    },
+    {
+      "path": "scripts/build.mjs",
+      "bytes": 901,
+      "sha256": "a682a2e303caf33f97598ff169a316d2b6b641b95df53fa2f54e859ea52ccadd"
+    },
+    {
+      "path": "scripts/freeze-inputs.mjs",
+      "bytes": 5796,
+      "sha256": "9ad116adde6d6c93fd2f597f1b5f8710a81f2b6822695de74afbe649e0afe4d9"
+    },
+    {
+      "path": "scripts/matrix.mjs",
+      "bytes": 3404,
+      "sha256": "dfe12076d2988539a9aaeff4e03c96455c8d68e0b4f54bf2a47e3b1bf530d7e6"
+    },
+    {
+      "path": "scripts/prepare-fixtures.mjs",
+      "bytes": 237,
+      "sha256": "5975785433484f8b123c6ee6e20ca8cd44c9328ae56f16345507a278e2ffe163"
+    },
+    {
+      "path": "scripts/receipt.mjs",
+      "bytes": 6693,
+      "sha256": "68fb5df6a367735336ca2e168d1bf61bd02262de71860b9a2a694f6fdb692673"
+    },
+    {
+      "path": "scripts/repro.mjs",
+      "bytes": 2546,
+      "sha256": "143b28447e566fa564876e02bcb15b5822815d4a38c1969d52a915ace9e21f90"
+    },
+    {
+      "path": "scripts/seal.mjs",
+      "bytes": 5103,
+      "sha256": "ec8f7797d6e45b7676e2e1edebd24f7e843c65e7731840952da85d353fdd9c61"
+    },
+    {
+      "path": "scripts/verify-producers.mjs",
+      "bytes": 2589,
+      "sha256": "c483fc5f8cc19005a4582d38803bd360d2ff4be279fad1dbf56625de6bdce343"
+    }
+  ],
+  "fixtureFiles": [
+    {
+      "path": "fixtures/authoring.json",
+      "bytes": 47558,
+      "sha256": "57627b42b0dbc34a757711b8cbf0d42dee606faec1f76e55bd9a15298b1e0306"
+    },
+    {
+      "path": "fixtures/grid-32.coefficients.bin",
+      "bytes": 245828,
+      "sha256": "0723f9651b590e4864d1ba152ae8c36a649d17dea31c8a0bf774dd6ff30196a5"
+    },
+    {
+      "path": "fixtures/grid-32.initial.bin",
+      "bytes": 98304,
+      "sha256": "cd0e88ab3071f20e2b3aa6d15b15b41a18d0f62236ea5507e878485851b011a2"
+    },
+    {
+      "path": "fixtures/grid-32.profile-r02.json",
+      "bytes": 2570,
+      "sha256": "7a16674eeb1babc327f32187c7d7974eaebc0b788867cf317c83dc833d20425f"
+    },
+    {
+      "path": "fixtures/grid-32.profile-r03.json",
+      "bytes": 2570,
+      "sha256": "dfc9b2c82856919badd3af2d45f4423802c5a692457893932da34873b99e75c5"
+    },
+    {
+      "path": "fixtures/grid-32.profile.json",
+      "bytes": 2570,
+      "sha256": "1236e6b572aa7a3a38729b1eb450c355793b66521f606c5ce05dbf77fe5b81b2"
+    },
+    {
+      "path": "fixtures/grid-48.coefficients.bin",
+      "bytes": 553028,
+      "sha256": "8871f80c9b45048279d417c34d6e40d124f13c45dc7e46260f3aa9b8d804cbee"
+    },
+    {
+      "path": "fixtures/grid-48.initial.bin",
+      "bytes": 221184,
+      "sha256": "b3849bdaa8a1f79fb457b1dcd5a6495128a17fa9d1a05399d3f95389288be780"
+    },
+    {
+      "path": "fixtures/grid-48.profile-r02.json",
+      "bytes": 2571,
+      "sha256": "2042d3a125672d9d360d90bc558832ca023a448ef9fbfb79099df25bac7af6a1"
+    },
+    {
+      "path": "fixtures/grid-48.profile-r03.json",
+      "bytes": 2571,
+      "sha256": "145349f91776ced7b414a057aabcbb4eeee46db09dd3cab0d5bf0895819c6efc"
+    },
+    {
+      "path": "fixtures/grid-48.profile.json",
+      "bytes": 2571,
+      "sha256": "3ff554e4fc9caf0cd9afcb43913e5d4e4ad8d34fb1f696a4b2d319f5cf2a9eca"
+    },
+    {
+      "path": "fixtures/grid-64.coefficients.bin",
+      "bytes": 983108,
+      "sha256": "81f4bd1c4ec66aa0e7d73bd42df617acb6f06fd1698d2b5fe444fdd83136c04f"
+    },
+    {
+      "path": "fixtures/grid-64.initial.bin",
+      "bytes": 393216,
+      "sha256": "96978cb9cdb639da9fccf268219b1e715251cb634ce975a21a3c1f6583824a4a"
+    },
+    {
+      "path": "fixtures/grid-64.profile-r02.json",
+      "bytes": 2571,
+      "sha256": "b901383cc6eab929c6e3dbeb14e479c8b95d4511880a9054b7a27f5941d95764"
+    },
+    {
+      "path": "fixtures/grid-64.profile-r03.json",
+      "bytes": 2571,
+      "sha256": "c04847268119d3ddcb8dee7fb82bfd48dc79f7568271a9d5996d54a84237899c"
+    },
+    {
+      "path": "fixtures/grid-64.profile.json",
+      "bytes": 2571,
+      "sha256": "106fd4f224797d9e67e8f1dbba4759c77ae22ef10181be52d54517f8f2261dad"
+    }
+  ],
+  "compiledFiles": [
+    {
+      "path": "dist/grid.d.ts",
+      "bytes": 1132,
+      "sha256": "cfc323fcca0c7a002c8686214d2da20c47e2238c548fc25ca436d1e16aa77c58"
+    },
+    {
+      "path": "dist/grid.js",
+      "bytes": 4639,
+      "sha256": "a597dc074c78f62c00b79ec9e2c26f92bee6888820ea34e0aee7f633aaa0a42b"
+    },
+    {
+      "path": "dist/transport.d.ts",
+      "bytes": 1639,
+      "sha256": "9bf906bab83e5f7199f293e241043a65db22235e2918a5f7d5ae8e17baf1e5f6"
+    },
+    {
+      "path": "dist/transport.js",
+      "bytes": 8091,
+      "sha256": "0684f8405e6b812ac3bad8691c9e23138dbaf8f53513bc3b70daa3a5ac50d530"
+    }
+  ],
+  "package": {
+    "path": "package.json",
+    "bytes": 294,
+    "sha256": "fc777ec53eeb303773cf4d7fc6201b51e60ab234877bee7b60d8f54c049e59ca"
+  },
+  "typecheckConfig": {
+    "path": "tsconfig.json",
+    "bytes": 254,
+    "sha256": "29a2cecbf9d8060be6fc7ec3b97f7011030e2767f7b6d01cf034aef46a85bd1c"
+  },
+  "producerClosure": {
+    "path": ".runtime/producer-verification.json",
+    "bytes": 3140,
+    "sha256": "ee28dedb261669f60ab7f5a40f830e8bba8ca1aeb0f8a81f2b9f25acce3842c2"
+  },
+  "sourceAdoption": {
+    "date": "2026-10-21",
+    "disposition": "NORMAL_A0_RESEARCH_SOURCE_NOT_APP_WORLD_OR_PRODUCT_ADOPTION",
+    "originalProducer": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Spike-WXG-07-2026-10-09/spikes/wxg-07-grid-dynamics",
+    "originalSourceBindingsSha256": "0885fe7fbd902cbed744bf43fe93b419a2f301fbe4e4fded38d051e7fcde0b47",
+    "acceptedCase": ".a0-runtime/benni-pc-wxg07-third-replay-case-source-r01/tests/replay-seven-day.test.mjs",
+    "acceptedCaseSha256": "c411af9366717f6456a055618ff1ae3b80f773d6828ab17e1a7d59d647d800ba",
+    "caseIntegration": "EXISTING_REPLAY_SUITE_REUSE_IMPORTS_OMIT_MACHINE_NODE_VERSION_ASSERT_ONLY",
+    "historicalDisposition": "HISTORICAL_ONLY_NOT_CURRENT_SUCCESS_PROOF",
+    "historicalFiles": [
+      "HANDOFF.md", "REPORT.md", "receipt.json", "runner-profile.json",
+      ".runtime/build-bindings.json", ".runtime/model-bindings.json", ".runtime/producer-verification.json",
+      ".runtime/final-seal/review.patch", ".runtime/final-seal/scope-seal.json"
+    ],
+    "currentEvidence": ".a0-runtime/benni-pc-wxg07-normal-source-adoption-r01",
+    "freshBuild": "NOT_RUN_533_ORIGINAL_INPUTS_MISSING_NO_INSTALL"
+  },
+  "wasm": "UPSTREAM_VERIFIED_NOT_EXECUTED",
+  "shader": "NOT_APPLICABLE",
+  "productPortChanges": []
+}

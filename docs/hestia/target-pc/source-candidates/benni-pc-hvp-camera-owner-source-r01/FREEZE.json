@@ -1,0 +1,14 @@
+{
+  "status": "SOURCE_APPLIED_PENDING_ROOT_REVIEW_BEHAVIOR_NOT_RUN",
+  "observedUtc": "2026-10-19T10:26:27.8146236Z",
+  "appStartUtc": "2026-10-19T10:13:17Z",
+  "appDeadlineUtc": "2026-10-19T10:28:17Z",
+  "elapsedToFreezeMs": 790814,
+  "freezeIsFullTurnEnd": false,
+  "sourceManifestSha256": "8ece4f934fb731c6a28fb4173b4d2957fc00eeaf0cfe1c22b6e586e37ba25043",
+  "normalAfterimageParity": 2,
+  "finalCompilerInputParity": 907,
+  "behavioralTestsRun": 0,
+  "runtimeRun": 0,
+  "automaticContinuation": false
+}

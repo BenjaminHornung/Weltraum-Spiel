@@ -14,6 +14,7 @@ import { createHvpTerrainCompiler, meshInitialHvpTerrain, releaseHvpOwnedTerrain
 import { createHvpTerrainConsumer, type HvpStagedTerrain,type HvpPreparedTerrainBody } from "../hestia-prototype/terrain/terrainConsumer";
 import {meshHvpTerrainFragment,meshHvpBodyCells} from "../hestia-prototype/presentation/terrainFragment";
 import {readHvpBodyCells} from "../hestia-prototype/physics/bodyCutPlan";
+import {hvpObjectLocalCenterOfMass} from "../hestia-prototype/physics/rigidRecipe";
 import {createHvpSaveStore,HVP_SAVE_SLOT} from "../hestia-prototype/persistence/saveStore";
 import {createHvpPhy01LabSaveStore,HVP_PHY01_LAB_SAVE_SLOT} from "../hestia-prototype/persistence/phy01LabSave";
 import {MemorySaveRepository} from "../browser-storage/memorySaveRepository";
@@ -1151,13 +1152,14 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       }finally{if(measurement.enabled){measurement.record(`${startupMeasuring?"startup":"runtime"}PlainMaterialAcquireCpuMs`,started,performance.now()-started,
         {frameBucketStart:lastMainCpuFrameStart??null,insideAnimationFrame:mainCpuFrameStart!==undefined});}}
     };
+    let ownedCamera: THREE.PerspectiveCamera;
     const presentation = createHvpPresentationBackend(backend, () => ({
-      position: backend!.camera.position,
-      orientation: backend!.camera.quaternion,
-      verticalFovDegrees: backend!.camera.fov,
-      aspect: backend!.camera.aspect,
-      near: backend!.camera.near,
-      far: backend!.camera.far
+      position: ownedCamera.position,
+      orientation: ownedCamera.quaternion,
+      verticalFovDegrees: ownedCamera.fov,
+      aspect: ownedCamera.aspect,
+      near: ownedCamera.near,
+      far: ownedCamera.far
     }), representationKey(HVP_WATER_REPRESENTATION_KEY), () => [...vegetationTransforms, ...physicsTransforms,
        ...physicsTransforms.filter(t=>t.representationKey==="hvp:branch:parent").map(t=>({...t,representationKey:representationKey(HVP_SALVAGE_LINK_KEY)})),
        ...branchProducts.filter(p=>p.decoration).flatMap(p=>{
@@ -1343,12 +1345,14 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
         activeTerrainKeys:active,visibleTerrainKeys:visibleKeys,
         ...(bodyCommandId===undefined?{}:{body:readBodyCutFrame(bodyCommandId,native,representationRoot)})};
     };
+    // Conservative owner reservation, not a measured Three.js allocation size.
+    const ownedCameraCpuReserveBytes=16*1024;
     const extraCpu=()=>{
       const bytes=overrides.extraCpuBytes?.()??0;
       if(!Number.isSafeInteger(bytes)||bytes<0||bytes>caps.maxCpuBytes){throw new Error("Invalid experimental CPU reservation");}
       // Pending products remain debited inside Prepare96; the persistent cache is outside that phase.
       const privateBytes=backend?.readPrivateMeshBytes?.();
-      return bytes+coldRecipeRetainedBytes+privateProjectionInputBytes+(terrainCompiler?.diagnostics().chunkCacheBytes??0)+(privateBytes?.custody??0)+(privateBytes?.pending??0);
+      return bytes+ownedCameraCpuReserveBytes+coldRecipeRetainedBytes+privateProjectionInputBytes+(terrainCompiler?.diagnostics().chunkCacheBytes??0)+(privateBytes?.custody??0)+(privateBytes?.pending??0);
     };
     const reportResources=(candidate:Parameters<typeof resourceReport>[0],limits:HvpResourceCaps)=>resourceReport({...candidate,totalCpuBytes:candidate.totalCpuBytes+extraCpu()},limits);
     const recordAdmission=(metric:"SceneAdmissionFailure"|"CutObservationBudgetDisabled",error:unknown,
@@ -1387,6 +1391,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
         triangles: 0,
         drawCalls: 0
       });
+    ownedCamera=backend.camera.clone();
     startupPhase("startupRendererMs");
     const loadQuery=owner.kind==="phy01-lab"?(owner.startMode==="cold"?"primary":null):new URLSearchParams(windowPort.location?.search??"").get("hvpLoad");
     if(loadQuery!==null&&loadQuery!=="primary"){throw new Error("Unknown Hestia restore slot");}
@@ -1503,7 +1508,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     const spawn = coldGame?.checkpoint.world.dropSpawn??{ x: -9, y: readHvpSourceColumnWorld(-9, -9).topMeters + 2.25, z: -9 };
     const savedDrop=coldGame?.world.bodies.find(b=>b.checkpoint.family==="drop"),savedInertia=coldGame?.world.bodies.find(b=>b.checkpoint.family==="inertia");
     if(coldGame&&(!savedDrop||!savedInertia)){throw new Error("Saved prototype specimens missing");}
-    const dropMesh = savedDrop?meshHvpBodyCells(readHvpBodyCells(savedDrop.recipe.source),savedDrop.recipe.mass.centerOfMassMeters!,savedDrop.recipe.source.contentHash,
+    const dropMesh = savedDrop?meshHvpBodyCells(readHvpBodyCells(savedDrop.recipe.source),hvpObjectLocalCenterOfMass(savedDrop.recipe.source,savedDrop.recipe.mass.centerOfMassMeters!),savedDrop.recipe.source.contentHash,
       savedDrop.checkpoint.ownerId==="hvp:physics:drop"?{ao:false,algorithmVersion:"hvp-drop-cube-v1"}:undefined)
       :meshHvpOccupancy({ sizeX: 4, sizeY: 4, sizeZ: 4, cellMeters: 0.125,
       originMeters: { x: -0.25, y: -0.25, z: -0.25 }, slotAt: () => 1 }, undefined, "hvp-drop-cube-v1", "hvp-drop-cube-v1");
@@ -1586,7 +1591,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     const fixedBranchOwners=new Set(branch.parts.filter(p=>p.anchored).map(p=>p.ownerId));
     branchProducts=meshHvpBranchProducts(branch).filter(p=>!coldGame||p.decoration||fixedBranchOwners.has(p.ownerId));
     const coldFragments=coldGame?.world.bodies.filter(b=>b.checkpoint.family==="terrain"||(b.checkpoint.family==="branch"&&b.checkpoint.dynamic)).map(b=>{
-      const cells=readHvpBodyCells(b.recipe.source),mesh=meshHvpBodyCells(cells,b.recipe.mass.centerOfMassMeters!,b.recipe.source.contentHash);
+      const cells=readHvpBodyCells(b.recipe.source),mesh=meshHvpBodyCells(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),b.recipe.source.contentHash);
       return {ownerId:b.checkpoint.ownerId,family:b.checkpoint.family as "terrain"|"branch",mesh,cells:cells.length,
         sourceBytes:b.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES,group:createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true})};
     })??[];
@@ -1597,7 +1602,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     const inertia=physics.read().inertia;
     if(inertia===null) { throw new Error("Canonical inertia specimen is missing from the admitted World"); }
     if(inertia!==null) {
-      const center=inertia.centerOfMass;
+      const center=savedInertia?hvpObjectLocalCenterOfMass(savedInertia.recipe.source,inertia.centerOfMass):inertia.centerOfMass;
       for(let i=0;i<inertiaMesh.positions.length;i+=3) {
         inertiaMesh.positions[i]=inertiaMesh.positions[i]!-center.x;inertiaMesh.positions[i+1]=inertiaMesh.positions[i+1]!-center.y;inertiaMesh.positions[i+2]=inertiaMesh.positions[i+2]!-center.z;
       }
@@ -1820,7 +1825,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       }
     };
 
-    camera = createHvpCamera({ camera: backend.camera, canvas, windowPort: windowPort as Window,
+    camera = createHvpCamera({ camera: ownedCamera, canvas, windowPort: windowPort as Window,
       isInputBlocked: () => playerInput?.active ?? false });
     const resizeViewport=()=>{
       if(disposed||myEpoch!==hvpMountEpoch||backend===undefined){return;}
@@ -1829,7 +1834,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     };
     listeners.add(windowPort,"resize",resizeViewport);
     resizeViewport();
-    playerInput = createHvpPlayerInput(canvas, backend.camera, physics, documentPort as Document, windowPort as Window, () => {
+    playerInput = createHvpPlayerInput(canvas, ownedCamera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
      },{confirm:()=>{
        const run=()=>{void plasmaTool?.confirm();};
@@ -2792,8 +2797,8 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
          const nextFragments:ReturnType<typeof makeFragmentEntry>[]=[];
          for(const b of game.world.bodies.filter(b=>b.checkpoint.family==="terrain"||(b.checkpoint.family==="branch"&&b.checkpoint.dynamic))){
            const owner=b.checkpoint.ownerId,key=registerEphemeral(scope,{kind:"fragment"},candidate),cells=readHvpBodyCells(b.recipe.source);
-           const mesh=renderPump?await renderPump.run(meshHvpOwnedBodyCellsSteps(cells,b.recipe.mass.centerOfMassMeters!,b.recipe.source.contentHash))
-             :meshHvpBodyCells(cells,b.recipe.mass.centerOfMassMeters!,b.recipe.source.contentHash);
+           const mesh=renderPump?await renderPump.run(meshHvpOwnedBodyCellsSteps(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),b.recipe.source.contentHash))
+             :meshHvpBodyCells(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),b.recipe.source.contentHash);
            const sourceBytes=b.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES;
            nextFragments.push(renderPump?await renderPump.run(makeFragmentEntrySteps(owner,mesh,sourceBytes,cells.length,root.revision,b.checkpoint.family as "terrain"|"branch",key,undefined,true,root,renderContext))
              :makeFragmentEntry(owner,mesh,sourceBytes,cells.length,root.revision,b.checkpoint.family as "terrain"|"branch",key));
@@ -3121,6 +3126,9 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
      // Upload all startup objects while Loading, then publish their complete set
      // before Ready or the first draw. Subsequent mutations publish immediately.
      presentation.updateProjection();
+     // Compare canonical doubles so renderer f32 rounding cannot keep a paused view dirty.
+     const projectedCamera={position:ownedCamera.position.clone(),quaternion:ownedCamera.quaternion.clone(),
+       fov:ownedCamera.fov,aspect:ownedCamera.aspect,near:ownedCamera.near,far:ownedCamera.far};
      if(disposed||hvpMountEpoch!==myEpoch){throw new Error("Scene disposed before tool Ready");}
      cutReady=true;preparingNotice.remove();
      hud.update("Ready", camera.readPose(), stats);
@@ -3191,14 +3199,20 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
         documentPort.body.dataset.hestiaPrototypePhysics = JSON.stringify(state);
         documentPort.body.dataset.hestiaPrototypePhysicsClock = JSON.stringify(physics!.clock??null);
         documentPort.body.dataset.hestiaPrototypeStructure = JSON.stringify(state.structural);
-        if (state.ticks !== physicsTick || playerInput!.active) {
+        camera!.update(deltaSeconds);
+        const cameraChanged=!ownedCamera.position.equals(projectedCamera.position)
+          ||!ownedCamera.quaternion.equals(projectedCamera.quaternion)||ownedCamera.fov!==projectedCamera.fov
+          ||ownedCamera.aspect!==projectedCamera.aspect||ownedCamera.near!==projectedCamera.near||ownedCamera.far!==projectedCamera.far;
+        if (state.ticks !== physicsTick || playerInput!.active || cameraChanged) {
           physicsTick = state.ticks;
           syncPhysicsTransforms();
           presentation.updateProjection();
+          projectedCamera.position.copy(ownedCamera.position);projectedCamera.quaternion.copy(ownedCamera.quaternion);
+          projectedCamera.fov=ownedCamera.fov;projectedCamera.aspect=ownedCamera.aspect;
+          projectedCamera.near=ownedCamera.near;projectedCamera.far=ownedCamera.far;
         }
         hud!.updatePhysics();
         if(!saveBusy){observeSalvage();}
-        camera!.update(deltaSeconds);
         });
       } catch (error) {
         mainCpuFrameStart=undefined;

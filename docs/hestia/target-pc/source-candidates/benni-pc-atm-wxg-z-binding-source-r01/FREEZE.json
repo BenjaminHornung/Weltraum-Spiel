@@ -1,0 +1,21 @@
+{
+  "status": "FINITE_PRIVATE_CONSUMER_SOURCE_BOUND_PENDING_ROOT_REVIEW",
+  "actualThread": "01a13648-c55b-7250-bf07-34921d70b43b",
+  "actualTurn": "01a1537e-905a-7180-a898-7a4d7d74c16f",
+  "actualAppStartUtc": "2026-10-19T09:29:25Z",
+  "fixedDeadlineUtc": "2026-10-19T09:47:25Z",
+  "reservedClosureStartUtc": "2026-10-19T09:45:25Z",
+  "freezeCapturedAtUtc": "2026-10-19T09:43:30.8239030Z",
+  "elapsedStartToFreezeSeconds": 845.823903,
+  "fullAppTurnEnd": "ONLY_OBSERVABLE_AFTER_FINAL_REPLY_NOT_FREEZE",
+  "previousWxgFullTurnMs": 926998,
+  "previousWxgBudgetMs": 900000,
+  "previousWxgTimeAndWorkerDeviation": "PARTIAL_HOLD_UNCHANGED",
+  "producerWrites": 0,
+  "productWrites": 0,
+  "actualM5Hosts": 0,
+  "realM5Records": 0,
+  "workerStarts": 0,
+  "subagents": 0,
+  "rendererReferenceProductAdoption": "NOT_RUN_NOT_CLAIMED"
+}

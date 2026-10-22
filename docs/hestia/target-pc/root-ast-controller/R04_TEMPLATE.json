@@ -1,0 +1,151 @@
+{
+  "schema": "hestia.core-material-poison-ast-next-task-template.v1",
+  "status": "PREPARED_SOURCE_ONLY_NO_CURRENT_AUTHORITY",
+  "attempt": "CORE_MATERIAL_POISON_AST_R04",
+  "scope": "ONE_QUALIFIED_NODE_PROCESS_STATIC_AST_PARSING_AND_SCOPE_DIFF_ONLY_NO_PRODUCT_IMPORT_METHOD_OR_TEST_EXECUTION",
+  "owner": {
+    "app": "01a13648-c55b-7250-bf07-34921d70b43b",
+    "paseoAgent": "58fc7970-b84f-485d-8cd0-e577205823e9",
+    "worktree": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13",
+    "head": "6ac0f61947c5a6aa3e5b156831542d8188c75c0a"
+  },
+  "preparationReport": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\READBACK.md",
+  "reviewedTemplate": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_TEMPLATE.json",
+  "fixedReviewPins": {
+    "taskSource": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R02_EXECUTION_TASK-20261021.json",
+    "expectedTaskSha256": "97216b3fd6e13e80637a7b62079e092311c5f5360d20faf15c78158ca1a90d3c",
+    "sixSourcePins": [
+      {
+        "relative": "apps/weltraum-browser/src/render/three/backend/threeMaterialFactory.ts",
+        "bytes": 5172,
+        "sha256": "fd0658244e613c684b1ecced904ad9ec4d6b823953490bd322cf12a572295542"
+      },
+      {
+        "relative": "apps/weltraum-browser/tests/unit/renderBackendLifecycle.test.ts",
+        "bytes": 44944,
+        "sha256": "6ab4b4d0acb0160411e651106ac8ee1a60cd13c960d5f3ea8a8cbd18ab2473d1"
+      },
+      {
+        "relative": ".a0-runtime/benni-pc-core-material-poison-source-r01/ast-check.cjs",
+        "bytes": 3458,
+        "sha256": "bba66c6a51ba19aea9c848251f7122e5ca883333dde103d273b3c4778abe0cd7"
+      },
+      {
+        "relative": ".a0-runtime/benni-pc-core-material-poison-source-r01/Run-Check.ps1",
+        "bytes": 3295,
+        "sha256": "e5d5f7ee00e7a6d3b7f14d240c5ff133c44e4230b87a99a3a543efdc8a8f6abe"
+      },
+      {
+        "relative": ".a0-runtime/benni-pc-core-material-poison-source-r01/before/threeMaterialFactory.ts",
+        "bytes": 5114,
+        "sha256": "9b259862c6534691773e2a7f7df7ed5c4696491243535844f69af84240fb1a6d"
+      },
+      {
+        "relative": ".a0-runtime/benni-pc-core-material-poison-source-r01/before/renderBackendLifecycle.test.ts",
+        "bytes": 44455,
+        "sha256": "23c796f32c182cc5ec0ca5ad3b200911d40dfe97d5f2ec430b3f8e9f73d651c9"
+      }
+    ],
+    "node": {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\artifacts\\hestia-other-pc-restored\\Tooling\\PortableNode\\node.exe",
+      "bytes": 86997320,
+      "version": "22.23.2",
+      "sha256": "0d0f5e39f9f3d9587bc19f73eab3c2c9c4903fd02d6dbf9c853dd81b3d95fad4"
+    },
+    "compiler": {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\artifacts\\hestia-target-pc-2026-10-13\\rt08-build-toolchain\\node_modules\\typescript\\lib\\typescript.js",
+      "bytes": 9112572,
+      "version": "5.9.3",
+      "sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+    },
+    "powerShell": {
+      "path": "C:\\IFI_SourceCode\\Utils\\PowerShell\\pwsh.exe",
+      "bytes": 301368,
+      "version": "7.6.4.500",
+      "sha256": "db6dd81183fe57d22e03b911ec9a30a2fd7c40542e97743615355a6fb44f458f"
+    }
+  },
+  "futureAttempt": {
+    "evidenceRoot": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-ast-once-r04",
+    "recorderSource": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-source-r01\\Run-Check.ps1",
+    "checkerAbsolute": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-source-r01\\ast-check.cjs",
+    "evidenceReceipt": "evidence\\CORE_MATERIAL_POISON_AST.json",
+    "checkerCwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-ast-once-r04",
+    "exactPayloadCommand": "$ErrorActionPreference='Stop';[Environment]::SetEnvironmentVariable('NODE_COMPILE_CACHE',$null,'Process');& 'C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-ast-once-r04\\Run-Check.ps1' -Label 'CORE_MATERIAL_POISON_AST' -Exe 'C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\artifacts\\hestia-other-pc-restored\\Tooling\\PortableNode\\node.exe' -CheckArgs @('C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-source-r01\\ast-check.cjs')",
+    "workBudgetMs": 48000,
+    "totalBudgetMs": 60000,
+    "maxActualAppTurnMs": 600000,
+    "readOnlyBindingWaitMs": 90000,
+    "a0RunOnceSource": {
+      "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021\\R04_A0_RUN_ONCE.ps1",
+      "bytes": 12926,
+      "sha256": "e8a65aca5845b8a042a8e1908eef03d5e04fc59c68504ca4a1fffc88b6964bfd"
+    },
+    "m5PreservationBaseline": {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-m5-prestart-diagnostics-source-r01\\PRESERVATION_BEFORE.json",
+      "bytes": 10390,
+      "sha256": "cbafbabda4dc344193f82b69e66cf6851f9ec0ac903eff671a3319064065063f",
+      "requiredCopyPins": 5,
+      "absentSlots": [
+        "M5_HARMLESS_EXTERNAL_ORIGIN.json",
+        "M5_HARMLESS_RUNTIME_AUTHORITY.json",
+        "M5_HARMLESS_OUTER_CLOCK.json",
+        "M5_HARMLESS_REVIEWED_PACKAGE.json",
+        "M5_HARMLESS_RUNTIME_CONTEXT.json",
+        "M5_HARMLESS_RUNTIME_GRANT.json",
+        "M5_HARMLESS_CONSUMED",
+        "M5_HARMLESS_DISPATCHED"
+      ]
+    },
+    "initialConsumptionFile": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_INITIAL_CONSUMED-20261021.json",
+    "finalExecutionTaskFile": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_FINAL_EXECUTION_TASK-20261021.json",
+    "directHumanApprovalFile": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_HUMAN_APPROVAL-20261021.json",
+    "finalGrantConsumptionFile": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_GRANT_CONSUMED-20261021.json",
+    "rootReadyFile": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_ROOT_READY-20261021.json",
+    "rootReadyPendingFile": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R04_ROOT_READY-20261021.json.pending",
+    "stop": "FIRST_ERROR_INCLUDING_ROOT_AND_A0_PREPARATION_STOP_NO_RETRY_NO_FALLBACK_PRESERVE_PARTIAL_EVIDENCE"
+  },
+  "directHumanAuthority": {
+    "source": "NONE",
+    "scope": "CORE_MATERIAL_POISON_AST_R04_ONCE",
+    "questionItemId": null,
+    "answer": null,
+    "initialConsumptionCreated": false,
+    "finalTaskCreated": false,
+    "finalApprovalCreated": false,
+    "finalConsumptionCreated": false,
+    "rootReadyCreated": false,
+    "newA0Turn": null,
+    "actualStartEpochMs": null,
+    "appDeadlineEpochMs": null,
+    "rootAbsoluteEndEpochMs": null
+  },
+  "spentR03": {
+    "initialConsumption": { "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R03_INITIAL_CONSUMED-20261021.json", "bytes": 887, "sha256": "599a312eac120fd67fbde34a0764be372571801eacaea31eec5fc285eba6ab67" },
+    "stopCheckpoint": { "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_POISON_AST_R03_ROOT_STOP-20261021.json", "bytes": 1773, "sha256": "684820da0cb3940b1e7f6439d8db63394af3d9a3ec5d295716d8b0f9e0c09623" },
+    "questionCallId": "call_cf1f33842b8b4ec0ab389519c038342b",
+    "answerToken": "JA_CORE_MATERIAL_POISON_AST_R03_ONCE",
+    "status": "SPENT_NO_R04_AUTHORITY"
+  },
+  "constraints": {
+    "initialConsumptionBeforeAnyPostReplyPreparation": true,
+    "clockAnchorWording": "After the validated direct reply, the one-time initial-consumption clock capture is T0: root end T0+900000 ms; A0 binding and Root-Ready no later than T0+90000 ms; actual A0 end min(actual startedAt*1000+600000, root end); recorder requires a full 60000 ms remaining. This wording does not measure reply age or extend authority.",
+    "actualAppDeadlineFormula": "min(new actual startedAt * 1000 + 600000, fixed root end captured once after the direct reply); never reset",
+    "finalBindingMustUseReadThreadShape": "thread.id/cwd/status/hostId and turns[0].id/status/startedAt, where startedAt is Unix seconds",
+    "sameA0Only": true,
+    "oldR01AndR02": "IMMUTABLE_SPENT_HOLD_NO_RETRY",
+    "g01": "ALREADY_ACCEPTED_COMPLETE_TARGETS_PRESENT_NEVER_REINSTALL_OR_REQUIRE_ABSENCE",
+    "noNodeOrPayloadBeforeRootReady": true,
+    "finalHashOrder": "FINAL_TASK_BYTES_SHA_THEN_APPROVAL_BYTES_SHA_THEN_FINAL_CONSUMPTION_BYTES_SHA_THEN_ROOT_READY_CREATE_NEW_AND_READBACK",
+    "recorder": "COPY_EXISTING_PINNED_RUN_CHECK_PS1_BYTE_FOR_BYTE_TO_FUTURE_EVIDENCE_ROOT_WITH_CREATE_NEW",
+    "futureNodeCompileCache": "REMOVE_ONLY_PROCESS_LOCALLY_IN_OUTER_POWERSHELL_INVOCATION",
+    "prohibited": "NO_SOURCE_EDIT_UNIT_TEST_BUILD_IMPORT_SEMANTIC_TYPECHECK_VERSION_PROGRAM_INSTALL_BROWSER_M5_NATIVE24_PHYSICS_GPU_SAVE_COMMIT_PUSH_MERGE"
+  },
+  "outcomeClassification": {
+    "allowedIfFuturePass": "STATIC_AST_SOURCE_SCOPE_QUALIFICATION_ONLY",
+    "originalBehavioralRegression": "NOT_RUN",
+    "originalIncidentReproduction": "NOT_RUN",
+    "performanceReference": "NOT_RUN",
+    "productAdoption": "NOT_RUN"
+  }
+}

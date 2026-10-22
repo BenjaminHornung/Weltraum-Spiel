@@ -1,0 +1,909 @@
+{
+  "schema": "wxg07.receipt/v1",
+  "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "branch": "feature/wxg-07-2026-10-09",
+  "owner": {
+    "nativeId": "01a12265-5205-7d72-8610-13bb2588c48d",
+    "agentId": "3f91fd8e-1de7-4a77-95e1-113c7a854da2",
+    "branch": "feature/wxg-07-2026-10-09"
+  },
+  "implementation": "COMPLETE",
+  "codeOracle": "PASS",
+  "executionLocation": "LOCAL_WINDOWS_ISOLATED",
+  "recommendation": "RESEARCH_ONLY",
+  "productIntegration": "NO",
+  "hardware": {
+    "reference": "NOT_RUN",
+    "crossDevice": "NOT_RUN",
+    "a0Slot": "NOT_GRANTED",
+    "freeWindow": "NOT_CONFIRMED",
+    "actualAdapter": {
+      "status": "NOT_APPLICABLE",
+      "reason": "CPU_ONLY"
+    },
+    "gpuTimer": {
+      "status": "NOT_APPLICABLE",
+      "value": null
+    }
+  },
+  "workflow": {
+    "specValidation": "PASS",
+    "devtoolboxExecutionId": "9876c0c448c24a00ad7cd12add466cb5",
+    "inheritedVerify": "FAIL_PRODUCT_TYPECHECK_MISSING_ISOLATED_DEPENDENCIES",
+    "initialFailure": {
+      "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/devtoolbox-initial-verification.json",
+      "bytes": 2317,
+      "sha256": "bb44bec217d5e00d662f09130bf061aace10efff8dd9b565480c07f469738b38"
+    },
+    "taskClosure": "MANUAL_FOCUSED_EVIDENCE_AFTER_ADVISORY_COMPLETION_PREFLIGHT",
+    "completionPreflight": {
+      "state": "DEGRADED_ADVISORY_CAN_PROCEED",
+      "evidence": {
+        "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/completion-preflight-initial.json",
+        "bytes": 5823,
+        "sha256": "754052fb2349972c0fd2fe408c47b419f79994d067e08cacb5207228efc8e824"
+      },
+      "disposition": "Own local evidence passed; inherited read-only product dependencies absent. Actual task toggles recorded separately after review."
+    }
+  },
+  "publication": {
+    "commit": "NOT_DONE",
+    "push": "NOT_DONE",
+    "merge": "NOT_DONE",
+    "humanPlannotator": "NOT_REQUESTED_NOT_GRANTED"
+  },
+  "source": {
+    "path": "SourceBindings.json",
+    "bytes": 9844,
+    "sha256": "0885fe7fbd902cbed744bf43fe93b419a2f301fbe4e4fded38d051e7fcde0b47"
+  },
+  "input": {
+    "path": "InputBindings.json",
+    "bytes": 743400,
+    "sha256": "e82e59a57933756278b4a0e61f2c75d1eb52c801448671098e4b56ea0c74c80b"
+  },
+  "dependencyLock": {
+    "path": "dependencies.lock.json",
+    "bytes": 1103,
+    "sha256": "13e5d2d229bbfa19ce3f680877ec0e2a397a639fc90360e4e2a461936face823"
+  },
+  "compiled": [
+    {
+      "path": "dist/grid.d.ts",
+      "bytes": 1132,
+      "sha256": "cfc323fcca0c7a002c8686214d2da20c47e2238c548fc25ca436d1e16aa77c58"
+    },
+    {
+      "path": "dist/grid.js",
+      "bytes": 4639,
+      "sha256": "a597dc074c78f62c00b79ec9e2c26f92bee6888820ea34e0aee7f633aaa0a42b"
+    },
+    {
+      "path": "dist/transport.d.ts",
+      "bytes": 1639,
+      "sha256": "9bf906bab83e5f7199f293e241043a65db22235e2918a5f7d5ae8e17baf1e5f6"
+    },
+    {
+      "path": "dist/transport.js",
+      "bytes": 8091,
+      "sha256": "0684f8405e6b812ac3bad8691c9e23138dbaf8f53513bc3b70daa3a5ac50d530"
+    }
+  ],
+  "fixtures": [
+    {
+      "path": "fixtures/authoring.json",
+      "bytes": 47558,
+      "sha256": "57627b42b0dbc34a757711b8cbf0d42dee606faec1f76e55bd9a15298b1e0306"
+    },
+    {
+      "path": "fixtures/grid-32.coefficients.bin",
+      "bytes": 245828,
+      "sha256": "0723f9651b590e4864d1ba152ae8c36a649d17dea31c8a0bf774dd6ff30196a5"
+    },
+    {
+      "path": "fixtures/grid-32.initial.bin",
+      "bytes": 98304,
+      "sha256": "cd0e88ab3071f20e2b3aa6d15b15b41a18d0f62236ea5507e878485851b011a2"
+    },
+    {
+      "path": "fixtures/grid-32.profile-r02.json",
+      "bytes": 2570,
+      "sha256": "7a16674eeb1babc327f32187c7d7974eaebc0b788867cf317c83dc833d20425f"
+    },
+    {
+      "path": "fixtures/grid-32.profile-r03.json",
+      "bytes": 2570,
+      "sha256": "dfc9b2c82856919badd3af2d45f4423802c5a692457893932da34873b99e75c5"
+    },
+    {
+      "path": "fixtures/grid-32.profile.json",
+      "bytes": 2570,
+      "sha256": "1236e6b572aa7a3a38729b1eb450c355793b66521f606c5ce05dbf77fe5b81b2"
+    },
+    {
+      "path": "fixtures/grid-48.coefficients.bin",
+      "bytes": 553028,
+      "sha256": "8871f80c9b45048279d417c34d6e40d124f13c45dc7e46260f3aa9b8d804cbee"
+    },
+    {
+      "path": "fixtures/grid-48.initial.bin",
+      "bytes": 221184,
+      "sha256": "b3849bdaa8a1f79fb457b1dcd5a6495128a17fa9d1a05399d3f95389288be780"
+    },
+    {
+      "path": "fixtures/grid-48.profile-r02.json",
+      "bytes": 2571,
+      "sha256": "2042d3a125672d9d360d90bc558832ca023a448ef9fbfb79099df25bac7af6a1"
+    },
+    {
+      "path": "fixtures/grid-48.profile-r03.json",
+      "bytes": 2571,
+      "sha256": "145349f91776ced7b414a057aabcbb4eeee46db09dd3cab0d5bf0895819c6efc"
+    },
+    {
+      "path": "fixtures/grid-48.profile.json",
+      "bytes": 2571,
+      "sha256": "3ff554e4fc9caf0cd9afcb43913e5d4e4ad8d34fb1f696a4b2d319f5cf2a9eca"
+    },
+    {
+      "path": "fixtures/grid-64.coefficients.bin",
+      "bytes": 983108,
+      "sha256": "81f4bd1c4ec66aa0e7d73bd42df617acb6f06fd1698d2b5fe444fdd83136c04f"
+    },
+    {
+      "path": "fixtures/grid-64.initial.bin",
+      "bytes": 393216,
+      "sha256": "96978cb9cdb639da9fccf268219b1e715251cb634ce975a21a3c1f6583824a4a"
+    },
+    {
+      "path": "fixtures/grid-64.profile-r02.json",
+      "bytes": 2571,
+      "sha256": "b901383cc6eab929c6e3dbeb14e479c8b95d4511880a9054b7a27f5941d95764"
+    },
+    {
+      "path": "fixtures/grid-64.profile-r03.json",
+      "bytes": 2571,
+      "sha256": "c04847268119d3ddcb8dee7fb82bfd48dc79f7568271a9d5996d54a84237899c"
+    },
+    {
+      "path": "fixtures/grid-64.profile.json",
+      "bytes": 2571,
+      "sha256": "106fd4f224797d9e67e8f1dbba4759c77ae22ef10181be52d54517f8f2261dad"
+    }
+  ],
+  "build": {
+    "path": ".runtime/build-bindings.json",
+    "bytes": 1677,
+    "sha256": "c0c08ec3a427ef8738fca629fbb720cd4a5091aaa261ca1a35d6eaadcd7192ec"
+  },
+  "sourceCompilerAndModel": {
+    "path": ".runtime/model-bindings.json",
+    "bytes": 2494,
+    "sha256": "1e079e8568adfda372fe3e8041a7125f58f5ee76c8a8d3b8578aec09afa40c9b"
+  },
+  "tools": {
+    "node": {
+      "version": "22.23.2",
+      "path": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+      "bytes": 86997320,
+      "sha256": "0d0f5e39f9f3d9587bc19f73eab3c2c9c4903fd02d6dbf9c853dd81b3d95fad4"
+    },
+    "typescript": {
+      "version": "7.0.2",
+      "path": "inputs/wxg/node_modules/@typescript/typescript-win32-x64/lib/tsc.exe",
+      "bytes": 24520544,
+      "sha256": "f9ecfbdc93753d2c972d66a8d0d75f5bd737fd4a5f88b422d9091ea282bcb2c7"
+    },
+    "git": {
+      "path": "C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe",
+      "bytes": 29696,
+      "sha256": "7cd588850959546663c81077af076835558c6a6af33506a64a65784743df92a1"
+    },
+    "npmObserved": "10.9.8",
+    "pythonObserved": "3.12.13",
+    "browser": "NOT_USED",
+    "rust": "NOT_USED"
+  },
+  "tests": {
+    "status": "PASS",
+    "count": 23,
+    "commands": [
+      {
+        "name": "node-version",
+        "executable": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+        "args": [
+          "--version"
+        ],
+        "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Spike-WXG-07-2026-10-09\\spikes\\wxg-07-grid-dynamics",
+        "start": "2026-10-09T21:17:57.057Z",
+        "end": "2026-10-09T21:17:57.122Z",
+        "exitCode": 0,
+        "error": null,
+        "stdout": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/node-version.stdout.log",
+          "bytes": 10,
+          "sha256": "ed7de8ea0cd4b667ff55ad318ae19bed3b87fd3e7f1027a7ce127bb04df124c4"
+        },
+        "stderr": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/node-version.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "node-syntax",
+        "executable": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+        "args": [
+          "--check",
+          "src/checkpoint.mjs"
+        ],
+        "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Spike-WXG-07-2026-10-09\\spikes\\wxg-07-grid-dynamics",
+        "start": "2026-10-09T21:17:57.131Z",
+        "end": "2026-10-09T21:17:57.206Z",
+        "exitCode": 0,
+        "error": null,
+        "stdout": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/node-syntax.stdout.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/node-syntax.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "bindings",
+        "executable": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+        "args": [
+          "scripts/bindings.mjs"
+        ],
+        "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Spike-WXG-07-2026-10-09\\spikes\\wxg-07-grid-dynamics",
+        "start": "2026-10-09T21:17:57.211Z",
+        "end": "2026-10-09T21:17:57.358Z",
+        "exitCode": 0,
+        "error": null,
+        "stdout": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/bindings.stdout.log",
+          "bytes": 24,
+          "sha256": "450fb60345433d88c2c01aba5ee437885d838ffc1037f98b008b869ad2a21304"
+        },
+        "stderr": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/bindings.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "producer-closure",
+        "executable": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+        "args": [
+          "scripts/verify-producers.mjs"
+        ],
+        "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Spike-WXG-07-2026-10-09\\spikes\\wxg-07-grid-dynamics",
+        "start": "2026-10-09T21:17:57.367Z",
+        "end": "2026-10-09T21:17:59.083Z",
+        "exitCode": 0,
+        "error": null,
+        "stdout": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/producer-closure.stdout.log",
+          "bytes": 68,
+          "sha256": "dc512600ec2ac46f50a48efe98433cf1c0a06b7bec775aac36985bd601202e06"
+        },
+        "stderr": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/producer-closure.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "build-typecheck",
+        "executable": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+        "args": [
+          "scripts/build.mjs"
+        ],
+        "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Spike-WXG-07-2026-10-09\\spikes\\wxg-07-grid-dynamics",
+        "start": "2026-10-09T21:17:59.090Z",
+        "end": "2026-10-09T21:17:59.568Z",
+        "exitCode": 0,
+        "error": null,
+        "stdout": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/build-typecheck.stdout.log",
+          "bytes": 40,
+          "sha256": "799fcbb125dece9d387f0655e0e4aafb569a62f93b9db35aa7c3678449cb4120"
+        },
+        "stderr": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/build-typecheck.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "fixtures",
+        "executable": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+        "args": [
+          "scripts/prepare-fixtures.mjs"
+        ],
+        "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Spike-WXG-07-2026-10-09\\spikes\\wxg-07-grid-dynamics",
+        "start": "2026-10-09T21:17:59.571Z",
+        "end": "2026-10-09T21:18:00.775Z",
+        "exitCode": 0,
+        "error": null,
+        "stdout": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/fixtures.stdout.log",
+          "bytes": 433,
+          "sha256": "fee33b1e255e45b59039dd3ca4d3542d2b7de3702d675ffa57040018871d763b"
+        },
+        "stderr": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/fixtures.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "historic-and-focused-tests",
+        "executable": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+        "args": [
+          "--experimental-test-isolation=none",
+          "--test",
+          "--test-concurrency=1",
+          "inputs/wxg/tests/geometry.test.mjs",
+          "tests/control.test.mjs",
+          "tests/first-oracle.test.mjs",
+          "tests/geometry-flux.test.mjs",
+          "tests/replay.test.mjs",
+          "tests/transport.test.mjs"
+        ],
+        "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Spike-WXG-07-2026-10-09\\spikes\\wxg-07-grid-dynamics",
+        "start": "2026-10-09T21:18:00.783Z",
+        "end": "2026-10-09T21:18:03.940Z",
+        "exitCode": 0,
+        "error": null,
+        "stdout": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/historic-and-focused-tests.stdout.log",
+          "bytes": 5552,
+          "sha256": "081d330eacae02ce73e144654a183bb921e7e14a2a84e075b46b7ea9ed6ec997"
+        },
+        "stderr": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/historic-and-focused-tests.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "name": "finite-runtime-matrix",
+        "executable": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+        "args": [
+          "scripts/matrix.mjs",
+          "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/matrix"
+        ],
+        "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Spike-WXG-07-2026-10-09\\spikes\\wxg-07-grid-dynamics",
+        "start": "2026-10-09T21:18:03.947Z",
+        "end": "2026-10-09T21:18:26.845Z",
+        "exitCode": 0,
+        "error": null,
+        "stdout": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/finite-runtime-matrix.stdout.log",
+          "bytes": 10816,
+          "sha256": "afbdc7c730d11d0b130652262f25aafe473d2755ffa687f30b5515934ce44610"
+        },
+        "stderr": {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/finite-runtime-matrix.stderr.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    ],
+    "evidence": {
+      "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/summary.json",
+      "bytes": 15421,
+      "sha256": "f3b1230da1e10d55791bfcdd88c48176d00fad45e5fc12a35af8bbcaa867e8ba"
+    },
+    "historicControl": {
+      "exitCode": 0,
+      "tests": 8,
+      "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/control.log"
+    },
+    "initialMissingOracle": {
+      "exitCode": 1,
+      "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/initial-missing-oracle.log"
+    },
+    "matrix": {
+      "status": "PASS",
+      "rows": 9,
+      "evidence": {
+        "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/local-functional-r04/matrix/matrix.json",
+        "bytes": 14942,
+        "sha256": "27ffc0ca7006afed4444744b65d6c82fb198dc531f88254a329384975309e051"
+      },
+      "rowsBound": [
+        {
+          "n": 32,
+          "cells": 6144,
+          "gapSeconds": 3600,
+          "checkpointTick": 432000,
+          "targetTick": 864000,
+          "steps": 12,
+          "tailSteps": 6,
+          "dtSeconds": 600,
+          "cflLimitSeconds": 876.9966770554113,
+          "minimumHydraulicLengthMeters": 109624.58463192641,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-32.coefficients.bin",
+            "bytes": 245828,
+            "sha256": "0723f9651b590e4864d1ba152ae8c36a649d17dea31c8a0bf774dd6ff30196a5"
+          },
+          "profileDigest": "sha256:dfc9b2c82856919badd3af2d45f4423802c5a692457893932da34873b99e75c5",
+          "fullDigest": "sha256:3120eb7d7566461d0fbeeda9e96c2dc6293bca44e75fc164808c57d94eb87724",
+          "tailDigest": "sha256:3120eb7d7566461d0fbeeda9e96c2dc6293bca44e75fc164808c57d94eb87724",
+          "checkpointDigest": "sha256:9f2c6c70caff7941cafa473cb9a022b0c4429c42b8bb13ef9705f67c26093c68",
+          "canonicalBytes": 98613,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            4.985489129526681e-15,
+            1.3485608792547665e-15
+          ],
+          "diagnosticFullReplayMs": 6.87439999999998,
+          "diagnosticCheckpointTailMs": 10.735100000000017,
+          "sourceAddedKg": [
+            63060148834.32627,
+            124120297.66862352
+          ],
+          "sinkRemovedKg": [
+            866249719743.334,
+            1302694794.0043783
+          ],
+          "finalMassKg": [
+            1202689555898101,
+            904010908439.4111
+          ]
+        },
+        {
+          "n": 32,
+          "cells": 6144,
+          "gapSeconds": 86400,
+          "checkpointTick": 432000,
+          "targetTick": 10800000,
+          "steps": 150,
+          "tailSteps": 144,
+          "dtSeconds": 600,
+          "cflLimitSeconds": 876.9966770554113,
+          "minimumHydraulicLengthMeters": 109624.58463192641,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-32.coefficients.bin",
+            "bytes": 245828,
+            "sha256": "0723f9651b590e4864d1ba152ae8c36a649d17dea31c8a0bf774dd6ff30196a5"
+          },
+          "profileDigest": "sha256:dfc9b2c82856919badd3af2d45f4423802c5a692457893932da34873b99e75c5",
+          "fullDigest": "sha256:3d3efd5fb7bd315a53b544e63974fff9175276d1704f8ca74fe7b1dd438aa37c",
+          "tailDigest": "sha256:3d3efd5fb7bd315a53b544e63974fff9175276d1704f8ca74fe7b1dd438aa37c",
+          "checkpointDigest": "sha256:9f2c6c70caff7941cafa473cb9a022b0c4429c42b8bb13ef9705f67c26093c68",
+          "canonicalBytes": 98616,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            0,
+            2.9668339343604865e-15
+          ],
+          "diagnosticFullReplayMs": 58.4606,
+          "diagnosticCheckpointTailMs": 65.75259999999997,
+          "sourceAddedKg": [
+            776751860427.9543,
+            1552503720.8559048
+          ],
+          "sinkRemovedKg": [
+            10786627165818.055,
+            16162395548.060522
+          ],
+          "finalMassKg": [
+            1193482870163626,
+            890579591108.5463
+          ]
+        },
+        {
+          "n": 32,
+          "cells": 6144,
+          "gapSeconds": 604800,
+          "checkpointTick": 432000,
+          "targetTick": 73008000,
+          "steps": 1014,
+          "tailSteps": 1008,
+          "dtSeconds": 600,
+          "cflLimitSeconds": 876.9966770554113,
+          "minimumHydraulicLengthMeters": 109624.58463192641,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-32.coefficients.bin",
+            "bytes": 245828,
+            "sha256": "0723f9651b590e4864d1ba152ae8c36a649d17dea31c8a0bf774dd6ff30196a5"
+          },
+          "profileDigest": "sha256:dfc9b2c82856919badd3af2d45f4423802c5a692457893932da34873b99e75c5",
+          "fullDigest": "sha256:0abd51b9e12389229475bf45883ef88fbe8cf4efe9ed9d74d1ed96dc6cccb327",
+          "tailDigest": "sha256:0abd51b9e12389229475bf45883ef88fbe8cf4efe9ed9d74d1ed96dc6cccb327",
+          "checkpointDigest": "sha256:9f2c6c70caff7941cafa473cb9a022b0c4429c42b8bb13ef9705f67c26093c68",
+          "canonicalBytes": 98615,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            2.6381546643745353e-14,
+            1.1327911385740039e-14
+          ],
+          "diagnosticFullReplayMs": 401.1858,
+          "diagnosticCheckpointTailMs": 401.2953,
+          "sourceAddedKg": [
+            5245082576465.852,
+            10489165152.99398
+          ],
+          "sinkRemovedKg": [
+            71195939429216.64,
+            104324436251.51086
+          ],
+          "finalMassKg": [
+            1137541888616296.8,
+            811354211837.2416
+          ]
+        },
+        {
+          "n": 48,
+          "cells": 13824,
+          "gapSeconds": 3600,
+          "checkpointTick": 432000,
+          "targetTick": 864000,
+          "steps": 24,
+          "tailSteps": 12,
+          "dtSeconds": 300,
+          "cflLimitSeconds": 577.4809544650126,
+          "minimumHydraulicLengthMeters": 72185.11930812657,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-48.coefficients.bin",
+            "bytes": 553028,
+            "sha256": "8871f80c9b45048279d417c34d6e40d124f13c45dc7e46260f3aa9b8d804cbee"
+          },
+          "profileDigest": "sha256:145349f91776ced7b414a057aabcbb4eeee46db09dd3cab0d5bf0895819c6efc",
+          "fullDigest": "sha256:4255a7ddf8e37a58fe26bffb8403eccda3b581603a5527114c6c1f7a9fc561e2",
+          "tailDigest": "sha256:4255a7ddf8e37a58fe26bffb8403eccda3b581603a5527114c6c1f7a9fc561e2",
+          "checkpointDigest": "sha256:19e2b1772ce36e357a4e592ea3c9c007c2fd5465a450f6db9d545f15fed0bff4",
+          "canonicalBytes": 221494,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            8.30914826927104e-16,
+            8.228833229109862e-15
+          ],
+          "diagnosticFullReplayMs": 21.25890000000004,
+          "diagnosticCheckpointTailMs": 11.22999999999979,
+          "sourceAddedKg": [
+            63060148834.33311,
+            124120297.66867056
+          ],
+          "sinkRemovedKg": [
+            866237690063.4763,
+            1302246017.7795742
+          ],
+          "finalMassKg": [
+            1202689608474164.5,
+            903724046334.9119
+          ]
+        },
+        {
+          "n": 48,
+          "cells": 13824,
+          "gapSeconds": 86400,
+          "checkpointTick": 432000,
+          "targetTick": 10800000,
+          "steps": 300,
+          "tailSteps": 288,
+          "dtSeconds": 300,
+          "cflLimitSeconds": 577.4809544650126,
+          "minimumHydraulicLengthMeters": 72185.11930812657,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-48.coefficients.bin",
+            "bytes": 553028,
+            "sha256": "8871f80c9b45048279d417c34d6e40d124f13c45dc7e46260f3aa9b8d804cbee"
+          },
+          "profileDigest": "sha256:145349f91776ced7b414a057aabcbb4eeee46db09dd3cab0d5bf0895819c6efc",
+          "fullDigest": "sha256:c1d74d467e708786b1249148aa8c385f115635a3893728796788a549da682716",
+          "tailDigest": "sha256:c1d74d467e708786b1249148aa8c385f115635a3893728796788a549da682716",
+          "checkpointDigest": "sha256:19e2b1772ce36e357a4e592ea3c9c007c2fd5465a450f6db9d545f15fed0bff4",
+          "canonicalBytes": 221495,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            2.700473187513088e-15,
+            4.991259499624015e-15
+          ],
+          "diagnosticFullReplayMs": 268.5246000000002,
+          "diagnosticCheckpointTailMs": 254.14179999999988,
+          "sourceAddedKg": [
+            776751860431.2054,
+            1552503720.858711
+          ],
+          "sinkRemovedKg": [
+            10786478036219.633,
+            16156835646.573908
+          ],
+          "finalMassKg": [
+            1193483059839603,
+            890297840129.3047
+          ]
+        },
+        {
+          "n": 48,
+          "cells": 13824,
+          "gapSeconds": 604800,
+          "checkpointTick": 432000,
+          "targetTick": 73008000,
+          "steps": 2028,
+          "tailSteps": 2016,
+          "dtSeconds": 300,
+          "cflLimitSeconds": 577.4809544650126,
+          "minimumHydraulicLengthMeters": 72185.11930812657,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-48.coefficients.bin",
+            "bytes": 553028,
+            "sha256": "8871f80c9b45048279d417c34d6e40d124f13c45dc7e46260f3aa9b8d804cbee"
+          },
+          "profileDigest": "sha256:145349f91776ced7b414a057aabcbb4eeee46db09dd3cab0d5bf0895819c6efc",
+          "fullDigest": "sha256:4fab9aa30549d28626aed07f4448085ed897c0b4011f77da9e3ea2c1b1a27384",
+          "tailDigest": "sha256:4fab9aa30549d28626aed07f4448085ed897c0b4011f77da9e3ea2c1b1a27384",
+          "checkpointDigest": "sha256:19e2b1772ce36e357a4e592ea3c9c007c2fd5465a450f6db9d545f15fed0bff4",
+          "canonicalBytes": 221496,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            1.2505268145252916e-13,
+            1.867000850670172e-13
+          ],
+          "diagnosticFullReplayMs": 1796.2942000000003,
+          "diagnosticCheckpointTailMs": 1805.4391000000005,
+          "sourceAddedKg": [
+            5245082576361.873,
+            10489165153.162737
+          ],
+          "sinkRemovedKg": [
+            71194982305056.45,
+            104288871148.00513
+          ],
+          "finalMassKg": [
+            1137542886286850.5,
+            811102466060.0039
+          ]
+        },
+        {
+          "n": 64,
+          "cells": 24576,
+          "gapSeconds": 3600,
+          "checkpointTick": 432000,
+          "targetTick": 864000,
+          "steps": 24,
+          "tailSteps": 12,
+          "dtSeconds": 300,
+          "cflLimitSeconds": 430.4551460634186,
+          "minimumHydraulicLengthMeters": 53806.89325792733,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-64.coefficients.bin",
+            "bytes": 983108,
+            "sha256": "81f4bd1c4ec66aa0e7d73bd42df617acb6f06fd1698d2b5fe444fdd83136c04f"
+          },
+          "profileDigest": "sha256:c04847268119d3ddcb8dee7fb82bfd48dc79f7568271a9d5996d54a84237899c",
+          "fullDigest": "sha256:a4c829d95cae4b22afb0199aec4787b83a68679dc1520fd601cbc1e0b7b6bbb3",
+          "tailDigest": "sha256:a4c829d95cae4b22afb0199aec4787b83a68679dc1520fd601cbc1e0b7b6bbb3",
+          "checkpointDigest": "sha256:1c0387ffe05286dc385a6168d55e584bc63d55082dcc4d52a0ed1eb213c3aadc",
+          "canonicalBytes": 393526,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            1.3294637080254875e-14,
+            1.6186584132000614e-15
+          ],
+          "diagnosticFullReplayMs": 39.14369999999872,
+          "diagnosticCheckpointTailMs": 17.907000000001062,
+          "sourceAddedKg": [
+            63060148834.310104,
+            124120297.66868836
+          ],
+          "sinkRemovedKg": [
+            866237699874.497,
+            1302349353.0557044
+          ],
+          "finalMassKg": [
+            1202689622095435.5,
+            903795753135.2256
+          ]
+        },
+        {
+          "n": 64,
+          "cells": 24576,
+          "gapSeconds": 86400,
+          "checkpointTick": 432000,
+          "targetTick": 10800000,
+          "steps": 300,
+          "tailSteps": 288,
+          "dtSeconds": 300,
+          "cflLimitSeconds": 430.4551460634186,
+          "minimumHydraulicLengthMeters": 53806.89325792733,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-64.coefficients.bin",
+            "bytes": 983108,
+            "sha256": "81f4bd1c4ec66aa0e7d73bd42df617acb6f06fd1698d2b5fe444fdd83136c04f"
+          },
+          "profileDigest": "sha256:c04847268119d3ddcb8dee7fb82bfd48dc79f7568271a9d5996d54a84237899c",
+          "fullDigest": "sha256:99e11ca04a53728edd229775ca1ddd16fbe82a96f4d1bf9b4715255677528c46",
+          "tailDigest": "sha256:99e11ca04a53728edd229775ca1ddd16fbe82a96f4d1bf9b4715255677528c46",
+          "checkpointDigest": "sha256:1c0387ffe05286dc385a6168d55e584bc63d55082dcc4d52a0ed1eb213c3aadc",
+          "canonicalBytes": 393526,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            8.932334288296244e-15,
+            1.8884348154000717e-15
+          ],
+          "diagnosticFullReplayMs": 481.08270000000084,
+          "diagnosticCheckpointTailMs": 672.1751000000004,
+          "sourceAddedKg": [
+            776751860430.5552,
+            1552503720.853445
+          ],
+          "sinkRemovedKg": [
+            10786478158352.14,
+            16158116703.346107
+          ],
+          "finalMassKg": [
+            1193483073348559.2,
+            890368369208.123
+          ]
+        },
+        {
+          "n": 64,
+          "cells": 24576,
+          "gapSeconds": 604800,
+          "checkpointTick": 432000,
+          "targetTick": 73008000,
+          "steps": 2028,
+          "tailSteps": 2016,
+          "dtSeconds": 300,
+          "cflLimitSeconds": 430.4551460634186,
+          "minimumHydraulicLengthMeters": 53806.89325792733,
+          "maximumWindMps": 100,
+          "waveSpeedMps": 0,
+          "coefficient": {
+            "path": "fixtures/grid-64.coefficients.bin",
+            "bytes": 983108,
+            "sha256": "81f4bd1c4ec66aa0e7d73bd42df617acb6f06fd1698d2b5fe444fdd83136c04f"
+          },
+          "profileDigest": "sha256:c04847268119d3ddcb8dee7fb82bfd48dc79f7568271a9d5996d54a84237899c",
+          "fullDigest": "sha256:f76295541bcc0c0d0b855f30d2f62715222f809d69646c32b4aeb44e3a751189",
+          "tailDigest": "sha256:f76295541bcc0c0d0b855f30d2f62715222f809d69646c32b4aeb44e3a751189",
+          "checkpointDigest": "sha256:1c0387ffe05286dc385a6168d55e584bc63d55082dcc4d52a0ed1eb213c3aadc",
+          "canonicalBytes": 393527,
+          "byteEquality": "PASS",
+          "pendingThenReady": "PASS",
+          "chunkInvariance": "PASS",
+          "sourceSinkBalance": "PASS",
+          "balanceRelativeError": [
+            4.13380121714175e-14,
+            1.8992258714880722e-13
+          ],
+          "diagnosticFullReplayMs": 4488.057299999999,
+          "diagnosticCheckpointTailMs": 4477.235500000001,
+          "sourceAddedKg": [
+            5245082576492.386,
+            10489165152.82182
+          ],
+          "sinkRemovedKg": [
+            71194983109684.86,
+            104297098548.07056
+          ],
+          "finalMassKg": [
+            1137542899113349.2,
+            811166048795.5371
+          ]
+        }
+      ]
+    },
+    "independentReview": {
+      "role": "reviewer",
+      "readiness": "GO_RESEARCH_ONLY",
+      "initial": {
+        "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/review-r01.md",
+        "bytes": 984,
+        "sha256": "3cb2d44b08be52fb64d36f75446e92a6bdcaafe7ead391d50b8c874b2b41fce1"
+      },
+      "followup": {
+        "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/review-r02.md",
+        "bytes": 838,
+        "sha256": "c048a74e0cd34f648761b888f78efe848acd2613f7919eb7159228711a8d9cf1"
+      },
+      "p2": "RESOLVED",
+      "humanApproval": "NOT_GRANTED"
+    },
+    "finalGuards": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/test-runner-guards-r01/bindings-check-rerun.json",
+          "bytes": 364,
+          "sha256": "ec44545ba11be30abfc315489ae34771a8b40695714c49e74de703b3c37bf882"
+        },
+        {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/test-runner-guards-r01/bindings-check.json",
+          "bytes": 1110,
+          "sha256": "8f06fa7b066cb3921b327be38a4301f46c8824582610c99a2f108527c143c76c"
+        },
+        {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/test-runner-guards-r01/seal-preflight.json",
+          "bytes": 543,
+          "sha256": "6f42b76313a2287b867c4512a9f3b4d53d7276b4b4cd16c63832dd333e979a76"
+        },
+        {
+          "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/test-runner-guards-r01/toolchain-and-owned-mjs-syntax.json",
+          "bytes": 9434,
+          "sha256": "4c83a4e3ee72f706c9f6a3d3e05c7664af0f2399bc086b348d2da4efed663968"
+        }
+      ],
+      "notes": "Initial wrapper cwd failure exit1 preserved; corrected bindings and final read-only scope preflight exit0. No repeated full suite."
+    },
+    "overflowRegression": {
+      "initialExitCode": 1,
+      "evidence": {
+        "path": "../../.devtoolbox/specs/changes/wxg-07-2026-10-09/tests/overflow-initial-r01.log",
+        "bytes": 1117,
+        "sha256": "15cbe98268ea12e38bd1d114b0d7daaf062765a662d8f362bb26933e98b2cb7d"
+      },
+      "final": "PASS_IN_LATEST_FOCUSED_SUITE"
+    }
+  },
+  "wasm": "UPSTREAM_VERIFIED_NOT_CONSUMED",
+  "shader": "NOT_APPLICABLE",
+  "runnerProfile": {
+    "path": "runner-profile.json",
+    "bytes": 698,
+    "sha256": "6476e31064636f7e2c7c2f8fbfbf77e54e070d20f2269fb282bd1f12efac1f27"
+  },
+  "limitations": [
+    "One band and two synthetic passive channels; no prognostic pressure/energy/acoustic/gravity waves/GCM",
+    "Upwind diffusion and linear catch-up costs; only fixed substep-lattice targets",
+    "Same-pinned-local implementation bytes; cross-device numerical/geometry equality NOT_RUN",
+    "96/128 scaling NOT_RUN_BUDGET_BOUND; concurrent diagnostic timings are not qualified reference results",
+    "Product build/Unity NOT_RUN_NO_PRODUCT_OR_UNITY_CHANGES; inherited product typecheck fails on missing isolated product dependencies"
+  ],
+  "dirtyTreeBinding": {
+    "status": "DETACHED_FULL_SCOPE_SEAL",
+    "path": ".runtime/final-seal/scope-seal.json",
+    "patch": ".runtime/final-seal/review.patch",
+    "definition": "Whole semantic and raw Git index, baseline/staged/unstaged/nonignored-untracked, plus complete ignored own payload. Seal excludes its own directory; receipt remains inside payload, no self-reference."
+  }
+}

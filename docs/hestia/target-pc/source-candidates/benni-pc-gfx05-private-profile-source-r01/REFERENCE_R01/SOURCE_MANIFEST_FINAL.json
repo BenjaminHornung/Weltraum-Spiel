@@ -1,0 +1,144 @@
+{
+  "schema": "gfx05.reference-r01-new-evidence-manifest/v1",
+  "status": "HOLD",
+  "root": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-gfx05-private-profile-source-r01",
+  "observedUtc": "2026-10-19T16:52:03.0454810+00:00",
+  "scope": "New R01 evidence, lease, five own process originals and private reference report only; original26frozenfiles excluded and bound separately in PRESERVATION_AFTER_HOLD.json",
+  "original26Excluded": true,
+  "excludedSelfOrLaterClose": [
+    "REFERENCE_R01/SOURCE_MANIFEST_FINAL.json",
+    "REFERENCE_R01/FREEZE.json",
+    "REFERENCE_R01/APP_TURN_CLOSE.json"
+  ],
+  "files": [
+    {
+      "path": "MESH_PROFILE_PROCESS_COMMAND.json",
+      "bytes": 1124,
+      "sha256": "ed56c3ce9a828e42520cf89919039d77792131ed53aa99aa8458d6d1dd2f3f18"
+    },
+    {
+      "path": "MESH_PROFILE_PROCESS_OWN_PID.json",
+      "bytes": 186,
+      "sha256": "0078eef4dffcb8cef4a136cfa26ada515f017dd409572c557a5d70fa293f1072"
+    },
+    {
+      "path": "MESH_PROFILE_PROCESS_RESULT.json",
+      "bytes": 425,
+      "sha256": "76ef3441fa8d472a6b78c47fe0f0bc11218ab2767f6a00b4646d1fccbc08133e"
+    },
+    {
+      "path": "MESH_PROFILE_PROCESS_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "MESH_PROFILE_PROCESS_STDOUT.txt",
+      "bytes": 382,
+      "sha256": "d6d4fed44944000d85b78bee16069f60c82fd41656be2893ad9ea37345c05b81"
+    },
+    {
+      "path": "REFERENCE_R01/ACTUAL_TURN.json",
+      "bytes": 526,
+      "sha256": "4b63cba0943c97191350851cfc132e00d23b48a6871a6fce4c36b92597a07db1"
+    },
+    {
+      "path": "REFERENCE_R01/ATTEMPT_BEGIN.json",
+      "bytes": 717,
+      "sha256": "eb95bbe6c6f30fd8d50343a4306e987e3827a6c53342918d9cfcbf50979b16bf"
+    },
+    {
+      "path": "REFERENCE_R01/DISPATCH.json",
+      "bytes": 807,
+      "sha256": "62b543b5f9e4a322cd0fb9b9f47be1dd9e52d4664ab71eb241633d7a858030c5"
+    },
+    {
+      "path": "REFERENCE_R01/HOLD.json",
+      "bytes": 853,
+      "sha256": "2a95df60849baa3bc55e13da8af766595980b413ab95fc114cb10ab7a7a9aeff"
+    },
+    {
+      "path": "REFERENCE_R01/MESH_PROFILE_PROCESS_COMMAND.json",
+      "bytes": 1124,
+      "sha256": "ed56c3ce9a828e42520cf89919039d77792131ed53aa99aa8458d6d1dd2f3f18"
+    },
+    {
+      "path": "REFERENCE_R01/MESH_PROFILE_PROCESS_OWN_PID.json",
+      "bytes": 186,
+      "sha256": "0078eef4dffcb8cef4a136cfa26ada515f017dd409572c557a5d70fa293f1072"
+    },
+    {
+      "path": "REFERENCE_R01/MESH_PROFILE_PROCESS_RESULT.json",
+      "bytes": 425,
+      "sha256": "76ef3441fa8d472a6b78c47fe0f0bc11218ab2767f6a00b4646d1fccbc08133e"
+    },
+    {
+      "path": "REFERENCE_R01/MESH_PROFILE_PROCESS_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "REFERENCE_R01/MESH_PROFILE_PROCESS_STDOUT.txt",
+      "bytes": 382,
+      "sha256": "d6d4fed44944000d85b78bee16069f60c82fd41656be2893ad9ea37345c05b81"
+    },
+    {
+      "path": "REFERENCE_R01/METRICS_SUMMARY.json",
+      "bytes": 43511,
+      "sha256": "98eb610d60a72acd23a53b0b3c1069efb945916ec082158158baa170a091d3c1"
+    },
+    {
+      "path": "REFERENCE_R01/NEW_FILES_INVENTORY.json",
+      "bytes": 4796,
+      "sha256": "7a5147d25e48e942c819752e3aa5b50e28bab77ffe978c25e726e950b039ec44"
+    },
+    {
+      "path": "REFERENCE_R01/PREFLIGHT.json",
+      "bytes": 48022,
+      "sha256": "9259fd5b714c96e8e5b2896928266aa3c2a41706e1aac1a789d9df237d6e9c46"
+    },
+    {
+      "path": "REFERENCE_R01/PRESERVATION_AFTER_HOLD.json",
+      "bytes": 38329,
+      "sha256": "10a638bbf30023e0aa001d2065daaac595a1798e7629d97b1b24b40c5bbcc4bf"
+    },
+    {
+      "path": "REFERENCE_R01/reference-profile.json",
+      "bytes": 146413,
+      "sha256": "8f2977e53bcd122521f762c0ecac74ac15424d14f47fa5f368ee03e11c94a0b0"
+    },
+    {
+      "path": "REFERENCE_R01/REPORT_VALIDATION.json",
+      "bytes": 14640,
+      "sha256": "5a5d045a5240817c21c610290e19a7ea43952199091a138eee294adbbd632200"
+    },
+    {
+      "path": "REFERENCE_R01/REPORT.md",
+      "bytes": 9748,
+      "sha256": "64d4b81d4d183c0a7caf871a875f5a660e61068f36ab2077dfea8fbc062f7044"
+    },
+    {
+      "path": "REFERENCE_R01/ROOT_BINDING_DISPATCH.json",
+      "bytes": 2635,
+      "sha256": "8664d6959a287a0620703d546d39619f5103dabc8ac99c7143837b5bd71758d5"
+    },
+    {
+      "path": "REFERENCE_R01/ROOT_CLOSE_STEERING.json",
+      "bytes": 927,
+      "sha256": "406f8a58eb0d6e7ac0257b109febc6b703b79dabed17567337950f1ac8fce4a9"
+    },
+    {
+      "path": "ROOT_REFERENCE_LEASE.json",
+      "bytes": 2635,
+      "sha256": "8664d6959a287a0620703d546d39619f5103dabc8ac99c7143837b5bd71758d5"
+    },
+    {
+      "path": "runtime/.runtime/reference-profile.json",
+      "bytes": 146413,
+      "sha256": "8f2977e53bcd122521f762c0ecac74ac15424d14f47fa5f368ee03e11c94a0b0"
+    }
+  ],
+  "rows": 25,
+  "helperInvocations": 1,
+  "retry": 0,
+  "sourceOrTimerChanges": 0
+}

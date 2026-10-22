@@ -1,0 +1,1708 @@
+{
+  "schema": "pmd.normal-core-source-complete-manifest/v1",
+  "status": "NORMAL_CORE_SOURCE_PENDING_ROOT_REVIEW",
+  "observedUtc": "2026-10-20T17:06:39.8838577+00:00",
+  "root": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-pmd-normal-core-source-r01",
+  "scope": "All actual P files, historical and current, plus final seven normal Afterimage pins; exclusions only self and later closure",
+  "historicalBefore20": 296,
+  "normalAfter": [
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\src\\world-generation\\planetaryMacro.ts",
+      "bytes": 6550,
+      "sha256": "3ca96103d37bbda42dfcdad586d8eaca703f3736761284ad54d1476fb8c32cda"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\src\\world-generation\\planetaryMacroTerrain.ts",
+      "bytes": 5839,
+      "sha256": "24a8a84ae4a005b111d13eb711ee7833b0b59379e0e657950adad5e769f2722e"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\src\\world-generation\\planetaryMacroModelPin.ts",
+      "bytes": 255,
+      "sha256": "f3c9c006746f7f03a3cd9461bf831c9f0a077a0f09eecbea25f4c4f79bfd10f9"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\src\\world-generation\\latticeNoise.ts",
+      "bytes": 6607,
+      "sha256": "04b5a07f2645f098124e16eee03295ffe15107b338aa6e8a816be8b7b7041b88"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\src\\world-generation\\hestia\\noise.ts",
+      "bytes": 111,
+      "sha256": "daa6640b8b5329f4b2980e2cb6c78b963ae05995131356479379f1682b2e09a9"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\src\\world-generation\\hestia\\seed.ts",
+      "bytes": 5100,
+      "sha256": "75166a9f874ae1370db4fe0b44bd974297733d2bd1e4c672697b100483fe0989"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\tests\\unit\\hestiaSeedDeterminism.test.ts",
+      "bytes": 13335,
+      "sha256": "75df1583dc87e7df2b634044cc59f61ea78280c556ded757cb9c29e438cc6bc7"
+    }
+  ],
+  "files": [
+    {
+      "path": ".runtime/build-bindings.json",
+      "bytes": 37300,
+      "sha256": "1069fb33d1c30cdaffd433588ef90a31448c0428deb3be96f80565695c93803c"
+    },
+    {
+      "path": ".runtime/model-binding.json",
+      "bytes": 10526,
+      "sha256": "cdd4511c5a62acea9281cdbff0e3c5b3fa2ad76bda058959026e8cab5a48a24e"
+    },
+    {
+      "path": ".runtime/normal-model-binding.json",
+      "bytes": 6400,
+      "sha256": "c44213370772dab12bb07fac9b0e31ffa15da7a11e3b663e8fc5ab4f93132786"
+    },
+    {
+      "path": "ACTUAL_TURN.json",
+      "bytes": 523,
+      "sha256": "f80fdbe3989d0ef9befa434f81f1d902f72edb96c8c4a9286a8979ac4d34d0e2"
+    },
+    {
+      "path": "before/apps/weltraum-browser/src/world-generation/hestia/noise.ts",
+      "bytes": 4781,
+      "sha256": "98a2fc27dfda4c237f59376dcf2ce9aa218735b2f86e0cc26bd3c879032c22d9"
+    },
+    {
+      "path": "before/apps/weltraum-browser/src/world-generation/hestia/seed.ts",
+      "bytes": 6774,
+      "sha256": "20ac280c0503e9c92089f30d7053f5ac084aaeddd286f7a656de9a35c44e16c0"
+    },
+    {
+      "path": "before/apps/weltraum-browser/tests/unit/hestiaSeedDeterminism.test.ts",
+      "bytes": 12826,
+      "sha256": "dac6e586bacb30b1a528156c4eff70fbe55658a3d31888a3dc37d732e5096d14"
+    },
+    {
+      "path": "ConsumerBindings.json",
+      "bytes": 23402,
+      "sha256": "435c974b2f6229ca71446c63dcd1097961e5ec9aad76732185ca668082ef1c60"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/ACTUAL_TURN.json",
+      "bytes": 544,
+      "sha256": "56a60cb4ede1c021096c6e2286c548aef2dab4b2fb35c72025e380d2ae03238d"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/.a0-runtime/benni-pc-pmd-normal-core-source-r01/.runtime/build-bindings.json",
+      "bytes": 37300,
+      "sha256": "1069fb33d1c30cdaffd433588ef90a31448c0428deb3be96f80565695c93803c"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/.a0-runtime/benni-pc-pmd-normal-core-source-r01/.runtime/model-binding.json",
+      "bytes": 10526,
+      "sha256": "cdd4511c5a62acea9281cdbff0e3c5b3fa2ad76bda058959026e8cab5a48a24e"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/.a0-runtime/benni-pc-pmd-normal-core-source-r01/.runtime/normal-model-binding.json",
+      "bytes": 6400,
+      "sha256": "c44213370772dab12bb07fac9b0e31ffa15da7a11e3b663e8fc5ab4f93132786"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/.a0-runtime/benni-pc-pmd-normal-core-source-r01/ConsumerBindings.json",
+      "bytes": 23402,
+      "sha256": "435c974b2f6229ca71446c63dcd1097961e5ec9aad76732185ca668082ef1c60"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/.a0-runtime/benni-pc-pmd-normal-core-source-r01/tsconfig.json",
+      "bytes": 603,
+      "sha256": "24954be4ab9ffe8597fa26833fc7e1d98b09ca9194265c57cda2fea8d3fa2c8e"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/apps/weltraum-browser/src/world-generation/hestia/noise.ts",
+      "bytes": 111,
+      "sha256": "daa6640b8b5329f4b2980e2cb6c78b963ae05995131356479379f1682b2e09a9"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/apps/weltraum-browser/src/world-generation/hestia/seed.ts",
+      "bytes": 5100,
+      "sha256": "75166a9f874ae1370db4fe0b44bd974297733d2bd1e4c672697b100483fe0989"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/apps/weltraum-browser/src/world-generation/latticeNoise.ts",
+      "bytes": 6607,
+      "sha256": "04b5a07f2645f098124e16eee03295ffe15107b338aa6e8a816be8b7b7041b88"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/apps/weltraum-browser/src/world-generation/planetaryMacro.ts",
+      "bytes": 6550,
+      "sha256": "3ca96103d37bbda42dfcdad586d8eaca703f3736761284ad54d1476fb8c32cda"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/apps/weltraum-browser/src/world-generation/planetaryMacroModelPin.ts",
+      "bytes": 255,
+      "sha256": "f3c9c006746f7f03a3cd9461bf831c9f0a077a0f09eecbea25f4c4f79bfd10f9"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/apps/weltraum-browser/src/world-generation/planetaryMacroTerrain.ts",
+      "bytes": 5839,
+      "sha256": "24a8a84ae4a005b111d13eb711ee7833b0b59379e0e657950adad5e769f2722e"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/before/apps/weltraum-browser/tests/unit/hestiaSeedDeterminism.test.ts",
+      "bytes": 13240,
+      "sha256": "0145eface47b645f68147eccaaab9954b026a151dd0ddb3223299141ff070455"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/cache/vitest/da39a3ee5e6b4b0d3255bfef95601890afd80709/results.json",
+      "bytes": 210,
+      "sha256": "3db4fcf78f344703088e4a7ae89ecfcfcfa11d416e7bcc5553f2daff2d6bc602"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/DIFF_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/NORMAL_CHANGE_BINDINGS.json",
+      "bytes": 7142,
+      "sha256": "c51d72c1b7226455c9a37deede838720d16b8575ce0a4bdfe078dfb6f1a32824"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/NORMAL_ORIGINAL_TO_FINAL.patch",
+      "bytes": 35168,
+      "sha256": "369669270c0cce66c8cb6a549f8e1543e770378d6ca887a437fb448c14fbee00"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/P_FILE_INVENTORY_FINAL.json",
+      "bytes": 94680,
+      "sha256": "669e42fff013df5e0be975a33cf15c1cc1d313afd93d6434a60382b32af16c8f"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/P_MEMBERSHIP_BEFORE.json",
+      "bytes": 56539,
+      "sha256": "7112b11cd77b9974374231c4c7df56945cb7a63820d2bc7ab623d6782b1ab27c"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/PLAN.md",
+      "bytes": 3276,
+      "sha256": "550c59095c328c0cf7be49f05c1bb861a3a5e1391b6361899066f8fd3d4d7889"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/PRESERVATION_AND_PROCESS_FINAL.json",
+      "bytes": 235061,
+      "sha256": "6350eefa83ba67b6af755c6d68645ae0662adea8514d6a609bd9542310c04fbe"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/PURE_ENTRY_REVIEW.json",
+      "bytes": 1850,
+      "sha256": "ca548150d379efad79c614c0b93ab5f5fa774f0227e43b7bd4f710c7501ca132"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/REPORT.md",
+      "bytes": 11650,
+      "sha256": "f3efe49a6fa46c83837f09a90c28e5e917c17ff198d5a393b91eeb7c109c4afa"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/RETAINED_PMD_BRICK_PROOF.json",
+      "bytes": 5659,
+      "sha256": "3d2a53987c8f15f7e1f00edd11635db9fe6ff003147b59c83b6a41d790f148ec"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/ROOT_INPUTS.json",
+      "bytes": 13873,
+      "sha256": "e9c7b1dd89629156f4db9fee9559dd47b718d53d0dc4c61a826af34fe7607aca"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/SCOPED_GIT_READBACK.json",
+      "bytes": 876,
+      "sha256": "8920b5352e72d57677c2e285d88e630eee3886071ec142a4de1191e89a9a36f2"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/SOURCE_CONSUMER_EMIT_AUDIT.json",
+      "bytes": 135833,
+      "sha256": "0ac792db6148336b0c10180cae0792cf3bc800d4881ed770de350f8f3b989387"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/TOOL_PRESERVATION_AFTER.json",
+      "bytes": 287,
+      "sha256": "c737cdf7ec3f6690c2b940496e8f718bc54bd33506fd31fad91cd087455fbf99"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/TOOL_QUALIFICATION_FRESH.json",
+      "bytes": 2499,
+      "sha256": "100251d591b855777aa445852a3515ad43abdb1979ab84e89523b7ffdac3916f"
+    },
+    {
+      "path": "CONTINUE_20261020_R01/vitest.pure.config.mjs",
+      "bytes": 1266,
+      "sha256": "cecec5af5e92c24c212e9f3492eadcc35710feecc96a902e8f85387c276ff5b2"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/climate.d.ts",
+      "bytes": 2744,
+      "sha256": "16f76d89ef1194332559957cf0587148f30c0ce43b897a7a26b1b17e16c25b26"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/climate.js",
+      "bytes": 7165,
+      "sha256": "727fd500bbb6a7ba60673e946eb4ef03b23a544875b2a199f2f4f52fbb956e35"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/common.d.ts",
+      "bytes": 1345,
+      "sha256": "87502ad2529a372b98ea6284447401ef95ffebebcb1c084dbf74bb3a02061d60"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/common.js",
+      "bytes": 1210,
+      "sha256": "2ca572b4ea62871c44a505a9b67f02581b7204da4059b12626d56bab1078f170"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/fixtures.d.ts",
+      "bytes": 351,
+      "sha256": "11163dc5acbf7b031735b7c8aeef7f59fdd20269d4f362c045293853035aacf7"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/fixtures.js",
+      "bytes": 2186,
+      "sha256": "67704e7a45d9ab95ad93d8c2f4a47df27b7460a4a80d76c4ab9cce04a37f12b3"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/geometry.d.ts",
+      "bytes": 1665,
+      "sha256": "466689963cc87c0d1454bfb0d18ac4d766ad550b24d4cd21aeadbe7f35ea939c"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/geometry.js",
+      "bytes": 7608,
+      "sha256": "bce6b2ec6b25426f6a1c597a86ff0d8d5a0aad170c2dfbe6e456a60a06bcaf6e"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/macro.d.ts",
+      "bytes": 2261,
+      "sha256": "7b30d7e511112ef5aceee4825e4eb117128cbc0fab5b9f5455eac192dafbf4ba"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/macro.js",
+      "bytes": 3649,
+      "sha256": "df1254e7b9b06edbe80adc5e427ed7c23ad371f6fb340367d59ef1e701c02ff1"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/model-pin.d.ts",
+      "bytes": 119,
+      "sha256": "4cfc8a01fc8a87e136fe2b9f74444eb07109a209abc2d3d9260b136662335bfe"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/model-pin.js",
+      "bytes": 170,
+      "sha256": "41fb12958b67e22ddbac7c964a108213bd741e379acf5b724ecd103ba9eab4aa"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/regional.d.ts",
+      "bytes": 2134,
+      "sha256": "78081b87a5bf11155ecfaad4bfc5845e6c05e94a19493a1ccf30c374707b3632"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/regional.js",
+      "bytes": 4587,
+      "sha256": "2d4714e7101484a205f75e6369e522624e094e2d558eff8a1dbcc54db3dfcd1a"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/synoptic.d.ts",
+      "bytes": 1218,
+      "sha256": "c6c5b0170f0f155b0c8c628fdb79930c6324a5d4e8246b4477c3e2b5554c8c94"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/synoptic.js",
+      "bytes": 3881,
+      "sha256": "477574707c69d1133812cc9d48ade9a7a7d0d79243b7f8be7d3579377ca13484"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/weather.d.ts",
+      "bytes": 991,
+      "sha256": "dc84a573f0fd30f310762dc3dfd69d037f55b225a23cb01c1a5b73a60e552e2a"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/weather.js",
+      "bytes": 6021,
+      "sha256": "6c877b0b46196de86e1d607245a87e183b6594fd38850df98ac4277f07e1dc2e"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/world-generation/planetaryMacroProfile.d.ts",
+      "bytes": 869,
+      "sha256": "7d7a9dd61fac18639a013fa91dadd2d7de89ebb28ae6b7c071241a7bd90e2e0c"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/src/world-generation/planetaryMacroProfile.js",
+      "bytes": 758,
+      "sha256": "55d2f441dda2fd92fa542e7e2c230bec7af327e2d738a0517cedbf3b15db90f8"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/canonical.d.ts",
+      "bytes": 629,
+      "sha256": "b8ffdf0128cfd6ecf7d651bbf10e6c916221dbcace02b6eb83da2cf144d106a4"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/canonical.js",
+      "bytes": 3378,
+      "sha256": "1af1cca4bce497afc31ee03ff940502941f2a579441b9a4a6ae6eaf479f9f9be"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/catalog.d.ts",
+      "bytes": 769,
+      "sha256": "af25530d9ee9019f304a43e21cdedc820aad7fe1c3fe724e698c8792c9f2b430"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/catalog.js",
+      "bytes": 6141,
+      "sha256": "16f1aa90ca6a37c41340450db26c8b91a0ea2404f4db5a49f3d7f6e13c27dd3c"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/errors.d.ts",
+      "bytes": 831,
+      "sha256": "9b6ee89db4af6eea37897e980a5a024275a3201282c1993da02e6744feba5f21"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/errors.js",
+      "bytes": 424,
+      "sha256": "f9201f0be75ea85e933c0d5821e7c0fa397da4de9a470a0cf75c51267dcf7bf7"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/ids.d.ts",
+      "bytes": 602,
+      "sha256": "37d8ecf5acc6d75bb4e890b2fc1fe83b01812049a6bf18aaed9c06ede3d26425"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/ids.js",
+      "bytes": 727,
+      "sha256": "b4f89b37ca66a11a1083adc32a15548f762dce5240c2c3e920eae41173786c4f"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/kepler.d.ts",
+      "bytes": 697,
+      "sha256": "bca70414b45976cf473e657e4bb79c889fc6650192d4de1debf8185e375fba20"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/kepler.js",
+      "bytes": 7348,
+      "sha256": "beb74deeabf6402ca33c915fededad8c730e9b9e9c5c3f71b307e4181307290d"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/starterSystem.d.ts",
+      "bytes": 1175,
+      "sha256": "67523604376e9fb098f8af072ab30feb3c030f6d69fc63ab844fa22e7547f3e5"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/starterSystem.js",
+      "bytes": 9229,
+      "sha256": "dcc3be81c3d0d4e5e2122120f087b6e311b899a03908cd119d1ebee1fef7c104"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/types.d.ts",
+      "bytes": 8736,
+      "sha256": "632f5e1bac9241c031f03c69f9979f6edd4b38b22b82290c9cea6d586bab4488"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/types.js",
+      "bytes": 247,
+      "sha256": "9bd418b8041196729fbf5924c2937317cd3be8765d69ba6d30d637bd4de03745"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/validation.d.ts",
+      "bytes": 963,
+      "sha256": "57f49b2ee5ad53643b4a60268cdc8a49657151be7a4b495f480d1e34c31e6a0b"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/celestial/validation.js",
+      "bytes": 12045,
+      "sha256": "dad73622bf7eb2141df18c78c46a836a8309717d6fdc41dd2fe93104f61b74a3"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/core/hash.d.ts",
+      "bytes": 267,
+      "sha256": "db8559b6d52358a0142a489d641f6086a7f0afa3adc7a0ba6cd3bfb832d67403"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/core/hash.js",
+      "bytes": 3087,
+      "sha256": "3e8eed1aa7c7c49a2cea382062643a5f3ac18a25d92e321bdff38e822b98f9c6"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/core/vector.d.ts",
+      "bytes": 860,
+      "sha256": "685d7e1536e36b98fbb5a2d512c5de99b765504f735f2fa44d96ff93034cffa5"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/core/vector.js",
+      "bytes": 1295,
+      "sha256": "28e6828a77104b810f698d324f928c2acd88e60ce2176dcfd7cb1199746bd8bd"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/canonical.d.ts",
+      "bytes": 1584,
+      "sha256": "5013124d36fcb885a104ecf3470403027cf322da2b894e6963009f73e88d8eec"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/canonical.js",
+      "bytes": 5096,
+      "sha256": "8c31b13c357731de87776a29becb9c9c0949dcd65522590fd2662c576710b0ea"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/ids.d.ts",
+      "bytes": 5444,
+      "sha256": "2111fbd248818f7f3165df355e70452c99dc4597f0498d0bb2315b473ee214f5"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/ids.js",
+      "bytes": 6149,
+      "sha256": "a65513d93675908222be597bdd00ab7c523ebee5f7a8258170afbb9be2320749"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/saveSchema.d.ts",
+      "bytes": 854,
+      "sha256": "16ef7bb2f12a11a3f88df8667973d24c2850604b9846a591a153c624c695b5a3"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/saveSchema.js",
+      "bytes": 30020,
+      "sha256": "841ae90a22f7403e42f32195cb9640d9d7fcc4cb5fb3713714bf0c6d9205d775"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/simulationMode.d.ts",
+      "bytes": 945,
+      "sha256": "9911ad358b3728e6a1c10c5e322bb567f41588e8eb706b1eefe4f32ee685ed5e"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/simulationMode.js",
+      "bytes": 1912,
+      "sha256": "69e6be4cd295cf221484cb5ee5292a128eb4b4a111ffe0ae755d8ee22b964ebe"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/time.d.ts",
+      "bytes": 1748,
+      "sha256": "c963f931ce82a3641b51927d2cff5667efe22813f9a169a9f07cdca8d68b74ac"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/time.js",
+      "bytes": 4584,
+      "sha256": "9a655cdc9ec8767bc79c27b7677707fe1cd95267b90db2ba0ecf27c12c3efd50"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/types.d.ts",
+      "bytes": 5701,
+      "sha256": "f7835fb5ff5f0714af46a2a6320a702a29ae75b696ed4756e9416d6ab7617bcc"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/types.js",
+      "bytes": 162,
+      "sha256": "e99a3471d794788a2c1e04cf5399d9831fe8d44fb4d2a62e9b3554b8e915374d"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/validation.d.ts",
+      "bytes": 2439,
+      "sha256": "a1c93a1a360ba144afc1778b7acee0cc601e4ac369243cc0bc7f4aceabce2213"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/persistence/validation.js",
+      "bytes": 9752,
+      "sha256": "bcca021274499803b113ca3760598769a349af07b62c7ff1aed4b12e608ee8ed"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/bodyFrames.d.ts",
+      "bytes": 1956,
+      "sha256": "f51b8a3252a902e0d28b4a2710a2601b9c004d5711927b382914ff3f37073523"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/bodyFrames.js",
+      "bytes": 10414,
+      "sha256": "7dfcb4fd86cfd0936e03660ba0df673f0df24ac125edc9765416d80fa797a337"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/canonical.d.ts",
+      "bytes": 370,
+      "sha256": "5651c909c873313d462bfb888f295808b2e97430775cc6dee3bb918de481587f"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/canonical.js",
+      "bytes": 412,
+      "sha256": "2438f9aac70876ba5790afd0d75d2fbce69c02fc2e55b4759d06e32d0acea36f"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/errors.d.ts",
+      "bytes": 643,
+      "sha256": "12935c69575879aa1f52bba31081071b12daadff13280ef342d24f42f3613ff6"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/errors.js",
+      "bytes": 386,
+      "sha256": "7a4dce0f44685bf093736c03b7918e8fbf17bff80002ed6efa5bc4e4680e7870"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/frameGraph.d.ts",
+      "bytes": 1440,
+      "sha256": "f5784da1b85fe42420e1f647a4061c8a5d9a14b1975e2ce1270c509a9f3abb1a"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/frameGraph.js",
+      "bytes": 4298,
+      "sha256": "bbecd29f2472cf9aacb64aa094b6e692ab9de4141dd5b8710a1e185984e79aa9"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/frameValidation.d.ts",
+      "bytes": 656,
+      "sha256": "90202e3d7c3fd038dc67cc014383dd9b86eb73e4f70dafb32c3dfa42b23340f9"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/frameValidation.js",
+      "bytes": 6081,
+      "sha256": "d9183543589caf0c23fe2575b8c22944e9526ff2496f6646d98737c3c3d1cc13"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/ids.d.ts",
+      "bytes": 638,
+      "sha256": "98c3ebde5c89df304771dff9007ea76bf7d60dd64f76444fc9de998a9561797e"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/ids.js",
+      "bytes": 771,
+      "sha256": "e4c295f1780e9d6430830d70253b512b66b96fc3f4d393f56664b3c7a3dfdcf9"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/quaternion.d.ts",
+      "bytes": 1962,
+      "sha256": "4fa3a2d504902e1e157bb1b79b306af2abe578518b26af46e44c05f4444d05b1"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/quaternion.js",
+      "bytes": 6220,
+      "sha256": "15b57a759be6d857d7d9d8c1310a816c495a0337462e1c159a9ee74f9db38ab4"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/surfaceLocalFrame.d.ts",
+      "bytes": 2317,
+      "sha256": "7bae723997673af17fb52de01641face3e7bbe2ab5726c6cd377be2be0a4a326"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/surfaceLocalFrame.js",
+      "bytes": 6119,
+      "sha256": "1225ae36168dd1620ae84868dcaf113e0878d8bb5e39a2cebfba33118223f94f"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/types.d.ts",
+      "bytes": 2900,
+      "sha256": "765b0aff46a11f9b6d20c580d9abdbb74464e8fc9f299339f5798e51f879cf0b"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/types.js",
+      "bytes": 587,
+      "sha256": "89b8c0e0ca4e913d55855486631ef98c679e0d413a801d7ab42796dd7b541ff1"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/universeClock.d.ts",
+      "bytes": 823,
+      "sha256": "1b57cf8fe74f00f9e8c42fb85ad46ad0f30cb454ca1d7f8eb2260195814a5736"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/snapshot/product/spatial/universeClock.js",
+      "bytes": 1326,
+      "sha256": "e4c24d5802c9a40b5ceff7bfaae1255a381cc2dde812266f68cc978a74fee161"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/src/contracts.d.ts",
+      "bytes": 1110,
+      "sha256": "0c44d308fc8b19f6005f5e6f7a617c7d3f7c3fb4d6edb8e801671e23fed41671"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/src/contracts.js",
+      "bytes": 23303,
+      "sha256": "0758fe16a241458c866079ec71ce8dc6d693c6ae52e080b538e0ae4896773d26"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/src/fixtures.d.ts",
+      "bytes": 164,
+      "sha256": "7d45b557ca527033411b29b4308416d33a1e3685974b38cfa185befc2777ccad"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/src/fixtures.js",
+      "bytes": 6683,
+      "sha256": "f31b76881b6049d9ef8ff82983d5855d9710c7fe0a1ec28e1abbab42c098b450"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/src/model-pin.d.ts",
+      "bytes": 119,
+      "sha256": "d297b6c23006e1fb4ca0c1d9cb265e1fd32f05c47f598bdc1846a93d9b779d8d"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/src/model-pin.js",
+      "bytes": 177,
+      "sha256": "374b9f314629e03bb3d06b8cfeb56d8cc0d621a9ff482b1875175cd3300759f1"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/src/types.d.ts",
+      "bytes": 6631,
+      "sha256": "23f97eea59d71eafb6013f276f248115a192bc95ffeb49065035fc6e99b80827"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/src/types.js",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/dist/vendor/plt/src/numerics.mjs",
+      "bytes": 4458,
+      "sha256": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/tests/helpers.mjs",
+      "bytes": 1143,
+      "sha256": "5998f081e39b98a52e0d2dd7961bb948898a4dcff954bb1a6baed44c906c30cc"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/vendor/plt/src/fixture.mjs",
+      "bytes": 3028,
+      "sha256": "55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/vendor/plt/src/numerics.d.mts",
+      "bytes": 444,
+      "sha256": "b0ad665b15b9e6a34dc19d0d967e4dc8518b437d7c62d24f7e7c43fd6698c7da"
+    },
+    {
+      "path": "dist/.a0-runtime/benni-pc-pmd-normal-core-source-r01/vendor/cel/vendor/plt/src/numerics.mjs",
+      "bytes": 4458,
+      "sha256": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/canonical.d.ts",
+      "bytes": 629,
+      "sha256": "b8ffdf0128cfd6ecf7d651bbf10e6c916221dbcace02b6eb83da2cf144d106a4"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/canonical.js",
+      "bytes": 3378,
+      "sha256": "1af1cca4bce497afc31ee03ff940502941f2a579441b9a4a6ae6eaf479f9f9be"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/catalog.d.ts",
+      "bytes": 769,
+      "sha256": "af25530d9ee9019f304a43e21cdedc820aad7fe1c3fe724e698c8792c9f2b430"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/catalog.js",
+      "bytes": 6141,
+      "sha256": "16f1aa90ca6a37c41340450db26c8b91a0ea2404f4db5a49f3d7f6e13c27dd3c"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/errors.d.ts",
+      "bytes": 831,
+      "sha256": "9b6ee89db4af6eea37897e980a5a024275a3201282c1993da02e6744feba5f21"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/errors.js",
+      "bytes": 424,
+      "sha256": "f9201f0be75ea85e933c0d5821e7c0fa397da4de9a470a0cf75c51267dcf7bf7"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/ids.d.ts",
+      "bytes": 602,
+      "sha256": "37d8ecf5acc6d75bb4e890b2fc1fe83b01812049a6bf18aaed9c06ede3d26425"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/ids.js",
+      "bytes": 727,
+      "sha256": "b4f89b37ca66a11a1083adc32a15548f762dce5240c2c3e920eae41173786c4f"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/starterSystem.d.ts",
+      "bytes": 1175,
+      "sha256": "67523604376e9fb098f8af072ab30feb3c030f6d69fc63ab844fa22e7547f3e5"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/starterSystem.js",
+      "bytes": 9229,
+      "sha256": "dcc3be81c3d0d4e5e2122120f087b6e311b899a03908cd119d1ebee1fef7c104"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/types.d.ts",
+      "bytes": 8736,
+      "sha256": "632f5e1bac9241c031f03c69f9979f6edd4b38b22b82290c9cea6d586bab4488"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/types.js",
+      "bytes": 247,
+      "sha256": "9bd418b8041196729fbf5924c2937317cd3be8765d69ba6d30d637bd4de03745"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/validation.d.ts",
+      "bytes": 963,
+      "sha256": "57f49b2ee5ad53643b4a60268cdc8a49657151be7a4b495f480d1e34c31e6a0b"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/celestial/validation.js",
+      "bytes": 12045,
+      "sha256": "dad73622bf7eb2141df18c78c46a836a8309717d6fdc41dd2fe93104f61b74a3"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/core/hash.d.ts",
+      "bytes": 267,
+      "sha256": "db8559b6d52358a0142a489d641f6086a7f0afa3adc7a0ba6cd3bfb832d67403"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/core/hash.js",
+      "bytes": 3087,
+      "sha256": "3e8eed1aa7c7c49a2cea382062643a5f3ac18a25d92e321bdff38e822b98f9c6"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/core/vector.d.ts",
+      "bytes": 860,
+      "sha256": "685d7e1536e36b98fbb5a2d512c5de99b765504f735f2fa44d96ff93034cffa5"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/core/vector.js",
+      "bytes": 1295,
+      "sha256": "28e6828a77104b810f698d324f928c2acd88e60ce2176dcfd7cb1199746bd8bd"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/canonical.d.ts",
+      "bytes": 1584,
+      "sha256": "5013124d36fcb885a104ecf3470403027cf322da2b894e6963009f73e88d8eec"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/canonical.js",
+      "bytes": 5096,
+      "sha256": "8c31b13c357731de87776a29becb9c9c0949dcd65522590fd2662c576710b0ea"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/ids.d.ts",
+      "bytes": 5444,
+      "sha256": "2111fbd248818f7f3165df355e70452c99dc4597f0498d0bb2315b473ee214f5"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/ids.js",
+      "bytes": 6149,
+      "sha256": "a65513d93675908222be597bdd00ab7c523ebee5f7a8258170afbb9be2320749"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/saveSchema.d.ts",
+      "bytes": 854,
+      "sha256": "16ef7bb2f12a11a3f88df8667973d24c2850604b9846a591a153c624c695b5a3"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/saveSchema.js",
+      "bytes": 30020,
+      "sha256": "841ae90a22f7403e42f32195cb9640d9d7fcc4cb5fb3713714bf0c6d9205d775"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/simulationMode.d.ts",
+      "bytes": 945,
+      "sha256": "9911ad358b3728e6a1c10c5e322bb567f41588e8eb706b1eefe4f32ee685ed5e"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/simulationMode.js",
+      "bytes": 1912,
+      "sha256": "69e6be4cd295cf221484cb5ee5292a128eb4b4a111ffe0ae755d8ee22b964ebe"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/time.d.ts",
+      "bytes": 1748,
+      "sha256": "c963f931ce82a3641b51927d2cff5667efe22813f9a169a9f07cdca8d68b74ac"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/time.js",
+      "bytes": 4584,
+      "sha256": "9a655cdc9ec8767bc79c27b7677707fe1cd95267b90db2ba0ecf27c12c3efd50"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/types.d.ts",
+      "bytes": 5701,
+      "sha256": "f7835fb5ff5f0714af46a2a6320a702a29ae75b696ed4756e9416d6ab7617bcc"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/types.js",
+      "bytes": 162,
+      "sha256": "e99a3471d794788a2c1e04cf5399d9831fe8d44fb4d2a62e9b3554b8e915374d"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/validation.d.ts",
+      "bytes": 2439,
+      "sha256": "a1c93a1a360ba144afc1778b7acee0cc601e4ac369243cc0bc7f4aceabce2213"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/persistence/validation.js",
+      "bytes": 9752,
+      "sha256": "bcca021274499803b113ca3760598769a349af07b62c7ff1aed4b12e608ee8ed"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/canonical.d.ts",
+      "bytes": 370,
+      "sha256": "5651c909c873313d462bfb888f295808b2e97430775cc6dee3bb918de481587f"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/canonical.js",
+      "bytes": 412,
+      "sha256": "2438f9aac70876ba5790afd0d75d2fbce69c02fc2e55b4759d06e32d0acea36f"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/errors.d.ts",
+      "bytes": 643,
+      "sha256": "12935c69575879aa1f52bba31081071b12daadff13280ef342d24f42f3613ff6"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/errors.js",
+      "bytes": 386,
+      "sha256": "7a4dce0f44685bf093736c03b7918e8fbf17bff80002ed6efa5bc4e4680e7870"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/frameGraph.d.ts",
+      "bytes": 1440,
+      "sha256": "f5784da1b85fe42420e1f647a4061c8a5d9a14b1975e2ce1270c509a9f3abb1a"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/frameGraph.js",
+      "bytes": 4298,
+      "sha256": "bbecd29f2472cf9aacb64aa094b6e692ab9de4141dd5b8710a1e185984e79aa9"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/frameValidation.d.ts",
+      "bytes": 656,
+      "sha256": "90202e3d7c3fd038dc67cc014383dd9b86eb73e4f70dafb32c3dfa42b23340f9"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/frameValidation.js",
+      "bytes": 6081,
+      "sha256": "d9183543589caf0c23fe2575b8c22944e9526ff2496f6646d98737c3c3d1cc13"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/ids.d.ts",
+      "bytes": 638,
+      "sha256": "98c3ebde5c89df304771dff9007ea76bf7d60dd64f76444fc9de998a9561797e"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/ids.js",
+      "bytes": 771,
+      "sha256": "e4c295f1780e9d6430830d70253b512b66b96fc3f4d393f56664b3c7a3dfdcf9"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/quaternion.d.ts",
+      "bytes": 1962,
+      "sha256": "4fa3a2d504902e1e157bb1b79b306af2abe578518b26af46e44c05f4444d05b1"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/quaternion.js",
+      "bytes": 6220,
+      "sha256": "15b57a759be6d857d7d9d8c1310a816c495a0337462e1c159a9ee74f9db38ab4"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/surfaceLocalFrame.d.ts",
+      "bytes": 2317,
+      "sha256": "7bae723997673af17fb52de01641face3e7bbe2ab5726c6cd377be2be0a4a326"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/surfaceLocalFrame.js",
+      "bytes": 6119,
+      "sha256": "1225ae36168dd1620ae84868dcaf113e0878d8bb5e39a2cebfba33118223f94f"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/transforms.d.ts",
+      "bytes": 3245,
+      "sha256": "43ef48399c0f7510df72c8dea7d1fd8c0c209896d7b77366eeef18efc519a070"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/transforms.js",
+      "bytes": 6717,
+      "sha256": "9d00eecdca2e9b8e109c5e2d78dbc30dead8c48d6205ef6371e867c75ad85694"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/types.d.ts",
+      "bytes": 2900,
+      "sha256": "765b0aff46a11f9b6d20c580d9abdbb74464e8fc9f299339f5798e51f879cf0b"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/spatial/types.js",
+      "bytes": 587,
+      "sha256": "89b8c0e0ca4e913d55855486631ef98c679e0d413a801d7ab42796dd7b541ff1"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/brick.d.ts",
+      "bytes": 1498,
+      "sha256": "0000ab007ce9f0822515195b72b6ea54cc4024087547ce0974a7edc0b4a1c669"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/brick.js",
+      "bytes": 10491,
+      "sha256": "72a9861726b2fd495411033c681170c370674657dd9dfce77cfc4d07283c1d04"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/canonical.d.ts",
+      "bytes": 1372,
+      "sha256": "2166fcd0a024363768d1d5e3508272acea38344035e87e38bb118ba61f0a674b"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/canonical.js",
+      "bytes": 7516,
+      "sha256": "6bf4ba71790a4d6f18b9d69f157397654ee5fd16bda5cddcf776fc4fd3b88e5d"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/channels.d.ts",
+      "bytes": 1026,
+      "sha256": "0c3c19bbb03b59092c5bf9c52f698a79557d1a6905f2b840423260fbe7259faa"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/channels.js",
+      "bytes": 2685,
+      "sha256": "afd6e34dbdf9c1f8d4fb3452a2450c3d41870644243339e448c8c61b178d3860"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/density.d.ts",
+      "bytes": 301,
+      "sha256": "1f83b5470f3572599295b91cc53c5fb14d86f64691c976a308da914b2e816a0a"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/density.js",
+      "bytes": 1185,
+      "sha256": "3dcecfd326198d3cbd052eb66c972ffd563fd5f1d1e43df160894c7f5d6ef684"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/ids.d.ts",
+      "bytes": 3127,
+      "sha256": "a6a08e8dd7025c2d9d51515bd1d6a1f5d1a3ea2285b2d6af6c17dfdb4dc1b797"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/ids.js",
+      "bytes": 3478,
+      "sha256": "023f1859bd49ebc5e56d56b3fd13028b0014ffddfa370ea834c53a3a0449cf84"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/index.d.ts",
+      "bytes": 217,
+      "sha256": "a8525e6a768a39996941ac1402f821bfb4c7a5de100bbc5b7310a9c7c6185b1f"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/index.js",
+      "bytes": 241,
+      "sha256": "64cb4b325670a0919dd51b884b295f02e36ace98e6881b49d408d0ae4ae769e1"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/materials.d.ts",
+      "bytes": 883,
+      "sha256": "f6dca23d91cc72d5095703a9607cb49076f0c3423dea3787fc431bea1743f3b7"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/materials.js",
+      "bytes": 6388,
+      "sha256": "9eacd8402ddadf27243834936ad0d837fd4fa2c165e5958b91f61da1dc3acd1c"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/surfaceNets.d.ts",
+      "bytes": 1074,
+      "sha256": "2a38306c335e90de57a9a3ffb7ca39d120cb8fda3213ee47adff4ce8623506ef"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/surfaceNets.js",
+      "bytes": 29905,
+      "sha256": "a779cae316ea62d03d1b2e5cf03af951455d39453a8c9725654abb0ac3ba0bc5"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/types.d.ts",
+      "bytes": 5030,
+      "sha256": "d7a9ac7a1cc20cc393f20fbb4e44f957c80ab8190bef716072b49cb6470e331e"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/voxel/types.js",
+      "bytes": 1016,
+      "sha256": "219bf35fe38b1f652b4b3c1e319d3778fc69ed840a8508b2ff131ec5b9390828"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/densityGenerator.d.ts",
+      "bytes": 1690,
+      "sha256": "5b5398181793d53025447f3c095b6fecd0ab85c45eb842f7f7a47641a009edf7"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/densityGenerator.js",
+      "bytes": 8858,
+      "sha256": "59c62a37fe57a80951bec035f476d6dccf77e09685871c9b480ee13807136ab8"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/index.d.ts",
+      "bytes": 259,
+      "sha256": "1fa63378a3af99eb732cd53a4f4c6bdb921aaf97c0f47e77cd966102748feacb"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/index.js",
+      "bytes": 227,
+      "sha256": "bb7b825ddf8845f3a6ded9c895361e32a9ac4c25fc9b09b4534b18b294e21301"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/materialClassifier.d.ts",
+      "bytes": 548,
+      "sha256": "135b60f7a46ce027eb512e6a14eba66b8de03879dc862136be338d5fa620f940"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/materialClassifier.js",
+      "bytes": 1173,
+      "sha256": "2e21899526c2b2aa7f36bb2053fdff74d45da2763c36164956d4333fd1dc4e13"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/noise.d.ts",
+      "bytes": 111,
+      "sha256": "daa6640b8b5329f4b2980e2cb6c78b963ae05995131356479379f1682b2e09a9"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/noise.js",
+      "bytes": 114,
+      "sha256": "8487a24ef2020036d8831c155da1d2d460abf675b69e24a614ebf7dee389638a"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/preset.d.ts",
+      "bytes": 1418,
+      "sha256": "092ec27c3c4cecd3b825e4e219cd2271ec3855ca48def21cbc4b1113dd80570e"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/preset.js",
+      "bytes": 1316,
+      "sha256": "3ce4aaa77a10a088ac1ca66082c096ee79fa0d0f7c6d5f3f54b29e71d66511bf"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/scatterGenerator.d.ts",
+      "bytes": 1015,
+      "sha256": "8d1b953512cd7c2771c8ee41cc6be265775413829c71b3ee92df61866d99a583"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/scatterGenerator.js",
+      "bytes": 4707,
+      "sha256": "5be892c521356461d30bb3b1b94ebc0b18879e609425d8abb119377e342d6a90"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/seed.d.ts",
+      "bytes": 1687,
+      "sha256": "a3943b52c53f6d7781bb91257c301df0342a13ec9d875bbd1b476033a632406c"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/hestia/seed.js",
+      "bytes": 4354,
+      "sha256": "c711d8e466dfe29a62f508bfd500683f6f47ba15f75b6989d420a610a09fe2fe"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/latticeNoise.d.ts",
+      "bytes": 997,
+      "sha256": "ea4939fe980d197ab4ec5d2a6b49c1715149b51cc18d678c6cde80649ac429ea"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/latticeNoise.js",
+      "bytes": 6405,
+      "sha256": "26239a535a7b4d2728aae11c19d680e63fa231d9f769f02856b76c710ebfc64c"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/planetaryMacro.d.ts",
+      "bytes": 2776,
+      "sha256": "0d387738d7fd02427c3ff7da4dfe3ca5254d1fc018d4411f8c6108b474cf2662"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/planetaryMacro.js",
+      "bytes": 4344,
+      "sha256": "4b8b217f913886f33473ed928436fcee256f005f03ffb50ac5f814818bb7a966"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/planetaryMacroModelPin.d.ts",
+      "bytes": 135,
+      "sha256": "122190ac8144df9784d0dd68ed1b6345ee386017bbcbb10379595e414f94d743"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/planetaryMacroModelPin.js",
+      "bytes": 246,
+      "sha256": "a48db913a761ad0c97c674c467609670367a8b4101d58c7dc27472c4637a7387"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/planetaryMacroTerrain.d.ts",
+      "bytes": 2560,
+      "sha256": "e2c0f18229b02bc83cfcd4ffcd9c29764345a8da7654c6896f9c5675f4ec3cc0"
+    },
+    {
+      "path": "dist/apps/weltraum-browser/src/world-generation/planetaryMacroTerrain.js",
+      "bytes": 5286,
+      "sha256": "37aaedda602d955da2d7cb259b77b48d4e88286fefc88d123aa3c1b6988dc026"
+    },
+    {
+      "path": "evidence/CONT20_DENSITY_R01.json",
+      "bytes": 3654,
+      "sha256": "50ded39d7840032c2c625dd1a82f7cf85ccffdeccc08870a59b2deb463f61a1d"
+    },
+    {
+      "path": "evidence/CONT20_SEED_GUARD_R02.json",
+      "bytes": 2563,
+      "sha256": "c21f88708f34432086a95b63289cfdbf732c48dd76409715bbc730cfc6e4ebe4"
+    },
+    {
+      "path": "evidence/CONT20_SEED_R01.json",
+      "bytes": 4100,
+      "sha256": "a7ebf220cd01d4dc1c0ac3f8af06b663507aa996ece597221cffb6ff119d7b5e"
+    },
+    {
+      "path": "evidence/CONT20_WXG_R01.json",
+      "bytes": 4079,
+      "sha256": "e4cd52e7f0edda24991099aa5c46b1161a904beabaabe5de462dd530eb113f81"
+    },
+    {
+      "path": "evidence/LATTICE_ARITHMETIC_PARITY.json",
+      "bytes": 845,
+      "sha256": "f977c520a9a2d6ada79341a72d0fb1b35130801179d86ed35403c2adcb1da683"
+    },
+    {
+      "path": "evidence/M5_TOOL_ENTRY_PINS.json",
+      "bytes": 2830,
+      "sha256": "cd93b9fd023367f5f66c338bab03df3db44842fa5185a23316adad7ca2f12cf9"
+    },
+    {
+      "path": "evidence/M5_TOOL_MODULE_TREE.json",
+      "bytes": 646,
+      "sha256": "b586a277eb9aba5f523ff9089a3818756eadce0b484ae105c46700ea397c6cc2"
+    },
+    {
+      "path": "evidence/NORMAL_CLIMATE_R01.json",
+      "bytes": 6302,
+      "sha256": "96894a14c5546194f0069e14ad79cae6e6aacdcb8730bb998f24c747e886464f"
+    },
+    {
+      "path": "evidence/NORMAL_CLIMATE_R02.json",
+      "bytes": 6303,
+      "sha256": "5e1a3fc8e7a85a1475abb805063ef142800a5148d459a0f369128b851dd548e2"
+    },
+    {
+      "path": "evidence/NORMAL_GEOMETRY_R01.json",
+      "bytes": 1938,
+      "sha256": "7967d8cf666aff5378a9186d26e54d65ceb6e2f8609abbd2885ba09d800784db"
+    },
+    {
+      "path": "evidence/NORMAL_GEOMETRY_R02.json",
+      "bytes": 2702,
+      "sha256": "be8a2c5de566767799eb4bb1d2afc0cffb0c3bfa05d419f5eb19611b5e920b48"
+    },
+    {
+      "path": "evidence/NORMAL_GEOMETRY_R03.json",
+      "bytes": 2701,
+      "sha256": "d30eb2b418af18f7b0efd5228bea08c215d86fc6eae74c96dabc8da31d18de64"
+    },
+    {
+      "path": "evidence/NORMAL_PREPARE_R01.json",
+      "bytes": 2012,
+      "sha256": "695a5945958d8c1b486e15d8baf7b7839a883a19a4cc475e2dd7f44888833f42"
+    },
+    {
+      "path": "evidence/NORMAL_PREPARE_R02.json",
+      "bytes": 1820,
+      "sha256": "411accd194fbd76b96e943d69cdfa10a386b069a74744704d0bd4b97fc9e92d2"
+    },
+    {
+      "path": "evidence/NORMAL_PREPARE_R03.json",
+      "bytes": 905,
+      "sha256": "cba1d77e1a8f8d7fb51f09c8d339d2fdf9803b9ef8a58bc1baed5cadba40e772"
+    },
+    {
+      "path": "evidence/NORMAL_PREPARE_R04.json",
+      "bytes": 905,
+      "sha256": "5df3592033be36c8af59a6bea55c789ce5ba456fcf694aa95298fc0351ff555e"
+    },
+    {
+      "path": "evidence/NORMAL_PREPARE_R05.json",
+      "bytes": 905,
+      "sha256": "58fce428d07fdbbd4b6e2d97fdae3d9506afee3c038adc5c6828f73efb71df25"
+    },
+    {
+      "path": "evidence/NORMAL_SEAL_R01.json",
+      "bytes": 687,
+      "sha256": "34c9417237c7992187bb914206e15b773a4595709cfb3779b7ff18bbab641109"
+    },
+    {
+      "path": "evidence/NORMAL_SEAL_R02.json",
+      "bytes": 687,
+      "sha256": "a208dfe89038598f1e17e7073db703e580a5be17c74449f73940d6f60172862d"
+    },
+    {
+      "path": "evidence/NORMAL_SEAL_R03.json",
+      "bytes": 687,
+      "sha256": "20f0b6426eacf14b032f6f4352b2b37a2d6be0b41c01bb16d78369ac73b902ae"
+    },
+    {
+      "path": "evidence/NORMAL_TSC_R01.json",
+      "bytes": 687,
+      "sha256": "45814a11a18920a610e4bc594fcf3f5109b39afcb8cd250813cdf0607b9e288b"
+    },
+    {
+      "path": "evidence/NORMAL_TSC_R02.json",
+      "bytes": 687,
+      "sha256": "8d0ef2105beb4b48c7af10f9e30ab104cf038f4e9f3cdb1a044e97783b8a386f"
+    },
+    {
+      "path": "evidence/NORMAL_TSC_R03.json",
+      "bytes": 687,
+      "sha256": "ccafe0b6e29e92529fcba6a682e81f946082b666fed036716a2566cc73298fae"
+    },
+    {
+      "path": "evidence/NORMAL_TSC_R04.json",
+      "bytes": 687,
+      "sha256": "6bfd123379cc78db72f8cb6fefcf07ef1d62f02149d9a9f8a89ebbb8a6df1522"
+    },
+    {
+      "path": "evidence/NORMAL_WXG_R01.json",
+      "bytes": 4080,
+      "sha256": "e29ec5583fb40cd8be565d7d5d9c6d823a78052821cb92773f5f0b6a590bd70d"
+    },
+    {
+      "path": "fixtures/authoring-config.json",
+      "bytes": 555,
+      "sha256": "3b684223432953c0fd60a9b1f27a10efea55f6dee175ccc3a70371fe575eafb8"
+    },
+    {
+      "path": "FROZEN_319_BEFORE.json",
+      "bytes": 98525,
+      "sha256": "cb43cf2ef462ab3dbaed5c204d565c76735691d2175e947d6ffd6e2d32d0d8cd"
+    },
+    {
+      "path": "package.json",
+      "bytes": 70,
+      "sha256": "40cb5034c225a73c8d0e1b3e865ade253a21480f0fcd7d501a8adf7d8261250f"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 2623,
+      "sha256": "76796f70a9ea2c38f71ca9f0ad95b30c2570a6071030df3b55a4fd8ecc55e39f"
+    },
+    {
+      "path": "ROOT_INPUTS.json",
+      "bytes": 2364,
+      "sha256": "81f5820e30d283e60244dd238a5549bb5ff5c2de421ed9113f3a495269d67a82"
+    },
+    {
+      "path": "Run-Check.ps1",
+      "bytes": 3295,
+      "sha256": "e5d5f7ee00e7a6d3b7f14d240c5ff133c44e4230b87a99a3a543efdc8a8f6abe"
+    },
+    {
+      "path": "scripts/bindings.mjs",
+      "bytes": 4406,
+      "sha256": "9a1f3b5588014fe740a2bed8ceb49a694923bcc4f524defb7a97c5e7e99e29e9"
+    },
+    {
+      "path": "scripts/build.mjs",
+      "bytes": 3312,
+      "sha256": "04a179754bcf4a02ab49883e4bf999de61774a7ef19e38fa4b69def2ba35c733"
+    },
+    {
+      "path": "src/climate.ts",
+      "bytes": 8424,
+      "sha256": "98b28ab5c7d6a566d23e0b4a43627791d9ff6e68a25507f96da937034baf7317"
+    },
+    {
+      "path": "src/common.ts",
+      "bytes": 1706,
+      "sha256": "c8068b7ea69c14a098f873a717415d728045dab1028704218cac8ea6213679f8"
+    },
+    {
+      "path": "src/fixtures.ts",
+      "bytes": 2247,
+      "sha256": "105ed0d1fce5f805831011d3c15131e48f0af8130638b07ad69c3f7f4ace6ca0"
+    },
+    {
+      "path": "src/geometry.ts",
+      "bytes": 8688,
+      "sha256": "4f1db9da5e5a569c095d04c8ac50bfaf7608c21e44f9b080177f39ca0df8dd48"
+    },
+    {
+      "path": "src/macro.ts",
+      "bytes": 4517,
+      "sha256": "c99cb85565f86f2573674ffc335e35e593e3117f8c065c086ddf0f017e0adb4b"
+    },
+    {
+      "path": "src/model-pin.ts",
+      "bytes": 179,
+      "sha256": "f09135fc1379b1af7dbc01adbe51284c2ac3e76d601110417b264d6cabb44faf"
+    },
+    {
+      "path": "src/regional.ts",
+      "bytes": 5214,
+      "sha256": "300925829f229e363bd0ef6c603214a78e70bcfe1d814b99642fd5a7d585d698"
+    },
+    {
+      "path": "src/synoptic.ts",
+      "bytes": 3785,
+      "sha256": "76d54d8b6256389efa909d4f87f024c5a66ee4d36c516a37279b757e376b78c7"
+    },
+    {
+      "path": "src/weather.ts",
+      "bytes": 5979,
+      "sha256": "ca394b2542360f79356fd53f214f04258b6cb1815e39635047754d13222d9008"
+    },
+    {
+      "path": "src/world-generation/planetaryMacroProfile.ts",
+      "bytes": 806,
+      "sha256": "e4284c11357d9dc719e1637e477a7ef25b1b4a69cba2fa75bfc5a14857a32eae"
+    },
+    {
+      "path": "tests/climate.test.mjs",
+      "bytes": 10790,
+      "sha256": "ad6f8730aee517bf633e4c23123ded0a993b43ac624bab397e2675bb1585d155"
+    },
+    {
+      "path": "tests/geometry.test.mjs",
+      "bytes": 14056,
+      "sha256": "d432645ba0c18bf611e04b67d4039ab42d4cb20297fe32e262959ce9be3a91df"
+    },
+    {
+      "path": "tests/helpers.mjs",
+      "bytes": 4593,
+      "sha256": "070922ff4851d0b11b5dca4ed4ae920ffcc06d6a2cae8943027b9ba805ebfe92"
+    },
+    {
+      "path": "tests/wxg.test.mjs",
+      "bytes": 15413,
+      "sha256": "eda3eaa4d3470b08215f19b482e10a529d0588220f95359e409a1673b195c660"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 603,
+      "sha256": "24954be4ab9ffe8597fa26833fc7e1d98b09ca9194265c57cda2fea8d3fa2c8e"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/canonical.d.ts",
+      "bytes": 629,
+      "sha256": "b8ffdf0128cfd6ecf7d651bbf10e6c916221dbcace02b6eb83da2cf144d106a4"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/canonical.js",
+      "bytes": 3378,
+      "sha256": "1af1cca4bce497afc31ee03ff940502941f2a579441b9a4a6ae6eaf479f9f9be"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/catalog.d.ts",
+      "bytes": 769,
+      "sha256": "af25530d9ee9019f304a43e21cdedc820aad7fe1c3fe724e698c8792c9f2b430"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/catalog.js",
+      "bytes": 6141,
+      "sha256": "16f1aa90ca6a37c41340450db26c8b91a0ea2404f4db5a49f3d7f6e13c27dd3c"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/errors.d.ts",
+      "bytes": 831,
+      "sha256": "9b6ee89db4af6eea37897e980a5a024275a3201282c1993da02e6744feba5f21"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/errors.js",
+      "bytes": 424,
+      "sha256": "f9201f0be75ea85e933c0d5821e7c0fa397da4de9a470a0cf75c51267dcf7bf7"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/ids.d.ts",
+      "bytes": 602,
+      "sha256": "37d8ecf5acc6d75bb4e890b2fc1fe83b01812049a6bf18aaed9c06ede3d26425"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/ids.js",
+      "bytes": 727,
+      "sha256": "b4f89b37ca66a11a1083adc32a15548f762dce5240c2c3e920eae41173786c4f"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/kepler.d.ts",
+      "bytes": 697,
+      "sha256": "bca70414b45976cf473e657e4bb79c889fc6650192d4de1debf8185e375fba20"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/kepler.js",
+      "bytes": 7348,
+      "sha256": "beb74deeabf6402ca33c915fededad8c730e9b9e9c5c3f71b307e4181307290d"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/starterSystem.d.ts",
+      "bytes": 1175,
+      "sha256": "67523604376e9fb098f8af072ab30feb3c030f6d69fc63ab844fa22e7547f3e5"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/starterSystem.js",
+      "bytes": 9229,
+      "sha256": "dcc3be81c3d0d4e5e2122120f087b6e311b899a03908cd119d1ebee1fef7c104"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/types.d.ts",
+      "bytes": 8736,
+      "sha256": "632f5e1bac9241c031f03c69f9979f6edd4b38b22b82290c9cea6d586bab4488"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/types.js",
+      "bytes": 247,
+      "sha256": "9bd418b8041196729fbf5924c2937317cd3be8765d69ba6d30d637bd4de03745"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/validation.d.ts",
+      "bytes": 963,
+      "sha256": "57f49b2ee5ad53643b4a60268cdc8a49657151be7a4b495f480d1e34c31e6a0b"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/celestial/validation.js",
+      "bytes": 12045,
+      "sha256": "dad73622bf7eb2141df18c78c46a836a8309717d6fdc41dd2fe93104f61b74a3"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/core/hash.d.ts",
+      "bytes": 267,
+      "sha256": "db8559b6d52358a0142a489d641f6086a7f0afa3adc7a0ba6cd3bfb832d67403"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/core/hash.js",
+      "bytes": 3087,
+      "sha256": "3e8eed1aa7c7c49a2cea382062643a5f3ac18a25d92e321bdff38e822b98f9c6"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/core/vector.d.ts",
+      "bytes": 860,
+      "sha256": "685d7e1536e36b98fbb5a2d512c5de99b765504f735f2fa44d96ff93034cffa5"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/core/vector.js",
+      "bytes": 1295,
+      "sha256": "28e6828a77104b810f698d324f928c2acd88e60ce2176dcfd7cb1199746bd8bd"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/canonical.d.ts",
+      "bytes": 1584,
+      "sha256": "5013124d36fcb885a104ecf3470403027cf322da2b894e6963009f73e88d8eec"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/canonical.js",
+      "bytes": 5096,
+      "sha256": "8c31b13c357731de87776a29becb9c9c0949dcd65522590fd2662c576710b0ea"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/ids.d.ts",
+      "bytes": 5444,
+      "sha256": "2111fbd248818f7f3165df355e70452c99dc4597f0498d0bb2315b473ee214f5"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/ids.js",
+      "bytes": 6149,
+      "sha256": "a65513d93675908222be597bdd00ab7c523ebee5f7a8258170afbb9be2320749"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/saveSchema.d.ts",
+      "bytes": 854,
+      "sha256": "16ef7bb2f12a11a3f88df8667973d24c2850604b9846a591a153c624c695b5a3"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/saveSchema.js",
+      "bytes": 30020,
+      "sha256": "841ae90a22f7403e42f32195cb9640d9d7fcc4cb5fb3713714bf0c6d9205d775"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/simulationMode.d.ts",
+      "bytes": 945,
+      "sha256": "9911ad358b3728e6a1c10c5e322bb567f41588e8eb706b1eefe4f32ee685ed5e"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/simulationMode.js",
+      "bytes": 1912,
+      "sha256": "69e6be4cd295cf221484cb5ee5292a128eb4b4a111ffe0ae755d8ee22b964ebe"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/time.d.ts",
+      "bytes": 1748,
+      "sha256": "c963f931ce82a3641b51927d2cff5667efe22813f9a169a9f07cdca8d68b74ac"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/time.js",
+      "bytes": 4584,
+      "sha256": "9a655cdc9ec8767bc79c27b7677707fe1cd95267b90db2ba0ecf27c12c3efd50"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/types.d.ts",
+      "bytes": 5701,
+      "sha256": "f7835fb5ff5f0714af46a2a6320a702a29ae75b696ed4756e9416d6ab7617bcc"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/types.js",
+      "bytes": 162,
+      "sha256": "e99a3471d794788a2c1e04cf5399d9831fe8d44fb4d2a62e9b3554b8e915374d"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/validation.d.ts",
+      "bytes": 2439,
+      "sha256": "a1c93a1a360ba144afc1778b7acee0cc601e4ac369243cc0bc7f4aceabce2213"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/persistence/validation.js",
+      "bytes": 9752,
+      "sha256": "bcca021274499803b113ca3760598769a349af07b62c7ff1aed4b12e608ee8ed"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/bodyFrames.d.ts",
+      "bytes": 1956,
+      "sha256": "f51b8a3252a902e0d28b4a2710a2601b9c004d5711927b382914ff3f37073523"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/bodyFrames.js",
+      "bytes": 10414,
+      "sha256": "7dfcb4fd86cfd0936e03660ba0df673f0df24ac125edc9765416d80fa797a337"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/canonical.d.ts",
+      "bytes": 370,
+      "sha256": "5651c909c873313d462bfb888f295808b2e97430775cc6dee3bb918de481587f"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/canonical.js",
+      "bytes": 412,
+      "sha256": "2438f9aac70876ba5790afd0d75d2fbce69c02fc2e55b4759d06e32d0acea36f"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/errors.d.ts",
+      "bytes": 643,
+      "sha256": "12935c69575879aa1f52bba31081071b12daadff13280ef342d24f42f3613ff6"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/errors.js",
+      "bytes": 386,
+      "sha256": "7a4dce0f44685bf093736c03b7918e8fbf17bff80002ed6efa5bc4e4680e7870"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/frameGraph.d.ts",
+      "bytes": 1440,
+      "sha256": "f5784da1b85fe42420e1f647a4061c8a5d9a14b1975e2ce1270c509a9f3abb1a"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/frameGraph.js",
+      "bytes": 4298,
+      "sha256": "bbecd29f2472cf9aacb64aa094b6e692ab9de4141dd5b8710a1e185984e79aa9"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/frameValidation.d.ts",
+      "bytes": 656,
+      "sha256": "90202e3d7c3fd038dc67cc014383dd9b86eb73e4f70dafb32c3dfa42b23340f9"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/frameValidation.js",
+      "bytes": 6081,
+      "sha256": "d9183543589caf0c23fe2575b8c22944e9526ff2496f6646d98737c3c3d1cc13"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/ids.d.ts",
+      "bytes": 638,
+      "sha256": "98c3ebde5c89df304771dff9007ea76bf7d60dd64f76444fc9de998a9561797e"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/ids.js",
+      "bytes": 771,
+      "sha256": "e4c295f1780e9d6430830d70253b512b66b96fc3f4d393f56664b3c7a3dfdcf9"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/quaternion.d.ts",
+      "bytes": 1962,
+      "sha256": "4fa3a2d504902e1e157bb1b79b306af2abe578518b26af46e44c05f4444d05b1"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/quaternion.js",
+      "bytes": 6220,
+      "sha256": "15b57a759be6d857d7d9d8c1310a816c495a0337462e1c159a9ee74f9db38ab4"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/surfaceLocalFrame.d.ts",
+      "bytes": 2317,
+      "sha256": "7bae723997673af17fb52de01641face3e7bbe2ab5726c6cd377be2be0a4a326"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/surfaceLocalFrame.js",
+      "bytes": 6119,
+      "sha256": "1225ae36168dd1620ae84868dcaf113e0878d8bb5e39a2cebfba33118223f94f"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/types.d.ts",
+      "bytes": 2900,
+      "sha256": "765b0aff46a11f9b6d20c580d9abdbb74464e8fc9f299339f5798e51f879cf0b"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/types.js",
+      "bytes": 587,
+      "sha256": "89b8c0e0ca4e913d55855486631ef98c679e0d413a801d7ab42796dd7b541ff1"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/universeClock.d.ts",
+      "bytes": 823,
+      "sha256": "1b57cf8fe74f00f9e8c42fb85ad46ad0f30cb454ca1d7f8eb2260195814a5736"
+    },
+    {
+      "path": "vendor/cel/dist/snapshot/product/spatial/universeClock.js",
+      "bytes": 1326,
+      "sha256": "e4c24d5802c9a40b5ceff7bfaae1255a381cc2dde812266f68cc978a74fee161"
+    },
+    {
+      "path": "vendor/cel/dist/src/contracts.d.ts",
+      "bytes": 1110,
+      "sha256": "0c44d308fc8b19f6005f5e6f7a617c7d3f7c3fb4d6edb8e801671e23fed41671"
+    },
+    {
+      "path": "vendor/cel/dist/src/contracts.js",
+      "bytes": 23303,
+      "sha256": "0758fe16a241458c866079ec71ce8dc6d693c6ae52e080b538e0ae4896773d26"
+    },
+    {
+      "path": "vendor/cel/dist/src/fixtures.d.ts",
+      "bytes": 164,
+      "sha256": "7d45b557ca527033411b29b4308416d33a1e3685974b38cfa185befc2777ccad"
+    },
+    {
+      "path": "vendor/cel/dist/src/fixtures.js",
+      "bytes": 6683,
+      "sha256": "f31b76881b6049d9ef8ff82983d5855d9710c7fe0a1ec28e1abbab42c098b450"
+    },
+    {
+      "path": "vendor/cel/dist/src/model-pin.d.ts",
+      "bytes": 119,
+      "sha256": "d297b6c23006e1fb4ca0c1d9cb265e1fd32f05c47f598bdc1846a93d9b779d8d"
+    },
+    {
+      "path": "vendor/cel/dist/src/model-pin.js",
+      "bytes": 177,
+      "sha256": "374b9f314629e03bb3d06b8cfeb56d8cc0d621a9ff482b1875175cd3300759f1"
+    },
+    {
+      "path": "vendor/cel/dist/src/types.d.ts",
+      "bytes": 6631,
+      "sha256": "23f97eea59d71eafb6013f276f248115a192bc95ffeb49065035fc6e99b80827"
+    },
+    {
+      "path": "vendor/cel/dist/src/types.js",
+      "bytes": 11,
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+    },
+    {
+      "path": "vendor/cel/dist/vendor/plt/src/numerics.mjs",
+      "bytes": 4458,
+      "sha256": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    },
+    {
+      "path": "vendor/cel/tests/helpers.mjs",
+      "bytes": 1143,
+      "sha256": "5998f081e39b98a52e0d2dd7961bb948898a4dcff954bb1a6baed44c906c30cc"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/src/fixture.mjs",
+      "bytes": 3028,
+      "sha256": "55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/src/numerics.d.mts",
+      "bytes": 444,
+      "sha256": "b0ad665b15b9e6a34dc19d0d967e4dc8518b437d7c62d24f7e7c43fd6698c7da"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/src/numerics.mjs",
+      "bytes": 4458,
+      "sha256": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    }
+  ],
+  "fileCount": 330,
+  "excludedSelfOrLaterClose": [
+    "CONTINUE_20261020_R01/SOURCE_MANIFEST_FINAL.json",
+    "CONTINUE_20261020_R01/FREEZE.json",
+    "CONTINUE_20261020_R01/APP_TURN_CLOSE.json"
+  ],
+  "oldTurnActualCompletionUtc": null,
+  "oldTurnStatus": "INTERRUPTED_UNKNOWN_END",
+  "normalModelDigest": "sha256:67d60634e52c4b47c6a829ea07e4ade44c0f214c3580a4cef966aaa31f54143e",
+  "privateWxgModelDigest": "sha256:9df122a0286dffdbe09c5812a49202791f841e8511aa8cb97e39d59ab04a3a5c",
+  "productActivation": "NONE"
+}

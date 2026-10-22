@@ -1,0 +1,87 @@
+{
+  "oracle": "Python 3.12 lexical JSON AST and independent SHA256; exact authored diagnostics, no meteorological oracle",
+  "rows": [
+    {
+      "name": "Hestia",
+      "status": "Unsupported",
+      "profileDigests": {
+        "physics": "sha256:4aa9d9cfe6c83aa7cef9c0b9665d9dec3c0d51e7c259ad8adc577f3e5e497ab2",
+        "optics": "sha256:8de131a6d1702b582b103aaadd00ce5a250e3bbce53a753a3de4300dd10defdc",
+        "profile": "sha256:09bc18b84407ffd5a6a6b4889db4b1ce06c0fab97fd5a1370f0577f17022fbb5"
+      },
+      "WeatherSnapshotId": "sha256:7999c8d91d934d2046e00d5879e9f8369c675092b600a941a5b1275ce5612ca1"
+    },
+    {
+      "name": "Airless",
+      "status": "NoAtmosphere",
+      "profileDigests": {
+        "physics": "sha256:7439362f267b19862b5f97e80b63b6371cb834171730e859e37a8c69453e8b0e",
+        "optics": "sha256:3f62658124945baef3e26a9eaf8d15b3c33baffb70863ea40ca20adfd3dc20d7",
+        "profile": "sha256:b76fbacb9aa7e45d6e0af3b2eb91ec161b6cb40317f44a34097742594155b6fa"
+      },
+      "WeatherSnapshotId": "sha256:a1ef3f7e6f96925c350742752b3b0aa9542c80774e2806c4b3f6d69a1efe2fe9"
+    },
+    {
+      "name": "Dust",
+      "status": "Known",
+      "profileDigests": {
+        "physics": "sha256:6924df09599a7bb0a5b306d30e6cb16af9ddf7dd81653a241ea8ef157de66e9f",
+        "optics": "sha256:b1ba6482c974c0d81a203af7743a6ce4942cebfefe26a9919954e1472c09f993",
+        "profile": "sha256:04b12f8c6791a3d7df1566a08d21a5a031ce23a98f2956bdcd82ec31eb935361"
+      },
+      "WeatherSnapshotId": "sha256:46a85900a9b378fbcfc9008acfd5fe1362eb395c437572986da6508fe784a2fc"
+    },
+    {
+      "name": "Methane",
+      "status": "Unsupported",
+      "profileDigests": {
+        "physics": "sha256:f93e001ac3afa631d1674e392d131d77850c8c1afaea09f73c7144dc137b8803",
+        "optics": "sha256:9c8c2fb9e9e72baa2b6dc16abc296ea4716804c1fbb70e70e10a2ca5380081d9",
+        "profile": "sha256:9890089d728f57d5c682d57a1057ff05e6b959a7894a3d74292f0f7cf7787da2"
+      },
+      "WeatherSnapshotId": "sha256:cc8797c4c6df46f518981cf91bacbf540dfe0b984917dfedebf9f5c10a625f64"
+    },
+    {
+      "name": "GasGiant",
+      "status": "Known",
+      "profileDigests": {
+        "physics": "sha256:b0f2b2bc06f77ff1234dd953f1da4a556ae9ddd9061fb00fba7264dcb4b94a5c",
+        "optics": "sha256:e5f589cf12970815ea04de4c4031d0b6402b9220016baa4bda3b1ea800e56357",
+        "profile": "sha256:3bb56693e3bd422b1de8290de47cc0782a533ed0f468f27558b6941dcf1306ae"
+      },
+      "WeatherSnapshotId": "sha256:3ec74e1464b73eb52a9563145b653e79ecc71f302ad28b7a96d7deaabcd71f66"
+    },
+    {
+      "name": "TidallyLocked",
+      "status": "Known",
+      "profileDigests": {
+        "physics": "sha256:faeeead9a9b0767828003949bb501624a9c90a1bc1c82478a1b123c9824cc693",
+        "optics": "sha256:e117d50bcc131ffe4b20b892ad7e74c35e543b4990524080cdff86468518e893",
+        "profile": "sha256:1bda6cd78215ad2710f771988c12c2ce8f67c6c5dea29e7d2a1b45ca4f9db9a3"
+      },
+      "WeatherSnapshotId": "sha256:8444308139f1e982b4d2af9f636a22cd74cab810a32b23307c63a08713b133b5"
+    }
+  ],
+  "canonicalVectors": [
+    {
+      "input": {
+        "z": "-0",
+        "a": "1"
+      },
+      "bytes": "{\"a\":1,\"z\":0}",
+      "digest": "sha256:b55af27c4bd5f02ebeca8f901b84d2940b22e7bea7230e4d06f275d903bfdd72"
+    },
+    {
+      "input": {
+        "b": [
+          "é",
+          true,
+          null
+        ],
+        "a": "120"
+      },
+      "bytes": "{\"a\":120,\"b\":[\"é\",true,null]}",
+      "digest": "sha256:8ea5e32f00f3f577c637ff3d7d2bc73f8745596aaa1e5bd2a33519563b3f43d9"
+    }
+  ]
+}

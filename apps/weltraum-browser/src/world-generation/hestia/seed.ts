@@ -3,14 +3,14 @@ import {
   validateVoxelStableId,
   type VoxelCoordinate
 } from "../../voxel";
-import { fnv1aHash } from "../../core/hash";
+import { fnv1a32Ascii, hashHestiaLattice, assertUint32 } from "../latticeNoise";
+export { hashHestiaLattice } from "../latticeNoise";
 import {
   HESTIA_GENERATOR_VERSION_V1,
   HESTIA_PRESET_ID,
   type HestiaGenerationInput
 } from "./preset";
 
-const FNV1A32_PRIME = 0x01000193;
 const UINT32_RANGE = 0x1_0000_0000;
 const ROOT_SEED_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
 
@@ -46,12 +46,6 @@ export interface HestiaSeedSet {
   readonly scatterJitter: number;
 }
 
-const assertAscii = (value: string, path: string): void => {
-  for (let index = 0; index < value.length; index += 1) {
-    if (value.charCodeAt(index) > 0x7f) throw new TypeError(`${path} must contain ASCII characters only`);
-  }
-};
-
 export function assertHestiaRootSeed(value: unknown): asserts value is string {
   if (typeof value !== "string" || !ROOT_SEED_PATTERN.test(value)) {
     throw new TypeError("rootSeed must be a 1-128 character ASCII token matching [A-Za-z0-9._:-]+");
@@ -86,13 +80,6 @@ export const assertHestiaGenerationInput = (
   }
 };
 
-const fnv1a32Ascii = (value: string): number => {
-  assertAscii(value, "seed tuple");
-  // hestia.seed.v1 is ASCII-only, so the neutral UTF-16-code-unit FNV helper
-  // is byte-equivalent here; fixed seed vectors bind this version boundary.
-  return Number.parseInt(fnv1aHash(value), 16) >>> 0;
-};
-
 const assertDomain = (domain: HestiaSeedDomain): void => {
   if (!(HESTIA_SEED_DOMAINS as readonly string[]).includes(domain)) {
     throw new TypeError("domain must be a documented Hestia V1 seed domain");
@@ -125,34 +112,6 @@ export const createHestiaSeedSet = (input: HestiaGenerationInput): HestiaSeedSet
   scatterScale: deriveHestiaDomainSeed(input, "scatter-scale"),
   scatterJitter: deriveHestiaDomainSeed(input, "scatter-jitter")
 });
-
-const assertUint32 = (value: number): void => {
-  if (!Number.isSafeInteger(value) || value < 0 || value > 0xffff_ffff || Object.is(value, -0)) {
-    throw new RangeError("seed must be an unsigned 32-bit integer");
-  }
-};
-
-const coordinateWords = (coordinate: number): readonly [number, number] => {
-  if (!isStrictVoxelInteger(coordinate)) throw new RangeError("lattice coordinates must be safe integers");
-  const bits = BigInt.asUintN(64, BigInt(coordinate));
-  return [Number(bits & 0xffff_ffffn), Number((bits >> 32n) & 0xffff_ffffn)];
-};
-
-/**
- * FNV word-mixing over both low and high two's-complement words. This is the
- * V1 safe-coordinate rule and intentionally does not truncate coordinates.
- */
-export const hashHestiaLattice = (seed: number, ...coordinates: readonly number[]): number => {
-  assertUint32(seed);
-  if (coordinates.length === 0) throw new RangeError("at least one lattice coordinate is required");
-  let hash = seed >>> 0;
-  for (const coordinate of coordinates) {
-    const [low, high] = coordinateWords(coordinate);
-    hash = Math.imul((hash ^ low) >>> 0, FNV1A32_PRIME) >>> 0;
-    hash = Math.imul((hash ^ high) >>> 0, FNV1A32_PRIME) >>> 0;
-  }
-  return hash;
-};
 
 export const hestiaUnitFloat = (seed: number, ...coordinates: readonly number[]): number =>
   hashHestiaLattice(seed, ...coordinates) / UINT32_RANGE;

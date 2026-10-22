@@ -1,0 +1,137 @@
+{
+  "schema": "hestia.native24.source-review-manifest.v1",
+  "root": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-native24-source-r01",
+  "actualOwnerNative": "01a13648-c55b-7250-bf07-34921d70b43b",
+  "sourceCopy": "DONE",
+  "guardTests": "PASS_30_OF_30_EXIT_0",
+  "runtimeGrant": "NONE_HOLD",
+  "createdUtc": "2026-10-14T08:11:28.1091479Z",
+  "files": [
+    {
+      "path": "batchOwner.mjs",
+      "bytes": 3746,
+      "sha256": "7204bfca8526896a5aa85fe105fd44c9e01888ef337b266fd9a405918d9b1350"
+    },
+    {
+      "path": "caseCatalog.ts",
+      "bytes": 18319,
+      "sha256": "0aad85ecf46848a5da1edeba655185eb59b9c9f807a35303e1bf9a9aecd2a82e"
+    },
+    {
+      "path": "cases.json",
+      "bytes": 18288,
+      "sha256": "713c5dcd8a5a5b016cc34c4a3fc680aafa2d64e5c14d28d67e6691c144f5a378"
+    },
+    {
+      "path": "child-cli-denial.log",
+      "bytes": 877,
+      "sha256": "00258376ff73faee3d7736ccfb4e11b05747d6a122ec97b08e538a6aae7877fc"
+    },
+    {
+      "path": "diagnostic-boundary.mjs",
+      "bytes": 3307,
+      "sha256": "40413496e5046761261882d2b1a1a2d12142fea864566c9639aef4fbd8d3c3ff"
+    },
+    {
+      "path": "diagnostic-child.mjs",
+      "bytes": 2404,
+      "sha256": "bd21468c161fb78aed18608690f381735bbca015c5ad8dc54fa1db7d8f83f2e9"
+    },
+    {
+      "path": "diagnostic.mjs",
+      "bytes": 10056,
+      "sha256": "5194d9a96eca933f8c07a6a167643755ce81238f545c5bbbf0892902ac34a6b0"
+    },
+    {
+      "path": "GUARD_RESULTS.json",
+      "bytes": 3248,
+      "sha256": "456640d5558aaf8e3d7e4e9ffb5a2f816f291577a7224df19464c62f35242d49"
+    },
+    {
+      "path": "guard-effect-probe.mjs",
+      "bytes": 756,
+      "sha256": "c165ec83c3f57e9854a478192f987a95a3863c754aa75561f675ffac683531eb"
+    },
+    {
+      "path": "guard-final.log",
+      "bytes": 5898,
+      "sha256": "eb1d3a10f2fe18ef37fd19f48011300725a045337d168a9e059feb8aeb76a4cd"
+    },
+    {
+      "path": "guard-green-r02.log",
+      "bytes": 5897,
+      "sha256": "3d27c1c27d10bdd966248356e4f3b724d4af6149fe1e7c8c2ccbbb71a8ba72d9"
+    },
+    {
+      "path": "guard-green.log",
+      "bytes": 12716,
+      "sha256": "d9a15f812eee4b4a8036700e4460ec9e7482fcfeb01f50e8227b2d91939b0f2d"
+    },
+    {
+      "path": "guard-red-authorized.log",
+      "bytes": 16906,
+      "sha256": "336d75657996f780e1b1a1492831ac13f8b5822180e47e87678cf27864043ebf"
+    },
+    {
+      "path": "guard-red.log",
+      "bytes": 1009,
+      "sha256": "37e3f06c1d02a1754f53073b7314296017e83553c59833a1a582656c968ed226"
+    },
+    {
+      "path": "guard-review-final.log",
+      "bytes": 6086,
+      "sha256": "cecda24ccd1d2783d36ee7a5328a0828c9eef770edb8e6415d1f53ac3b02dab8"
+    },
+    {
+      "path": "guard.test.mjs",
+      "bytes": 10239,
+      "sha256": "de1d0df50cc1a1c8fd8cde6bfc43f7d6c564da3b03e0958499a4217a52dd2fc5"
+    },
+    {
+      "path": "INPUT_BINDINGS.json",
+      "bytes": 358121,
+      "sha256": "2b625a783183008e2feab2ed700a47a9e0cb0d830324e066741c2bb6f2cc1ace"
+    },
+    {
+      "path": "native24.vitest.config.mjs",
+      "bytes": 1493,
+      "sha256": "ca8ea2e0a47110d8875f0a48aa59769195502db8e9cdc52e661647d6b305e880"
+    },
+    {
+      "path": "parent-cli-denial.log",
+      "bytes": 871,
+      "sha256": "5335f7180ad38a12a2d7ba8dc6f969892df68218860091013b882cbc22602ab3"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 2427,
+      "sha256": "d8dd746c1555f6962119a7363a02cac2dd3201a66b2b685ac8389538fa83afb9"
+    },
+    {
+      "path": "PROVENANCE.json",
+      "bytes": 5684,
+      "sha256": "24a4b2518223620e9f3bd2d7ff745fcb043f1f17ea602330cd801c456d5a1edb"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4719,
+      "sha256": "0158a95175f05a912b76b23394bc0aea763b9dd2b6b70ec76650331f3c06e96e"
+    },
+    {
+      "path": "review-env-red.log",
+      "bytes": 6623,
+      "sha256": "d2a421d297ce5bfd5eb8e2d1598e9e48159b9b03f11918a47b10b45217055c68"
+    },
+    {
+      "path": "SOURCE_DIFF.patch",
+      "bytes": 12676,
+      "sha256": "eb3b10fc572b03d544ffcdaec8ab26bc4eef1db2ffc1340bbac1dede7fcd756e"
+    },
+    {
+      "path": "SOURCE_PROVENANCE_CHECK.json",
+      "bytes": 6026,
+      "sha256": "c9fbd130fa3582dcabef3675bbdddb2b08ed316896fcf48879b7c074cf7d7b57"
+    }
+  ],
+  "reviewBinding": "Root independently reviews these exact bytes; no further automatic continuation"
+}

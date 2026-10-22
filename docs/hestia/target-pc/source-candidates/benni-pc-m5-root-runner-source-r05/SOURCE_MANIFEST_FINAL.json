@@ -1,0 +1,67 @@
+{
+  "schema": "hestia.m5.root-runner.source-r05.manifest.v1",
+  "status": "SOURCE_PREPARED_PROFILE_HOLD",
+  "selfExclusion": "SOURCE_MANIFEST_FINAL.json only",
+  "files": [
+    {
+      "path": "compile-root-outer-launcher.ps1",
+      "bytes": 1415,
+      "sha256": "137aaa39c3c1bdd4b6a3dc1e55fa7b8eea87f2c5c0cbbe1003108ee7165e0337"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 1726,
+      "sha256": "afbf75924d2c3417850348315e7cc8be525ed86a916973f8ca880ea93208abdc"
+    },
+    {
+      "path": "OriginProducer.mjs",
+      "bytes": 10800,
+      "sha256": "1cfcf985388845150f3e1271bc6fe3415e714934211604771cc6220431782e6e"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 6896,
+      "sha256": "dc9ca777cd69b37a5fa5046df3c55d88ae8219b2c89cbbdc3ac76d1960ca08e0"
+    },
+    {
+      "path": "ROOT_RUNNER_PLAN.json",
+      "bytes": 169094,
+      "sha256": "20c56ad5c58f9e14ae7ac514b914eaef11fc2871c7f46a3ad846a0986f391b08"
+    },
+    {
+      "path": "root-dispatch.ps1",
+      "bytes": 31537,
+      "sha256": "982dfdfbc21ac771af2d152ec286257e0d04b1c176d53cd2bb3c817b647e316d"
+    },
+    {
+      "path": "root-outer.ps1",
+      "bytes": 17299,
+      "sha256": "d91bd8d476990e57f17aabd9cf25d79dbaf19fab8947c2d5d6677ba8ac0cadf0"
+    },
+    {
+      "path": "root-runner-model.mjs",
+      "bytes": 9390,
+      "sha256": "37030a203c4bd101e9c5162d2f5ad16061f259192b183dcfb0e9d83b5ccb5c7b"
+    },
+    {
+      "path": "root-runner-source-checks.mjs",
+      "bytes": 32021,
+      "sha256": "ddac27000a0302e55ea70ad1380771137d9282b1ca9c6976469302380516252b"
+    },
+    {
+      "path": "root-runner.ps1",
+      "bytes": 29107,
+      "sha256": "da8d1e4d1a9c25912894ba4cefdf2b0af107eff6477d8c26e37455424a763e76"
+    },
+    {
+      "path": "RootOuterAtomicLauncher.cs",
+      "bytes": 26155,
+      "sha256": "7a7334e72013dda3c2f2947292aca615f20137845747d1f45b507858ced83006"
+    },
+    {
+      "path": "RootOuterAtomicLauncher.dll",
+      "bytes": 23040,
+      "sha256": "148f0ac69fc07651922b591e32d63660f874b88992d50ab4226908d1e1233b70"
+    }
+  ]
+}

@@ -1,0 +1,648 @@
+{
+  "schema": "hestia.d2.negative-frame.afterimages.v1",
+  "status": "PARTIAL_SOURCE_HOLD",
+  "entryCount": 128,
+  "selfExcluded": true,
+  "files": [
+    {
+      "path": "ACTUAL_COMMANDS.json",
+      "bytes": 19967,
+      "sha256": "af28ed816d9af8ee4882961721a8c33c6288999270a512d1f39c0ec22a1b0508"
+    },
+    {
+      "path": "COMPILE_COMMAND.json",
+      "bytes": 765,
+      "sha256": "8131f4811740e53eaa889ef7d791c461891948ec78d63471801cd3fdef7a115a"
+    },
+    {
+      "path": "COMPILE_RESULT.json",
+      "bytes": 43966,
+      "sha256": "704172ac801d8aeaa12ab890ad3f8d28f697f35325a0d1e425951d974215c551"
+    },
+    {
+      "path": "COMPILE_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "COMPILE_STDOUT.txt",
+      "bytes": 190360,
+      "sha256": "71e153aca04ec1f9115c5cbb6fd966d029c8f18fb9e296b1ea004ade1a11b4e7"
+    },
+    {
+      "path": "FINAL_RESULT.json",
+      "bytes": 2052,
+      "sha256": "caa8ff9e86cfa869829c1a9b3b27537b45adaca4068f1d038984640989c82e63"
+    },
+    {
+      "path": "INPUTS.json",
+      "bytes": 1814,
+      "sha256": "1bc8f6493644ee5daeec8fb8031d5baacdc05cef139cf86ca3adc226c60845c6"
+    },
+    {
+      "path": "PRESERVATION_RESULT.json",
+      "bytes": 1065,
+      "sha256": "136f4f95aa70c88d0f297fb4ba0dbd143c085839dd9253463bc324977f308a2e"
+    },
+    {
+      "path": "PURE_COMPILE_COMMAND.json",
+      "bytes": 770,
+      "sha256": "17c11c324b29bb0b336ac9c0600898b468c1c0b19dd86db581f70fe6406a9f5d"
+    },
+    {
+      "path": "PURE_COMPILE_RESULT.json",
+      "bytes": 41015,
+      "sha256": "26dc6e5269078b93f0a1b4638ccaf3924334193d0c5d41793e7a4245ac3c8011"
+    },
+    {
+      "path": "PURE_COMPILE_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "PURE_COMPILE_STDOUT.txt",
+      "bytes": 181354,
+      "sha256": "1f86ea196439e8ad024279a5650bee96167bfbaa7bcd82e92d37811b0400caeb"
+    },
+    {
+      "path": "PURE_TEST_IMPORT_GRAPH.json",
+      "bytes": 166837,
+      "sha256": "c3e5ba2be75560f2bdcffc403ff7f64718503000dfded1237bef2a60f40402b0"
+    },
+    {
+      "path": "PURE_TEST_IMPORT_GRAPH.json.failed-r01",
+      "bytes": 15664,
+      "sha256": "6b0601eb7b6a19775a4f75336da128fc7ddc33af147597cce2fe929e875d44b6"
+    },
+    {
+      "path": "PURE_TEST_REQUEST.json",
+      "bytes": 1853,
+      "sha256": "39046d291476f614d368da024ae8ec7e1548c044b2faf5f2c3f45e9cf88dc238"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6805,
+      "sha256": "5566e33aa72df72992bf458d38ef9822d58783b4a79758a7bee4e3b2c43b73f6"
+    },
+    {
+      "path": "SOURCE_DIFF.json",
+      "bytes": 8091,
+      "sha256": "787adb67454915b57974b952dc82f702c2a61e703aac4a371fc3f9652963bc7b"
+    },
+    {
+      "path": "SOURCE_DIFF.patch",
+      "bytes": 5019,
+      "sha256": "7c628162550c3c8bc3da31dfb272d32b49c1f5f323b911d8f88a3f3d1c4af584"
+    },
+    {
+      "path": "STATIC_RESULT.json",
+      "bytes": 319,
+      "sha256": "0d6b42ce140c688cf7478e1c3aebc3ea79db5004d248ddd4a71a4c6287230e97"
+    },
+    {
+      "path": "STATIC_RESULT.json.failed-r01",
+      "bytes": 318,
+      "sha256": "6929433b2700f250188788dd333f78cc6c1cf5d36a33c69bf1fdd5d45b88b021"
+    },
+    {
+      "path": "TEST_TREE_BINDINGS.json",
+      "bytes": 41555,
+      "sha256": "c38ffbdb9ed8b6806586aefb66faa9c5158dd1ccd5f994947897a95771d8b9d9"
+    },
+    {
+      "path": "TOOLS.json",
+      "bytes": 791,
+      "sha256": "3b90c07441570cc290ede9ce8d2ee300b8a81c6d496da3216c530bad6cca8de9"
+    },
+    {
+      "path": "after/apps/weltraum-browser/src/hestia-prototype/physics/bodyCut.ts",
+      "bytes": 7618,
+      "sha256": "0eb18428f383b7a794ce59474aebbfb6beaee8362bb24dfe007e1bd5dc783171"
+    },
+    {
+      "path": "after/apps/weltraum-browser/src/hestia-prototype/physics/branchSession.ts",
+      "bytes": 11310,
+      "sha256": "469d39b41567d6d3f2fe748b761623de361ff36a2ff893d3c0608c1d06d0e2bf"
+    },
+    {
+      "path": "after/apps/weltraum-browser/src/hestia-prototype/physics/rigidRecipe.ts",
+      "bytes": 18494,
+      "sha256": "3e3fcfc6f84e975b92ee1bf931e8a2b788b4c34a92449a2910ec90bc4de5fa27"
+    },
+    {
+      "path": "after/apps/weltraum-browser/src/hestia-prototype/physics/structuralPlan.ts",
+      "bytes": 22894,
+      "sha256": "1678ad7535aa2f05cd99c90032f5ba97dd5fae99dd12a9ef2993f14e01532273"
+    },
+    {
+      "path": "after/apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 233992,
+      "sha256": "e0e7edd92731d477ea68359ac34bb540bbc3145b1adc25c757268069d4efc659"
+    },
+    {
+      "path": "after/apps/weltraum-browser/tests/unit/hvp-negative-frame.test.ts",
+      "bytes": 3660,
+      "sha256": "17604add3a1d3031f3d63cf9a85802d8cbc3aa985049d077357ac299f9657e4d"
+    },
+    {
+      "path": "before/apps/weltraum-browser/src/hestia-prototype/physics/bodyCut.ts",
+      "bytes": 7542,
+      "sha256": "626c7a63d5690af27fb888e3f2ad0ee021ec099fa6dd3b88f0e59b109439b379"
+    },
+    {
+      "path": "before/apps/weltraum-browser/src/hestia-prototype/physics/branchSession.ts",
+      "bytes": 11122,
+      "sha256": "35bb306c6c957442cca1e156ba3a605e92b5917f49c4a9bbec98f08c1b3c566b"
+    },
+    {
+      "path": "before/apps/weltraum-browser/src/hestia-prototype/physics/rigidRecipe.ts",
+      "bytes": 18063,
+      "sha256": "39d18e0e8449cd60a799bdbf4a7e01ff942fc167a1981cd80525b117bb3c507d"
+    },
+    {
+      "path": "before/apps/weltraum-browser/src/hestia-prototype/physics/structuralPlan.ts",
+      "bytes": 22832,
+      "sha256": "bb673a2a8f71a381025e74339ba7289229533674e3d623f7cfac6f9794197257"
+    },
+    {
+      "path": "before/apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 233635,
+      "sha256": "d671499ba5f735013ae2e06a04ec225d408648ceb0c49d6072202f26e8804dbc"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/core/fnv1a64.ts",
+      "bytes": 1550,
+      "sha256": "27b1c99ace27f7e0fc27706a4f59bf8dfcaa7ce148872356b97da349a82aa9b4"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/core/hash.ts",
+      "bytes": 3099,
+      "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/core/vector.ts",
+      "bytes": 1587,
+      "sha256": "bcd1ce4c43a5a79f82f4410c16e528a3b4a2794dd6526a5f7c9393c10d068ad9"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/experiments/cutKernelProbe.ts",
+      "bytes": 10056,
+      "sha256": "7fca0ff19127ebc45244490c00141964ca420a2cb389d850c4e8c7090860b04c"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/persistence/gridCheckpoint.ts",
+      "bytes": 5144,
+      "sha256": "feb3281e2e4b0f1357b3f3b71c2af542d1663c569c7e2aa789fb79723195aa98"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/physics/bodyCutPlan.ts",
+      "bytes": 6883,
+      "sha256": "cca34d7b10b79b263ca33e6c8bf307fee4736c8f5680a09d8feb2315e63a50e0"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/physics/hvpPlanSteps.ts",
+      "bytes": 628,
+      "sha256": "a1f9adfd403caed530877e29b6675fcae226898cdd81fd88d92f00f58781bc88"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/physics/principalAxes.ts",
+      "bytes": 3603,
+      "sha256": "1bb86622963aa903302f00de4c8bfc17b63a315698c18535d7f76c98c0dd4710"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/physics/rigidRecipe.ts",
+      "bytes": 18494,
+      "sha256": "3e3fcfc6f84e975b92ee1bf931e8a2b788b4c34a92449a2910ec90bc4de5fa27"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/physics/structuralPlan.ts",
+      "bytes": 22894,
+      "sha256": "1678ad7535aa2f05cd99c90032f5ba97dd5fae99dd12a9ef2993f14e01532273"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/physics/terrainColliders.ts",
+      "bytes": 4942,
+      "sha256": "bef91789d7b5a2131796df707ff403f93882db7d854acff2eecab3bc156d6a63"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/physics/terrainFragment.ts",
+      "bytes": 13933,
+      "sha256": "1228f2565ccee4876c7a2daaf43aba6dcf24ff6395c6c724b9ec07f8b56a736b"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/presentation/bodyMeshAdmission.ts",
+      "bytes": 10704,
+      "sha256": "0e01e78b19ef22cc359f6021961d34ec7e00cd09334eb82fe55156b613759e34"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/presentation/renderStageRecovery.ts",
+      "bytes": 337,
+      "sha256": "28009570f52830179595ce6c2b92a709c5b9c7ae339c61214d744dcedd5466e7"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/presentation/terrainFragment.ts",
+      "bytes": 2306,
+      "sha256": "13130cde48958da0e0d6cf27b4b7283208de4c67a2eaa99929ce1fa88fbd348d"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/runtime/cutTrace.ts",
+      "bytes": 26731,
+      "sha256": "ae2ca3a1eeabe3cb2465b2dcd02fb95ffefe4847e9865848f94084e731afc911"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/runtime/neighborProducts.ts",
+      "bytes": 5743,
+      "sha256": "55f6a42fe3b2d2c0a98a815e7b323db2ff8b7995a8571c8bd3f25049ee157a50"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/runtime/projectionPacket.ts",
+      "bytes": 5060,
+      "sha256": "577e92ca5ced96f9add2c9f6a7e1b2eebd82ba10c480f67889845e5d721008de"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/runtime/regionSource.ts",
+      "bytes": 4500,
+      "sha256": "c77bb40362c522582df4db7f1b997ee66d96b75a8fc4b1000c975d8eaa3f02bc"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/terrain/cutPlan.ts",
+      "bytes": 28881,
+      "sha256": "d35b37dfce3d3ba29ace56c9c63769054fd211bca012ad598d855e5783aca3cb"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/terrain/ownedSlotCopy.ts",
+      "bytes": 3085,
+      "sha256": "24884343c6f5718f02d996b290e287fc6095814b12dd9721c1d992e7f21abb40"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/terrain/picking.ts",
+      "bytes": 2504,
+      "sha256": "5d147db11f5ad53ceab20b7865f972570389836478378062afd6d1c0f5f1ae90"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/terrain/structuralIngest.ts",
+      "bytes": 21973,
+      "sha256": "170a75de8e173ef023d91b8726f08d1af91db37f9179b37a41a24743de5da54d"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/terrain/supportPlan.ts",
+      "bytes": 18406,
+      "sha256": "6720e6f9589fe91e5c4ef45315a195912394118283dc6de1ded09fafb05999f3"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hestia-prototype/terrain/terrainChunkInput.ts",
+      "bytes": 6876,
+      "sha256": "c0f7860bdec1da6c54416c51d5a3b3fcec4763bc8043a309b5d455fff4d9fe43"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hvp/hvpCoastMesher.ts",
+      "bytes": 56238,
+      "sha256": "c854879ead739f3a824a9a4af3dfdc8ff908b813cbb1ba804c079f269724727d"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 40601,
+      "sha256": "b34aaf2e8f6e967a3364d9d88c695e824d5182fa313b65cfbdd696d00cbe2820"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/canonical.ts",
+      "bytes": 50875,
+      "sha256": "2974212185f36de5da7b43b99c7a06bce9439c11a35fbc52d9d55a38a3d7a056"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/coordinates.ts",
+      "bytes": 10676,
+      "sha256": "aa76e09491f2958b581a4551caf91e68b99838c329b4e48508f095d1cea51c9d"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/edits.ts",
+      "bytes": 11451,
+      "sha256": "a379a9176e705210c061f86b350f2c3ef25b0dcb44a00597a71568c9bfc7bd85"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/index.ts",
+      "bytes": 2085,
+      "sha256": "c48c83a532643384688351ce6a396901d564885056ef6e1944ba43ec58bc9f82"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/materialization.ts",
+      "bytes": 29881,
+      "sha256": "a03173ac54937e07259dd5ccb6d4a9d9055eb7ec8d1e7d390c16b533bba541d6"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/ownedCanonicalHashSteps.ts",
+      "bytes": 17257,
+      "sha256": "a8bc1b31df2f23f2ec91da3f45e467e4259f83277638d4267ec4ff457da0bc32"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/planner.ts",
+      "bytes": 17955,
+      "sha256": "9d9cb2b36d62ca4b27bd67732bedc868436b8c0ca2977c99b6a70eeab64e7325"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/residency.ts",
+      "bytes": 4674,
+      "sha256": "d564c7231bf4132efbef094a6c8c6bd7c48da126b09c89be8ed0de4264cf10eb"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/types.ts",
+      "bytes": 11968,
+      "sha256": "b44ccc8844222e4b1ce6ab7a6605ea68417ca41fb993be8ddc2dc4b1ee5c1d2b"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/adaptive/validation.ts",
+      "bytes": 20611,
+      "sha256": "41d73a7834d3775ffd791f10d2b4d5911cc4f18fa73ac4829f20d4253af26ffd"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/blockAmbientOcclusion.ts",
+      "bytes": 6904,
+      "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/brick.ts",
+      "bytes": 11095,
+      "sha256": "b0d10dfe2b1cd2b5a8c5e093fedfe186b4c825853d8e2d37c27142518157ed29"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/canonical.ts",
+      "bytes": 7967,
+      "sha256": "0994167495c2f9306aa209792dc9e92ec4453276a1f614e8670615ce504ad029"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/channels.ts",
+      "bytes": 2978,
+      "sha256": "5fb713a91915f990166e2ca61f55cfa60427a3f0407950c2c34ac17db3bb7d7f"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/density.ts",
+      "bytes": 1268,
+      "sha256": "c3f0b2b31d0034546a0b6db6711c36915124367eb3cc838150e1b048c9227a79"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/ids.ts",
+      "bytes": 5747,
+      "sha256": "14f4a73a1d61e1e0b97003f1411b15232799f7c230cd9c5cc69b4d46efb5e86b"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/index.ts",
+      "bytes": 217,
+      "sha256": "a8525e6a768a39996941ac1402f821bfb4c7a5de100bbc5b7310a9c7c6185b1f"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/materials.ts",
+      "bytes": 6836,
+      "sha256": "79c9ff04fee6965bbdb2a1a0d42f993fcdbf801fe8355e54d7ca3f7176448420"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/canonical.ts",
+      "bytes": 15500,
+      "sha256": "2897c5887e5ac299dbadfe5de43fcc6be1955ed3c39c5892f296031d5e489979"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/classificationSteps.ts",
+      "bytes": 39398,
+      "sha256": "fd1f3daa2b359b55471f0a30a385c93179c0883d8e7d0648513cf5b394405ed0"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/commands.ts",
+      "bytes": 36548,
+      "sha256": "8b2c715d62c001942bfc59d5e4f38cd5adeea952465d8412fd983069eb4d400b"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/connectivity.ts",
+      "bytes": 1333,
+      "sha256": "672771252f23439bb0529d2d78f926c6ef42575c026b04043f0e096c2afb71b1"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/coordinates.ts",
+      "bytes": 7083,
+      "sha256": "bdea75d16a35e3125ad23bf23ee0a72623c41726caebbb518adf3d10e869313f"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/greedyMesher.ts",
+      "bytes": 14404,
+      "sha256": "078bfae9dc9619430c99badc00955ac8cacc502d58493a4274aa54bbf1816cbd"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/index.ts",
+      "bytes": 2966,
+      "sha256": "7c3c1c12922e5aae1fa7543f358d59d0f353de7c7d31161757c82313804915c2"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/massProperties.ts",
+      "bytes": 25191,
+      "sha256": "9fec4de5e19f85b2b760ccb05ad4c741b3769c0df51eb1ab9490fe8360739c45"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/model.ts",
+      "bytes": 50602,
+      "sha256": "ee975aaf1ef4cfd21ce458e8f6e1acb51348109360bff6f874bb2b6fa3322041"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/occupiedEntries.ts",
+      "bytes": 12273,
+      "sha256": "3cfa60499e8513af73be244c380016b78ed7fb433781a78ba8e66fdcbf633bb0"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/persistence.ts",
+      "bytes": 15702,
+      "sha256": "fb8090930123016f3e461c0a8f10df1d3608b39c615fb59d88ae24e65b81b4bc"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/physicsCommit.ts",
+      "bytes": 42724,
+      "sha256": "103d1d7b8de77ff5e8786eddde6d0ab7b2bf1aad3814fb84d0f8c44d3b89bfe8"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/physicsTransition.ts",
+      "bytes": 44328,
+      "sha256": "f579c6dff577bae4b1e29beb3d1dcb96fc56ab3f6d170b3e6d91b85ca24c41af"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/provingGroundR5.ts",
+      "bytes": 27589,
+      "sha256": "8bb5b9488c29ccd2d0920027b9b610291ae80453e471f44f238c1a4762ce572e"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/regionSave.ts",
+      "bytes": 18866,
+      "sha256": "384842ac264db4a408ef90da9ea883654b7e3f87a6962bdc2df95b6cc043f972"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/types.ts",
+      "bytes": 16697,
+      "sha256": "b83e0e7db4dd57451b164280ce43edd75d814edd1f6549759d6bd0f2ea25a6ff"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/structural/validation.ts",
+      "bytes": 35065,
+      "sha256": "89d7633e087f3556d1fa49cc937fc167cb4f7d1a768185a5ecfc5f2be136f4ae"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/surfaceNets.ts",
+      "bytes": 29457,
+      "sha256": "f43ceaf6bc13e0eba1cf27caa84de26a48c48335640acfec6f444f49d8dfb385"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/voxel/types.ts",
+      "bytes": 5373,
+      "sha256": "bd18ff7f2384d514fb6ee7b10a373a231e77d532a0fef74fca08bb469b254f85"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/cancellation.ts",
+      "bytes": 1056,
+      "sha256": "aa0da3b134d49684b2426016065eb173dc9517993b8ae461553f117ce9925e90"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpBodyCutJob.ts",
+      "bytes": 13671,
+      "sha256": "c5125566d6e1a77351eee2b6bef152907a1cd143ffc20b00201a0bf5e06ba94b"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpBodyCutWire.ts",
+      "bytes": 15927,
+      "sha256": "dc027a544283eeb5a12a1e48c8f659491e7106081742a3e329202e97e825dae0"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpBodyMeshJob.ts",
+      "bytes": 36930,
+      "sha256": "7dfbbe8c1ca9e9fd4bd8d589a7bc67278025f33841b58fcc48ac18d389d0ac41"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpBoundedPump.ts",
+      "bytes": 3361,
+      "sha256": "81b95f0e1741b505dd661c1a8fccc100a957cb0e269e5d367afa719818ecafc0"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpChunkJob.ts",
+      "bytes": 16596,
+      "sha256": "6543b775b55e8e62dd5e28b02f35212fd24124232adc31962c67cce2ac300b2d"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpCollisionJob.ts",
+      "bytes": 8106,
+      "sha256": "6cc590a2fb806cf63c017723683a3a8d40f9471c6adc26129cdfe2b73d1edb91"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpNeighborJob.ts",
+      "bytes": 5618,
+      "sha256": "afe3128eb165d5dae384a970c0f48697c158943648304e4d74b07fc78e07340a"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpSupportJob.ts",
+      "bytes": 18290,
+      "sha256": "55028eddb82eb9a147e6a8187c1eafe34b1c151defef04e55f100a3179f66237"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpSupportJson.ts",
+      "bytes": 5289,
+      "sha256": "3e3a423d5dcb39ae8ffccb75b7aeabd0123c6e673c0fef7475d61a451f6d2af3"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/hvpTerrainJob.ts",
+      "bytes": 11760,
+      "sha256": "53f1c7e121334a2ab10073e349b8bcbd85efc7140f46c35c8665e42accc43a9d"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/ids.ts",
+      "bytes": 2573,
+      "sha256": "61abaadf0052b15645547fd9b286a4144f5a5bd712263a523cfae1a7e6967126"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/index.ts",
+      "bytes": 403,
+      "sha256": "25a5f8db2a3bf8aa87987b4b2d71845a59b48b87a754f5ac5f5a02c463951c76"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/messages.ts",
+      "bytes": 6231,
+      "sha256": "6a5e16da33b201cf52bb55f6f5d6dce4d1cc18c68a1638a2c81a2133ca2f041c"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/protocol.ts",
+      "bytes": 31529,
+      "sha256": "adcc8222d774bf172d65c609cfd7800d33151958ccb1eb147de3decdef949bbe"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/queue.ts",
+      "bytes": 4382,
+      "sha256": "ec2c5b2ffcbff65f31f5ba8bdb5cf3b16989a3ea0506329b05bc26234756a06c"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/resultGate.ts",
+      "bytes": 7566,
+      "sha256": "9051378aeb2bd58967b2a73c819d91d3fe54982e75d1a3fbba083b3387ecc8a0"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/streamingWorker.ts",
+      "bytes": 20822,
+      "sha256": "77859c4e07dd9a46b1528d53035a19c5c3b9508601c67d4df4b1f546170c2403"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/workerHandle.ts",
+      "bytes": 8542,
+      "sha256": "4c782de003573f82283c3d59cc55b1cdaa87ac421f61f3ba35ecf3e150cfbf15"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/workers/workerPool.ts",
+      "bytes": 47053,
+      "sha256": "54c003b3c60ec7c6db42d43d87ddbbb286d5386ed7ec32d081b95261fb1ba099"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/world-generation/hestia/densityGenerator.ts",
+      "bytes": 9731,
+      "sha256": "bd2b2e34859d2fbfbf79a20a0483de718d83596a0d11b29f5d9cd9755f32df74"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/world-generation/hestia/index.ts",
+      "bytes": 265,
+      "sha256": "e0515e10805f0e5a831f1276b9f898632b4d9986ed15a2ce388ac752172bda0f"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/world-generation/hestia/materialClassifier.ts",
+      "bytes": 1527,
+      "sha256": "0d462037dcf110930c15d1a7f3cac364677086e3c3d704efe7dede4d6c4bb911"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/world-generation/hestia/noise.ts",
+      "bytes": 4781,
+      "sha256": "98a2fc27dfda4c237f59376dcf2ce9aa218735b2f86e0cc26bd3c879032c22d9"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/world-generation/hestia/preset.ts",
+      "bytes": 2269,
+      "sha256": "72171abe1aebde2625ab04fc069121c4d355885e1e8a8cb532ae49f509879eee"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/world-generation/hestia/scatterGenerator.ts",
+      "bytes": 5062,
+      "sha256": "adde1f64ac5b67c7e0904c7b5faac1956540632cd80657b970f1e4ac690bb1bb"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/src/world-generation/hestia/seed.ts",
+      "bytes": 6774,
+      "sha256": "20ac280c0503e9c92089f30d7053f5ac084aaeddd286f7a656de9a35c44e16c0"
+    },
+    {
+      "path": "test-tree/apps/weltraum-browser/tests/unit/hvp-negative-frame.test.ts",
+      "bytes": 3660,
+      "sha256": "17604add3a1d3031f3d63cf9a85802d8cbc3aa985049d077357ac299f9657e4d"
+    },
+    {
+      "path": "tsconfig.afterimages.json",
+      "bytes": 1829,
+      "sha256": "982c3a40fbde2c3b1482b75f5ff326733dd4bf0e8bd5471928224eb7486089d1"
+    },
+    {
+      "path": "tsconfig.pure-afterimages.json",
+      "bytes": 838,
+      "sha256": "c6bd743bf205227f6df660c19413fc54a08569b04c15cf2a6cd6d2e350b87b57"
+    },
+    {
+      "path": "vitest.pure.config.mjs",
+      "bytes": 364,
+      "sha256": "b3863d832070df0d062fbcf4f0dea9615901c14b0bf9a032ebd713f271d97021"
+    }
+  ]
+}

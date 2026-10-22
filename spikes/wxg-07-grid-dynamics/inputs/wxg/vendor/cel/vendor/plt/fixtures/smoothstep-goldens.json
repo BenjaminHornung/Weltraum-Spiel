@@ -1,0 +1,90 @@
+{
+  "oracle": "Python Decimal precision80, 3*x*x-2*x*x*x; ROUND_HALF_UP",
+  "domain": [
+    0,
+    65536
+  ],
+  "absoluteErrorBound": "1/131072",
+  "vectors": [
+    {
+      "inputQ16": 0,
+      "exactDecimal": "0",
+      "expectedQ16": 0
+    },
+    {
+      "inputQ16": 1,
+      "exactDecimal": "6.98484825534251285716891288757324218750E-10",
+      "expectedQ16": 0
+    },
+    {
+      "inputQ16": 2,
+      "exactDecimal": "2.793910880427574738860130310058593750E-9",
+      "expectedQ16": 0
+    },
+    {
+      "inputQ16": 127,
+      "exactDecimal": "0.000011251421717872744920896366238594055175781250",
+      "expectedQ16": 1
+    },
+    {
+      "inputQ16": 1024,
+      "exactDecimal": "0.000724792480468750",
+      "expectedQ16": 48
+    },
+    {
+      "inputQ16": 8191,
+      "exactDecimal": "0.042958736943553788023564266040921211242675781250",
+      "expectedQ16": 2815
+    },
+    {
+      "inputQ16": 16384,
+      "exactDecimal": "0.156250",
+      "expectedQ16": 10240
+    },
+    {
+      "inputQ16": 21845,
+      "exactDecimal": "0.259252477601101816162554314360022544860839843750",
+      "expectedQ16": 16990
+    },
+    {
+      "inputQ16": 32767,
+      "exactDecimal": "0.499977111816413355427357601001858711242675781250",
+      "expectedQ16": 32767
+    },
+    {
+      "inputQ16": 32768,
+      "exactDecimal": "0.500",
+      "expectedQ16": 32768
+    },
+    {
+      "inputQ16": 32769,
+      "exactDecimal": "0.500022888183586644572642398998141288757324218750",
+      "expectedQ16": 32769
+    },
+    {
+      "inputQ16": 43691,
+      "exactDecimal": "0.740747522398898183837445685639977455139160156250",
+      "expectedQ16": 48546
+    },
+    {
+      "inputQ16": 49152,
+      "exactDecimal": "0.843750",
+      "expectedQ16": 55296
+    },
+    {
+      "inputQ16": 65534,
+      "exactDecimal": "0.999999997206089119572425261139869689941406250",
+      "expectedQ16": 65536
+    },
+    {
+      "inputQ16": 65535,
+      "exactDecimal": "0.999999999301515174465748714283108711242675781250",
+      "expectedQ16": 65536
+    },
+    {
+      "inputQ16": 65536,
+      "exactDecimal": "1",
+      "expectedQ16": 65536
+    }
+  ]
+}

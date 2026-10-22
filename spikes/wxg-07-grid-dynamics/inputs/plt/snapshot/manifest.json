@@ -1,0 +1,17 @@
+{
+  "imports": [
+    {
+      "source": "apps/weltraum-browser/src/persistence/time.ts",
+      "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "sourceDigest": "sha256:fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df",
+      "changedPort": false
+    },
+    {
+      "source": "apps/weltraum-browser/src/persistence/ids.ts",
+      "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "sourceDigest": "sha256:db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4",
+      "changedPort": false
+    }
+  ],
+  "generated": "time.mjs: Node stripTypeScriptTypes; no semantic source edits"
+}

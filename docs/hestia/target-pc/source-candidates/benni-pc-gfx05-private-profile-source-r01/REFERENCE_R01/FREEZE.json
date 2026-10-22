@@ -1,0 +1,23 @@
+{
+  "schema": "gfx05.reference-r01-freeze/v1",
+  "status": "HOLD",
+  "freezeUtc": "2026-10-19T16:52:03.1080376+00:00",
+  "freezeIsActualAppEnd": false,
+  "manifestSha256": "93a2a3286588db4ff78772110e93303a920f2f3876c94bcbe22b4c7fd5dadb04",
+  "manifestRows": 25,
+  "manifestAllReadbackMatch": true,
+  "original26Mismatches": [],
+  "actualStartUtc": "2026-10-19T16:45:25Z",
+  "effectiveEarlierEndUtc": "2026-10-19T17:19:55Z",
+  "report": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\GFX05_CPU_REFERENCE_R01-20261019.md",
+    "bytes": 9748,
+    "sha256": "64d4b81d4d183c0a7caf871a875f5a660e61068f36ab2077dfea8fbc062f7044"
+  },
+  "helperInvocations": 1,
+  "retry": 0,
+  "nodeRun": "4016ms,96rows,48exactpairs,ownprocessclean; separately supported by Root",
+  "workflowFailure": "Post-run pure metadata ParserError preserved in HOLD.json and Root steering",
+  "productAdoption": "NO",
+  "noAutomaticContinuation": true
+}

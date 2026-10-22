@@ -1,0 +1,26 @@
+{
+  "schema": "cel.finite-runner-profile/v1",
+  "scope": "PURE_FUNCTIONAL_PARITY_ONLY",
+  "executionLocation": "LOCAL_WINDOWS_ISOLATED",
+  "baseCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "maxWorkers": 1,
+  "maxRuns": 1,
+  "commands": [
+    {"script": "scripts/seal.mjs --check", "expectedExit": 0, "order": 1},
+    {"script": "scripts/tool-bindings.mjs --check", "expectedExit": 0, "order": 2},
+    {"script": "scripts/repro.mjs --run-id runner-functional-unique", "expectedExit": 0, "order": 3}
+  ],
+  "expectedProfiles": 6,
+  "expectedFunctionalTests": 72,
+  "expectedStates": ["Unsupported", "NoAtmosphere", "Known", "Unsupported", "Known", "Known"],
+  "mustRecord": ["source/model/profile/tool byte bindings", "actual Node/Python/compiler versions", "raw exits and failed checks", "concurrent load and execution location"],
+  "actualAdapter": "NOT_APPLICABLE",
+  "gpuTimer": "NOT_REQUESTED",
+  "referencePerformance": "NOT_RUN_NOT_REQUESTED",
+  "armCrossDevice": "NOT_RUN",
+  "headerSabDeployment": "NOT_RUN_REQUIRES_SEPARATE_DECISION",
+  "productIntegration": "NO",
+  "afterProductIntegration": "Only A0 binds actual catalogue Core/Save/Flight regressions; not scheduled here.",
+  "onMissingToolOrInput": "Return NOT_RUN/UNSUPPORTED for affected proof; never invent zeros or hardware PASS.",
+  "forbidden": ["HVP or 42/1400 qualification", "GPU/native performance pilots", "product or producer writes", "parallel test/build waves"]
+}

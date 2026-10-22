@@ -1,0 +1,94 @@
+{
+  "schema": "hestia.core.player.source.freeze.v1",
+  "freezeUtc": "2026-10-21T10:29:28.0083399+00:00",
+  "freezeEpochMs": 1792578568008,
+  "actualAppElapsedAtFreezeMs": 463008,
+  "freezeOperationStopwatchMs": 256,
+  "appCompletionUtc": null,
+  "appCompletionObserver": "Root independent readback after final",
+  "actual": {
+    "app": "01a13648-c55b-7250-bf07-34921d70b43b",
+    "turn": "01a15dfb-325f-77f3-925d-757c88659d72",
+    "status": "inProgress",
+    "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13",
+    "startEpochMs": 1792578105000,
+    "startUtc": "2026-10-21T10:21:45Z",
+    "deadlineEpochMs": 1792578705000,
+    "rootEndUtc": "2026-10-21T10:33:00Z",
+    "appCompletionUtc": null
+  },
+  "sourceStatus": "IMPLEMENTED_SOURCE_ONLY_PENDING_REVIEW",
+  "qualification": "HOLD_EXTERNAL_TYPE_CONTEXT",
+  "manifest": {
+    "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-player-actual-endpoint-source-r01\\MANIFEST.json",
+    "bytes": 4095,
+    "sha256": "1325b933a246faa90844244fd2c38762e065a95d58f379ca6edd47cc2fbf43d8"
+  },
+  "normalSourcePins": [
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\src\\hestia-prototype\\player\\locomotion.ts",
+      "relative": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "bytes": 7881,
+      "sha256": "f2bac74e5fa5ccb85800ad620b764448aeefba418d20b3176518893c94e63b36"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\apps\\weltraum-browser\\tests\\unit\\hvp-locomotion.test.ts",
+      "relative": "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
+      "bytes": 10126,
+      "sha256": "ea059df241268f7178c946b1acd00ca5830a829103831400a7c5dd3a32504bc0"
+    }
+  ],
+  "adminReport": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_PLAYER_COVERAGE_SOURCE-20261021.md",
+    "bytes": 4989,
+    "sha256": "895a8042c4b4312531ab6938c67b671984cf51b27bf62c4e29b6445539278532"
+  },
+  "checks": [
+    {
+      "label": "AST_R01",
+      "command": [
+        "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\artifacts\\hestia-other-pc-restored\\Tooling\\PortableNode\\node.exe",
+        "ast-check.cjs"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 272,
+      "terminal": true,
+      "stdoutEof": true,
+      "stderrEof": true,
+      "safeHandleClosed": true,
+      "receiptPath": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-player-actual-endpoint-source-r01\\evidence\\AST_R01.json"
+    },
+    {
+      "label": "NOEMIT_R01",
+      "command": [
+        "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\artifacts\\hestia-target-pc-2026-10-13\\m5-toolchain\\node_modules\\@typescript\\typescript-win32-x64\\lib\\tsc.exe",
+        "--noEmit",
+        "--project",
+        "tsconfig.json"
+      ],
+      "exitCode": 1,
+      "elapsedMs": 898,
+      "terminal": true,
+      "stdoutEof": true,
+      "stderrEof": true,
+      "safeHandleClosed": true,
+      "receiptPath": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-player-actual-endpoint-source-r01\\evidence\\NOEMIT_R01.json"
+    },
+    {
+      "label": "TYPE_BASELINE_CLASSIFICATION_R01",
+      "command": [
+        "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\artifacts\\hestia-other-pc-restored\\Tooling\\PortableNode\\node.exe",
+        "type-baseline.cjs"
+      ],
+      "exitCode": 0,
+      "elapsedMs": 10391,
+      "terminal": true,
+      "stdoutEof": true,
+      "stderrEof": true,
+      "safeHandleClosed": true,
+      "receiptPath": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-player-actual-endpoint-source-r01\\evidence\\TYPE_BASELINE_CLASSIFICATION_R01.json"
+    }
+  ],
+  "runtimeTests": "NOT_RUN",
+  "automaticContinuation": false
+}

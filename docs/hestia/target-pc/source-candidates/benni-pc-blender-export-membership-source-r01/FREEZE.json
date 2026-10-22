@@ -1,0 +1,18 @@
+{
+  "status": "SOURCE_APPLIED_PURE_HOST_CHECKED_PENDING_ROOT_REVIEW",
+  "observedUtc": "2026-10-19T11:02:47.0009655Z",
+  "actualTurn": "01a153cd-6b6e-7303-8cc1-eab0791fb010",
+  "appStartUtc": "2026-10-19T10:55:33Z",
+  "deadlineUtc": "2026-10-19T11:05:33Z",
+  "elapsedToFreezeMs": 434001,
+  "freezeIsFullTurnEnd": false,
+  "sourceManifest": {
+    "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-blender-export-membership-source-r01\\SOURCE_MANIFEST_FINAL.json",
+    "bytes": 4936,
+    "sha256": "1d132bc1c10bdc1de8f6a7a79686b4ac8702354b36dd184cf5b376c3f56d9ff7"
+  },
+  "normalAfterimageParity": 2,
+  "realBlenderRuns": 0,
+  "runtimeRuns": 0,
+  "automaticContinuation": false
+}

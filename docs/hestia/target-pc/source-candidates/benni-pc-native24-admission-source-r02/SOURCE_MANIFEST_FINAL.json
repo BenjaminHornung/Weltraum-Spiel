@@ -1,0 +1,150 @@
+{
+  "schema": "hestia.admission.r02.complete-manifest.v1",
+  "status": "SOURCE_READY_FOR_INDEPENDENT_REVIEW",
+  "actualNative": "01a13648-c55b-7250-bf07-34921d70b43b",
+  "files": [
+    {
+      "relative": "BOUND_INPUTS.json",
+      "bytes": 426074,
+      "sha256": "c6a0bd2aa34cc55091bfe37878d084ca2551fd1587abec20dedc1bd4e91eea34"
+    },
+    {
+      "relative": "CASES_SOURCE.json",
+      "bytes": 18288,
+      "sha256": "713c5dcd8a5a5b016cc34c4a3fc680aafa2d64e5c14d28d67e6691c144f5a378"
+    },
+    {
+      "relative": "CHANGE.patch",
+      "bytes": 677,
+      "sha256": "ee25f8b3659d0560e819dcea6adfbdee9af981ed253d912e3d1035fe664477f3"
+    },
+    {
+      "relative": "CURRENT_DISPOSITION.json",
+      "bytes": 320,
+      "sha256": "a5ef7268c5824e380adf9fcbbfdf3eb7afa09d805a2bab8ac84455f11e8f9847"
+    },
+    {
+      "relative": "CURRENT_READBACK.json",
+      "bytes": 449329,
+      "sha256": "8bb45c247e1080bf5221f36175e2bc0a5c5cfba36dfbd36e4ee06e75247b5e43"
+    },
+    {
+      "relative": "GREEN_COMMAND.json",
+      "bytes": 1585,
+      "sha256": "e4f837f316287ac687d5ac8b4251b79b44d0d467c19e811ac8e1d2ad882f93cf"
+    },
+    {
+      "relative": "GREEN_RESULT.json",
+      "bytes": 1273,
+      "sha256": "92555747e429386871ec219825350837f16d7893bdbc8056e2131ff6a14aa9d0"
+    },
+    {
+      "relative": "GREEN_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "GREEN_STDOUT.txt",
+      "bytes": 3117,
+      "sha256": "baae8ed88b9357052ced88a887a37cca9259fae449264dccb32c920aa7744a10"
+    },
+    {
+      "relative": "HOST_TOOL_RECEIPTS.json",
+      "bytes": 3144,
+      "sha256": "8053e9cac09cebfae23670c8ed6eba5313629ad09e8985835eb78b94d16331a4"
+    },
+    {
+      "relative": "PRESERVATION_AFTER.json",
+      "bytes": 1071,
+      "sha256": "f50ce88dfc609589bba803227af6ca6aacba7d2f0c75f5d99de870858605a45b"
+    },
+    {
+      "relative": "PRESERVATION_BEFORE.json",
+      "bytes": 2867638,
+      "sha256": "6e32d7f58314b006e67117bd23decac8e1286cd4b0aae307046f3076bee0e740"
+    },
+    {
+      "relative": "R01_PROTECTED.json",
+      "bytes": 6859,
+      "sha256": "f3a348b5d0c4c2c0dec53658d99cf29286c0b82a5892225a533d2d954cffbbf9"
+    },
+    {
+      "relative": "RED_COMMAND.json",
+      "bytes": 1583,
+      "sha256": "f121dfb31d8cf6a45d665f2f1d995b8d2f90a0521bef663da409d0316d0c0d9d"
+    },
+    {
+      "relative": "RED_RESULT.json",
+      "bytes": 1271,
+      "sha256": "5e74971cb8a69221c82cfcecd424fdfec74e444d2884ac6ce4871e968063338e"
+    },
+    {
+      "relative": "RED_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "RED_STDOUT.txt",
+      "bytes": 5541,
+      "sha256": "c7f2b3f68e5cf3ea09790aa57fdfea932fae9e9a4f417c7b7860858dbc467aec"
+    },
+    {
+      "relative": "REPORT.md",
+      "bytes": 4586,
+      "sha256": "033cf573995eedfb4a85bd76eddaacc9d0fa22b1f783a52701d55d088ccc8c74"
+    },
+    {
+      "relative": "SOURCE_MANIFEST.json",
+      "bytes": 818,
+      "sha256": "504611622d53254b7265b99c9f31593d6c1a739ea377f3415c7fdacb3d2a8985"
+    },
+    {
+      "relative": "TASK_BINDINGS.json",
+      "bytes": 564,
+      "sha256": "77a35b3b518cdef78a5945b03edcbb2db3e5e6c3f06ce41daa6907066dc3853a"
+    },
+    {
+      "relative": "TEST_MANIFEST.json",
+      "bytes": 3410,
+      "sha256": "e267077018215e40d96cadda6549ad4593a3eba499bfdf43a67eb79a9783e6a1"
+    },
+    {
+      "relative": "admission.mjs",
+      "bytes": 8622,
+      "sha256": "dcd652f1851ee3d180672613c94f3d03aa62f1d86f2dcb13ec359c3f66047f77"
+    },
+    {
+      "relative": "data-guards.mjs",
+      "bytes": 12716,
+      "sha256": "3de539f513f5f871568b8ce107dcf45544a131b5b283cebab9c2ef8809978b0e"
+    },
+    {
+      "relative": "snapshots/red/admission.mjs",
+      "bytes": 8598,
+      "sha256": "a454bed1587e565250452b50c69884582e5d283fadbddb2b0b11266666aa1a0e"
+    },
+    {
+      "relative": "snapshots/red/data-guards.mjs",
+      "bytes": 12716,
+      "sha256": "3de539f513f5f871568b8ce107dcf45544a131b5b283cebab9c2ef8809978b0e"
+    }
+  ],
+  "fileCount": 25,
+  "rowOrder": "StringComparer.Ordinal on slash-normalized relative",
+  "excludesOnly": "SOURCE_MANIFEST_FINAL.json (self)",
+  "sourceManifestSha256": "504611622d53254b7265b99c9f31593d6c1a739ea377f3415c7fdacb3d2a8985",
+  "testManifestSha256": "e267077018215e40d96cadda6549ad4593a3eba499bfdf43a67eb79a9783e6a1",
+  "sourceSha256": "dcd652f1851ee3d180672613c94f3d03aa62f1d86f2dcb13ec359c3f66047f77",
+  "testSha256": "3de539f513f5f871568b8ce107dcf45544a131b5b283cebab9c2ef8809978b0e",
+  "taskTiming": {
+    "originalStartUtc": "2026-10-17T12:49:47.0000000+00:00",
+    "reportAndManifestsPreparedUtc": "2026-10-17T12:57:00.8399639Z",
+    "elapsedIncludingReportAndManifestPreparationMs": 433839.9639,
+    "budgetMs": 600000,
+    "withinBudget": true
+  },
+  "actualCurrent": "HOLD",
+  "runtimeGrant": "NONE_HOLD",
+  "independentReview": "OPEN",
+  "stop": "IDLE_NO_AUTOMATIC_CONTINUATION"
+}

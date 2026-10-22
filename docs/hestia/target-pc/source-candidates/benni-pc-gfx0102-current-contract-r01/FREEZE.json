@@ -1,0 +1,35 @@
+{
+  "schema": "hestia.gfx0102.private-source-freeze.v1",
+  "freezeUtc": "2026-10-20T17:44:10.2305118Z",
+  "status": "PRIVATE_CURRENT_CONTRACT_SOURCE_PENDING_ROOT_REVIEW",
+  "manifest": {
+    "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-gfx0102-current-contract-r01\\MANIFEST.json",
+    "bytes": 11968,
+    "sha256": "ab9cd9952cef2a9d57a3f613434325e30c853a4a0442343910bbe7c0fe9b25c8"
+  },
+  "memberCount": 64,
+  "report": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\GFX0102_CURRENT_CONTRACT_SOURCE-20261020.md",
+    "bytes": 7456,
+    "sha256": "d14f411365fe9b76124ba23e8ed9ee3a3cab5ef5acbc8b08258fcd6ade3f40a7"
+  },
+  "actualTurn": {
+    "app": "01a13648-c55b-7250-bf07-34921d70b43b",
+    "turn": "01a15a61-379d-78f1-ac35-183950a348a0",
+    "actualStartUtc": "2026-10-20T17:34:43Z",
+    "hostStartedAt": 1792517683,
+    "effectiveEarlierEndUtc": "2026-10-20T17:54:35Z",
+    "closeOnlyFromUtc": "2026-10-20T17:51:35Z",
+    "last60sCheckStartUtc": "2026-10-20T17:50:35Z",
+    "maxDurationMs": 1200000,
+    "noPriorDeadlineRevival": true
+  },
+  "elapsedToFreezeMs": -6632769,
+  "actualAppCompletionUtc": null,
+  "appCompletionDisposition": "Root must observe actual host App completion after final. Freeze is not App completion.",
+  "originalFullPackage": "HOLD_6_ORIGINAL_SEAL_MEMBERS_MISSING",
+  "normalA0Adoption": "NONE",
+  "runtime": "NOT_RUN",
+  "selfExcluded": true,
+  "returnCheckpointSeparate": true
+}

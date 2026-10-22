@@ -1,0 +1,341 @@
+{
+  "currentCriticalRootController22Oct": {"status":"IMPLEMENTED_STATIC_PURE_VERIFIED_PENDING_LIVE_AUTHORITY","observedUtc":"2026-10-22T08:24:49.7276915+00:00","readback":"ROOT_CRITICAL_CONTROLLER_SOURCE_ROOT_ACCEPTANCE-20261022.json","freshReadOnly":"ROOT_CRITICAL_CONTROLLER_FRESH_READONLY-20261022.json","sourceFolder":"ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021","nativeReview":"PASS_SOURCE_ONLY_TWO_INDEPENDENT","pi":"ANONYMOUS_DEEPSEEK_V41_FLASH_ADVICE","sourceFiles":8,"sourcePins":13,"realPreload":"PASS_3_EXIT0_SAME_A0_NOTLOADED_LAST_G01_COMPLETED","r03":"SPENT_HOLD_NO_RETRY","newRuntimeAuthority":"NONE","a0Dispatches":0,"astStarts":0,"live90Seconds":"NOT_RUN","referenceMeasurement":"NOT_RUN","productAdoption":"NOT_RUN","wholeGoalComplete":false,"reviewSnapshotBranch":"feature/hestia-core-review-2026-10-22"},
+  "currentMaterialAstR03Attempt21Oct": {"status":"SPENT_HOLD_ROOT_90S_ADMISSION_DEADLINE_BEFORE_A0","readback":"CORE_MATERIAL_POISON_AST_R03_ROOT_CLOSEOUT-20261021.json","stop":"CORE_MATERIAL_POISON_AST_R03_ROOT_STOP-20261021.json","initialConsumption":"CORE_MATERIAL_POISON_AST_R03_INITIAL_CONSUMED-20261021.json","questionItemId":"[\"request_user_input_async\",\"call_cf1f33842b8b4ec0ab389519c038342b\",0]","rootT0Utc":"2026-10-21T19:28:35Z","bindingReadyEndUtc":"2026-10-21T19:30:05Z","rootAbsoluteEndUtc":"2026-10-21T19:43:35Z","initialPhysicalCreationUtc":"2026-10-21T19:29:49.5277546Z","elapsedAtStopMs":127000,"a0Dispatches":0,"nodeAstStarts":0,"hosts":0,"retry":0,"newRuntimeAuthority":"NONE","sourceRepair":"REQUIRES_PRELOADED_UNINTERRUPTED_ROOT_CRITICAL_PATH_NOT_IMPLEMENTED_NO_NEW_REQUEST","nativeStopReview":"PASS","pi":"ANONYMOUS_DEEPSEEK_ADVICE_NO_CODE_AUDIT","referenceMeasurement":"NOT_RUN","productAdoption":"NOT_RUN","wholeGoalComplete":false},
+  "currentRootQuestionScope21Oct": {"status":"SOURCE_QUALIFIED_FOR_SEPARATE_DIRECT_R03_REQUEST_NO_RUN","readback":"ROOT_AST_PREPARATION_REPAIR-20261021/QUESTION_SCOPE_READBACK.json","freshReadOnlyProof":"ROOT_AST_PREPARATION_REPAIR-20261021/FRESH_READONLY_READBACK.json","worksheetSha256":"9fa182df64344d7d151a441688caf70a032a3178840b05d55490ad756049d584","hashedInputs":6,"parsedProductTexts":4,"executableCodeChanged":false,"parser":"MODULE_IN_SAME_NODE_CHECKER","newRuntimeAuthority":"NONE","a0Dispatches":0,"nodeAstStarts":0,"previousR01R02":"SPENT_HOLD","m5R05":"SEPARATE_UNANSWERED"},
+  "currentIndependentSourceRecheck21Oct": {"status":"NO_ADDITIONAL_SOURCE_FIX_OR_DUPLICATE_WXG_COMPILE_TASK_ESTABLISHED_IN_BOUNDED_RECHECK","readback":"WXG07_CURRENT_COMPILE_SCOPE_READBACK-20261021.json","previousGoalTurn":"PROGRESS_ROOT_REPAIR_AND_ACTUAL1098_SOURCE_DATA_STAGE","newEvidence":"CURRENT_WXG_TS_SCOPE_EXCLUDES_MJS_ALL4_SOURCE_PINS_MATCH_CURRENT17_CPU_ALREADY_ACCEPTED","nextActionChange":"DO_NOT_CREATE_UNNECESSARY_COMPILE_CONFIG_SNAPSHOT_TEST_OR_REQUEST","otherIndependentSourceSearch":"NO_NEW_FREE_D4_FLD_RT02B_S1_OR_LATER_PHASE_FIX_PROVEN_NOT_GLOBAL_COMPLETENESS","productSourceChanges":0,"newRuntimeAuthority":"NONE","newRootRuns":0,"newA0Dispatches":0,"sameA0":"01a13648-c55b-7250-bf07-34921d70b43b","peer":"ACTIVE_OWN_HUMAN_AUTHORIZED_MATERIAL_FRAME_REPAIR_EXISTING_ERROR_FACTS_REQUESTED_ONLY","goalStatus":"active","fullGoalComplete":false},
+  "currentG01PrivateSourceData21Oct": {
+    "status": "ACCEPTED_PRIVATE_SOURCE_DATA_ONLY_NOT_RUNNABLE_APP",
+    "readback": "G01_FULL_SOURCE_DATA_PREPARATION-20261021/READBACK.md",
+    "files": 1098,
+    "bytes": 51338287,
+    "administrativeInvocations": 2,
+    "physicalCifiMergeAndBuild": "NOT_RUN_SEPARATE_AUTHORITY_REQUIRED",
+    "normalSourceUnchanged": true,
+    "newCoreImplementation": 0,
+    "newRuntimeAuthority": "NONE"
+  },
+  "currentWxgBuildAndWorldContract21Oct": {
+    "readback": "WXG_CURRENT_BUILD_AND_WORLD_CONTRACT_READBACK-20261021.md",
+    "status": "BOUNDED_DEPENDENCY_DISCOVERY_NO_IMPLEMENTATION_OR_RUNTIME",
+    "historicalOriginalReproduction": "HOLD_532_OF533_ONE2213_BYTE_HIDDEN_LOCK_MISSING",
+    "separateCurrentSourceCheck": "NO_NEW_REQUIRED_COMPILE_TASK_ESTABLISHED_UNCHANGED_TWO_TS_SOURCES_MJS_OUTSIDE_TYPING_CURRENT17_CPU_ALREADY_ACCEPTED",
+    "currentCompileScopeReadback": "WXG07_CURRENT_COMPILE_SCOPE_READBACK-20261021.json",
+    "surfaceLab": "EXISTING_BODY_FRAME_TIME_FACTS_VERIFIED_NO_PROVEN_TIME_BUG_NO_PMD_PROFILE_SELECTION",
+    "worldOwnerSelection": "DIAGNOSTIC_PROFILES_ALREADY_EXIST_NORMAL_WORLD_SESSION_EPOCH_CURSOR_ORBIT_BINDING_NOT_PROVEN",
+    "gameplay": "FACTS_DELIVERED_LIMITED60_TO120_MAPPING_EXISTS_FULL_WORLD_ORBIT_BINDING_OPEN_NEW_MATERIAL_FRAME_ERROR_SCOPE_FACTS_REQUESTED_NO_EXTRA_RUN",
+    "newAuthority": "NONE"
+  },
+  "currentOriginalPublicRecovery21Oct": {"status":"ACCEPTED_ORIGINAL_PUBLIC_DATA_RECOVERY_ONLY","readback":"G01_PUBLIC_ORIGINAL_RECOVERY-20261021/READBACK.md","files":77,"bytes":14797749,"normalFilesChanged":0,"installedTreeModified":false,"nodeOrAstRuns":0,"newRuntimeAuthority":"NONE","coreDiscovery":"NO_NEW_D4_CONTEXT_LOSS_SOURCE_GAP_PROVEN_IN_BOUNDED_REVIEW","worldConsumerFacts":"REQUESTED_READ_ONLY_FROM_GAMEPLAY_NO_NEW_DEFAULTS_OR_RUNS"},
+  "currentRootPreparationRepair21Oct": {"status":"SOURCE_PREPARATION_QUALIFIED_NO_RUNTIME_AUTHORITY","readback":"ROOT_AST_PREPARATION_REPAIR-20261021/READBACK.md","verification":"ROOT_AST_PREPARATION_REPAIR-20261021/FINAL_VERIFICATION.json","nativeReview":"PASS_SOURCE_ONLY","pi":"THREE_ANONYMOUS_DEEPSEEK_V41_FLASH_REVIEWS","clockDraftAddendum":"ROOT_AST_PREPARATION_REPAIR-20261021/CLOCK_CONTRACT_READBACK.json","clockAndPinReview":"PASS_SOURCE_ONLY_UNSIGNED_WORDING_AND_NECESSARY_HASH_SIZE_LITERALS","actualGoalStatus":"active","a0Dispatches":0,"nodeStarts":0,"newR03Question":"NOT_CREATED_NOT_ASKED","liveWorkflow":"NOT_RUN","referenceMeasurement":"NOT_RUN","productAdoption":"NOT_RUN","next":"FRESH_READINESS_AND_SEPARATE_DIRECT_AUTHORITY_BEFORE_ANY_FUTURE_AST_RUN"},
+  "currentActualGrantCloseout21Oct": {
+    "utc": "2026-10-21T15:23:00Z",
+    "goal": "BLOCKED_INCOMPLETE_ALL30_ORIGINAL18_R0_R5_THREE_PHASES",
+    "g01": "ISOLATED_INSTALL_FILE_QUALIFICATION_ACCEPTED_ONE_NPM_CI60REGISTRY1LINK4677FILES",
+    "g01Acceptance": "G01_APP_INSTALL_R01_ROOT_ACCEPTANCE-20261021.json",
+    "materialSource": "TWO_NORMAL_SOURCE_FILES_REVIEWED_EXISTING_CASE_EXTENDED_NOT_EXECUTED",
+    "materialAst": "R01_AND_R02_SPENT_AT_ROOT_PREPARATION0APPS0NODE_NO_RETRY",
+    "materialAstStop": "CORE_MATERIAL_POISON_AST_R02_ROOT_STOP-20261021.json",
+    "m5": "R05_SEPARATE_QUESTION_UNANSWERED_NO_AUTHORITY",
+    "nextAction": "CLOSE_OUT_ADMINISTRATION_AND_CORRECT_CONTROLLER_READINESS_BEFORE_ANY_FUTURE_REQUEST",
+    "r03Question": "NOT_CREATED_NOT_ASKED",
+    "newSourceEdits": 0,
+    "newLiveAuthority": "NONE",
+    "referenceMeasurement": "NOT_RUN",
+    "productAdoption": false
+  },
+  "schema": "hestia.core-next-dependency-selection.v1",
+  "currentProgress21Oct": {
+    "utc": "2026-10-21T12:52:37Z",
+    "goal": "BLOCKED_INCOMPLETE_ALL30_ORIGINAL18_R0_R5_THREE_PHASES",
+    "blockedAudit": "GOAL_PENDING_AUTHORITY_BLOCKED_AUDIT-20261021.json",
+    "blockedReason": "THIRD_SAME_DIRECT_AUTHORITY_CONDITION_TURN_CURRENT_NO_PROGRESS_NO_KNOWN_LIVE_WORK",
+    "coreCoverageAndType": "ACCEPTED_SELECTED_STRICT_GRAPH_NO_RUNTIME",
+    "wxgSourceAndCpu": "NORMAL_SOURCE_ADOPTED_CURRENT17_OF17_CPU_PASS_ONCE_GRANT_SPENT",
+    "wxgAcceptance": "WXG07_NORMAL_SUITE_ROOT_ACCEPTANCE-20261021.json",
+    "g01InstallerSource": "ACCEPTED_NO_INSTALLATION_DIRECT_INSTALL_ANSWER_PENDING",
+    "g01Acceptance": "G01_INSTALLER_SOURCE_ROOT_ACCEPTANCE-20261021.json",
+    "g01Request": "G01_APP_INSTALL_R01_ONCE_REQUEST-20261021.md",
+    "materialSource": "INDEPENDENT_REVIEW_AND_DIFF_PRESERVATION_PASS_AST_AUTO_BLOCKED0NODE0TEST_STARTS_NO_RETRY",
+    "materialReadback": "CORE_MATERIAL_RELEASE_POISON_ROOT_READBACK-20261021.json",
+    "materialAstRequest": "CORE_MATERIAL_POISON_AST_ONCE_REQUEST-20261021.md",
+    "g01BuildPrerequisites": "G01_CURRENT_APP_BUILD_PREREQUISITES-20261021.json",
+    "m5": "R04_SPENT_R05_SEPARATE_DIRECT_ANSWER_PENDING",
+    "weatherProduct": "WORLD_PROFILE_MODEL_ORBIT_CONSUMER_CHOICE_STILL_OPEN",
+    "peerReticleRecord": "CORE_GAMEPLAY_FINAL_AND_RETICLE_READBACK-20261021.json",
+    "globalSourceCompleteness": false,
+    "referenceMeasurement": "NOT_RUN",
+    "productAdoption": false,
+    "olderDatedSelections": "HISTORICAL_UNLESS_STILL_COMPATIBLE"
+  },
+  "utc": "2026-10-20T19:04:36Z",
+  "status": "G01_PRIVATE1098_SOURCE_DATA_ACCEPTED_ROOT_REPAIR_SOURCE_QUALIFIED_NO_NEW_REQUIRED_WXG_COMPILE_NO_RUNTIME_M5_R05_PENDING",
+  "afterR04IndependentReview21Oct": {
+    "status": "BOUNDED_D4_FLD_SOURCE_RECHECK_COMPLETED_NO_NEW_SOURCE_GAP_PROVEN",
+    "record": "CORE_INDEPENDENT_PLAN_SOURCE_RECHECK-20261021-R02.json",
+    "separateNewSourceDefect": "CORE_PLAYER_COVERAGE_REVIEW-20261021.json",
+    "sourceCorrection": "SOURCE_AST_AND_STRICT_SELECTED_GRAPH_TYPE_PASS_RUNTIME_NOT_QUALIFIED",
+    "m5": "R04_SPENT_R05_SEPARATE_DIRECT_ANSWER_PENDING",
+    "sourceAndRuntimeEffects": 0,
+    "globalCompleteness": false,
+    "sourceAcceptance": "CORE_PLAYER_COVERAGE_ROOT_ACCEPTANCE-20261021.json",
+    "afterSourceRootHashChecks": "2350_PHYSICAL_PINS_792_NORMAL_2_ALLOWED_CHANGES_1309_M5_PINS_5_INSTALLED_UNCHANGED",
+    "nextBoundedSource": "MECHANICAL_MODEL_TYPE_FIX_COMPLETE_NO_NEW_TEST;M5_R05_SEPARATE_DIRECT_ANSWER_PENDING",
+    "typeAcceptance": "CORE_STRUCTURAL_SEMANTIC_TYPE_ROOT_ACCEPTANCE-20261021.json",
+    "afterTypeRootHashChecks": "2872_PHYSICAL_PINS_826_NORMAL_1_TYPE_ONLY_CHANGE_22_LOCKED_PRIOR_FILES_1309_M5_PINS_5_INSTALLED_UNCHANGED"
+  },
+  "afterSnapshotQualification21Oct": {
+    "status": "M5_DIAGNOSTIC_SOURCE_ACCEPTED_R04_HUMAN_ANSWER_PENDING_NO_LIVE",
+    "rootAcceptance": "M5_APP_SNAPSHOT_RETENTION_ROOT_ACCEPTANCE-20261021.json",
+    "checks": "TWO_SYNTAX_AND_EXISTING_REPLAY_PASS_ALL14SOURCE_FILES_UNCHANGED",
+    "request": "M5_DIAGNOSTIC_R04_ONCE_REQUEST-20261021.md",
+    "requestReview": "PASS_FOR_HUMAN_REVIEW",
+    "freshReadOnlyClosure": "8GROUPS_296ROWS_304FILES_1309PINS_5COPIES_PASS_8SLOTS_AND_R04DIR_ABSENT_NOT_ADMISSION",
+    "humanQuestion": "ASKED_UNANSWERED_NEW_DIRECT_ONCE_REQUIRED",
+    "runtimeAuthority": "NONE_R03_SPENT_NO_RETRY",
+    "goalService": "BLOCKED_AFTER_PREVIOUS_ROOT_MODEL_CAPACITY_FAILURE_CURRENT_SOURCE_WORK_COMPLETED_NO_MODEL_CHANGE",
+    "gfx0102": "EXISTING_PRIVATE_SOURCE_ACCEPTANCE_AND_NORMAL_V1_SEMANTICS_CONFIRMED_NO_NEW_REPAIR_OR_DUPLICATE_TEST_JUSTIFIED",
+    "remaining": "FULL_M5_NATIVE24_PHY01_PHY02_MINIMUM_RUN_SHARED_ENVELOPE_REAL_LOAD_CUT_RESAVE_REFERENCE_PRODUCT_NOT_PROVEN"
+  },
+  "afterR03Current21Oct": {
+    "historicalOnly": true,
+    "record": "M5_DIAGNOSTIC_ONCE_EXECUTION-20261021-R03/ROOT_DISPOSITION.json",
+    "status": "R03_SPENT_HOLD_1HOST_0PAYLOAD_ALL6_NOT_RUN",
+    "actualAppDurationMs": 477311,
+    "actualAppTerminalBeforeFixedEnd": true,
+    "rootMetadataTerminal": true,
+    "hostAbsentAtNativeElapsedMs": 118265,
+    "sourceGap": "Root.cell.mjs:54 reads current snapshot;58-60 rejects six comparisons without retaining it; Issue retention starts too late",
+    "independentReviewer": "/root/m5_r02_preparation_debug_20261021",
+    "historicalFailedPredicate": "UNKNOWN",
+    "currentPathThreadTurnStartComparison": "MATCH;76CHAR_CWD_5BACKSLASHES_SAME_PHYSICAL_WORKTREE_NO_REPARSE",
+    "nextSource": "RETAIN_SAFE_OBSERVED_FIELDS_TIMESTAMP_AND_SIX_COMPARISON_RESULTS_BEFORE_UNCHANGED_GUARD;EXTEND_EXISTING_REPLAY_WRONG_TURN_HOLD_ZERO_ISSUE_AND_VALID_SINGLE_ISSUE",
+    "guardOrPathNormalizationChange": "NOT_JUSTIFIED",
+    "rt02bOwnerDecision": "CONFIRMED_NO_ADOPTION_CURRENT_PACKET_ENCODING_FOR_EXACT_ORIGINAL_SEMANTICS",
+    "rt02bRecord": "RT02B_OWNER_DISPOSITION_CORRECTION-20261021.json",
+    "rt02bFullCard": "PARTIAL_REPLACEMENT_REPRESENTATION_UNDECIDED_NO_ROUTING_CHANGE",
+    "rt01BoundedReview": "SOURCE_DDA_INDEPENDENT_AABB_VALIDATION_EXPORT_LOADER_AND_CANONICAL_SHARED_V1_PRESENT;NO_CONCRETE_SOURCE_GAP_OR_REQUIRED_PRODUCT_WIRING_IDENTIFIED",
+    "rt01ActualTargetCpuProfile": "NOT_RUN;SELECTIVE_A0_PRODUCERSOURCE_COPY_NOT_STANDALONE_FULL_ORIGINAL_SPIKE_PRESENT",
+    "newLiveAuthority": "NONE",
+    "newTests": 0,
+    "newProductCode": 0,
+    "referenceMeasurement": "NOT_RUN",
+    "productAdoption": false
+  },
+  "currentClarification21Oct": {
+    "observedUtc": "2026-10-21T06:12:35Z",
+    "reviewer": "/root/s1_early_decision_authority_20261021",
+    "verdict": "SOLVER_021_FIXED_SOURCE_BOUND_COLLIDER_ADOPTION_AND_PUBLIC_MIGRATION_UNQUALIFIED",
+    "authority": {
+      "directOverrideBlob": "C:\\tmp\\hestia-other-pc-handoff-2026-10-13\\Payload\\4d2761721a1d784b889ede2aa120d7232dc463986f682c35dbdcd8b43e2fb4c0",
+      "directOverrideSha256": "4d2761721a1d784b889ede2aa120d7232dc463986f682c35dbdcd8b43e2fb4c0",
+      "directLines": [13, 100],
+      "amendmentArchive": "Hestia_Cloud_Spikes_und_ProgrammAmendment_2026-10-09.zip",
+      "member": "Hestia_Cloud_Spikes_und_ProgrammAmendment_2026-10-09/A0/00_AENDERUNGSAUFTRAG.md",
+      "lines": [34, 38, 42, 47, 53, 55, 57],
+      "rootReadback": "DIRECT_OVERRIDE_HASH_AND_NORMAL_PROFILE_CONFIRMED;EXACT_ARCHIVE_MEMBER_AND_CAPSULE_LINES_READ_EXIT0"
+    },
+    "existingNormalSource": "apps/weltraum-browser/src/hestia-prototype/physics/profile.ts:4-13 binds rapier-0.21.0-phy01.migration2 and blocks public Save cutover",
+    "existingPhy03": "modern-r01/src/partialEvidence.ts:40-50 reports representationChoice=NONE,nativeLifecycle=NOT_RUN,publicColdSave=NOT_PROVEN",
+    "actualPrerequisites": "EARLY_M5_THEN_FULL_PHY01_PHY02_DIAGNOSIS_AND_TARGET_PC_MINIMUM_RUN_BEFORE_REPRESENTATION_DEPENDENT_S1_S2_M4;THEN_COMMON_ENVELOPE_AND_REAL_LOAD_COLLIDER_REBUILD_MOTION_COM_INERTIA_SURFACE_CUT_RESAVE",
+    "semanticDeviation": "EXACT_TOLERANCES_AND_SAVE_EFFECTS_REQUIRE_HUMAN_MATERIAL_DECISION_IF_ACTUALLY_NEEDED",
+    "pi": {
+      "agentId": "5ad25f49-7d5c-4c47-a13d-5ca3b719cb27",
+      "model": "opencode-go/deepseek-v4.1-flash",
+      "input": "PI_GENERIC_SOURCE_ADOPTION_GATE_INPUT-20261021.json",
+      "result": "PI_GENERIC_SOURCE_ADOPTION_GATE_REVIEW-20261021.json",
+      "scope": "ANONYMOUS_GENERIC_TEXT_ONLY_NO_PROJECT_FILES_OR_SOURCE_AUDIT",
+      "rootAssessment": "Version/source/adoption distinction retained; the generic proposed one-authority rule is not a new binding requirement. Primary plans govern."
+    },
+    "boundedOutcome": "NO_NEW_INDEPENDENT_SOURCE_TASK_ESTABLISHED_IN_THIS_S1_S2_M4_REVIEW;NOT_GLOBAL_SOURCE_COMPLETENESS",
+    "currentM5Request": "M5_DIAGNOSTIC_R03_ONCE_REQUEST-20261021.md",
+    "humanAnswer": "R03_ANSWERED_APPROVED_AND_SPENT_HOLD_R02_REMAINS_SPENT",
+    "newM5Authority": "NONE",
+    "newImplementationChanges": 0,
+    "newTests": 0,
+    "referenceMeasurement": "NOT_RUN",
+    "productAdoption": false
+  },
+  "controller": "Root reusable Core Engine; separate Gameplay chat owns Weltraum-Spiel prototypes; Root contracts take precedence",
+  "sameA0App": "01a13648-c55b-7250-bf07-34921d70b43b",
+  "sameA0Paseo": "58fc7970-b84f-485d-8cd0-e577205823e9",
+  "workspace": "wks_f2d458343a45c91e",
+  "previousGoalTurn": "PROGRESS_EXISTING_D3_COMPOSITION_CPU_ACCEPTED;17_DISTINCT_CASES_IN_THREE_NORMAL_MODULES",
+  "archives": {
+    "utc": "2026-10-20 19:00:12 UTC",
+    "files": 10,
+    "status": "EXACT_NAME_SIZE_SHA_MATCH",
+    "source": "PLAN_ARCHIVE_INVENTORY.json",
+    "current": [
+      {
+        "name": "Hestia_A0_CutV3_Codex_Neustart_2026-10-05.zip",
+        "bytes": 96240,
+        "sha256": "8e542257de7b19de0d88f8b69869261b295de4569b4895663d254c6653e91bda"
+      },
+      {
+        "name": "Hestia_Agent2_RD_Codex_Neustart_2026-10-05.zip",
+        "bytes": 351940,
+        "sha256": "9030d0ea2b7f76d617e0a0992abb5efe4cd7414b24cc7972787a0af781af8916"
+      },
+      {
+        "name": "Hestia_Agent3_AssetCompiler_2026-10-02.zip",
+        "bytes": 18328,
+        "sha256": "3062741a47375df1112872f38e01b340886faa913da68151d7ec59ee400b1fbf"
+      },
+      {
+        "name": "Hestia_Agent3_Codex_Neustart_2026-10-05.zip",
+        "bytes": 1091493,
+        "sha256": "faef1f3fc0d6d14c79ced7c528cf3f7dfae0c506af85948c9c7ab1ca6f76330d"
+      },
+      {
+        "name": "Hestia_Agent3_PlannerReview_2026-10-04.zip",
+        "bytes": 1084881,
+        "sha256": "e800583faae6452bf1590088bfc840dcfe11f006f191b594f30de96eff02101e"
+      },
+      {
+        "name": "Hestia_Cloud_Spikes_und_ProgrammAmendment_2026-10-09.zip",
+        "bytes": 778551,
+        "sha256": "0136d515ce6c86e3110bfb7fb91e1ccf1ceb8536cbef56dad9b4d6e4a6dd3d4d"
+      },
+      {
+        "name": "Hestia_Codex_Neustart_Gesamt_2026-10-05.zip",
+        "bytes": 1649728,
+        "sha256": "ae08df146b2f13dd3660fe458da9b2474d2a2ea3823ff856e0bf4adddb4127b0"
+      },
+      {
+        "name": "Hestia_Cut_Phase1_Arbeitsauftrag_2026-10-07.zip",
+        "bytes": 75568,
+        "sha256": "a263b7ad39b6e586d4ab780f9e820f4d7a12feb2a4320ba0922c750d37738f5b"
+      },
+      {
+        "name": "Hestia_Destruction_Gesamtpaket_Phase1_2_3_2026-10-07.zip",
+        "bytes": 131565,
+        "sha256": "f7c8bd52dddfd8e0daab23a85d378af116a012f2a4cf9c38cc9156dd024f4391"
+      },
+      {
+        "name": "Hestia_RD_Orchestratorpaket_2026-10-02.zip",
+        "bytes": 325370,
+        "sha256": "510c87e3754f395daf76eb3a2ca44b818041067c13e240c8ebc2c93be95b6c8f"
+      }
+    ]
+  },
+  "currentCanonicalBoardSha256": "c57e368f7109e5f1dfc306645df4c86bc0b823edbb809e022f2b890edc035385",
+  "mandatorySolverTarget": "0.21.0-phy01.migration2; newer direct10Oct authority retained; older KEEP012 is historical",
+  "independentPlanSelection": {
+    "historicalOnly": true,
+    "agent": "/root/gfx0102_current_contract_plan_20261020",
+    "verdict": "NO_DISPATCHABLE_CORE_SOURCE_IN_COMPLETED_BOUNDED_SELECTION",
+    "candidates": [
+      {
+        "integration": "S1_S2_M4_OWNER_AND_SHARED_ENVELOPE",
+        "status": "DEPENDENCY_WAIT",
+        "plan": "09Oct A0-R2:32-34;A0-R4:53-57;07Oct Phase2:12,26-27",
+        "actualNormalPaths": [
+          "apps/weltraum-browser/src/hestia-prototype/terrain/cutPlan.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/profile.ts",
+          "apps/weltraum-browser/src/hestia-prototype/persistence/worldCheckpoint.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/session.ts"
+        ],
+        "existingImplementation": "PHY03 migration-capsule src/capsule.ts and modern-r01/src/envelope.ts",
+        "required": "Actual early solver/collider decision and accepted common migration layout; then existing Owner/persistence binding and real Load-Cut-Resave",
+        "notDone": "NO_SOLVER_STRING_REWRITE_OR_PREMATURE_LAYOUT_ADOPTION"
+      },
+      {
+        "integration": "NORMAL_CORE_GFX_ADAPTIVE_QUALITY_SETTINGS_V2",
+        "status": "S3_PUBLIC_CONTRACT_WAIT",
+        "plan": "09Oct GFX-01-02:16,29,35;A0-R5:61",
+        "actualNormalPaths": [
+          "apps/weltraum-browser/src/settings/types.ts",
+          "apps/weltraum-browser/src/render/three/graphicsSettingsAdapter.ts"
+        ],
+        "existingImplementation": "Corrected private V2 candidate .a0-runtime/benni-pc-gfx0102-current-contract-r01; mature quality/frameWindow/probe policy",
+        "required": "S3 after S2; consume existing policy under A0 resource ledger with explicit settings migration and real renderer port; S3/S4 adoption as planned",
+        "notDone": "NORMAL_SCHEMA_V1_RETAINED;NO_REPLAY_OF_ACCEPTED75_CPU_CASES"
+      },
+      {
+        "integration": "NORMAL_CEL_WXG_WEATHER_CONSUMER",
+        "status": "OWNER_CONSUMER_WAIT",
+        "plan": "09Oct CEL:18,20,38;WXG:22,28,38;A0-R5:63",
+        "existingImplementation": "Normal PMD sampler/terrain adapter accepted; private WXG actual normal imports and AnalyticReadView accepted",
+        "required": "Real normal consumer with world/profile/model/Orbit owner and snapshot/storm identity continuity; weather persistence is not a cut precondition",
+        "notDone": "NO_NEW_WEATHER_WRAPPER_OR_UNAPPROVED_GAME_WORLD_DEFAULT"
+      }
+    ]
+  },
+  "independentPmdConsumerDiscovery": {
+    "agent": "/root/pmd_tool_manifest_recovery_20261020",
+    "verdict": "NO_INDEPENDENT_PMD_WXG_SOURCE_STEP_WITHOUT_PRODUCT_BINDING_DECISION",
+    "scope": "CURRENT_NORMAL_A0_APP_SOURCE_ONLY",
+    "sampler": "samplePlanetaryMacro and createPlanetaryBrick exist; no ordinary app caller found beyond adapter internal sampler",
+    "existingNormalTerrain": "densityGenerator/scatterGenerator still sampleHestiaSurfaceFields; SurfaceLab local Hestia preview lacks global BodyFixed mapping",
+    "existingAcceptedEvidence": [
+      "PMD_NORMAL_CORE_ROOT_ACCEPTANCE-20261020.json",
+      "ATM_WXG_Z_BINDING_ROOT_ACCEPTANCE-20261019.json"
+    ],
+    "productAdoption": false,
+    "notGlobalSourceClosure": true
+  },
+  "independentM5RequestReview": {
+    "historicalOnly": true,
+    "agent": "/root/pmd_source_recovery_review_20261020",
+    "verdict": "READY_FOR_NEW_DIRECT_HUMAN_ANSWER_NO_CONCRETE_SOURCE_BLOCKER",
+    "request": "M5_HARMLESS_DIAGNOSTIC_ONCE_REQUEST-20261019.md",
+    "sha256": "af0471dbd9d48b78886262661128d2e6ecb61df666c437f8e0dca6cd9438025c",
+    "sourceManifestSha256": "957ffc287c5eb07530df41f9ca73b85cbc879df3cb5bd2b18d7de37e77a3fa8a",
+    "diagnosticSourceRows": 10,
+    "originalA0CellsAndHelpersUnchanged": true,
+    "installedR04CopiesUnchanged": 5,
+    "actualRuntimeRecordSlotsAbsent": 8,
+    "fullFresh1309ReadbackInThisReview": false,
+    "requiredAtIssue": "Fresh actual identities/host/clock/capacity/output and complete source checks; not a newly missing implementation",
+    "originalTimingCause": "UNKNOWN;diagnostics preserve error detail and are not a proven timing fix",
+    "limits": {
+      "emptyHostPreflightSeconds": 180,
+      "sharedSixCasePayloadAndCleanupSeconds": 60,
+      "wholeActualAppTurnMinutes": 10,
+      "stopFirstError": true,
+      "retries": 0
+    },
+    "currentHumanAnswer": "PENDING_ACTUAL_DIRECT_ANSWER",
+    "newRuntimeAuthority": "NONE",
+    "priorOnceGrants": "SPENT_HOLD"
+  },
+  "pi": {
+    "agentId": "5ad25f49-7d5c-4c47-a13d-5ca3b719cb27",
+    "model": "opencode-go/deepseek-v4.1-flash",
+    "sessionId": "01a13b10-a6e1-7596-9fbc-2cff564157a9",
+    "input": "PI_CORE_NEXT_DEPENDENCY_GENERIC_INPUT-20261020.json",
+    "result": "PI_CORE_NEXT_DEPENDENCY_GENERIC_RESULT-20261020.json",
+    "status": "COMPLETED",
+    "scope": "GENERIC_TEXT_ONLY_NO_PROJECT_FILES_CODE_OR_ACTUAL_SOURCE_REVIEW",
+    "rootAssessment": "Advice to bind genuine requirements, consumers and gates retained. A plan need not name an exact source filename, and a justified high-value new test is allowed; these generic suggestions are not new mandatory restrictions."
+  },
+  "blockingAudit": {
+    "historicalOnly": true,
+    "schema": "hestia.goal-blocking-audit.v1",
+    "observedUtc": "2026-10-20T19:04:36Z",
+    "previousGoalTurnClassification": "PROGRESS_D3_COMPOSITION_CPU_ACCEPTED_AND_AUTHORITATIVE_BOARD_UPDATED",
+    "currentGoalTurnClassification": "NO_PROGRESS_NO_NEW_ENGINE_FEATURE_OR_NEW_QUALIFIED_RUNTIME_EVIDENCE",
+    "consecutiveNoProgressGoalTurns": 1,
+    "condition": "PREPARED_M5_DIAGNOSTIC_DIRECT_ANSWER_PENDING_AND_REQUIRED_DOWNSTREAM_LAYOUT_OWNER_GATES_OPEN",
+    "actualGoalStatus": "active",
+    "blockedThresholdReached": false,
+    "old18OctBlockedAudits": "HISTORICAL_NOT_COUNTED_AFTER_SUBSEQUENT_REAL_SOURCE_PROGRESS",
+    "actualA0": "IDLE_LAST_TURN_COMPLETED_NO_ACTIVE_EXECUTION",
+    "sameA0App": "01a13648-c55b-7250-bf07-34921d70b43b",
+    "lastProgressTurn": "01a15aa2-ca47-7b12-9699-438946ce9dc6",
+    "lastProgressEvidence": "D3_COMPOSITION_CPU_ROOT_ACCEPTANCE-20261020.json",
+    "freshQuestion": "EXISTING_ASYNC_REQUEST_PENDING_NO_NEW_QUESTION",
+    "newRuntimeAuthority": "NONE",
+    "nextPermissibleEffect": "ONLY_AFTER_DIRECT_ANSWER_AND_FRESH_JIT_ADMISSION;NO_AUTOMATIC_RUN_OR_RETRY",
+    "scope": "NO_ELIGIBLE_SOURCE_TASK_ESTABLISHED_IN_THIS_COMPLETED_BOUNDED_SELECTION_NOT_A_GLOBAL_SOURCE_COMPLETENESS_PROOF",
+    "fullObjective": "ALL30_ORIGINAL18_A0_R0_R5_THREE_PHASES_UNCHANGED_INCOMPLETE"
+  },
+  "newImplementationChanges": 0,
+  "newTests": 0,
+  "newA0Dispatch": false,
+  "referenceMeasurement": "NOT_RUN",
+  "productAdoption": false,
+  "newM5Authority": "NONE",
+  "completion": "ALL30_ORIGINAL18_R0_R5_THREE_PHASES_INCOMPLETE;THIS_BOUNDED_SELECTION_IS_NOT_GLOBAL_SOURCE_COMPLETENESS",
+  "next": "Root critical controller source repair accepted 22Oct after two independent source/pure reviews and actual read-only preload PASS. Fixed old caller/binding/evidence/G01-M5 guards retained; preloaded strings pinned; no model round between consume and Ready. R03 remains SPENT/HOLD; no new AST question or runtime authority, no retry. User now authorizes a separate Core review checkpoint commit/push using an isolated Git index; keep the same A0 HEAD6ac0, working files and main index unchanged. Include adopted source plus clearly labelled source candidates and current status. No Node/AST/M5/Native24/physics/GPU/browser/save/build run. New live admission and its real90s proof require a separate direct one-use approval. G01 data1098 and existingWXG17 CPU acceptance preserved; all30/original18/R0-R5/threephases reference/product remain incomplete."
+}

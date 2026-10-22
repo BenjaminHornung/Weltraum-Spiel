@@ -1,0 +1,406 @@
+{
+  "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "productSnapshots": "unchanged exact Git blobs and worktree bytes",
+  "files": [
+    {
+      "localPath": "snapshot/product/celestial/starterSystem.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/celestial/starterSystem.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 9262,
+      "sha256": "d6a1bff618e4b47ebedbff9c69aa4f283caa14e604fac182ddb8b16c99e9da43"
+    },
+    {
+      "localPath": "snapshot/product/celestial/catalog.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/celestial/catalog.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 6861,
+      "sha256": "d06073a382dbfb57123566c95a0bd32bbcb009491cb11b29464e72fd506b184e"
+    },
+    {
+      "localPath": "snapshot/product/celestial/canonical.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/celestial/canonical.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 3824,
+      "sha256": "20b5d53ffab98ab87f8ab19db730d381db7ceba4028a8c26b50b61e89bd9bf4a"
+    },
+    {
+      "localPath": "snapshot/product/core/hash.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/core/hash.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 3099,
+      "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "localPath": "snapshot/product/celestial/errors.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/celestial/errors.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 1033,
+      "sha256": "6a3af7a96d0a11a6271a9d4a088f622abb34fc69f79ea981153b2e8486ae5524"
+    },
+    {
+      "localPath": "snapshot/product/celestial/ids.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/celestial/ids.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 1210,
+      "sha256": "67d674f7ca89569a175185ae3c38ce2a1092e06d9e534e7feaa93740a327fbe9"
+    },
+    {
+      "localPath": "snapshot/product/celestial/types.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/celestial/types.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 8603,
+      "sha256": "a32286f52c579016c3b73e1e00b3dbc9a08a588e7c1f7ed3d6fe36a2b03a82a0"
+    },
+    {
+      "localPath": "snapshot/product/core/vector.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/core/vector.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 1587,
+      "sha256": "bcd1ce4c43a5a79f82f4410c16e528a3b4a2794dd6526a5f7c9393c10d068ad9"
+    },
+    {
+      "localPath": "snapshot/product/celestial/validation.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/celestial/validation.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 12761,
+      "sha256": "19e52d974efd95c892d02cf3f24fd18711e263369af17bd26a19150a077d0bf8"
+    },
+    {
+      "localPath": "snapshot/product/spatial/surfaceLocalFrame.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/surfaceLocalFrame.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 7923,
+      "sha256": "2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94"
+    },
+    {
+      "localPath": "snapshot/product/persistence/time.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/persistence/time.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 5468,
+      "sha256": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+    },
+    {
+      "localPath": "snapshot/product/persistence/ids.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/persistence/ids.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 9345,
+      "sha256": "db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4"
+    },
+    {
+      "localPath": "snapshot/product/spatial/canonical.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/canonical.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 577,
+      "sha256": "4821116410203880dadc200ccb13c91fed4d6f5101e52f884462091e1baa0729"
+    },
+    {
+      "localPath": "snapshot/product/persistence/canonical.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/persistence/canonical.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 5830,
+      "sha256": "e21ef6b4ecb2e60663b9d5e1e42327d1dce0e147b3eeb1edf99c2b1d70834ead"
+    },
+    {
+      "localPath": "snapshot/product/persistence/saveSchema.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/persistence/saveSchema.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 32871,
+      "sha256": "821c3f600a7ace426a5e26a47143b7c9eac1c594990df7d12fc33ec2ee6a79f3"
+    },
+    {
+      "localPath": "snapshot/product/persistence/simulationMode.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/persistence/simulationMode.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 2398,
+      "sha256": "cee8dd7c34023cd532dfc209845291762dd12685030159a3baba196dc3e8c6df"
+    },
+    {
+      "localPath": "snapshot/product/persistence/types.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/persistence/types.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 5643,
+      "sha256": "93575ab700e3c42e98d1915daa82fb702be649b5c16c3646189219a293241454"
+    },
+    {
+      "localPath": "snapshot/product/persistence/validation.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/persistence/validation.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 10972,
+      "sha256": "101c0ae7b122e5ff4d468c42c9acc0caca96f627b081f2605833f87c7958f1ef"
+    },
+    {
+      "localPath": "snapshot/product/spatial/errors.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/errors.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 815,
+      "sha256": "47f48d65467970f3db4ba5e2ab1a3059d10e77999d465af71b9fe26aaa39b146"
+    },
+    {
+      "localPath": "snapshot/product/spatial/frameGraph.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/frameGraph.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 5366,
+      "sha256": "8553854de09b1d069a654b89482c914b01a0ba5bb45458e7498d7f14fa068a7f"
+    },
+    {
+      "localPath": "snapshot/product/spatial/frameValidation.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/frameValidation.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 6672,
+      "sha256": "72b4c3a0472ecfab8d9ccf1708e711f0ec2fc807c2c4dd0e4225718a670cf2f0"
+    },
+    {
+      "localPath": "snapshot/product/spatial/ids.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/ids.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 1066,
+      "sha256": "ab208880b05067f0ef06108cfc5d019e3f482a44485465bb863ddc516f7433b9"
+    },
+    {
+      "localPath": "snapshot/product/spatial/quaternion.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/quaternion.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 7014,
+      "sha256": "5036273dae402fa1b9b25e1c35d8b50bee1236b2c70b57691f3f7e9c4e133c3f"
+    },
+    {
+      "localPath": "snapshot/product/spatial/types.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/types.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 2783,
+      "sha256": "f19cb96cc08e1b7922178c84a420f7efb9f83f2b15ad114c72eba53b02a622ac"
+    },
+    {
+      "localPath": "snapshot/product/spatial/bodyFrames.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/bodyFrames.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 12011,
+      "sha256": "129ab6e093351465d1766b0fa63cfbae040f2f48e3ee2c5aebf17aafa7a40451"
+    },
+    {
+      "localPath": "snapshot/product/spatial/universeClock.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/spatial/universeClock.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 2022,
+      "sha256": "729e06cb50a01c41b9d61067483082b5c12fb091f4ef6748fcc224c90f0d1b73"
+    },
+    {
+      "localPath": "vendor/plt/NumericsProfile.json",
+      "source": "PLT-01-02",
+      "sourcePath": "NumericsProfile.json",
+      "bytes": 1386,
+      "sha256": "c7652cc948a0f213a8a29ff75bdb0a76ede71344c315f924fcc541e6f7ead551"
+    },
+    {
+      "localPath": "vendor/plt/src/numerics.mjs",
+      "source": "PLT-01-02",
+      "sourcePath": "src/numerics.mjs",
+      "bytes": 4458,
+      "sha256": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    },
+    {
+      "localPath": "vendor/plt/src/fixture.mjs",
+      "source": "PLT-01-02",
+      "sourcePath": "src/fixture.mjs",
+      "bytes": 3028,
+      "sha256": "55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+    },
+    {
+      "localPath": "vendor/plt/snapshot/time.mjs",
+      "source": "PLT-01-02",
+      "sourcePath": "snapshot/time.mjs",
+      "bytes": 5468,
+      "sha256": "dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c"
+    },
+    {
+      "localPath": "vendor/plt/fixtures/queries.json",
+      "source": "PLT-01-02",
+      "sourcePath": "fixtures/queries.json",
+      "bytes": 346,
+      "sha256": "df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033"
+    },
+    {
+      "localPath": "vendor/plt/fixtures/smoothstep-goldens.json",
+      "source": "PLT-01-02",
+      "sourcePath": "fixtures/smoothstep-goldens.json",
+      "bytes": 2201,
+      "sha256": "74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1"
+    },
+    {
+      "localPath": "vendor/plt/licenses/Random123.txt",
+      "source": "PLT-01-02",
+      "sourcePath": "licenses/Random123.txt",
+      "bytes": 1497,
+      "sha256": "613a52307188093b64a0767167576b432fcec41d0cb6a6a16a4cba922c4fe199"
+    },
+    {
+      "localPath": "snapshot/product/celestial/kepler.ts",
+      "source": "product",
+      "sourcePath": "apps/weltraum-browser/src/celestial/kepler.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "bytes": 7687,
+      "sha256": "4f9176810c9bbf22b12b781b45684b09b2afdf66cdfa65919c6f5c8918f0d5dd"
+    }
+  ],
+  "packageInputs": [
+    {
+      "path": "00_START_HIER.md",
+      "bytes": 3243,
+      "sha256": "31d831cf18a99442acabf4f424bb43030fc72f767926385e9c4c94a4a23689d1"
+    },
+    {
+      "path": "01_PRUEFUNG_UND_ENTSCHEIDUNG.md",
+      "bytes": 8005,
+      "sha256": "8c866c78f516ffc4134dfec1292bbbeb55995335915768e016e54e523a325e09"
+    },
+    {
+      "path": "03_SCHNITTSTELLEN_UND_UEBERNAHME.md",
+      "bytes": 6579,
+      "sha256": "7f3d2f477819e9f7209a45c16fd46456ddf60ef569532d6bdc438790773cf047"
+    },
+    {
+      "path": "Cloud/00_GEMEINSAMER_VERTRAG.md",
+      "bytes": 5908,
+      "sha256": "0b9a13ebe3929b4d5d48fa77a7483d0e7ba32fe82dd6c6c61e1cabaa9c1e27b2"
+    },
+    {
+      "path": "Auftraege/CEL-01-WXG-00.md",
+      "bytes": 3327,
+      "sha256": "5d9f29493519e5925640b485cf95982ab93dc10aa4a588276d0267f3cd8e8913"
+    },
+    {
+      "path": "Goals/CEL-01-WXG-00.txt",
+      "bytes": 437,
+      "sha256": "670a7c3a206f81a69b3fb1e65b0c52aefafe396dda435a60b5491f9cc5fc957a"
+    },
+    {
+      "path": "SOURCE_DOCS.json",
+      "bytes": 473,
+      "sha256": "18fd0f85e13e13729acead902af925342d2ea4a7b920cdd4f74533e0ca158f0e"
+    },
+    {
+      "path": "Quellen/weltraum-universeller-planeten-wetter-climate-core-architektur-v2-2026-10-09.md",
+      "bytes": 49044,
+      "sha256": "7a35fe03f6d85e7ba8870794c161332bc7671f232faf0669fe9359b2ac64d3ed"
+    },
+    {
+      "path": "Quellen/hestia-dynamisches-volumetrisches-wetter-architekturkonzept-2026-10-09.md",
+      "bytes": 62481,
+      "sha256": "78b6dbf918f9d8e5254f6ec79930847f687f683ea92529d2a220392195ed548e"
+    },
+    {
+      "path": "Quellen/hestia-konzeptpaket-review-und-arbeitspaket-registry-2026-10-09.md",
+      "bytes": 90628,
+      "sha256": "9d1fd7f751a2264acbb0214f0491825d4e71192ff6f518c69802fd03bf4074f2"
+    }
+  ],
+  "producer": {
+    "anchors": [
+      {
+        "path": "receipt.json",
+        "bytes": 13793,
+        "sha256": "5842f1c2b781c1ce65a347ec45c28da0717215537ebd45ee100b3a255429555a"
+      },
+      {
+        "path": "NumericsProfile.json",
+        "bytes": 1386,
+        "sha256": "c7652cc948a0f213a8a29ff75bdb0a76ede71344c315f924fcc541e6f7ead551"
+      },
+      {
+        "path": ".runtime/final-seal/scope-seal.json",
+        "bytes": 21203,
+        "sha256": "b4c0daf90e5c91e4f6811e47b08f32dcfc39b2e932b1e9f34fc53c4009586c6d"
+      },
+      {
+        "path": ".runtime/final-seal/review.patch",
+        "bytes": 1300015,
+        "sha256": "6e1a8d6a835c6d7630554d7c6235727edff0d8e9b48ec2ae66741a232cb7fe71"
+      },
+      {
+        "path": "SourceBindings.json",
+        "bytes": 2186,
+        "sha256": "bd7ff8d2e7bb764b1a963234af8c1c1bc7377a92c844504623444bb28aafc82e"
+      },
+      {
+        "path": "dependencies.lock.json",
+        "bytes": 1142,
+        "sha256": "f40f0fa6dc38599731845822fa88e5596d5fd845a220939536fccadef935bd56"
+      },
+      {
+        "path": "package-lock.json",
+        "bytes": 253,
+        "sha256": "f5b5fbf862539b97a9e851252af96d5b502dbae3aa38b59ef065dcc222be84a6"
+      },
+      {
+        "path": "runner-profile.json",
+        "bytes": 1140,
+        "sha256": "8d0ef02f6fc84097fede912069829defe9389945884993fe9e5c5f3c96b00906"
+      },
+      {
+        "path": "src/numerics.mjs",
+        "bytes": 4458,
+        "sha256": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+      },
+      {
+        "path": "src/fixture.mjs",
+        "bytes": 3028,
+        "sha256": "55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+      },
+      {
+        "path": "snapshot/time.mjs",
+        "bytes": 5468,
+        "sha256": "dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c"
+      },
+      {
+        "path": "fixtures/queries.json",
+        "bytes": 346,
+        "sha256": "df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033"
+      },
+      {
+        "path": "fixtures/smoothstep-goldens.json",
+        "bytes": 2201,
+        "sha256": "74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1"
+      },
+      {
+        "path": "wasm/scalar.wasm",
+        "bytes": 458,
+        "sha256": "4e7fb1fec55509236ceeecb5405ce062f2d64bb88103a844be42e09a77e6087c"
+      },
+      {
+        "path": "wasm/simd.wasm",
+        "bytes": 396,
+        "sha256": "55f94330fb47c8096f417d0998aed29a26f09385ceb764de9425d2d751638cb4"
+      }
+    ],
+    "dirtyTreeDigest": "sha256:e97130b2dc276016649b86f1a6452edeea11d462dc4dc3c3daa418761d3ddd57",
+    "verifiedDirtyFiles": 102
+  },
+  "wasm": "verified upstream only; not imported or executed; no weather kernel",
+  "shader": "NOT_APPLICABLE"
+}

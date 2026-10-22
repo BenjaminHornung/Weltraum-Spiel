@@ -1,0 +1,7 @@
+{
+  "name":"hestia-rt08-photo", "version":"1.0.0", "private":true, "type":"module",
+  "engines":{"node":">=22.18.0"},
+  "scripts":{"typecheck":"tsc --noEmit", "build":"node build.mjs", "test":"node --test --test-concurrency=1 tests/*.test.mjs", "preview":"node serve.mjs"},
+  "dependencies":{"three":"0.186.1", "three-gpu-pathtracer":"0.0.27", "three-mesh-bvh":"0.9.16", "xatlas-web":"0.1.0"},
+  "devDependencies":{"@types/three":"0.186.0", "@webgpu/types":"0.1.64", "typescript":"5.9.3", "esbuild":"0.28.2"}
+}

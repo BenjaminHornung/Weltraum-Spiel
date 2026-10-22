@@ -53,6 +53,7 @@ export class ThreeMaterialFactory {
   }
 
   acquire(profiles: readonly MaterialProfile[], options: ThreeMaterialAcquireOptions = {}): ThreeMaterialLease {
+    if(this.releaseUncertain){throw this.releaseFailure;}
     const vertexColors = options.vertexColors ?? false;
     const acquired: CachedMaterial[] = [];
     const newDefinitionIds: MaterialProfileId[] = [];

@@ -1,0 +1,31 @@
+{
+  "actual": {
+    "app": "01a13648-c55b-7250-bf07-34921d70b43b",
+    "turn": "01a15e8c-aebe-7d32-b974-91c4500ebcfa",
+    "status": "inProgress",
+    "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13",
+    "startEpochMs": 1792587640000,
+    "startUtc": "2026-10-21T13:00:40Z",
+    "deadlineEpochMs": 1792588240000,
+    "rootEndUtc": "2026-10-21T13:15:11Z",
+    "appCompletionUtc": null
+  },
+  "freezeUtc": "2026-10-21T13:09:33.1441343+00:00",
+  "freezeEpochMs": 1792588173144,
+  "actualAppElapsedAtFreezeMs": 533144,
+  "operationStopwatchMs": 149,
+  "status": "SOURCE_DIFF_HASH_PASS_AST_APPROVAL_HOLD",
+  "manifest": {
+    "sha256": "96fa51ebe4a56ae25da8286a1d44a8ba013452b62f2d09069240bf0c1ec36f76",
+    "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-core-material-poison-source-r01\\MANIFEST.json",
+    "bytes": 3101
+  },
+  "report": {
+    "sha256": "2068f37c3372f536dbbf935e5f760739dc9fa0637a9e15149d3dde601844e174",
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\CORE_MATERIAL_RELEASE_POISON_SOURCE-20261021.md",
+    "bytes": 3719
+  },
+  "actualAppCompletionUtc": null,
+  "freezeIsAppEnd": false,
+  "automaticContinuation": false
+}

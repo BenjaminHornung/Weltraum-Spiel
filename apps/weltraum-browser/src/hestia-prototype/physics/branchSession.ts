@@ -3,6 +3,7 @@ import { ingestHvpStructuralCells } from "../terrain/structuralIngest";
 import { pickHvpCell } from "../terrain/picking";
 import { HVP_BRANCH_CELLS, HVP_BRANCH_KEY, HVP_BRANCH_SUPPORT,HVP_SALVAGE_CELLS } from "./profile";
 import { prepareHvpRigidBody, installHvpRigidBody } from "./rigidBody";
+import {hvpObjectLocalCenterOfMass} from "./rigidRecipe";
 import { prepareHvpStructuralBreak, stageHvpStructuralBreak } from "./structuralBreak";
 import { R, isHvpSolidCollider } from "./rapierPort";
 import {fnv1aHash} from "../../core/hash";
@@ -29,7 +30,7 @@ export const createHvpBranchSession=(world:R.World,origin:Vec,targets=new Map<st
     installHvpRigidBody(world,recipe!,{translationMeters:origin,rotation:{x:0,y:0,z:0,w:1}},undefined,false);
   let generation=restored?.checkpoint.generation??0;
   let parts=(restored?.fixed??[{ownerId:HVP_BRANCH_KEY,body:parent!,recipe:recipe!}]).map(p=>({...p,anchored:true,
-    cells:readHvpBodyCells(p.recipe.source),center:p.recipe.mass.centerOfMassMeters!}));
+    cells:readHvpBodyCells(p.recipe.source),center:hvpObjectLocalCenterOfMass(p.recipe.source,p.recipe.mass.centerOfMassMeters!)}));
   let attachmentOwner=HVP_BRANCH_KEY;
   let stage:ReturnType<typeof stageHvpStructuralBreak>|undefined;
   let plan:ReturnType<typeof prepareHvpStructuralBreak>|undefined;
@@ -48,7 +49,7 @@ export const createHvpBranchSession=(world:R.World,origin:Vec,targets=new Map<st
       c=>isHvpSolidCollider(c)&&c.parent()?.isKinematic()!==true);
     if(hit?.collider.parent()?.handle!==parent.handle) { return null; }
     const rotation=parent.rotation(),inverse={x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w};
-    const p=parent.translation(),center=recipe.mass.centerOfMassMeters!;
+    const p=parent.translation(),center=hvpObjectLocalCenterOfMass(recipe.source,recipe.mass.centerOfMassMeters!);
     const local=rotateStructuralWorldVector(inverse,{x:eye.x-p.x,y:eye.y-p.y,z:eye.z-p.z});
     const ray=rotateStructuralWorldVector(inverse,direction);
     // Rapier establishes the unobscured first contact; DDA establishes the actual
@@ -118,7 +119,7 @@ export const createHvpBranchSession=(world:R.World,origin:Vec,targets=new Map<st
       }
     },
     read(includeCells=false){
-      const released=[...targets.values()].filter(p=>p.family==="branch").map(p=>({...p,anchored:false,cells:readHvpBodyCells(p.recipe.source),center:p.recipe.mass.centerOfMassMeters!}));
+      const released=[...targets.values()].filter(p=>p.family==="branch").map(p=>({...p,anchored:false,cells:readHvpBodyCells(p.recipe.source),center:hvpObjectLocalCenterOfMass(p.recipe.source,p.recipe.mass.centerOfMassMeters!)}));
       const published=stage?(committed?parts:stage.result.parts.map((p,i)=>({...p,recipe:plan!.parts[i]!.recipe}))):[...parts,...released];
       const support=published.find(p=>p.cells.some(c=>c.x===HVP_BRANCH_SUPPORT.x&&c.y===HVP_BRANCH_SUPPORT.y&&c.z===HVP_BRANCH_SUPPORT.z));
       return Object.freeze({kind,origin:Object.freeze({...origin}),cutEdge:edge,generation,sourceDigest:generation===0?source!.contentHash:fnv1aHash(JSON.stringify(published.map(p=>[p.ownerId,p.recipe.source.contentHash]))),state:held?"RecoveryHold":stage?committed?"CommittedHeld":"PreparedHeld":"Idle",last,preview,

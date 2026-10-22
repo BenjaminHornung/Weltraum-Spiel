@@ -4,7 +4,7 @@ import {applyStructuralDestructionCommand,deriveStructuralComponentClassificatio
 import {selectHvpCutCells,type HvpCutShape} from "../terrain/cutPlan";
 import {fnv1aHash} from "../../core/hash";
 import {ingestHvpStructuralCells,prepareHvpStructuralIngestOwnedSteps} from "../terrain/structuralIngest";
-import {assertHvpRigidRecipe,prepareHvpRigidBodyOwnedHashSteps,prepareHvpRigidBodySteps,prepareRecipeFromFacts,type HvpRigidRecipe,type HvpRigidRecipeSpans} from "./rigidRecipe";
+import {assertHvpRigidRecipe,hvpObjectLocalCenterOfMass,prepareHvpRigidBodyOwnedHashSteps,prepareHvpRigidBodySteps,prepareRecipeFromFacts,type HvpRigidRecipe,type HvpRigidRecipeSpans} from "./rigidRecipe";
 import {measureHvpCut,type HvpCutSpan,type HvpCutTrace} from "../runtime/cutTrace";
 // Private core module (not in the structural barrel): the step form of the public classification.
 import {structuralComponentClassificationSteps,structuralIssuedComponentClassificationSteps,structuralOwnedComponentClassificationSteps,
@@ -243,7 +243,7 @@ function* finishPlanSteps(ownedHash:boolean,before:StructuralObject,after:Struct
   const remainingMass=parts.reduce((n,part)=>n+part.recipe.mass.totalMassKg,0);
   reserve?.(2_048,true);
   const frozenParts=reserve===undefined?Object.freeze(parts):yield* borrowedHvpPlanSteps(structuralFreezeArraySteps(parts,reserve),"ownerClassification");
-  const plan=Object.freeze({before,after,commandId,parts:frozenParts,preCutCenter:oldMass.centerOfMassMeters,
+  const plan=Object.freeze({before,after,commandId,parts:frozenParts,preCutCenter:hvpObjectLocalCenterOfMass(before,oldMass.centerOfMassMeters),
     removedCells:changedVoxelCount,removedMassKg:oldMass.totalMassKg-remainingMass});
   issued.add(plan);
   return plan;

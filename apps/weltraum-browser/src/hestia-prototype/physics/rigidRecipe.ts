@@ -7,6 +7,7 @@ import {deriveStructuralSingleComponentPhysicsPreparationOwnedHashSteps,deriveSt
   STRUCTURAL_TRANSITION_HASH_PHASE,STRUCTURAL_TRANSITION_PAYLOAD_PHASE,STRUCTURAL_TRANSITION_PREPARE_PHASE} from "../../voxel/structural/physicsTransition";
 import {structuralComponentClassificationSteps,prepareOwnedRigidComponentFactsSteps,readPreparedRigidComponentFacts,type PreparedComponentFacts} from "../../voxel/structural/classificationSteps";
 import {MICROVOXEL_BASE_QUANTUM_METERS} from "../../voxel/structural";
+import {sub,scale,type Vec3} from "../../core/vector";
 import {hvpPrincipalAxes} from "./principalAxes";
 import {readHvpBodyCells,readHvpOwnedBodyCellsSteps} from "./bodyCutPlan";
 import {borrowedHvpPlanSteps} from "./hvpPlanSteps";
@@ -16,6 +17,13 @@ import {mergeGreedyQuantumBoxesOwnedSteps,prepareStructuralGreedyRecipeFromFacts
 const issued=new WeakSet<object>();
 const zero=Object.freeze({x:0,y:0,z:0});
 const budgets={maxVisitedCells:32_768,maxConnectivityCells:32_768,maxComponents:32,maxConnectivityFacts:262_144};
+
+/** HVP readers/render cells are object-local; public mass and native poses stay global. */
+export const hvpObjectLocalCenterOfMass=(source:StructuralObject,center:Vec3):Vec3=>{
+  const origin=source.frame.objectOriginQuantum;
+  if(origin.x===0&&origin.y===0&&origin.z===0){return center;}
+  return Object.freeze(sub(center,scale(origin,MICROVOXEL_BASE_QUANTUM_METERS)));
+};
 
 /** Optional wall-clock sub-spans for the recipe derivation; behaviour is unchanged. */
 export interface HvpRigidRecipeSpans {massMs?:number;classifyMs?:number;transitionMs?:number;axesMs?:number;verifyMs?:number;

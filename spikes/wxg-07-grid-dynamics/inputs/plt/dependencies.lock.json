@@ -1,0 +1,18 @@
+{
+  "npm": { "dependencies": [], "lifecycleScriptsRequired": false },
+  "node": { "version": "22.23.2", "npmVersionObserved": "10.9.8", "pythonVersionObserved": "3.12.13" },
+  "rust": {
+    "version": "1.97.1", "commit": "8bab26f4f68e0e26f0bb7960be334d5b520ea452", "llvm": "22.1.6",
+    "target": "wasm32-unknown-unknown", "license": "MIT OR Apache-2.0",
+    "targetArchive": "https://static.rust-lang.org/dist/rust-std-1.97.1-wasm32-unknown-unknown.tar.xz",
+    "sha256": "fa0edb6e9f34faae5735554d62d50875eded839dc707d0f1c01467a918d8453b",
+    "installation": "own ignored .tools only; global compiler read-only; no rustup mutation"
+  },
+  "rng": {
+    "algorithm": "Threefry2x32-20", "reference": "DEShawResearch/random123 v1.14.0",
+    "vectors": "https://raw.githubusercontent.com/DEShawResearch/random123/v1.14.0/tests/kat_vectors",
+    "algorithmSource": "https://raw.githubusercontent.com/DEShawResearch/random123/v1.14.0/include/Random123/threefry.h",
+    "license": "BSD-3-Clause", "notice": "licenses/Random123.txt"
+  },
+  "browserPolicy": "actual binaries/UA in runtime evidence; no installed browser or product package changes"
+}

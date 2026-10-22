@@ -1,0 +1,7 @@
+{
+  "schema":"wxg.synthetic-climate-config/v1","referenceTemperatureK":280,"solarFluxWPerM2":1360,
+  "longwaveAtReferenceWPerM2":238,"feedbackWPerM2K":2,"diffusionWPerM2K":0.6,"p2ForcingWPerM2":-60,
+  "lapseKPerM":0.003,"seasonalAmplitudeK":8,"seasonPeriodTicks":3784320000,"tidalContrastK":20,"substellarDirection":{"x":1,"y":0,"z":0},
+  "circulationHeightMeters":10000,"circulationDeltaK":40,"zonalWindMps":12,
+  "provenance":{"kind":"TestAssumption","note":"Synthetic authoring constants, not accepted planetary climate or natural atmosphere data."}
+}

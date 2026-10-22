@@ -1,0 +1,15 @@
+{
+  "status": "ISOLATED_FUNCTIONAL_PASS_ROOT_REVIEW_PENDING",
+  "sourceAdoption": "HOLD",
+  "frozenAt": "2026-10-18T17:31:31.5572337+00:00",
+  "actualAppTurn": "01a1500b-e66e-7ce1-8264-64e21e1d8d46",
+  "appStartedAt": "2026-10-18T17:25:19Z",
+  "fixedAbsoluteDeadline": "2026-10-18T17:34:32.0000000+00:00",
+  "appElapsedThroughFreezeSeconds": 372.5572337,
+  "fullAppTurn": "Root must read actual end after final response; freeze is not full turn",
+  "functionalInvocations": 1,
+  "passed": true,
+  "selectedInputsUnchanged": 44,
+  "manifestExcludesOnlyItself": true,
+  "automaticContinuation": false
+}

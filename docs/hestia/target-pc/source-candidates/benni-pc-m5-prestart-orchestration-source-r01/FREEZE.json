@@ -1,0 +1,13 @@
+{
+  "status": "SOURCE_PREPARED_PENDING_REVIEW_RUNTIME_NONE",
+  "turn": "01a152f9-5e1d-7792-bd22-968ad6f9444d",
+  "startUtc": "2026-10-19T07:03:56Z",
+  "deadlineUtc": "2026-10-19T07:15:56Z",
+  "freezeUtc": "2026-10-19T07:16:30.8019306Z",
+  "fullTurnEnd": "NOT_OBSERVABLE_BEFORE_FINAL_RESPONSE",
+  "rootIssuerBodyExecuted": false,
+  "liveRuns": 0,
+  "rootRecords": 0,
+  "subagents": 0,
+  "baselineRootConfirmedSha256": "90761df2b0ce247ca63b2de7273c88327426da8360c7805c07eb5f86a2d1f6a1"
+}

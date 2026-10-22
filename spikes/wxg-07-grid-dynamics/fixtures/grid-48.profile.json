@@ -1,0 +1,87 @@
+{
+  "schema": "wxg07.transport-profile/v1",
+  "id": "wxg07.filtered-passive-48",
+  "version": 1,
+  "n": 48,
+  "radius": 8282000,
+  "wind": 100,
+  "axis": {
+    "x": 0.28221626051507914,
+    "y": 0.9407208683835973,
+    "z": 0.18814417367671946
+  },
+  "dtTicks": 36000,
+  "policy": {
+    "source": [
+      1e-8,
+      2e-11
+    ],
+    "sink": [
+      1e-7,
+      2e-7
+    ]
+  },
+  "events": [
+    {
+      "tick": 432000,
+      "priority": 0,
+      "sourceId": "fixture.source",
+      "commandId": "source-1h",
+      "cell": 0,
+      "channel": 0,
+      "massKg": 1000000000
+    },
+    {
+      "tick": 10368000,
+      "priority": 0,
+      "sourceId": "fixture.source",
+      "commandId": "source-24h",
+      "cell": 13823,
+      "channel": 1,
+      "massKg": 1000000
+    }
+  ],
+  "channels": [
+    "passive-moisture-kg-m2",
+    "passive-aerosol-kg-m2"
+  ],
+  "pressureBands": 1,
+  "universeTicksPerSecond": 120,
+  "waveSpectrum": "ADVECTION_ONLY_NO_GRAVITY_ACOUSTIC_OR_PRESSURE_WAVES",
+  "numerics": "FLOAT64_FIXED_ORDER_PINNED_INPUT_COEFFICIENTS_PLT_LE",
+  "minimumLength": 72185.11930812657,
+  "maximumOutflowRate": 0.0010336893214387781,
+  "safety": 0.8,
+  "implementationDigest": "sha256:5a3f4f0c53fae7fdd2ae91de1487a319fe52e11ff396f32f7707a97f82c9e16d",
+  "inputDigest": "sha256:e82e59a57933756278b4a0e61f2c75d1eb52c801448671098e4b56ea0c74c80b",
+  "climate": {
+    "digest": "sha256:aba9e5e713d00e6498d7168dbabc9f0c7389b33ef733c5585b0dbc09ec611f49",
+    "id": "wxg.climate.HestiaAuthoring",
+    "version": 1
+  },
+  "weatherReadProfile": {
+    "digest": "sha256:ab1f08ab461075225d20869bf7774c1145c839783c333d1efa9fcd45a55e899e",
+    "id": "wxg.weather.HestiaAuthoring",
+    "version": 1
+  },
+  "basePhysics": "sha256:0feaed9b6bcbb1ec71a2ecf52512d3f00a1aada2a7027445dd03b3ceba257e3e",
+  "authoring": {
+    "path": "fixtures/authoring.json",
+    "bytes": 47558,
+    "sha256": "57627b42b0dbc34a757711b8cbf0d42dee606faec1f76e55bd9a15298b1e0306"
+  },
+  "coefficients": {
+    "path": "fixtures/grid-48.coefficients.bin",
+    "bytes": 553028,
+    "sha256": "8871f80c9b45048279d417c34d6e40d124f13c45dc7e46260f3aa9b8d804cbee"
+  },
+  "initial": {
+    "path": "fixtures/grid-48.initial.bin",
+    "bytes": 221184,
+    "sha256": "b3849bdaa8a1f79fb457b1dcd5a6495128a17fa9d1a05399d3f95389288be780"
+  },
+  "provenance": {
+    "kind": "TestAssumption",
+    "note": "Two passive channels; climate-derived initial density has no calibrated humidity or aerosol interpretation. Prescribed solid rotation at maximum speed 100 m/s; no prognostic atmosphere or natural Hestia adoption."
+  }
+}

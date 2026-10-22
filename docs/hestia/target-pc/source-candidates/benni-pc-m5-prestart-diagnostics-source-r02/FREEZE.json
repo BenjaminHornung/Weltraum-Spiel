@@ -1,0 +1,33 @@
+{
+  "actualApp": {
+    "app": "01a13648-c55b-7250-bf07-34921d70b43b",
+    "turn": "01a15d73-3ff0-7782-bee0-6a09c6cd7c22",
+    "status": "inProgress",
+    "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13",
+    "startEpochMs": 1792569196000,
+    "startUtc": "2026-10-21T07:53:16.000Z",
+    "deadlineEpochMs": 1792569676000,
+    "actualAppCompletionUtc": null,
+    "closeOnlyEpochMs": 1792569586000
+  },
+  "freezeUtc": "2026-10-21T07:58:52.8004470+00:00",
+  "elapsedToFreezeMs": 336800,
+  "checks": "ALL_THREE_NOT_RUN",
+  "report": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\M5_APP_SNAPSHOT_RETENTION_SOURCE_R02-20261021.md",
+    "bytes": 4769,
+    "sha256": "a3e10b241c54fc185875416c5cf7dee579b8778155537690af0e0c3d5891f470"
+  },
+  "completion": "Root must read actual host completion after final; freeze is not App completion",
+  "fixedEarlierEndUtc": "2026-10-21T08:01:16.0000000+00:00",
+  "retry": 0,
+  "schema": "hestia.m5.snapshot-retention-source-r02.freeze.v1",
+  "runtime": "NONE",
+  "manifest": {
+    "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-m5-prestart-diagnostics-source-r02\\SOURCE_MANIFEST_FINAL.json",
+    "bytes": 2242,
+    "sha256": "ff966459e5439566e29b1151dece3fe599ed2d22c08efd41552cbd9461214511"
+  },
+  "actualAppCompletionUtc": null,
+  "status": "HOLD_SOURCE_IMPLEMENTED_CHECK_LAUNCH_REJECTED_RUNTIME_NONE"
+}

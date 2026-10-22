@@ -1,0 +1,42 @@
+{
+  "schema": "hestia.numerics-profile/v1",
+  "id": "deterministicMathV1",
+  "version": 1,
+  "universeTicksPerSecond": 120,
+  "precisionClasses": [
+    "exact-canonical-bytes",
+    "solver-profile-tolerance",
+    "optical-gpu-approximation"
+  ],
+  "rng": "Threefry2x32-20/Random123-v1.14.0",
+  "fixedpoint": {
+    "scale": 65536,
+    "function": "3x²-2x³",
+    "domainQ16": [
+      0,
+      65536
+    ],
+    "rounding": "nearest-half-up",
+    "absoluteErrorBound": "1/131072"
+  },
+  "serialization": "NM/v1:u32LE,u64LE-safe,f64LE-finite;-0=>+0",
+  "unicode": "NFC; malformed-surrogates-rejected;UTF8-length-prefixed",
+  "implementation": [
+    [
+      "src/numerics.mjs",
+      "sha256:bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    ],
+    [
+      "src/fixture.mjs",
+      "sha256:55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+    ],
+    [
+      "snapshot/time.mjs",
+      "sha256:dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c"
+    ]
+  ],
+  "implementationDigest": "sha256:db7435dfacf7dd0ee244ba7c0975f1bc552bb168bcf424225521f38307ad27a9",
+  "fixtureDigest": "sha256:df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033",
+  "goldenDigest": "sha256:74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1",
+  "contentDigest": "sha256:64e7977f9b510d74aa61fc37edae076c94ef7a3d0fda09b1fd9cf14e364bb714"
+}

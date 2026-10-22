@@ -1,0 +1,94 @@
+{
+  "schema": "hestia.root-controller-source-acceptance.v1",
+  "status": "PASS_SOURCE_ONLY",
+  "observedUtc": "2026-10-22T08:24:49.7276915+00:00",
+  "sourceFolder": "ROOT_AST_CRITICAL_CONTROLLER_SOURCE-20261021",
+  "files": [
+    {
+      "relative": "R04_CONTROLLER.js",
+      "bytes": 16113,
+      "sha256": "78bda572c71c549fadb82a633f6a737aebfd2740075a7427292a0bf51510f7a1"
+    },
+    {
+      "relative": "R04_A0_RUN_ONCE.ps1",
+      "bytes": 12926,
+      "sha256": "e8a65aca5845b8a042a8e1908eef03d5e04fc59c68504ca4a1fffc88b6964bfd"
+    },
+    {
+      "relative": "R04_TEMPLATE.json",
+      "bytes": 9400,
+      "sha256": "4955f76a7b6cb2981533451c2044020d4891ed3e1eae1726d73263abb808968a"
+    },
+    {
+      "relative": "R04_VERIFY_PREPARATION.ps1",
+      "bytes": 17313,
+      "sha256": "f9f79d5c6fc4a1a7deff3258392653efa8af63ef06a4fb529535c561ed7f603a"
+    },
+    {
+      "relative": "R04_PREPARED_CACHE.json",
+      "bytes": 6776,
+      "sha256": "d6ecab29e0f92089274df6d4615935a59927ce82116e610d77f1d4a3a8b1cad9"
+    },
+    {
+      "relative": "R04_EXEC_CELLS.md",
+      "bytes": 11329,
+      "sha256": "c394681791e0047a501be87e732ee7282e639dff8906e1dffaeaeb8061cbf45e"
+    },
+    {
+      "relative": "PURE_SIMULATION.js",
+      "bytes": 9229,
+      "sha256": "9eaef6b3c8cdeadb7fc4b53af472434bce2cb15b249bcf3f50fc5006d4f4c885"
+    },
+    {
+      "relative": "READBACK.md",
+      "bytes": 4206,
+      "sha256": "5d50ec0ac19a66e8506d22fc874fa1a0ecef78f060e4d77fc6fa889f877fa53c"
+    }
+  ],
+  "readOnlyProof": "ROOT_CRITICAL_CONTROLLER_FRESH_READONLY-20261022.json",
+  "nativeReview": "PASS_SOURCE_ONLY_TWO_INDEPENDENT",
+  "restoredOldGuards": [
+    "Prior call IDs/format",
+    "Binding host/cursor/previous G01 and terminal host",
+    "Evidence row shape/exact control raw text",
+    "G01/M5 preservation proofs"
+  ],
+  "checks": {
+    "V8": "CONTROLLER_TWO_FENCES_LITERAL_A0_PASS",
+    "pureFakes": "PASS_NO_REAL_TOOLS",
+    "powerShellCommandsParsed": 9,
+    "syntaxErrors": 0,
+    "actualReadOnlyPreload": "PASS_3_EXIT0",
+    "sourcePins": 13,
+    "inputs": 6,
+    "futureParsedProductTexts": 4,
+    "m5Copies": 5,
+    "m5AbsentSlots": 8,
+    "futureControlsAbsent": 6,
+    "absentEvidenceRoots": 4
+  },
+  "pi": {
+    "model": "opencode-go/deepseek-v4.1-flash",
+    "mode": "ANONYMOUS_DESIGN_ADVICE_NOT_CODE_AUDIT",
+    "reports": [
+      "PI_ROOT_SINGLE_CRITICAL_SOURCE_RESULT-20261021.json",
+      "PI_ROOT_PURE_BOOTSTRAP_RESULT-20261021.json"
+    ],
+    "projectFilesTransmitted": false
+  },
+  "r03": {
+    "status": "SPENT_HOLD_ZERO_A0_ZERO_AST",
+    "initialSha256": "599a312eac120fd67fbde34a0764be372571801eacaea31eec5fc285eba6ab67",
+    "stopSha256": "684820da0cb3940b1e7f6439d8db63394af3d9a3ec5d295716d8b0f9e0c09623",
+    "retry": 0
+  },
+  "newRuntimeAuthority": "NONE",
+  "a0Sends": 0,
+  "nodeAstStarts": 0,
+  "runtime90Seconds": "NOT_RUN",
+  "referenceMeasurement": "NOT_RUN",
+  "productAdoption": "NOT_RUN",
+  "wholeGoal": "ACTIVE_INCOMPLETE_ALL30_ORIGINAL18_R0_R5_THREEPHASES",
+  "reviewBranch": "feature/hestia-core-review-2026-10-22",
+  "sourceBackup": "C:\\Users\\benni\\AppData\\Local\\Temp\\Hestia-R04-source-repair-20261022\\before-source"
+}

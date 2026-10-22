@@ -1303,6 +1303,70 @@ class BlenderBoundaryTests(unittest.TestCase):
                 )
             )
 
+    def test_cli_rejects_unannotated_mesh_before_export_without_mutating_source_or_outputs(self) -> None:
+        part = _FakeObject("Part", {
+            "hestia.part_id": "part-01", "hestia.representation_mode": "StructuralAssembly",
+            "hestia.render_material_id": "mat-render", "hestia.destructible": False,
+            "hestia.collision_policy": "None", "hestia.navigation_policy": "None",
+            "hestia.thin_feature_policy": "Reject", "hestia.declared_minimum_thickness_m": 0.01,
+        })
+        unknown = _FakeObject("UnannotatedMesh", {"ordinary": "preserved"})
+        part.type = unknown.type = "MESH"  # type: ignore[attr-defined]
+        material = _PropertyBlock({"hestia.render_material_id": "mat-render"})
+        material.name = material.name_full = "Material"  # type: ignore[attr-defined]
+        part.material_slots = (types.SimpleNamespace(material=material),)
+        scene = _PropertyBlock({
+            "hestia.schema_version": "hestia.asset-authoring.v1", "hestia.asset_id": "asset-01",
+            "hestia.asset_revision": 7, "hestia.representation_mode": "StructuralAssembly",
+        })
+        scene.objects = (part, unknown)  # type: ignore[attr-defined]
+        scene.collection = types.SimpleNamespace(objects=scene.objects, children=())  # type: ignore[attr-defined]
+        view_objects = types.SimpleNamespace(active=unknown)
+        unknown.select_set(True)
+
+        def export_operator(**kwargs: object) -> set[str]:
+            nodes = [
+                {"name": obj.name, "mesh": index,
+                 **({"extras": {"hestia": obj["hestia"]}} if "hestia" in obj else {})}
+                for index, obj in enumerate(scene.objects)  # type: ignore[attr-defined]
+            ]
+            Path(str(kwargs["filepath"])).write_bytes(self._minimal_glb({
+                "asset": {"version": "2.0"}, "scene": 0, "scenes": [{"nodes": [0, 1]}],
+                "nodes": nodes, "meshes": [{"primitives": []}, {"primitives": []}],
+            }))
+            return {"FINISHED"}
+
+        gltf = mock.Mock(side_effect=export_operator)
+        gltf.get_rna_type.return_value = types.SimpleNamespace(properties=())
+        blender = types.SimpleNamespace(
+            context=types.SimpleNamespace(scene=scene, view_layer=types.SimpleNamespace(objects=view_objects)),
+            ops=types.SimpleNamespace(export_scene=types.SimpleNamespace(gltf=gltf)),
+        )
+        blocks = (scene, part, unknown, material)
+        original = [json.loads(json.dumps(block)) for block in blocks]
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "asset.glb"
+            sidecar = Path(directory) / "asset.hestia-authoring-report.json"
+            output.write_bytes(b"prior-glb")
+            sidecar.write_bytes(b"prior-report")
+            with (
+                mock.patch.object(adapter, "bpy", blender),
+                mock.patch.object(adapter, "transform_from_object", return_value=model.Transform()),
+                mock.patch.object(adapter, "collect_mesh_inventory", return_value=((), (), ())),
+                mock.patch.object(cli, "_load_contract_modules", return_value=(adapter, model, validation, report, canonical)),
+                mock.patch.object(cli, "_print_error") as print_error,
+            ):
+                result = cli.main(["blender", "--", "--output", str(output)])
+            self.assertEqual((1, 0), (result, gltf.call_count))
+            self.assertEqual("adapter.failed", print_error.call_args.args[0])
+            self.assertIn("UnannotatedMesh", print_error.call_args.args[1])
+            self.assertEqual(original, [dict(block) for block in blocks])
+            self.assertEqual((False, True), (part.select_get(), unknown.select_get()))
+            self.assertIs(unknown, view_objects.active)
+            self.assertEqual(b"prior-glb", output.read_bytes())
+            self.assertEqual(b"prior-report", sidecar.read_bytes())
+            self.assertEqual({output.name, sidecar.name}, {path.name for path in Path(directory).iterdir()})
+
     def test_export_failure_preserves_prior_artifacts_and_restores_attached_extras(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "asset.glb"

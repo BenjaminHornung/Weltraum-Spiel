@@ -1,5 +1,6 @@
 import { readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import * as ts from "typescript/unstable/ast";
 import { API as TypeScriptAPI } from "typescript/unstable/sync";
 import { describe, expect, it } from "vitest";
@@ -251,17 +252,19 @@ describe("Hestia V1 seed and byte determinism", () => {
   });
 
   it("keeps the exact seven-module Hestia V1 boundary deterministic and owner-neutral", { timeout: 10_000 }, () => {
-    const directory = resolve(process.cwd(), "src", "world-generation", "hestia");
-    const configFilePath = resolve(process.cwd(), "tsconfig.json");
+    const appRoot = fileURLToPath(new URL("../../", import.meta.url));
+    const directory = resolve(appRoot, "src", "world-generation", "hestia");
+    const configFilePath = resolve(appRoot, "tsconfig.json");
     const actualModules = readdirSync(directory).filter((file) => file.endsWith(".ts")).sort();
     expect(actualModules).toEqual([...HESTIA_V1_MODULES].sort());
     const allowedDependencies = new Set([
       ...HESTIA_V1_MODULES.map((moduleName) => `./${moduleName.slice(0, -3)}`),
       "../../core/hash",
-      "../../voxel"
+      "../../voxel",
+      "../latticeNoise"
     ]);
     const findings: string[] = [];
-    const api = new TypeScriptAPI({ cwd: process.cwd() });
+    const api = new TypeScriptAPI({ cwd: appRoot });
     try {
       const snapshot = api.updateSnapshot({ openProjects: [configFilePath] });
       try {
@@ -277,6 +280,10 @@ describe("Hestia V1 seed and byte determinism", () => {
           }
           findings.push(...scanHestiaModule(moduleName, sourceFile, allowedDependencies));
         }
+        const commonPath = resolve(directory, "../latticeNoise.ts");
+        const commonSource = project.program.getSourceFile(commonPath);
+        if (commonSource === undefined) throw new Error(`TypeScript project snapshot is missing source file ${commonPath}`);
+        findings.push(...scanHestiaModule("../latticeNoise.ts", commonSource, new Set(["../core/hash", "../voxel/ids"])));
       } finally {
         snapshot.dispose();
       }

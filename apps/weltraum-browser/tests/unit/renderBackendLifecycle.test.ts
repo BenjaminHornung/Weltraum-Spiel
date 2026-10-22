@@ -592,6 +592,13 @@ describe("ThreeRenderBackend resource lifecycle", () => {
     });
     expect(ephemeralRelease(backend, mesh, "RemoveRepresentation")).toMatchObject({ status: "BackendUnavailable", reasonCode: "EphemeralReleaseUncertain" });
     expect(upsert(backend, ephemeralMesh(key))).toMatchObject({ status: "BackendUnavailable", reasonCode: "EphemeralReleaseUncertain" });
+    const materialAllocations = backend.readDiagnostics().materialAllocations;
+    const freshKey = ephemeralRepresentationKey({ kind: "neighbor", part: "proxy" }, 0, 2);
+    expect(registerEphemeral(backend, freshKey, 2, 0).status).toBe("Accepted");
+    expect(upsert(backend, ephemeralMesh(freshKey))).toMatchObject({
+      status: "BackendUnavailable", reasonCode: "ResourcePreparationFailed"
+    });
+    expect(backend.readDiagnostics().materialAllocations).toBe(materialAllocations);
     expect(disposeCalls).toBe(1);
     expect(backend.readDiagnostics()).toMatchObject({
       activeRepresentations: 0,

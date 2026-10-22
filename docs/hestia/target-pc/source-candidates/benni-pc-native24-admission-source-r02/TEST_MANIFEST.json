@@ -1,0 +1,105 @@
+{
+  "schema": "hestia.admission.r02.tests-and-evidence-manifest.v1",
+  "rowOrder": "StringComparer.Ordinal on slash-normalized relative",
+  "files": [
+    {
+      "relative": "CHANGE.patch",
+      "bytes": 677,
+      "sha256": "ee25f8b3659d0560e819dcea6adfbdee9af981ed253d912e3d1035fe664477f3"
+    },
+    {
+      "relative": "CURRENT_DISPOSITION.json",
+      "bytes": 320,
+      "sha256": "a5ef7268c5824e380adf9fcbbfdf3eb7afa09d805a2bab8ac84455f11e8f9847"
+    },
+    {
+      "relative": "GREEN_COMMAND.json",
+      "bytes": 1585,
+      "sha256": "e4f837f316287ac687d5ac8b4251b79b44d0d467c19e811ac8e1d2ad882f93cf"
+    },
+    {
+      "relative": "GREEN_RESULT.json",
+      "bytes": 1273,
+      "sha256": "92555747e429386871ec219825350837f16d7893bdbc8056e2131ff6a14aa9d0"
+    },
+    {
+      "relative": "GREEN_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "GREEN_STDOUT.txt",
+      "bytes": 3117,
+      "sha256": "baae8ed88b9357052ced88a887a37cca9259fae449264dccb32c920aa7744a10"
+    },
+    {
+      "relative": "HOST_TOOL_RECEIPTS.json",
+      "bytes": 3144,
+      "sha256": "8053e9cac09cebfae23670c8ed6eba5313629ad09e8985835eb78b94d16331a4"
+    },
+    {
+      "relative": "PRESERVATION_AFTER.json",
+      "bytes": 1071,
+      "sha256": "f50ce88dfc609589bba803227af6ca6aacba7d2f0c75f5d99de870858605a45b"
+    },
+    {
+      "relative": "PRESERVATION_BEFORE.json",
+      "bytes": 2867638,
+      "sha256": "6e32d7f58314b006e67117bd23decac8e1286cd4b0aae307046f3076bee0e740"
+    },
+    {
+      "relative": "R01_PROTECTED.json",
+      "bytes": 6859,
+      "sha256": "f3a348b5d0c4c2c0dec53658d99cf29286c0b82a5892225a533d2d954cffbbf9"
+    },
+    {
+      "relative": "RED_COMMAND.json",
+      "bytes": 1583,
+      "sha256": "f121dfb31d8cf6a45d665f2f1d995b8d2f90a0521bef663da409d0316d0c0d9d"
+    },
+    {
+      "relative": "RED_RESULT.json",
+      "bytes": 1271,
+      "sha256": "5e74971cb8a69221c82cfcecd424fdfec74e444d2884ac6ce4871e968063338e"
+    },
+    {
+      "relative": "RED_STDERR.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "RED_STDOUT.txt",
+      "bytes": 5541,
+      "sha256": "c7f2b3f68e5cf3ea09790aa57fdfea932fae9e9a4f417c7b7860858dbc467aec"
+    },
+    {
+      "relative": "REPORT.md",
+      "bytes": 4586,
+      "sha256": "033cf573995eedfb4a85bd76eddaacc9d0fa22b1f783a52701d55d088ccc8c74"
+    },
+    {
+      "relative": "TASK_BINDINGS.json",
+      "bytes": 564,
+      "sha256": "77a35b3b518cdef78a5945b03edcbb2db3e5e6c3f06ce41daa6907066dc3853a"
+    },
+    {
+      "relative": "data-guards.mjs",
+      "bytes": 12716,
+      "sha256": "3de539f513f5f871568b8ce107dcf45544a131b5b283cebab9c2ef8809978b0e"
+    },
+    {
+      "relative": "snapshots/red/admission.mjs",
+      "bytes": 8598,
+      "sha256": "a454bed1587e565250452b50c69884582e5d283fadbddb2b0b11266666aa1a0e"
+    },
+    {
+      "relative": "snapshots/red/data-guards.mjs",
+      "bytes": 12716,
+      "sha256": "3de539f513f5f871568b8ce107dcf45544a131b5b283cebab9c2ef8809978b0e"
+    }
+  ],
+  "fileCount": 19,
+  "includes": "all local test, preservation, report and evidence files before source/test/full manifest records",
+  "passed": 63,
+  "failed": 0
+}

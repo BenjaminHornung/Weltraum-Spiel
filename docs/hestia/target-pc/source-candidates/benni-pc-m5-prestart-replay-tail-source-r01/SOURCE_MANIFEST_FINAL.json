@@ -1,0 +1,43 @@
+{
+  "status": "SOURCE_CHECKED_PENDING_ROOT_REVIEW_RUNTIME_NONE",
+  "selfExclusion": "SOURCE_MANIFEST_FINAL.json only",
+  "rows": 7,
+  "physical": 8,
+  "files": [
+    {
+      "path": "ADMIN_REPORT_REFERENCE.json",
+      "bytes": 332,
+      "sha256": "b8d669ca1ce79b2f8618d4cc921dd081e5bd122d164d1e3fe101ff24509d8461"
+    },
+    {
+      "path": "CHECK_RESULTS.json",
+      "bytes": 2756,
+      "sha256": "d268bcf8acf62dff2530640ce4966b601ae68af85ec79b18c1eb5f5dfda99811"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 661,
+      "sha256": "d9e063a732b7771e6e1534129f2db78de49c9a634fde5a47dba84bb463ef9c92"
+    },
+    {
+      "path": "PRESERVATION_AFTER.json",
+      "bytes": 889,
+      "sha256": "a53eaaf8efb222bba9919bb271b296ee7e1fec9ace602c89871d4eeef270d620"
+    },
+    {
+      "path": "PRESERVATION_BEFORE.json",
+      "bytes": 7922,
+      "sha256": "13613adf6f3191bf30e6b57050d846bbfb61b4dbd1763b7c7f3e2310eb9485ae"
+    },
+    {
+      "path": "REFERENCES.json",
+      "bytes": 1654,
+      "sha256": "2d47793b1ab2d491c6cd3f8c7b6729c319e6732cc0b605fff571453860120d1b"
+    },
+    {
+      "path": "replay.mjs",
+      "bytes": 4749,
+      "sha256": "b69ca21ba14c739a3fe52bfbcce679a93b7e3d252d5a64dd6129cca82a8528c5"
+    }
+  ]
+}

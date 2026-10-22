@@ -1,0 +1,392 @@
+[
+  {
+    "WeatherSnapshotId": "sha256:7999c8d91d934d2046e00d5879e9f8369c675092b600a941a5b1275ce5612ca1",
+    "binding": {
+      "atmosphereEpoch": "atmosphere.1",
+      "authorityRevision": "1",
+      "checkpointDigest": null,
+      "climateNormals": {
+        "digest": "sha256:c61826b2e89992da0510fadb8ea4f9f6cc48989970c67b3d8cd49ccfa6e27f5f",
+        "id": "fixture.climate.Hestia",
+        "version": 1
+      },
+      "eventCursor": "0",
+      "eventDigest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "macroGeography": {
+        "digest": "sha256:3784bb8c30dc81a82eecbb4ccb3d93b92918db4c8bb76f47ec2f5b01938c72cc",
+        "id": "fixture.macro-projection.Hestia",
+        "version": 1
+      },
+      "model": {
+        "digest": "sha256:6a51ff1ab2ca347befe5aca796e230034368671abb98d1fe83a504025ed20c4e",
+        "id": "authored-diagnostic-read-v1",
+        "version": 1
+      },
+      "profile": {
+        "digest": "sha256:09bc18b84407ffd5a6a6b4889db4b1ce06c0fab97fd5a1370f0577f17022fbb5",
+        "id": "fixture.weather.Hestia",
+        "version": 1
+      },
+      "sessionId": "fixture.session",
+      "simulationTick": 120,
+      "sourceDigest": "sha256:ef8073ea6c42c4450a3ed727ffce9c304189423e189455bedc6dc5227cea1abc",
+      "sourceEpoch": "source.1",
+      "sourceOwner": "fixture.author",
+      "sourceRevision": "1",
+      "worldId": "fixture.world"
+    },
+    "query": {
+      "bodyFixedPositionMeters": {
+        "x": 8282000,
+        "y": 0,
+        "z": 0
+      },
+      "bodyId": "planet.hestia",
+      "frameId": "frame:body-fixed.planet.hestia",
+      "frameKind": "BodyFixed",
+      "requiredAccuracy": "macro",
+      "simulationTick": 120,
+      "vertical": {
+        "altitudeMeters": 0,
+        "kind": "AltitudeMeters"
+      }
+    },
+    "reasonCode": "MISSING_GAS_MIXTURE",
+    "status": "Unsupported",
+    "weatherStep": 0
+  },
+  {
+    "WeatherSnapshotId": "sha256:a1ef3f7e6f96925c350742752b3b0aa9542c80774e2806c4b3f6d69a1efe2fe9",
+    "binding": {
+      "atmosphereEpoch": "atmosphere.1",
+      "authorityRevision": "1",
+      "checkpointDigest": null,
+      "climateNormals": {
+        "digest": "sha256:b2e44aae47c27845d98dbb8d6139819e52b0c6e879de3a8aee88be20687ce856",
+        "id": "fixture.climate.Airless",
+        "version": 1
+      },
+      "eventCursor": "0",
+      "eventDigest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "macroGeography": {
+        "digest": "sha256:7403cb2785c3430524c2104f401517fdeaa7e068195bac84e13ec2a628a57907",
+        "id": "fixture.macro-projection.Airless",
+        "version": 1
+      },
+      "model": {
+        "digest": "sha256:6a51ff1ab2ca347befe5aca796e230034368671abb98d1fe83a504025ed20c4e",
+        "id": "authored-diagnostic-read-v1",
+        "version": 1
+      },
+      "profile": {
+        "digest": "sha256:b76fbacb9aa7e45d6e0af3b2eb91ec161b6cb40317f44a34097742594155b6fa",
+        "id": "fixture.weather.Airless",
+        "version": 1
+      },
+      "sessionId": "fixture.session",
+      "simulationTick": 120,
+      "sourceDigest": "sha256:0aeb61dca2e9c175852879a1e780a233157078e64bcb15df77576e692e23cec8",
+      "sourceEpoch": "source.1",
+      "sourceOwner": "fixture.author",
+      "sourceRevision": "1",
+      "worldId": "fixture.world"
+    },
+    "precipitation": [],
+    "query": {
+      "bodyFixedPositionMeters": {
+        "x": 2421000,
+        "y": 0,
+        "z": 0
+      },
+      "bodyId": "planet.korus",
+      "frameId": "frame:body-fixed.planet.korus",
+      "frameKind": "BodyFixed",
+      "requiredAccuracy": "macro",
+      "simulationTick": 120,
+      "vertical": {
+        "altitudeMeters": 0,
+        "kind": "AltitudeMeters"
+      }
+    },
+    "status": "NoAtmosphere",
+    "weatherStep": 0
+  },
+  {
+    "WeatherSnapshotId": "sha256:46a85900a9b378fbcfc9008acfd5fe1362eb395c437572986da6508fe784a2fc",
+    "accuracy": "macro",
+    "binding": {
+      "atmosphereEpoch": "atmosphere.1",
+      "authorityRevision": "1",
+      "checkpointDigest": null,
+      "climateNormals": {
+        "digest": "sha256:f3bdd00d33073f20846d7bbb029ef016fb16b4bb434138ca35f12685fd997397",
+        "id": "fixture.climate.Dust",
+        "version": 1
+      },
+      "eventCursor": "0",
+      "eventDigest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "macroGeography": {
+        "digest": "sha256:94e2c21def1c71a06784aa6b43cc89d5bc927c08de435e170aaac43162858193",
+        "id": "fixture.macro-projection.Dust",
+        "version": 1
+      },
+      "model": {
+        "digest": "sha256:6a51ff1ab2ca347befe5aca796e230034368671abb98d1fe83a504025ed20c4e",
+        "id": "authored-diagnostic-read-v1",
+        "version": 1
+      },
+      "profile": {
+        "digest": "sha256:04b12f8c6791a3d7df1566a08d21a5a031ce23a98f2956bdcd82ec31eb935361",
+        "id": "fixture.weather.Dust",
+        "version": 1
+      },
+      "sessionId": "fixture.session",
+      "simulationTick": 120,
+      "sourceDigest": "sha256:e293f81c6b619729c23ed16acbec017848c4ead25cd5cdb4b0b1af2d43088e21",
+      "sourceEpoch": "source.1",
+      "sourceOwner": "fixture.author",
+      "sourceRevision": "1",
+      "worldId": "fixture.world"
+    },
+    "provenance": {
+      "kind": "TestAssumption",
+      "note": "Synthetic schema/read fixture only; not natural constants or product climate."
+    },
+    "query": {
+      "bodyFixedPositionMeters": {
+        "x": 3695000,
+        "y": 0,
+        "z": 0
+      },
+      "bodyId": "planet.tharos",
+      "frameId": "frame:body-fixed.planet.tharos",
+      "frameKind": "BodyFixed",
+      "requiredAccuracy": "macro",
+      "simulationTick": 120,
+      "vertical": {
+        "altitudeMeters": 0,
+        "kind": "AltitudeMeters"
+      }
+    },
+    "sample": {
+      "aerosols": [
+        {
+          "massMixingRatio": 0.001,
+          "speciesId": "dust.test"
+        }
+      ],
+      "condensates": [],
+      "extinctionPerM": 0.00001,
+      "precipitation": [],
+      "pressurePa": 100000,
+      "stormIds": [],
+      "temperatureK": 280,
+      "windBodyFixedMps": {
+        "x": 0,
+        "y": 3,
+        "z": 0
+      }
+    },
+    "status": "Known",
+    "supportRadiusMeters": 200000,
+    "weatherStep": 0
+  },
+  {
+    "WeatherSnapshotId": "sha256:cc8797c4c6df46f518981cf91bacbf540dfe0b984917dfedebf9f5c10a625f64",
+    "binding": {
+      "atmosphereEpoch": "atmosphere.1",
+      "authorityRevision": "1",
+      "checkpointDigest": null,
+      "climateNormals": {
+        "digest": "sha256:787cd1e51ef010e6061275daf42786a6294c6a4c2c901cea44b089ccd6369537",
+        "id": "fixture.climate.Methane",
+        "version": 1
+      },
+      "eventCursor": "0",
+      "eventDigest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "macroGeography": null,
+      "model": {
+        "digest": "sha256:6a51ff1ab2ca347befe5aca796e230034368671abb98d1fe83a504025ed20c4e",
+        "id": "authored-diagnostic-read-v1",
+        "version": 1
+      },
+      "profile": {
+        "digest": "sha256:9890089d728f57d5c682d57a1057ff05e6b959a7894a3d74292f0f7cf7787da2",
+        "id": "fixture.weather.Methane",
+        "version": 1
+      },
+      "sessionId": "fixture.session",
+      "simulationTick": 120,
+      "sourceDigest": "sha256:beb6e356eba0579b738651f946acf10213b67412ab7444d8fe623e8acf264a6e",
+      "sourceEpoch": "source.1",
+      "sourceOwner": "fixture.author",
+      "sourceRevision": "1",
+      "worldId": "fixture.world"
+    },
+    "query": {
+      "bodyFixedPositionMeters": {
+        "x": 25484000,
+        "y": 0,
+        "z": 0
+      },
+      "bodyId": "planet.nereion",
+      "frameId": "frame:body-fixed.planet.nereion",
+      "frameKind": "BodyFixed",
+      "requiredAccuracy": "macro",
+      "simulationTick": 120,
+      "vertical": {
+        "kind": "PressurePa",
+        "pressurePa": 100000
+      }
+    },
+    "reasonCode": "SATURATION_UNDEFINED",
+    "status": "Unsupported",
+    "weatherStep": 0
+  },
+  {
+    "WeatherSnapshotId": "sha256:3ec74e1464b73eb52a9563145b653e79ecc71f302ad28b7a96d7deaabcd71f66",
+    "accuracy": "macro",
+    "binding": {
+      "atmosphereEpoch": "atmosphere.1",
+      "authorityRevision": "1",
+      "checkpointDigest": null,
+      "climateNormals": {
+        "digest": "sha256:67b6f27c2f80b3b42c5cceac7c08a13cb5253f3bcc0fcce390fb8e76db5e401e",
+        "id": "fixture.climate.GasGiant",
+        "version": 1
+      },
+      "eventCursor": "0",
+      "eventDigest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "macroGeography": null,
+      "model": {
+        "digest": "sha256:6a51ff1ab2ca347befe5aca796e230034368671abb98d1fe83a504025ed20c4e",
+        "id": "authored-diagnostic-read-v1",
+        "version": 1
+      },
+      "profile": {
+        "digest": "sha256:3bb56693e3bd422b1de8290de47cc0782a533ed0f468f27558b6941dcf1306ae",
+        "id": "fixture.weather.GasGiant",
+        "version": 1
+      },
+      "sessionId": "fixture.session",
+      "simulationTick": 120,
+      "sourceDigest": "sha256:f2dafd86ecad6d1cdadeaf37c45293ca959746375f0463459242629593a571da",
+      "sourceEpoch": "source.1",
+      "sourceOwner": "fixture.author",
+      "sourceRevision": "1",
+      "worldId": "fixture.world"
+    },
+    "provenance": {
+      "kind": "TestAssumption",
+      "note": "Synthetic schema/read fixture only; not natural constants or product climate."
+    },
+    "query": {
+      "bodyFixedPositionMeters": {
+        "x": 68807000,
+        "y": 0,
+        "z": 0
+      },
+      "bodyId": "planet.aureon",
+      "frameId": "frame:body-fixed.planet.aureon",
+      "frameKind": "BodyFixed",
+      "requiredAccuracy": "macro",
+      "simulationTick": 120,
+      "vertical": {
+        "kind": "PressurePa",
+        "pressurePa": 100000
+      }
+    },
+    "sample": {
+      "aerosols": [],
+      "condensates": [],
+      "extinctionPerM": 0.00001,
+      "precipitation": [],
+      "pressurePa": 100000,
+      "stormIds": [],
+      "temperatureK": 280,
+      "windBodyFixedMps": {
+        "x": 0,
+        "y": 3,
+        "z": 0
+      }
+    },
+    "status": "Known",
+    "supportRadiusMeters": 200000,
+    "weatherStep": 0
+  },
+  {
+    "WeatherSnapshotId": "sha256:8444308139f1e982b4d2af9f636a22cd74cab810a32b23307c63a08713b133b5",
+    "accuracy": "macro",
+    "binding": {
+      "atmosphereEpoch": "atmosphere.1",
+      "authorityRevision": "1",
+      "checkpointDigest": null,
+      "climateNormals": {
+        "digest": "sha256:998c12f55ac45bfb15de622bfdc729ad7f35e9ef7dea508ba0f00661c3f36a1c",
+        "id": "fixture.climate.TidallyLocked",
+        "version": 1
+      },
+      "eventCursor": "0",
+      "eventDigest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "macroGeography": {
+        "digest": "sha256:21ea82d7af9d9a7054abaf1276c75dc2a0bd53aef9585b75d5725e83072442c0",
+        "id": "fixture.macro-projection.TidallyLocked",
+        "version": 1
+      },
+      "model": {
+        "digest": "sha256:6a51ff1ab2ca347befe5aca796e230034368671abb98d1fe83a504025ed20c4e",
+        "id": "authored-diagnostic-read-v1",
+        "version": 1
+      },
+      "profile": {
+        "digest": "sha256:1bda6cd78215ad2710f771988c12c2ce8f67c6c5dea29e7d2a1b45ca4f9db9a3",
+        "id": "fixture.weather.TidallyLocked",
+        "version": 1
+      },
+      "sessionId": "fixture.session",
+      "simulationTick": 120,
+      "sourceDigest": "sha256:4b87027b942008eb4f9d2e69ed9401f96baf37febb1e9658347819b79b13626f",
+      "sourceEpoch": "source.1",
+      "sourceOwner": "fixture.author",
+      "sourceRevision": "1",
+      "worldId": "fixture.world"
+    },
+    "provenance": {
+      "kind": "TestAssumption",
+      "note": "Synthetic schema/read fixture only; not natural constants or product climate."
+    },
+    "query": {
+      "bodyFixedPositionMeters": {
+        "x": 6052000,
+        "y": 0,
+        "z": 0
+      },
+      "bodyId": "planet.pyra",
+      "frameId": "frame:body-fixed.planet.pyra",
+      "frameKind": "BodyFixed",
+      "requiredAccuracy": "macro",
+      "simulationTick": 120,
+      "vertical": {
+        "altitudeMeters": 0,
+        "kind": "AltitudeMeters"
+      }
+    },
+    "sample": {
+      "aerosols": [],
+      "condensates": [],
+      "extinctionPerM": 0.00001,
+      "precipitation": [],
+      "pressurePa": 100000,
+      "stormIds": [],
+      "temperatureK": 280,
+      "windBodyFixedMps": {
+        "x": 0,
+        "y": 3,
+        "z": 0
+      }
+    },
+    "status": "Known",
+    "supportRadiusMeters": 200000,
+    "weatherStep": 0
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "status": "SOURCE_FIX_PENDING_ROOT_REVIEW",
+  "freezeUtc": "2026-10-19T13:28:12.5491449Z",
+  "manifestSha256": "207bc95b9d363ad999e6446d19cd21cd8e22a5722a83b6773692a66220999506",
+  "manifestRows": 8,
+  "reportSha256": "a6bb81a0a48eb33a59e87e07240cb6844569860f88bf80fc0d838d58a0ee6317",
+  "freezeIsFullAppEnd": false,
+  "fixedDeadlineUtc": "2026-10-19T13:29:34Z"
+}

@@ -1,0 +1,1 @@
+Baue einen begrenzten Cube-Sphere-Transportkern mit korrekten Seams, Bilanzen, Stabilität und Checkpointreplay. Prüfe Catch-up, ohne unbemerkt auf analytisches Wetter zu wechseln oder eine Produkt-GCM zu behaupten. Maßgeblich sind Auftraege/WXG-07.md und Cloud/00_GEMEINSAMER_VERTRAG.md. Keine Produktintegration; Codeprüfung, Hardwareprüfung und Adoption getrennt melden.

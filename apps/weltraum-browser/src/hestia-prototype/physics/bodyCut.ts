@@ -1,7 +1,7 @@
 import {deriveStructuralWorldSplitVelocity,rotateStructuralWorldVector} from "../../voxel/structural";
 import {pickHvpCell,type HvpCell,type HvpCellReader} from "../terrain/picking";
 import {R,isHvpSolidCollider} from "./rapierPort";
-import {assertHvpRigidRecipe,type HvpRigidRecipe} from "./rigidRecipe";
+import {assertHvpRigidRecipe,hvpObjectLocalCenterOfMass,type HvpRigidRecipe} from "./rigidRecipe";
 import {prepareHvpLocalBodyCutOwnedHashSteps,prepareHvpLocalBodyCutSteps,readHvpBodyCells} from "./bodyCutPlan";
 import {stageHvpStructuralBreak} from "./structuralBreak";
 import {drainHvpPlanSteps,type HvpPlanProbe} from "./structuralPlan";
@@ -36,7 +36,7 @@ export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCutt
   const target=[...targets.values()].find(t=>t.body===body);if(!target){return null;}
   const position={...body.translation()},rotation={...body.rotation()},inverse={x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w};
   const local=rotateStructuralWorldVector(inverse,{x:eye.x-position.x,y:eye.y-position.y,z:eye.z-position.z});
-  const ray=rotateStructuralWorldVector(inverse,direction),center=target.recipe.mass.centerOfMassMeters!;
+  const ray=rotateStructuralWorldVector(inverse,direction),center=hvpObjectLocalCenterOfMass(target.recipe.source,target.recipe.mass.centerOfMassMeters!);
   const {reader,min}=readerFor(target.recipe),enter=Math.min(4,contact.timeOfImpact+1e-6);
   const picked=pickHvpCell(reader,[local.x+center.x+ray.x*enter,local.y+center.y+ray.y*enter,local.z+center.z+ray.z*enter],
     [ray.x,ray.y,ray.z],4-enter);

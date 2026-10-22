@@ -1,0 +1,78 @@
+{
+  "status": "SOURCE_PREPARED_PENDING_REVIEW_RUNTIME_NONE",
+  "rows": 14,
+  "physical": 15,
+  "selfExclusion": "SOURCE_MANIFEST_FINAL.json only",
+  "files": [
+    {
+      "path": "A0.cell.mjs",
+      "bytes": 10274,
+      "sha256": "7a11392d5e7c3604b5ae224811dce5073773124bdc60398e154151d7a893c0a8"
+    },
+    {
+      "path": "ADMIN_REPORT_REFERENCE.json",
+      "bytes": 343,
+      "sha256": "8ebe9c58776c2ebc5b0875be3b9f4c37805e1256c082386bf201bc40642e13ef"
+    },
+    {
+      "path": "CHECK_RESULTS_FINAL.json",
+      "bytes": 3063,
+      "sha256": "317865d25b5f6dbc52cab818be18334a0ed88a747d3faac5de907d6f0ea0d773"
+    },
+    {
+      "path": "CHECK_RESULTS_POST_REVIEW.json",
+      "bytes": 3064,
+      "sha256": "5afca1015d58e463413fa746915aecce7e001466d48be0dfe6aeb76af3f15759"
+    },
+    {
+      "path": "CHECK_RESULTS.json",
+      "bytes": 3064,
+      "sha256": "9a0c0110cd47336b13c8cfec2c1ce1b33c6dfbadc973950cfe58cacd37afd689"
+    },
+    {
+      "path": "FREEZE.json",
+      "bytes": 497,
+      "sha256": "d8636ac3d51db2b5fdc101be8a0546cfbf1266ab216dc6f1a305cc939bd53d56"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 1542,
+      "sha256": "0e1d9f2be9fd0712d790a021f8ec95ae6a4716cf158c5ecd992ee64c8f3e1684"
+    },
+    {
+      "path": "PRESERVATION_AFTER.json",
+      "bytes": 300,
+      "sha256": "931445810eb2b36c00b82a626749754db5d26be2789a906a27a07365b91ccb05"
+    },
+    {
+      "path": "PRESERVATION_BEFORE.json",
+      "bytes": 238492,
+      "sha256": "08dd0a3a7f89b1103af49c2faabafc7035352fc7938f2b29f348d6051ad5955c"
+    },
+    {
+      "path": "prestart.ps1",
+      "bytes": 19636,
+      "sha256": "d5dfbf71f7ae01523ded6c98334c6a5ab72ef10189b2a5e9dd8f9a22245402c9"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3589,
+      "sha256": "7577208dc9ea9a89d5c48acdf7372523e2a8188723daf527beeb06c33978a574"
+    },
+    {
+      "path": "replay.mjs",
+      "bytes": 3576,
+      "sha256": "3124e722bf7bf476fdbed8659a172ac16c8249667564d667fdcc235241ec895a"
+    },
+    {
+      "path": "Root.cell.mjs",
+      "bytes": 3832,
+      "sha256": "112c01019ce143d9be61ab827912388a5a2a0ad32ac782a3a85c3000faf99d10"
+    },
+    {
+      "path": "verify.ps1",
+      "bytes": 4353,
+      "sha256": "2ffebfaab6c7c5b4dc31e13b8747dcb8b680092a63f8dcb581018d241baa7ef7"
+    }
+  ]
+}

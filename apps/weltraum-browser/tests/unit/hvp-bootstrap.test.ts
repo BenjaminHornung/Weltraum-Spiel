@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { applyCameraProjection } from "../../src/render/three/backend/threeCameraProjection";
 import { describe, expect, it, vi } from "vitest";
 import {MemorySaveRepository} from "../../src/browser-storage";
 import {createHvpTerrainCompiler,meshInitialHvpTerrain} from "../../src/hestia-prototype/terrain/terrainProducts";
@@ -576,7 +577,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
       expect(failures).toHaveLength(measured?1:0);
       if(measured){
         const data=(failures[0]![1] as PerformanceMeasureOptions).detail.data;
-        expect(data.totalCpuBytes).toBeGreaterThan(1);expect(data.extraCpuBytes).toBe(0);expect(data.stack.length).toBeLessThanOrEqual(512);
+        expect(data.totalCpuBytes).toBeGreaterThan(1);expect(data.extraCpuBytes).toBe(16*1024);expect(data.stack.length).toBeLessThanOrEqual(512);
       }
     }finally{measure.mockRestore();}
   });
@@ -1428,6 +1429,11 @@ describe("HVP T08 bootstrap lifecycle", () => {
   });
   it("keeps HUD inspection state tied to the real camera across presets reset Play and restored modes", async () => {
     const source = harness();
+    const dispatch = source.backend.dispatch;
+    source.backend.dispatch = (command) => {
+      if (command.kind === "ApplyFrameProjection") applyCameraProjection(source.camera, command.snapshot);
+      return dispatch(command);
+    };
     const createCamera = cameraModule.createHvpCamera;
     const createHud = hudModule.createHvpHud;
     const createPhysics = source.overrides()!.createPhysics!;
@@ -1438,6 +1444,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
       camera = createCamera(...args);
       return camera;
     });
+    const inputSpy = vi.spyOn(playerInputModule, "createHvpPlayerInput");
     const hudSpy = vi.spyOn(hudModule, "createHvpHud").mockImplementation((options) => {
       actions = options.actions;
       hud = createHud(options);
@@ -1457,6 +1464,10 @@ describe("HVP T08 bootstrap lifecycle", () => {
         }
       }));
       expect(cameraSpy).toHaveBeenCalledOnce();
+      expect(inputSpy).toHaveBeenCalledOnce();
+      const ownedCamera = cameraSpy.mock.calls[0]![0].camera;
+      expect(ownedCamera).not.toBe(source.camera);
+      expect(inputSpy.mock.calls[0]![1]).toBe(ownedCamera);
       expect(hudSpy).toHaveBeenCalledOnce();
       const owner = camera!;
       const actualHud = hud!;
@@ -1491,6 +1502,9 @@ describe("HVP T08 bootstrap lifecycle", () => {
           expect(root.dataset.inspect).toBe("off");
           expect(mode.textContent).toContain("(Orbit)");
           stepFrame(source.windowPort, performance.now());
+          const projection = source.commands.filter(command => command.kind === "ApplyFrameProjection").at(-1)!.snapshot;
+          expect(projection.cameraPositionRelative).toEqual(owner.readPose().position);
+          expect(projection.cameraOrientation).toEqual(owner.readPose().quaternion);
           expect(owner.mode).toBe("Orbit");
           expect(hudActions.readInspectEnabled()).toBe(false);
           expect(inspect.textContent).toBe("Inspect: off");
@@ -1554,6 +1568,40 @@ describe("HVP T08 bootstrap lifecycle", () => {
           expect(root.dataset.inspect).toBe(enabled ? "off" : "on");
           expect(mode.textContent).toContain(enabled ? "(Orbit)" : "(Fly)");
         }
+
+        owner.restore({ ...owner.checkpoint(), mode: "Fly",
+          position: { x: 1 / 3, y: 3.15, z: -11.123456789 },
+          quaternion: { x: 1 / 3, y: 0, z: 0, w: Math.sqrt(8 / 9) }, fov: 57.123456789 });
+        const exactPose = owner.readPose();
+        const exactCheckpoint = owner.checkpoint();
+        const roundtrip = JSON.parse(JSON.stringify(exactCheckpoint));
+        expect(exactPose.position.x).not.toBe(Math.fround(exactPose.position.x));
+        expect(exactCheckpoint.fov).not.toBe(Math.fround(exactCheckpoint.fov));
+        for (let frame = 0; frame < 3; frame += 1) {
+          const before = source.commands.length;
+          source.windowPort.innerWidth += 1;
+          source.windowPort.dispatchEvent(new Event("resize"));
+          stepFrame(source.windowPort, performance.now());
+          const projections = source.commands.slice(before).filter(command => command.kind === "ApplyFrameProjection");
+          expect(projections.length).toBeGreaterThan(0);
+          const snapshot = projections.at(-1)!.snapshot;
+          expect(snapshot.cameraPositionRelative).toEqual(exactPose.position);
+          expect(snapshot.cameraOrientation).toEqual(exactPose.quaternion);
+          expect(snapshot.projectionParameters).toEqual({ kind: "Perspective", verticalFovDegrees: exactCheckpoint.fov,
+            aspect: ownedCamera.aspect, near: ownedCamera.near, far: ownedCamera.far });
+          expect(source.camera.position.toArray()).toEqual(Object.values(exactPose.position).map(Math.fround));
+          expect(source.camera.quaternion.toArray()).toEqual(Object.values(exactPose.quaternion).map(Math.fround));
+          expect([source.camera.fov, source.camera.aspect, source.camera.near, source.camera.far]).toEqual(
+            [exactCheckpoint.fov, ownedCamera.aspect, ownedCamera.near, ownedCamera.far].map(Math.fround));
+          expect(owner.readPose()).toEqual(exactPose);
+          expect(owner.checkpoint()).toEqual(exactCheckpoint);
+          expect(JSON.parse(JSON.stringify(owner.checkpoint()))).toEqual(roundtrip);
+        }
+        const projectionCount = source.commands.filter(command => command.kind === "ApplyFrameProjection").length;
+        stepFrame(source.windowPort, performance.now());
+        expect(source.commands.filter(command => command.kind === "ApplyFrameProjection")).toHaveLength(projectionCount);
+        owner.restore(roundtrip);
+        expect(owner.checkpoint()).toEqual(exactCheckpoint);
       } finally {
         updates.mockRestore();
       }
@@ -1562,6 +1610,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
         await handle?.dispose();
       } finally {
         cameraSpy.mockRestore();
+        inputSpy.mockRestore();
         hudSpy.mockRestore();
       }
     }
@@ -1653,7 +1702,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
     const handle = await startHvp(source.overrides());
     try {
       const resources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
-      expect(resources.gameplayCpuBytes).toBe(resources.ledger.totalCpuBytes);
+      expect(resources.gameplayCpuBytes).toBe(resources.ledger.totalCpuBytes + 16*1024);
       expect(resources.diagnosticReservedBytes).toBe(cutTraceModule.HVP_CUT_TRACE_RESERVE_BYTES);
       expect(resources.totalCpuBytes).toBe(resources.gameplayCpuBytes + resources.diagnosticReservedBytes);
       expect(resources.diagnosticRuntimeOverhead).toBe("not-measured");
@@ -1669,7 +1718,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
     try {
       const resources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
       expect(resources.diagnosticReservedBytes).toBe(0);
-      expect(resources.totalCpuBytes).toBe(resources.ledger.totalCpuBytes);
+      expect(resources.totalCpuBytes).toBe(resources.ledger.totalCpuBytes + 16*1024);
       expect(resources.cutObservation.status).toBe("not-requested");
     } finally {
       await handle.dispose();
@@ -1679,7 +1728,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
   it("C2B does not allocate the observer when startup leaves less than its reserve", async () => {
     const baseline = harness();
     const baselineHandle = await startHvp(baseline.overrides());
-    const gameplayCpuBytes = JSON.parse(baseline.body.dataset.hestiaPrototypeResources!).ledger.totalCpuBytes as number;
+    const gameplayCpuBytes = JSON.parse(baseline.body.dataset.hestiaPrototypeResources!).gameplayCpuBytes as number;
     await baselineHandle.dispose();
 
     const source = harness();

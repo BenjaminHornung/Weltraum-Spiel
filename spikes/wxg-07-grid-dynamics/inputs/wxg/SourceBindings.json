@@ -1,0 +1,177 @@
+{
+  "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "files": [
+    {
+      "path": "snapshot/read-only-product/apps/weltraum-browser/src/world-generation/hestia/seed.ts",
+      "bytes": 6774,
+      "sha256": "20ac280c0503e9c92089f30d7053f5ac084aaeddd286f7a656de9a35c44e16c0",
+      "original": "apps/weltraum-browser/src/world-generation/hestia/seed.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "gitBlobSha256": "20ac280c0503e9c92089f30d7053f5ac084aaeddd286f7a656de9a35c44e16c0",
+      "workingTreeBytes": "exact bytecopy; CRLF vs Git LF separately bound, no changed port"
+    },
+    {
+      "path": "snapshot/read-only-product/apps/weltraum-browser/src/spatial/surfaceLocalFrame.ts",
+      "bytes": 7923,
+      "sha256": "2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94",
+      "original": "apps/weltraum-browser/src/spatial/surfaceLocalFrame.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "gitBlobSha256": "2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94",
+      "workingTreeBytes": "exact bytecopy; CRLF vs Git LF separately bound, no changed port"
+    },
+    {
+      "path": "snapshot/read-only-product/apps/weltraum-browser/src/persistence/time.ts",
+      "bytes": 5468,
+      "sha256": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df",
+      "original": "apps/weltraum-browser/src/persistence/time.ts",
+      "sourceCommit": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "gitBlobSha256": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df",
+      "workingTreeBytes": "exact bytecopy; CRLF vs Git LF separately bound, no changed port"
+    },
+    {
+      "path": "snapshot/card-inputs/00_START_HIER.md",
+      "bytes": 3243,
+      "sha256": "31d831cf18a99442acabf4f424bb43030fc72f767926385e9c4c94a4a23689d1",
+      "original": "00_START_HIER.md",
+      "source": "original immutable package"
+    },
+    {
+      "path": "snapshot/card-inputs/01_PRUEFUNG_UND_ENTSCHEIDUNG.md",
+      "bytes": 8005,
+      "sha256": "8c866c78f516ffc4134dfec1292bbbeb55995335915768e016e54e523a325e09",
+      "original": "01_PRUEFUNG_UND_ENTSCHEIDUNG.md",
+      "source": "original immutable package"
+    },
+    {
+      "path": "snapshot/card-inputs/03_SCHNITTSTELLEN_UND_UEBERNAHME.md",
+      "bytes": 6579,
+      "sha256": "7f3d2f477819e9f7209a45c16fd46456ddf60ef569532d6bdc438790773cf047",
+      "original": "03_SCHNITTSTELLEN_UND_UEBERNAHME.md",
+      "source": "original immutable package"
+    },
+    {
+      "path": "snapshot/card-inputs/Cloud/00_GEMEINSAMER_VERTRAG.md",
+      "bytes": 5908,
+      "sha256": "0b9a13ebe3929b4d5d48fa77a7483d0e7ba32fe82dd6c6c61e1cabaa9c1e27b2",
+      "original": "Cloud/00_GEMEINSAMER_VERTRAG.md",
+      "source": "original immutable package"
+    },
+    {
+      "path": "snapshot/card-inputs/Auftraege/WXG-01-04.md",
+      "bytes": 3552,
+      "sha256": "36d08b8f506d42d023ec2ceeb9140c73da1f3df9d3d269b56386bbc1648b626e",
+      "original": "Auftraege/WXG-01-04.md",
+      "source": "original immutable package"
+    },
+    {
+      "path": "snapshot/card-inputs/Goals/WXG-01-04.txt",
+      "bytes": 425,
+      "sha256": "3e1f3af2e0562aee8853d34dbe8182bbcf6a91d2c6b18b86146da46932796543",
+      "original": "Goals/WXG-01-04.txt",
+      "source": "original immutable package"
+    },
+    {
+      "path": "snapshot/card-inputs/SOURCE_DOCS.json",
+      "bytes": 473,
+      "sha256": "18fd0f85e13e13729acead902af925342d2ea4a7b920cdd4f74533e0ca158f0e",
+      "original": "SOURCE_DOCS.json",
+      "source": "original immutable package"
+    },
+    {
+      "path": "snapshot/card-inputs/Quellen/weltraum-universeller-planeten-wetter-climate-core-architektur-v2-2026-10-09.md",
+      "bytes": 49044,
+      "sha256": "7a35fe03f6d85e7ba8870794c161332bc7671f232faf0669fe9359b2ac64d3ed",
+      "original": "Quellen/weltraum-universeller-planeten-wetter-climate-core-architektur-v2-2026-10-09.md",
+      "source": "original immutable package"
+    },
+    {
+      "path": "snapshot/card-inputs/Quellen/hestia-konzeptpaket-review-und-arbeitspaket-registry-2026-10-09.md",
+      "bytes": 90628,
+      "sha256": "9d1fd7f751a2264acbb0214f0491825d4e71192ff6f518c69802fd03bf4074f2",
+      "original": "Quellen/hestia-konzeptpaket-review-und-arbeitspaket-registry-2026-10-09.md",
+      "source": "original immutable package"
+    }
+  ],
+  "cel": {
+    "path": "vendor/cel/SourceBindings.json",
+    "bytes": 15639,
+    "sha256": "8a6d1ee2faf07801c3eb48bad0b834f4af2c05251e7d0443a28debaf7812cd4d"
+  },
+  "pltLicensedClosure": [
+    {
+      "path": "vendor/cel/vendor/plt/fixtures/queries.json",
+      "producer": "CEL-01-WXG-00",
+      "sourcePath": "vendor/plt/fixtures/queries.json",
+      "bytes": 346,
+      "sha256": "df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/fixtures/smoothstep-goldens.json",
+      "producer": "CEL-01-WXG-00",
+      "sourcePath": "vendor/plt/fixtures/smoothstep-goldens.json",
+      "bytes": 2201,
+      "sha256": "74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/licenses/Random123.txt",
+      "producer": "CEL-01-WXG-00",
+      "sourcePath": "vendor/plt/licenses/Random123.txt",
+      "bytes": 1497,
+      "sha256": "613a52307188093b64a0767167576b432fcec41d0cb6a6a16a4cba922c4fe199"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/NumericsProfile.json",
+      "producer": "CEL-01-WXG-00",
+      "sourcePath": "vendor/plt/NumericsProfile.json",
+      "bytes": 1386,
+      "sha256": "c7652cc948a0f213a8a29ff75bdb0a76ede71344c315f924fcc541e6f7ead551"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/snapshot/time.mjs",
+      "producer": "CEL-01-WXG-00",
+      "sourcePath": "vendor/plt/snapshot/time.mjs",
+      "bytes": 5468,
+      "sha256": "dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/src/fixture.mjs",
+      "producer": "CEL-01-WXG-00",
+      "sourcePath": "vendor/plt/src/fixture.mjs",
+      "bytes": 3028,
+      "sha256": "55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/src/numerics.d.mts",
+      "producer": "CEL-01-WXG-00",
+      "sourcePath": "vendor/plt/src/numerics.d.mts",
+      "bytes": 444,
+      "sha256": "b0ad665b15b9e6a34dc19d0d967e4dc8518b437d7c62d24f7e7c43fd6698c7da"
+    },
+    {
+      "path": "vendor/cel/vendor/plt/src/numerics.mjs",
+      "producer": "CEL-01-WXG-00",
+      "sourcePath": "vendor/plt/src/numerics.mjs",
+      "bytes": 4458,
+      "sha256": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+    }
+  ],
+  "productPortChanges": [],
+  "macroSource": "Synthetic authoring projection; fixed source contains a design but no implemented global atlas. No second geographic RNG seed, no source mutation.",
+  "scientificReferences": [
+    {
+      "title": "North 1975 two-mode diffusive energy-balance family",
+      "url": "https://courses.washington.edu/pcc587/readings/north1975.pdf",
+      "status": "SEARCH_ABSTRACT_FOUND_DIRECT_FETCH_404; not distributed"
+    },
+    {
+      "title": "Diffusive EBM equations and parameter units",
+      "url": "https://www.atmos.albany.edu/facstaff/brose/classes/ATM623_Spring2015/Notes/Lectures/Lecture14%20--%20Diffusive%20energy%20balance%20model.html",
+      "status": "equation inspected; no code/data dependency"
+    },
+    {
+      "title": "MIT Held/Hou symmetric circulation calculations",
+      "url": "https://ocw.mit.edu/courses/12-810-dynamics-of-the-atmosphere-spring-2008/resources/chapter_7/",
+      "status": "source listing inspected; width is a limited diagnostic candidate"
+    }
+  ]
+}

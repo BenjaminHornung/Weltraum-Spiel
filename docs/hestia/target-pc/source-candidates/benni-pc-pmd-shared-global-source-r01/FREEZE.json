@@ -1,0 +1,23 @@
+{
+  "schema": "pmd.source-freeze/v1",
+  "status": "PRIVATE_SHARED_PMD_SOURCE_PENDING_ROOT_REVIEW",
+  "freezeUtc": "2026-10-19T16:39:54.6397814+00:00",
+  "freezeIsActualAppEnd": false,
+  "actualStartUtc": "2026-10-19T16:14:19Z",
+  "effectiveEarlierDeadlineUtc": "2026-10-19T16:48:54Z",
+  "closeOnlyFromUtc": "2026-10-19T16:45:54Z",
+  "manifest": {
+    "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-A0-BenniPC-2026-10-13\\.a0-runtime\\benni-pc-pmd-shared-global-source-r01\\SOURCE_MANIFEST_FINAL.json",
+    "sha256": "8380d494a055389e11d255ea60d704cdb5e303902dc572a3029990d614bfcd4d",
+    "fileCount": 316,
+    "allReadBackMatch": true
+  },
+  "report": {
+    "path": "E:\\DEV\\Weltraum-Spiel\\TARGET_PC\\PMD_SHARED_GLOBAL_SOURCE-20261019.md",
+    "bytes": 10027,
+    "sha256": "419a158fbb12b9bef9c0cdcc889fe7709c472bde582f203aa32fe84e64e9fd91"
+  },
+  "normalSourceAdoption": "HOLD",
+  "runtimeAcceptance": "NOT_RUN",
+  "noAutomaticContinuation": true
+}

@@ -1,0 +1,341 @@
+{
+  "schema": "hestia.plt-01-02-receipt/v1",
+  "baseline": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+  "branch": "feature/plt-01-02-2026-10-09",
+  "environment": "LOCAL_WINDOWS_ISOLATED",
+  "implementation": "COMPLETE",
+  "codeOracle": "PASS",
+  "crossBrowser": "PASS",
+  "referenceHardware": "NOT_RUN",
+  "crossDevice": "NOT_RUN",
+  "recommendation": "CANDIDATE",
+  "headerDeployment": "REQUIRES_DECISION",
+  "productIntegration": "NO",
+  "actualAdapter": "NOT_REQUESTED_CPU_ONLY",
+  "gpuTimer": "NOT_REQUESTED",
+  "hostLoad": "CONCURRENT_SESSIONS_UNCONTROLLED",
+  "tools": {
+    "rust": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+    "npmObserved": "10.9.8",
+    "node": "22.23.2",
+    "python": "3.12.13",
+    "architecture": "x64"
+  },
+  "profileDigest": "sha256:64e7977f9b510d74aa61fc37edae076c94ef7a3d0fda09b1fd9cf14e364bb714",
+  "implementationDigest": "sha256:db7435dfacf7dd0ee244ba7c0975f1bc552bb168bcf424225521f38307ad27a9",
+  "sourceInputBindings": "SourceBindings.json",
+  "dependencyLock": "dependencies.lock.json",
+  "packageLock": "package-lock.json",
+  "snapshotBindings": "snapshot/manifest.json",
+  "wasmBindings": {
+    "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+    "target": "wasm32-unknown-unknown",
+    "targetArchiveDigest": "sha256:fa0edb6e9f34faae5735554d62d50875eded839dc707d0f1c01467a918d8453b",
+    "compilerDigest": "sha256:cf79cfd77b0a144c56a0a6af6bf10bcdf095a73718cd4bf2b9d4fe2d2cbded55",
+    "kernelDigest": "sha256:e3586ea54d61615f6cc527e43af7b62f8d21c943c09c5b379eb829028394bbb2",
+    "bindings": {
+      "scalar": "sha256:4e7fb1fec55509236ceeecb5405ce062f2d64bb88103a844be42e09a77e6087c",
+      "simd": "sha256:55f94330fb47c8096f417d0998aed29a26f09385ceb764de9425d2d751638cb4"
+    }
+  },
+  "shaderBinding": {
+    "reason": "No shader or GPU kernel in this spike",
+    "status": "NOT_APPLICABLE"
+  },
+  "focusedTests": {
+    "log": "tests/runs/local-browser-05/unit.log",
+    "status": "PASS",
+    "pass": 19,
+    "exitCode": 0,
+    "fail": 0
+  },
+  "browserEvidence": {
+    "cases": 6,
+    "cleanup": "Six direct owned child SIGTERM exits observed, six own servers closed; no natural exit0 or full descendant proof",
+    "summary": "tests/runs/local-browser-05/summary.json",
+    "crossBrowser": "PASS",
+    "reproExitCode": 0,
+    "servedBindings": [
+      {
+        "path": "NumericsProfile.json",
+        "sourceDigest": "c7652cc948a0f213a8a29ff75bdb0a76ede71344c315f924fcc541e6f7ead551",
+        "servedDigest": "c7652cc948a0f213a8a29ff75bdb0a76ede71344c315f924fcc541e6f7ead551"
+      },
+      {
+        "path": "src/fixture.mjs",
+        "sourceDigest": "55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6",
+        "servedDigest": "55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+      },
+      {
+        "path": "src/numerics.mjs",
+        "sourceDigest": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a",
+        "servedDigest": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+      },
+      {
+        "path": "src/report-validation.mjs",
+        "sourceDigest": "338f72ced6c171925305229dec5fd88d6d212b16cf9f4364d78593d24ca4848d",
+        "servedDigest": "338f72ced6c171925305229dec5fd88d6d212b16cf9f4364d78593d24ca4848d"
+      },
+      {
+        "path": "src/wasm-loader.mjs",
+        "sourceDigest": "c84ac6b84fa40e0251a2db9c213072d8b783b8c4f96d49590e91dc169f1dc2ac",
+        "servedDigest": "c84ac6b84fa40e0251a2db9c213072d8b783b8c4f96d49590e91dc169f1dc2ac"
+      },
+      {
+        "path": "web/index.html",
+        "sourceDigest": "de3d6febef8a506f2b7d0aceff28fd3ecf0565f31074fa94573da57b2dc31dfb",
+        "servedDigest": "de3d6febef8a506f2b7d0aceff28fd3ecf0565f31074fa94573da57b2dc31dfb"
+      },
+      {
+        "path": "web/probe.mjs",
+        "sourceDigest": "53fad70dd93aeac458691ac9a19a0e8cd625550a06ca06844d3044fb1fa4a0ca",
+        "servedDigest": "53fad70dd93aeac458691ac9a19a0e8cd625550a06ca06844d3044fb1fa4a0ca"
+      },
+      {
+        "path": "web/worker.mjs",
+        "sourceDigest": "6d7841baae205b5de662eedc53c4051274bc8040d93270baaa3d70586d7c56f9",
+        "servedDigest": "6d7841baae205b5de662eedc53c4051274bc8040d93270baaa3d70586d7c56f9"
+      },
+      {
+        "path": "snapshot/ids.ts",
+        "sourceDigest": "db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4",
+        "servedDigest": "db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4"
+      },
+      {
+        "path": "snapshot/manifest.json",
+        "sourceDigest": "9d1e070b9be0b171be0ce9dff4f8b861573199b69bb80060078346897f2b8980",
+        "servedDigest": "9d1e070b9be0b171be0ce9dff4f8b861573199b69bb80060078346897f2b8980"
+      },
+      {
+        "path": "snapshot/time.mjs",
+        "sourceDigest": "dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c",
+        "servedDigest": "dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c"
+      },
+      {
+        "path": "snapshot/time.ts",
+        "sourceDigest": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df",
+        "servedDigest": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+      },
+      {
+        "path": "fixtures/queries.json",
+        "sourceDigest": "df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033",
+        "servedDigest": "df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033"
+      },
+      {
+        "path": "fixtures/rng-kat.json",
+        "sourceDigest": "1381508b7f0d07315563c26b9eeeae7f5051c3abf101e6f61ba39d081fe1d8ee",
+        "servedDigest": "1381508b7f0d07315563c26b9eeeae7f5051c3abf101e6f61ba39d081fe1d8ee"
+      },
+      {
+        "path": "fixtures/smoothstep-goldens.json",
+        "sourceDigest": "74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1",
+        "servedDigest": "74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1"
+      },
+      {
+        "path": "wasm/bindings.json",
+        "sourceDigest": "23369e65595225429ea5a13fac89cf385d66e679487481e000bff082f8b09442",
+        "servedDigest": "23369e65595225429ea5a13fac89cf385d66e679487481e000bff082f8b09442"
+      },
+      {
+        "path": "wasm/BUILD.md",
+        "sourceDigest": "e8dbddd8a72dbb08ee4930a533cff5fd13cad051f7c5b468854e4ac94abc256a",
+        "servedDigest": "e8dbddd8a72dbb08ee4930a533cff5fd13cad051f7c5b468854e4ac94abc256a"
+      },
+      {
+        "path": "wasm/kernel.rs",
+        "sourceDigest": "e3586ea54d61615f6cc527e43af7b62f8d21c943c09c5b379eb829028394bbb2",
+        "servedDigest": "e3586ea54d61615f6cc527e43af7b62f8d21c943c09c5b379eb829028394bbb2"
+      },
+      {
+        "path": "wasm/scalar.wasm",
+        "sourceDigest": "4e7fb1fec55509236ceeecb5405ce062f2d64bb88103a844be42e09a77e6087c",
+        "servedDigest": "4e7fb1fec55509236ceeecb5405ce062f2d64bb88103a844be42e09a77e6087c"
+      },
+      {
+        "path": "wasm/simd.wasm",
+        "sourceDigest": "55f94330fb47c8096f417d0998aed29a26f09385ceb764de9425d2d751638cb4",
+        "servedDigest": "55f94330fb47c8096f417d0998aed29a26f09385ceb764de9425d2d751638cb4"
+      }
+    ],
+    "sourceBindings": [
+      {
+        "path": "src/numerics.mjs",
+        "sha256": "bbb02b325d728c836ef780be9a60e4d210c8bbe4b62a8ade7a477e7a24ead48a"
+      },
+      {
+        "path": "src/fixture.mjs",
+        "sha256": "55e40764195e1e185c3c179f6dd3124b3adcbddb764d683059d276ce71324fb6"
+      },
+      {
+        "path": "src/wasm-loader.mjs",
+        "sha256": "c84ac6b84fa40e0251a2db9c213072d8b783b8c4f96d49590e91dc169f1dc2ac"
+      },
+      {
+        "path": "web/probe.mjs",
+        "sha256": "53fad70dd93aeac458691ac9a19a0e8cd625550a06ca06844d3044fb1fa4a0ca"
+      },
+      {
+        "path": "web/worker.mjs",
+        "sha256": "6d7841baae205b5de662eedc53c4051274bc8040d93270baaa3d70586d7c56f9"
+      },
+      {
+        "path": "src/report-validation.mjs",
+        "sha256": "338f72ced6c171925305229dec5fd88d6d212b16cf9f4364d78593d24ca4848d"
+      },
+      {
+        "path": "web/index.html",
+        "sha256": "de3d6febef8a506f2b7d0aceff28fd3ecf0565f31074fa94573da57b2dc31dfb"
+      },
+      {
+        "path": "scripts/server.mjs",
+        "sha256": "4da10131202df67d82470d2431fd4d7bf1efc07a8c0d7b929f358924e7e1c465"
+      },
+      {
+        "path": "scripts/repro.mjs",
+        "sha256": "90556de9228d9abadada5c8c58629186001bccad17cd1ce861634e6fae5415c0"
+      },
+      {
+        "path": "scripts/build.mjs",
+        "sha256": "d7cd8c9cd6fc8169df69a085cb16a6dc02d946136e7f26b2dfa728c034b9bed6"
+      },
+      {
+        "path": "scripts/seal.mjs",
+        "sha256": "632e62949d1847a1fff76884577bee7d00e61ffa25db674297cef35f85a4bedf"
+      },
+      {
+        "path": "scripts/generate-goldens.py",
+        "sha256": "8ca1dbe82efd0039fa752b511ff481e39b59bdfde1fd8ce3e947028c3e687376"
+      },
+      {
+        "path": "scripts/prepare-rust.ps1",
+        "sha256": "dd525967d930922681535b1f6620395e55255305abadca3d30e0fc521235ecb7"
+      },
+      {
+        "path": "tests/integration.test.mjs",
+        "sha256": "695994bf4a1d12c9bb9bd9e268c87b17e1c1991a02ee39c11dc4ea8aea81ecd8"
+      },
+      {
+        "path": "tests/numerics.test.mjs",
+        "sha256": "0dc2a11aef95d505f197e5c220cf78f80e5b72e6a8a60ec143187fbc082cf2ac"
+      },
+      {
+        "path": "package.json",
+        "sha256": "c45f2cc26fa32bfe9d0d8f597ca86bc434bf93171b46fcd4ad828b5913ebce89"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "f5b5fbf862539b97a9e851252af96d5b502dbae3aa38b59ef065dcc222be84a6"
+      },
+      {
+        "path": "dependencies.lock.json",
+        "sha256": "f40f0fa6dc38599731845822fa88e5596d5fd845a220939536fccadef935bd56"
+      },
+      {
+        "path": "SourceBindings.json",
+        "sha256": "bd7ff8d2e7bb764b1a963234af8c1c1bc7377a92c844504623444bb28aafc82e"
+      },
+      {
+        "path": "snapshot/time.ts",
+        "sha256": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+      },
+      {
+        "path": "snapshot/time.mjs",
+        "sha256": "dce7b42f3f90f83f3c44dcb26e822a55ff4098277d39c9e3295e8ef46b5c1a8c"
+      },
+      {
+        "path": "snapshot/ids.ts",
+        "sha256": "db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4"
+      },
+      {
+        "path": "snapshot/manifest.json",
+        "sha256": "9d1e070b9be0b171be0ce9dff4f8b861573199b69bb80060078346897f2b8980"
+      },
+      {
+        "path": "wasm/kernel.rs",
+        "sha256": "e3586ea54d61615f6cc527e43af7b62f8d21c943c09c5b379eb829028394bbb2"
+      },
+      {
+        "path": "wasm/bindings.json",
+        "sha256": "23369e65595225429ea5a13fac89cf385d66e679487481e000bff082f8b09442"
+      },
+      {
+        "path": "fixtures/queries.json",
+        "sha256": "df3895c0f285148d4ee852e54efd65dfa2d968798514fc7a533dffdf8e7c3033"
+      },
+      {
+        "path": "fixtures/rng-kat.json",
+        "sha256": "1381508b7f0d07315563c26b9eeeae7f5051c3abf101e6f61ba39d081fe1d8ee"
+      },
+      {
+        "path": "fixtures/smoothstep-goldens.json",
+        "sha256": "74a2a00458b56361adaab4ecf1f70e667d0c3ff04ab4e3953bde8f9dc3e78fb1"
+      },
+      {
+        "path": "wasm/scalar.wasm",
+        "sha256": "4e7fb1fec55509236ceeecb5405ce062f2d64bb88103a844be42e09a77e6087c"
+      },
+      {
+        "path": "wasm/simd.wasm",
+        "sha256": "55f94330fb47c8096f417d0998aed29a26f09385ceb764de9425d2d751638cb4"
+      }
+    ],
+    "status": "PASS",
+    "nativeMcp": {
+      "reportPostStatus": 200,
+      "screenshot": "tests/mcp-chromium-05.png",
+      "status": "PASS",
+      "json": "tests/mcp-chromium-05.json",
+      "serverTerminalExit": 1,
+      "listeners": "Both own ports ECONNREFUSED",
+      "consoleErrors": 0,
+      "listenerProbeExit": 0
+    },
+    "boundedProcessAudit": "tests/final-profile-process-audit.json: exact own profile matches0; no process changed"
+  },
+  "negativeCases": {
+    "profileCreationFailure": {
+      "summary": "tests/runs/repro-profile-blocked/summary.json",
+      "expectedExitCode": 1
+    },
+    "staleSeal": {
+      "log": "tests/seal-stale-01.log",
+      "expectedExitCode": 1
+    }
+  },
+  "independentReview": {
+    "status": "NO_REMAINING_SUBSTANTIVE_FINDINGS",
+    "evidence": "tests/review.md",
+    "finalVerification": "SCOPED_COMPLETE_PASS_SUPPORTED",
+    "verificationEvidence": "tests/verification-review.md"
+  },
+  "workflow": {
+    "specValidation": "PASS",
+    "inheritedProductTypecheck": "FAIL",
+    "executionId": "2ece2dfc670a48f99331140a5919e87d",
+    "reason": "MODULE_NOT_FOUND: product node_modules/typescript/bin/tsc; outside writable product scope",
+    "completionPreflight": "ADVISORY_WARNING_CAN_PROCEED",
+    "inheritedExitCode": 1,
+    "taskCompletion": "DONE_ON_SCOPED_MANUAL_EVIDENCE_AFTER_ADVISORY_PREFLIGHT",
+    "manualOverride": "NONE"
+  },
+  "dirtyTreeBinding": {
+    "scopePrefixes": [
+      "spikes/plt-01-02-numerics/",
+      ".devtoolbox/specs/changes/plt-01-02-2026-10-09/"
+    ],
+    "method": "Ordered path/length/SHA256 for all baseline changes and staged/unstaged/nonignored-untracked files",
+    "freshCheck": "node scripts/seal.mjs --check",
+    "exactReviewPatch": ".runtime/final-seal/review.patch",
+    "detachedSeal": ".runtime/final-seal/scope-seal.json",
+    "selfReference": "Detached ignored metadata; no circular digest"
+  },
+  "publication": {
+    "push": "NO",
+    "merge": "NO",
+    "commit": "NO",
+    "plannotatorApproval": "NOT_REQUESTED_NO_COMMIT",
+    "integrator": "A0_ONLY"
+  },
+  "remainingProfile": "runner-profile.json",
+  "existingHelperInventory": "Inventory.md"
+}
