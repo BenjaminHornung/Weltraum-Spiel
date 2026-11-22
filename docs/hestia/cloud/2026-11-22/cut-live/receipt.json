@@ -1,0 +1,365 @@
+{
+  "recordedUtc": "2026-11-22T15:58:16.685132+00:00",
+  "repository": "BenjaminHornung/Weltraum-Spiel",
+  "branch": "codex/hestia-cut-live-integration-2026-11-22",
+  "publishedProductCommit": "d84b5532068e8e584d031dbdc398c96c405812d4",
+  "testedLocalCommit": "abf90f07ca063d67e5b683af6a732dee608e5842",
+  "tree": "b43941e6002cfab9b6d24a7a8ee39a4669cf4ae8",
+  "completeDistSha256": "b485dff091a29c1267e889e7e6e72bfc50baddc2e6561bde917ffd941c6e93e9",
+  "emitted": {
+    "physicsWorker-9S8hP8xu.js": "d340dec315063961f2d4a9513a945c73f6e391e13b47a443d25530c443ff70a8",
+    "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb"
+  },
+  "productionBuildExit": 0,
+  "focusedUnitNode24": {
+    "exit": 0,
+    "suites": 12,
+    "passed": 74
+  },
+  "targetedNode22": "evidence/final-targeted.json",
+  "finalNormalPlayerClicks": [
+    {
+      "mode": "final-control",
+      "attempt": "player-1.json",
+      "inputToPublishedMs": 672.1,
+      "inputToMatchingSubmitMs": 5654.9,
+      "receipt": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "staticCollisionCompileElapsedMs": [
+        410.3
+      ],
+      "staticCollisionActiveSlicesMs": [
+        1.6,
+        1.1,
+        0,
+        0.8,
+        0.7,
+        0.1
+      ],
+      "nativePrepareElapsedMs": [
+        108.4
+      ],
+      "componentIndexMs": [
+        5.5
+      ]
+    },
+    {
+      "mode": "final-control",
+      "attempt": "player-2.json",
+      "inputToPublishedMs": 1134.7,
+      "inputToMatchingSubmitMs": 2482.5,
+      "receipt": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "staticCollisionCompileElapsedMs": [
+        744.7
+      ],
+      "staticCollisionActiveSlicesMs": [
+        1.7,
+        1.8,
+        0,
+        0.4,
+        1.2,
+        0
+      ],
+      "nativePrepareElapsedMs": [
+        195.7
+      ],
+      "componentIndexMs": [
+        4.1
+      ]
+    },
+    {
+      "mode": "final-priority",
+      "attempt": "player-1.json",
+      "inputToPublishedMs": 564.5,
+      "inputToMatchingSubmitMs": 1438.7,
+      "receipt": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "staticCollisionCompileElapsedMs": [
+        392.6
+      ],
+      "staticCollisionActiveSlicesMs": [
+        1.1,
+        1.9,
+        0.8,
+        0.1,
+        9.2,
+        1,
+        0
+      ],
+      "nativePrepareElapsedMs": [
+        125.1
+      ],
+      "componentIndexMs": [
+        17.2
+      ]
+    },
+    {
+      "mode": "final-priority",
+      "attempt": "player-2.json",
+      "inputToPublishedMs": 1088.2,
+      "inputToMatchingSubmitMs": 9804.8,
+      "receipt": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "staticCollisionCompileElapsedMs": [
+        331.3
+      ],
+      "staticCollisionActiveSlicesMs": [
+        6.7,
+        2.7,
+        1.1,
+        0.1,
+        0.8,
+        0.6,
+        0
+      ],
+      "nativePrepareElapsedMs": [
+        438.9
+      ],
+      "componentIndexMs": [
+        14.3
+      ]
+    }
+  ],
+  "privateSaveColdLoadRecut": [
+    {
+      "exportSource": "final",
+      "exportSha256": "f91354e0e2dcad404c4cfb44b4dd92abcd6381d3c0fb1de97891e2f994ddb18f",
+      "freshProcess": "3375dcdf-13fa-4126-9a13-03f70d036dea",
+      "coldProcess": "f6cd649c-3363-4638-acae-bd844dae11d9",
+      "nativeRecut": {
+        "receipt": {
+          "id": "p1-lab-recut",
+          "status": "Applied",
+          "parentId": "hvp-branch:r1:p1",
+          "children": [
+            "hvp-branch:r1:p1:r1:p0"
+          ],
+          "removedCells": 1,
+          "removedMassKg": 1.171875,
+          "issuedTick": 5,
+          "commitTick": 6,
+          "parentPose": {
+            "position": {
+              "x": -10.5,
+              "y": 2.938570499420166,
+              "z": -13.25
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": -1.1794462203979492,
+              "z": 0
+            },
+            "angularVelocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "removedMomentum": {
+            "massKg": 1.171875,
+            "referencePoint": {
+              "x": -10.5,
+              "y": 2.938570499420166,
+              "z": -13.25
+            },
+            "center": {
+              "x": -10.6875,
+              "y": 3.001070499420166,
+              "z": -13.4375
+            },
+            "linear": {
+              "x": 0,
+              "y": -1.3821635395288467,
+              "z": 0
+            },
+            "angular": {
+              "x": -0.25915566366165876,
+              "y": 0,
+              "z": 0.25915566366165876
+            }
+          }
+        },
+        "priorSequence": 0,
+        "afterSequence": 1,
+        "parentMassKg": 150,
+        "remainingMassKg": 148.828125,
+        "checkpointTick": 6
+      },
+      "resave": {
+        "slot": "hvp-phy01-migration2-lab-r01",
+        "revision": 2,
+        "signature": "fnv1a32:c131b0fe",
+        "bytes": 223891,
+        "sha256": "7a29c3e69fce2cd3582270a01ae16607092bec96b813fd0c783c2e841e47533f"
+      },
+      "disposed": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "terrainRecovery": {
+          "catalogs": 0,
+          "entries": 0,
+          "sectors": 0,
+          "fragments": 0,
+          "held": 0
+        },
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "liveThreads": 0
+    },
+    {
+      "exportSource": "R3",
+      "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+      "freshProcess": "845debe2-b487-4bd1-843c-6c416a17077e",
+      "coldProcess": "12197279-405b-4a73-a5d7-e9a5da6e30e8",
+      "nativeRecut": {
+        "receipt": {
+          "id": "p1-lab-recut",
+          "status": "Applied",
+          "parentId": "hvp-branch:r1:p1",
+          "children": [
+            "hvp-branch:r1:p1:r1:p0"
+          ],
+          "removedCells": 1,
+          "removedMassKg": 1.171875,
+          "issuedTick": 4,
+          "commitTick": 5,
+          "parentPose": {
+            "position": {
+              "x": -10.5,
+              "y": 2.9569993019104004,
+              "z": -13.25
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": -0.982871949672699,
+              "z": 0
+            },
+            "angularVelocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "removedMomentum": {
+            "massKg": 1.171875,
+            "referencePoint": {
+              "x": -10.5,
+              "y": 2.9569993019104004,
+              "z": -13.25
+            },
+            "center": {
+              "x": -10.6875,
+              "y": 3.0194993019104004,
+              "z": -13.4375
+            },
+            "linear": {
+              "x": 0,
+              "y": -1.151803066022694,
+              "z": 0
+            },
+            "angular": {
+              "x": -0.21596307487925515,
+              "y": 0,
+              "z": 0.21596307487925515
+            }
+          }
+        },
+        "priorSequence": 0,
+        "afterSequence": 1,
+        "parentMassKg": 150,
+        "remainingMassKg": 148.828125,
+        "checkpointTick": 5
+      },
+      "resave": {
+        "slot": "hvp-phy01-migration2-lab-r01",
+        "revision": 2,
+        "signature": "fnv1a32:316825f8",
+        "bytes": 223907,
+        "sha256": "4e59c62505c467d105d0174119247b3207589c459b6c01ffd439109f0bce12c1"
+      },
+      "disposed": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "terrainRecovery": {
+          "catalogs": 0,
+          "entries": 0,
+          "sectors": 0,
+          "fragments": 0,
+          "held": 0
+        },
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "liveThreads": 0
+    }
+  ],
+  "referenceDeviceRun": false,
+  "cloudClicksMeeting10ms": 0,
+  "physicalDisplayMeasured": false,
+  "publicSaveCutover": false,
+  "compactWorkerQualification": "evidence/compact-native-worker-ipc.json",
+  "broadRunCommit": "b54f92b5d8ab8c737888aac8b4b3955e8a75567e",
+  "broadResults": "evidence/r11-verification.json",
+  "finalMovingPlayerRun": "evidence/moving-browser-recut.json",
+  "fullTemporalUpscaling": false,
+  "liveRayPhotomodeAccepted": false,
+  "nativeNexusSolverBuilt": false
+}

@@ -1,0 +1,1651 @@
+{
+  "hash": "fnv1a64-v1:61ddd07e19e6a3ba",
+  "groups": {
+    "base": {
+      "count": 40,
+      "meanCpu": 41.49930000000001,
+      "wallMedian": 36.787349999999606,
+      "yieldCount": 12519,
+      "phases": {
+        "ownerIngestPrefix": 5.02255200000036,
+        "ownerIngestBricks": 15.639451000000008,
+        "ownerIngestProofs": 4.095434000000296,
+        "ownerIngestStructural": 11.111218000000008
+      }
+    },
+    "candidate": {
+      "count": 40,
+      "meanCpu": 19.6236,
+      "wallMedian": 21.1724049999998,
+      "yieldCount": 5237,
+      "phases": {
+        "ownerIngestPrefix": 2.8791479999999865,
+        "ownerIngestBricks": 5.163090000000011,
+        "ownerIngestProofs": 1.8336359999998422,
+        "ownerIngestStructural": 10.113005000000157
+      }
+    }
+  },
+  "rows": [
+    {
+      "name": "candidate",
+      "pair": 0,
+      "wall": 79.14702199999999,
+      "cpu": 57.874,
+      "times": {
+        "ownerIngestPrefix": 15.615314000000012,
+        "ownerIngestBricks": 26.735535,
+        "ownerIngestProofs": 7.960127999999997,
+        "ownerIngestStructural": 28.237070999999986
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 0,
+      "wall": 105.092974,
+      "cpu": 76.718,
+      "times": {
+        "ownerIngestPrefix": 28.632164000000017,
+        "ownerIngestBricks": 39.871172,
+        "ownerIngestProofs": 11.925789000000009,
+        "ownerIngestStructural": 24.217679999999973
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 1,
+      "wall": 80.35402399999998,
+      "cpu": 51.189,
+      "times": {
+        "ownerIngestPrefix": 12.137872000000016,
+        "ownerIngestBricks": 25.783920999999964,
+        "ownerIngestProofs": 21.779402000000005,
+        "ownerIngestStructural": 20.09018900000001
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 1,
+      "wall": 41.41582,
+      "cpu": 31.467,
+      "times": {
+        "ownerIngestPrefix": 4.968222000000026,
+        "ownerIngestBricks": 7.996640999999954,
+        "ownerIngestProofs": 3.1931020000000103,
+        "ownerIngestStructural": 25.163595999999984
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 2,
+      "wall": 37.28908099999995,
+      "cpu": 27.427,
+      "times": {
+        "ownerIngestPrefix": 4.434804999999983,
+        "ownerIngestBricks": 6.591797999999983,
+        "ownerIngestProofs": 3.3044870000000515,
+        "ownerIngestStructural": 22.88824699999998
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 2,
+      "wall": 56.06529899999998,
+      "cpu": 40.409,
+      "times": {
+        "ownerIngestPrefix": 12.61455699999999,
+        "ownerIngestBricks": 16.872249000000068,
+        "ownerIngestProofs": 6.832253999999921,
+        "ownerIngestStructural": 19.69525500000009
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 3,
+      "wall": 76.43623300000002,
+      "cpu": 53.099,
+      "times": {
+        "ownerIngestPrefix": 21.509842999999933,
+        "ownerIngestBricks": 33.84783200000004,
+        "ownerIngestProofs": 4.937005999999997,
+        "ownerIngestStructural": 16.07624499999997
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 3,
+      "wall": 38.59783100000004,
+      "cpu": 23.123,
+      "times": {
+        "ownerIngestPrefix": 8.357604000000038,
+        "ownerIngestBricks": 9.943824999999947,
+        "ownerIngestProofs": 7.645924000000036,
+        "ownerIngestStructural": 12.609488000000056
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 4,
+      "wall": 37.631284999999934,
+      "cpu": 25.889,
+      "times": {
+        "ownerIngestPrefix": 3.6440079999999853,
+        "ownerIngestBricks": 5.6905779999999595,
+        "ownerIngestProofs": 15.547383999999965,
+        "ownerIngestStructural": 12.707303000000024
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 4,
+      "wall": 41.938653000000045,
+      "cpu": 37.879,
+      "times": {
+        "ownerIngestPrefix": 5.435192000000029,
+        "ownerIngestBricks": 17.710515999999984,
+        "ownerIngestProofs": 4.605646999999976,
+        "ownerIngestStructural": 14.145306000000005
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 5,
+      "wall": 68.42170399999998,
+      "cpu": 50.064,
+      "times": {
+        "ownerIngestPrefix": 8.491341000000034,
+        "ownerIngestBricks": 24.53511800000001,
+        "ownerIngestProofs": 17.304348000000005,
+        "ownerIngestStructural": 18.055645000000027
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 5,
+      "wall": 41.283465999999976,
+      "cpu": 40.066,
+      "times": {
+        "ownerIngestPrefix": 7.232794000000013,
+        "ownerIngestBricks": 7.414852999999994,
+        "ownerIngestProofs": 5.2297680000000355,
+        "ownerIngestStructural": 21.35615699999994
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 6,
+      "wall": 53.479944000000046,
+      "cpu": 37.937,
+      "times": {
+        "ownerIngestPrefix": 3.7863780000000133,
+        "ownerIngestBricks": 6.9339820000000145,
+        "ownerIngestProofs": 2.4243880000000217,
+        "ownerIngestStructural": 40.29764
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 6,
+      "wall": 64.47106500000007,
+      "cpu": 63.386,
+      "times": {
+        "ownerIngestPrefix": 10.793299000000047,
+        "ownerIngestBricks": 23.439080999999987,
+        "ownerIngestProofs": 7.985495000000014,
+        "ownerIngestStructural": 22.212671
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 7,
+      "wall": 75.66116800000009,
+      "cpu": 63.326,
+      "times": {
+        "ownerIngestPrefix": 23.268197999999984,
+        "ownerIngestBricks": 23.559798999999998,
+        "ownerIngestProofs": 7.92394400000012,
+        "ownerIngestStructural": 20.871110999999928
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 7,
+      "wall": 43.25529000000006,
+      "cpu": 36.016,
+      "times": {
+        "ownerIngestPrefix": 5.636267000000089,
+        "ownerIngestBricks": 8.87244499999997,
+        "ownerIngestProofs": 3.5020180000001346,
+        "ownerIngestStructural": 25.07082299999979
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 8,
+      "wall": 35.43901899999992,
+      "cpu": 34.978,
+      "times": {
+        "ownerIngestPrefix": 4.380253999999923,
+        "ownerIngestBricks": 10.948566999999912,
+        "ownerIngestProofs": 2.3436189999999897,
+        "ownerIngestStructural": 17.57781100000011
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 8,
+      "wall": 214.46776999999997,
+      "cpu": 153.374,
+      "times": {
+        "ownerIngestPrefix": 8.004082000000153,
+        "ownerIngestBricks": 28.123284000000012,
+        "ownerIngestProofs": 60.687700999999834,
+        "ownerIngestStructural": 117.34811400000012
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 9,
+      "wall": 312.67878199999996,
+      "cpu": 278.463,
+      "times": {
+        "ownerIngestPrefix": 66.356446,
+        "ownerIngestBricks": 94.17609300000004,
+        "ownerIngestProofs": 4.708209000000124,
+        "ownerIngestStructural": 145.5239489999999
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 9,
+      "wall": 41.78895000000011,
+      "cpu": 34.695,
+      "times": {
+        "ownerIngestPrefix": 12.49634100000003,
+        "ownerIngestBricks": 5.820549999999912,
+        "ownerIngestProofs": 2.093789999999899,
+        "ownerIngestStructural": 19.958855000000085
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 10,
+      "wall": 26.535350000000108,
+      "cpu": 17.969,
+      "times": {
+        "ownerIngestPrefix": 2.8791479999999865,
+        "ownerIngestBricks": 9.34564300000011,
+        "ownerIngestProofs": 3.530340000000024,
+        "ownerIngestStructural": 10.746979999999894
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 10,
+      "wall": 42.797869999999875,
+      "cpu": 36.774,
+      "times": {
+        "ownerIngestPrefix": 5.0287409999998545,
+        "ownerIngestBricks": 18.17872699999998,
+        "ownerIngestProofs": 3.896801000000096,
+        "ownerIngestStructural": 15.624729000000116
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 11,
+      "wall": 41.61888900000008,
+      "cpu": 33.503,
+      "times": {
+        "ownerIngestPrefix": 5.229808000000048,
+        "ownerIngestBricks": 18.77279499999986,
+        "ownerIngestProofs": 5.833288000000039,
+        "ownerIngestStructural": 11.754145999999992
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 11,
+      "wall": 20.60979599999996,
+      "cpu": 19.718,
+      "times": {
+        "ownerIngestPrefix": 3.317116000000169,
+        "ownerIngestBricks": 5.163090000000011,
+        "ownerIngestProofs": 1.7258269999999811,
+        "ownerIngestStructural": 10.379637000000002
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 12,
+      "wall": 32.626724000000195,
+      "cpu": 16.787,
+      "times": {
+        "ownerIngestPrefix": 1.8780310000001919,
+        "ownerIngestBricks": 7.7463319999999385,
+        "ownerIngestProofs": 1.5708680000000186,
+        "ownerIngestStructural": 21.410511999999926
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 12,
+      "wall": 42.37043900000003,
+      "cpu": 32.3,
+      "times": {
+        "ownerIngestPrefix": 5.502749999999878,
+        "ownerIngestBricks": 23.610093000000006,
+        "ownerIngestProofs": 4.27446800000007,
+        "ownerIngestStructural": 8.955836999999974
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 13,
+      "wall": 40.068040999999994,
+      "cpu": 38.319,
+      "times": {
+        "ownerIngestPrefix": 4.614260000000058,
+        "ownerIngestBricks": 17.13725999999997,
+        "ownerIngestProofs": 3.704107000000022,
+        "ownerIngestStructural": 14.588448999999855
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 13,
+      "wall": 23.413083000000142,
+      "cpu": 22.005,
+      "times": {
+        "ownerIngestPrefix": 4.20928200000003,
+        "ownerIngestBricks": 5.376735000000053,
+        "ownerIngestProofs": 1.8825779999999668,
+        "ownerIngestStructural": 11.913332000000082
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 14,
+      "wall": 33.40661,
+      "cpu": 23.577,
+      "times": {
+        "ownerIngestPrefix": 3.2573970000000827,
+        "ownerIngestBricks": 5.115107999999964,
+        "ownerIngestProofs": 12.92877899999985,
+        "ownerIngestStructural": 12.08104000000003
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 14,
+      "wall": 37.1227550000001,
+      "cpu": 35.692,
+      "times": {
+        "ownerIngestPrefix": 6.0356769999998505,
+        "ownerIngestBricks": 15.639451000000008,
+        "ownerIngestProofs": 3.8269780000000537,
+        "ownerIngestStructural": 11.592687999999953
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 15,
+      "wall": 37.03428300000019,
+      "cpu": 35.061,
+      "times": {
+        "ownerIngestPrefix": 6.2227130000001125,
+        "ownerIngestBricks": 15.519334000000072,
+        "ownerIngestProofs": 4.969943999999941,
+        "ownerIngestStructural": 10.297986999999921
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 15,
+      "wall": 30.709440000000086,
+      "cpu": 20.556,
+      "times": {
+        "ownerIngestPrefix": 12.929211000000123,
+        "ownerIngestBricks": 4.473131000000194,
+        "ownerIngestProofs": 3.1645599999997103,
+        "ownerIngestStructural": 10.113005000000157
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 16,
+      "wall": 23.454783000000134,
+      "cpu": 22.252,
+      "times": {
+        "ownerIngestPrefix": 4.879672000000028,
+        "ownerIngestBricks": 5.319711000000098,
+        "ownerIngestProofs": 1.8808450000001358,
+        "ownerIngestStructural": 11.350509999999758
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 16,
+      "wall": 45.76420800000005,
+      "cpu": 36.822,
+      "times": {
+        "ownerIngestPrefix": 6.865482000000156,
+        "ownerIngestBricks": 19.197901999999885,
+        "ownerIngestProofs": 4.321777000000111,
+        "ownerIngestStructural": 15.35201700000016
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 17,
+      "wall": 32.66777000000002,
+      "cpu": 24.702,
+      "times": {
+        "ownerIngestPrefix": 4.622421999999915,
+        "ownerIngestBricks": 16.384889999999814,
+        "ownerIngestProofs": 2.4006630000003497,
+        "ownerIngestStructural": 9.238934999999856
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 17,
+      "wall": 12.030033000000003,
+      "cpu": 9.568,
+      "times": {
+        "ownerIngestPrefix": 1.6063610000001063,
+        "ownerIngestBricks": 3.1267840000000433,
+        "ownerIngestProofs": 1.65275900000006,
+        "ownerIngestStructural": 5.623398000000179
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 18,
+      "wall": 11.89779899999985,
+      "cpu": 11.764,
+      "times": {
+        "ownerIngestPrefix": 1.5434479999998985,
+        "ownerIngestBricks": 3.0184949999998025,
+        "ownerIngestProofs": 1.100684000000001,
+        "ownerIngestStructural": 6.213951000000179
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 18,
+      "wall": 24.139404000000013,
+      "cpu": 22.747,
+      "times": {
+        "ownerIngestPrefix": 2.8287239999999656,
+        "ownerIngestBricks": 9.673596000000089,
+        "ownerIngestProofs": 2.4307169999997313,
+        "ownerIngestStructural": 9.182111000000077
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 19,
+      "wall": 32.133050999999796,
+      "cpu": 27.868,
+      "times": {
+        "ownerIngestPrefix": 3.050061999999798,
+        "ownerIngestBricks": 9.632245000000239,
+        "ownerIngestProofs": 2.8706159999997,
+        "ownerIngestStructural": 16.561830999999984
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 19,
+      "wall": 26.52612100000033,
+      "cpu": 22.678,
+      "times": {
+        "ownerIngestPrefix": 3.4229820000000473,
+        "ownerIngestBricks": 5.815391999999974,
+        "ownerIngestProofs": 2.8058099999998376,
+        "ownerIngestStructural": 14.457060000000183
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 20,
+      "wall": 21.56195600000001,
+      "cpu": 19.821,
+      "times": {
+        "ownerIngestPrefix": 4.18768,
+        "ownerIngestBricks": 5.158048000000235,
+        "ownerIngestProofs": 1.9407240000000456,
+        "ownerIngestStructural": 10.24959600000011
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 20,
+      "wall": 61.68585400000029,
+      "cpu": 44.565,
+      "times": {
+        "ownerIngestPrefix": 5.02255200000036,
+        "ownerIngestBricks": 15.944560999999794,
+        "ownerIngestProofs": 5.860869000000093,
+        "ownerIngestStructural": 34.82386099999985
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 21,
+      "wall": 41.449731000000156,
+      "cpu": 38.936,
+      "times": {
+        "ownerIngestPrefix": 5.6076459999999315,
+        "ownerIngestBricks": 17.748321999999916,
+        "ownerIngestProofs": 6.781857999999829,
+        "ownerIngestStructural": 11.286035999999967
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 21,
+      "wall": 21.1724049999998,
+      "cpu": 19.689,
+      "times": {
+        "ownerIngestPrefix": 3.0588739999998324,
+        "ownerIngestBricks": 5.267834000000221,
+        "ownerIngestProofs": 2.3926910000000134,
+        "ownerIngestStructural": 10.42247099999986
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 22,
+      "wall": 30.51505300000008,
+      "cpu": 20.21,
+      "times": {
+        "ownerIngestPrefix": 2.7011059999999816,
+        "ownerIngestBricks": 7.1587759999997616,
+        "ownerIngestProofs": 1.9463220000002366,
+        "ownerIngestStructural": 18.682310000000143
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 22,
+      "wall": 36.787349999999606,
+      "cpu": 38.896,
+      "times": {
+        "ownerIngestPrefix": 5.140096000000085,
+        "ownerIngestBricks": 16.316730000000007,
+        "ownerIngestProofs": 4.091077000000041,
+        "ownerIngestStructural": 11.208031000000119
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 23,
+      "wall": 34.28277299999991,
+      "cpu": 32.88,
+      "times": {
+        "ownerIngestPrefix": 5.149989999999889,
+        "ownerIngestBricks": 14.729967000000215,
+        "ownerIngestProofs": 4.288829999999962,
+        "ownerIngestStructural": 10.09029099999998
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 23,
+      "wall": 29.594660999999633,
+      "cpu": 21.315,
+      "times": {
+        "ownerIngestPrefix": 2.9778089999999793,
+        "ownerIngestBricks": 5.277459000000363,
+        "ownerIngestProofs": 1.7660059999998339,
+        "ownerIngestStructural": 19.543983000000026
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 24,
+      "wall": 20.671646000000237,
+      "cpu": 18.764,
+      "times": {
+        "ownerIngestPrefix": 3.097411000000193,
+        "ownerIngestBricks": 5.27270099999987,
+        "ownerIngestProofs": 1.8342569999999796,
+        "ownerIngestStructural": 10.440638000000035
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 24,
+      "wall": 36.69465300000002,
+      "cpu": 39.946,
+      "times": {
+        "ownerIngestPrefix": 5.482151000000158,
+        "ownerIngestBricks": 15.568525000000136,
+        "ownerIngestProofs": 4.340515999999752,
+        "ownerIngestStructural": 11.273658000000069
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 25,
+      "wall": 70.09758199999987,
+      "cpu": 42.098,
+      "times": {
+        "ownerIngestPrefix": 17.937971999999718,
+        "ownerIngestBricks": 23.412716000000273,
+        "ownerIngestProofs": 3.305207999999766,
+        "ownerIngestStructural": 25.418121000000156
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 25,
+      "wall": 12.999092999999903,
+      "cpu": 11.993,
+      "times": {
+        "ownerIngestPrefix": 1.6626139999998486,
+        "ownerIngestBricks": 3.6457900000000336,
+        "ownerIngestProofs": 1.2363649999997506,
+        "ownerIngestStructural": 6.425172000000202
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 26,
+      "wall": 18.889646999999968,
+      "cpu": 15.618,
+      "times": {
+        "ownerIngestPrefix": 5.822133000000122,
+        "ownerIngestBricks": 3.26921399999992,
+        "ownerIngestProofs": 1.0767490000002908,
+        "ownerIngestStructural": 8.698055999999724
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 26,
+      "wall": 22.380698999999822,
+      "cpu": 23.986,
+      "times": {
+        "ownerIngestPrefix": 3.0018090000003212,
+        "ownerIngestBricks": 10.379338999999618,
+        "ownerIngestProofs": 2.6949570000001586,
+        "ownerIngestStructural": 6.282591000000139
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 27,
+      "wall": 43.31914800000004,
+      "cpu": 32.792,
+      "times": {
+        "ownerIngestPrefix": 3.316063000000213,
+        "ownerIngestBricks": 22.65600600000016,
+        "ownerIngestProofs": 3.9316819999999097,
+        "ownerIngestStructural": 13.39102099999991
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 27,
+      "wall": 22.524931999999808,
+      "cpu": 17.444,
+      "times": {
+        "ownerIngestPrefix": 2.6017100000003666,
+        "ownerIngestBricks": 8.490049999999883,
+        "ownerIngestProofs": 1.6902039999999943,
+        "ownerIngestStructural": 9.712412999999742
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 28,
+      "wall": 19.193786999999702,
+      "cpu": 19.752,
+      "times": {
+        "ownerIngestPrefix": 2.634277999999995,
+        "ownerIngestBricks": 5.053286999999727,
+        "ownerIngestProofs": 1.7976230000003852,
+        "ownerIngestStructural": 9.653516999999738
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 28,
+      "wall": 46.643920999999864,
+      "cpu": 35.385,
+      "times": {
+        "ownerIngestPrefix": 4.276279999999588,
+        "ownerIngestBricks": 13.613110000000233,
+        "ownerIngestProofs": 17.686541000000034,
+        "ownerIngestStructural": 11.035821999999825
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 29,
+      "wall": 38.80991499999982,
+      "cpu": 30.401,
+      "times": {
+        "ownerIngestPrefix": 4.932470000000194,
+        "ownerIngestBricks": 20.020404999999755,
+        "ownerIngestProofs": 3.890642000000298,
+        "ownerIngestStructural": 9.938306999999895
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 29,
+      "wall": 27.13214999999991,
+      "cpu": 23.783,
+      "times": {
+        "ownerIngestPrefix": 3.0632009999999354,
+        "ownerIngestBricks": 5.125614000000041,
+        "ownerIngestProofs": 5.992883999999776,
+        "ownerIngestStructural": 12.919096000000081
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 30,
+      "wall": 26.465386000000308,
+      "cpu": 14.96,
+      "times": {
+        "ownerIngestPrefix": 2.9089930000000095,
+        "ownerIngestBricks": 15.812064000000191,
+        "ownerIngestProofs": 1.4794929999998203,
+        "ownerIngestStructural": 6.245257000000038
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 30,
+      "wall": 23.39570599999979,
+      "cpu": 23.762,
+      "times": {
+        "ownerIngestPrefix": 4.075525000000198,
+        "ownerIngestBricks": 9.37573599999996,
+        "ownerIngestProofs": 3.8728550000000723,
+        "ownerIngestStructural": 6.05132999999978
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 31,
+      "wall": 25.047123999999712,
+      "cpu": 22.467,
+      "times": {
+        "ownerIngestPrefix": 4.962504000000081,
+        "ownerIngestBricks": 10.333589999999731,
+        "ownerIngestProofs": 3.635685000000194,
+        "ownerIngestStructural": 6.100253000000066
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 31,
+      "wall": 18.2563439999999,
+      "cpu": 15.138,
+      "times": {
+        "ownerIngestPrefix": 2.5497730000001866,
+        "ownerIngestBricks": 5.089570999999978,
+        "ownerIngestProofs": 1.6829939999997805,
+        "ownerIngestStructural": 8.911903000000166
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 32,
+      "wall": 28.982946000000084,
+      "cpu": 16.731,
+      "times": {
+        "ownerIngestPrefix": 2.6552780000001803,
+        "ownerIngestBricks": 4.084050999999818,
+        "ownerIngestProofs": 1.1226570000003449,
+        "ownerIngestStructural": 21.0982869999998
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 32,
+      "wall": 22.793828000000303,
+      "cpu": 19.627,
+      "times": {
+        "ownerIngestPrefix": 3.8670270000002347,
+        "ownerIngestBricks": 9.872568999999658,
+        "ownerIngestProofs": 2.546658000000207,
+        "ownerIngestStructural": 6.484260000000177
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 33,
+      "wall": 21.760674000000108,
+      "cpu": 23.972,
+      "times": {
+        "ownerIngestPrefix": 2.8436870000000454,
+        "ownerIngestBricks": 9.88533899999993,
+        "ownerIngestProofs": 2.4873200000001816,
+        "ownerIngestStructural": 6.52873499999987
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 33,
+      "wall": 13.3435029999996,
+      "cpu": 11.299,
+      "times": {
+        "ownerIngestPrefix": 1.5871130000000448,
+        "ownerIngestBricks": 3.211149000000205,
+        "ownerIngestProofs": 2.4323099999996884,
+        "ownerIngestStructural": 6.090337999999974
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 34,
+      "wall": 13.755658999999923,
+      "cpu": 15.758,
+      "times": {
+        "ownerIngestPrefix": 1.7739380000002711,
+        "ownerIngestBricks": 3.9678249999997206,
+        "ownerIngestProofs": 0.9875380000003133,
+        "ownerIngestStructural": 7.009524000000056
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 34,
+      "wall": 35.31759999999986,
+      "cpu": 26.659,
+      "times": {
+        "ownerIngestPrefix": 2.498377000000346,
+        "ownerIngestBricks": 10.351656999999705,
+        "ownerIngestProofs": 9.984685000000354,
+        "ownerIngestStructural": 12.460277999999562
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 35,
+      "wall": 34.51256300000023,
+      "cpu": 32.774,
+      "times": {
+        "ownerIngestPrefix": 4.416026999999758,
+        "ownerIngestBricks": 14.867741000000024,
+        "ownerIngestProofs": 4.095434000000296,
+        "ownerIngestStructural": 11.111218000000008
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 35,
+      "wall": 20.26412500000015,
+      "cpu": 18.708,
+      "times": {
+        "ownerIngestPrefix": 2.829305000000204,
+        "ownerIngestBricks": 6.141794000000118,
+        "ownerIngestProofs": 1.8900989999997364,
+        "ownerIngestStructural": 9.369257000000289
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 36,
+      "wall": 17.831084999999803,
+      "cpu": 19.603,
+      "times": {
+        "ownerIngestPrefix": 2.6571719999997185,
+        "ownerIngestBricks": 4.783149000000321,
+        "ownerIngestProofs": 1.8336359999998422,
+        "ownerIngestStructural": 8.53432500000008
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 36,
+      "wall": 38.884563999999955,
+      "cpu": 28.755,
+      "times": {
+        "ownerIngestPrefix": 2.787022999999863,
+        "ownerIngestBricks": 22.272109,
+        "ownerIngestProofs": 4.130245000000286,
+        "ownerIngestStructural": 9.67095100000006
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 37,
+      "wall": 34.04329000000007,
+      "cpu": 27.161,
+      "times": {
+        "ownerIngestPrefix": 7.168399000000136,
+        "ownerIngestBricks": 12.097153000000162,
+        "ownerIngestProofs": 7.347732999999607,
+        "ownerIngestStructural": 7.408453000000009
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 37,
+      "wall": 12.677659999999833,
+      "cpu": 11.667,
+      "times": {
+        "ownerIngestPrefix": 1.5834070000000793,
+        "ownerIngestBricks": 4.534582000000228,
+        "ownerIngestProofs": 1.0282779999997729,
+        "ownerIngestStructural": 5.505966000000171
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 38,
+      "wall": 14.247855999999956,
+      "cpu": 14.838,
+      "times": {
+        "ownerIngestPrefix": 1.876969999999801,
+        "ownerIngestBricks": 5.655767000000196,
+        "ownerIngestProofs": 0.9943969999999354,
+        "ownerIngestStructural": 5.702635999999984
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 38,
+      "wall": 35.982520999999906,
+      "cpu": 22.75,
+      "times": {
+        "ownerIngestPrefix": 15.296273999999812,
+        "ownerIngestBricks": 9.547950000000128,
+        "ownerIngestProofs": 5.108658999999989,
+        "ownerIngestStructural": 6.009548999999879
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 39,
+      "wall": 23.41102899999987,
+      "cpu": 21.305,
+      "times": {
+        "ownerIngestPrefix": 2.7929720000001907,
+        "ownerIngestBricks": 10.73168799999985,
+        "ownerIngestProofs": 2.413492000000133,
+        "ownerIngestStructural": 7.456232999999884
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 39,
+      "wall": 14.299442999999883,
+      "cpu": 14.371,
+      "times": {
+        "ownerIngestPrefix": 1.7325869999999668,
+        "ownerIngestBricks": 3.475850000000264,
+        "ownerIngestProofs": 1.1115899999999783,
+        "ownerIngestStructural": 7.957124000000022
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 40,
+      "wall": 12.925094000000172,
+      "cpu": 11.925,
+      "times": {
+        "ownerIngestPrefix": 1.6399200000000747,
+        "ownerIngestBricks": 3.2076139999999214,
+        "ownerIngestProofs": 1.490429000000404,
+        "ownerIngestStructural": 6.570716999999604
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 40,
+      "wall": 35.643191000000115,
+      "cpu": 26.974,
+      "times": {
+        "ownerIngestPrefix": 2.5477499999997235,
+        "ownerIngestBricks": 9.679575000000114,
+        "ownerIngestProofs": 2.3358579999999165,
+        "ownerIngestStructural": 21.054381000000376
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 41,
+      "wall": 34.693279000000075,
+      "cpu": 35.106,
+      "times": {
+        "ownerIngestPrefix": 4.538478000000396,
+        "ownerIngestBricks": 13.890639999999621,
+        "ownerIngestProofs": 6.156615000000329,
+        "ownerIngestStructural": 10.084641999999803
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 41,
+      "wall": 19.643729999999778,
+      "cpu": 19.985,
+      "times": {
+        "ownerIngestPrefix": 2.904145999999855,
+        "ownerIngestBricks": 5.00911300000007,
+        "ownerIngestProofs": 1.7858150000001842,
+        "ownerIngestStructural": 9.916483999999855
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 42,
+      "wall": 14.88214199999993,
+      "cpu": 15.49,
+      "times": {
+        "ownerIngestPrefix": 2.808994999999868,
+        "ownerIngestBricks": 5.3168869999999515,
+        "ownerIngestProofs": 1.2673500000000786,
+        "ownerIngestStructural": 5.466997999999876
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 42,
+      "wall": 31.085485999999946,
+      "cpu": 16.821,
+      "times": {
+        "ownerIngestPrefix": 2.522273000000041,
+        "ownerIngestBricks": 20.56289599999991,
+        "ownerIngestProofs": 2.2118239999999787,
+        "ownerIngestStructural": 5.764237000000321
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 43,
+      "wall": 23.151026,
+      "cpu": 19.963,
+      "times": {
+        "ownerIngestPrefix": 6.569526000000224,
+        "ownerIngestBricks": 8.743962999999894,
+        "ownerIngestProofs": 2.18854999999985,
+        "ownerIngestStructural": 5.631701000000248
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 43,
+      "wall": 14.012960000000021,
+      "cpu": 14.83,
+      "times": {
+        "ownerIngestPrefix": 1.550478000000112,
+        "ownerIngestBricks": 3.3489629999999124,
+        "ownerIngestProofs": 1.0452430000000277,
+        "ownerIngestStructural": 8.043059000000085
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "candidate",
+      "pair": 44,
+      "wall": 12.192973000000165,
+      "cpu": 10.686,
+      "times": {
+        "ownerIngestPrefix": 1.5166680000002088,
+        "ownerIngestBricks": 3.3427929999998014,
+        "ownerIngestProofs": 2.091236000000208,
+        "ownerIngestStructural": 5.221426000000065
+      },
+      "counts": {
+        "ownerIngestPrefix": 1246,
+        "ownerIngestBricks": 216,
+        "ownerIngestProofs": 58,
+        "ownerIngestStructural": 3717
+      }
+    },
+    {
+      "name": "base",
+      "pair": 44,
+      "wall": 19.748895999999604,
+      "cpu": 19.59,
+      "times": {
+        "ownerIngestPrefix": 2.6083590000002914,
+        "ownerIngestBricks": 8.656995999999708,
+        "ownerIngestProofs": 2.3937330000003385,
+        "ownerIngestStructural": 6.069917999999689
+      },
+      "counts": {
+        "ownerIngestPrefix": 6686,
+        "ownerIngestBricks": 1593,
+        "ownerIngestProofs": 523,
+        "ownerIngestStructural": 3717
+      }
+    }
+  ]
+}

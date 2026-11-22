@@ -1,0 +1,598 @@
+{
+  "owner": "hvp:terrain-fragment:r1:1b4aa69d",
+  "count": 384,
+  "massKg": 1722.65625,
+  "geometry": [
+    {
+      "min": [
+        176,
+        82,
+        76
+      ],
+      "max": [
+        200,
+        86,
+        80
+      ]
+    }
+  ],
+  "nativeMassKg": 1722.6561279296875,
+  "samples": [
+    {
+      "pair": 0,
+      "lane": "lazy",
+      "sourceMs": 2.3101479999995718,
+      "nativeInstallAndPublishMs": 3.6332099999999627,
+      "totalMs": 5.9433579999995345,
+      "threadCpuMs": 4.003
+    },
+    {
+      "pair": 0,
+      "lane": "eager",
+      "sourceMs": 51.947863000000325,
+      "nativeInstallAndPublishMs": 0.48460399999930814,
+      "totalMs": 52.43246699999963,
+      "threadCpuMs": 52.002
+    },
+    {
+      "pair": 1,
+      "lane": "eager",
+      "sourceMs": 31.752379999999903,
+      "nativeInstallAndPublishMs": 0.5980329999993046,
+      "totalMs": 32.35041299999921,
+      "threadCpuMs": 31.919
+    },
+    {
+      "pair": 1,
+      "lane": "lazy",
+      "sourceMs": 0.5347789999996166,
+      "nativeInstallAndPublishMs": 0.39568299999973533,
+      "totalMs": 0.930461999999352,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 2,
+      "lane": "lazy",
+      "sourceMs": 0.8310360000004948,
+      "nativeInstallAndPublishMs": 0.30630199999995966,
+      "totalMs": 1.1373380000004545,
+      "threadCpuMs": 3.972
+    },
+    {
+      "pair": 2,
+      "lane": "eager",
+      "sourceMs": 25.40463600000021,
+      "nativeInstallAndPublishMs": 0.3679919999995036,
+      "totalMs": 25.772627999999713,
+      "threadCpuMs": 23.994
+    },
+    {
+      "pair": 3,
+      "lane": "eager",
+      "sourceMs": 23.734373000000232,
+      "nativeInstallAndPublishMs": 0.3982179999993605,
+      "totalMs": 24.132590999999593,
+      "threadCpuMs": 24.009
+    },
+    {
+      "pair": 3,
+      "lane": "lazy",
+      "sourceMs": 0.5615379999999277,
+      "nativeInstallAndPublishMs": 0.25191199999972014,
+      "totalMs": 0.8134499999996478,
+      "threadCpuMs": 3.999
+    },
+    {
+      "pair": 4,
+      "lane": "lazy",
+      "sourceMs": 0.5529959999994389,
+      "nativeInstallAndPublishMs": 0.49130500000046595,
+      "totalMs": 1.0443009999999049,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 4,
+      "lane": "eager",
+      "sourceMs": 24.48388799999975,
+      "nativeInstallAndPublishMs": 0.4576950000000579,
+      "totalMs": 24.94158299999981,
+      "threadCpuMs": 23.721
+    },
+    {
+      "pair": 5,
+      "lane": "eager",
+      "sourceMs": 20.28154799999993,
+      "nativeInstallAndPublishMs": 0.27440500000011525,
+      "totalMs": 20.555953000000045,
+      "threadCpuMs": 23.985
+    },
+    {
+      "pair": 5,
+      "lane": "lazy",
+      "sourceMs": 0.34465799999998126,
+      "nativeInstallAndPublishMs": 0.19730100000015227,
+      "totalMs": 0.5419590000001335,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 6,
+      "lane": "lazy",
+      "sourceMs": 0.34773300000051677,
+      "nativeInstallAndPublishMs": 0.15578000000004977,
+      "totalMs": 0.5035130000005665,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 6,
+      "lane": "eager",
+      "sourceMs": 20.40494099999978,
+      "nativeInstallAndPublishMs": 0.26586200000019744,
+      "totalMs": 20.670802999999978,
+      "threadCpuMs": 20.006
+    },
+    {
+      "pair": 7,
+      "lane": "eager",
+      "sourceMs": 20.596263000000363,
+      "nativeInstallAndPublishMs": 0.24352899999939837,
+      "totalMs": 20.83979199999976,
+      "threadCpuMs": 23.868
+    },
+    {
+      "pair": 7,
+      "lane": "lazy",
+      "sourceMs": 0.28745400000025256,
+      "nativeInstallAndPublishMs": 0.11302599999999074,
+      "totalMs": 0.4004800000002433,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 8,
+      "lane": "lazy",
+      "sourceMs": 0.2556169999998019,
+      "nativeInstallAndPublishMs": 0.0967529999998078,
+      "totalMs": 0.3523699999996097,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 8,
+      "lane": "eager",
+      "sourceMs": 18.9376570000004,
+      "nativeInstallAndPublishMs": 0.20611399999961577,
+      "totalMs": 19.143771000000015,
+      "threadCpuMs": 19.999
+    },
+    {
+      "pair": 9,
+      "lane": "eager",
+      "sourceMs": 19.9166009999999,
+      "nativeInstallAndPublishMs": 0.2842790000004243,
+      "totalMs": 20.200880000000325,
+      "threadCpuMs": 20
+    },
+    {
+      "pair": 9,
+      "lane": "lazy",
+      "sourceMs": 0.2954360000003362,
+      "nativeInstallAndPublishMs": 0.27603799999997136,
+      "totalMs": 0.5714740000003076,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 10,
+      "lane": "lazy",
+      "sourceMs": 0.253273000000263,
+      "nativeInstallAndPublishMs": 0.10563600000023143,
+      "totalMs": 0.3589090000004944,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 10,
+      "lane": "eager",
+      "sourceMs": 21.460027000000082,
+      "nativeInstallAndPublishMs": 0.19451699999990524,
+      "totalMs": 21.654543999999987,
+      "threadCpuMs": 23.819
+    },
+    {
+      "pair": 11,
+      "lane": "eager",
+      "sourceMs": 19.582808000000114,
+      "nativeInstallAndPublishMs": 0.20550399999956426,
+      "totalMs": 19.788311999999678,
+      "threadCpuMs": 19.994
+    },
+    {
+      "pair": 11,
+      "lane": "lazy",
+      "sourceMs": 0.2800330000000031,
+      "nativeInstallAndPublishMs": 0.16069700000025477,
+      "totalMs": 0.44073000000025786,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 12,
+      "lane": "lazy",
+      "sourceMs": 0.25235200000042823,
+      "nativeInstallAndPublishMs": 0.1396359999998822,
+      "totalMs": 0.3919880000003104,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 12,
+      "lane": "eager",
+      "sourceMs": 19.392698000000564,
+      "nativeInstallAndPublishMs": 0.270408999999745,
+      "totalMs": 19.66310700000031,
+      "threadCpuMs": 20
+    },
+    {
+      "pair": 13,
+      "lane": "eager",
+      "sourceMs": 19.34366499999942,
+      "nativeInstallAndPublishMs": 0.2199639999998908,
+      "totalMs": 19.56362899999931,
+      "threadCpuMs": 20.001
+    },
+    {
+      "pair": 13,
+      "lane": "lazy",
+      "sourceMs": 0.32153400000061083,
+      "nativeInstallAndPublishMs": 0.1414279999999053,
+      "totalMs": 0.4629620000005161,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 14,
+      "lane": "lazy",
+      "sourceMs": 0.24444099999982427,
+      "nativeInstallAndPublishMs": 0.09771399999954156,
+      "totalMs": 0.3421549999993658,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 14,
+      "lane": "eager",
+      "sourceMs": 19.759187999999995,
+      "nativeInstallAndPublishMs": 0.21875299999919662,
+      "totalMs": 19.97794099999919,
+      "threadCpuMs": 19.993
+    },
+    {
+      "pair": 15,
+      "lane": "eager",
+      "sourceMs": 18.72436199999993,
+      "nativeInstallAndPublishMs": 0.3471720000006826,
+      "totalMs": 19.07153400000061,
+      "threadCpuMs": 20
+    },
+    {
+      "pair": 15,
+      "lane": "lazy",
+      "sourceMs": 0.3001219999996465,
+      "nativeInstallAndPublishMs": 0.16784800000004907,
+      "totalMs": 0.4679699999996956,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 16,
+      "lane": "lazy",
+      "sourceMs": 0.326680999999553,
+      "nativeInstallAndPublishMs": 0.14796900000055757,
+      "totalMs": 0.4746500000001106,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 16,
+      "lane": "eager",
+      "sourceMs": 19.334461999999803,
+      "nativeInstallAndPublishMs": 0.2547759999997652,
+      "totalMs": 19.58923799999957,
+      "threadCpuMs": 20.002
+    },
+    {
+      "pair": 17,
+      "lane": "eager",
+      "sourceMs": 19.49735200000032,
+      "nativeInstallAndPublishMs": 0.21481700000003912,
+      "totalMs": 19.712169000000358,
+      "threadCpuMs": 19.939
+    },
+    {
+      "pair": 17,
+      "lane": "lazy",
+      "sourceMs": 0.34567000000060943,
+      "nativeInstallAndPublishMs": 0.15313599999990402,
+      "totalMs": 0.49880600000051345,
+      "threadCpuMs": 3.999
+    },
+    {
+      "pair": 18,
+      "lane": "lazy",
+      "sourceMs": 0.2371290000000954,
+      "nativeInstallAndPublishMs": 0.1035730000003241,
+      "totalMs": 0.3407020000004195,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 18,
+      "lane": "eager",
+      "sourceMs": 18.789467000000514,
+      "nativeInstallAndPublishMs": 0.2768390000001091,
+      "totalMs": 19.066306000000623,
+      "threadCpuMs": 20.002
+    },
+    {
+      "pair": 19,
+      "lane": "eager",
+      "sourceMs": 17.901127000000088,
+      "nativeInstallAndPublishMs": 0.22848699999940436,
+      "totalMs": 18.129613999999492,
+      "threadCpuMs": 15.999
+    },
+    {
+      "pair": 19,
+      "lane": "lazy",
+      "sourceMs": 0.3143639999998413,
+      "nativeInstallAndPublishMs": 0.1259860000000117,
+      "totalMs": 0.440349999999853,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 20,
+      "lane": "lazy",
+      "sourceMs": 0.24113500000021304,
+      "nativeInstallAndPublishMs": 0.1086909999994532,
+      "totalMs": 0.34982599999966624,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 20,
+      "lane": "eager",
+      "sourceMs": 20.260827999999492,
+      "nativeInstallAndPublishMs": 0.20373100000051636,
+      "totalMs": 20.46455900000001,
+      "threadCpuMs": 23.87
+    },
+    {
+      "pair": 21,
+      "lane": "eager",
+      "sourceMs": 18.55211700000018,
+      "nativeInstallAndPublishMs": 0.21404600000005303,
+      "totalMs": 18.766163000000233,
+      "threadCpuMs": 16.001
+    },
+    {
+      "pair": 21,
+      "lane": "lazy",
+      "sourceMs": 0.2627179999999498,
+      "nativeInstallAndPublishMs": 0.19850300000052812,
+      "totalMs": 0.46122100000047794,
+      "threadCpuMs": 4.002
+    },
+    {
+      "pair": 22,
+      "lane": "lazy",
+      "sourceMs": 0.23217199999999139,
+      "nativeInstallAndPublishMs": 0.10208099999999831,
+      "totalMs": 0.3342529999999897,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 22,
+      "lane": "eager",
+      "sourceMs": 18.420123000000785,
+      "nativeInstallAndPublishMs": 0.2957459999997809,
+      "totalMs": 18.715869000000566,
+      "threadCpuMs": 15.998
+    },
+    {
+      "pair": 23,
+      "lane": "eager",
+      "sourceMs": 22.447272999999768,
+      "nativeInstallAndPublishMs": 0.23422600000048988,
+      "totalMs": 22.681499000000258,
+      "threadCpuMs": 23.789
+    },
+    {
+      "pair": 23,
+      "lane": "lazy",
+      "sourceMs": 0.3036579999998139,
+      "nativeInstallAndPublishMs": 0.1285699999998542,
+      "totalMs": 0.4322279999996681,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 24,
+      "lane": "lazy",
+      "sourceMs": 0.22878700000001118,
+      "nativeInstallAndPublishMs": 0.10159000000021479,
+      "totalMs": 0.33037700000022596,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 24,
+      "lane": "eager",
+      "sourceMs": 19.946794999999838,
+      "nativeInstallAndPublishMs": 0.21766200000001845,
+      "totalMs": 20.164456999999857,
+      "threadCpuMs": 20.001
+    },
+    {
+      "pair": 25,
+      "lane": "eager",
+      "sourceMs": 20.64821000000029,
+      "nativeInstallAndPublishMs": 0.31020799999987503,
+      "totalMs": 20.958418000000165,
+      "threadCpuMs": 19.995
+    },
+    {
+      "pair": 25,
+      "lane": "lazy",
+      "sourceMs": 0.5728749999998399,
+      "nativeInstallAndPublishMs": 0.15497899999991205,
+      "totalMs": 0.727853999999752,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 26,
+      "lane": "lazy",
+      "sourceMs": 0.24316799999996874,
+      "nativeInstallAndPublishMs": 0.11565100000007078,
+      "totalMs": 0.3588190000000395,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 26,
+      "lane": "eager",
+      "sourceMs": 18.96571700000004,
+      "nativeInstallAndPublishMs": 0.22845700000016222,
+      "totalMs": 19.194174000000203,
+      "threadCpuMs": 19.993
+    },
+    {
+      "pair": 27,
+      "lane": "eager",
+      "sourceMs": 21.115429000000404,
+      "nativeInstallAndPublishMs": 0.2647109999998065,
+      "totalMs": 21.38014000000021,
+      "threadCpuMs": 19.975
+    },
+    {
+      "pair": 27,
+      "lane": "lazy",
+      "sourceMs": 0.4489220000004934,
+      "nativeInstallAndPublishMs": 0.2458329999999478,
+      "totalMs": 0.6947550000004412,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 28,
+      "lane": "lazy",
+      "sourceMs": 0.4763519999996788,
+      "nativeInstallAndPublishMs": 0.23679900000024645,
+      "totalMs": 0.7131509999999253,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 28,
+      "lane": "eager",
+      "sourceMs": 20.114822999999888,
+      "nativeInstallAndPublishMs": 0.20642399999996996,
+      "totalMs": 20.321246999999858,
+      "threadCpuMs": 20
+    },
+    {
+      "pair": 29,
+      "lane": "eager",
+      "sourceMs": 17.769874000000527,
+      "nativeInstallAndPublishMs": 0.24411999999938416,
+      "totalMs": 18.01399399999991,
+      "threadCpuMs": 19.995
+    },
+    {
+      "pair": 29,
+      "lane": "lazy",
+      "sourceMs": 0.26596300000073825,
+      "nativeInstallAndPublishMs": 0.1175729999995383,
+      "totalMs": 0.38353600000027654,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 30,
+      "lane": "lazy",
+      "sourceMs": 0.2618370000000141,
+      "nativeInstallAndPublishMs": 0.0942590000004202,
+      "totalMs": 0.3560960000004343,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 30,
+      "lane": "eager",
+      "sourceMs": 19.308954000000085,
+      "nativeInstallAndPublishMs": 0.246183000000201,
+      "totalMs": 19.555137000000286,
+      "threadCpuMs": 19.953
+    },
+    {
+      "pair": 31,
+      "lane": "eager",
+      "sourceMs": 18.775337000000036,
+      "nativeInstallAndPublishMs": 0.2396840000001248,
+      "totalMs": 19.01502100000016,
+      "threadCpuMs": 19.993
+    },
+    {
+      "pair": 31,
+      "lane": "lazy",
+      "sourceMs": 0.32239599999957136,
+      "nativeInstallAndPublishMs": 0.18652500000007421,
+      "totalMs": 0.5089209999996456,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 32,
+      "lane": "lazy",
+      "sourceMs": 0.26344799999969837,
+      "nativeInstallAndPublishMs": 0.12058800000068004,
+      "totalMs": 0.3840360000003784,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 32,
+      "lane": "eager",
+      "sourceMs": 18.49124800000027,
+      "nativeInstallAndPublishMs": 0.1887879999994766,
+      "totalMs": 18.680035999999745,
+      "threadCpuMs": 19.968
+    },
+    {
+      "pair": 33,
+      "lane": "eager",
+      "sourceMs": 19.073867000000064,
+      "nativeInstallAndPublishMs": 0.19983499999943888,
+      "totalMs": 19.273701999999503,
+      "threadCpuMs": 19.831
+    },
+    {
+      "pair": 33,
+      "lane": "lazy",
+      "sourceMs": 0.26654299999972864,
+      "nativeInstallAndPublishMs": 0.11519000000043889,
+      "totalMs": 0.3817330000001675,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 34,
+      "lane": "lazy",
+      "sourceMs": 0.22465100000044913,
+      "nativeInstallAndPublishMs": 0.12368299999980081,
+      "totalMs": 0.34833400000024994,
+      "threadCpuMs": 0
+    },
+    {
+      "pair": 34,
+      "lane": "eager",
+      "sourceMs": 18.547590000000127,
+      "nativeInstallAndPublishMs": 0.1965700000000652,
+      "totalMs": 18.744160000000193,
+      "threadCpuMs": 20.004
+    },
+    {
+      "pair": 35,
+      "lane": "eager",
+      "sourceMs": 19.491793999999572,
+      "nativeInstallAndPublishMs": 0.28420900000037363,
+      "totalMs": 19.776002999999946,
+      "threadCpuMs": 20
+    },
+    {
+      "pair": 35,
+      "lane": "lazy",
+      "sourceMs": 0.3828350000003411,
+      "nativeInstallAndPublishMs": 0.15429799999947136,
+      "totalMs": 0.5371329999998125,
+      "threadCpuMs": 0
+    }
+  ]
+}

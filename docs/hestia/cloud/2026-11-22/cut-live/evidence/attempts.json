@@ -1,0 +1,3746 @@
+{
+  "environment": "Cloud Linux, Chromium 149, SwiftShader, shared scheduling. Measured render submit is CPU-side, physical presentation unmeasured. No reference-device p95 certified.",
+  "qualifiedTarget": "every qualified click <= 10 ms on reference PC, including event wait and native-to-main delivery",
+  "runs": [
+    {
+      "case": "baseline",
+      "distSha256": "8759e97d0ef0bc68b7f8bd29715303806f4d77218e24595be5453bf628fa01c4",
+      "recordedCheckout": "1e29cef8f8239b5867ef7d9ac72a181e5fd295f0",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "1ce248bfb7146e83b2c033778ec25f60f87ff09c77e5e12f3805721d749a32cf",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 1688.5,
+          "domToCallbackMs": 138.39999999850988,
+          "domToSubmitMs": 2011.3999999985099,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 10871.89999999851
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~4",
+              "hvp:terrain:s7:e0~5"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              2.1
+            ],
+            "cutSupportAnalyzeMs": [
+              1249
+            ],
+            "cutTransferPrepareMs": [
+              4.5
+            ],
+            "cutCompileMs": [
+              33.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              134.5
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              43.6
+            ],
+            "cutNativePrepareMs": [
+              245.3
+            ],
+            "cutNativeCommitMs": [
+              1.2
+            ],
+            "cutNativeFinalizeMs": [
+              1.6
+            ],
+            "cutGraphicsStageMs": [
+              56.9
+            ]
+          },
+          "index": null
+        },
+        {
+          "attempt": "player-2.json",
+          "completed": true,
+          "sha256": "982c0a2261895c7622fbb9f900d608457b7b8eae0d5c354fb427e6318a43328a",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 1132.1000000014901,
+          "domToCallbackMs": 6.600000001490116,
+          "domToSubmitMs": 1712.1000000014901,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 11087.5
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~4",
+              "hvp:terrain:s7:e0~5"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.6
+            ],
+            "cutSupportAnalyzeMs": [
+              802.7
+            ],
+            "cutTransferPrepareMs": [
+              5.2
+            ],
+            "cutCompileMs": [
+              47.9
+            ],
+            "cutNativeFragmentSourceMs": [
+              131.6
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              38.4
+            ],
+            "cutNativePrepareMs": [
+              250
+            ],
+            "cutNativeCommitMs": [
+              1
+            ],
+            "cutNativeFinalizeMs": [
+              1.9
+            ],
+            "cutGraphicsStageMs": [
+              67
+            ]
+          },
+          "index": null
+        }
+      ]
+    },
+    {
+      "case": "first-integrated",
+      "distSha256": "a31eb116d49d6cf380c033a1963a3e9b8abefff5d20209e97473789858a09d2a",
+      "recordedCheckout": "cfa7cf7d35e13c7321bf3c819f4826e3dc62c003",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "slice2",
+      "distSha256": "5fddf44a34951210c066c8f075f60b895f470297113270e35dacd615320ba70e",
+      "recordedCheckout": "cfa7cf7d35e13c7321bf3c819f4826e3dc62c003",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "e0e0cd37c49b3899e2f47a7e32343014f5de0ead8d88700737b9b99e98c2edd2",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 4346.699999999255,
+          "domToCallbackMs": 10.800000000745058,
+          "domToSubmitMs": 8687.49995117262,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 12926.800000000745
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              2.5
+            ],
+            "cutSupportAnalyzeMs": [
+              67.9
+            ],
+            "cutComponentIndexMs": [
+              67.5
+            ],
+            "cutTransferPrepareMs": [
+              11.4
+            ],
+            "cutCompileMs": [
+              329.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              31.1
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              51.6
+            ],
+            "cutNativePrepareMs": [
+              635
+            ],
+            "cutNativeCommitMs": [
+              2246.1
+            ],
+            "cutNativeFinalizeMs": [
+              1029.6
+            ],
+            "cutGraphicsStageMs": [
+              60.6
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "payloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 360,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 49.399999994784594,
+            "fragmentMassMs": 0,
+            "fragmentShapeMs": 0.09999999776482582,
+            "fragmentMembershipMs": 1.300000000745058,
+            "workingBytes": 19855232,
+            "blocksBuilt": 33,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 135168,
+            "seamPairsBuilt": 100,
+            "componentsVisited": 21,
+            "edgesVisited": 97,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 563392,
+            "localComponentsBuilt": 33
+          }
+        }
+      ]
+    },
+    {
+      "case": "r3",
+      "distSha256": "b14c593db1852dc01b46d2c7bf8316ad8b89d24e1fd3f9fdb23d6a746643be1c",
+      "recordedCheckout": "3ea42667053b1b8e3f8bf5b2ab68c915b9b20bd7",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "25b6e187dcd156b75391337f1425a5ead727ca751e5f8c10e5e96f6eda14aceb",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 1728.9000000022352,
+          "domToCallbackMs": 87.10000000149012,
+          "domToSubmitMs": 4095.20009765774,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 15542.199999999255
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              2.3
+            ],
+            "cutSupportAnalyzeMs": [
+              17.1
+            ],
+            "cutComponentIndexMs": [
+              16.9
+            ],
+            "cutTransferPrepareMs": [
+              2.5
+            ],
+            "cutCompileMs": [
+              1495.7
+            ],
+            "cutNativeFragmentSourceMs": [
+              76.2
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              15.1
+            ],
+            "cutNativePrepareMs": [
+              117.2
+            ],
+            "cutNativeCommitMs": [
+              1.3
+            ],
+            "cutNativeFinalizeMs": [
+              1.4
+            ],
+            "cutGraphicsStageMs": [
+              134.4
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 12.700000002980232,
+            "fragmentMassMs": 0.09999999776482582,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 0.8000000007450581,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-2.json",
+          "completed": false,
+          "diagnostics": [
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "r4",
+      "distSha256": "a20f39bffb7398fee5388f9f2550bd012a3a84cd1da269c4ba2748de7b09030f",
+      "recordedCheckout": "b54f92b5d8ab8c737888aac8b4b3955e8a75567e",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "498e95d3829d20b1e98a458013c17ddca86c35168d6d873635321e2f192c97e1",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 919.1000000014901,
+          "domToCallbackMs": 73.40000000223517,
+          "domToSubmitMs": 2693.80014648661,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 14129.70000000298
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.3
+            ],
+            "cutSupportAnalyzeMs": [
+              9.7
+            ],
+            "cutComponentIndexMs": [
+              9.7
+            ],
+            "cutTransferPrepareMs": [
+              2.7
+            ],
+            "cutCompileMs": [
+              665.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              80.1
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              29.3
+            ],
+            "cutNativePrepareMs": [
+              146.1
+            ],
+            "cutNativeCommitMs": [
+              15
+            ],
+            "cutNativeFinalizeMs": [
+              2
+            ],
+            "cutGraphicsStageMs": [
+              65
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 5.599999997764826,
+            "fragmentMassMs": 0.09999999776482582,
+            "fragmentShapeMs": 0.10000000149011612,
+            "fragmentMembershipMs": 0.8000000007450581,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-2.json",
+          "completed": true,
+          "sha256": "5e0705c230919d6f09268724cfc8d1126983ab64b3764df18f41a093fa6c56e3",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 407.5,
+          "domToCallbackMs": 75.19999999925494,
+          "domToSubmitMs": 13260.099902343005,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 18846.29999999702
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              8.9
+            ],
+            "cutSupportAnalyzeMs": [
+              11.1
+            ],
+            "cutComponentIndexMs": [
+              11
+            ],
+            "cutTransferPrepareMs": [
+              2.5
+            ],
+            "cutCompileMs": [
+              57.8
+            ],
+            "cutNativeFragmentSourceMs": [
+              119
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              37
+            ],
+            "cutNativePrepareMs": [
+              235.8
+            ],
+            "cutNativeCommitMs": [
+              8.7
+            ],
+            "cutNativeFinalizeMs": [
+              4.6
+            ],
+            "cutGraphicsStageMs": [
+              135.6
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 3,
+            "fragmentMassMs": 0.20000000298023224,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 5.399999998509884,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-3.json",
+          "completed": false,
+          "diagnostics": [
+            "Parent ended the hung third attempt (exit 130)."
+          ]
+        }
+      ]
+    },
+    {
+      "case": "sector-baseline",
+      "distSha256": "8759e97d0ef0bc68b7f8bd29715303806f4d77218e24595be5453bf628fa01c4",
+      "recordedCheckout": "1e29cef8f8239b5867ef7d9ac72a181e5fd295f0",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "f730ac93552181135d7046c6671ca8f408c8cb13b3c06ef10faec74fd8c684e0",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 712.5999999977648,
+          "domToCallbackMs": 9.0,
+          "domToSubmitMs": 2820.10009765625,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 18997.400000002235
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~4",
+              "hvp:terrain:s7:e0~5"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              2.2
+            ],
+            "cutSupportAnalyzeMs": [
+              386.8
+            ],
+            "cutTransferPrepareMs": [
+              6.7
+            ],
+            "cutCompileMs": [
+              49.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              107.9
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              40.3
+            ],
+            "cutNativePrepareMs": [
+              227.9
+            ],
+            "cutNativeCommitMs": [
+              1.2
+            ],
+            "cutNativeFinalizeMs": [
+              1.1
+            ],
+            "cutGraphicsStageMs": [
+              70.3
+            ]
+          },
+          "index": null
+        }
+      ]
+    },
+    {
+      "case": "sector-candidate",
+      "distSha256": "a20f39bffb7398fee5388f9f2550bd012a3a84cd1da269c4ba2748de7b09030f",
+      "recordedCheckout": "54ad1ade5a94ce2f63e23fe521112247527c81fc",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "a1a04db1fffbed345adaf81a53b87801710da652440ef064a8f25a844720758c",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 613.8999999985099,
+          "domToCallbackMs": 51.5,
+          "domToSubmitMs": 3438.7998046875,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 18816.10000000149
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              2
+            ],
+            "cutSupportAnalyzeMs": [
+              12.9
+            ],
+            "cutComponentIndexMs": [
+              12.6
+            ],
+            "cutTransferPrepareMs": [
+              2.4
+            ],
+            "cutCompileMs": [
+              160.5
+            ],
+            "cutNativeFragmentSourceMs": [
+              125.7
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              15.5
+            ],
+            "cutNativePrepareMs": [
+              313.7
+            ],
+            "cutNativeCommitMs": [
+              64.3
+            ],
+            "cutNativeFinalizeMs": [
+              2.6
+            ],
+            "cutGraphicsStageMs": [
+              93.3
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 8.100000001490116,
+            "fragmentMassMs": 0.09999999776482582,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 1.1000000014901161,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ]
+    },
+    {
+      "case": "r5-first",
+      "distSha256": "2d1969585f256ae46dbd585ada65d979f070398542b60539bea754fa0850b6ba",
+      "recordedCheckout": "f0c6a41f7735598477618e4dfd54eeb2f5b01332",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "Target crashed"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "r5-repeat",
+      "distSha256": "2d1969585f256ae46dbd585ada65d979f070398542b60539bea754fa0850b6ba",
+      "recordedCheckout": "71103b7ea246dde8f9b60a785941b0fa57a37c06",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "\"reason\":\"Invalid terrain recovery boundary\"",
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "r6",
+      "distSha256": "72027d80da63f8d2a6015bc646ee69812f416817951eee61d64396af89ebe1ef",
+      "recordedCheckout": "d8676276e5a2bc0fcfe9d53d234160ebebf10cc7",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "Target crashed",
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "r6-diagnostic",
+      "distSha256": "72027d80da63f8d2a6015bc646ee69812f416817951eee61d64396af89ebe1ef",
+      "recordedCheckout": "d8676276e5a2bc0fcfe9d53d234160ebebf10cc7",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "cutDomInputToPhysicsPublishedMs 13596 506",
+            "Target crashed",
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "r6-diagnostic-cdp",
+      "distSha256": "72027d80da63f8d2a6015bc646ee69812f416817951eee61d64396af89ebe1ef",
+      "recordedCheckout": "796e2f055e1fa77a6124f9716a1036ac3cef68b5",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "e81295eabde2d7ff77137208ba0507e98afc33fa1a56fd123783d6309d332473",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 282.5,
+          "domToCallbackMs": 3.2999999970197678,
+          "domToSubmitMs": 2841.4000976532698,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 15899.699999999255
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.1
+            ],
+            "cutSupportAnalyzeMs": [
+              6.1
+            ],
+            "cutComponentIndexMs": [
+              5.9
+            ],
+            "cutTransferPrepareMs": [
+              2.2
+            ],
+            "cutCompileMs": [
+              133.5
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.6,
+              2,
+              0.5,
+              0.1,
+              1.1,
+              0.5,
+              0.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              63.5
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              11.8
+            ],
+            "cutNativePrepareMs": [
+              129.1
+            ],
+            "cutNativeCommitMs": [
+              2
+            ],
+            "cutNativeFinalizeMs": [
+              1.5
+            ],
+            "cutGraphicsStageMs": [
+              259.2
+            ],
+            "cutTerrainVisualMeshWorkMs": [
+              2,
+              1.4,
+              0.1,
+              2.2,
+              2,
+              2.1,
+              2.1,
+              0,
+              1.4,
+              1,
+              4.5,
+              1.9,
+              0.7
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2,
+              2,
+              1.9,
+              2,
+              0.5,
+              1.5,
+              2.1,
+              0.9
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 2,
+            "fragmentMassMs": 0,
+            "fragmentShapeMs": 0.10000000149011612,
+            "fragmentMembershipMs": 0.5,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ]
+    },
+    {
+      "case": "r6-stream",
+      "distSha256": "72027d80da63f8d2a6015bc646ee69812f416817951eee61d64396af89ebe1ef",
+      "recordedCheckout": "27848f268e858f53999c08d26dd2394a8d5c3de5",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "Target crashed",
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ],
+      "stream": {
+        "sha256": "590522706bc666ef269cfdee8562408ffde47186f8e7db8b851572f43d6bf3f6",
+        "nativePublications": [
+          145.30000000074506
+        ],
+        "crashes": [
+          {
+            "capturedUtc": "2026-11-22T15:31:08.858Z",
+            "kind": "crash",
+            "detail": {}
+          }
+        ],
+        "submits": []
+      }
+    },
+    {
+      "case": "r6-crash",
+      "distSha256": "72027d80da63f8d2a6015bc646ee69812f416817951eee61d64396af89ebe1ef",
+      "recordedCheckout": "47d24e05a126ae3a337b24fe09835bfdb98ef7a2",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "Target crashed",
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ],
+      "stream": {
+        "sha256": "8aa8546a0cde763f66bd6141acd39333ef91726ace57406fe16cee5ec177de66",
+        "nativePublications": [
+          1095.3999999985099
+        ],
+        "crashes": [
+          {
+            "capturedUtc": "2026-11-22T15:32:41.933Z",
+            "kind": "crash",
+            "detail": {}
+          },
+          {
+            "capturedUtc": "2026-11-22T15:32:41.936Z",
+            "kind": "targetCrashed",
+            "detail": {
+              "targetId": "416284D86270D141EEB426F0119BE749",
+              "status": "crashed",
+              "errorCode": 5
+            }
+          }
+        ],
+        "submits": []
+      }
+    },
+    {
+      "case": "r7",
+      "distSha256": "b048608d6ae45c027e9326de5171f75e8a6a392ae429edbf706505390de78d7c",
+      "recordedCheckout": "27848f268e858f53999c08d26dd2394a8d5c3de5",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "cutDomInputToPhysicsPublishedMs 14550 1467",
+            "target crash reason {\"targetId\":\"2C6A43EDF36BD86092F37ACBCC7759FB\",\"status\":\"crashed\",\"errorCode\":5}",
+            "Target crashed",
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ]
+    },
+    {
+      "case": "r8-worker",
+      "distSha256": "7336b2bf5e4b49665e4f1994a33e48e90f3842248161726188f9dfe10f78fa6a",
+      "recordedCheckout": "47d24e05a126ae3a337b24fe09835bfdb98ef7a2",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "c89592218a127be8b8c4e247e1acbd939003cbbcdc66405ec0a3f280bba49f9c",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 466.4000000022352,
+          "domToCallbackMs": 5.400000002235174,
+          "domToSubmitMs": 1613.2999023459852,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 14167.10000000149
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              0.7
+            ],
+            "cutSupportAnalyzeMs": [
+              4.3
+            ],
+            "cutComponentIndexMs": [
+              4.2
+            ],
+            "cutTransferPrepareMs": [
+              1.8
+            ],
+            "cutCompileMs": [
+              104.1
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.7,
+              1.6,
+              0.1,
+              0.2,
+              0.7,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              34.1
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              12.9
+            ],
+            "cutNativePrepareMs": [
+              229.2
+            ],
+            "cutNativeCommitMs": [
+              77.2
+            ],
+            "cutNativeFinalizeMs": [
+              40.9
+            ],
+            "cutGraphicsStageMs": [
+              78.7
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              1.9,
+              2,
+              2,
+              1,
+              0.8,
+              2,
+              1
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 1,
+            "fragmentMassMs": 0,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 0.8000000007450581,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ]
+    },
+    {
+      "case": "r8-local-stream",
+      "distSha256": "7336b2bf5e4b49665e4f1994a33e48e90f3842248161726188f9dfe10f78fa6a",
+      "recordedCheckout": "47d24e05a126ae3a337b24fe09835bfdb98ef7a2",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": false,
+          "diagnostics": [
+            "Target crashed",
+            "Timeout 40000ms exceeded"
+          ]
+        }
+      ],
+      "stream": {
+        "sha256": "f776831c5a07a506952710f33c15cc07e33de267262c65520593ac7188bb311c",
+        "nativePublications": [
+          94
+        ],
+        "crashes": [
+          {
+            "capturedUtc": "2026-11-22T15:35:22.306Z",
+            "kind": "crash",
+            "detail": {}
+          }
+        ],
+        "submits": []
+      }
+    },
+    {
+      "case": "r9",
+      "distSha256": "f8b5bb03e36d8e1f94a52b29a9a1339d86659f0c44ab8c6d52c21ec4a259c938",
+      "recordedCheckout": "867ecdeef1d1395f07a346ac8909e08feb73df0f",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "44a4e9bac30bcf7ebcd8f5b6349cdec5198c1e676c2362f13d58a90ed80dc3b7",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 1150.1000000014901,
+          "domToCallbackMs": 52.80000000074506,
+          "domToSubmitMs": 2699.10004882887,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 13654.5
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.1
+            ],
+            "cutSupportAnalyzeMs": [
+              8.7
+            ],
+            "cutComponentIndexMs": [
+              8.5
+            ],
+            "cutTransferPrepareMs": [
+              1.9
+            ],
+            "cutCompileMs": [
+              561.4
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.6,
+              2,
+              0,
+              0,
+              1,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              40.9
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              14.9
+            ],
+            "cutNativePrepareMs": [
+              376.6
+            ],
+            "cutNativeCommitMs": [
+              96.3
+            ],
+            "cutNativeFinalizeMs": [
+              47.6
+            ],
+            "cutGraphicsStageMs": [
+              228.8
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2,
+              2,
+              2.5,
+              2,
+              0.8,
+              1.3,
+              2,
+              0.6
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 2.4999999962747097,
+            "fragmentMassMs": 0.20000000298023224,
+            "fragmentShapeMs": 0.09999999776482582,
+            "fragmentMembershipMs": 1,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-2.json",
+          "completed": true,
+          "sha256": "1b35d612c4d174cc8ebab11993dc2dd2b76eebefcf7f3b134381d5aac8fcea90",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 276.4000000022352,
+          "domToCallbackMs": 102.69999999925494,
+          "domToSubmitMs": 4089.60014648363,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 14854.89999999851
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              0.9
+            ],
+            "cutSupportAnalyzeMs": [
+              11.7
+            ],
+            "cutComponentIndexMs": [
+              11.3
+            ],
+            "cutTransferPrepareMs": [
+              3.2
+            ],
+            "cutCompileMs": [
+              36.8
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.5,
+              2,
+              0.3,
+              0,
+              1.4,
+              0.1,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              59.1
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              14
+            ],
+            "cutNativePrepareMs": [
+              112.1
+            ],
+            "cutNativeCommitMs": [
+              3.2
+            ],
+            "cutNativeFinalizeMs": [
+              1.8
+            ],
+            "cutGraphicsStageMs": [
+              60.3
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2,
+              1.5,
+              0.5,
+              0.9
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 3.899999998509884,
+            "fragmentMassMs": 0.09999999776482582,
+            "fragmentShapeMs": 0.10000000149011612,
+            "fragmentMembershipMs": 1.300000000745058,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-3.json",
+          "completed": true,
+          "sha256": "df07af091c1697cd0133950e5e7c213d6b14496ac8d2b6b0d772cd73fa93b9eb",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 258.30000000074506,
+          "domToCallbackMs": 37.69999999925494,
+          "domToSubmitMs": 2318.300097655505,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 13502.89999999851
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.1
+            ],
+            "cutSupportAnalyzeMs": [
+              8.8
+            ],
+            "cutComponentIndexMs": [
+              8.5
+            ],
+            "cutTransferPrepareMs": [
+              2.8
+            ],
+            "cutCompileMs": [
+              86.5
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.6,
+              2,
+              0.1,
+              0,
+              1.6,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              28.3
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              8.1
+            ],
+            "cutNativePrepareMs": [
+              79.4
+            ],
+            "cutNativeCommitMs": [
+              23.9
+            ],
+            "cutNativeFinalizeMs": [
+              13.2
+            ],
+            "cutGraphicsStageMs": [
+              96.7
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2.5,
+              2,
+              2,
+              1.4,
+              0.5,
+              1.4
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 1.1000000014901161,
+            "fragmentMassMs": 0.30000000074505806,
+            "fragmentShapeMs": 0.10000000149011612,
+            "fragmentMembershipMs": 1.9000000022351742,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ]
+    },
+    {
+      "case": "r9-oracle",
+      "distSha256": "f8b5bb03e36d8e1f94a52b29a9a1339d86659f0c44ab8c6d52c21ec4a259c938",
+      "recordedCheckout": "867ecdeef1d1395f07a346ac8909e08feb73df0f",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "ac9f7236f5a3f05876437ce69e1c6022722ba95f8609a09b2b5d5b3de8b729df",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 1864.6000000014901,
+          "domToCallbackMs": 198.60000000149012,
+          "domToSubmitMs": 3977.400048829615,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 15775.199999999255
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.5
+            ],
+            "cutSupportAnalyzeMs": [
+              856.6
+            ],
+            "cutTransferPrepareMs": [
+              1.8
+            ],
+            "cutCompileMs": [
+              4.9
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.5,
+              0.4,
+              0,
+              0.8,
+              0.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              741.6
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              38.4
+            ],
+            "cutNativePrepareMs": [
+              794.5
+            ],
+            "cutNativeCommitMs": [
+              1.1
+            ],
+            "cutNativeFinalizeMs": [
+              1.6
+            ],
+            "cutGraphicsStageMs": [
+              54.3
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              1.9,
+              2,
+              1.4,
+              0.5,
+              2,
+              0.4
+            ]
+          },
+          "index": null
+        }
+      ]
+    },
+    {
+      "case": "r9-sectors",
+      "distSha256": "f8b5bb03e36d8e1f94a52b29a9a1339d86659f0c44ab8c6d52c21ec4a259c938",
+      "recordedCheckout": "867ecdeef1d1395f07a346ac8909e08feb73df0f",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "8a5386f4359ac69253739eff45f54917c5779af6185811a49c6718098dbe4bbe",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 347.9000000022352,
+          "domToCallbackMs": 63.400000002235174,
+          "domToSubmitMs": 1420.1998046897352,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 14683.60000000149
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.1
+            ],
+            "cutSupportAnalyzeMs": [
+              5.6
+            ],
+            "cutComponentIndexMs": [
+              5.4
+            ],
+            "cutTransferPrepareMs": [
+              1.6
+            ],
+            "cutCompileMs": [
+              80.6
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.6,
+              1.8,
+              0.1,
+              0.3,
+              1.2,
+              0.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              24.9
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              9.7
+            ],
+            "cutNativePrepareMs": [
+              78.3
+            ],
+            "cutNativeCommitMs": [
+              40.7
+            ],
+            "cutNativeFinalizeMs": [
+              73.2
+            ],
+            "cutGraphicsStageMs": [
+              74.4
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2,
+              2.1,
+              2.2,
+              0.6,
+              1.3,
+              2,
+              0.5
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 0.29999999701976776,
+            "fragmentMassMs": 0.10000000149011612,
+            "fragmentShapeMs": 0.10000000149011612,
+            "fragmentMembershipMs": 2.5,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ],
+      "stream": {
+        "sha256": "8f9b309c6daea18eea572ce71f1db27ebf43ab054239748db33368450b30d89d",
+        "nativePublications": [
+          347.9000000022352
+        ],
+        "crashes": [],
+        "submits": [
+          1356.7998046875
+        ]
+      }
+    },
+    {
+      "case": "r10-local",
+      "distSha256": "a290df0265be223983754c83cedf37547e62f238d28aa0dbde357846166f36df",
+      "recordedCheckout": "e810ab8a0471f63ff2b4aca789bdb9b72b0dad1e",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "71b077466d85d49fac6aca5b6acdae73803e1a4f7656ead4dc20c97a48e3836c",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 611.1999999992549,
+          "domToCallbackMs": 111.69999999925494,
+          "domToSubmitMs": 2575.599902343005,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 17747.60000000149
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.3
+            ],
+            "cutSupportAnalyzeMs": [
+              5.3
+            ],
+            "cutComponentIndexMs": [
+              5.1
+            ],
+            "cutTransferPrepareMs": [
+              9.5
+            ],
+            "cutCompileMs": [
+              331.9
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.8,
+              1.7,
+              0.1,
+              0.1,
+              1.6,
+              0.1,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              68.4
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              13.2
+            ],
+            "cutNativePrepareMs": [
+              143.4
+            ],
+            "cutNativeCommitMs": [
+              2.3
+            ],
+            "cutNativeFinalizeMs": [
+              2.5
+            ],
+            "cutGraphicsStageMs": [
+              74.8
+            ],
+            "cutTerrainVisualMeshWorkMs": [
+              2,
+              0.6,
+              1,
+              2.1,
+              2,
+              2,
+              0,
+              2,
+              0.3,
+              1.6,
+              0.7
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2.1,
+              0.9,
+              1.1,
+              1.3
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 1.2999999970197678,
+            "fragmentMassMs": 0.09999999776482582,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 0.6999999992549419,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-2.json",
+          "completed": true,
+          "sha256": "642e84990f79181db36b79452f7c76c747845f9a196fb6a802e7dfe13b789dd8",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 315.20000000298023,
+          "domToCallbackMs": 2.2000000029802322,
+          "domToSubmitMs": 2761.2998535186052,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 16372.10000000149
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              0.7
+            ],
+            "cutSupportAnalyzeMs": [
+              3.8
+            ],
+            "cutComponentIndexMs": [
+              3.6
+            ],
+            "cutTransferPrepareMs": [
+              2
+            ],
+            "cutCompileMs": [
+              129.9
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.7,
+              0.2,
+              0.1,
+              0.9,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              24.6
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              13.1
+            ],
+            "cutNativePrepareMs": [
+              82.8
+            ],
+            "cutNativeCommitMs": [
+              45.6
+            ],
+            "cutNativeFinalizeMs": [
+              45.9
+            ],
+            "cutGraphicsStageMs": [
+              496.1
+            ],
+            "cutTerrainVisualMeshWorkMs": [
+              2,
+              2.7,
+              0.1,
+              3,
+              2,
+              2,
+              1.4,
+              0.5,
+              1.4,
+              0.5,
+              22.2,
+              1.9,
+              3.4,
+              1
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              9.4,
+              3.3,
+              2,
+              2.1,
+              2.2,
+              2,
+              0.9,
+              3.5,
+              2.3,
+              2.3,
+              2,
+              29.3,
+              0.5
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 0.30000000074505806,
+            "fragmentMassMs": 0.10000000149011612,
+            "fragmentShapeMs": 0.10000000149011612,
+            "fragmentMembershipMs": 1.199999999254942,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-3.json",
+          "completed": true,
+          "sha256": "088fc9c442734bae0bb38cb12784e8618da19883d28640d3f8eeba0717f2c307",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 224.19999999925494,
+          "domToCallbackMs": 15.0,
+          "domToSubmitMs": 2495.60009765625,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 14725.70000000298
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              0.8
+            ],
+            "cutSupportAnalyzeMs": [
+              4.5
+            ],
+            "cutComponentIndexMs": [
+              4.3
+            ],
+            "cutTransferPrepareMs": [
+              1.7
+            ],
+            "cutCompileMs": [
+              87.9
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.6,
+              2.4,
+              0,
+              0.1,
+              1.1,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              47.6
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              16.3
+            ],
+            "cutNativePrepareMs": [
+              107.1
+            ],
+            "cutNativeCommitMs": [
+              2.3
+            ],
+            "cutNativeFinalizeMs": [
+              2.1
+            ],
+            "cutGraphicsStageMs": [
+              79.5
+            ],
+            "cutTerrainVisualMeshWorkMs": [
+              2,
+              0.2,
+              1.5,
+              4.9,
+              2.4,
+              1.4,
+              0.6,
+              0.1,
+              1.8,
+              1
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              5.1,
+              2,
+              2,
+              1.4,
+              0.5,
+              1.5
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 1.5000000037252903,
+            "fragmentMassMs": 0.09999999776482582,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 0.6000000014901161,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ]
+    },
+    {
+      "case": "r11",
+      "distSha256": "ae0258bc2d50b9d33e09f29c2e317f9f50b1f603f9a349f9b9db42cab39c69c2",
+      "recordedCheckout": "bf49270d2e17c619581cbb771413d380e033675b",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "442a49a9d55ec78276c0b19e65a63cdf1ecc4cfdbeb45ce2f63a32e87a1183ea",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 955.3999999985099,
+          "domToCallbackMs": 24.699999999254942,
+          "domToSubmitMs": 4938.39995117113,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 17411
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              2.1
+            ],
+            "cutSupportAnalyzeMs": [
+              12
+            ],
+            "cutComponentIndexMs": [
+              11.8
+            ],
+            "cutTransferPrepareMs": [
+              3.5
+            ],
+            "cutCompileMs": [
+              755.6
+            ],
+            "cutStaticCollisionWorkMs": [
+              0.9,
+              5.7,
+              1.6,
+              1,
+              0.1,
+              0.9,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              91.1
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              23.3
+            ],
+            "cutNativePrepareMs": [
+              149
+            ],
+            "cutNativeCommitMs": [
+              2.2
+            ],
+            "cutNativeFinalizeMs": [
+              2
+            ],
+            "cutGraphicsStageMs": [
+              125.7
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              3.4,
+              2,
+              0.8,
+              1.1,
+              2.1,
+              0.9
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 2.100000001490116,
+            "fragmentMassMs": 0.09999999776482582,
+            "fragmentShapeMs": 0.10000000149011612,
+            "fragmentMembershipMs": 2.5,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-2.json",
+          "completed": true,
+          "sha256": "b2bcb86cc7644c6f95669d7da4b451d573678e05f3dd0bdc42000eae8d1a06a2",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 756.5999999977648,
+          "domToCallbackMs": 24.599999997764826,
+          "domToSubmitMs": 2204.29995116964,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 18993.699999999255
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.5
+            ],
+            "cutSupportAnalyzeMs": [
+              6.6
+            ],
+            "cutComponentIndexMs": [
+              6.3
+            ],
+            "cutTransferPrepareMs": [
+              2.6
+            ],
+            "cutCompileMs": [
+              240.7
+            ],
+            "cutStaticCollisionWorkMs": [
+              5,
+              2.3,
+              4.1,
+              0.5,
+              0.1,
+              1.2,
+              0.5,
+              0.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              39.9
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              12.2
+            ],
+            "cutNativePrepareMs": [
+              165.1
+            ],
+            "cutNativeCommitMs": [
+              104.1
+            ],
+            "cutNativeFinalizeMs": [
+              204.3
+            ],
+            "cutGraphicsStageMs": [
+              49.9
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2.1,
+              2,
+              1.1,
+              0.8,
+              0.1
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 1.9999999962747097,
+            "fragmentMassMs": 0.30000000074505806,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 0.8999999985098839,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-3.json",
+          "completed": true,
+          "sha256": "411b89cdba86e21dd68ee9bf06ba249c6848fe6498d928660db2d610154f9516",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 2717.300000000745,
+          "domToCallbackMs": 302.0999999977648,
+          "domToSubmitMs": 4756.40004882589,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 15209.89999999851
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              0.7
+            ],
+            "cutSupportAnalyzeMs": [
+              9
+            ],
+            "cutComponentIndexMs": [
+              8.8
+            ],
+            "cutTransferPrepareMs": [
+              2.1
+            ],
+            "cutCompileMs": [
+              652.3
+            ],
+            "cutStaticCollisionWorkMs": [
+              0.6,
+              2.1,
+              0.5,
+              0,
+              1.7,
+              1.1,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              64.6
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              16.3
+            ],
+            "cutNativePrepareMs": [
+              686.4
+            ],
+            "cutNativeCommitMs": [
+              598.8
+            ],
+            "cutNativeFinalizeMs": [
+              454.9
+            ],
+            "cutGraphicsStageMs": [
+              96.5
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              6.3,
+              2.2,
+              3.4,
+              2,
+              0.2,
+              1.8,
+              0.5
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 5.200000002980232,
+            "fragmentMassMs": 0.10000000149011612,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 1.300000000745058,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ]
+    },
+    {
+      "case": "r11-sectors",
+      "distSha256": "ae0258bc2d50b9d33e09f29c2e317f9f50b1f603f9a349f9b9db42cab39c69c2",
+      "recordedCheckout": "bf49270d2e17c619581cbb771413d380e033675b",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "fe6bc4c19e9e1e6906c38317b0a51079382d2a5bf387910d8d2cfc053bf459a1",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 538.1999999992549,
+          "domToCallbackMs": 17.699999999254942,
+          "domToSubmitMs": 2588.79985351488,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 19419.800000000745
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.2
+            ],
+            "cutSupportAnalyzeMs": [
+              5.4
+            ],
+            "cutComponentIndexMs": [
+              4.9
+            ],
+            "cutTransferPrepareMs": [
+              4.9
+            ],
+            "cutCompileMs": [
+              85.7
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.8,
+              1.3,
+              0,
+              0.6,
+              0.6,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              42
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              10.2
+            ],
+            "cutNativePrepareMs": [
+              105.1
+            ],
+            "cutNativeCommitMs": [
+              165.8
+            ],
+            "cutNativeFinalizeMs": [
+              148.6
+            ],
+            "cutGraphicsStageMs": [
+              176.7
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2,
+              2.1,
+              2.1,
+              0.4,
+              1.6,
+              0.4
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 1.3999999985098839,
+            "fragmentMassMs": 0.10000000149011612,
+            "fragmentShapeMs": 0.09999999776482582,
+            "fragmentMembershipMs": 1.3999999985098839,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ],
+      "stream": {
+        "sha256": "b349e7b69f65987879e7bac8142095dfa73df96b30894db156ae0f70da6cf949",
+        "nativePublications": [
+          538.1999999992549
+        ],
+        "crashes": [],
+        "submits": [
+          2571.099853515625
+        ]
+      }
+    },
+    {
+      "case": "final-control",
+      "distSha256": "b485dff091a29c1267e889e7e6e72bfc50baddc2e6561bde917ffd941c6e93e9",
+      "recordedCheckout": "abf90f07ca063d67e5b683af6a732dee608e5842",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "5ac202188c98e38f52c4ff605513d12e948010b4d67f8536523a163fbdb68158",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 672.0999999977648,
+          "domToCallbackMs": 77.5,
+          "domToSubmitMs": 5654.89990234375,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 15403.10000000149
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              0.7
+            ],
+            "cutSupportAnalyzeMs": [
+              5.7
+            ],
+            "cutComponentIndexMs": [
+              5.5
+            ],
+            "cutTransferPrepareMs": [
+              1.6
+            ],
+            "cutCompileMs": [
+              410.3
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.6,
+              1.1,
+              0,
+              0.8,
+              0.7,
+              0.1
+            ],
+            "cutNativeFragmentSourceMs": [
+              53.8
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              13.6
+            ],
+            "cutNativePrepareMs": [
+              108.4
+            ],
+            "cutNativeCommitMs": [
+              26.5
+            ],
+            "cutNativeFinalizeMs": [
+              37.1
+            ],
+            "cutGraphicsStageMs": [
+              51
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2,
+              1.3,
+              0.6,
+              0.3
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 1.4000000022351742,
+            "fragmentMassMs": 0.09999999776482582,
+            "fragmentShapeMs": 0,
+            "fragmentMembershipMs": 1.5,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-2.json",
+          "completed": true,
+          "sha256": "2436833e8ac971f85fbda4699bbe2a2ba309da85b895e988ae0b7941298e2066",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 1134.699999999255,
+          "domToCallbackMs": 176.39999999850988,
+          "domToSubmitMs": 2482.50009765476,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 15453
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.2
+            ],
+            "cutSupportAnalyzeMs": [
+              4.3
+            ],
+            "cutComponentIndexMs": [
+              4.1
+            ],
+            "cutTransferPrepareMs": [
+              1.8
+            ],
+            "cutCompileMs": [
+              744.7
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.7,
+              1.8,
+              0,
+              0.4,
+              1.2,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              64.9
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              16.1
+            ],
+            "cutNativePrepareMs": [
+              195.7
+            ],
+            "cutNativeCommitMs": [
+              6.6
+            ],
+            "cutNativeFinalizeMs": [
+              1.3
+            ],
+            "cutGraphicsStageMs": [
+              87.4
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2,
+              2,
+              0.5,
+              1.1,
+              0.6
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 0.4999999962747097,
+            "fragmentMassMs": 0.10000000149011612,
+            "fragmentShapeMs": 0.09999999776482582,
+            "fragmentMembershipMs": 0.6999999992549419,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ]
+    },
+    {
+      "case": "final-priority",
+      "distSha256": "b485dff091a29c1267e889e7e6e72bfc50baddc2e6561bde917ffd941c6e93e9",
+      "recordedCheckout": "abf90f07ca063d67e5b683af6a732dee608e5842",
+      "attempts": [
+        {
+          "attempt": "player-1.json",
+          "completed": true,
+          "sha256": "806e507c251183ecaba0589e5ff5adb220bdea5f32bc912075722e0f6dbafd33",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 564.5,
+          "domToCallbackMs": 9,
+          "domToSubmitMs": 1438.699951171875,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 15871
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              3.4
+            ],
+            "cutSupportAnalyzeMs": [
+              17.7
+            ],
+            "cutComponentIndexMs": [
+              17.2
+            ],
+            "cutTransferPrepareMs": [
+              3.2
+            ],
+            "cutCompileMs": [
+              392.6
+            ],
+            "cutStaticCollisionWorkMs": [
+              1.1,
+              1.9,
+              0.8,
+              0.1,
+              9.2,
+              1,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              45.8
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              16.2
+            ],
+            "cutNativePrepareMs": [
+              125.1
+            ],
+            "cutNativeCommitMs": [
+              4.6
+            ],
+            "cutNativeFinalizeMs": [
+              1.7
+            ],
+            "cutGraphicsStageMs": [
+              69.3
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              5,
+              2,
+              0.5,
+              1.5,
+              0.2
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 9.699999999254942,
+            "fragmentMassMs": 0.10000000149011612,
+            "fragmentShapeMs": 0.29999999701976776,
+            "fragmentMembershipMs": 1.2999999970197678,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        },
+        {
+          "attempt": "player-2.json",
+          "completed": true,
+          "sha256": "295cd1d481e6becf9cc19499125203d18c3070813ebc088552fa4d7fbd482461",
+          "browser": "149.0.7827.0",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+          "domToNativeMs": 1088.199999999255,
+          "domToCallbackMs": 113.39999999850988,
+          "domToSubmitMs": 9804.79990234226,
+          "physicalPresentationMeasured": false,
+          "within10ms": false,
+          "result": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "nativeGeneration": 1,
+          "nativeAck": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 18000
+          },
+          "firstMatchingSubmit": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~3",
+              "hvp:terrain:s7:e0~4"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          },
+          "phases": {
+            "cutRootPrepareMs": [
+              1.1
+            ],
+            "cutSupportAnalyzeMs": [
+              14.4
+            ],
+            "cutComponentIndexMs": [
+              14.3
+            ],
+            "cutTransferPrepareMs": [
+              2.2
+            ],
+            "cutCompileMs": [
+              331.3
+            ],
+            "cutStaticCollisionWorkMs": [
+              6.7,
+              2.7,
+              1.1,
+              0.1,
+              0.8,
+              0.6,
+              0
+            ],
+            "cutNativeFragmentSourceMs": [
+              157.5
+            ],
+            "cutNativeFragmentAdmissionMs": [
+              66.4
+            ],
+            "cutNativePrepareMs": [
+              438.9
+            ],
+            "cutNativeCommitMs": [
+              75.1
+            ],
+            "cutNativeFinalizeMs": [
+              104.6
+            ],
+            "cutGraphicsStageMs": [
+              61.2
+            ],
+            "cutTerrainVisualCompositionWorkMs": [
+              2,
+              2.1,
+              2.1,
+              5.7,
+              0.8,
+              1.3,
+              2.5,
+              0.3
+            ]
+          },
+          "index": {
+            "commandId": "cut-1",
+            "partReferences": 2,
+            "voxelPayloadBytesCopied": 0,
+            "descriptorReferencesReused": 0,
+            "descriptorsBuilt": 1,
+            "partDescriptorsPrepared": 7,
+            "materialRunsReferenced": 34,
+            "anchoredWitnesses": 1,
+            "blockBuildMs": 1.8999999985098839,
+            "fragmentMassMs": 2,
+            "fragmentShapeMs": 0.19999999925494194,
+            "fragmentMembershipMs": 2.399999998509884,
+            "workingBytes": 1410614,
+            "floorColumnReads": 80,
+            "blocksBuilt": 2,
+            "dirtyBlocksBuilt": 2,
+            "sourceCellsScanned": 8192,
+            "seamPairsBuilt": 5,
+            "componentsVisited": 2,
+            "edgesVisited": 2,
+            "outputCells": 384,
+            "blockTypedArrayBytesAllocated": 27190,
+            "localComponentsBuilt": 2
+          }
+        }
+      ]
+    }
+  ]
+}

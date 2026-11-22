@@ -1,0 +1,1619 @@
+{
+  "capturedUtc": "2026-11-22T15:56:46.211950+00:00",
+  "baseCommit": "cfa7cf7d35e13c7321bf3c819f4826e3dc62c003",
+  "candidateCommit": "b54f92b5d8ab8c737888aac8b4b3955e8a75567e",
+  "candidateTree": "563fead7515ad3a8d620dbd2c9a58cc8da127a9d",
+  "candidateMatchesGit": true,
+  "completeDistSha256": "a20f39bffb7398fee5388f9f2550bd012a3a84cd1da269c4ba2748de7b09030f",
+  "scope": "Cloud Chromium 149 / SwiftShader. DOM input through published exact physics and first correlated render submit, private save/restore, Vitest files, grouped Chromium E2E. Nonsynthetic click; no TestBridge or physical presentation measurement.",
+  "baselineRegressions": {
+    "base": "cfa7cf7d35e13c7321bf3c819f4826e3dc62c003",
+    "unitFileCount": 304,
+    "unitScope": "Seven focused files only, default 5 s timeout. Single timed-out case retried in isolation with 30 s allowance, completed in 2.98 s.",
+    "unit": {
+      "report": "baseline/focused-unit/results.json",
+      "sha256": "57a8cf81aa48db296a4066deeffedb2576fdd4cb1a750dc3b2a116bf45b3be5d",
+      "files": 7,
+      "passed": 154,
+      "failed": 1,
+      "pending": 1,
+      "failures": [
+        "HVP paired terrain consumer cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing"
+      ]
+    },
+    "unitIsolated": {
+      "report": "baseline/timeout-control/results.json",
+      "sha256": "a3351c381b0455d0b2ed1f7210c4777bd8701f6ccdfb3a94e93d6956186e19fe",
+      "files": 1,
+      "passed": 1,
+      "failed": 0,
+      "pending": 37,
+      "failures": []
+    },
+    "groups": {
+      "core": "Total: 43 tests in 26 files",
+      "live": "Total: 47 tests in 11 files",
+      "ui": "Total: 12 tests in 4 files"
+    },
+    "ui": {
+      "report": "baseline/ui-hydrated/result.json",
+      "sha256": "8cefc2469535e454155d997b46735631e0b5d4c31bcc8bc0e3ec835f8be515eb",
+      "stats": {
+        "startTime": "2026-11-22T14:54:19.236Z",
+        "duration": 218900.065,
+        "expected": 12,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "failures": []
+    },
+    "uiFirstAttempt": {
+      "report": "baseline/ui/result.json",
+      "sha256": "d9cb250203e2025ec2c0d6a2dd8782010f2e584a042777c80a3e29a96b352281",
+      "stats": {
+        "startTime": "2026-11-22T14:50:58.542Z",
+        "duration": 129858.357,
+        "expected": 9,
+        "skipped": 0,
+        "unexpected": 3,
+        "flaky": 0
+      },
+      "failures": [
+        "authoritative normal flight surface keeps live WebGL and concept HUD boundaries",
+        "navigation planner presents a full star-map route plan in normal runtime",
+        "combat contact scenario is a red-accented UI shell without default TestBridge exposure"
+      ]
+    },
+    "uiRetryReason": "First pass had three screenshot comparisons that attempted to decode Git LFS pointers. All four rejected V1 reference PNGs were restored and verified from the local LFS store before the complete passing rerun.",
+    "rockE2E": {
+      "report": "baseline/rock-e2e/result.json",
+      "sha256": "baa060112eb6521c624c43babf4470df150a2144e6e70e5a377c1149df3b0ab3",
+      "stats": {
+        "startTime": "2026-11-22T14:54:56.112Z",
+        "duration": 193076.692,
+        "expected": 0,
+        "skipped": 0,
+        "unexpected": 2,
+        "flaky": 0
+      },
+      "failures": [
+        "HVP-09B a normal undercut transfers actual rock-arm cells to one falling body",
+        "HVP-10 normal input recuts a terrain-origin body without changing static Root generation"
+      ]
+    },
+    "rockFailures": [
+      "HVP-09B line 937 awaited grounded for 5 s before the click.",
+      "HVP-10 line 1014 timed out after 30 s awaiting first cut Applied, before the second cut."
+    ],
+    "e2eConfig": "Cloud Chromium 149, SwiftShader, 1280 x 720, one worker and no retries; dev server for UI, static Vite preview for the two canonical HVP specs.",
+    "fullCoreLiveUnit": "Not run as a complete suite.",
+    "groupedCoreRun": {
+      "completed": 32,
+      "passed": 32,
+      "total": 43,
+      "stoppedWhenFinalCandidateArrived": true
+    }
+  },
+  "candidateUnits": {
+    "declaredFiles": 312,
+    "perFileWallLimitSeconds": 170,
+    "parallelFiles": 3,
+    "sourceAndTestSnapshotSha256": "2619b3d27363b918747777a659bd18355447d32e3a3922b18020f875c97a0837",
+    "filesCompleted": 312,
+    "filesPassed": 288,
+    "filesFailed": 21,
+    "filesTimedOut": 3,
+    "testsPassed": 2992,
+    "testsFailed": 43,
+    "testsSkipped": 24,
+    "nonpassingFiles": [
+      {
+        "file": "tests/unit/hvp-terrain-consumer.test.ts",
+        "exit": 1,
+        "seconds": 13.657,
+        "passed": 31,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "HVP paired terrain consumer cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-physics-worker-clock.test.ts",
+        "exit": 1,
+        "seconds": 10.07,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "terrain timing projects one coherent transaction through the real worker handler"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-physics-worker-body-clock.test.ts",
+        "exit": 1,
+        "seconds": 44.433,
+        "passed": 3,
+        "failed": 2,
+        "skipped": 0,
+        "failures": [
+          "retains body clock diagnostics after restoring the worker world",
+          "disables optional timing during a prepared restore without changing the native cut"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-bootstrap.test.ts",
+        "exit": 124,
+        "seconds": 170.035
+      },
+      {
+        "file": "tests/unit/simulation.test.ts",
+        "exit": 1,
+        "seconds": 28.773,
+        "passed": 29,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "FixedStepSimulationLoop exposes the gated proving-ground v2 helpers through TestBridge only"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-body-plan-owner.test.ts",
+        "exit": 124,
+        "seconds": 170.256
+      },
+      {
+        "file": "tests/unit/structuralPgTragwerkF7.test.ts",
+        "exit": 1,
+        "seconds": 16.897,
+        "passed": 8,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "P-PG-F7: Drehimpulsantwort (Audit-Repro + passender Pfad) T1: Dichtepfad antwortet mit Ixx_eff = 2,722... statt 0,1205 (Defektbeleg)"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-owned-resident-source.test.ts",
+        "exit": 1,
+        "seconds": 11.201,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "keeps independent complete resident/source bytes and real proof brands within one inactive borrowed lifetime"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvpCutRtReport.test.ts",
+        "exit": 1,
+        "seconds": 2.507,
+        "passed": 50,
+        "failed": 5,
+        "skipped": 0,
+        "failures": [
+          "CDP metadata publication privacy keeps nested metadata and error canaries out of files and fallback test attachments",
+          "P07 owning artifact and privacy boundaries retains first operation failure, warmups and raw markers after first-write failure",
+          "P07 owning artifact and privacy boundaries retains first operation failure, warmups and raw markers after final-write failure",
+          "P07 owning artifact and privacy boundaries creates one exclusive safe directory and emits relative inventories with unchanged actual hashes",
+          "P07 owning artifact and privacy boundaries rechecks a created directory before final persistence and falls back without redirected writes"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-owned-materialization.test.ts",
+        "exit": 1,
+        "seconds": 9.579,
+        "passed": 2,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "preserves literal complete materialized bytes, original native namespaces and borrowed owned lifetimes"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-parallel-p03-camera.test.ts",
+        "exit": 1,
+        "seconds": 2.618,
+        "passed": 24,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "P03 frozen b3 camera / player parity P03-T08 frozen oracle matches b3 blobs and protected avatar suffix is byte-identical"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-game-save.test.ts",
+        "exit": 1,
+        "seconds": 25.69,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 16,
+        "failures": [],
+        "fileErrors": [
+          "Speichern und Laden ist f\u00fcr diesen Pr\u00fcfstand noch nicht freigegeben."
+        ]
+      },
+      {
+        "file": "tests/unit/hvp-owned-structural-ingest.test.ts",
+        "exit": 1,
+        "seconds": 9.823,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "shares complete preimage-bound Adaptive-to-Structural issuance, generic observations and borrowed lifetime without World authority"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-vegetation.test.ts",
+        "exit": 1,
+        "seconds": 72.951,
+        "passed": 11,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "HVP-03 authored vegetation T05 wood mass and COM are independent of cosmetic palette"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvpColdWorkerAncestor.test.ts",
+        "exit": 1,
+        "seconds": 9.671,
+        "passed": 0,
+        "failed": 6,
+        "skipped": 0,
+        "failures": [
+          "includes fresh Inertia and every retained Fixed branch recipe and Source in the private resident union",
+          "restores the actual saved Body384 into the Worker with an owned ancestor before Ready and identical native Save",
+          "accounts the exact initial retained union for Drop Inertia Fixed and Parked recipes without a duplicate active-recipe charge",
+          "keeps the initial Cold recipe charged while adding only real recut children",
+          "publishes retained Recipe identities only after complete World validation and preserves hash quantum and exact decode JSON",
+          "rejects Worker Cold preparation over the unchanged cap before native restoration and releases its ledger"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-residency-session.test.ts",
+        "exit": 1,
+        "seconds": 6.372,
+        "passed": 1,
+        "failed": 3,
+        "skipped": 0,
+        "failures": [
+          "holds actual capsule coverage until the complete neighbour commits, and checkpoints both regions",
+          "cold-restores a checkpointed sleeping fragment without instantiating it until the real player returns",
+          "keeps the private live parked recipe allowance charged through real player return and wake"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvpAdaptiveEditRaster.test.ts",
+        "exit": 124,
+        "seconds": 170.033
+      },
+      {
+        "file": "tests/unit/hvp-body-mesh-worker.test.ts",
+        "exit": 1,
+        "seconds": 27.286,
+        "passed": 6,
+        "failed": 2,
+        "skipped": 0,
+        "failures": [
+          "native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)",
+          "native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-terrain-native-worker.test.ts",
+        "exit": 1,
+        "seconds": 9.514,
+        "passed": 2,
+        "failed": 2,
+        "skipped": 0,
+        "failures": [
+          "bounds real Source diagnostics with four retained Hold transitions and both timing copies",
+          "reports coarse Native source admission phases only when measured, with unchanged complete source views"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-world-save.test.ts",
+        "exit": 1,
+        "seconds": 20.813,
+        "passed": 1,
+        "failed": 6,
+        "skipped": 0,
+        "failures": [
+          "recreates every current native owner and the paused player from artifact-only data",
+          "rejects running checkpoints and foreign collision/profile or incomplete owner membership",
+          "restores current recut timber and terrain fragments with 'none' (measure=false)",
+          "restores current recut timber and terrain fragments with 'none' (measure=true)",
+          "restores current recut timber and terrain fragments with 'Pause' (measure=true)",
+          "restores current recut timber and terrain fragments with 'Inspect' (measure=true)"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvpChunkWorldLayout.test.ts",
+        "exit": 1,
+        "seconds": 5.866,
+        "passed": 5,
+        "failed": 2,
+        "skipped": 0,
+        "failures": [
+          "preserves all empty primary slots and static wood extras without creating empty native colliders",
+          "replaces a complete legacy catalogue by chunks and back with exact Save digests and real native retirement"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-chunk-physics-worker.test.ts",
+        "exit": 1,
+        "seconds": 6.665,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "failures": [
+          "keeps chunk segmentation through the real Worker initialize and complete Restore acknowledgements"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvpCutProductBinding.test.ts",
+        "exit": 1,
+        "seconds": 1.766,
+        "passed": 9,
+        "failed": 2,
+        "skipped": 0,
+        "failures": [
+          "binds actual product bytes and explicit Source provenance (valid)",
+          "binds actual product bytes and explicit Source provenance (historic-source)"
+        ],
+        "fileErrors": []
+      },
+      {
+        "file": "tests/unit/hvp-world-replacement.test.ts",
+        "exit": 1,
+        "seconds": 7.749,
+        "passed": 0,
+        "failed": 3,
+        "skipped": 0,
+        "failures": [
+          "keeps A alive through B preparation/rollback, and removes A only after explicit finalization",
+          "fails candidate creation without deleting A, and reports uncertain retirement as RecoveryHold",
+          "restores between absent and resident eastern collision without changing the live World early"
+        ],
+        "fileErrors": []
+      }
+    ],
+    "complete": true
+  },
+  "candidateE2E": {
+    "core": {
+      "declaredTests": 43,
+      "complete": true,
+      "reportAvailable": true,
+      "exit": 1,
+      "forced": false,
+      "limitSeconds": 900,
+      "passedSoFar": 42,
+      "failedSoFar": 1,
+      "stats": {
+        "startTime": "2026-11-22T15:12:58.994Z",
+        "duration": 529240.375,
+        "expected": 42,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "globalErrors": [],
+      "nonpassing": [
+        {
+          "spec": "trajectory-predictor-core.spec.ts",
+          "test": "normal route imports and proves the deterministic shared trajectory predictor core",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m22\u001b[39m\nReceived: \u001b[31m24\u001b[39m"
+          ]
+        }
+      ],
+      "lastAttemptStatuses": {
+        "passed": 42,
+        "failed": 1
+      },
+      "unstartedCases": [],
+      "globalTimedOut": false
+    },
+    "ui": {
+      "declaredTests": 12,
+      "complete": true,
+      "reportAvailable": true,
+      "exit": 1,
+      "forced": false,
+      "limitSeconds": 480,
+      "passedSoFar": 11,
+      "failedSoFar": 1,
+      "stats": {
+        "startTime": "2026-11-22T15:21:49.963Z",
+        "duration": 263472.406,
+        "expected": 11,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "globalErrors": [],
+      "nonpassing": [
+        {
+          "spec": "flight-ui-foundation.spec.ts",
+          "test": "flight HUD foundation keeps center clear, shows navigation, autopilot, warnings, and records evidence",
+          "status": [
+            "timedOut"
+          ],
+          "errors": [
+            "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
+          ]
+        }
+      ],
+      "lastAttemptStatuses": {
+        "passed": 11,
+        "timedOut": 1
+      },
+      "unstartedCases": [],
+      "globalTimedOut": false
+    },
+    "live": {
+      "declaredTests": 47,
+      "complete": true,
+      "reportAvailable": true,
+      "exit": 1,
+      "forced": false,
+      "limitSeconds": 1800,
+      "passedSoFar": 4,
+      "failedSoFar": 20,
+      "stats": {
+        "startTime": "2026-11-22T15:26:14.580Z",
+        "duration": 1800003.143,
+        "expected": 4,
+        "skipped": 23,
+        "unexpected": 20,
+        "flaky": 0
+      },
+      "globalErrors": [
+        "\u001b[31mTimed out waiting 1800s for the test suite to run\u001b[39m",
+        "\u001b[31mTimed out waiting 1800s for the teardown for test suite to run\u001b[39m"
+      ],
+      "nonpassing": [
+        {
+          "spec": "hvp-look.spec.ts",
+          "test": "HVP-02 T02 water toggle keeps shore depth visible through the real UI",
+          "status": [
+            "timedOut"
+          ],
+          "errors": [
+            "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m"
+          ]
+        },
+        {
+          "spec": "hvp-look.spec.ts",
+          "test": "HVP-02 R3 AO toggle changes rendered brightness through the real UI",
+          "status": [
+            "timedOut"
+          ],
+          "errors": [
+            "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m"
+          ]
+        },
+        {
+          "spec": "hvp-look.spec.ts",
+          "test": "HVP-02 T03 key and cool fill are bound to the readable look",
+          "status": [
+            "timedOut"
+          ],
+          "errors": [
+            "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m"
+          ]
+        },
+        {
+          "spec": "hvp-look.spec.ts",
+          "test": "HVP-02 T05/T06 use the stored binding and expose the non-editable proxy",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#hvp-state')\nExpected substring: \u001b[32m\"State: Ready\"\u001b[39m\nTimeout: 20000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 20000ms\u001b[22m\n\u001b[2m  - waiting for locator('#hvp-state')\u001b[22m\n"
+          ]
+        },
+        {
+          "spec": "hvp-look.spec.ts",
+          "test": "HVP-02 T08 C01 and C04 render complete viewport captures without a test harness",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: locator.click: Page crashed\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Physik pausieren', exact: true })\u001b[22m\n"
+          ]
+        },
+        {
+          "spec": "hvp-look.spec.ts",
+          "test": "HVP-03 root coast renders all four real camera views with admitted vegetation",
+          "status": [
+            "timedOut"
+          ],
+          "errors": [
+            "\u001b[31mTest timeout of 120000ms exceeded.\u001b[39m"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-14 the real end-session action releases owned resources before another start",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"\u001b[7mPause\u001b[27md\"\u001b[39m\nReceived: \u001b[31m\"\u001b[7mSimulationHol\u001b[27md\"\u001b[39m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-13 a sleeping terrain fragment dematerializes and returns from its checkpoint (live)",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: Timeout 5000ms exceeded while waiting on the predicate"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-13 a sleeping terrain fragment dematerializes and returns from its checkpoint (cold)",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#hvp-state')\nExpected substring: \u001b[32m\"State: Ready\"\u001b[39m\nTimeout: 30000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#hvp-state')\u001b[22m\n"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-13 real walking admits eastern collision and replaces overlapping projections",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#hvp-state')\nExpected substring: \u001b[32m\"State: Ready\"\u001b[39m\nTimeout: 30000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#hvp-state')\u001b[22m\n"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-13 twenty real round trips keep the regional cache and native/render resources bounded",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: Regional walk failed: {\"east\":true,\"target\":17,\"latest\":{\"physics\":{\"ticks\":180,\"backlogSeconds\":0.01889999999850994,\"discardedSeconds\":1.2188000000007453,\"status\":\"SimulationHold\",\"gravity\":11.794460201817357,\"gravityProfile\":\"local-tangent-gravity-v1\",\"activeDynamic\":0,\"residentDynamic\":2,\"solver\":\"rapier-0.21.0-phy01.migration2:legacy-impulse-v1\",\"stepCpuMs\":0.6999999992549419,\"bodyCount\":4,\"colliderCount\":204,\"nativeBytes\":\"unsupported\",\"terrainGeneration\":0,\"collisionBytes\":2504520,\"terrainTransaction\":\"Idle\",\"terrainFragments\":[],\"parked\":[],\"neighbor\":null,\"dormantCheckpointBytes\":0,\"bodySourceResidentBytes\":402496,\"bodyResidencyId\":null,\"bodyResidencyTransaction\":\"Idle\",\"neigh"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-05 the authored dry shaft has a real rim and bottom, not an invisible floor",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeLessThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: <= \u001b[32m0.145\u001b[39m\nReceived:    \u001b[31m0.6021469593048095\u001b[39m"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-05 real capsule walks with pointer ownership, pauses and stays fixed in inspection",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m2.2434569358825684\u001b[39m\nReceived:   \u001b[31m1.6551473140716553\u001b[39m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-06 a real click commits local quarry mode 1 with matching World generation",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-06 a real click commits local quarry mode 2 with matching World generation",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"Applied\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n\nCall Log:\n- Timeout 30000ms exceeded while waiting on the predicate"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-06 a real click commits local quarry mode 3 with matching World generation",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"Applied\"\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n\nCall Log:\n- Timeout 30000ms exceeded while waiting on the predicate"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-11 real local save and live load restore the confirmed Root, World and input state",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: {\"state\":\"Rejected\",\"message\":\"Error: Speichern und Laden ist f\u00fcr diesen Pr\u00fcfstand noch nicht freigegeben.\",\"revision\":null}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatchObject\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[32m- Expected  - 2\u001b[39m\n\u001b[31m+ Received  + 2\u001b[39m\n\n\u001b[2m  Object {\u001b[22m\n\u001b[32m-   \"revision\": 1,\u001b[39m\n\u001b[32m-   \"state\": \"Saved\",\u001b[39m\n\u001b[31m+   \"revision\": null,\u001b[39m\n\u001b[31m+   \"state\": \"Rejected\",\u001b[39m\n\u001b[2m  }\u001b[22m"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-11 cold artifact restores a recut terrain owner and accepts its next real cut",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#hvp-state')\nExpected substring: \u001b[32m\"State: Ready\"\u001b[39m\nTimeout: 30000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 30000ms\u001b[22m\n\u001b[2m  - waiting for locator('#hvp-state')\u001b[22m\n"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-11 cold artifact restores a recut branch owner and accepts its next real cut",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: > \u001b[32m167\u001b[39m\nReceived:   \u001b[31m167\u001b[39m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+          ]
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-12 completes a real salvage contract by walking, cutting, contact impulses and a durable save",
+          "status": [
+            "failed"
+          ],
+          "errors": [
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\nExpected: \u001b[32m[1, 7, 0]\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n\nCall Log:\n- Timeout 5000ms exceeded while waiting on the predicate"
+          ]
+        }
+      ],
+      "lastAttemptStatuses": {
+        "passed": 4,
+        "timedOut": 4,
+        "failed": 16,
+        "notAttempted": 23
+      },
+      "unstartedCases": [
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-09B a normal undercut transfers actual rock-arm cells to one falling body"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-10 normal input recuts a terrain-origin body without changing static Root generation"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-10 a released timber recut keeps its foliage on the live support owner"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-08 a normal cutter click detaches timber and its supported foliage in the real World"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-04 real worker-owned body falls, contacts the coast, pauses and disposes"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-04 failed solver worker startup is visible and never Ready"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-01 visible coast reaches Ready through the real UI and renders the bound scene structure"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-01 camera presets switch through real buttons"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-07 the normal push input moves a source-bound asymmetric rigid body"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP-09A previews the real rock-arm support without publishing a cut or a body"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "existing routes stay untouched and combined queries resolve to Surface Lab"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "stored HVP PNG evidence rejects missing, corrupt, blank, and wrong-size replacements"
+        },
+        {
+          "spec": "hvp-visible-coast.spec.ts",
+          "test": "HVP HUD projections avoid repeated real DOM writes and preserve normalized reticle colors"
+        },
+        {
+          "spec": "large-field-navigation-objective.spec.ts",
+          "test": "normal runtime presents and progresses the Range 500m navigation objective"
+        },
+        {
+          "spec": "large-field-objective-chain-live.spec.ts",
+          "test": "normal runtime completes 500m and 1000m before admitting the visible 2500m preview"
+        },
+        {
+          "spec": "normal-runtime-functional-planner.spec.ts",
+          "test": "normal runtime executes the authoritative target-profile-preview-replan-engage workflow"
+        },
+        {
+          "spec": "normal-runtime-functional-planner.spec.ts",
+          "test": "Escape, Close, focus trap, and keyboard map controls preserve route and view state"
+        },
+        {
+          "spec": "normal-runtime-functional-planner.spec.ts",
+          "test": "explicit TestBridge instrumentation preserves exact lock and terminal hashes while planner gates input"
+        },
+        {
+          "spec": "normal-runtime-functional-planner.spec.ts",
+          "test": "hash-mismatch Engage fails visibly, remains modal, and focuses the inline live error"
+        },
+        {
+          "spec": "playable-large-field-live-flight.spec.ts",
+          "test": "normal player HUD flies a large-field target with live browser runtime movement"
+        },
+        {
+          "spec": "playable-large-proving-ground.spec.ts",
+          "test": "normal browser runtime exposes and previews the playable large proving-ground targets"
+        },
+        {
+          "spec": "world-chunk-streaming.spec.ts",
+          "test": "world chunk streaming scenario is deterministic and records evidence"
+        },
+        {
+          "spec": "world-chunk-streaming.spec.ts",
+          "test": "normal browser startup keeps TestBridge hidden"
+        }
+      ],
+      "globalTimedOut": true
+    }
+  },
+  "candidatePrivateSave": {
+    "lab": {
+      "freshPassed": true,
+      "freshProcess": "8c82837d-2057-4647-85d3-71a18d708c57",
+      "freshPid": 93,
+      "inputExportSha256": "097be63eb22e6c22b7144a223cf38b6d047a70dc6defbcc1d5acdabd0d0974f1",
+      "freshDispose": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "freshWorkerBuilds": {
+        "physicsWorker": [
+          "physicsWorker-lzxa3YSJ.js",
+          "6e1b68cdebf7c78cc56a9e049ef46a8bd749924e97c6a8a9691a56676e8f8f7b"
+        ],
+        "streamingWorker": [
+          "streamingWorker-KdDAIE4n.js",
+          "1bcd66d3666f52b8d1faeed8f4b43b5594425605eb0e035da92c67d6f1f8b161"
+        ]
+      },
+      "coldCompleted": true,
+      "coldPassed": true,
+      "failure": null,
+      "coldProcess": "2bb8568c-4c41-48fa-920b-cefb2bbcd9d5",
+      "coldPid": 136,
+      "processesDiffer": true,
+      "coldWorkerBuilds": {
+        "physicsWorker": [
+          "physicsWorker-lzxa3YSJ.js",
+          "6e1b68cdebf7c78cc56a9e049ef46a8bd749924e97c6a8a9691a56676e8f8f7b"
+        ],
+        "streamingWorker": [
+          "streamingWorker-KdDAIE4n.js",
+          "1bcd66d3666f52b8d1faeed8f4b43b5594425605eb0e035da92c67d6f1f8b161"
+        ]
+      },
+      "coldStreamJobs": 257,
+      "coldDispose": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "inputExportMatches": true,
+      "recutStatus": "Applied",
+      "removedCells": 1,
+      "removedMassKg": 1.171875,
+      "beforeMassKg": 150,
+      "remainingMassKg": 148.828125,
+      "resaveRevision": 2,
+      "liveThreads": 0
+    },
+    "cross-lab": {
+      "freshPassed": true,
+      "freshProcess": "6d816942-81c6-4c72-887d-66817923aa9d",
+      "freshPid": 16,
+      "inputExportSha256": "2bd56bc84529171ab43fe9ef4aa2fdcfed26abae21dc2e5352f0f45d73fae5c1",
+      "freshDispose": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "freshWorkerBuilds": {
+        "physicsWorker": [
+          "physicsWorker-DgjO90de.js",
+          "388bd198dee0ab31165855c03a359ec7ce6b78df8cd538cd82506c179f23ea96"
+        ],
+        "streamingWorker": [
+          "streamingWorker-C3QySsQI.js",
+          "b7ca7bbd83867ff6519d0baa715a0b0871f011f01122184bb82337978712acfa"
+        ]
+      },
+      "coldCompleted": true,
+      "coldPassed": true,
+      "failure": null,
+      "coldProcess": "16c80f5c-0842-41bb-8a58-b013d4c62ef4",
+      "coldPid": 181,
+      "processesDiffer": true,
+      "coldWorkerBuilds": {
+        "physicsWorker": [
+          "physicsWorker-lzxa3YSJ.js",
+          "6e1b68cdebf7c78cc56a9e049ef46a8bd749924e97c6a8a9691a56676e8f8f7b"
+        ],
+        "streamingWorker": [
+          "streamingWorker-KdDAIE4n.js",
+          "1bcd66d3666f52b8d1faeed8f4b43b5594425605eb0e035da92c67d6f1f8b161"
+        ]
+      },
+      "coldStreamJobs": 257,
+      "coldDispose": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "inputExportMatches": true,
+      "recutStatus": "Applied",
+      "removedCells": 1,
+      "removedMassKg": 1.171875,
+      "beforeMassKg": 150,
+      "remainingMassKg": 148.828125,
+      "resaveRevision": 2,
+      "liveThreads": 0
+    }
+  },
+  "matchedSectors": [
+    {
+      "id": 0,
+      "hash": "fnv1a64:8935758189e83503"
+    },
+    {
+      "id": 1,
+      "hash": "fnv1a64:90c4d3d4f2a73adb"
+    },
+    {
+      "id": 2,
+      "hash": "fnv1a64:12c2b3c6bae2f847"
+    },
+    {
+      "id": 3,
+      "hash": "fnv1a64:270c651ac2f4a6d5"
+    },
+    {
+      "id": 4,
+      "hash": "fnv1a64:a2f05ad83ce5be99"
+    },
+    {
+      "id": 5,
+      "hash": "fnv1a64:ac667eef6044fb65"
+    },
+    {
+      "id": 6,
+      "hash": "fnv1a64:c30edb120ba0a671"
+    },
+    {
+      "id": 7,
+      "hash": "fnv1a64:be404ee519fc04bc"
+    },
+    {
+      "id": 8,
+      "hash": "fnv1a64:35ce931fac38609e"
+    },
+    {
+      "id": 9,
+      "hash": "fnv1a64:1de245e0a04f37a8"
+    },
+    {
+      "id": 10,
+      "hash": "fnv1a64:ea3447acd6ce0989"
+    },
+    {
+      "id": 11,
+      "hash": "fnv1a64:1bdf988bc219e7a1"
+    },
+    {
+      "id": 12,
+      "hash": "fnv1a64:9d2d40aa75d11ba4"
+    },
+    {
+      "id": 13,
+      "hash": "fnv1a64:635a5288d03e9c7c"
+    },
+    {
+      "id": 14,
+      "hash": "fnv1a64:c9369bec2a016373"
+    },
+    {
+      "id": 15,
+      "hash": "fnv1a64:5528c61f6726e2ac"
+    }
+  ],
+  "inputAudits": {
+    "baseline": {
+      "commit": "cfa7cf7d35e13c7321bf3c819f4826e3dc62c003",
+      "gitTree": "ae39c7f159a09a2497e53f05c28e7bd3c62893a0",
+      "trackedInputCount": 996,
+      "byKind": {
+        "index.html": 1,
+        "package-lock.json": 1,
+        "package.json": 1,
+        "playwright.config.ts": 1,
+        "public": 77,
+        "scripts": 3,
+        "src": 395,
+        "tests": 392,
+        "tsconfig.json": 1,
+        "vendor": 122,
+        "vite.build.config.mjs": 1,
+        "vite.config.ts": 1
+      },
+      "mismatches": [],
+      "missing": [],
+      "materializedLfsFiles": 78,
+      "retainedLfsPointers": []
+    },
+    "candidate": {
+      "commit": "b54f92b5d8ab8c737888aac8b4b3955e8a75567e",
+      "gitTree": "563fead7515ad3a8d620dbd2c9a58cc8da127a9d",
+      "trackedInputCount": 1013,
+      "byKind": {
+        "index.html": 1,
+        "package-lock.json": 1,
+        "package.json": 1,
+        "playwright.config.ts": 1,
+        "public": 77,
+        "scripts": 3,
+        "src": 401,
+        "tests": 403,
+        "tsconfig.json": 1,
+        "vendor": 122,
+        "vite.build.config.mjs": 1,
+        "vite.config.ts": 1
+      },
+      "mismatches": [],
+      "missing": [],
+      "materializedLfsFiles": 78,
+      "retainedLfsPointers": []
+    }
+  },
+  "independentTargetedRechecks": {
+    "baseline": {
+      "bootstrap-wiring": {
+        "exit": 0,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 1,
+          "failed": 0,
+          "filteredOut": 101
+        },
+        "logSha256": "3ef53dc3852edeb0e6c1509f53c18dd13fafb916742d526107b2838dbebb38a7"
+      },
+      "owned-source": {
+        "exit": 0,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 1,
+          "failed": 0,
+          "filteredOut": 0
+        },
+        "logSha256": "f2861afdf123c404259e4b82486119f9cff94c1856d3f8603867c3b1995e216a"
+      },
+      "physics-contract": {
+        "exit": 1,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 0,
+          "failed": 1,
+          "filteredOut": 8
+        },
+        "logSha256": "ac39be3a5981badf29906f9c854f0d82bceacf21e5e8ea6e2ad3a0161ea42f66"
+      },
+      "public-clock": {
+        "exit": 1,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 0,
+          "failed": 1,
+          "filteredOut": 4
+        },
+        "logSha256": "adf1a317013bbf7e036c0647087ff3f8190a9808abd0dae2edd9e3227af9731f"
+      },
+      "terrain-matrix": {
+        "exit": 0,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 1,
+          "failed": 0,
+          "filteredOut": 37
+        },
+        "logSha256": "c130d2149de834331a47e0bc24e8d8fab7a1dae9c7320d1d699baf29f5b05de2"
+      }
+    },
+    "candidate": {
+      "bootstrap-wiring": {
+        "exit": 0,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 1,
+          "failed": 0,
+          "filteredOut": 101
+        },
+        "logSha256": "e0cd5a6e859b77d837a589cd41b971ef56098687c8b98e36da9f1b33a9aaf5bc"
+      },
+      "owned-source": {
+        "exit": 0,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 1,
+          "failed": 0,
+          "filteredOut": 0
+        },
+        "logSha256": "133f5b64eaee1fd2d0900de91e5572088e769fae1fb0628d4a23a6d6158ec8c5"
+      },
+      "physics-contract": {
+        "exit": 1,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 0,
+          "failed": 1,
+          "filteredOut": 8
+        },
+        "logSha256": "fd13d82638aebcc74fc1bcfa763ab5538a087ca52a29f1f1a005f8180d6437af"
+      },
+      "public-clock": {
+        "exit": 1,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 0,
+          "failed": 1,
+          "filteredOut": 4
+        },
+        "logSha256": "09a688ec47dc359c6c045a93e749a8318b0d00433acee390ee18028b9069d5ce"
+      },
+      "terrain-matrix": {
+        "exit": 0,
+        "timeoutOverrideMs": 30000,
+        "caseResults": {
+          "passed": 1,
+          "failed": 0,
+          "filteredOut": 31
+        },
+        "logSha256": "816c26aadf2a02a49569445acfce30ff4319e8a1b4fddcc4f47645babd24d575"
+      }
+    }
+  },
+  "node22UiControl": {
+    "runtime": "22.23.2",
+    "repoCiTimeoutSeconds": 150,
+    "spec": "flight-ui-foundation.spec.ts:108",
+    "stats": {
+      "startTime": "2026-11-22T15:26:11.209Z",
+      "duration": 71878.806,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "exit": 0
+  },
+  "node22CoreControl": {
+    "runtime": "22.23.2",
+    "nodeExecutableSha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+    "spec": "trajectory-predictor-core.spec.ts:244",
+    "stats": {
+      "startTime": "2026-11-22T15:22:41.740Z",
+      "duration": 12504.234999999999,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "exit": 0
+  },
+  "laterR6Verification": {
+    "build": {
+      "expectedRuntimeCommit": "d8676276e5a2bc0fcfe9d53d234160ebebf10cc7",
+      "expectedTree": "63337c6741e1b5c788255aa89c090a2a882b0ce5",
+      "checkoutHead": "d8676276e5a2bc0fcfe9d53d234160ebebf10cc7",
+      "checkoutTree": "63337c6741e1b5c788255aa89c090a2a882b0ce5",
+      "runtimeInputCount": 624,
+      "runtimeInputMismatches": [],
+      "recordedPriorCutBAssetsMatch": false,
+      "currentRuntimeInputCount": 624,
+      "currentRuntimeSha256": "a05935c766f992efd3c610ffe977b269ded4b1b9c0aa31eed5b589a7198a2baf",
+      "completeDistFileCount": 94,
+      "completeDistSha256": "72027d80da63f8d2a6015bc646ee69812f416817951eee61d64396af89ebe1ef",
+      "currentDistSha256Algorithm": "SHA-256 of sorted SHA256 + 2 spaces + relative path + LF lines",
+      "capturedUtc": "2026-11-22T15:28:45.261762+00:00",
+      "chromiumSha256": "434d2607c55941dcaa7fdd19b0800ee90488922fd9744a6642ef527ba8fabf63",
+      "checkedDistEntries": {
+        "backend-DTidQUVY.js": "3501ac891d71021f59343baea8d1f62da5059c1b693393057fbe9f23696238f1",
+        "browserBridge-BVGCuGaZ.js": "7b61ae5e5860b2461a83b1ce0b03c8c615cca51fa9267dbb707664c4c2f27ec0",
+        "hvpBootstrap-BeAe47EG.js": "50255b29e4a7a3599f3f4c5df64a68f8e196944336fed586bfa0d3e30a351350",
+        "index-BOHbsZY7.js": "ff04dc074b2e51e9497c83fdea48546aa5e0aad9facce3ac3fc41224322e983e",
+        "index-GeJ96uLU.css": "252d286768f545feda6b7a69f8242535aaa7fbe6645ab93e2fb1500e3941e188",
+        "physicsWorker-C7OHNjt8.js": "1b4f92243b7e0ad3aa395fa59e0859798f149f6929b585f595e763c823477e4a",
+        "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+        "streamingWorker-Rl_TPqd9.js": "1a32c441a3ec4cb84709fbd913903f802d292485f278ade582150dc54d66540a",
+        "surface-lab-sFDSnm05.js": "fa640dfe6044e2384053ccafa126f1714893ace224085e570681ce95bfce06f8"
+      },
+      "distIndexSha256": "0d406d3a4971a0606aa1e206ebce86bb53eec2634a78750d7fd6f9883dd44673",
+      "runnerSha256": "e04cacf89396bd00b11372306f41c1c0d62134797f6a94c7f25e26ef00897954"
+    },
+    "inputAudit": {
+      "commit": "d8676276e5a2bc0fcfe9d53d234160ebebf10cc7",
+      "gitTree": "63337c6741e1b5c788255aa89c090a2a882b0ce5",
+      "trackedInputCount": 1033,
+      "byKind": {
+        "index.html": 1,
+        "package-lock.json": 1,
+        "package.json": 1,
+        "playwright.config.ts": 1,
+        "public": 77,
+        "scripts": 3,
+        "src": 418,
+        "tests": 406,
+        "tsconfig.json": 1,
+        "vendor": 122,
+        "vite.build.config.mjs": 1,
+        "vite.config.ts": 1
+      },
+      "mismatches": [],
+      "missing": [],
+      "materializedLfsFiles": 78,
+      "retainedLfsPointers": []
+    },
+    "renderReportedByCompletedDiagnostic": false,
+    "changedUnits": {
+      "runtime": "22.23.2",
+      "exit": 0,
+      "filesTotal": 7,
+      "passed": 78,
+      "failed": 0,
+      "skipped": 0,
+      "testsByFile": {
+        "hvp-terrain-consumer.test.ts": 41,
+        "hvp-terrain-publication-channel.test.ts": 8,
+        "hvp-terrain-worker-recovery.test.ts": 2,
+        "hvpCompactNativeSource.test.ts": 14,
+        "hvpLiveRenderDelta.test.ts": 7,
+        "weather-hvp-read-view.test.ts": 4,
+        "completeLeaf.test.ts": 2
+      }
+    },
+    "lab": {
+      "lab": {
+        "coldPassed": true,
+        "freshProcess": "14d82e32-f7e0-4aa2-a678-c60dfb1bf948",
+        "coldProcess": "fdcba22d-3ffa-4242-9d6c-dc7bbb133cd2",
+        "differentProcesses": true,
+        "exportSha256": "0d1d3bb67cc3cc3ee826a026dadd35d4a8531a1fa3978f0b1a624632dca67271",
+        "exportMatchesBothProcesses": true,
+        "recut": "Applied",
+        "removedCells": 1,
+        "beforeMassKg": 150,
+        "remainingMassKg": 148.828125,
+        "resaveRevision": 2,
+        "liveThreads": 0,
+        "dispose": {
+          "workers": 0,
+          "pendingJobs": 0,
+          "timers": 0,
+          "timingSinkFailures": 0,
+          "terrainRecovery": {
+            "catalogs": 0,
+            "entries": 0,
+            "sectors": 0,
+            "fragments": 0,
+            "held": 0
+          },
+          "listeners": 0,
+          "native": {
+            "status": "Disposed",
+            "bodies": 0,
+            "colliders": 0
+          }
+        },
+        "workerBuilds": {
+          "physicsWorker": [
+            "physicsWorker-C7OHNjt8.js",
+            "1b4f92243b7e0ad3aa395fa59e0859798f149f6929b585f595e763c823477e4a"
+          ],
+          "streamingWorker": [
+            "streamingWorker-Rl_TPqd9.js",
+            "1a32c441a3ec4cb84709fbd913903f802d292485f278ade582150dc54d66540a"
+          ]
+        },
+        "raw": {
+          "path": "r6-private/lab/lab-cold-result.json",
+          "sha256": "1855cf5c836db4ac86fe69cab981162f930290ed3c6c22a3c956178d4385924e"
+        }
+      },
+      "cross-lab": {
+        "coldPassed": true,
+        "freshProcess": "6d816942-81c6-4c72-887d-66817923aa9d",
+        "coldProcess": "38a8b6b2-4115-4331-9cbe-efef6805f68c",
+        "differentProcesses": true,
+        "exportSha256": "2bd56bc84529171ab43fe9ef4aa2fdcfed26abae21dc2e5352f0f45d73fae5c1",
+        "exportMatchesBothProcesses": true,
+        "recut": "Applied",
+        "removedCells": 1,
+        "beforeMassKg": 150,
+        "remainingMassKg": 148.828125,
+        "resaveRevision": 2,
+        "liveThreads": 0,
+        "dispose": {
+          "workers": 0,
+          "pendingJobs": 0,
+          "timers": 0,
+          "timingSinkFailures": 0,
+          "terrainRecovery": {
+            "catalogs": 0,
+            "entries": 0,
+            "sectors": 0,
+            "fragments": 0,
+            "held": 0
+          },
+          "listeners": 0,
+          "native": {
+            "status": "Disposed",
+            "bodies": 0,
+            "colliders": 0
+          }
+        },
+        "workerBuilds": {
+          "physicsWorker": [
+            "physicsWorker-C7OHNjt8.js",
+            "1b4f92243b7e0ad3aa395fa59e0859798f149f6929b585f595e763c823477e4a"
+          ],
+          "streamingWorker": [
+            "streamingWorker-Rl_TPqd9.js",
+            "1a32c441a3ec4cb84709fbd913903f802d292485f278ade582150dc54d66540a"
+          ]
+        },
+        "raw": {
+          "path": "r6-private/cross-lab/lab-cold-result.json",
+          "sha256": "630f042021c84673ac59b7aa1913a5ad4a47536bf5f471faee4b081a88d064fc"
+        }
+      }
+    },
+    "browserDiagnostics": [
+      {
+        "capture": "r6-stream",
+        "streamedPhysicsPublicationMs": 145.30000000074506,
+        "nativePublicationData": {
+          "commandId": "cut-1",
+          "sessionId": "hvp-session-1",
+          "epoch": 1,
+          "revision": 1,
+          "sourceDigest": "26d5308d",
+          "nativeGeneration": 1,
+          "callbackStart": 16331.5
+        },
+        "firstCommittedRenderSubmitObserved": false,
+        "pageCrashObserved": true,
+        "targetCrash": null,
+        "sampledJsHeapMiB": null,
+        "phases": {
+          "hvp.cutSubmittedMs": 0,
+          "hvp.cutSupportAnalyzeMs": 5.800000000745058,
+          "hvp.cutComponentIndexMs": 5.699999999254942,
+          "hvp.cutCompileMs": 27.299999997019768,
+          "hvp.cutNativePrepareMs": 94.89999999850988,
+          "hvp.cutNativeCommitMs": 4.699999999254942,
+          "hvp.cutDomInputToPhysicsPublishedMs": 145.30000000074506,
+          "hvp.cutInputToAppliedMs": 144.599853515625,
+          "hvp.cutNativeFinalizeMs": 3.699999999254942
+        },
+        "raw": {
+          "path": "r6-stream/events.ndjson",
+          "sha256": "590522706bc666ef269cfdee8562408ffde47186f8e7db8b851572f43d6bf3f6"
+        }
+      },
+      {
+        "capture": "r6-crash",
+        "streamedPhysicsPublicationMs": 1095.3999999985099,
+        "nativePublicationData": {
+          "commandId": "cut-1",
+          "sessionId": "hvp-session-1",
+          "epoch": 1,
+          "revision": 1,
+          "sourceDigest": "26d5308d",
+          "nativeGeneration": 1,
+          "callbackStart": 14130.39999999851
+        },
+        "firstCommittedRenderSubmitObserved": false,
+        "pageCrashObserved": true,
+        "targetCrash": {
+          "targetId": "416284D86270D141EEB426F0119BE749",
+          "status": "crashed",
+          "errorCode": 5
+        },
+        "sampledJsHeapMiB": {
+          "peak": 111.27548217773438,
+          "last": 40.4974479675293
+        },
+        "phases": {
+          "hvp.cutSubmittedMs": 0,
+          "hvp.cutSupportAnalyzeMs": 6.5,
+          "hvp.cutComponentIndexMs": 6.200000002980232,
+          "hvp.cutCompileMs": 518.8999999985099,
+          "hvp.cutNativePrepareMs": 276.19999999925494,
+          "hvp.cutNativeCommitMs": 25.699999999254942,
+          "hvp.cutDomInputToPhysicsPublishedMs": 1095.3999999985099,
+          "hvp.cutInputToAppliedMs": 856.60009765625,
+          "hvp.cutNativeFinalizeMs": 21.800000000745058
+        },
+        "raw": {
+          "path": "r6-crash/events.ndjson",
+          "sha256": "8aa8546a0cde763f66bd6141acd39333ef91726ace57406fe16cee5ec177de66"
+        }
+      }
+    ]
+  },
+  "r8RenderComparison": {
+    "commit": "47d24e05a126ae3a337b24fe09835bfdb98ef7a2",
+    "distSha256": "7336b2bf5e4b49665e4f1994a33e48e90f3842248161726188f9dfe10f78fa6a",
+    "distFiles": 94,
+    "renderer": "Chromium 149 / SwiftShader",
+    "workerOverride": {
+      "route": "/?hestiaPrototype=1&hvpMeasure=1&hvpScenario=rock-arm&hvpCutVisual=worker",
+      "domInputToNativeMs": 466.4000000022352,
+      "domInputToRenderSubmitMs": 1613.2999023459852,
+      "result": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "rawSha256": "c89592218a127be8b8c4e247e1acbd939003cbbcdc66405ec0a3f280bba49f9c"
+    },
+    "defaultLocal": {
+      "route": "hestiaPrototype=1&hvpMeasure=1&hvpScenario=rock-arm",
+      "trustedEvent": {
+        "name": "trustedMousedown",
+        "eventTimeStamp": 13151.5,
+        "button": 0,
+        "pointerLock": "debug-scene"
+      },
+      "nativePublication": {
+        "name": "hvp.cutDomInputToPhysicsPublishedMs",
+        "startTime": 13151.5,
+        "duration": 94,
+        "detail": {
+          "sampleId": "cutDomInputToPhysicsPublishedMs:1241",
+          "data": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 13152.699999999255
+          }
+        }
+      },
+      "appliedReported": true,
+      "committedSubmitReported": false,
+      "crashObserved": true,
+      "rawSha256": "f776831c5a07a506952710f33c15cc07e33de267262c65520593ac7188bb311c",
+      "phases": {
+        "hvp.cutSubmittedMs": 0,
+        "hvp.cutSupportAnalyzeMs": 5.400000002235174,
+        "hvp.cutComponentIndexMs": 5,
+        "hvp.cutCompileMs": 17.900000002235174,
+        "hvp.cutNativePrepareMs": 54.30000000074506,
+        "hvp.cutNativeCommitMs": 8.5,
+        "hvp.cutDomInputToPhysicsPublishedMs": 94,
+        "hvp.cutInputToAppliedMs": 92.89990234375,
+        "hvp.cutNativeFinalizeMs": 2.100000001490116
+      }
+    },
+    "hardwarePresentMeasured": false
+  },
+  "interim": {
+    "previewFilesAttempted": 256,
+    "r3PrivateSaveAttempts": {
+      "workerBuilds": {
+        "physicsWorker": [
+          "physicsWorker-lzxa3YSJ.js",
+          "6e1b68cdebf7c78cc56a9e049ef46a8bd749924e97c6a8a9691a56676e8f8f7b"
+        ],
+        "streamingWorker": [
+          "streamingWorker-KdDAIE4n.js",
+          "1bcd66d3666f52b8d1faeed8f4b43b5594425605eb0e035da92c67d6f1f8b161"
+        ]
+      },
+      "attempts": [
+        {
+          "file": "r3-private/lab/lab-fresh-result.json",
+          "sha256": "8336d5462cac9dd73459efa6152a46b5c6b86bc92037087580e0de9f3874279a",
+          "passed": true,
+          "processInstance": "845debe2-b487-4bd1-843c-6c416a17077e",
+          "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+          "completedStreamingJobs": 256,
+          "nativeStatusAtRecut": null,
+          "failure": null,
+          "recut": null,
+          "removedCells": null,
+          "massBefore": null,
+          "massAfter": null,
+          "resaveRevision": null,
+          "dispose": {
+            "workers": 0,
+            "pendingJobs": 0,
+            "timers": 0,
+            "timingSinkFailures": 0,
+            "listeners": 0,
+            "native": {
+              "status": "Disposed",
+              "bodies": 0,
+              "colliders": 0
+            }
+          },
+          "liveThreads": 0
+        },
+        {
+          "file": "r3-private/lab/lab-cold-result.json",
+          "sha256": "32936d6569a5adc9fc89eea2265edc3184553515858862bcafc08a6f3bfb9f12",
+          "passed": false,
+          "processInstance": "163418ab-1583-4044-94f1-258a22394441",
+          "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+          "completedStreamingJobs": 256,
+          "nativeStatusAtRecut": "SimulationHold",
+          "failure": "{\"state\":\"Idle\",\"last\":{\"id\":\"p1-lab-recut\",\"status\":\"Rejected\",\"reason\":\"Error: Moving cut unavailable\"},\"issued\":1}\n+ actual - expected\n\n+ 'Rejected'\n- 'Applied'\n",
+          "recut": null,
+          "removedCells": null,
+          "massBefore": null,
+          "massAfter": null,
+          "resaveRevision": null,
+          "dispose": {
+            "workers": 0,
+            "pendingJobs": 0,
+            "timers": 0,
+            "timingSinkFailures": 0,
+            "listeners": 0,
+            "native": {
+              "status": "Disposed",
+              "bodies": 0,
+              "colliders": 0
+            }
+          },
+          "liveThreads": 0
+        },
+        {
+          "file": "r3-private-unrestricted/lab/lab-cold-result.json",
+          "sha256": "924314f60f51d2512f01451da4238d42a13fd48802ab6c5f31263a072b3c57e1",
+          "passed": true,
+          "processInstance": "9e229d7e-36a0-4e0b-a516-b6505d4eda1a",
+          "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+          "completedStreamingJobs": 257,
+          "nativeStatusAtRecut": "Running",
+          "failure": null,
+          "recut": "Applied",
+          "removedCells": 1,
+          "massBefore": 150,
+          "massAfter": 148.828125,
+          "resaveRevision": 2,
+          "dispose": {
+            "workers": 0,
+            "pendingJobs": 0,
+            "timers": 0,
+            "timingSinkFailures": 0,
+            "listeners": 0,
+            "native": {
+              "status": "Disposed",
+              "bodies": 0,
+              "colliders": 0
+            }
+          },
+          "liveThreads": 0
+        },
+        {
+          "file": "r3-private-unrestricted/cross-lab/lab-cold-result.json",
+          "sha256": "8f5044604256f38f08f7bae41135bde107827eea13d4c60b870c8f73e2b6e51a",
+          "passed": true,
+          "processInstance": "b855cd1f-6a11-4dc7-860f-f4012a7496fd",
+          "exportSha256": "2bd56bc84529171ab43fe9ef4aa2fdcfed26abae21dc2e5352f0f45d73fae5c1",
+          "completedStreamingJobs": 257,
+          "nativeStatusAtRecut": "Running",
+          "failure": null,
+          "recut": "Applied",
+          "removedCells": 1,
+          "massBefore": 150,
+          "massAfter": 148.828125,
+          "resaveRevision": 2,
+          "dispose": {
+            "workers": 0,
+            "pendingJobs": 0,
+            "timers": 0,
+            "timingSinkFailures": 0,
+            "listeners": 0,
+            "native": {
+              "status": "Disposed",
+              "bodies": 0,
+              "colliders": 0
+            }
+          },
+          "liveThreads": 0
+        }
+      ]
+    }
+  }
+}

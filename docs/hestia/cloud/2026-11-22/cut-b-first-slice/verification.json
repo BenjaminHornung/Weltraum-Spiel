@@ -1,0 +1,105 @@
+{
+  "productCommit": "2edc0dcdcfdcb42acb71ab3c32d7ca5694d523a5",
+  "build": {
+    "command": "npm run build",
+    "exit": 0
+  },
+  "completedRuns": [
+    {
+      "scope": [
+        "hvpCutTrace",
+        "hvp-terrain-consumer",
+        "hvp-physics"
+      ],
+      "passed": 136,
+      "exit": 0
+    },
+    {
+      "scope": [
+        "terrainComponentIndex",
+        "hvpIndexedRockArmAdmission"
+      ],
+      "passed": 8,
+      "exit": 0
+    },
+    {
+      "scope": [
+        "hvp-bootstrap: C2B wires the real confirm, terrain trace, and accepted render callbacks"
+      ],
+      "passed": 1,
+      "filteredOut": 101,
+      "exit": 0
+    },
+    {
+      "scope": [
+        "hvp-terrain-support",
+        "hvp-game-save",
+        "hvp-world-save",
+        "hvp-physics-client-diagnostics",
+        "phy01-source-binding"
+      ],
+      "passed": 17,
+      "failed": 6,
+      "skipped": 16,
+      "exit": 1,
+      "suiteLoadFailure": "hvp-game-save.test.ts",
+      "cause": "The public save cutover throws in profile.ts."
+    },
+    {
+      "scope": [
+        "unmodified base: hvp-game-save",
+        "unmodified base: hvp-world-save"
+      ],
+      "base": "1e29cef8f8239b5867ef7d9ac72a181e5fd295f0",
+      "passed": 1,
+      "failed": 6,
+      "skipped": 16,
+      "exit": 1,
+      "suiteLoadFailure": "hvp-game-save.test.ts",
+      "cause": "Same public save cutover exception on the unmodified base source."
+    },
+    {
+      "scope": "cut-publication.mjs on built Chromium player route",
+      "exit": 0,
+      "deadlineReached": false
+    }
+  ],
+  "largerRegressionRun": {
+    "scope": "9 suites including the entire 102-case bootstrap file",
+    "exit": 130,
+    "outcome": "Operator ended this extra run after approximately ten minutes without a suite summary. No pass count attributed."
+  },
+  "privateSave": {
+    "mode": "Lab, existing planner",
+    "freshExit": 0,
+    "coldExit": 0,
+    "differentProcesses": true,
+    "freshPassed": true,
+    "coldPassed": true,
+    "recut": "Applied",
+    "freshDispose": {
+      "workers": 0,
+      "pendingJobs": 0,
+      "timers": 0,
+      "timingSinkFailures": 0,
+      "listeners": 0,
+      "native": {
+        "status": "Disposed",
+        "bodies": 0,
+        "colliders": 0
+      }
+    },
+    "coldDispose": {
+      "workers": 0,
+      "pendingJobs": 0,
+      "timers": 0,
+      "timingSinkFailures": 0,
+      "listeners": 0,
+      "native": {
+        "status": "Disposed",
+        "bodies": 0,
+        "colliders": 0
+      }
+    }
+  }
+}

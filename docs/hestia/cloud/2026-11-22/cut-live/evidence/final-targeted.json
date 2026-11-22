@@ -1,0 +1,237 @@
+{
+  "capturedUtc": "2026-11-22T15:56:47.279648+00:00",
+  "candidateCommit": "abf90f07ca063d67e5b683af6a732dee608e5842",
+  "candidateTree": "b43941e6002cfab9b6d24a7a8ee39a4669cf4ae8",
+  "publishedCommit": "d84b5532068e8e584d031dbdc398c96c405812d4",
+  "publishedCommitUrl": "https://github.com/BenjaminHornung/Weltraum-Spiel/commit/d84b5532068e8e584d031dbdc398c96c405812d4",
+  "publishedTreeAsReportedByIntegrator": "b43941e6002cfab9b6d24a7a8ee39a4669cf4ae8",
+  "publishedCommitVerifiedViaGitHub": true,
+  "originalBaselineCommit": "cfa7cf7d35e13c7321bf3c819f4826e3dc62c003",
+  "sourceAudit": {
+    "commit": "abf90f07ca063d67e5b683af6a732dee608e5842",
+    "gitTree": "b43941e6002cfab9b6d24a7a8ee39a4669cf4ae8",
+    "trackedInputCount": 1043,
+    "byKind": {
+      "index.html": 1,
+      "package-lock.json": 1,
+      "package.json": 1,
+      "playwright.config.ts": 1,
+      "public": 77,
+      "scripts": 3,
+      "src": 421,
+      "tests": 413,
+      "tsconfig.json": 1,
+      "vendor": 122,
+      "vite.build.config.mjs": 1,
+      "vite.config.ts": 1
+    },
+    "mismatches": [],
+    "missing": [],
+    "materializedLfsFiles": 78,
+    "retainedLfsPointers": []
+  },
+  "unitScope": "All added or modified *.test.ts under apps/weltraum-browser/tests/unit between originalBaselineCommit and candidateCommit, including nested directories. Frozen source, one worker.",
+  "node": "22.23.2",
+  "vitest": "4.1.11",
+  "unitTotalFiles": 19,
+  "passed": 208,
+  "failed": 0,
+  "skipped": 0,
+  "processExit": 0,
+  "files": {
+    "tests/unit/hvp-neighbor-controller.test.ts": {
+      "passed": 10,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvp-terrain-consumer.test.ts": {
+      "passed": 41,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvp-terrain-publication-channel.test.ts": {
+      "passed": 11,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvp-terrain-worker-recovery.test.ts": {
+      "passed": 2,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpCompactNativeOwner.test.ts": {
+      "passed": 6,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpCompactNativeSource.test.ts": {
+      "passed": 14,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpCompactTerrainWire.test.ts": {
+      "passed": 2,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpCompactWorkerQualification.test.ts": {
+      "passed": 1,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpCutTaskPriority.test.ts": {
+      "passed": 2,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpCutTrace.test.ts": {
+      "passed": 79,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpFramePasses.test.ts": {
+      "passed": 4,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpLiveRenderDelta.test.ts": {
+      "passed": 7,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpLiveSupport.test.ts": {
+      "passed": 2,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/hvpRegionalCutCoverage.test.ts": {
+      "passed": 8,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/weather-hvp-read-view.test.ts": {
+      "passed": 4,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/componentIndex/compactHandoff.test.ts": {
+      "passed": 7,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/componentIndex/completeLeaf.test.ts": {
+      "passed": 2,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/componentIndex/nativeHandoff.test.ts": {
+      "passed": 1,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    },
+    "tests/unit/componentIndex/terrainCollision.test.ts": {
+      "passed": 5,
+      "failed": 0,
+      "filteredOrSkipped": 0
+    }
+  },
+  "inputs": {
+    "final-regression/full-input-audit.json": "139b51509c2152055042a5434ae863443920e0b1f1b3f614dfc9e8adbf6db08d",
+    "final-regression/changed-tests/results.json": "3c97ebd75629dfd5edb5cd9af5c25f9a2411ffd5dda9bd31f9566391d0ec58b0",
+    "final-regression/changed-tests/files.txt": "3f30819b8858b37e8c29d8e516ab217d273749d81291e65168e56a16959265d6",
+    "final-regression/changed-tests/exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "final-regression/changed-tests/output.log": "38ad7e0ee5662a9ce572c42ad4f8ce5efdf7c33782fe9a44889016f3033c6a0e"
+  },
+  "historicalBroadMatrix": {
+    "commit": "b54f92b5d8ab8c737888aac8b4b3955e8a75567e",
+    "unitFileCounts": {
+      "declaredFiles": 312,
+      "filesCompleted": 312,
+      "filesPassed": 288,
+      "filesFailed": 21,
+      "filesTimedOut": 3,
+      "testsPassed": 2992,
+      "testsFailed": 43,
+      "testsSkipped": 24
+    },
+    "e2e": {
+      "core": {
+        "declaredTests": 43,
+        "complete": true,
+        "reportAvailable": true,
+        "exit": 1,
+        "globalTimedOut": false,
+        "limitSeconds": 900,
+        "stats": {
+          "startTime": "2026-11-22T15:12:58.994Z",
+          "duration": 529240.375,
+          "expected": 42,
+          "skipped": 0,
+          "unexpected": 1,
+          "flaky": 0
+        },
+        "lastAttemptStatuses": {
+          "passed": 42,
+          "failed": 1
+        },
+        "globalErrors": []
+      },
+      "ui": {
+        "declaredTests": 12,
+        "complete": true,
+        "reportAvailable": true,
+        "exit": 1,
+        "globalTimedOut": false,
+        "limitSeconds": 480,
+        "stats": {
+          "startTime": "2026-11-22T15:21:49.963Z",
+          "duration": 263472.406,
+          "expected": 11,
+          "skipped": 0,
+          "unexpected": 1,
+          "flaky": 0
+        },
+        "lastAttemptStatuses": {
+          "passed": 11,
+          "timedOut": 1
+        },
+        "globalErrors": []
+      },
+      "live": {
+        "declaredTests": 47,
+        "complete": true,
+        "reportAvailable": true,
+        "exit": 1,
+        "globalTimedOut": true,
+        "limitSeconds": 1800,
+        "stats": {
+          "startTime": "2026-11-22T15:26:14.580Z",
+          "duration": 1800003.143,
+          "expected": 4,
+          "skipped": 23,
+          "unexpected": 20,
+          "flaky": 0
+        },
+        "lastAttemptStatuses": {
+          "passed": 4,
+          "timedOut": 4,
+          "failed": 16,
+          "notAttempted": 23
+        },
+        "globalErrors": [
+          "\u001b[31mTimed out waiting 1800s for the test suite to run\u001b[39m",
+          "\u001b[31mTimed out waiting 1800s for the teardown for test suite to run\u001b[39m"
+        ]
+      }
+    },
+    "R4Reruns": {
+      "coreNode22Pass": true,
+      "uiNode22CiTimeBudgetPass": true
+    }
+  },
+  "r11VerificationZip": {
+    "file": "Hestia_Verifikation_R11.zip",
+    "bytes": 5507807,
+    "sha256": "cb40beeabd2f10055b11134ed6d2494a62111cbe5df08f89120811038b1033f7"
+  }
+}
