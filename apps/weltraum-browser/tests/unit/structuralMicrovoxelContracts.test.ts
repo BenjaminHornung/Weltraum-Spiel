@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { createStructuralCellAddress } from "../../src/voxel/structural/coordinates";
 import * as structuralPublic from "../../src/voxel/structural";
 import {
   ADAPTIVE_BRICK_ESTIMATED_BYTES,
@@ -139,6 +140,26 @@ const expectStructuralError = (operation: () => unknown, path: string, code?: st
 };
 
 describe("Structural Microvoxel contracts", () => {
+  it("owns and freezes the entire address without freezing caller-owned coordinates", () => {
+    const origin = { x: 0, y: 0, z: 0 };
+    const local = { x: 1, y: 2, z: 3 };
+    const key = createAdaptiveBrickKey({
+      bodyId: frame.bodyId, surfaceFrameId: frame.surfaceFrameId, regionId: frame.regionId,
+      generatorVersion: frame.generatorVersion, level: 4, originQuantum: origin
+    });
+    const shallowInput = Object.freeze({ ...key, originQuantum: origin });
+    const address = createStructuralCellAddress(shallowInput, local);
+
+    origin.x = 16;
+    local.z = 9;
+    expect(address.brickKey.originQuantum.x).toBe(0);
+    expect(address.local.z).toBe(3);
+    expect(isDeepFrozen(address)).toBe(true);
+    expect(isDeepFrozen(key)).toBe(true);
+    expect(() => createStructuralCellAddress(shallowInput, { ...local, z: 16 })).toThrow(StructuralValidationError);
+    expect(() => createStructuralCellAddress({ ...shallowInput, originQuantum: { ...origin, x: 1 } }, local)).toThrow(StructuralValidationError);
+  });
+
   it("accepts only the unchanged Adaptive FNV-1a64 hash format and rejects long or malformed digests", () => {
     expect(requireStructuralHash("fnv1a64-v1:0123456789abcdef", "hash")).toBe("fnv1a64-v1:0123456789abcdef");
     for (const invalid of [

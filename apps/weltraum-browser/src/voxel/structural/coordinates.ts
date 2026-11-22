@@ -46,7 +46,7 @@ const safeTranslate = (value: number, offset: number, path: string): number => {
 export const validateStructuralLocalCellOffset = (value: unknown, path = "local"): StructuralLocalCellOffset => {
   const record = requirePlainRecord(value, path);
   requireExactKeys(record, ["x", "y", "z"], path);
-  return deepFreeze({ x: axis(record.x, `${path}/x`), y: axis(record.y, `${path}/y`), z: axis(record.z, `${path}/z`) });
+  return Object.freeze({ x: axis(record.x, `${path}/x`), y: axis(record.y, `${path}/y`), z: axis(record.z, `${path}/z`) });
 };
 
 export const structuralLocalCellIndex = (value: unknown, path = "localIndex"): StructuralLocalCellIndex => {
@@ -75,7 +75,7 @@ export const localCellOffsetFromIndex = (value: unknown): StructuralLocalCellOff
 export const createStructuralCellAddress = (brickKeyValue: unknown, localValue: unknown): StructuralCellAddress => {
   const brickKey = validateAdaptiveBrickKey(brickKeyValue);
   if (brickKey.level !== adaptiveLevel(4)) return structuralFail("InvalidAdaptiveBinding", "brickKey/level", "Structural cell addresses require Adaptive level 4.");
-  return deepFreeze({ brickKey, local: validateStructuralLocalCellOffset(localValue) });
+  return Object.freeze({ brickKey, local: validateStructuralLocalCellOffset(localValue) });
 };
 
 export const validateStructuralCellAddress = (value: unknown, path = "cell"): StructuralCellAddress => {

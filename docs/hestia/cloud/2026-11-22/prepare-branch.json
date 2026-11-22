@@ -1,0 +1,111 @@
+{
+  "scope": "Node worker_threads, real R05 WASM, 384-cell PrepareBranch handler, one sample per process",
+  "referenceHardware": false,
+  "baseCommit": "fdc9a34ab4f36869f342e5c7f77e632a60b2df55",
+  "node": "v24.22.3",
+  "wasmSha256": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+  "workers": {
+    "control": "993f4cc69bc1e4626e64bad26b5badca51ba6c9ca71e0b9dc35bec373bb35184",
+    "candidate": "cc0845e4c14fd9fe3a5dd4b1d42f90802f22872b25a00d2b394f4c9589d13298"
+  },
+  "timing": {
+    "phase": "PrepareBranch handler, same 384-cell branch",
+    "order": [
+      "control",
+      "candidate",
+      "candidate",
+      "control",
+      "candidate",
+      "control",
+      "control",
+      "candidate",
+      "candidate",
+      "control",
+      "control",
+      "candidate",
+      "control",
+      "candidate",
+      "candidate",
+      "control"
+    ],
+    "handler_ms": [
+      1101.8084880000001,
+      797.6007290000002,
+      560.3140440000002,
+      793.4750490000001,
+      613.00659,
+      805.1268749999999,
+      913.4008630000001,
+      772.1614910000001,
+      750.5794720000001,
+      1126.112905,
+      707.275044,
+      544.7090310000001,
+      790.9430869999999,
+      584.1610070000002,
+      567.0219450000002,
+      924.8242770000002
+    ],
+    "median_ms": {
+      "control": 859.263869,
+      "candidate": 598.5837985000001
+    }
+  },
+  "branchChecks": {
+    "sourceFixture": "tests/unit/hvp-body-mesh-worker.test.ts",
+    "solver": "rapier-0.21.0-phy01.migration2:legacy-impulse-v1",
+    "parent": {
+      "ownerId": "hvp:branch:parent",
+      "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+      "anchored": true,
+      "massKg": 450,
+      "cellCount": 384
+    },
+    "contact": {
+      "cell": [
+        6,
+        9,
+        0
+      ],
+      "point": {
+        "x": 0.75,
+        "y": 1.2499999980583518,
+        "z": 4.622971783163621e-09
+      }
+    },
+    "sourceDigestBefore": "fnv1a64-v1:9cb845863922efae",
+    "sourceDigestAfter": "df8d0489",
+    "applied": {
+      "id": "release",
+      "status": "Applied",
+      "removedCells": 64,
+      "removedMassKg": 75
+    },
+    "fragmentCount": 2,
+    "parts": [
+      {
+        "ownerId": "hvp-branch:r1:p0",
+        "sourceDigest": "fnv1a64-v1:0aaf75536841e427",
+        "anchored": true,
+        "massKg": 225,
+        "cellCount": 192
+      },
+      {
+        "ownerId": "hvp-branch:r1:p1",
+        "sourceDigest": "fnv1a64-v1:5c16fb39d52126c8",
+        "anchored": false,
+        "massKg": 150,
+        "cellCount": 128
+      }
+    ],
+    "attachmentOwnerId": "hvp-branch:r1:p1"
+  },
+  "disposeChecks": {
+    "status": "Disposed",
+    "bodies": 0,
+    "colliders": 0,
+    "timers": 0,
+    "nativeBytes": "unsupported"
+  },
+  "allProcessesExitCode": 0
+}

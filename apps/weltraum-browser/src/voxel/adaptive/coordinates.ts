@@ -27,7 +27,7 @@ export const brickExtentQuantumForLevel = (level: AdaptiveLevel): number =>
   ADAPTIVE_BRICK_CELLS_PER_AXIS * cellSizeQuantumForLevel(level);
 
 const point = (value: { readonly x: number; readonly y: number; readonly z: number }, path: string): QuantumPoint =>
-  deepFreeze({
+  Object.freeze({
     x: globalQuantumCoordinate(value.x, `${path}/x`),
     y: globalQuantumCoordinate(value.y, `${path}/y`),
     z: globalQuantumCoordinate(value.z, `${path}/z`)
@@ -86,7 +86,7 @@ export const createAdaptiveBrickKey = (input: AdaptiveBrickKeyInput): AdaptiveBr
   requireExactKeys(originRecord, ["x", "y", "z"], "keyInput/originQuantum");
   const level = adaptiveLevel(input.level);
   const originQuantum = validateAdaptiveBrickKeyDomain(level, point(input.originQuantum, "originQuantum"));
-  return deepFreeze({
+  return Object.freeze({
     schemaVersion: ADAPTIVE_KEY_SCHEMA_VERSION,
     bodyId: stableAuthorityId(input.bodyId, "bodyId"),
     surfaceFrameId: stableAuthorityId(input.surfaceFrameId, "surfaceFrameId"),
