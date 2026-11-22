@@ -43,13 +43,23 @@ export function summarizeCutBrowserTrace(events, state) {
 }
 
 export async function startCutBrowserTrace(page, file) {
-  const client=await page.context().newCDPSession(page);
+  const client=await page.context().browser().newBrowserCDPSession();
   await client.send("Tracing.start",{categories:"toplevel,devtools.timeline,disabled-by-default-devtools.timeline,blink.user_timing,v8",transferMode:"ReturnAsStream"});
   const clockSync=await page.evaluate(()=>performance.mark("hvpProbeClockSync").startTime);
   return async state=>{
-    const complete=new Promise(resolve=>client.once("Tracing.tracingComplete",resolve));
-    await client.send("Tracing.end");
-    const {stream}=await complete;
+    let timeout;
+    const complete=new Promise((resolve,reject)=>{
+      client.once("Tracing.tracingComplete",resolve);
+      timeout=setTimeout(()=>reject(Error("Chromium trace stream did not finish")),12000);
+    });
+    let stream;
+    try{
+      const [finished]=await Promise.all([complete,client.send("Tracing.end")]);
+      stream=finished.stream;
+    } catch(error) {
+      await client.detach().catch(()=>{});
+      return {sampled:false,reason:String(error.message)};
+    } finally{clearTimeout(timeout);}
     const buffers=[];
     try {
       for(;;){
