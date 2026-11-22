@@ -1,0 +1,47 @@
+{
+  "tree": "f1990da4b00fa4199b580ea942327ce65ff508fa",
+  "sample": "ABBA attempt 4, worker",
+  "sourceSha256": "1809ac3948cd3da40d4f874f5cfd2f82e79497a321ea68e56fb14d16519be2d5",
+  "units": "ms elapsed from DOM mousedown. Cross-realm markers use performance.timeOrigin + monotonic timestamps. They are not thread CPU samples.",
+  "cumulative": {
+    "domInput": 0,
+    "inputHandler": 107.3,
+    "mainDispatch": 139.1,
+    "nativePublication": 149.0,
+    "mainReplyObserved": 272.7,
+    "mainQueryReady": 275.5,
+    "firstNativeStep": 297.8,
+    "staticVisualWorkStart": 658.3,
+    "meshRetirementEnd": 748.2,
+    "renderSubmit": 2180.9
+  },
+  "consecutive": {
+    "domInput to inputHandler": 107.3,
+    "inputHandler to mainDispatch": 31.8,
+    "mainDispatch to nativePublication": 9.9,
+    "nativePublication to mainReplyObserved": 123.7,
+    "mainReplyObserved to mainQueryReady": 2.8,
+    "mainQueryReady to firstNativeStep": 22.3,
+    "firstNativeStep to staticVisualWorkStart": 360.5,
+    "staticVisualWorkStart to meshRetirementEnd": 89.9,
+    "meshRetirementEnd to renderSubmit": 1432.7
+  },
+  "solverActivation": {
+    "commandId": "cut-1",
+    "publishedEpochMs": 1795369187678,
+    "releasedEpochMs": 1795369187804.4001,
+    "releaseRequestId": 17,
+    "releaseCommandKind": "Read",
+    "holdMs": 126.40000000223517,
+    "skippedTimerCallbacks": 8,
+    "commitTick": 190,
+    "firstStepTick": 191,
+    "firstStepEpochMs": 1795369187826.8,
+    "firstStepAfterMs": 148.80000000074506
+  },
+  "activeSubspans": {
+    "index": 12.800000000745058,
+    "staticCollision": 3.399999998509884,
+    "nativePlan": 6.300000000745058
+  }
+}
