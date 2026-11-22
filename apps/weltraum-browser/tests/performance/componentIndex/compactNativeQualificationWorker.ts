@@ -85,7 +85,7 @@ async function execute(msg:Cmd) {
   const eye=mapStructuralAuthorPointToWorld(rotation,{...body.translation()},center,{x:18.5*.125,y:3.5*.125,z:-.25});
   const ray=rotateStructuralWorldVector(rotation,{x:0,y:0,z:1});
   const target={ownerId:identity.ownerId,body,recipe},hit=captureHvpBodyHit(world,new Map([[target.ownerId,target]]),eye,ray,1);
-  if(!hit||hit.sourceDigest!==recipe.source.contentHash||hit.ownerId!==target.ownerId) throw new Error("Moving source binding incomplete");
+  if(!hit||hit.sourceDigest!==identity.membershipDigest||hit.ownerId!==target.ownerId) throw new Error("Moving source binding incomplete");
   const plan=prepareHvpBodyCut(hit,target,"ipc-recut",1);
   const stage=stageHvpBodyCut(world,target,plan);
   stage.commit();stage.finalize();world.updateSceneQueries();
