@@ -33,7 +33,7 @@ export const createHvpTerrainConsumer = (
   root: ReturnType<typeof createHvpTerrainRoot>,
   compile: (plan: HvpPreparedCut,support?:HvpSupportPlan) => Promise<HvpTerrainProducts>,
   stage: HvpStageTerrain,
-  physics: Pick<HvpPhysicsClient,"prepareTerrain"|"commitTerrain"|"publishTerrain"|"rollbackTerrain"|"finalizeTerrain"|"command">&Partial<Pick<HvpPhysicsClient,"preparedTerrainFragments"|"read">>,
+  physics: Pick<HvpPhysicsClient,"prepareTerrain"|"commitTerrain"|"publishTerrain"|"rollbackTerrain"|"finalizeTerrain"|"command">&Partial<Pick<HvpPhysicsClient,"preparedTerrainFragments"|"applyCompactTerrain"|"read">>,
   supports: readonly Readonly<{x:number;z:number}>[] = [],
   analyze?: (plan:HvpPreparedCut)=>Promise<HvpSupportPlan>,
   traceInput?: HvpCutTrace,
@@ -183,33 +183,41 @@ export const createHvpTerrainConsumer = (
           const nativeWork=phaseCredits===undefined?undefined:{sourceDigest:currentPlan.after.sourceDigest,sourceSessionId:bound.sessionId,sourceEpoch:bound.epoch,
             ...(trace===undefined?{}:{trace}),copyBytes,nativeBytes:phaseCredits.nativeGrant(copyBytes),
             onSourcePrepared:async(views:readonly HvpPhysicsSnapshot["preparedTerrainFragments"][number][])=>{sourceViews=views;}};
-          await measureAsync("cutNativePrepareMs",()=>physics.prepareTerrain(bound.commandId,currentPlan.before.revision,replacements,fragments,nativeWork,binding));
-          worldPrepared=true;
           let bodies:HvpPreparedTerrainBody[]=[];
-          if(fragments.length>0){
-            const prepared=physics.preparedTerrainFragments?.();
-            if(!prepared||prepared.length!==fragments.length){throw new Error("Missing native fragment admission");}
-            if(sourceViews!==undefined){for(let i=0;i<prepared.length;i+=1){const actual=prepared[i]!,expected=sourceViews[i]!;
-              if(actual.ownerId!==expected.ownerId||actual.sourceDigest!==expected.sourceDigest
-                ||!Object.is(actual.centerOfMass.x,expected.centerOfMass.x)||!Object.is(actual.centerOfMass.y,expected.centerOfMass.y)||!Object.is(actual.centerOfMass.z,expected.centerOfMass.z)
-                ||!Object.is(actual.massKg,expected.massKg)||actual.cellCount!==expected.cellCount||actual.colliders!==expected.colliders||actual.sourceBytes!==expected.sourceBytes){
-                throw new Error("Native Stage source view mismatch");}
-            }}
-            bodies=fragments.map(request=>{
-              const state=prepared.find(p=>p.ownerId===request.ownerId);
-              if(!state||state.cellCount!==request.cells.length||Math.abs(state.massKg-request.massKg)>1e-8){throw new Error("Native fragment binding mismatch");}
-              return {request,state};
+          const appliedCompact=!!nativeWork&&!!physics.applyCompactTerrain&&await measureAsync("cutNativeApplyMs",()=>
+            physics.applyCompactTerrain!(binding,replacements,fragments,nativeWork,views=>{
+              if(disposed||root.read()!==currentPlan.before)throw new Error("Stale terrain at compact publication");
+              bodies=views.map((state,index)=>({request:fragments[index]!,state}));
+              measure("cutRootCommitMs",()=>root.commit(currentPlan));rootPublished=true;
+            }));
+          if(!appliedCompact){
+            await measureAsync("cutNativePrepareMs",()=>physics.prepareTerrain(bound.commandId,currentPlan.before.revision,replacements,fragments,nativeWork,binding));
+            worldPrepared=true;
+            if(fragments.length>0){
+              const prepared=physics.preparedTerrainFragments?.();
+              if(!prepared||prepared.length!==fragments.length){throw new Error("Missing native fragment admission");}
+              if(sourceViews!==undefined){for(let i=0;i<prepared.length;i+=1){const actual=prepared[i]!,expected=sourceViews[i]!;
+                if(actual.ownerId!==expected.ownerId||actual.sourceDigest!==expected.sourceDigest
+                  ||!Object.is(actual.centerOfMass.x,expected.centerOfMass.x)||!Object.is(actual.centerOfMass.y,expected.centerOfMass.y)||!Object.is(actual.centerOfMass.z,expected.centerOfMass.z)
+                  ||!Object.is(actual.massKg,expected.massKg)||actual.cellCount!==expected.cellCount||actual.colliders!==expected.colliders||actual.sourceBytes!==expected.sourceBytes){
+                  throw new Error("Native Stage source view mismatch");}
+              }}
+              bodies=fragments.map(request=>{
+                const state=prepared.find(p=>p.ownerId===request.ownerId);
+                if(!state||state.cellCount!==request.cells.length||Math.abs(state.massKg-request.massKg)>1e-8){throw new Error("Native fragment binding mismatch");}
+                return {request,state};
+              });
+            }
+            if(disposed||root.read()!==currentPlan.before) { throw new Error("Stale terrain before commit"); }
+            await measureAsync("cutNativeCommitMs",()=>physics.commitTerrain(bound.commandId)); // World stays held until the main owner publishes.
+            if(disposed||root.read()!==currentPlan.before){throw new Error("Stale terrain at publication");}
+            measure("cutRootCommitMs",()=>{
+              // publishTerrain checks the held receipt before switching the authoritative root.
+              physics.publishTerrain(currentPlan.after.revision);
+              root.commit(currentPlan);rootPublished=true;
             });
+            await measureAsync("cutNativeFinalizeMs",()=>physics.finalizeTerrain(bound.commandId));
           }
-          if(disposed||root.read()!==currentPlan.before) { throw new Error("Stale terrain before commit"); }
-          await measureAsync("cutNativeCommitMs",()=>physics.commitTerrain(bound.commandId)); // World stays held until the main owner publishes.
-          if(disposed||root.read()!==currentPlan.before){throw new Error("Stale terrain at publication");}
-          measure("cutRootCommitMs",()=>{
-            // publishTerrain checks the held receipt before switching the authoritative root.
-            physics.publishTerrain(currentPlan.after.revision);
-            root.commit(currentPlan);rootPublished=true;
-          });
-          await measureAsync("cutNativeFinalizeMs",()=>physics.finalizeTerrain(bound.commandId));
           if(root.read()!==currentPlan.after){throw new Error("Released terrain root mismatch");}
           try{onPublished?.(bound.commandId,currentPlan.after,currentPlan.after.revision,currentPlan);}catch{/* Observation only. */}
           const older=pendingRender?.source===currentPlan.before?pendingRender:undefined;

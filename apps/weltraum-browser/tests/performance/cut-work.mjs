@@ -21,6 +21,8 @@ export function cutWork(phases, commandId, planner = "indexed", placement = "wor
   return {
     scope:"Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
     complete, placement, handler:1, crossThreadDeliveries, dispatches, replies, recoveryMessages, collisionResumes, copyResumes, planResumes,
+    recoveryMailbox:{writes:count("cutRecoveryMailboxWrite"),bodies:count("cutRecoveryMotionBodies"),
+      captureAndCloneMs:named("cutRecoveryMailboxWrite").reduce((n,p)=>n+(p.detail.data.activeMs??0),0)},
     observedStages:stages, targetStages:3, withinStageBudget:complete && stages <= 3,
     activeElapsedMs:{
       index:sumMs("cutComponentIndexMs"), staticCollision:sumMs("cutStaticCollisionWorkMs"),
