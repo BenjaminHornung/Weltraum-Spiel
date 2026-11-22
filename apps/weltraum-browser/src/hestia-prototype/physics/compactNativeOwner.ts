@@ -98,15 +98,20 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
   return makeCompactOwner(identity,checked,count,leafCount,box(min,max),mass,shapes);
 }
 
-type CompactIdentity=Readonly<HvpCompactRuntimeBinding & {kind:"hvp-compact-runtime-v1";ownerId:string;membershipDigest:string;registryDigest:string}>;
+export type CompactIdentity=Readonly<HvpCompactRuntimeBinding & {kind:"hvp-compact-runtime-v1";ownerId:string;membershipDigest:string;registryDigest:string}>;
 export function issueCompactMovingChild(parent:HvpCompactNativeOwner,removed:readonly Span[],kept:readonly Span[]){
   if(!isIssuedHvpCompactNativeOwner(parent))throw new Error("Missing authoritative moving parent");
-  const identity=createHvpCompactChildIdentity({ownerId:parent.identity.ownerId,revision:0,sourceDigest:parent.identity.membershipDigest,spans:parent.materialRuns()},removed,kept);
+  return restoreMovingChildFromRuns(parent.identity,parent.materialRuns(),removed,kept);
+}
+/** Reconstruct the recorded child partition. No brush selection, targeting or cut plan runs during recovery. */
+export function restoreMovingChildFromRuns(parent:CompactIdentity,parentRuns:readonly Span[],removed:readonly Span[],kept:readonly Span[]){
+  if(parent.kind!=="hvp-compact-runtime-v1"||parent.registryDigest!==HVP_COAST_REGISTRY_DIGEST)throw new Error("Invalid moving parent material registry");
+  const identity=createHvpCompactChildIdentity({ownerId:parent.ownerId,revision:0,sourceDigest:parent.membershipDigest,spans:parentRuns},removed,kept);
   if(!identity)return;
   const f=measureCompactMaterialSpans(kept),shapes=exactShapes(kept,f.count,f.bounds);
   if(!shapes||!connected(shapes))throw new Error("Unverified moving child collision coverage");
   const leaves=new Set(kept.map(s=>[s.x>>4,s.y>>4,s.z>>4].join(",")));
-  const child=makeCompactOwner(Object.freeze({...parent.identity,ownerId:identity.ownerId,membershipDigest:identity.sourceDigest}),
+  const child=makeCompactOwner(Object.freeze({...parent,ownerId:identity.ownerId,membershipDigest:identity.sourceDigest}),
     kept,f.count,leaves.size,f.bounds,f.mass,shapes,recipe=>{bindHvpCompactChildArchive(recipe,identity.proof);});
   return {child,removedDigest:identity.removedDigest};
 }

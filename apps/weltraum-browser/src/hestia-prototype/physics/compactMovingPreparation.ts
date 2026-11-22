@@ -32,6 +32,6 @@ export function prepareLiveCompactMovingCut(parent:HvpCompactNativeOwner,request
       parts:Object.freeze(owners.map(o=>({ownerId:o.identity.ownerId,anchored:false,cells:childCells,recipe:o.recipe}))),
       removedMassKg:geom.removed.mass.totalMassKg,after:undefined});
     issued.set(nativePlan,parent);
-    return {nativePlan,owners,projection,preparation,removedMass:geom.removed.mass};
+    return {nativePlan,owners,projection,preparation,removedMass:geom.removed.mass,removedRuns:geom.removed.runs};
   }catch(error){derived?.child.dispose();throw error;}
 }

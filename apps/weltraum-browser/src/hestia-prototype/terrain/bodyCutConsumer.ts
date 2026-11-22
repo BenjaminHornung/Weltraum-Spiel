@@ -56,7 +56,7 @@ export const createHvpBodyCutConsumer=(physics:Pick<HvpPhysicsClient,"read"|"com
       busy=true;
       const submitted=emit(request.id,"cutBodySubmittedMs");
       const promise=(async()=>{
-        let begun=false,finished=false,render:HvpStagedTerrain|undefined,terminal:NonNullable<typeof last>|undefined;
+        let begun=false,committed=false,finished=false,render:HvpStagedTerrain|undefined,terminal:NonNullable<typeof last>|undefined;
         try{
           const source=await physics.beginBodyCut(request);begun=true;
           if(finishCompile!==undefined){cleanupId=request.id;cleanupRelease=undefined;}
@@ -66,23 +66,24 @@ export const createHvpBodyCutConsumer=(physics:Pick<HvpPhysicsClient,"read"|"com
           if(disposed){throw new Error("Moving render staging cancelled");}
           await physics.stageBodyCut(request.id,products); // Now hold CURRENT pose/motion.
           if(disposed){throw new Error("Moving commit cancelled");}
-          await physics.commitBodyCut(request.id);
-          if(disposed){throw new Error("Moving publication cancelled");}
-          physics.publishBodyCut();render.publish();
+          await physics.commitBodyCut(request.id);committed=true;
+          physics.publishBodyCut();
           await physics.finalizeBodyCut(request.id);finished=true;
+          if(disposed){throw new Error("Moving display disposed after native publication");}
+          render.publish();
           render.finish();render=undefined;terminal=Object.freeze({id:request.id,status:"Applied",reason:"Current-pose fragment replacement"});
           if(finishCompile===undefined){last=terminal;if(submitted!==undefined){emit(request.id,"cutBodyTotalAppliedMs",submitted);}}
         }catch(error){
           const renderRecovery=error instanceof HvpRenderStageRecoveryError;
-          let restored=!finished&&!renderRecovery;
+          let restored=!committed&&!renderRecovery;
           if(renderRecovery){held=true;try{await physics.command("Pause");}catch{/* Cleanup cannot assert a running World is safe. */}}
-          if(!finished){
+          if(!committed){
             try{render?.rollback();}catch{restored=false;}
             if(begun){try{await physics.rollbackBodyCut(request.id);}catch{restored=false;}}
           }
           try{if(physics.read().moving.state==="RecoveryHold"){restored=false;}}catch{restored=false;}
           if(!restored){held=true;if(!renderRecovery){try{await physics.command("Pause");}catch{/* Never assert restoration without the World. */}}}
-          terminal=Object.freeze({id:request.id,status:held?"RecoveryHold":"Rejected",reason:String(error)});
+          terminal=Object.freeze({id:request.id,status:held?"RecoveryHold":"Rejected",reason:(finished?"Native cut applied; display recovery required: ":committed?"Native cut applied; publication recovery required: ":"")+String(error)});
           if(finishCompile===undefined){last=terminal;if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}}
         }finally{
           if(finishCompile!==undefined&&!held&&cleanupId===request.id){

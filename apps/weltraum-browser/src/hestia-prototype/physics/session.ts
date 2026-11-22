@@ -1,3 +1,4 @@
+import {readHvpBodyCells} from "./bodyCutPlan";
 import { resolveHvpGravity, HVP_INERTIA_CELLS, HVP_INERTIA_KEY, HVP_PLAYER_PROFILE, HVP_SOLVER_VERSION, assertHvpPublicSaveCutover } from "./profile";
 import {validateHvpChunkStaticLayout,validateHvpChunkCollisionSteps,type HvpChunkStaticLayout} from "./staticTerrainLayout";
 export { resolveHvpGravity } from "./profile";
@@ -13,8 +14,8 @@ import {hvpTerrainFragmentCellCount,prepareHvpTerrainFragment,prepareHvpTerrainF
 import {prepareHvpProbeTerrainFragmentOwnedSteps,createHvpProbeTerrainSourceOwner} from "./terrainFragment";
 import {isProbeKernelEnabled,isProbeTerrainSubsetEnabled,markProbeSource} from "../experiments/cutKernelProbe";
 import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
-import {issueHvpCompactNativeOwner,isIssuedHvpCompactNativeOwner,type HvpCompactNativeOwner,type HvpCompactRuntimeBinding} from "./compactNativeOwner";
-import {hvpFragmentArchiveDigest,supportsCompactArchive} from "./compactFragmentIdentity";
+import {restoreMovingChildFromRuns,issueHvpCompactNativeOwner,isIssuedHvpCompactNativeOwner,type HvpCompactNativeOwner,type HvpCompactRuntimeBinding} from "./compactNativeOwner";
+import {compactCellSpans,compactRuntimeMembershipDigest,hvpFragmentArchiveDigest,supportsCompactArchive} from "./compactFragmentIdentity";
 import type {HvpRigidRecipe} from "./rigidRecipe";
 import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
@@ -59,8 +60,10 @@ export interface HvpTerrainMotion {
 export interface HvpTerrainJournalEntry {
   readonly binding:HvpTerrainBinding;readonly replacements:readonly TerrainReplacement[];readonly fragments:readonly HvpTerrainFragmentRequest[];
 }
+export type HvpMovingPublication=ReturnType<ReturnType<typeof createHvpOwnedHashBodyCutSession>["publication"]>;
+export type HvpMovingForward=HvpMovingPublication&{motion:HvpTerrainMotion;assets?:HvpTerrainRecoveryAssets};
 export interface HvpTerrainRecoveryImage {
-  readonly assets:HvpTerrainRecoveryAssets;readonly motion:HvpTerrainMotion;readonly journal:readonly HvpTerrainJournalEntry[];
+  readonly moving?:HvpMovingPublication;readonly assets:HvpTerrainRecoveryAssets;readonly motion:HvpTerrainMotion;readonly journal:readonly HvpTerrainJournalEntry[];
 }
 type SessionWorld<C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>=Omit<HvpDecodedWorld,"checkpoint">&{readonly checkpoint:C};
 type SessionCheckpointContext<C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>={
@@ -475,7 +478,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
     },saved?.tick);
     let terrainGeneration = saved?.terrainGeneration??0;
     type Fragment=HvpCuttableBody;
-    const moving=(workerOwned?createHvpOwnedHashBodyCutSession:createHvpBodyCutSession)(world,movingBodies,bodies,sessionId,saved?.moving,residentExtras,
+    const moving=(workerOwned?createHvpOwnedHashBodyCutSession:createHvpBodyCutSession)(world,movingBodies,bodies,sessionId,recovery?.moving?.checkpoint??saved?.moving,residentExtras,
       measureBodyHold?trace=>{
         logSlowHvpBodyPlan(trace);
         if(workerOwned&&moving.resources()?.reservedBytes){
@@ -667,7 +670,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       }
     };
     // Capture at the held simulation tick. Ownership maps contain R before native commit and R+1 after it.
-    const captureWorld=(held=false)=>{
+    const captureWorld=(held=false,committedMoving?:HvpMovingPublication["checkpoint"])=>{
         const captureReserve=labCaptureReserve;
         const restoredDrop=restored?.bodies.find(b=>b.checkpoint.family==="drop")?.recipe;
         if(captureReserve&&restoredDrop===undefined){reserveCaptureBytes(captureReserve,2*ADAPTIVE_BRICK_ESTIMATED_BYTES+64*1024+64*256);}
@@ -689,7 +692,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         return {version:"hvp-world-checkpoint-v1",sessionId,gravity,terrainGeneration,
           tick:tick.read(),collisionDigest:hvpCollisionDigest(allCollision()),dropSpawn:Object.freeze({...spawn}),
           player:(held?character?.heldMotion():character?.checkpoint())??null,coverage:Object.freeze(coverage.map(c=>Object.freeze({...c}))),
-          bodies:Object.freeze(result),branch:branch?.checkpoint()??null,moving:moving.checkpoint(),impulses,
+          bodies:Object.freeze(result),branch:branch?.checkpoint()??null,moving:committedMoving??moving.checkpoint(),impulses,
           neighbor:neighbor?.read().checkpoint??null,parked:Object.freeze(residency!.read().map(p=>p.ownerId)),
           lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,lastImpulse} as const;
     };
@@ -937,6 +940,20 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
          try{moving.stage(id,products,tick.read().ticks);}catch(error){if(!moving.holdsWorld&&movingWasRunning){tick.resume();}
            const released=finishBodyHold();if(released!==undefined){bodyReleasedHold=Object.freeze({id,ms:released});}throw error;}
        },
+       beforeMovingPublication(id:string,binding:HvpTerrainBinding,parentId:string,parentDigest:string,sequence:number){
+         const current=moving.read(),parent=movingBodies.get(parentId);
+         if(binding.commandId!==id||binding.baseRevision!==terrainGeneration||current.state!=="PreparedHeld"||current.sequence!==sequence
+           ||current.last?.id!==id||current.last.parentId!==parentId||bodyDigest(parent)!==parentDigest||tick.read().status!=="Paused"){
+           throw new Error("Stale moving publication basis");
+         }
+         return captureTerrainMotion(binding,movingWasRunning,tick.read());
+       },
+       captureMovingPublication(id:string,binding:HvpTerrainBinding):HvpMovingForward{
+         world.updateSceneQueries();
+         const publication=moving.publication(id),motion=captureTerrainMotion(binding,movingWasRunning,tick.read());
+         if(publication.delta)return {...publication,motion};
+         return {...publication,motion,assets:{world:labCheckpointContext.build(captureWorld(true,publication.checkpoint)),collision:allCollision(),layout:staticLayout??null}};
+       },
        commitBodyCut(id:string):void {moving.commit(id);},
        rollbackBodyCut(id:string):void {moving.rollback(id);if(!moving.holdsWorld&&movingWasRunning){tick.resume();}finishBodyHold();},
        finalizeBodyCut(id:string):void {try{moving.finalize(id);}finally{if(!moving.holdsWorld&&movingWasRunning){tick.resume();}finishBodyHold();}},
@@ -1181,6 +1198,29 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         const replacements=frame.replacements.length?frame.replacements:[{index:0,mesh:collision.get(0)!.mesh}];
         session.prepareTerrain(binding.commandId,binding.baseRevision,replacements,frame.fragments);
         session.commitTerrain(binding.commandId);session.finalizeTerrain(binding.commandId);
+      }
+      if(recovery.moving){
+        const {delta,checkpoint:committed}=recovery.moving,receipt=committed.last;
+        const parent=receipt&&movingBodies.get(receipt.parentId);
+        if(!delta||!parent||!receipt||receipt.status!=="Applied"||receipt.id!==motion.binding.commandId||committed.sequence!==recovery.assets.world.moving.sequence+1
+          ||delta.identity.ownerId!==receipt.parentId||delta.identity.membershipDigest!==bodyDigest(parent)||delta.identity.generation>terrainGeneration
+          ||receipt.children.length!==delta.children.length||delta.children.length>1)throw new Error("Invalid moving forward membership");
+        if(parent.compactOwner&&Object.entries(parent.compactOwner.identity).some(([key,value])=>
+          delta.identity[key as keyof typeof delta.identity]!==value))throw new Error("Moving parent archive identity mismatch");
+        const runs=parent.compactOwner?.materialRuns()??compactCellSpans(readHvpBodyCells(parent.recipe.source));
+        const child=delta.children[0];
+        if(child){
+          const rebuilt=restoreMovingChildFromRuns(delta.identity,runs,delta.removed,child.runs)?.child;
+          if(!rebuilt||rebuilt.identity.ownerId!==child.ownerId||receipt.children[0]!==child.ownerId||rebuilt.identity.membershipDigest!==child.digest
+            ||bodies.has(child.ownerId))throw new Error("Invalid moving forward child archive");
+          const body=installHvpRigidBody(world,rebuilt.recipe);
+          movingBodies.set(child.ownerId,compactFragment(body,rebuilt));bodies.set(child.ownerId,body);
+        }else if(delta.removed.length!==runs.length||runs.some((r,i)=>{const s=delta.removed[i]!;
+          return r.z!==s.z||r.y!==s.y||r.x!==s.x||r.end!==s.end||r.material!==s.material;})
+          ||compactRuntimeMembershipDigest(delta.removed,receipt.removedCells)!==delta.identity.membershipDigest){
+          throw new Error("Invalid full moving erasure");
+        }
+        world.removeRigidBody(parent.body);movingBodies.delete(parent.ownerId);bodies.delete(parent.ownerId);parent.compactOwner?.dispose();
       }
       const expectedDigest=motion.revision===motion.binding.baseRevision?motion.binding.baseDigest:motion.binding.targetDigest;
       if((digest!==undefined&&digest!==expectedDigest)||terrainGeneration!==motion.revision||bodies.size!==motion.bodies.length

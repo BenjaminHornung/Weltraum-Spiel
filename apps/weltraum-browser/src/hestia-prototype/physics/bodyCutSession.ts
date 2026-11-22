@@ -389,6 +389,15 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       stage=undefined;children=[];committed=false;
     },
     get busy(){return opening!==undefined||pending!==undefined||held||retiredWork!==undefined;},get holdsWorld(){return stage!==undefined||held;},
+    publication(id:string){
+      if(!committed||!pending||pending.request.id!==id||!last||last.status!=="CommittedHeld")throw new Error("Missing committed moving cut");
+      const checkpoint:HvpMovingCheckpoint={sequence,last:{...last,status:"Applied"}};
+      const compact=pending.compact,owner=pending.target.compactOwner;
+      const delta=compact&&owner?{identity:owner.identity,removed:compact.removedRuns,children:compact.owners.map(o=>({
+        ownerId:o.identity.ownerId,digest:o.identity.membershipDigest,runs:o.materialRuns()
+      }))}:undefined;
+      return {checkpoint,delta};
+    },
     checkpoint():HvpMovingCheckpoint {
       if(opening||pending||held||retiredWork!==undefined){throw new Error("Moving checkpoint requires confirmed ownership");}
       return Object.freeze({sequence,last});

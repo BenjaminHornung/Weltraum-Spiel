@@ -1,3 +1,4 @@
+import {readMovingPublication} from "./movingPublication";
 import {sameCompactBinding,admitsCompactTerrainApply,assertCompactDisplayCells,readCompactWitness,compactWorldBudget,readTerrainSourceViews,type TerrainReplacements,type TerrainViews} from "./compactTerrainApply";
 import { WorkerPool } from "../../workers/workerPool";
 import { algorithmVersion, byteCount, contentRevision, jobDeadline, planningEpoch, workerEpoch, workerJobId, workerJobKind, workerTargetKey } from "../../workers/ids";
@@ -67,6 +68,7 @@ export interface HvpPhysicsClient {
   applyCompactTerrain?(binding:HvpTerrainBinding,replacements:TerrainReplacements,fragments:readonly HvpTerrainFragmentRequest[],
     work:{nativeBytes:number;copyBytes:number;trace?:HvpCutTrace},commitRoot:(views:TerrainViews)=>void):Promise<boolean>;
   /** Owner-internal repair image for a sealed cut whose original root is quarantined. Never encoded through the public Save endpoint. */
+  movingForwardRecovery?():HvpTerrainRecoveryImage|undefined;
   compactForwardRecovery?():HvpTerrainRecoveryImage|undefined;
   primeTerrainRecovery?():Promise<void>;
   preparedTerrainFragments():HvpPhysicsSnapshot["preparedTerrainFragments"];
@@ -303,6 +305,10 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
   let compactQuarantine:HvpTerrainRecoveryImage|undefined;
   let terrainTrace:HvpCutTrace|undefined;
   let terrainBinding:HvpTerrainBinding|undefined,baseMotion:HvpTerrainMotion|undefined,forwardMotion:HvpTerrainMotion|undefined;
+  let movingProtocol=false,movingRolledBack:string|undefined;
+  let movingIntent:HvpMovingCutRequest|undefined,movingProjection:HvpBodyCutAdmission|undefined;
+  let movingForward:{id:string;image:HvpTerrainRecoveryImage;confirmed?:{value:HvpPhysicsSnapshot;sequence:number}}|undefined;
+  let movingInDoubt=false;
   let catalog:HvpTerrainRecoveryAssets|undefined,entry:HvpTerrainJournalEntry|undefined,priming:Promise<void>|undefined;
   let journal:HvpTerrainJournalEntry[]=[],catalogEpoch=0;
   const matches=(b:HvpTerrainBinding|undefined):boolean=>b!==undefined&&terrainBinding!==undefined
@@ -363,6 +369,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       traceHvpCutBoundary(terrainTrace,p.measuredCut,"main",data.beforeTerrainInstall?"cutRecoverySideband":"cutPhysicsReply");
     }
     const initializing=p?.kind==="Initialize"||p?.kind==="InitializeLab"||p?.kind==="InitializeFreshLab";
+    if(initializing&&data.snapshot)movingProtocol=data.movingPublicationVersion===1;
     if(initializing&&data.recoveryAssets&&data.snapshot===undefined){
       // Initialization remains pending until the worker reports its live clock and native snapshot.
       catalog=data.recoveryAssets;return;
@@ -465,17 +472,16 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       ||motion.tick.ticks!==reply.snapshot.ticks){throw new Error("Invalid held terrain receipt");}
     if(phase==="PreparedHeld"){baseMotion=motion;}else{forwardMotion=motion;}
   };
-  const recoverTerrain=async(motion:HvpTerrainMotion|undefined,holdForCompactRetry=false,fenceCompactForward?:number)=>{
-    if(!motion||!matches(motion.binding)||!catalog||!entry||disposed){throw new Error("RecoveryHold: missing terrain recovery image");}
+  const restoreNativeImage=async(image:HvpTerrainRecoveryImage,holdForCompactRetry=false,fenceCompactForward?:number,movingFenced=false)=>{
+    const {motion}=image;
     let reconstructed:{value:HvpPhysicsSnapshot;sequence:number}|undefined;
-    const image:HvpTerrainRecoveryImage={assets:catalog,motion,journal:motion===forwardMotion?[...journal,entry]:journal};
     fail(new Error("Terrain worker superseded"));worker=openWorker();incarnation=crypto.randomUUID();
     terminated=false;failure=undefined;publishRequestFloor=-1;lastSnapshotSequence=-1;lastClockSequence=-1;lastRestoreSequence=-1;
     heldSnapshot=undefined;attachWorker();
     try{
-      await send({kind:"RecoverTerrain",image,...(fenceCompactForward===undefined?{}:{fenceCompactForward}),...(holdForCompactRetry?{holdForCompactRetry:true as const}:{}),measure:onTimings!==undefined},[],false,reply=>{
+      await send({kind:"RecoverTerrain",image,...(movingFenced?{movingFenced:true as const}:{}),...(fenceCompactForward===undefined?{}:{fenceCompactForward}),...(holdForCompactRetry?{holdForCompactRetry:true as const}:{}),measure:onTimings!==undefined},[],false,reply=>{
         const restored=reply.snapshot;
-        if(!matches(reply.terrainReceipt)||restored?.terrainTransaction!=="Idle"||restored.terrainGeneration!==motion.revision
+        if(!sameCompactBinding(reply.terrainReceipt,motion.binding)||restored?.terrainTransaction!=="Idle"||restored.terrainGeneration!==motion.revision
           ||restored.ticks!==motion.tick.ticks||(motion.tick.status==="SimulationHold"&&(restored.status!=="SimulationHold"
             ||restored.backlogSeconds!==motion.tick.backlogSeconds||restored.discardedSeconds!==motion.tick.discardedSeconds))){
           throw new Error("Invalid reconstructed terrain generation");
@@ -483,10 +489,14 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         const expected=motion.bodies.map(b=>b.ownerId);
         if(expected.some(id=>!restored.bodies.some(b=>b.ownerId===id))){throw new Error("Reconstructed terrain ownership mismatch");}
         reconstructed={value:restored,sequence:reply.sequence};
-        if(fenceCompactForward===undefined){snapshot=restored;lastSnapshotSequence=reply.sequence;}
+        if(fenceCompactForward===undefined&&!movingFenced){snapshot=restored;lastSnapshotSequence=reply.sequence;}
       });
     }catch(error){fail(new Error("RecoveryHold: "+String(error)));throw failure;}
     return reconstructed!;
+  };
+  const recoverTerrain=async(motion:HvpTerrainMotion|undefined,holdForCompactRetry=false,fenceCompactForward?:number)=>{
+    if(!motion||!matches(motion.binding)||!catalog||!entry||disposed)throw new Error("RecoveryHold: missing terrain recovery image");
+    return restoreNativeImage({assets:catalog,motion,journal:motion===forwardMotion?[...journal,entry]:journal},holdForCompactRetry,fenceCompactForward);
   };
   const appendTerrainJournal=(next:HvpTerrainJournalEntry)=>{
     const replaced=new Set(next.replacements.map(r=>r.index));
@@ -725,7 +735,10 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       // The body transaction owns the held slot: an older rejected transaction's snapshot never proves its cleanup.
       heldSnapshot=undefined;
       let preparation:HvpMovingCutPreparation|undefined;
-      try{await send({kind:"BeginBodyCut",request:{id:request.id,ownerId:request.ownerId,sourceDigest:request.sourceDigest,edge:request.edge,
+      try{
+        if(movingProtocol)await primeTerrainRecovery();
+        movingIntent=request;movingProjection=undefined;movingRolledBack=undefined;
+        await send({kind:"BeginBodyCut",request:{id:request.id,ownerId:request.ownerId,sourceDigest:request.sourceDigest,edge:request.edge,
          direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.expectedEye?{expectedEye:{...request.expectedEye}}:{}),...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})}},[],true,reply=>{
            preparation=reply.bodyPreparation;
            if(preparation!==undefined){bodyProjectionTicket={binding:hvpBodyProjectionBinding(preparation,reply.id),beginSequence:reply.sequence};}
@@ -812,21 +825,102 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       await send({kind:"PrepareBodyPlan",transactionId:id});
       if(!bodyPending||mutating){throw new Error("No pending local body work");}
       mutating=true;heldSnapshot=undefined;
+      movingProjection=admission;
       const staging=send({kind:"StageBodyCut",transactionId:id,products:admission},[],false);
       await staging;
     },
-    commitBodyCut(id){return send({kind:"CommitBodyCut",transactionId:id},[],false);},
-    publishBodyCut(){if(!mutating||heldSnapshot?.value.moving.state!=="CommittedHeld"){throw new Error("Missing committed moving snapshot");}
-      snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;heldSnapshot=undefined;},
-    async rollbackBodyCut(id){
-      if(bodyProjectionTicket?.binding.commandId===id){bodyProjectionTicket=undefined;}
-      // Only this transaction's own Stage/Commit reply can fill the slot; it never moves publication backwards.
-      if(heldSnapshot?.value.moving.state==="Idle"){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}
-      else{await send({kind:"RollbackBodyCut",transactionId:id});}
-      heldSnapshot=undefined;mutating=false;bodyPending=false;
+    async commitBodyCut(id){
+      if(!movingProtocol){await send({kind:"CommitBodyCut",transactionId:id},[],false);return;}
+      const intent=movingIntent,parts=movingProjection?.parts,assets=catalog;
+      if(!intent||intent.id!==id||!parts||!assets||!snapshot||assets.world.terrainGeneration+journal.length!==snapshot.terrainGeneration)
+        throw new Error("Missing moving recovery basis");
+      const previous=journal.at(-1)?.binding,digest=previous?.targetDigest??assets.world.collisionDigest;
+      const binding={commandId:id,sessionId:previous?.sessionId??assets.world.sessionId,epoch:previous?.epoch??0,
+        baseRevision:snapshot.terrainGeneration,baseDigest:digest,targetDigest:digest};
+      const channel=new MessageChannel(),sequence=snapshot.moving.sequence,requestId=nextId,ownerIncarnation=incarnation;
+      let reply:HvpClientReply|undefined;
+      const normal=send({kind:"PublishMovingCut",transactionId:id,parentId:intent.ownerId,parentDigest:intent.sourceDigest,sequence,
+        publication:binding,recoveryPort:channel.port2},[channel.port2],false,value=>{reply=value;});
+      // Observe delivery on both independently ordered channels. A transport failure never authorizes an inverse mutation.
+      let delivered=true;
+      try{await normal;}catch{delivered=false;}
+      try{
+        const witness=await readMovingPublication(channel.port1,requestId,ownerIncarnation,binding,assets.world.sessionId);
+        if(!witness.forward){
+          await restoreNativeImage({assets,motion:witness.base,journal});
+          movingRolledBack=id;throw new Error("Moving native publication rejected before commit");
+        }
+        const f=witness.forward;
+        const image:HvpTerrainRecoveryImage=f.assets?{assets:f.assets,motion:f.motion,journal:[]}:
+          {assets,motion:f.motion,journal,moving:{checkpoint:f.checkpoint,delta:f.delta}};
+        movingForward={id,image};
+        const verifies=(next:HvpPhysicsSnapshot|undefined)=>next!==undefined&&next.moving.state==="Idle"&&next.moving.sequence===sequence+1
+          &&next.moving.last?.id===id&&next.moving.last.status==="Applied"&&next.moving.last.parentId===intent.ownerId
+          &&next.moving.last.children.length===parts.length&&parts.every(p=>next.moving.last!.children.includes(p.ownerId))
+          &&next.ticks===f.motion.tick.ticks&&next.terrainGeneration===binding.baseRevision&&!next.bodies.some(b=>b.ownerId===intent.ownerId)
+          &&parts.every(p=>next.bodies.some(b=>b.ownerId===p.ownerId));
+        if(f.checkpoint.sequence!==sequence+1||f.checkpoint.last?.parentId!==intent.ownerId||f.checkpoint.last.children.length!==parts.length
+          ||parts.some(p=>!f.checkpoint.last!.children.includes(p.ownerId))||f.delta?.children.some(c=>!parts.some(p=>p.ownerId===c.ownerId&&p.sourceDigest===c.digest)))
+          throw new Error("Invalid moving forward children");
+        if(delivered&&reply&&sameCompactBinding(reply.terrainReceipt,binding)&&verifies(reply.snapshot)){
+          movingForward.confirmed={value:reply.snapshot!,sequence:reply.sequence};
+        }else{
+          const restored=await restoreNativeImage(image,false,undefined,true);
+          if(!verifies(restored.value))throw new Error("Moving forward restoration mismatch");
+          movingForward.confirmed=restored;
+        }
+      }catch(error){
+        if(!movingRolledBack){movingInDoubt=true;fail(new Error("RecoveryHold: "+String(error)));}
+        throw error;
+      }finally{channel.port1.close();channel.port2.close();}
     },
-    async finalizeBodyCut(id){if(bodyProjectionTicket?.binding.commandId===id){bodyProjectionTicket=undefined;}await send({kind:"FinalizeBodyCut",transactionId:id},[],false);
-      if(heldSnapshot){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}heldSnapshot=undefined;mutating=false;bodyPending=false;},
+    publishBodyCut(){
+      if(movingProtocol){
+        const accepted=movingForward?.confirmed;
+        if(!mutating||!accepted)throw new Error("Missing native moving publication");
+        snapshot=accepted.value;lastSnapshotSequence=accepted.sequence;heldSnapshot=undefined;return;
+      }
+      if(!mutating||heldSnapshot?.value.moving.state!=="CommittedHeld")throw new Error("Missing committed moving snapshot");
+      snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;heldSnapshot=undefined;
+    },
+    async rollbackBodyCut(id){
+      if(movingInDoubt||movingForward)throw new Error("RecoveryHold: moving publication cannot be rolled back");
+      if(bodyProjectionTicket?.binding.commandId===id)bodyProjectionTicket=undefined;
+      if(movingRolledBack===id){movingRolledBack=undefined;}
+      else if(heldSnapshot?.value.moving.state==="Idle"){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}
+      else{await send({kind:"RollbackBodyCut",transactionId:id});}
+      heldSnapshot=undefined;mutating=false;bodyPending=false;movingIntent=undefined;movingProjection=undefined;
+    },
+    async finalizeBodyCut(id){
+      if(bodyProjectionTicket?.binding.commandId===id)bodyProjectionTicket=undefined;
+      if(movingProtocol){
+        if(movingForward?.id!==id||movingForward.confirmed?.value!==snapshot)throw new Error("Moving world is not published");
+        const image=movingForward.image,binding=image.motion.binding,at=snapshot.moving.sequence;
+        // Until this explicit input read, neither the original owner nor a replacement may tick.
+        if(failure){
+          const restored=await restoreNativeImage(image,false,undefined,true);
+          if(restored.value.moving.sequence!==at||restored.value.moving.last?.id!==id)throw new Error("Moving activation restore mismatch");
+          movingForward.confirmed=restored;snapshot=restored.value;lastSnapshotSequence=restored.sequence;
+        }
+        confirmedCompact=binding;
+        try{
+          await send({kind:"Read",input:playerInput,cameraOffset,cutAim},[],false,reply=>{
+            if(reply.clock?.compactActivation?.commandId!==id||reply.snapshot?.moving.sequence!==at||reply.snapshot.moving.last?.id!==id)
+              throw new Error("Missing moving activation acknowledgement");
+            snapshot=reply.snapshot;lastSnapshotSequence=reply.sequence;
+          });
+        }catch(error){
+          // The activation may have released later steps. Keep the exact forward archive and hold; never recreate an earlier tick silently.
+          movingInDoubt=true;throw error;
+        }
+        playerInput={...playerInput,jump:false};confirmedCompact=undefined;
+        catalog=undefined;journal=[];catalogEpoch++;
+        heldSnapshot=undefined;mutating=false;bodyPending=false;movingIntent=undefined;movingProjection=undefined;
+        movingForward=undefined;return;
+      }
+      await send({kind:"FinalizeBodyCut",transactionId:id},[],false);
+      if(heldSnapshot){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}heldSnapshot=undefined;mutating=false;bodyPending=false;
+    },
     async impulse(direction) {
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }
       await send({kind:"Impulse",direction:{x:direction.x,y:direction.y,z:direction.z}});
@@ -846,6 +940,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         });
       }else{await send({ kind }, [], !mutating);}
     },
+    movingForwardRecovery:()=>movingForward&&structuredClone(movingForward.image),
     compactForwardRecovery:()=>compactQuarantine&&structuredClone(compactQuarantine),
     async applyCompactTerrain(binding,replacements,fragments,work,commitRoot){
       for(const f of fragments)assertCompactDisplayCells(f);
@@ -1084,7 +1179,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         await send({ kind: "Dispose" });
         if(snapshot?.status!=="Disposed"||snapshot.bodyCount!==0||snapshot.colliderCount!==0||clock?.timers!==0){throw new Error("Missing native disposal receipt");}
       }
-      finally { disposed=true;catalogEpoch+=1;compactQuarantine=undefined;catalog=undefined;journal=[];clearTerrain();fail(new Error("Physics disposed")); }
+      finally { disposed=true;movingForward=undefined;movingIntent=undefined;movingProjection=undefined;catalogEpoch+=1;compactQuarantine=undefined;catalog=undefined;journal=[];clearTerrain();fail(new Error("Physics disposed")); }
     }
   };
 };

@@ -100,9 +100,15 @@ it.each(["","begin"])("restores completed moving receipts without native replay 
   expect(next.physics.beginBodyCut).not.toHaveBeenCalled();expect(next.consumer.read().last).toEqual(saved.last);
   await expect(next.consumer.submit({...request,edge:4})).rejects.toThrow(/conflict/);
 });
-it.each(["begin","compile","upload","stage-world","commit","world-publish","publish","finalize"])("preserves old publication on %s failure",async fault=>{
+it.each(["begin","compile","upload","stage-world","commit"])("preserves old publication on %s failure",async fault=>{
   const h=harness(fault);await h.consumer.submit(request);
   expect(h.consumer.read().last?.status).toBe("Rejected");expect(h.state()).toEqual({native:0,visible:0,published:0,paused:false});
+});
+it.each(["world-publish","publish","finalize"])("preserves the installed child after %s failure",async fault=>{
+  const h=harness(fault),inverse=vi.spyOn(h.physics,"rollbackBodyCut");
+  await h.consumer.submit(request);
+  expect(h.consumer.read().state).toBe("RecoveryHold");expect(h.state().native).toBe(1);expect(inverse).not.toHaveBeenCalled();
+  expect(h.consumer.read().last?.reason).toContain("Native cut applied");
 });
 it("does not resurrect a removed parent after uncertain old-resource retirement",async()=>{
   const h=harness("retire");await h.consumer.submit(request);
@@ -180,7 +186,7 @@ it("holds the save boundary until actual mesh cleanup acknowledgement after rend
     ()=>({publish(){events.push("publish");},rollback(){},finish(){events.push("render-finish");}}),undefined,async()=>{
       events.push("mesh-close");entered();await closing;events.push("mesh-closed");
     });
-  try{const submitted=consumer.submit(request);await ready;expect(events).toEqual(["publish","native-finalize","render-finish","mesh-close"]);
+  try{const submitted=consumer.submit(request);await ready;expect(events).toEqual(["native-finalize","publish","render-finish","mesh-close"]);
     expect(consumer.read().state).toBe("Pending");expect(()=>consumer.checkpoint()).toThrow("save boundary");
     let idle=false;void consumer.whenIdle().then(()=>{idle=true;});await Promise.resolve();expect(idle).toBe(false);
     end();await submitted;expect(consumer.read().last?.status).toBe("Applied");expect(consumer.checkpoint().entries).toHaveLength(1);

@@ -49,7 +49,7 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
   | { readonly kind: "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
   | { readonly kind: "Impulse"; readonly direction: {x:number;y:number;z:number} }
   | { readonly kind:"PrimeTerrainRecovery" }
-  | { readonly kind:"RecoverTerrain";readonly image:HvpTerrainRecoveryImage;readonly holdForCompactRetry?:true;readonly fenceCompactForward?:number;readonly measure?:boolean }
+  | { readonly kind:"RecoverTerrain";readonly image:HvpTerrainRecoveryImage;readonly holdForCompactRetry?:true;readonly fenceCompactForward?:number;readonly movingFenced?:true;readonly measure?:boolean }
   | { readonly kind: "PrepareTerrain";readonly publication?:HvpTerrainBinding; readonly transactionId: string; readonly generation: number;
       readonly replacements: readonly { index: number; mesh: HvpCollisionSector }[];readonly fragments?:readonly HvpTerrainFragmentRequest[];
       readonly prepareRequestId?:number;readonly sourceDigest?:string;readonly sourceSessionId?:string;readonly sourceEpoch?:number }
@@ -70,6 +70,7 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
   | {readonly kind:"ReleaseBodyMeshWork";readonly binding:HvpBodyProjectionRequest}
   | {readonly kind:"AdmitBodyChildMesh";readonly binding:HvpBodyProjectionRequest;readonly request:WorkerJobRequest;readonly output:TransferableBufferBundle}
   | {readonly kind:"StageBodyCut";readonly transactionId:string;readonly products:HvpBodyCutAdmission}
+  | {readonly kind:"PublishMovingCut";readonly transactionId:string;readonly parentId:string;readonly parentDigest:string;readonly sequence:number;readonly publication:HvpTerrainBinding;readonly recoveryPort:MessagePort}
   | {readonly kind:"CommitBodyCut"|"RollbackBodyCut"|"FinalizeBodyCut";readonly transactionId:string}
   | {readonly kind:"Checkpoint"}
   | {readonly kind:"PrepareRestore";readonly transactionId:string;readonly checkpoint:HvpWorldCheckpoint;readonly replacements:readonly {index:number;mesh:HvpCollisionSector}[];readonly completeCollision?:HvpCompleteStaticCollision}
@@ -82,7 +83,7 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
 );
 export type HvpPhysicsRequest = HvpPhysicsMessage extends infer M ? M extends HvpPhysicsMessage ? Omit<M,"id"|keyof HvpPhysicsBinding> : never : never;
 export type HvpPhysicsReply = HvpPhysicsBinding & { readonly id: number; readonly sequence:number; readonly snapshot?: HvpPhysicsSnapshot; readonly error?: string; readonly rejected?: string;readonly bodyPreparation?:HvpMovingCutPreparation;
-  readonly terrainReceipt?:HvpTerrainBinding;readonly terrainMotion?:HvpTerrainMotion;readonly beforeTerrainInstall?:HvpTerrainMotion;readonly compactObservedTick?:number;readonly compactRecoveryWriteMs?:number;readonly compactRecoveryBodies?:number;readonly recoveryAssets?:HvpTerrainRecoveryAssets;
+  readonly movingPublicationVersion?:1;readonly terrainReceipt?:HvpTerrainBinding;readonly terrainMotion?:HvpTerrainMotion;readonly beforeTerrainInstall?:HvpTerrainMotion;readonly compactObservedTick?:number;readonly compactRecoveryWriteMs?:number;readonly compactRecoveryBodies?:number;readonly recoveryAssets?:HvpTerrainRecoveryAssets;
   readonly bodyChildProjection?:HvpBodyProjectionReply;
   readonly bodyMeshAdmission?:HvpBodyMeshAdmissionReply;
   readonly bodyMeshWork?:{readonly beginRequestId:number;readonly projection:HvpBodyChildProjection;readonly budget:HvpBodyMeshBudget};
@@ -276,6 +277,11 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
         receipt=data.image.motion.binding;
         if(data.holdForCompactRetry && (data.image.motion.revision!==receipt.baseRevision || data.image.motion.tick.status!=="Paused" || !data.image.motion.running)){
           throw new Error("Invalid compact retry clock");
+        }
+        if(data.movingFenced){
+          if(data.image.motion.revision!==receipt.baseRevision||receipt.baseDigest!==receipt.targetDigest
+            ||(data.image.moving?.checkpoint??data.image.assets.world.moving).last?.id!==receipt.commandId)throw new Error("Invalid moving recovery publication");
+          activation={binding:receipt,since:performance.now(),tick:data.image.motion.tick.ticks,missed:0};
         }
         const image=data.holdForCompactRetry?{...data.image,motion:{...data.image.motion,running:false}}:data.image;
         if(data.holdForCompactRetry)resumeCompactRetry=receipt;
@@ -657,6 +663,20 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
           }
           break;
         }
+        case "PublishMovingCut":{
+          const id=data.transactionId,binding=data.publication,channel=data.recoveryPort;
+          const envelope={id:data.id,incarnation};
+          const base=session.beforeMovingPublication(id,binding,data.parentId,data.parentDigest,data.sequence);
+          channel.postMessage({...envelope,kind:"Base",motion:base});
+          // Until both finalization and the private forward record complete, no reader or native tick may observe this change.
+          session.commitBodyCut(id);
+          const forward=session.captureMovingPublication(id,binding);
+          session.finalizeBodyCut(id);
+          activation={binding,since:performance.now(),tick:forward.motion.tick.ticks,missed:0};
+          channel.postMessage({...envelope,kind:"Forward",forward});
+          receipt=binding;bodyProjectionTicket=undefined;
+          break;
+        }
         case "CommitBodyCut":session.commitBodyCut(data.transactionId);break;
         case "RollbackBodyCut":
           session.rollbackBodyCut(data.transactionId);bodyProjectionTicket=undefined;break;
@@ -677,7 +697,7 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
       // Deliberately held transaction/pause time is not simulation backlog.
        if(data.kind==="Resume"||data.kind==="Play"||data.kind==="Drop"||releasingHeld){simulationPrevious=performance.now();releasedPrepareHoldMs=0;}
     }
-    reply({ id: data.id,...(recoveryAssets?{recoveryAssets}:{}),...(receipt?{terrainReceipt:receipt}:{}),...(motion?{terrainMotion:motion}:{}),snapshot: session?.read(data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain"||data.kind==="PrepareBranch"),bodyPreparation });
+    reply({ id: data.id,...(/^(Initialize|RecoverTerrain)/.test(data.kind)?{movingPublicationVersion:1 as const}:{}),...(recoveryAssets?{recoveryAssets}:{}),...(receipt?{terrainReceipt:receipt}:{}),...(motion?{terrainMotion:motion}:{}),snapshot: session?.read(data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain"||data.kind==="PrepareBranch"),bodyPreparation });
   } catch (error) {
     if(data.kind==="InspectCompactPublication"){reply({id:data.id,rejected:String(error)});return;}
     if(data.kind==="ApplyCompactTerrain"){
@@ -706,7 +726,7 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
     if(releasingHeld){simulationPrevious=performance.now();releasedPrepareHoldMs=0;}
     if(data.kind === "PrepareTerrain" || data.kind === "CommitTerrain" || data.kind === "RollbackTerrain" || data.kind === "FinalizeTerrain"
       ||data.kind==="PrepareBranch"||data.kind==="CommitBranch"||data.kind==="RollbackBranch"||data.kind==="FinalizeBranch"
-      ||data.kind==="BeginBodyCut"||data.kind==="PrepareBodyPlan"||data.kind==="StageBodyCut"||data.kind==="CommitBodyCut"||data.kind==="RollbackBodyCut"||data.kind==="FinalizeBodyCut"
+      ||data.kind==="PublishMovingCut"||data.kind==="BeginBodyCut"||data.kind==="PrepareBodyPlan"||data.kind==="StageBodyCut"||data.kind==="CommitBodyCut"||data.kind==="RollbackBodyCut"||data.kind==="FinalizeBodyCut"
       ||data.kind==="Checkpoint"||data.kind==="CheckpointLab"||data.kind==="PrepareRestore"||data.kind==="PrepareLabRestore"
       ||data.kind==="CommitRestore"||data.kind==="RollbackRestore"||data.kind==="FinalizeRestore"
       ||data.kind==="PrepareNeighbor"||data.kind==="CommitNeighbor"||data.kind==="RollbackNeighbor"||data.kind==="FinalizeNeighbor"
@@ -721,7 +741,7 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
   }
 };
 port.onmessage=async event=>{
-  const received=event.data.kind==="ApplyCompactTerrain"?event.data.rollbackPort:undefined;
+  const received=event.data.kind==="ApplyCompactTerrain"?event.data.rollbackPort:event.data.kind==="PublishMovingCut"?event.data.recoveryPort:undefined;
   try{await handle(event);}
   finally{
     // Close this transferred endpoint even when the envelope failed before reaching command dispatch.
