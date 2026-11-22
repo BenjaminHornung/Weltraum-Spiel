@@ -137,7 +137,8 @@ it.skipIf(!out)("qualifies one exact native rock-arm mutation across independent
   expect(digest).toBe(profile.wasmSha256);
   const sampleCount=Number(process.env.HESTIA_NATIVE_OCCUPANCY_SAMPLES??7);
   if(!Number.isSafeInteger(sampleCount)||sampleCount<1||sampleCount>31)throw new RangeError("Use 1 to 31 measured repetitions per profile");
-  const rounds=[];
+  type RecordedCase=Awaited<ReturnType<typeof run>>&{profile: Profile};
+  const rounds:{round:number;warmup:boolean;cases:RecordedCase[]}[]=[];
   for(let round=-1;round<sampleCount;round++){
     const cases=[];
     for(const p of (round%2===0?profiles:[...profiles].reverse()))cases.push({profile:p,...await run(g,tiles,p)});
