@@ -1,0 +1,67 @@
+--- a/source/src/geometry/broad_phase_bvh/mod.rs
++++ b/source/src/geometry/broad_phase_bvh/mod.rs
+@@ -1,7 +1,7 @@
+ use crate::alloc_prelude::*;
+ use crate::data::Coarena;
+ use crate::dynamics::IntegrationParameters;
+-use crate::geometry::{Aabb, ColliderHandle};
++use crate::geometry::{Aabb, ColliderHandle, ColliderSet};
+ use crate::math::Real;
+ use parry::partitioning::{Bvh, BvhLeafUpdateStatus, BvhWorkspace};
+ use parry::utils::hashmap::HashMap;
+@@ -180,6 +180,39 @@
+     /// Initializes a new empty broad-phase.
+     pub fn new() -> Self {
+         Self::default()
++    }
++
++    /// Publish current geometry to a detached query-only tree. The solver owns its
++    /// own tree, pair adjacency and change lists; queries never consume them.
++    pub fn publish_query_copy(
++        &self,
++        target: &mut Option<Self>,
++        params: &IntegrationParameters,
++        colliders: &ColliderSet,
++    ) {
++        // The WASM physics pipeline discards the previous projection on step/restore.
++        // The solver tree is then the canonical base. Copy the spatial nodes only.
++        let queries = target.get_or_insert_with(|| {
++            let mut query = Self::new();
++            query.tree = self.tree.clone();
++            query
++        });
++        // An arena slot can be reused at a new generation before the next step.
++        // Remove all old slots first, then resolve each live generational handle.
++        for handle in &colliders.removed_colliders {
++            queries.tree.remove(handle.into_raw_parts().0);
++        }
++        for handle in colliders.modified_colliders.iter() {
++            if let Some(collider) = colliders.get(*handle) {
++                if collider.is_enabled() {
++                    queries.set_aabb(params, *handle, collider.compute_aabb());
++                } else {
++                    queries.tree.remove(handle.into_raw_parts().0);
++                }
++            }
++        }
++        // This query-only broad phase will never generate a contact pair.
++        queries.pending_set_aabb.clear();
+     }
+ 
+     /// The change-detection margin (fat-AABB skin) for a leaf with the given AABB:
+--- a/source/bindings/typescript/src/geometry/broad_phase.rs
++++ b/source/bindings/typescript/src/geometry/broad_phase.rs
+@@ -35,11 +35,8 @@
+         integration_parameters: &RawIntegrationParameters,
+         colliders: &RawColliderSet,
+     ) {
+-        let mut queries = DefaultBroadPhase::new();
+-        for (handle, collider) in colliders.0.iter_enabled() {
+-            queries.set_aabb(&integration_parameters.0, handle, collider.compute_aabb());
+-        }
+-        self.1 = Some(queries);
++        self.0
++            .publish_query_copy(&mut self.1, &integration_parameters.0, &colliders.0);
+     }
+ 
+     pub fn castRay(

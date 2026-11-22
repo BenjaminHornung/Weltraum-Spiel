@@ -3,6 +3,7 @@ import {readFileSync,writeFileSync} from "node:fs";
 import {cpus} from "node:os";
 import {execFileSync} from "node:child_process";
 import {expect,it,vi} from "vitest";
+import {wasmBase64} from "../../../vendor/rapier-phy01-positive-margin-r05/dist/src/wasmBytes";
 import {R} from "../../../src/hestia-prototype/physics/rapierPort";
 import {createHvpWorkerPhysicsSession} from "../../../src/hestia-prototype/physics/session";
 import {collisionSectors,type HvpCollisionSector} from "../../../src/hestia-prototype/physics/terrainColliders";
@@ -63,6 +64,7 @@ const profiles:Profile[]=[{bodies:2,statics:8},{bodies:16,statics:8},{bodies:31,
 function timed<T>(read:()=>T) {const start=performance.now(),value=read();return {value,ms:performance.now()-start};}
 type Metrics=Record<string,number>;
 async function run(g:ReturnType<typeof geometry>,tiles:HvpCollisionSector[],p:Profile) {
+  const priorStep=process.env.HESTIA_QUERY_PRESTEP==="1";
   const sectors=[g.before,...tiles.slice(0,p.statics-1)];
   const s=await createHvpWorkerPhysicsSession(sectors,{x:-10,y:10,z:-10});
   const cast=(x:number,y:number,z:number)=>s.queryTerrainRay({x,y,z},{x:0,y:0,z:1},.55);
@@ -75,6 +77,7 @@ async function run(g:ReturnType<typeof geometry>,tiles:HvpCollisionSector[],p:Pr
     const setup=await s.prepareTerrainPlan("seed",0,seedEdits,filler,reserve(),host,
       {sessionId:g.binding.sessionId,epoch:g.binding.epoch,generation:1,terrainDigest:g.binding.baseDigest});
     s.prepareTerrain("seed",0,seedEdits,filler,setup);s.commitTerrain("seed");s.finalizeTerrain("seed");
+    if(priorStep){const tick=s.readTickClock().ticks;s.advance(1/60);expect(s.readTickClock().ticks).toBe(tick+1);}
     const old=s.read();expect(old.bodyCount).toBe(p.bodies);expect(old.colliderCount).toBe(p.bodies+p.statics);
     expect(baseRay()?.ownerId).toBe(null);expect(armRay()?.ownerId).toBe(null);
     for(const i of [0,p.statics-2]){
@@ -133,8 +136,8 @@ async function run(g:ReturnType<typeof geometry>,tiles:HvpCollisionSector[],p:Pr
 it.skipIf(!out)("qualifies one exact native rock-arm mutation across independently varied real HVP occupancy",async()=>{
   const g=geometry(),tiles=Array.from({length:4063},(_,i)=>tile(i));
   const profile=JSON.parse(readFileSync("vendor/rapier-phy01-positive-margin-r05/profile.json","utf8"));
-  const digest=createHash("sha256").update(readFileSync("vendor/rapier-phy01-positive-margin-r05/dist/src/rapier_wasm3d_bg.wasm")).digest("hex");
-  expect(digest).toBe(profile.wasmSha256);
+  const digest=createHash("sha256").update(Buffer.from(wasmBase64,"base64")).digest("hex");
+  expect(digest).toBe(process.env.HESTIA_QUERY_WASM_SHA256??profile.wasmSha256);
   const sampleCount=Number(process.env.HESTIA_NATIVE_OCCUPANCY_SAMPLES??7);
   if(!Number.isSafeInteger(sampleCount)||sampleCount<1||sampleCount>31)throw new RangeError("Use 1 to 31 measured repetitions per profile");
   type RecordedCase=Awaited<ReturnType<typeof run>>&{profile: Profile};
@@ -153,7 +156,7 @@ it.skipIf(!out)("qualifies one exact native rock-arm mutation across independent
     return {...p,n:samples.length,outcome:samples[0]!.outcome,colliders:samples[0]!.colliders,ms:metric};
   });
   const evidence={commit:execFileSync("git",["rev-parse","HEAD"],{encoding:"utf8"}).trim(),node:process.version,cpu:cpus()[0]?.model,
-    measuredAt:new Date().toISOString(),wasmSha256:digest,
+    measuredAt:new Date().toISOString(),wasmSha256:digest,priorSolverStep:process.env.HESTIA_QUERY_PRESTEP==="1",
     scope:"Node R05 WASM native session, single 32x32 coast column. Busy standalone static tiles. Measured active spans, synchronous structuredClone proxies. No IPC, solver step, rendering or click-to-ack latency.",
     bytes:{replacement:g.after.vertices.byteLength+g.after.indices.byteLength,previous:g.before.vertices.byteLength+g.before.indices.byteLength,
       compactParts:g.request.compactSource!.parts.length,compactRuns:g.request.compactSource!.parts.reduce((n,p)=>n+p.runs.length,0),
