@@ -118,7 +118,7 @@ try {
     const gl = document.querySelector("#debug-scene").getContext("webgl2");
     const extension = gl?.getExtension("WEBGL_debug_renderer_info");
     const placementMarks = performance.getEntriesByName("hvp.physicsPlacement", "mark");
-    return {...window.readCutPublication(), ownerPlacement:placementMarks.at(-1)?.detail.owner,compactActivation:JSON.parse(data.hestiaPrototypePhysicsClock??"null")?.compactActivation??null, testBridgePresent:"TestBridge" in window, fragments:physics.terrainFragments, result:JSON.parse(data.hestiaPrototypeTool).last,
+    return {...window.readCutPublication(),documentTimeOrigin:performance.timeOrigin, ownerPlacement:placementMarks.at(-1)?.detail.owner,compactActivation:JSON.parse(data.hestiaPrototypePhysicsClock??"null")?.compactActivation??null, testBridgePresent:"TestBridge" in window, fragments:physics.terrainFragments, result:JSON.parse(data.hestiaPrototypeTool).last,
       renderer:extension ? gl.getParameter(extension.UNMASKED_RENDERER_WEBGL) : null,
       nativeGeneration:physics.terrainGeneration,nativeCounts:{bodies:physics.bodyCount,colliders:physics.colliderCount}, transaction:physics.terrainTransaction,
       fragmentCells:physics.terrainFragments.map(f => f.cellCount)};

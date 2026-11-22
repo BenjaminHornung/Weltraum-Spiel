@@ -1,4 +1,4 @@
-import {admitsCompactTerrainApply,assertCompactDisplayCells,readCompactWitness,compactWorldBudget,readTerrainSourceViews,type TerrainReplacements,type TerrainViews} from "./compactTerrainApply";
+import {sameCompactBinding,admitsCompactTerrainApply,assertCompactDisplayCells,readCompactWitness,compactWorldBudget,readTerrainSourceViews,type TerrainReplacements,type TerrainViews} from "./compactTerrainApply";
 import { WorkerPool } from "../../workers/workerPool";
 import { algorithmVersion, byteCount, contentRevision, jobDeadline, planningEpoch, workerEpoch, workerJobId, workerJobKind, workerTargetKey } from "../../workers/ids";
 import { fnv1aBytes, type TransferableBufferBundle,type WorkerJobRequest } from "../../workers/protocol";
@@ -424,6 +424,28 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); return; }
     if(measuredCut)traceHvpCutBoundary(terrainTrace,measuredCut,"main","cutPhysicsDispatch");
   });
+  type ActivationRead={binding:HvpTerrainBinding;trace?:HvpCutTrace};
+  let owedRead:ActivationRead|undefined;
+  const updateOwner=(activation?:ActivationRead):void=>{
+    if(disposed||failure||!activation&&mutating)return;
+    if(busy){if(activation)owedRead=activation;return;}
+    busy=true;const readingOwner=worker;
+    const read=send({kind:"Read",input:playerInput,cameraOffset,cutAim,...(timingSinkDisabled?{measure:false as const}:{})},[],true,reply=>{
+      if(activation){
+        traceHvpCutBoundary(activation.trace,activation.binding.commandId,"main","cutActivationReply");
+        if(sameCompactBinding(activation.binding,confirmedCompact)&&reply.clock?.compactActivation?.commandId===activation.binding.commandId){
+          confirmedCompact=undefined;
+        }
+      }
+    });
+    if(activation&&!failure)traceHvpCutBoundary(activation.trace,activation.binding.commandId,"main","cutActivationDispatch");
+    playerInput={...playerInput,jump:false};
+    void read.catch(error=>{if(readingOwner===worker)failure=error;}).finally(()=>{
+      busy=false;
+      const next=owedRead;owedRead=undefined;
+      if(next&&sameCompactBinding(next.binding,confirmedCompact))updateOwner(next);
+    });
+  };
   const primeTerrainRecovery=():Promise<void>=>{
     if(catalog&&journal.length<256){return Promise.resolve();}
     if(priming){return priming;}
@@ -809,14 +831,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }
       await send({kind:"Impulse",direction:{x:direction.x,y:direction.y,z:direction.z}});
     },
-    update() {
-      if (disposed || mutating) { return; }
-      if (busy) { return; }
-      busy = true;const readingOwner=worker;
-      void send({ kind: "Read", input: playerInput, cameraOffset,cutAim,
-        ...(timingSinkDisabled?{measure:false as const}:{}) }).catch(error => { if(readingOwner===worker){failure=error;} }).finally(() => { busy = false; });
-      playerInput = { ...playerInput, jump: false };
-    },
+    update(){updateOwner();},
     async command(kind) {
       if((terrainBinding&&mutating)||((mutating||bodyPending) && kind !== "Pause" && kind !== "Inspect")) { throw new Error("Terrain Pending"); }
       if (kind === "Pause" || kind === "Inspect" || kind === "Play") { playerInput = { x: 0, z: 0, sprint: false, jump: false }; }
@@ -858,6 +873,9 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       };
       const publish=(views:TerrainViews,next:HvpPhysicsSnapshot,sequence:number)=>{
         rootAttempted=true;commitRoot(views);snapshot=next;lastSnapshotSequence=sequence;journal=nextJournal;confirmedCompact=binding;
+        // The root and native view now agree. Deliver the ordinary player input/read in this acknowledgement task.
+        // In-flight reads retain their original generation; their completion immediately dispatches this one.
+        updateOwner({binding,trace:work.trace});
       };
       const quarantine=(error:unknown,motion:HvpTerrainMotion):never=>{
         compactQuarantine={assets:catalog!,motion,journal:nextJournal};

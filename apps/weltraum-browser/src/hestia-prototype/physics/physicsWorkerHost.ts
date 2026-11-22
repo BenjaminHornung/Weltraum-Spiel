@@ -33,7 +33,7 @@ export interface HvpPhysicsClock {
   readonly lastCommand:string;readonly lastHandlerMs:number;
   readonly lastTerrainRecipeMs?:number;readonly lastTerrainCookMs?:number;
   readonly lastTerrainInstallMs?:number;readonly lastTerrainHoldMs?:number;readonly lastTerrainCommandId?:string;
-  readonly compactActivation?:{commandId:string;holdMs:number;skippedTimerCallbacks:number;commitTick:number;firstStepTick?:number;firstStepAfterMs?:number};
+  readonly compactActivation?:{commandId:string;publishedEpochMs:number;releasedEpochMs:number;releaseRequestId:number;releaseCommandKind:string;firstStepEpochMs?:number;holdMs:number;skippedTimerCallbacks:number;commitTick:number;firstStepTick?:number;firstStepAfterMs?:number};
   readonly lastBodyHoldMs?:number|null;readonly lastBodyCommandId?:string;readonly lastBodyManualPause?:boolean;
   readonly delayedCallbacks:readonly {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[];
   readonly simulationHold?:Readonly<{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;backlogSeconds:number;ticks:number}>;
@@ -205,7 +205,7 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
   const confirmed=(data as typeof data&{confirmedCompact?:HvpTerrainBinding}).confirmedCompact;
   if(activation&&sameCompactBinding(activation.binding,confirmed)){
     const now=performance.now();
-    clock.compactActivation={commandId:activation.binding.commandId,holdMs:now-activation.since,skippedTimerCallbacks:activation.missed,commitTick:activation.tick};
+    clock.compactActivation={commandId:activation.binding.commandId,publishedEpochMs:performance.timeOrigin+activation.since,releasedEpochMs:performance.timeOrigin+now,releaseRequestId:data.id,releaseCommandKind:data.kind,holdMs:now-activation.since,skippedTimerCallbacks:activation.missed,commitTick:activation.tick};
     firstStepAfterActivation={commandId:activation.binding.commandId,since:activation.since,tick:activation.tick};
     simulationPrevious=now;releasedPrepareHoldMs=0;activation=undefined;
   }
@@ -337,7 +337,7 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
               if(restore===undefined){const steps=session!.advance(simulationElapsedMs/1000,measure);
                 for(const step of steps??[]){if(stepTimings.length<1024){stepTimings.push(step);}else{droppedTimings+=1;}}}
               if(firstStepAfterActivation&&clock.compactActivation&&session!.readTickClock().ticks>firstStepAfterActivation.tick){
-                clock.compactActivation={...clock.compactActivation,firstStepTick:session!.readTickClock().ticks,firstStepAfterMs:performance.now()-firstStepAfterActivation.since};
+                clock.compactActivation={...clock.compactActivation,firstStepTick:session!.readTickClock().ticks,firstStepEpochMs:performance.timeOrigin+performance.now(),firstStepAfterMs:performance.now()-firstStepAfterActivation.since};
                 firstStepAfterActivation=undefined;
               }
               const advanceMs=performance.now()-now;clock.maxAdvanceMs=Math.max(clock.maxAdvanceMs,advanceMs);

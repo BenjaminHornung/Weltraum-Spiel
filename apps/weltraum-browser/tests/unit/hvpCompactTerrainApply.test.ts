@@ -9,7 +9,7 @@ import type {HvpCutSpan} from "../../src/hestia-prototype/runtime/cutTrace";
 vi.mock("../../src/workers/workerPool",()=>({WorkerPool:class {async start(){} async shutdown(){}}}));
 const floor={sizeX:4,sizeY:16,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0},readSlot:(_x:number,y:number)=>y===0?1:0};
 
-it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ack","lost-live","stale-root","forged-reply","delayed-ack","duplicates"] as const)("applies compact publication with a real R05 owner: %s",async fault=>{
+it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ack","lost-live","stale-root","forged-reply","delayed-ack","duplicates","busy-read"] as const)("applies compact publication with a real R05 owner: %s",async fault=>{
   const commands:{kind:string;incarnation:string}[]=[],replies:string[]=[],spans:HvpCutSpan[]=[];
   const root=rootFor(uFixture()),cut=cutAt(root,[12,2,4]),competing=cutAt(root,[24,6,4]);
   let nativeTick:()=>void=()=>{},simTime=100,closedRollbackPorts=0,duplicate:((corrupt:boolean)=>Promise<HvpWorkerReply>)|undefined;
@@ -23,6 +23,7 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
     return t;
   }) as typeof setTimeout);
   let release!:()=>void,sawAck!:()=>void;const heldAck=new Promise<void>(r=>{sawAck=r;});
+  let busyId:number|undefined,releaseBusy:(()=>void)|undefined;
   let duplicateResponse:((value:HvpWorkerReply)=>void)|undefined;
   let faulted=false,late:undefined|(()=>void),baseTick:number|undefined;
   const close:Promise<void>[]=[];
@@ -32,6 +33,9 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
     onerror:((e:ErrorEvent)=>void)|null=null;onmessageerror=null;
     private owner:HvpPhysicsOwnerPort={postMessage:value=>{
       const reply=structuredClone(value),handler=this.onmessage;
+      if(reply.id===busyId&&fault==="busy-read"&&!releaseBusy){
+        releaseBusy=()=>handler?.({data:reply} as MessageEvent<HvpWorkerReply>);return;
+      }
       if(reply.id>=20_000){duplicateResponse?.(reply);return;}
       if(reply.terrainPlan && reply.snapshot){
         if(fault==="stale-root")root.commit(competing);
@@ -53,6 +57,7 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
     private terminateOwner=bindHvpPhysicsOwner(this.owner);
     postMessage(value:HvpWorkerMessage,transfers:Transferable[]=[]){
       const msg=structuredClone(value,{transfer:transfers});commands.push({kind:msg.kind,incarnation:msg.incarnation});
+      if(msg.kind==="Read"&&fault==="busy-read"&&busyId===undefined)busyId=msg.id;
       if(msg.kind==="ApplyCompactTerrain"&&(fault==="duplicates"||fault==="lost-ack")){
         const {rollbackPort:ignored,...saved}=msg;original=saved;
       }
@@ -114,6 +119,7 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
       await client.command("Pause");await client.command("Play");
       expect(client.read().status).toBe("Running");commands.length=0;
     }
+    if(fault==="busy-read"){client.update();await new Promise(r=>setTimeout(r,0));}
     wantDeadline=fault==="lost-live";
     let published=0;
     const run=client.applyCompactTerrain!(binding,edits,[fRequest],credit,views=>{
@@ -133,9 +139,17 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
       expect(published).toBe(1);expect(root.read()).toBe(cut.after);expect(client.read().terrainGeneration).toBe(1);
       expect(client.read().terrainFragments.map(f=>f.ownerId)).toEqual([f.ownerId]);
       expect(client.lifecycle!().terrainRecovery).toMatchObject({entries:1,fragments:1,held:0});
+      if(fault==="busy-read"){
+        expect(commands.map(c=>c.kind)).toEqual(["Initialize","Read","ApplyCompactTerrain"]);
+        client.update();client.update();releaseBusy!();
+        await new Promise(r=>setTimeout(r,0));
+        expect(spans.filter(s=>s.phase==="cutActivationDispatch")).toHaveLength(1);
+        expect(spans.filter(s=>s.phase==="cutActivationReply")).toHaveLength(1);
+      }
       const kinds=commands.filter(c=>c.kind!=="Initialize").map(c=>c.kind);
-      expect(kinds).toEqual(fault==="lost-ack"?["ApplyCompactTerrain","RecoverTerrain"]:fault==="lost-after-base"?["ApplyCompactTerrain","RecoverTerrain","ApplyCompactTerrain"]:
-        (fault==="forged-reply"||fault==="lost-live")?["ApplyCompactTerrain","InspectCompactPublication"]:["ApplyCompactTerrain"]);
+      expect(kinds.at(-1)).toBe("Read");
+      expect(kinds.slice(0,-1)).toEqual(fault==="lost-ack"?["ApplyCompactTerrain","RecoverTerrain"]:fault==="lost-after-base"?["ApplyCompactTerrain","RecoverTerrain","ApplyCompactTerrain"]:
+        (fault==="forged-reply"||fault==="lost-live")?["ApplyCompactTerrain","InspectCompactPublication"]:fault==="busy-read"?["Read","ApplyCompactTerrain"]:["ApplyCompactTerrain"]);
       if(fault==="duplicates"||fault==="lost-ack"){
         const again=await duplicate!(false);expect(again.rejected).toBeUndefined();
         expect(again.snapshot?.terrainFragments).toHaveLength(1);expect(again.terrainMotion?.revision).toBe(1);
@@ -143,6 +157,7 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
       }
       if(fault==="delayed-ack"||fault==="lost-ack"||fault==="lost-live"){
         expect(client.read().ticks).toBe(baseTick);
+        await new Promise(r=>setTimeout(r,0));
         const start=client.read().player!.position;
         client.setPlayerInput({x:1,z:0,sprint:false,jump:false});client.update();
         await new Promise(r=>setTimeout(r,0));
@@ -156,7 +171,12 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
           expect(replay.snapshot?.ticks).toBe(baseTick);
           expect(replay.compactObservedTick).toBe(client.read().ticks);
         }
-        if(fault==="delayed-ack")expect(client.clock?.compactActivation).toMatchObject({skippedTimerCallbacks:8,holdMs:136});
+        if(fault==="delayed-ack"){
+          const a=client.clock!.compactActivation!;
+          expect(a).toMatchObject({skippedTimerCallbacks:8,holdMs:136,releaseCommandKind:"Read"});
+          expect(a.releasedEpochMs-a.publishedEpochMs).toBe(136);
+          expect(a.firstStepEpochMs!).toBeGreaterThan(a.releasedEpochMs);
+        }
       }
     }else if(fault==="lost-before-witness"){
       await expect(run).rejects.toThrow(/RecoveryHold/);
