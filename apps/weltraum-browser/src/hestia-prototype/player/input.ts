@@ -7,7 +7,7 @@ import { createHvpPlayerVisualPose } from "./presentation";
 /** Input owns intent, never avatar position. Camera consumes solver readback only. */
 export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: PerspectiveCamera, physics: Pick<HvpPhysicsClient,"command"|"impulse"|"read"|"setCameraOffset"|"setPlayerInput">,
   doc: Document = document, win: Pick<Window, "addEventListener" | "removeEventListener"> = window,
-  onInspect: () => void = () => {}, tool: {confirm():void;select(mode:number):void} = {confirm:()=>{},select:()=>{}},isBlocked:()=>boolean=()=>false) => {
+  onInspect: () => void = () => {}, tool: {confirm(eventTimeStamp?:number):void;select(mode:number):void} = {confirm:()=>{},select:()=>{}},isBlocked:()=>boolean=()=>false) => {
   const listeners=createHvpListeners();
   const keys = new Set<string>();
   const movementKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ShiftLeft", "ShiftRight", "Space"]);
@@ -86,7 +86,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const visibility = (): void => { if (doc.hidden) { stop(); } };
   const pointerError = (): void => { error("Pointer Lock nicht verfügbar – bitte erneut auf Spielen klicken."); stop(); };
   const confirm = (event:MouseEvent):void => {
-    if(active&&!isBlocked()&&!activating&&doc.pointerLockElement===canvas&&event.button===0) { event.preventDefault();tool.confirm(); }
+    if(active&&!isBlocked()&&!activating&&doc.pointerLockElement===canvas&&event.button===0) { event.preventDefault();tool.confirm(event.timeStamp); }
   };
   const start = (): void => {
     if (disposed || doc.hidden || isBlocked()) { return; }

@@ -1,5 +1,5 @@
 import type { HvpPhysicsClient } from "../physics/client";
-import { assertHvpSafeQuarry, snapshotHvpCutRequest, prepareHvpPrivateTerrainCut, type HvpCutRequest, type HvpPreparedCut, createHvpTerrainRoot } from "./cutPlan";
+import { assertHvpSafeQuarry, snapshotHvpCutRequest, prepareHvpPrivateTerrainCut, type HvpCutRequest, type HvpPreparedCut, type HvpTerrainSnapshot, createHvpTerrainRoot } from "./cutPlan";
 import type { HvpTerrainProducts } from "./terrainProducts";
 import {hvpTerrainProductPhaseCredits,releaseHvpOwnedTerrainProducts} from "./terrainProducts";
 import type {HvpTerrainFragmentRequest} from "../physics/terrainFragment";
@@ -38,7 +38,8 @@ export const createHvpTerrainConsumer = (
   analyze?: (plan:HvpPreparedCut)=>Promise<HvpSupportPlan>,
   traceInput?: HvpCutTrace,
   quoteStage?:(products:HvpTerrainProducts,fragments:readonly HvpTerrainFragmentRequest[],credits:HvpSupportPhaseCredits)=>Promise<number>,
-  stageOwned?:(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[],commandId?:string)=>Promise<HvpStagedTerrain>
+  stageOwned?:(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[],commandId?:string)=>Promise<HvpStagedTerrain>,
+  onPublished?:(commandId:string,root:HvpTerrainSnapshot,nativeGeneration:number)=>void
 ) => {
   let trace=traceInput;
   const receipts=new Map<string,{signature:string;result:Promise<HvpCutOutcome>}>();
@@ -168,9 +169,14 @@ export const createHvpTerrainConsumer = (
           measure("cutRootCommitMs",()=>root.commit(currentPlan)); rootPublished=true;
           // Both publications are synchronous; new fragment geometry needs the
           // admitted native poses, whereas the existing quarry order is unchanged.
-          measure("cutPublishMs",()=>{if(fragments.length>0){physics.publishTerrain();products!.publish();}
-          else{products!.publish();physics.publishTerrain();}});
-          await measureAsync("cutNativeFinalizeMs",()=>physics.finalizeTerrain(bound.commandId)); finalized=true;
+          measure("cutPublishMs",()=>{if(fragments.length>0){physics.publishTerrain(currentPlan.after.revision);products!.publish();}
+          else{products!.publish();physics.publishTerrain(currentPlan.after.revision);}});
+          await measureAsync("cutNativeFinalizeMs",()=>physics.finalizeTerrain(bound.commandId,
+            trace && onPublished ? generation => {
+              if (!disposed && root.read() === currentPlan.after && generation === currentPlan.after.revision) {
+                onPublished(bound.commandId, currentPlan.after, generation);
+              }
+            } : undefined)); finalized=true;
           measure("cutCleanupMs",()=>products!.finish());
           return finishTerminal(last=Object.freeze({...outcome(bound,"Applied",transfer?.directRemovedCells??currentPlan.changed.length,"Terrain and collision committed"),
             ...(transfer?{transferredCells:transfer.transferredCells,transferredMassKg:transfer.transferredMassKg,materialRemovedKg:transfer.materialRemovedKg}: {})}));

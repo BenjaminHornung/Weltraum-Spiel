@@ -1,0 +1,202 @@
+{
+  "base": "1e29cef8f8239b5867ef7d9ac72a181e5fd295f0",
+  "scope": "Isolated topology/rigid-recipe differential candidate and real-click publication measurement on the existing planner.",
+  "browserBuildSha256": {
+    "hvpBootstrap-CVzhw1Mt.js": "03efa876686d7c66a87391a328e783fa676e67df4bfa934b8950a47bb5a31ec3",
+    "physicsWorker-DgjO90de.js": "388bd198dee0ab31165855c03a359ec7ce6b78df8cd538cd82506c179f23ea96",
+    "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb"
+  },
+  "playerCut": {
+    "browser": "149.0.7827.0",
+    "eventTimeStamp": 11467.89999999851,
+    "metrics": {
+      "hvp.cutDomInputToPhysicsPublishedMs": {
+        "startTime": 11467.89999999851,
+        "duration": 3470.2000000011176,
+        "detail": {
+          "sampleId": "cutDomInputToPhysicsPublishedMs:1902",
+          "data": {
+            "commandId": "cut-1",
+            "sessionId": "hvp-session-1",
+            "epoch": 1,
+            "revision": 1,
+            "sourceDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "callbackStart": 11600.89999999851
+          }
+        }
+      },
+      "hvp.cutInputToAppliedMs": {
+        "startTime": 11600.89999999851,
+        "duration": 3338.60009765625,
+        "detail": {
+          "sampleId": "cutInputToAppliedMs:1906",
+          "data": {
+            "commandId": "cut-1",
+            "inputOrigin": 1795355310599.9,
+            "inputStart": 11600.89999999851,
+            "terminalOrigin": 1795355310599.9,
+            "terminalStart": 11610.5,
+            "terminalDuration": 3329
+          }
+        }
+      },
+      "hvp.cutFirstCommittedRenderSubmitMs": {
+        "startTime": 11600.89999999851,
+        "duration": 3928,
+        "detail": {
+          "sampleId": "cutFirstCommittedRenderSubmitMs:1916",
+          "data": {
+            "commandId": "cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~4",
+              "hvp:terrain:s7:e0~5"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false
+          }
+        }
+      }
+    },
+    "result": {
+      "commandId": "cut-1",
+      "status": "Applied",
+      "removedCells": 64,
+      "reason": "Terrain and collision committed",
+      "revision": 1,
+      "transferredCells": 384,
+      "transferredMassKg": 1722.65625,
+      "materialRemovedKg": 300
+    },
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "nativeGeneration": 1,
+    "transaction": "Idle",
+    "fragmentCells": [
+      384
+    ],
+    "domToSubmitMs": 4061,
+    "within10ms": false,
+    "presentMeasured": false
+  },
+  "referenceAndIndexTrials": [
+    {
+      "trial": 0,
+      "oracleProbes": 2156,
+      "oracleTotalMs": 559.5397300000004,
+      "oracleSeedsAndSupportMs": 10.390896000000794,
+      "topologyColdMs": 34.46355299999959,
+      "topologyWarmMs": 2.6917499999999563,
+      "cold": {
+        "blocksBuilt": 47,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 192512,
+        "seamPairsBuilt": 100,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 589682,
+        "localComponentsBuilt": 44
+      },
+      "warm": {
+        "blocksBuilt": 2,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 8192,
+        "seamPairsBuilt": 14,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 18998,
+        "localComponentsBuilt": 2
+      }
+    },
+    {
+      "trial": 1,
+      "oracleProbes": 2156,
+      "oracleTotalMs": 428.62679599999865,
+      "oracleSeedsAndSupportMs": 3.119831999998496,
+      "topologyColdMs": 13.386134000000311,
+      "topologyWarmMs": 1.3925340000005235,
+      "cold": {
+        "blocksBuilt": 47,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 192512,
+        "seamPairsBuilt": 100,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 589682,
+        "localComponentsBuilt": 44
+      },
+      "warm": {
+        "blocksBuilt": 2,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 8192,
+        "seamPairsBuilt": 14,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 18998,
+        "localComponentsBuilt": 2
+      }
+    },
+    {
+      "trial": 2,
+      "oracleProbes": 2156,
+      "oracleTotalMs": 434.6350080000011,
+      "oracleSeedsAndSupportMs": 1.8734540000004927,
+      "topologyColdMs": 7.9060109999991255,
+      "topologyWarmMs": 0.9987430000001041,
+      "cold": {
+        "blocksBuilt": 47,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 192512,
+        "seamPairsBuilt": 100,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 589682,
+        "localComponentsBuilt": 44
+      },
+      "warm": {
+        "blocksBuilt": 2,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 8192,
+        "seamPairsBuilt": 14,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 18998,
+        "localComponentsBuilt": 2
+      }
+    }
+  ],
+  "indexedCellsThroughExistingExactRecipe": {
+    "cells": 384,
+    "digest": "1b4aa69d",
+    "massKg": 1722.65625,
+    "colliders": 1,
+    "ingestMs": 198.39975099999992,
+    "recipeMs": 238.59542299999998
+  },
+  "environment": "Cloud Chromium with SwiftShader for the player cut. Node/Vitest in the cloud for the isolated numerical checks. The two timing series have different boundaries."
+}

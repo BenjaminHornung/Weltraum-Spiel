@@ -117,7 +117,7 @@ type HvpRawSpan = Readonly<{
   duration: number;
 }>;
 type HvpSpanTiming = Readonly<{ origin: number; start: number; end: number }>;
-type HvpInputRecord = Readonly<{ origin: number; start: number }>;
+type HvpInputRecord = Readonly<{ origin: number; start: number; eventTimeStamp?: number }>;
 type HvpPendingRender = Readonly<{
   commandId: string;
   input: HvpInputRecord;
@@ -267,7 +267,8 @@ export function createHvpCutObservation(
   sink: HvpCutObservationSink,
   readFrame: (bodyCommandId?: string) => HvpCutRenderFacts
 ): {
-  confirm(run: () => void): void;
+  confirm(run: () => void, eventTimeStamp?: number): void;
+  terrainPublished(commandId: string, root: HvpTerrainSnapshot, nativeGeneration: number): void;
   trace: HvpCutTrace;
   render(run: () => RenderCommandResult): RenderCommandResult;
   read(): HvpCutObservationState;
@@ -448,7 +449,7 @@ export function createHvpCutObservation(
     }
   };
 
-  const confirm = (run: () => void): void => {
+  const confirm = (run: () => void, eventTimeStamp?: number): void => {
     const previous = activeInput;
     const generation = operationGeneration;
     activeInput = undefined;
@@ -470,7 +471,9 @@ export function createHvpCutObservation(
         if (!isFiniteNonNegative(start) || !isFiniteNonNegative(origin) || !Number.isFinite(absoluteStart)) {
           drop("invalidSpan");
         } else {
-          activeInput = Object.freeze({ origin, start });
+          // Preserve the callback-based series for historical A/B runs.
+          const sameClock = isFiniteNonNegative(eventTimeStamp) && eventTimeStamp <= start;
+          activeInput = Object.freeze(sameClock ? { origin, start, eventTimeStamp } : { origin, start });
         }
       }
     }
@@ -759,5 +762,25 @@ export function createHvpCutObservation(
     activeInput = undefined;
   };
 
-  return { confirm, trace, render, read, dispose };
+  const terrainPublished = (commandId: string, root: HvpTerrainSnapshot, nativeGeneration: number): void => {
+    const input = inputs.get(`terrain:${commandId}`);
+    if (disposed || input?.eventTimeStamp === undefined || nativeGeneration !== root.revision) {
+      return;
+    }
+    try {
+      const end = performance.now();
+      if (input.origin !== performance.timeOrigin || !Number.isFinite(end) || end < input.start) {
+        drop("invalidSpan");
+        return;
+      }
+      sink.record("cutDomInputToPhysicsPublishedMs", input.eventTimeStamp, end - input.eventTimeStamp, {
+        commandId, sessionId: root.sessionId, epoch: root.epoch, revision: root.revision,
+        sourceDigest: root.sourceDigest, nativeGeneration, callbackStart: input.start
+      });
+    } catch {
+      drop("diagnosticFailure");
+    }
+  };
+
+  return { confirm, trace, render, read, dispose, terrainPublished };
 }

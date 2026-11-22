@@ -1840,9 +1840,9 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     resizeViewport();
     playerInput = createHvpPlayerInput(canvas, ownedCamera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
-     },{confirm:()=>{
+     },{confirm:eventTimeStamp=>{
        const run=()=>{void plasmaTool?.confirm();};
-       if(cutObservation!==undefined){cutObservation.confirm(run);}else{run();}
+       if(cutObservation!==undefined){cutObservation.confirm(run,eventTimeStamp);}else{run();}
      },select:mode=>plasmaTool?.select(mode)},()=>!cutReady||saveBusy||saveHold||supportPending||Boolean(dormancy?.read().recoveryHold));
     if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
     const dropProfile = createMaterialProfile({ id: materialProfileId("hvp:drop-limestone-v1"), kind: "BasicLit",
@@ -2365,7 +2365,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
         try{return await pump.run(stageTerrainSteps(products,fragments,commandId,true));}
         catch(error){if(saveHold&&!(error instanceof HvpRenderStageRecoveryError))throw new HvpRenderStageRecoveryError([error],"Owned terrain graphics cleanup is unproven");throw error;}
         finally{pump.dispose();}
-      });
+      },(commandId,root,generation)=>cutObservation?.terrainPublished(commandId,root,generation));
      const syncPhysicsTransforms=()=>{
        physicsTransforms=physics!.read().bodies.map(p=>({representationKey:representationKey(p.ownerId),positionRelative:p.position,orientation:p.orientation,scale:{x:1,y:1,z:1}}));
        const aliases=physicsTransforms.flatMap(p=>{const alias=fragmentEntries.get(p.representationKey)?.artifact.representationKey

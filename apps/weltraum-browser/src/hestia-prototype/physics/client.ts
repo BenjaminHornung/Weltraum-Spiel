@@ -63,9 +63,9 @@ export interface HvpPhysicsClient {
       readonly onSourcePrepared?:(views:readonly HvpPhysicsSnapshot["preparedTerrainFragments"][number][])=>Promise<void>}): Promise<void>;
   preparedTerrainFragments():HvpPhysicsSnapshot["preparedTerrainFragments"];
   commitTerrain(id: string): Promise<void>;
-  publishTerrain(): void;
+  publishTerrain(expectedRevision?: number): void;
   rollbackTerrain(id: string): Promise<void>;
-  finalizeTerrain(id: string): Promise<void>;
+  finalizeTerrain(id: string, onFinalized?: (generation: number) => void): Promise<void>;
   checkpoint():Promise<HvpWorldCheckpoint>;
   prepareRestore(id:string,checkpoint:HvpWorldCheckpoint,replacements:readonly {index:number;mesh:HvpCollisionSector}[],completeCollision?:HvpCompleteStaticCollision):Promise<HvpPhysicsSnapshot>;
   commitRestore(id:string):Promise<void>;
@@ -792,12 +792,25 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       return heldSnapshot.value.preparedTerrainFragments;
     },
     commitTerrain(id) { return send({kind:"CommitTerrain",transactionId:id},[],false); },
-    publishTerrain() {
-      if(!mutating||heldSnapshot?.value.terrainTransaction!=="CommittedHeld") { throw new Error("Missing committed World snapshot"); }
+    publishTerrain(expectedRevision) {
+      if(!mutating||heldSnapshot?.value.terrainTransaction!=="CommittedHeld"
+        ||(expectedRevision!==undefined && heldSnapshot.value.terrainGeneration!==expectedRevision)) { throw new Error("Missing committed World snapshot"); }
       snapshot=heldSnapshot.value; lastSnapshotSequence=heldSnapshot.sequence; heldSnapshot=undefined;
     },
     async rollbackTerrain(id) { await send({kind:"RollbackTerrain",transactionId:id}); heldSnapshot=undefined; mutating=false; },
-    async finalizeTerrain(id) { await send({kind:"FinalizeTerrain",transactionId:id}); heldSnapshot=undefined; mutating=false; },
+    async finalizeTerrain(id, onFinalized) {
+      let finalizedGeneration: number | undefined;
+      await send({kind:"FinalizeTerrain",transactionId:id}, [], true, onFinalized && (reply => {
+        if (reply.snapshot?.terrainTransaction === "Idle") {
+          finalizedGeneration = reply.snapshot.terrainGeneration;
+        }
+      }));
+      heldSnapshot=undefined;
+      mutating=false;
+      if (onFinalized && finalizedGeneration !== undefined) {
+        try { onFinalized(finalizedGeneration); } catch { /* Timing cannot affect a finalized mutation. */ }
+      }
+    },
     lifecycle:()=>Object.freeze({workers:terminated?0:1,pendingJobs:pending.size,timers:clock===undefined?null:pending.size+clock.timers,
       timingSinkFailures,
       listeners:Number(worker.onmessage!==null)+Number(worker.onerror!==null)+Number(worker.onmessageerror!==null),
