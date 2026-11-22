@@ -20,7 +20,7 @@ import type {HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
 import type {HvpBodyChildProjection} from "./bodyCutSession";
 import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
 import {createHvpBodyMeshPhaseReserve} from "../presentation/bodyMeshAdmission";
-import {admitsCompactTerrainApply} from "./compactTerrainApply";
+import {readTerrainSourceViews,compactFragmentSignature,admitsCompactTerrainApply,assertCompactDisplayCells,compactWorldBudget,sameCompactBinding,type TerrainViews,type TerrainReplacements} from "./compactTerrainApply";
 import {enableProbeKernel} from "../experiments/cutKernelProbe";
 import {resolveHvpGravity} from "./profile";
 import type {HvpCutSpan} from "../runtime/cutTrace";
@@ -33,6 +33,7 @@ export interface HvpPhysicsClock {
   readonly lastCommand:string;readonly lastHandlerMs:number;
   readonly lastTerrainRecipeMs?:number;readonly lastTerrainCookMs?:number;
   readonly lastTerrainInstallMs?:number;readonly lastTerrainHoldMs?:number;readonly lastTerrainCommandId?:string;
+  readonly compactActivation?:{commandId:string;holdMs:number;skippedTimerCallbacks:number;commitTick:number;firstStepTick?:number;firstStepAfterMs?:number};
   readonly lastBodyHoldMs?:number|null;readonly lastBodyCommandId?:string;readonly lastBodyManualPause?:boolean;
   readonly delayedCallbacks:readonly {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[];
   readonly simulationHold?:Readonly<{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;backlogSeconds:number;ticks:number}>;
@@ -48,10 +49,11 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
   | { readonly kind: "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
   | { readonly kind: "Impulse"; readonly direction: {x:number;y:number;z:number} }
   | { readonly kind:"PrimeTerrainRecovery" }
-  | { readonly kind:"RecoverTerrain";readonly image:HvpTerrainRecoveryImage;readonly holdForCompactRetry?:true;readonly measure?:boolean }
+  | { readonly kind:"RecoverTerrain";readonly image:HvpTerrainRecoveryImage;readonly holdForCompactRetry?:true;readonly fenceCompactForward?:number;readonly measure?:boolean }
   | { readonly kind: "PrepareTerrain";readonly publication?:HvpTerrainBinding; readonly transactionId: string; readonly generation: number;
       readonly replacements: readonly { index: number; mesh: HvpCollisionSector }[];readonly fragments?:readonly HvpTerrainFragmentRequest[];
       readonly prepareRequestId?:number;readonly sourceDigest?:string;readonly sourceSessionId?:string;readonly sourceEpoch?:number }
+  | {readonly kind:"InspectCompactPublication";readonly transactionId:string;readonly publication:HvpTerrainBinding}
   | {readonly kind:"ApplyCompactTerrain";readonly transactionId:string;readonly generation:number;readonly sourceDigest:string;readonly sourceSessionId:string;
       readonly sourceEpoch:number;readonly allowanceBytes:number;readonly publication:HvpTerrainBinding;readonly rollbackPort:MessagePort;
       readonly replacements:readonly {index:number;mesh:HvpCollisionSector}[];readonly fragments:readonly HvpTerrainFragmentRequest[]}
@@ -80,7 +82,7 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
 );
 export type HvpPhysicsRequest = HvpPhysicsMessage extends infer M ? M extends HvpPhysicsMessage ? Omit<M,"id"|keyof HvpPhysicsBinding> : never : never;
 export type HvpPhysicsReply = HvpPhysicsBinding & { readonly id: number; readonly sequence:number; readonly snapshot?: HvpPhysicsSnapshot; readonly error?: string; readonly rejected?: string;readonly bodyPreparation?:HvpMovingCutPreparation;
-  readonly terrainReceipt?:HvpTerrainBinding;readonly terrainMotion?:HvpTerrainMotion;readonly beforeTerrainInstall?:HvpTerrainMotion;readonly compactRecoveryWriteMs?:number;readonly compactRecoveryBodies?:number;readonly recoveryAssets?:HvpTerrainRecoveryAssets;
+  readonly terrainReceipt?:HvpTerrainBinding;readonly terrainMotion?:HvpTerrainMotion;readonly beforeTerrainInstall?:HvpTerrainMotion;readonly compactObservedTick?:number;readonly compactRecoveryWriteMs?:number;readonly compactRecoveryBodies?:number;readonly recoveryAssets?:HvpTerrainRecoveryAssets;
   readonly bodyChildProjection?:HvpBodyProjectionReply;
   readonly bodyMeshAdmission?:HvpBodyMeshAdmissionReply;
   readonly bodyMeshWork?:{readonly beginRequestId:number;readonly projection:HvpBodyChildProjection;readonly budget:HvpBodyMeshBudget};
@@ -124,6 +126,9 @@ let initializing = false;
 let disposed = false;
 let timer: ReturnType<typeof setInterval> | undefined;
 let incarnation:string|undefined;
+let activation:{binding:HvpTerrainBinding;since:number;tick:number;missed:number}|undefined;
+let lastCompact:{binding:HvpTerrainBinding;motion:HvpTerrainMotion;snapshot?:HvpPhysicsSnapshot;views:TerrainViews;replacements:TerrainReplacements;fragment:HvpTerrainFragmentRequest}|undefined;
+let firstStepAfterActivation:{commandId:string;since:number;tick:number}|undefined;
 let resumeCompactRetry:HvpTerrainBinding|undefined;
 let ownerMode:"public"|"phy01-lab"|undefined;
 let replySequence=0;
@@ -139,7 +144,7 @@ let releasedPrepareHoldMs=0;
 let measure=false,droppedTimings=0;
 let stepTimings:(readonly[number,number])[]=[];
 let timerTimings:(readonly[number,number])[]=[];
-const clock:{maxTimerGapMs:number;maxAdvanceMs:number;maxHandlerMs:number;lastCommand:string;lastHandlerMs:number;
+const clock:{compactActivation?:HvpPhysicsClock["compactActivation"];maxTimerGapMs:number;maxAdvanceMs:number;maxHandlerMs:number;lastCommand:string;lastHandlerMs:number;
   lastTerrainRecipeMs?:number;lastTerrainCookMs?:number;lastTerrainInstallMs?:number;lastTerrainHoldMs?:number;lastTerrainCommandId?:string;
   lastBodyHoldMs?:number|null;lastBodyCommandId?:string;lastBodyManualPause?:boolean;
   simulationHold:HvpPhysicsClock["simulationHold"],
@@ -162,7 +167,7 @@ const closeTerrainPlan=async()=>{const ticket=terrainPlanTicket;terrainPlanTicke
 let shutdown: Promise<void> | undefined;
 function closeOwner(): Promise<void> {
   if (shutdown) return shutdown;
-  disposed = true;
+  disposed = true;activation=undefined;firstStepAfterActivation=undefined;lastCompact=undefined;resumeCompactRetry=undefined;
   bodyProjectionTicket = undefined;
   clearInterval(timer);
   timer = undefined;
@@ -196,6 +201,16 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
   }
   if((data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain")&&(initializing||session!==undefined||disposed)){
     post({id:data.id,rejected:"Physics already initialized/disposed"});return;
+  }
+  const confirmed=(data as typeof data&{confirmedCompact?:HvpTerrainBinding}).confirmedCompact;
+  if(activation&&sameCompactBinding(activation.binding,confirmed)){
+    const now=performance.now();
+    clock.compactActivation={commandId:activation.binding.commandId,holdMs:now-activation.since,skippedTimerCallbacks:activation.missed,commitTick:activation.tick};
+    firstStepAfterActivation={commandId:activation.binding.commandId,since:activation.since,tick:activation.tick};
+    simulationPrevious=now;releasedPrepareHoldMs=0;activation=undefined;
+  }
+  if(activation&&data.kind!=="ApplyCompactTerrain"&&data.kind!=="InspectCompactPublication"&&data.kind!=="Dispose"){
+    post({id:data.id,rejected:"Compact publication awaits bound confirmation"});return;
   }
   const started=performance.now();
   const previousTerrainSpans=session?.terrainPrepareSpans();
@@ -264,8 +279,19 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
         }
         const image=data.holdForCompactRetry?{...data.image,motion:{...data.image.motion,running:false}}:data.image;
         if(data.holdForCompactRetry)resumeCompactRetry=receipt;
+        if(data.fenceCompactForward!==undefined){
+          if(!Number.isFinite(data.fenceCompactForward)||data.fenceCompactForward<=0||data.fenceCompactForward>performance.timeOrigin+performance.now()+2
+            ||data.image.motion.revision!==receipt.baseRevision+1)throw new Error("Invalid recovered compact forward revision");
+          activation={binding:receipt,since:data.fenceCompactForward-performance.timeOrigin,tick:data.image.motion.tick.ticks,missed:0};
+        }
         if(ownerMode==="phy01-lab"){labSession=await restoreHvpTerrainWorker(image,"phy01-lab",measure);session=labSession;}
         else{publicSession=await restoreHvpTerrainWorker(image,"public",measure);session=publicSession;}
+        if(data.fenceCompactForward!==undefined){
+          const frame=image.journal.at(-1),snap=session.read();
+          if(!frame||!sameCompactBinding(frame.binding,receipt)||!admitsCompactTerrainApply(frame.replacements,frame.fragments))throw new Error("Missing compact forward journal entry");
+          const fragment=frame.fragments[0]!,views=readTerrainSourceViews(snap.terrainFragments.filter(v=>v.ownerId===fragment.ownerId),frame.fragments);
+          lastCompact={binding:receipt,motion:image.motion,snapshot:snap,views,replacements:frame.replacements,fragment};
+        }
       }else if(data.kind==="Initialize"){
         const args=[data.sectors,data.spawn,data.gravity,data.player,data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind,measure] as const;
         publicSession=await (data.staticLayout===undefined?createHvpWorkerPhysicsSession(...args):createHvpChunkWorkerPhysicsSession(data.staticLayout,...args));
@@ -301,6 +327,7 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
         timer = setInterval(() => {
           try {
              const now = performance.now();
+             if(activation){activation.missed++;previous=now;return;}
              const gapMs=now-previous;clock.maxTimerGapMs=Math.max(clock.maxTimerGapMs,gapMs);
              if(measure){if(timerTimings.length<1024){timerTimings.push([previous,gapMs]);}else{droppedTimings+=1;}}
               // Keep the real callback gap visible, but never simulate the
@@ -309,6 +336,10 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
               const simulationElapsedMs=now-simulationPrevious-releasedPrepareHoldMs;
               if(restore===undefined){const steps=session!.advance(simulationElapsedMs/1000,measure);
                 for(const step of steps??[]){if(stepTimings.length<1024){stepTimings.push(step);}else{droppedTimings+=1;}}}
+              if(firstStepAfterActivation&&clock.compactActivation&&session!.readTickClock().ticks>firstStepAfterActivation.tick){
+                clock.compactActivation={...clock.compactActivation,firstStepTick:session!.readTickClock().ticks,firstStepAfterMs:performance.now()-firstStepAfterActivation.since};
+                firstStepAfterActivation=undefined;
+              }
               const advanceMs=performance.now()-now;clock.maxAdvanceMs=Math.max(clock.maxAdvanceMs,advanceMs);
               if(measure&&beforeTick?.status==="Running"){
                 const afterTick=session!.readTickClock();
@@ -451,6 +482,10 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
         case "Impulse": session.impulse(data.direction); break;
         case "Play": session.play(); break;
         case "Inspect": session.inspect(); break;
+        case "InspectCompactPublication":{
+          if(!lastCompact||!sameCompactBinding(lastCompact.binding,data.publication)||!activation)throw new Error("Unknown compact publication");
+          reply({id:data.id,terrainReceipt:lastCompact.binding,terrainMotion:lastCompact.motion,snapshot:session.read()});return;
+        }
         case "ApplyCompactTerrain":
         case "PrepareTerrainPlan":{
           const compact=data.kind==="ApplyCompactTerrain"?data:undefined;
@@ -462,6 +497,25 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
               ||(resumeCompactRetry&&Object.keys(resumeCompactRetry).some(k=>resumeCompactRetry![k as keyof HvpTerrainBinding]!==b[k as keyof HvpTerrainBinding]))){
               throw new Error("Invalid compact publication binding");
             }
+          }
+          if(compact){
+            if(!compactWorldBudget(session.compactWorldCounts()))throw new Error("Compact World work budget exceeded");
+            assertCompactDisplayCells(compact.fragments[0]!);
+            if(lastCompact?.binding.commandId===compact.transactionId){
+              const prior=lastCompact,edits=compact.replacements;
+              if(!sameCompactBinding(prior.binding,compact.publication)||compactFragmentSignature(prior.fragment)!==compactFragmentSignature(compact.fragments[0]!)
+                ||prior.replacements.length!==edits.length||edits.some((r,i)=>{const prev=prior.replacements[i]!;
+                  return r.index!==prev.index||r.mesh.vertices.length!==prev.mesh.vertices.length||r.mesh.indices.length!==prev.mesh.indices.length
+                    ||!r.mesh.vertices.every((v,j)=>v===prev.mesh.vertices[j])||!r.mesh.indices.every((v,j)=>v===prev.mesh.indices[j]);})){
+                throw new Error("Compact command idempotency conflict");
+              }
+              const snapshot=session.read();
+              if(snapshot.terrainGeneration!==prior.motion.revision)throw new Error("Superseded compact publication");
+              reply({id:data.id,terrainReceipt:prior.binding,terrainMotion:prior.motion,snapshot:prior.snapshot??snapshot,compactObservedTick:snapshot.ticks,
+                terrainPlan:{prepareRequestId:data.id,transactionId:data.transactionId,generation:data.generation,sourceDigest:data.sourceDigest,
+                  sourceSessionId:data.sourceSessionId,sourceEpoch:data.sourceEpoch,sourceViews:prior.views}});return;
+            }
+            if(activation)throw new Error("Compact publication awaits bound confirmation");
           }
           if(terrainPlanTicket!==undefined||restore!==undefined||typeof data.sourceDigest!=="string"||data.sourceDigest.length>128
             ||typeof data.sourceSessionId!=="string"||!/^[A-Za-z0-9:_-]{1,128}$/.test(data.sourceSessionId)||!Number.isSafeInteger(data.sourceEpoch)||data.sourceEpoch<0
@@ -484,22 +538,29 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
               // The rollback port is dormant on the main thread. Deposit the last exact base tick before the first native mutation.
               // Its receiver survives a crash of this Worker. No frame, input or second command can interleave in this block.
               const begin=performance.now(),before=owner.captureBeforeNativeInstall(compact.publication);
-              compact.rollbackPort.postMessage({id:data.id,incarnation:ownerIncarnation,motion:before});
+              compact.rollbackPort.postMessage({kind:"Base",id:data.id,incarnation:ownerIncarnation,motion:before});
               writeMs=performance.now()-begin;journalBodies=before.bodies.length;
               owner.prepareTerrain(ticket.id,ticket.generation,ticket.plan!.replacements,ticket.plan!.fragments,ticket.plan);
               try{
                 owner.commitTerrain(ticket.id);
                 forward=owner.captureTerrainRecovery(compact.publication);
+                const sealing=performance.now(),binding=compact.publication;
+                const replay={binding,motion:forward,views:sourceViews,replacements:ticket.plan!.replacements,fragment:compact.fragments[0]!};
+                // L. Queries already see R+1. The next native step is fenced until the first command that confirms this exact binding.
+                const sealedAt=performance.now();
+                compact.rollbackPort.postMessage({kind:"Forward",id:data.id,incarnation:ownerIncarnation,motion:forward,views:sourceViews,sealedAt:performance.timeOrigin+sealedAt});
+                lastCompact=replay;activation={binding,tick:forward.tick.ticks,since:sealedAt,missed:0};
+                writeMs+=performance.now()-sealing;journalBodies+=forward.bodies.length;
                 owner.finalizeTerrain(ticket.id);
               }catch(error){
-                if(owner.read().terrainTransaction!=="RecoveryHold")owner.rollbackTerrain(ticket.id);
+                if(!activation&&owner.read().terrainTransaction!=="RecoveryHold")owner.rollbackTerrain(ticket.id);
                 throw error;
               }
               // Exclude only the measured native hold. The planning time before the hold remains simulation time.
               releasedPrepareHoldMs+=owner.terrainPrepareSpans()?.holdMs??0;
-              terrainPlanTicket=undefined;
+              terrainPlanTicket=undefined;lastCompact!.snapshot=owner.read();
             }
-            reply({id:data.id,...(compact?{snapshot:owner.read(),terrainReceipt:compact.publication,terrainMotion:forward,compactRecoveryWriteMs:writeMs,compactRecoveryBodies:journalBodies}:{}),terrainPlan:{prepareRequestId:ticket.requestId,transactionId:ticket.id,generation:ticket.generation,sourceDigest:ticket.sourceDigest,
+            reply({id:data.id,...(compact?{snapshot:lastCompact!.snapshot,terrainReceipt:compact.publication,terrainMotion:forward,compactRecoveryWriteMs:writeMs,compactRecoveryBodies:journalBodies}:{}),terrainPlan:{prepareRequestId:ticket.requestId,transactionId:ticket.id,generation:ticket.generation,sourceDigest:ticket.sourceDigest,
             sourceSessionId:ticket.sourceSessionId,sourceEpoch:ticket.sourceEpoch,sourceViews,...(!measure||ticket.plan!.spans===undefined?{}:{spans:ticket.plan!.spans}),
             ...(!measure||ticket.plan!.sourceTiming===undefined?{}:{sourceTiming:ticket.plan!.sourceTiming})}});}
           catch(error){if(terrainPlanTicket===ticket){terrainPlanTicket=undefined;}throw error;}
@@ -618,9 +679,12 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
     }
     reply({ id: data.id,...(recoveryAssets?{recoveryAssets}:{}),...(receipt?{terrainReceipt:receipt}:{}),...(motion?{terrainMotion:motion}:{}),snapshot: session?.read(data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain"||data.kind==="PrepareBranch"),bodyPreparation });
   } catch (error) {
+    if(data.kind==="InspectCompactPublication"){reply({id:data.id,rejected:String(error)});return;}
     if(data.kind==="ApplyCompactTerrain"){
       const state=session?.read();
-      if(state?.terrainTransaction==="Idle"&&state.terrainGeneration===data.generation){
+      if(!activation&&state?.terrainTransaction==="Idle"&&state.terrainGeneration===data.generation
+        &&typeof MessagePort!=="undefined"&&data.rollbackPort instanceof MessagePort){
+        data.rollbackPort.postMessage({kind:"Rejected",id:data.id,incarnation,binding:data.publication});
         const hold=session?.terrainPrepareSpans();
         if(hold!==previousTerrainSpans&&hold?.transactionId===data.transactionId)releasedPrepareHoldMs+=hold.holdMs??0;
       }

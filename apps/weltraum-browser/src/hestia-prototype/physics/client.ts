@@ -1,4 +1,4 @@
-import {admitsCompactTerrainApply,readTerrainSourceViews,type TerrainReplacements,type TerrainViews} from "./compactTerrainApply";
+import {admitsCompactTerrainApply,assertCompactDisplayCells,readCompactWitness,compactWorldBudget,readTerrainSourceViews,type TerrainReplacements,type TerrainViews} from "./compactTerrainApply";
 import { WorkerPool } from "../../workers/workerPool";
 import { algorithmVersion, byteCount, contentRevision, jobDeadline, planningEpoch, workerEpoch, workerJobId, workerJobKind, workerTargetKey } from "../../workers/ids";
 import { fnv1aBytes, type TransferableBufferBundle,type WorkerJobRequest } from "../../workers/protocol";
@@ -66,6 +66,8 @@ export interface HvpPhysicsClient {
   /** Publish a bounded native cut and its authoritative root in the same acknowledgement handler. */
   applyCompactTerrain?(binding:HvpTerrainBinding,replacements:TerrainReplacements,fragments:readonly HvpTerrainFragmentRequest[],
     work:{nativeBytes:number;copyBytes:number;trace?:HvpCutTrace},commitRoot:(views:TerrainViews)=>void):Promise<boolean>;
+  /** Owner-internal repair image for a sealed cut whose original root is quarantined. Never encoded through the public Save endpoint. */
+  compactForwardRecovery?():HvpTerrainRecoveryImage|undefined;
   primeTerrainRecovery?():Promise<void>;
   preparedTerrainFragments():HvpPhysicsSnapshot["preparedTerrainFragments"];
   commitTerrain(id: string): Promise<void>;
@@ -297,6 +299,8 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
   }
   let worker=openWorker(),nextId=0;
   let incarnation=crypto.randomUUID();
+  let confirmedCompact:HvpTerrainBinding|undefined;
+  let compactQuarantine:HvpTerrainRecoveryImage|undefined;
   let terrainTrace:HvpCutTrace|undefined;
   let terrainBinding:HvpTerrainBinding|undefined,baseMotion:HvpTerrainMotion|undefined,forwardMotion:HvpTerrainMotion|undefined;
   let catalog:HvpTerrainRecoveryAssets|undefined,entry:HvpTerrainJournalEntry|undefined,priming:Promise<void>|undefined;
@@ -403,7 +407,11 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     const ownsClock=message.kind!=="PrimeTerrainRecovery"&&message.kind!=="AdmitBodyChildMesh"&&message.kind!=="PrepareBodyMeshWork"&&message.kind!=="ReleaseBodyMeshWork"&&message.kind!=="PrepareTerrainPlan"&&message.kind!=="ReleaseTerrainPlan";
     const ownsState=ownsClock&&message.kind!=="Read"&&message.kind!=="Pause"&&message.kind!=="Inspect"&&message.kind!=="PrepareBodyChildProjection";
     if(!publish&&ownsState){publishRequestFloor=Math.max(publishRequestFloor,id);}
-    const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
+    const timeout=setTimeout(()=>{
+      if(message.kind==="ApplyCompactTerrain"){
+        pending.delete(id);reject(new Error("Compact acknowledgement timed out"));
+      }else fail(new Error("Physics worker response deadline exceeded"));
+    },20_000);
     const measuredCut=terrainTrace&&terrainBinding&&(
       ("transactionId" in message && message.transactionId===terrainBinding.commandId)
       || message.kind==="PrimeTerrainRecovery" || (message.kind==="RecoverTerrain"&&message.image.motion.binding.commandId===terrainBinding.commandId)
@@ -412,7 +420,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     const wireMessage=ownerKind==="phy01-lab"
       ?("labMode" in message?message:{...message,labMode:HVP_LAB_PHYSICS_MODE}) as HvpLabPhysicsRequest
       :message as HvpPhysicsRequest;
-    try { worker.postMessage({ ...wireMessage, id,protocol:HVP_PHYSICS_PROTOCOL,incarnation } as HvpPhysicsMessage|HvpLabPhysicsMessage, transfers); }
+    try { worker.postMessage({ ...wireMessage,...(confirmedCompact&&message.kind!=="RecoverTerrain"?{confirmedCompact}:{}), id,protocol:HVP_PHYSICS_PROTOCOL,incarnation } as HvpPhysicsMessage|HvpLabPhysicsMessage, transfers); }
     catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); return; }
     if(measuredCut)traceHvpCutBoundary(terrainTrace,measuredCut,"main","cutPhysicsDispatch");
   });
@@ -435,14 +443,15 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       ||motion.tick.ticks!==reply.snapshot.ticks){throw new Error("Invalid held terrain receipt");}
     if(phase==="PreparedHeld"){baseMotion=motion;}else{forwardMotion=motion;}
   };
-  const recoverTerrain=async(motion:HvpTerrainMotion|undefined,holdForCompactRetry=false)=>{
+  const recoverTerrain=async(motion:HvpTerrainMotion|undefined,holdForCompactRetry=false,fenceCompactForward?:number)=>{
     if(!motion||!matches(motion.binding)||!catalog||!entry||disposed){throw new Error("RecoveryHold: missing terrain recovery image");}
+    let reconstructed:{value:HvpPhysicsSnapshot;sequence:number}|undefined;
     const image:HvpTerrainRecoveryImage={assets:catalog,motion,journal:motion===forwardMotion?[...journal,entry]:journal};
     fail(new Error("Terrain worker superseded"));worker=openWorker();incarnation=crypto.randomUUID();
     terminated=false;failure=undefined;publishRequestFloor=-1;lastSnapshotSequence=-1;lastClockSequence=-1;lastRestoreSequence=-1;
     heldSnapshot=undefined;attachWorker();
     try{
-      await send({kind:"RecoverTerrain",image,...(holdForCompactRetry?{holdForCompactRetry:true as const}:{}),measure:onTimings!==undefined},[],false,reply=>{
+      await send({kind:"RecoverTerrain",image,...(fenceCompactForward===undefined?{}:{fenceCompactForward}),...(holdForCompactRetry?{holdForCompactRetry:true as const}:{}),measure:onTimings!==undefined},[],false,reply=>{
         const restored=reply.snapshot;
         if(!matches(reply.terrainReceipt)||restored?.terrainTransaction!=="Idle"||restored.terrainGeneration!==motion.revision
           ||restored.ticks!==motion.tick.ticks||(motion.tick.status==="SimulationHold"&&(restored.status!=="SimulationHold"
@@ -451,9 +460,11 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         }
         const expected=motion.bodies.map(b=>b.ownerId);
         if(expected.some(id=>!restored.bodies.some(b=>b.ownerId===id))){throw new Error("Reconstructed terrain ownership mismatch");}
-        snapshot=restored;lastSnapshotSequence=reply.sequence;
+        reconstructed={value:restored,sequence:reply.sequence};
+        if(fenceCompactForward===undefined){snapshot=restored;lastSnapshotSequence=reply.sequence;}
       });
     }catch(error){fail(new Error("RecoveryHold: "+String(error)));throw failure;}
+    return reconstructed!;
   };
   const appendTerrainJournal=(next:HvpTerrainJournalEntry)=>{
     const replaced=new Set(next.replacements.map(r=>r.index));
@@ -820,8 +831,10 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         });
       }else{await send({ kind }, [], !mutating);}
     },
+    compactForwardRecovery:()=>compactQuarantine&&structuredClone(compactQuarantine),
     async applyCompactTerrain(binding,replacements,fragments,work,commitRoot){
-      if(experimentalKernel || typeof MessageChannel==="undefined" || !admitsCompactTerrainApply(replacements,fragments)
+      for(const f of fragments)assertCompactDisplayCells(f);
+      if(experimentalKernel || !snapshot || !compactWorldBudget(snapshot) || typeof MessageChannel==="undefined" || !admitsCompactTerrainApply(replacements,fragments)
         ||!catalog||journal.length>=256)return false;
       if(mutating||bodyPending||catalog.world.terrainGeneration+journal.length!==binding.baseRevision)throw new Error("Stale or pending compact cut");
       const reserve=createHvpBodyMeshPhaseReserve(work.copyBytes);
@@ -832,6 +845,24 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       const nextJournal=appendTerrainJournal(immutable);
       mutating=true;entry=immutable;terrainBinding=binding;terrainTrace=work.trace;
       heldSnapshot=undefined;baseMotion=undefined;forwardMotion=undefined;
+      const worldId=catalog.world.sessionId;
+      let rootAttempted=false;
+      const checkInstalled=(next:HvpPhysicsSnapshot,motion:HvpTerrainMotion,views:TerrainViews)=>{
+        if(next.terrainTransaction!=="Idle"||next.terrainGeneration!==binding.baseRevision+1||!matches(motion.binding)||motion.revision!==next.terrainGeneration
+          ||motion.worldId!==worldId||motion.tick.ticks!==next.ticks)throw new Error("Invalid compact installed revision");
+        const installed=next.terrainFragments.filter(f=>f.ownerId===fragments[0]!.ownerId),a=installed[0],b=views[0]!;
+        if(installed.length!==1||!a?.centerOfMass||a.sourceDigest!==b.sourceDigest||a.cellCount!==b.cellCount||a.colliders!==b.colliders
+          ||a.sourceBytes!==b.sourceBytes||a.massKg!==b.massKg||a.centerOfMass.x!==b.centerOfMass.x||a.centerOfMass.y!==b.centerOfMass.y
+          ||a.centerOfMass.z!==b.centerOfMass.z||!motion.bodies.some(body=>body.ownerId===a.ownerId&&body.sourceDigest===a.sourceDigest))
+          throw new Error("Compact installed body mismatch");
+      };
+      const publish=(views:TerrainViews,next:HvpPhysicsSnapshot,sequence:number)=>{
+        rootAttempted=true;commitRoot(views);snapshot=next;lastSnapshotSequence=sequence;journal=nextJournal;confirmedCompact=binding;
+      };
+      const quarantine=(error:unknown,motion:HvpTerrainMotion):never=>{
+        compactQuarantine={assets:catalog!,motion,journal:nextJournal};
+        const hold=new Error("RecoveryHold: sealed compact publication requires its original root: "+String(error));fail(hold);throw hold;
+      };
       try {
         for(let attempt=0;attempt<2;attempt++){
           const inbox=new MessageChannel(),expectedId=nextId,expectedIncarnation=incarnation;
@@ -849,49 +880,50 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
                 ||!plan||plan.prepareRequestId!==expectedId||plan.transactionId!==binding.commandId||plan.generation!==binding.baseRevision
                 ||plan.sourceSessionId!==binding.sessionId||plan.sourceEpoch!==binding.epoch||plan.sourceDigest!==binding.targetDigest)throw new Error("Invalid compact publication receipt");
               const views=readTerrainSourceViews(plan.sourceViews,immutable.fragments);
-              const installed=next.terrainFragments.filter(f=>f.ownerId===fragments[0]!.ownerId),a=installed[0],b=views[0]!;
-              if(installed.length!==1||!a?.centerOfMass||a.sourceDigest!==b.sourceDigest||a.cellCount!==b.cellCount||a.colliders!==b.colliders
-                ||a.sourceBytes!==b.sourceBytes||a.massKg!==b.massKg||a.centerOfMass.x!==b.centerOfMass.x||a.centerOfMass.y!==b.centerOfMass.y
-                ||a.centerOfMass.z!==b.centerOfMass.z||!motion.bodies.some(body=>body.ownerId===a.ownerId&&body.sourceDigest===a.sourceDigest)){
-                throw new Error("Compact installed body mismatch");
-              }
+              checkInstalled(next,motion,views);
               if(work.trace){
                 for(const span of plan.spans??[]){try{work.trace(span);}catch{/* optional observation */}}
                 writeReported=true;
-                traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMailboxWrite",1,reply.compactRecoveryWriteMs);
+                traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMailboxWrite",2,reply.compactRecoveryWriteMs);
                 traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMotionBodies",reply.compactRecoveryBodies??0);
                 if(plan.sourceTiming)traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutPhysicsPlanTaskResumes",plan.sourceTiming.taskYields,plan.sourceTiming.workElapsedMs);
               }
               // Every fallible validation and journal allocation precedes this synchronous root publication.
-              commitRoot(views);snapshot=next;lastSnapshotSequence=reply.sequence;journal=nextJournal;
+              publish(views,next,reply.sequence);
             });
             return true;
           }catch(error){
             if(disposed||signal.aborted)throw error;
-            const rejected=readHeldSnapshot();
-            if(!failure && rejected?.id===expectedId && rejected.value.terrainTransaction==="Idle" && rejected.value.terrainGeneration===binding.baseRevision)throw error;
+            const packet=await readCompactWitness(inbox.port1,expectedId,expectedIncarnation,binding,worldId)
+              .catch(cause=>{fail(cause instanceof Error?cause:new Error(String(cause)));throw cause;});
+            traceHvpCutBoundary(work.trace,binding.commandId,"main","cutRecoverySideband",packet.delivered);
+            if(!writeReported){
+              const motions=[packet.base,packet.forward].filter(m=>m!==undefined);
+              traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMailboxWrite",motions.length);
+              traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMotionBodies",motions.reduce((n,m)=>n+m.bodies.length,0));
+            }
+            if(packet.forward){
+              forwardMotion=packet.forward;
+              if(rootAttempted)quarantine(error,forwardMotion);
+              try{
+                const views=readTerrainSourceViews(packet.views,immutable.fragments);
+                let verified:{value:HvpPhysicsSnapshot;sequence:number}|undefined;
+                if(!failure){
+                  try{await send({kind:"InspectCompactPublication",transactionId:binding.commandId,publication:binding},[],false,r=>{
+                    if(!matches(r.terrainReceipt)||!r.snapshot)throw new Error("Missing live forward receipt");
+                    checkInstalled(r.snapshot,packet.forward!,views);verified={value:r.snapshot,sequence:r.sequence};
+                  });}catch{/* The sealed image remains valid when the owner needs replacement. */}
+                }
+                verified??=await recoverTerrain(forwardMotion,false,packet.sealedAt!);
+                checkInstalled(verified.value,forwardMotion,views);
+                publish(views,verified.value,verified.sequence);return true;
+              }catch(cause){quarantine(cause,forwardMotion);}
+            }
+            if(packet.rejected)throw error;
+            if(!packet.base)throw new Error("RecoveryHold: missing compact base");
+            baseMotion=packet.base;
             const retry=!!failure&&attempt===0;
-            const before=await new Promise<HvpTerrainMotion>((resolve,reject)=>{
-              const deadline=setTimeout(()=>reject(new Error("RecoveryHold: base tick unavailable after compact transport failure")),2000);
-              inbox.port1.onmessage=({data})=>{
-                clearTimeout(deadline);
-                traceHvpCutBoundary(work.trace,binding.commandId,"main","cutRecoverySideband");
-                const motion=data?.motion as HvpTerrainMotion|undefined;
-                if(data?.id!==expectedId||data?.incarnation!==expectedIncarnation||!motion||!matches(motion.binding)||motion.worldId!==catalog?.world.sessionId
-                  ||motion.revision!==binding.baseRevision||!(motion.tick.status==="Paused"||motion.tick.status==="SimulationHold"&&!motion.running)){
-                  reject(new Error("RecoveryHold: invalid compact rollback witness"));return;
-                }
-                if(!writeReported){
-                  // The original reply, including the sender-side clone duration, was lost.
-                  traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMailboxWrite");
-                  traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMotionBodies",motion.bodies.length);
-                }
-                resolve(motion);
-              };
-            }).catch(cause=>{fail(cause instanceof Error?cause:new Error(String(cause)));throw cause;});
-            baseMotion=before;
-            // A lost ACK has not exposed the new generation on this client. Kill that incarnation and replay the same command at its exact sealed tick.
-            await recoverTerrain(before,retry&&before.running);
+            await recoverTerrain(baseMotion,retry&&baseMotion.running);
             if(!retry)throw error;
           }finally{inbox.port1.close();inbox.port2.close();}
         }
@@ -900,6 +932,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     },
     async prepareTerrain(id,generation,replacements,fragments=[],work,publication) {
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }
+      for(const f of fragments)assertCompactDisplayCells(f);
       if(fragments.length>32||fragments.reduce((n,f)=>n+f.cells.length,0)>32_768){throw new Error("Fragment transfer BudgetExceeded");}
       heldSnapshot=undefined;terrainBinding=publication;terrainTrace=work?.trace;baseMotion=undefined;forwardMotion=undefined;entry=undefined;
       if(publication){
@@ -1023,7 +1056,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     lifecycle:()=>Object.freeze({workers:terminated?0:1,pendingJobs:pending.size,timers:clock===undefined?null:pending.size+clock.timers,
       timingSinkFailures,terrainRecovery:Object.freeze({catalogs:Number(catalog!==undefined),entries:journal.length,
         sectors:journal.reduce((n,e)=>n+e.replacements.length,0),fragments:journal.reduce((n,e)=>n+e.fragments.length,0),
-        held:Number(baseMotion!==undefined)+Number(forwardMotion!==undefined)}),
+        held:Number(baseMotion!==undefined)+Number(forwardMotion!==undefined)+Number(compactQuarantine!==undefined)}),
       listeners:Number(worker.onmessage!==null)+Number(worker.onerror!==null)+Number(worker.onmessageerror!==null),
       native:snapshot?Object.freeze({status:snapshot.status,bodies:snapshot.bodyCount,colliders:snapshot.colliderCount}):null}),
     async dispose() {
@@ -1033,7 +1066,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         await send({ kind: "Dispose" });
         if(snapshot?.status!=="Disposed"||snapshot.bodyCount!==0||snapshot.colliderCount!==0||clock?.timers!==0){throw new Error("Missing native disposal receipt");}
       }
-      finally { disposed=true;catalogEpoch+=1;catalog=undefined;journal=[];clearTerrain();fail(new Error("Physics disposed")); }
+      finally { disposed=true;catalogEpoch+=1;compactQuarantine=undefined;catalog=undefined;journal=[];clearTerrain();fail(new Error("Physics disposed")); }
     }
   };
 };

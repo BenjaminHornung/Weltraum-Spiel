@@ -737,6 +737,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       publishTerrainCatalog(publish:(assets:HvpTerrainRecoveryAssets)=>void):void {
         tick.whileStopped(()=>publish(session.captureTerrainAssets()));
       },
+      compactWorldCounts:()=>({bodyCount:world.bodies.len(),colliderCount:world.colliders.len()}),
       captureBeforeNativeInstall(binding:HvpTerrainBinding):HvpTerrainMotion{
         const clock=tick.read();
         if(disposed||staged||terrainHeld||branch?.busy||moving.busy||extraHeld()||terrainGeneration!==binding.baseRevision
