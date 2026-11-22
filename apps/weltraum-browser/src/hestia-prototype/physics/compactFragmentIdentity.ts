@@ -46,11 +46,19 @@ export function supportsCompactArchive(source:HvpCompactTerrainSource):boolean {
   return true;
 }
 
-function orderedCellSpans(cells:readonly HvpStructuralCell[]):Span[] {
+const isCompactCell=(cell:HvpStructuralCell)=>!!cell && Number.isSafeInteger(cell.x) && cell.x>=0 && cell.x<256
+  && Number.isSafeInteger(cell.y) && cell.y>0 && cell.y<128 && Number.isSafeInteger(cell.z) && cell.z>=0 && cell.z<256
+  && Number.isSafeInteger(cell.materialId) && cell.materialId>=1 && cell.materialId<=4;
+
+/** Validate a cloned cell projection and canonicalize it independently of its input order. */
+export function compactCellSpans(cells:readonly HvpStructuralCell[]):Span[] {
+  if(!Array.isArray(cells) || cells.length>1024 || !cells.every(isCompactCell))throw new Error("Invalid compact cell projection");
   const sorted=[...cells].sort((a,b)=>a.z-b.z||a.y-b.y||a.x-b.x);
   const result:{x:number;y:number;z:number;end:number;material:number}[]=[];
   for(const cell of sorted){
     const previous=result.at(-1);
+    if(!cell)throw new Error("Missing compact cell");
+    if(previous && previous.z===cell.z && previous.y===cell.y && cell.x<previous.end)throw new Error("Duplicate compact cell");
     if(previous&&cell.x%16!==0&&previous.end===cell.x&&previous.y===cell.y&&previous.z===cell.z&&previous.material===cell.materialId){
       previous.end++; continue;
     }
@@ -203,7 +211,7 @@ export function bindHvpCompactChildArchive(recipe:HvpRigidRecipe,proof:unknown):
   if (!isHvpCompactChildProof(proof) || recipe.source.objectId!==proof.parentOwnerId+":r1:p0" || !compactArchiveProfile(recipe)) {
     throw new Error("Invalid compact child archive profile or lineage");
   }
-  const child=compactRuns(orderedCellSpans(readHvpBodyCells(recipe.source))),removed=compactRuns(proof.removed);
+  const child=compactRuns(compactCellSpans(readHvpBodyCells(recipe.source))),removed=compactRuns(proof.removed);
   if (!child || !removed) throw new Error("Invalid compact child archive membership");
   const parent=compactRuns([...child.spans,...removed.spans].sort(spanOrder),256);
   const match=terrainRoot.exec(proof.parentOwnerId)!;
@@ -224,9 +232,11 @@ export function hvpFragmentArchiveDigest(recipe:HvpRigidRecipe):string {
   let digest=source.contentHash;
   const match=terrainRoot.exec(source.objectId);
   if(match && Number.isSafeInteger(Number(match[1])) && compactArchiveProfile(recipe)){
-    const cells=readHvpBodyCells(source),spans=orderedCellSpans(cells);
-    if(spans.length<=128 && spans.every(s=>s.x>=0&&s.end<=256&&s.y>0&&s.y<128&&s.z>=0&&s.z<256)
-      && compactTerrainOwnerDigest(spans)===match[2])digest=compactRuntimeMembershipDigest(spans,cells.length);
+    const cells=readHvpBodyCells(source);
+    if(cells.every(isCompactCell)){
+      const spans=compactCellSpans(cells);
+      if(spans.length<=128 && compactTerrainOwnerDigest(spans)===match[2])digest=compactRuntimeMembershipDigest(spans,cells.length);
+    }
   }
   archiveDigests.set(recipe,digest);
   return digest;
@@ -241,6 +251,6 @@ export function matchesHvpFragmentSourceDigest(value:unknown,request:HvpTerrainF
   if(source&&!supportsCompactArchive(source))return false;
   const count=source?.cellCount??request.cells.length;
   if(!Number.isSafeInteger(count)||count<1||count>1024)return false;
-  const spans=source?checkedCompactSpans(source):orderedCellSpans(request.cells);
+  const spans=source?checkedCompactSpans(source):compactCellSpans(request.cells);
   return compactRuntimeMembershipDigest(spans,count)===value;
 }

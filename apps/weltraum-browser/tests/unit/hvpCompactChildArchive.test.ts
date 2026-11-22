@@ -4,7 +4,7 @@ import {cellsFromCompactSpans,compactTerrainOwnerDigest} from "../../src/voxel/s
 import type {Span} from "../../src/voxel/structural/componentIndex/exactShapes";
 import {createStructuralOwnerLedger} from "../../src/voxel/structural/model";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
-import {bindHvpCompactChildArchive,compactRuntimeMembershipDigest,createHvpCompactChildIdentity,
+import {bindHvpCompactChildArchive,compactCellSpans,compactRuntimeMembershipDigest,createHvpCompactChildIdentity,
   hvpCompactChildArchiveProof,hvpFragmentArchiveDigest} from "../../src/hestia-prototype/physics/compactFragmentIdentity";
 import {createHvpLabPhysicsSession} from "../../src/hestia-prototype/physics/session";
 import {decodeHvpColdLabWorld,hvpColdLabWorldAllocationBytes} from "../../src/hestia-prototype/persistence/worldCheckpoint";
@@ -23,6 +23,16 @@ const materials=HVP_COAST_MATERIAL_REGISTRY.map(m=>({materialId:m.slot,densityKg
   structuralClass:m.role,destructible:true,tags:null}));
 const makeRecipe=(id:string,spans:Span[])=>prepareHvpRigidBody(ingestHvpStructuralCells(id,cellsFromCompactSpans(spans),materials));
 beforeAll(initializeHvpRapier);
+
+it("canonicalizes cloned projections and rejects duplicate, malformed or excess cell input",()=>{
+  const cells=cellsFromCompactSpans(whole);
+  expect(compactCellSpans([...cells].reverse())).toEqual([row(13,16,1),row(16,18,1),row(18,20,3)]);
+  expect(compactCellSpans([])).toEqual([]);
+  expect(()=>compactCellSpans([cells[0]!,{...cells[0]!,materialId:3}])).toThrow(/Duplicate/);
+  expect(()=>compactCellSpans([{...cells[0]!,y:0}])).toThrow(/compact/);
+  expect(()=>compactCellSpans([{...cells[0]!,materialId:5}])).toThrow(/compact/);
+  expect(()=>compactCellSpans(Array(1025).fill(cells[0]))).toThrow(/compact/);
+});
 
 it("binds the retained and removed materials to the original root independently of run boundaries",()=>{
   const issued=createHvpCompactChildIdentity(parent,removed,retained)!;
