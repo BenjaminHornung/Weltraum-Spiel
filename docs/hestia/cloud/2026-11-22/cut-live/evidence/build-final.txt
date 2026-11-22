@@ -1,0 +1,47 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> weltraum-browser@0.1.0 prebuild
+> node scripts/r05Build.mjs prepare
+
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build --config vite.build.config.mjs --configLoader native
+
+vite v8.1.5 building client environment for production...
+[2K
+transforming...✓ 315 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                40.68 kB │ gzip:     7.33 kB
+dist/assets/streamingWorker-Ce24_sYC.js       314.55 kB
+dist/assets/rapier_wasm3d_bg-B0dwcyb_.wasm  3,245.64 kB │ gzip: 1,184.44 kB
+dist/assets/physicsWorker-9S8hP8xu.js       5,157.76 kB
+dist/assets/index-GeJ96uLU.css                170.33 kB │ gzip:    27.08 kB
+dist/assets/surface-lab-Cleg2bBN.js            53.77 kB │ gzip:    17.45 kB │ map:   208.06 kB
+dist/assets/browserBridge-gQYgAYGa.js          61.66 kB │ gzip:    14.06 kB │ map:   179.80 kB
+dist/assets/backend-DBrhGhT1.js               130.27 kB │ gzip:    34.08 kB │ map:   469.98 kB
+dist/assets/hvpBootstrap-PdDFzIf_.js          451.72 kB │ gzip:   137.79 kB │ map: 1,533.86 kB
+dist/assets/index-t-HVEacS.js               1,393.41 kB │ gzip:   369.22 kB │ map: 5,874.46 kB
+
+[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugins. Here is a breakdown:
+  - cifi-owned-physical-file-identity (88%)
+  - vite:worker-import-meta-url (6%)
+See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 4.28s
+
+> weltraum-browser@0.1.0 postbuild
+> node scripts/r05Build.mjs verify
+
+{
+  "labArtifactId": "rapier-0.21.0-phy01.migration2:positive-margin-r05:f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+  "worker": "physicsWorker-9S8hP8xu.js",
+  "workerSha256": "d340dec315063961f2d4a9513a945c73f6e391e13b47a443d25530c443ff70a8",
+  "binary": "rapier_wasm3d_bg-B0dwcyb_.wasm",
+  "wasmSha256": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb"
+}

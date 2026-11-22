@@ -1,0 +1,2074 @@
+{
+  "tree": "b43941e6002cfab9b6d24a7a8ee39a4669cf4ae8",
+  "assets": {
+    "hvpBootstrap-PdDFzIf_.js": "ed9f50bc6cdafb4e2099b1abe4fc4cf95d687d232cc9f201b53c1efe4d017bd4",
+    "physicsWorker-9S8hP8xu.js": "d340dec315063961f2d4a9513a945c73f6e391e13b47a443d25530c443ff70a8",
+    "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb"
+  },
+  "timeline": [
+    {
+      "stage": "ready",
+      "status": "Running",
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 7,
+          "y": 1.0449999570846558,
+          "z": -6.25
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "moving": {
+        "sequence": 0,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": null,
+        "last": null
+      },
+      "impulseTarget": {
+        "kind": "NotPlaying",
+        "target": null,
+        "distanceMeters": null,
+        "massKg": null,
+        "point": null
+      },
+      "lastImpulse": null,
+      "sectors": [
+        {
+          "id": 0,
+          "key": "hvp:terrain:s0:r0",
+          "hash": "fnv1a64:8935758189e83503"
+        },
+        {
+          "id": 1,
+          "key": "hvp:terrain:s1:r0",
+          "hash": "fnv1a64:90c4d3d4f2a73adb"
+        },
+        {
+          "id": 2,
+          "key": "hvp:terrain:s2:r0",
+          "hash": "fnv1a64:12c2b3c6bae2f847"
+        },
+        {
+          "id": 3,
+          "key": "hvp:terrain:s3:r0",
+          "hash": "fnv1a64:270c651ac2f4a6d5"
+        },
+        {
+          "id": 4,
+          "key": "hvp:terrain:s4:r0",
+          "hash": "fnv1a64:a2f05ad83ce5be99"
+        },
+        {
+          "id": 5,
+          "key": "hvp:terrain:s5:r0",
+          "hash": "fnv1a64:ac667eef6044fb65"
+        },
+        {
+          "id": 6,
+          "key": "hvp:terrain:s6:r0",
+          "hash": "fnv1a64:0a5f9d636eb0dfb6"
+        },
+        {
+          "id": 7,
+          "key": "hvp:terrain:s7:r0",
+          "hash": "fnv1a64:4aee51ba0c2eea69"
+        },
+        {
+          "id": 8,
+          "key": "hvp:terrain:s8:r0",
+          "hash": "fnv1a64:35ce931fac38609e"
+        },
+        {
+          "id": 9,
+          "key": "hvp:terrain:s9:r0",
+          "hash": "fnv1a64:1de245e0a04f37a8"
+        },
+        {
+          "id": 10,
+          "key": "hvp:terrain:s10:r0",
+          "hash": "fnv1a64:ea3447acd6ce0989"
+        },
+        {
+          "id": 11,
+          "key": "hvp:terrain:s11:r0",
+          "hash": "fnv1a64:1bdf988bc219e7a1"
+        },
+        {
+          "id": 12,
+          "key": "hvp:terrain:s12:r0",
+          "hash": "fnv1a64:9d2d40aa75d11ba4"
+        },
+        {
+          "id": 13,
+          "key": "hvp:terrain:s13:r0",
+          "hash": "fnv1a64:635a5288d03e9c7c"
+        },
+        {
+          "id": 14,
+          "key": "hvp:terrain:s14:r0",
+          "hash": "fnv1a64:c9369bec2a016373"
+        },
+        {
+          "id": 15,
+          "key": "hvp:terrain:s15:r0",
+          "hash": "fnv1a64:5528c61f6726e2ac"
+        }
+      ],
+      "ticks": 0,
+      "bodyCount": 4,
+      "nativeGeneration": 0,
+      "transaction": "Idle",
+      "clock": {
+        "maxTimerGapMs": 0,
+        "maxAdvanceMs": 0,
+        "maxHandlerMs": 2499.099999997765,
+        "lastCommand": "Initialize",
+        "lastHandlerMs": 2499.099999997765,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "camera": null,
+      "tool": {
+        "mode": "Zelle",
+        "edges": 0,
+        "issued": 0,
+        "message": "Spielen: 1 Zelle · 2 Box · 3 Kugel · Linksklick",
+        "state": "Idle",
+        "queued": 0,
+        "receipts": 0,
+        "structural": {
+          "state": "Ready",
+          "issued": 0,
+          "last": null
+        },
+        "moving": {
+          "state": "Idle",
+          "last": null,
+          "issued": 0
+        }
+      },
+      "generation": 0,
+      "fragments": [],
+      "nativeBodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9,
+            "y": 3.25,
+            "z": -9
+          }
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.702425956726074,
+            "y": 2.7958333492279053,
+            "z": -13.120797157287598
+          }
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          }
+        }
+      ],
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 0,
+        "pressedKeys": []
+      },
+      "dialogOpen": false,
+      "bridge": false
+    },
+    {
+      "stage": "blocked-awaiting-fallen-target",
+      "status": "Running",
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 6.99898624420166,
+          "y": 1.035099983215332,
+          "z": -6.250424385070801
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "moving": {
+        "sequence": 0,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": null,
+        "last": null
+      },
+      "impulseTarget": {
+        "kind": "NoContact",
+        "target": null,
+        "distanceMeters": null,
+        "massKg": null,
+        "point": null
+      },
+      "lastImpulse": null,
+      "sectors": [
+        {
+          "id": 0,
+          "key": "hvp:terrain:s0:r0",
+          "hash": "fnv1a64:8935758189e83503"
+        },
+        {
+          "id": 1,
+          "key": "hvp:terrain:s1:r0",
+          "hash": "fnv1a64:90c4d3d4f2a73adb"
+        },
+        {
+          "id": 2,
+          "key": "hvp:terrain:s2:r0",
+          "hash": "fnv1a64:12c2b3c6bae2f847"
+        },
+        {
+          "id": 3,
+          "key": "hvp:terrain:s3:r0",
+          "hash": "fnv1a64:270c651ac2f4a6d5"
+        },
+        {
+          "id": 4,
+          "key": "hvp:terrain:s4:r0",
+          "hash": "fnv1a64:a2f05ad83ce5be99"
+        },
+        {
+          "id": 5,
+          "key": "hvp:terrain:s5:r0",
+          "hash": "fnv1a64:ac667eef6044fb65"
+        },
+        {
+          "id": 6,
+          "key": "hvp:terrain:s6:e0~3",
+          "hash": "fnv1a64:c30edb120ba0a671"
+        },
+        {
+          "id": 7,
+          "key": "hvp:terrain:s7:e0~4",
+          "hash": "fnv1a64:be404ee519fc04bc"
+        },
+        {
+          "id": 8,
+          "key": "hvp:terrain:s8:r0",
+          "hash": "fnv1a64:35ce931fac38609e"
+        },
+        {
+          "id": 9,
+          "key": "hvp:terrain:s9:r0",
+          "hash": "fnv1a64:1de245e0a04f37a8"
+        },
+        {
+          "id": 10,
+          "key": "hvp:terrain:s10:r0",
+          "hash": "fnv1a64:ea3447acd6ce0989"
+        },
+        {
+          "id": 11,
+          "key": "hvp:terrain:s11:r0",
+          "hash": "fnv1a64:1bdf988bc219e7a1"
+        },
+        {
+          "id": 12,
+          "key": "hvp:terrain:s12:r0",
+          "hash": "fnv1a64:9d2d40aa75d11ba4"
+        },
+        {
+          "id": 13,
+          "key": "hvp:terrain:s13:r0",
+          "hash": "fnv1a64:635a5288d03e9c7c"
+        },
+        {
+          "id": 14,
+          "key": "hvp:terrain:s14:r0",
+          "hash": "fnv1a64:c9369bec2a016373"
+        },
+        {
+          "id": 15,
+          "key": "hvp:terrain:s15:r0",
+          "hash": "fnv1a64:5528c61f6726e2ac"
+        }
+      ],
+      "ticks": 2052,
+      "bodyCount": 5,
+      "nativeGeneration": 1,
+      "transaction": "Idle",
+      "clock": {
+        "maxTimerGapMs": 137.5,
+        "maxAdvanceMs": 129.60000000149012,
+        "maxHandlerMs": 2499.099999997765,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.8000000007450581,
+        "simulationHold": {
+          "gapMs": 86.69999999925494,
+          "previousCommand": "Initialize",
+          "handlerMs": 2499.099999997765,
+          "advanceMs": 8.5,
+          "backlogSeconds": 0.020166666666666676,
+          "ticks": 5
+        },
+        "delayedCallbacks": [
+          {
+            "gapMs": 86.69999999925494,
+            "previousCommand": "Initialize",
+            "handlerMs": 2499.099999997765,
+            "advanceMs": 8.5
+          },
+          {
+            "gapMs": 63.19999999925494,
+            "previousCommand": "Read",
+            "handlerMs": 8.600000001490116,
+            "advanceMs": 56.899999998509884
+          },
+          {
+            "gapMs": 61.599999997764826,
+            "previousCommand": "FinalizeTerrain",
+            "handlerMs": 1,
+            "advanceMs": 20.700000002980232
+          },
+          {
+            "gapMs": 70.69999999925494,
+            "previousCommand": "Read",
+            "handlerMs": 1,
+            "advanceMs": 1.0999999977648258
+          },
+          {
+            "gapMs": 137.5,
+            "previousCommand": "Read",
+            "handlerMs": 1,
+            "advanceMs": 1
+          },
+          {
+            "gapMs": 70.20000000298023,
+            "previousCommand": "Read",
+            "handlerMs": 0.19999999925494194,
+            "advanceMs": 0.5
+          },
+          {
+            "gapMs": 67.59999999776483,
+            "previousCommand": "Read",
+            "handlerMs": 0.19999999925494194,
+            "advanceMs": 8.300000000745058
+          }
+        ],
+        "lastTerrainRecipeMs": 59.100000001490116,
+        "lastTerrainCookMs": 0.8000000007450581,
+        "lastTerrainInstallMs": 0.5,
+        "lastTerrainHoldMs": 1875.0999999977648,
+        "lastTerrainCommandId": "cut-1",
+        "timers": 1
+      },
+      "camera": {
+        "position": [
+          6.99898624420166,
+          1.785099983215332,
+          -6.250424385070801
+        ],
+        "orientation": [
+          0.2277720780388438,
+          0.6694175680887579,
+          -0.22777207803884375,
+          0.669417568088758
+        ],
+        "visualBody": [
+          6.99898624420166,
+          1.035099983215332,
+          -6.250424385070801
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "tool": {
+        "mode": "Box 0,5 m",
+        "edges": 1,
+        "issued": 1,
+        "message": "Kein Ziel innerhalb 4 m",
+        "state": "Applied",
+        "queued": 0,
+        "receipts": 1,
+        "last": {
+          "commandId": "cut-1",
+          "status": "Applied",
+          "removedCells": 64,
+          "reason": "Terrain and collision committed",
+          "revision": 1,
+          "transferredCells": 384,
+          "transferredMassKg": 1722.65625,
+          "materialRemovedKg": 300
+        },
+        "structural": {
+          "state": "Ready",
+          "issued": 0,
+          "last": null
+        },
+        "moving": {
+          "state": "Idle",
+          "last": null,
+          "issued": 0
+        }
+      },
+      "generation": 1,
+      "fragments": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+          "centerOfMass": {
+            "x": 23.50561224489796,
+            "y": 10.49158163265306,
+            "z": 9.755612244897959
+          },
+          "cellCount": 384,
+          "massKg": 1722.65625,
+          "colliders": 1,
+          "sourceBytes": 262144
+        }
+      ],
+      "nativeBodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.633415222167969,
+            "y": 0.458950936794281,
+            "z": -7.734687805175781
+          }
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.70605182647705,
+            "y": 1.5457834005355835,
+            "z": -13.12487506866455
+          }
+        },
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "position": {
+            "x": 7.469996929168701,
+            "y": 0.9915043711662292,
+            "z": -5.228994369506836
+          }
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          }
+        }
+      ],
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 3,
+        "pressedKeys": []
+      },
+      "dialogOpen": false,
+      "locked": "debug-scene",
+      "bridge": false
+    }
+  ],
+  "actions": [
+    {
+      "kind": "trustedFirstClick"
+    },
+    {
+      "kind": "mouseAim",
+      "tick": 320,
+      "dx": -1451,
+      "dy": 431,
+      "point": [
+        390,
+        480
+      ],
+      "distanceM": 0.9556100727595547
+    },
+    {
+      "kind": "mouseAim",
+      "tick": 441,
+      "dx": -1001,
+      "dy": 635,
+      "point": [
+        170,
+        640
+      ],
+      "distanceM": 1.3765770365336305
+    },
+    {
+      "kind": "mouseAim",
+      "tick": 528,
+      "dx": -1001,
+      "dy": 635,
+      "point": [
+        1,
+        718
+      ],
+      "distanceM": 1.3765770365336305
+    },
+    {
+      "kind": "mouseAim",
+      "tick": 719,
+      "dx": -1001,
+      "dy": 635,
+      "point": [
+        1,
+        718
+      ],
+      "distanceM": 1.3765770365336305
+    },
+    {
+      "kind": "mouseAim",
+      "tick": 958,
+      "dx": -1001,
+      "dy": 635,
+      "point": [
+        1,
+        718
+      ],
+      "distanceM": 1.3765770365336305
+    },
+    {
+      "kind": "mouseAim",
+      "tick": 994,
+      "dx": -1001,
+      "dy": 635,
+      "point": [
+        1,
+        718
+      ],
+      "distanceM": 1.3765770365336305
+    },
+    {
+      "kind": "resume",
+      "tick": 1973,
+      "native": "SimulationHold"
+    }
+  ],
+  "errors": [],
+  "browserVersion": "149.0.7827.0",
+  "terminal": {
+    "physics": {
+      "ticks": 2076,
+      "backlogSeconds": 0.007433333331098205,
+      "discardedSeconds": 0.09936666666592266,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 0,
+      "residentDynamic": 3,
+      "solver": "rapier-0.21.0-phy01.migration2:legacy-impulse-v1",
+      "stepCpuMs": 0.19999999925494194,
+      "bodyCount": 5,
+      "colliderCount": 205,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 1,
+      "collisionBytes": 2503944,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+          "centerOfMass": {
+            "x": 23.50561224489796,
+            "y": 10.49158163265306,
+            "z": 9.755612244897959
+          },
+          "cellCount": 384,
+          "massKg": 1722.65625,
+          "colliders": 1,
+          "sourceBytes": 262144
+        }
+      ],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodySourceResidentBytes": 668992,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 6.99898624420166,
+          "y": 1.035099983215332,
+          "z": -6.250424385070801
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 0,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": null,
+        "last": null
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "NoContact",
+        "target": null,
+        "distanceMeters": null,
+        "massKg": null,
+        "point": null
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.560185432434082,
+          "y": 1.3124504089355469,
+          "z": -13.267728805541992
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.633415222167969,
+            "y": 0.458950936794281,
+            "z": -7.734687805175781
+          },
+          "orientation": {
+            "x": 0.16675297915935516,
+            "y": -0.6038644909858704,
+            "z": 0.7518937587738037,
+            "w": -0.2054191529750824
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.70605182647705,
+            "y": 1.5457834005355835,
+            "z": -13.12487506866455
+          },
+          "orientation": {
+            "x": 9.243748877452163e-8,
+            "y": 0.37785908579826355,
+            "z": 9.364722473037546e-7,
+            "w": 0.9258632063865662
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "position": {
+            "x": 7.469996929168701,
+            "y": 0.9915043711662292,
+            "z": -5.228994369506836
+          },
+          "orientation": {
+            "x": -0.00001942976814461872,
+            "y": 0.5459485650062561,
+            "z": -0.000015200244888546877,
+            "w": 0.8378186821937561
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 1722.6561279296875
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "tool": {
+      "mode": "Box 0,5 m",
+      "edges": 1,
+      "issued": 1,
+      "message": "Kein Ziel innerhalb 4 m",
+      "state": "Applied",
+      "queued": 0,
+      "receipts": 1,
+      "last": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "structural": {
+        "state": "Ready",
+        "issued": 0,
+        "last": null
+      },
+      "moving": {
+        "state": "Idle",
+        "last": null,
+        "issued": 0
+      }
+    },
+    "input": {
+      "owner": "Player",
+      "locked": true,
+      "jumpEdges": 0,
+      "neutralizations": 3,
+      "pressedKeys": []
+    },
+    "bridge": false,
+    "dialog": false,
+    "locked": "debug-scene"
+  },
+  "error": "Error: Keine aktive Zielvorschau auf das gefallene Fragment innerhalb des Spielerfensters\n    at file:///workspace/scratch/5b1f8c0d748a/cut-live-qa/final-recut/fast.mjs:153:73",
+  "dialogEvents": [
+    {
+      "type": "keydown",
+      "at": 15885.300000000745,
+      "key": "Enter",
+      "target": "hvp-aim-rock",
+      "open": false,
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "keyup",
+      "at": 15888,
+      "key": "Enter",
+      "target": "hvp-aim-rock",
+      "open": false,
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "keydown",
+      "at": 15929.099999997765,
+      "key": "Enter",
+      "target": "hvp-play",
+      "open": false,
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "keyup",
+      "at": 15935.199999999255,
+      "key": "Enter",
+      "target": "hvp-play",
+      "open": false,
+      "lock": "debug-scene",
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "pointerlockchange",
+      "at": 15930.599999997765,
+      "open": false,
+      "lock": "debug-scene",
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "pointerlockchange",
+      "at": 51541.699999999255,
+      "open": true,
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "toggle",
+      "at": 51541.89999999851,
+      "target": "hvp-player-pause",
+      "open": true,
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "keydown",
+      "at": 51836.300000000745,
+      "key": "Enter",
+      "target": "",
+      "open": true,
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "keyup",
+      "at": 51841.39999999851,
+      "key": "Enter",
+      "target": "debug-scene",
+      "open": false,
+      "lock": "debug-scene",
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "toggle",
+      "at": 51837,
+      "target": "hvp-player-pause",
+      "open": false,
+      "lock": "debug-scene",
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "pointerlockchange",
+      "at": 51841,
+      "open": false,
+      "lock": "debug-scene",
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    },
+    {
+      "type": "close",
+      "at": 51837,
+      "target": "hvp-player-pause",
+      "open": false,
+      "lock": "debug-scene",
+      "nativeStatus": "SimulationHold",
+      "prevented": false
+    }
+  ],
+  "pointer": [
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      15935.300000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      15941.800000000745
+    ],
+    [
+      "pointerlockchange",
+      null,
+      "debug-scene",
+      null,
+      null,
+      null,
+      null,
+      true,
+      15930.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      15957.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      15974.300000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      16071.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      16213.800000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      16511.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      16690.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      16783.300000000745
+    ],
+    [
+      "mousedown",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      16792.199999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      17061.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      17326.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      17403.800000000745
+    ],
+    [
+      "mouseup",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      17403.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      17749.800000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      18461.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      19219.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      20197
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      21237.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      22008.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      23311.199999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      24332.300000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      24781.39999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      390,
+      480,
+      0,
+      0,
+      true,
+      24781.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      -390,
+      -480,
+      0,
+      0,
+      true,
+      25216.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      25960.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      26402
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      170,
+      640,
+      0,
+      0,
+      true,
+      26402.199999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      -170,
+      -640,
+      0,
+      0,
+      true,
+      26708.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      27454.300000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      28841.800000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      29205
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      1,
+      718,
+      0,
+      0,
+      true,
+      29205.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      -1,
+      -718,
+      0,
+      0,
+      true,
+      30494.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      32295.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      32379.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      1,
+      718,
+      0,
+      0,
+      true,
+      32379.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      -1,
+      -718,
+      0,
+      0,
+      true,
+      32914.800000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33521.300000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33532.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33550
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33566.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33604.199999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33625.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33666.800000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33760
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33866
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      33896.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      1,
+      718,
+      0,
+      0,
+      true,
+      33896.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      -1,
+      -718,
+      0,
+      0,
+      true,
+      34087.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      34329.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      34511
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      34638.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      34768.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      34917.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      1,
+      718,
+      0,
+      0,
+      true,
+      34918.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      -1,
+      -718,
+      0,
+      0,
+      true,
+      35134.300000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      35365.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      35516.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      35648.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      35918
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      36091.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      36204.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      36558.300000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      36709.39999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      37032.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      37396.39999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      37845.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      38287
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      38871.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      39766.199999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      41229.300000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      43418.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      45266.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      46438.199999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      46917.39999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47096.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47319.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47332.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47357.800000000745
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47380.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47388.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47406.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47423.199999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47435.89999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47452.599999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47465.39999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47496.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47501.099999997765
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47519.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47536
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47552.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47580.699999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47582.39999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47605.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47622.5
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47639.199999999255
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47656.39999999851
+    ],
+    [
+      "mousemove",
+      "debug-scene",
+      "debug-scene",
+      0,
+      0,
+      0,
+      0,
+      true,
+      47901.099999997765
+    ]
+  ]
+}

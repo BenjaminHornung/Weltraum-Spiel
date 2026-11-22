@@ -1,0 +1,55 @@
+{
+  "localToolchain": {
+    "rustc": null,
+    "cargo": null,
+    "cargo-gpu": null,
+    "wasm-bindgen": null
+  },
+  "pinnedUpstream": {
+    "nexus": "7c94a9664ddd6468de892c2bad6f56db8f992ed7",
+    "khal": "57ad7b6badd5bbdaa59462de282847abe8080912",
+    "vortx": "e7b9add21702a2656d7c39dbd848d33157e51b17"
+  },
+  "attempts": [
+    {
+      "command": [
+        "node",
+        "scripts/build.mjs"
+      ],
+      "cwd": "/workspace/scratch/5b1f8c0d748a/continuation/n1/work/handoff/hestia-other-pc-2026-10-13/ProducerSource/PHY-04/phy-04-nexus-gpu",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "node:fs:621\n  return binding.open(\n                 ^\n\nError: ENOENT: no such file or directory, open '/workspace/scratch/5b1f8c0d748a/continuation/n1/work/handoff/hestia-other-pc-2026-10-13/ProducerSource/PHY-04/phy-04-nexus-gpu/SourceBindings.json'\n    at Object.openSync (node:fs:621:18)\n    at readFileSync (node:fs:487:35)\n    at verifyInputs (file:///workspace/scratch/5b1f8c0d748a/continuation/n1/work/handoff/hestia-other-pc-2026-10-13/ProducerSource/PHY-04/phy-04-nexus-gpu/scripts/verify-inputs.mjs:28:30)\n    at file:///workspace/scratch/5b1f8c0d748a/continuation/n1/work/handoff/hestia-other-pc-2026-10-13/ProducerSource/PHY-04/phy-04-nexus-gpu/scripts/build.mjs:27:1\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  errno: -2,\n  code: 'ENOENT',\n  syscall: 'open',\n  path: '/workspace/scratch/5b1f8c0d748a/continuation/n1/work/handoff/hestia-other-pc-2026-10-13/ProducerSource/PHY-04/phy-04-nexus-gpu/SourceBindings.json'\n}\n\nNode.js v24.22.3\n"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--target",
+        "wasm32-unknown-unknown"
+      ],
+      "cwd": "/workspace/scratch/5b1f8c0d748a/n1-reference/handoff/hestia-other-pc-2026-10-13/ProducerSource/PHY-04/phy-04-nexus-gpu/harness",
+      "spawnError": "No such file or directory",
+      "missingExecutable": "cargo"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "-p",
+        "nexus_rbd3d",
+        "--features",
+        "cpu",
+        "--lib"
+      ],
+      "cwd": "/workspace/scratch/5b1f8c0d748a/n1-reference/nexus",
+      "spawnError": "No such file or directory",
+      "missingExecutable": "cargo"
+    }
+  ],
+  "solverShaderArtifacts": []
+}

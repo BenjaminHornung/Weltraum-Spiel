@@ -1,0 +1,747 @@
+{
+  "timeUtc": "2026-11-22T15:41:22.306169+00:00",
+  "comparedInputs": {
+    "cfa7": {
+      "commit": "cfa7cf7d35e13c7321bf3c819f4826e3dc62c003",
+      "gitTree": "ae39c7f159a09a2497e53f05c28e7bd3c62893a0",
+      "trackedInputCount": 996,
+      "byKind": {
+        "index.html": 1,
+        "package-lock.json": 1,
+        "package.json": 1,
+        "playwright.config.ts": 1,
+        "public": 77,
+        "scripts": 3,
+        "src": 395,
+        "tests": 392,
+        "tsconfig.json": 1,
+        "vendor": 122,
+        "vite.build.config.mjs": 1,
+        "vite.config.ts": 1
+      },
+      "mismatches": [],
+      "missing": [],
+      "materializedLfsFiles": 78,
+      "retainedLfsPointers": []
+    },
+    "r9": {
+      "commit": "867ecdeef1d1395f07a346ac8909e08feb73df0f",
+      "gitTree": "ca6303c2ca9ac7379b88e545cf03412a75a0cd5d",
+      "trackedInputCount": 1039,
+      "byKind": {
+        "index.html": 1,
+        "package-lock.json": 1,
+        "package.json": 1,
+        "playwright.config.ts": 1,
+        "public": 77,
+        "scripts": 3,
+        "src": 421,
+        "tests": 409,
+        "tsconfig.json": 1,
+        "vendor": 122,
+        "vite.build.config.mjs": 1,
+        "vite.config.ts": 1
+      },
+      "mismatches": [],
+      "missing": [],
+      "materializedLfsFiles": 78,
+      "retainedLfsPointers": []
+    }
+  },
+  "environment": {
+    "node": "v24.22.3",
+    "vitest": "4.1.11",
+    "maxWorkersPerCommand": 1,
+    "caseTimeoutMs": 30000,
+    "sameMachine": true,
+    "referenceHardware": false
+  },
+  "reportScope": "Paired Vitest unit suites selected from the R4 failures. The prior inventory used the default case timeout of 5000 ms and a separate 170 s per-file limit. Counts here include pending tests when a suite hook failed.",
+  "comparisonRule": "Compare case names, pass/fail/pending counts, hook messages and first failure lines. Ignore only the random six-character mkdtemp suffix; both raw reasons are retained.",
+  "batches": {
+    "cfa7/0": {
+      "resultSha256": "a64aec3f7d545d1a45ef072bcc6a567d3a4c554660c3cf87d4cdebcff49bc1e4",
+      "exit": 1,
+      "passed": 7,
+      "failed": 21,
+      "pending": 16
+    },
+    "cfa7/1": {
+      "resultSha256": "b53b57ccb09de28a2d1436a32422a11e3f4ad10f30bd60a981db53a2a80c45e9",
+      "exit": 1,
+      "passed": 22,
+      "failed": 2,
+      "pending": 0
+    },
+    "cfa7/2": {
+      "resultSha256": "6767cd1d9ff258044a6544d901bab2ea2d6fc9263f6ad4643207df2c38526397",
+      "exit": 1,
+      "passed": 13,
+      "failed": 2,
+      "pending": 0
+    },
+    "cfa7/3": {
+      "resultSha256": "1fff9eed67ed75ba1737084245cb4f475b4abf0652e78d2ef7f71735f6a17d58",
+      "exit": 1,
+      "passed": 107,
+      "failed": 9,
+      "pending": 0
+    },
+    "r9/0": {
+      "resultSha256": "9dbefbe1e3af20594f270972a3abcc979665ccbb7398e9417a312f17bee32256",
+      "exit": 1,
+      "passed": 7,
+      "failed": 21,
+      "pending": 16
+    },
+    "r9/1": {
+      "resultSha256": "61bd20d3f52298a4f1708b36816601033e65037757db958bf7e96d0aac946dc4",
+      "exit": 1,
+      "passed": 22,
+      "failed": 2,
+      "pending": 0
+    },
+    "r9/2": {
+      "resultSha256": "7cb762c43ed9c8c1b355aef2f863322cf171e72ba375814de323b61b39e85363",
+      "exit": 1,
+      "passed": 13,
+      "failed": 2,
+      "pending": 0
+    },
+    "r9/3": {
+      "resultSha256": "b8f3e12d659584ddb66fc7733619e86e64fd7bcc6c916460284a6719daa655b1",
+      "exit": 1,
+      "passed": 107,
+      "failed": 9,
+      "pending": 0
+    }
+  },
+  "suites": [
+    {
+      "file": "hvp-body-mesh-worker.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 6,
+        "failed": 2,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)",
+            "reason": "AssertionError: expected undefined to be defined"
+          },
+          {
+            "name": "native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)",
+            "reason": "AssertionError: expected undefined to be defined"
+          }
+        ]
+      },
+      "r9": {
+        "passed": 6,
+        "failed": 2,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)",
+            "reason": "AssertionError: expected undefined to be defined"
+          },
+          {
+            "name": "native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)",
+            "reason": "AssertionError: expected undefined to be defined"
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvp-chunk-physics-worker.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 0,
+        "failed": 1,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "keeps chunk segmentation through the real Worker initialize and complete Restore acknowledgements",
+            "reason": "TypeError: Cannot read properties of undefined (reading 'collisionDigest')"
+          }
+        ]
+      },
+      "r9": {
+        "passed": 0,
+        "failed": 1,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "keeps chunk segmentation through the real Worker initialize and complete Restore acknowledgements",
+            "reason": "TypeError: Cannot read properties of undefined (reading 'collisionDigest')"
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvp-game-save.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 0,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben.",
+        "failures": []
+      },
+      "r9": {
+        "passed": 0,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben.",
+        "failures": []
+      }
+    },
+    {
+      "file": "hvp-owned-materialization.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      },
+      "r9": {
+        "passed": 3,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      }
+    },
+    {
+      "file": "hvp-owned-structural-ingest.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 1,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      },
+      "r9": {
+        "passed": 1,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      }
+    },
+    {
+      "file": "hvp-parallel-p03-camera.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 24,
+        "failed": 1,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "P03 frozen b3 camera / player parity P03-T08 frozen oracle matches b3 blobs and protected avatar suffix is byte-identical",
+            "reason": "Error: spawnSync C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe ENOENT"
+          }
+        ]
+      },
+      "r9": {
+        "passed": 24,
+        "failed": 1,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "P03 frozen b3 camera / player parity P03-T08 frozen oracle matches b3 blobs and protected avatar suffix is byte-identical",
+            "reason": "Error: spawnSync C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe ENOENT"
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvp-physics-worker-body-clock.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 3,
+        "failed": 2,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "retains body clock diagnostics after restoring the worker world",
+            "reason": "AssertionError: expected undefined to be defined"
+          },
+          {
+            "name": "disables optional timing during a prepared restore without changing the native cut",
+            "reason": "AssertionError: expected undefined to be defined"
+          }
+        ]
+      },
+      "r9": {
+        "passed": 3,
+        "failed": 2,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "retains body clock diagnostics after restoring the worker world",
+            "reason": "AssertionError: expected undefined to be defined"
+          },
+          {
+            "name": "disables optional timing during a prepared restore without changing the native cut",
+            "reason": "AssertionError: expected undefined to be defined"
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvp-physics-worker-clock.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 0,
+        "failed": 1,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "terrain timing projects one coherent transaction through the real worker handler",
+            "reason": "AssertionError: expected undefined to be defined"
+          }
+        ]
+      },
+      "r9": {
+        "passed": 0,
+        "failed": 1,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "terrain timing projects one coherent transaction through the real worker handler",
+            "reason": "AssertionError: expected undefined to be defined"
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvp-residency-session.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 1,
+        "failed": 3,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "holds actual capsule coverage until the complete neighbour commits, and checkpoints both regions",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "cold-restores a checkpointed sleeping fragment without instantiating it until the real player returns",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "keeps the private live parked recipe allowance charged through real player return and wake",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      },
+      "r9": {
+        "passed": 1,
+        "failed": 3,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "holds actual capsule coverage until the complete neighbour commits, and checkpoints both regions",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "cold-restores a checkpointed sleeping fragment without instantiating it until the real player returns",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "keeps the private live parked recipe allowance charged through real player return and wake",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvp-terrain-native-worker.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 4,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      },
+      "r9": {
+        "passed": 4,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      }
+    },
+    {
+      "file": "hvp-vegetation.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 12,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      },
+      "r9": {
+        "passed": 12,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      }
+    },
+    {
+      "file": "hvp-world-replacement.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 0,
+        "failed": 3,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "keeps A alive through B preparation/rollback, and removes A only after explicit finalization",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "fails candidate creation without deleting A, and reports uncertain retirement as RecoveryHold",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores between absent and resident eastern collision without changing the live World early",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      },
+      "r9": {
+        "passed": 0,
+        "failed": 3,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "keeps A alive through B preparation/rollback, and removes A only after explicit finalization",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "fails candidate creation without deleting A, and reports uncertain retirement as RecoveryHold",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores between absent and resident eastern collision without changing the live World early",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvp-world-save.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 1,
+        "failed": 6,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "recreates every current native owner and the paused player from artifact-only data",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "rejects running checkpoints and foreign collision/profile or incomplete owner membership",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores current recut timber and terrain fragments with 'none' (measure=false)",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores current recut timber and terrain fragments with 'none' (measure=true)",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores current recut timber and terrain fragments with 'Pause' (measure=true)",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores current recut timber and terrain fragments with 'Inspect' (measure=true)",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      },
+      "r9": {
+        "passed": 1,
+        "failed": 6,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "recreates every current native owner and the paused player from artifact-only data",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "rejects running checkpoints and foreign collision/profile or incomplete owner membership",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores current recut timber and terrain fragments with 'none' (measure=false)",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores current recut timber and terrain fragments with 'none' (measure=true)",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores current recut timber and terrain fragments with 'Pause' (measure=true)",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores current recut timber and terrain fragments with 'Inspect' (measure=true)",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvpChunkWorldLayout.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 5,
+        "failed": 2,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "preserves all empty primary slots and static wood extras without creating empty native colliders",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "replaces a complete legacy catalogue by chunks and back with exact Save digests and real native retirement",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      },
+      "r9": {
+        "passed": 5,
+        "failed": 2,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "preserves all empty primary slots and static wood extras without creating empty native colliders",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "replaces a complete legacy catalogue by chunks and back with exact Save digests and real native retirement",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvpColdWorkerAncestor.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 0,
+        "failed": 6,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "includes fresh Inertia and every retained Fixed branch recipe and Source in the private resident union",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores the actual saved Body384 into the Worker with an owned ancestor before Ready and identical native Save",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "accounts the exact initial retained union for Drop Inertia Fixed and Parked recipes without a duplicate active-recipe charge",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "keeps the initial Cold recipe charged while adding only real recut children",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "publishes retained Recipe identities only after complete World validation and preserves hash quantum and exact decode JSON",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "rejects Worker Cold preparation over the unchanged cap before native restoration and releases its ledger",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      },
+      "r9": {
+        "passed": 0,
+        "failed": 6,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "includes fresh Inertia and every retained Fixed branch recipe and Source in the private resident union",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "restores the actual saved Body384 into the Worker with an owned ancestor before Ready and identical native Save",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "accounts the exact initial retained union for Drop Inertia Fixed and Parked recipes without a duplicate active-recipe charge",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "keeps the initial Cold recipe charged while adding only real recut children",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "publishes retained Recipe identities only after complete World validation and preserves hash quantum and exact decode JSON",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          },
+          {
+            "name": "rejects Worker Cold preparation over the unchanged cap before native restoration and releases its ledger",
+            "reason": "Error: Speichern und Laden ist für diesen Prüfstand noch nicht freigegeben."
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvpCutProductBinding.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 9,
+        "failed": 2,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "binds actual product bytes and explicit Source provenance (valid)",
+            "reason": "Error: Product binding path escapes workspace"
+          },
+          {
+            "name": "binds actual product bytes and explicit Source provenance (historic-source)",
+            "reason": "Error: Product binding path escapes workspace"
+          }
+        ]
+      },
+      "r9": {
+        "passed": 9,
+        "failed": 2,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "binds actual product bytes and explicit Source provenance (valid)",
+            "reason": "Error: Product binding path escapes workspace"
+          },
+          {
+            "name": "binds actual product bytes and explicit Source provenance (historic-source)",
+            "reason": "Error: Product binding path escapes workspace"
+          }
+        ]
+      }
+    },
+    {
+      "file": "hvpCutRtReport.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 50,
+        "failed": 5,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "CDP metadata publication privacy keeps nested metadata and error canaries out of files and fallback test attachments",
+            "reason": "AssertionError: expected [] to have a length of 1 but got +0"
+          },
+          {
+            "name": "P07 owning artifact and privacy boundaries retains first operation failure, warmups and raw markers after first-write failure",
+            "reason": "AssertionError: expected 'artifact: Error' to contain 'ENOSPC'"
+          },
+          {
+            "name": "P07 owning artifact and privacy boundaries retains first operation failure, warmups and raw markers after final-write failure",
+            "reason": "AssertionError: expected 'artifact: Error' to contain 'ENOSPC'"
+          },
+          {
+            "name": "P07 owning artifact and privacy boundaries creates one exclusive safe directory and emits relative inventories with unchanged actual hashes",
+            "reason": "Error: ENOENT: no such file or directory, mkdtemp 'C:/IFI_SourceCode/Utils/opencode-migration/tmp/opencode/hvp-runner-contract-fixture-Q9onJs'"
+          },
+          {
+            "name": "P07 owning artifact and privacy boundaries rechecks a created directory before final persistence and falls back without redirected writes",
+            "reason": "Error: Explicit external C:/IFI_SourceCode evidence directory required"
+          }
+        ]
+      },
+      "r9": {
+        "passed": 50,
+        "failed": 5,
+        "pending": 0,
+        "suiteError": "",
+        "failures": [
+          {
+            "name": "CDP metadata publication privacy keeps nested metadata and error canaries out of files and fallback test attachments",
+            "reason": "AssertionError: expected [] to have a length of 1 but got +0"
+          },
+          {
+            "name": "P07 owning artifact and privacy boundaries retains first operation failure, warmups and raw markers after first-write failure",
+            "reason": "AssertionError: expected 'artifact: Error' to contain 'ENOSPC'"
+          },
+          {
+            "name": "P07 owning artifact and privacy boundaries retains first operation failure, warmups and raw markers after final-write failure",
+            "reason": "AssertionError: expected 'artifact: Error' to contain 'ENOSPC'"
+          },
+          {
+            "name": "P07 owning artifact and privacy boundaries creates one exclusive safe directory and emits relative inventories with unchanged actual hashes",
+            "reason": "Error: ENOENT: no such file or directory, mkdtemp 'C:/IFI_SourceCode/Utils/opencode-migration/tmp/opencode/hvp-runner-contract-fixture-Nbor5k'"
+          },
+          {
+            "name": "P07 owning artifact and privacy boundaries rechecks a created directory before final persistence and falls back without redirected writes",
+            "reason": "Error: Explicit external C:/IFI_SourceCode evidence directory required"
+          }
+        ]
+      }
+    },
+    {
+      "file": "simulation.test.ts",
+      "equivalent": true,
+      "cfa7": {
+        "passed": 30,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      },
+      "r9": {
+        "passed": 30,
+        "failed": 0,
+        "pending": 0,
+        "suiteError": "",
+        "failures": []
+      }
+    }
+  ],
+  "interpretation": {
+    "publicSaveGate": "HVP R05 profile.ts intentionally rejects public saves. hvp-world-save, hvpColdWorkerAncestor, hvp-residency-session, hvp-world-replacement, hvpChunkWorldLayout and hvp-game-save hit this gate. hvp-chunk-physics-worker dereferences collisionDigest on a missing public checkpoint. Both hvp-body-mesh-worker failures require the same disabled Checkpoint at line 106.",
+    "legacyPerformanceHarness": "Artifact policy and fixture assume C:/IFI_SourceCode. Negative cases do execute. Positive binding assertions fail on Linux even in synthetic fixtures. hvp-parallel-p03-camera also spawns a Windows-only git.exe absolute path.",
+    "r4DefaultTimeout": "The R4 native worker diagnostic suite first timed out before establishing the next scenario owner. A later Physics is not ready result alone cannot establish a new failure. Compare both complete 30s reruns. A default 5s timeout remains a failed attempt.",
+    "scope": "Other whole-file timeout groups on R4 were outside this paired selection. No public save cutover or reference-device performance is established by these runs."
+  }
+}

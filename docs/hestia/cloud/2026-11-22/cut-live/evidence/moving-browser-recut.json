@@ -1,0 +1,160 @@
+{
+  "tree": "b43941e6002cfab9b6d24a7a8ee39a4669cf4ae8",
+  "previewPort": 45857,
+  "route": "/?hestiaPrototype=1&hvpScenario=rock-arm",
+  "source": "normal player UI and trusted browser input; DOM/public HUD and native readback only",
+  "purpose": "functional, shared Chromium software-rendered environment",
+  "assets": {
+    "hvpBootstrap-PdDFzIf_.js": "ed9f50bc6cdafb4e2099b1abe4fc4cf95d687d232cc9f201b53c1efe4d017bd4",
+    "physicsWorker-9S8hP8xu.js": "d340dec315063961f2d4a9513a945c73f6e391e13b47a443d25530c443ff70a8",
+    "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb"
+  },
+  "attempts": 2,
+  "recutVerified": false,
+  "outcome": "NoSecondClickOnConfirmedTarget",
+  "runs": [
+    {
+      "rawRecord": "first.json",
+      "rawRecordSha256": "3cc7c6c69ba47af193461d5d75f56177973101ae21ba6b41864ca35c7d0d3e47",
+      "browserVersion": "149.0.7827.0",
+      "trustedMouseDown": [
+        {
+          "type": "mousedown",
+          "target": "debug-scene",
+          "lock": "debug-scene",
+          "trusted": true,
+          "timestampMs": 16792.199999999255
+        }
+      ],
+      "firstCut": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "fragment": {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+        "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+        "cellCount": 384,
+        "massKg": 1722.65625,
+        "fallMeters": 1.5000772614868314,
+        "observedBodyPosition": {
+          "x": 7.469996929168701,
+          "y": 0.9915043711662292,
+          "z": -5.228994369506836
+        }
+      },
+      "resumeAndSecondClick": [
+        {
+          "kind": "resume",
+          "tick": 1973,
+          "native": "SimulationHold"
+        }
+      ],
+      "aimGestures": 6,
+      "previewAtSecondClick": null,
+      "movingReceipt": null,
+      "toolMoving": {
+        "state": "Idle",
+        "last": null,
+        "issued": 0
+      },
+      "terminal": {
+        "nativeStatus": "Running",
+        "ticks": 2076,
+        "terrainTransaction": "Idle",
+        "playerInput": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 3,
+          "pressedKeys": []
+        },
+        "bridge": false,
+        "terrainGeneration": 1,
+        "toolMessage": "Kein Ziel innerhalb 4 m",
+        "visibleModal": false,
+        "fragmentCenterDistanceM": 1.3765770365336307,
+        "angleToFragmentCenterDegrees": 128.51807191476362,
+        "movingPreview": null,
+        "movingSequence": 0
+      },
+      "validationError": "Error: Keine aktive Zielvorschau auf das gefallene Fragment innerhalb des Spielerfensters\n    at file:///workspace/scratch/5b1f8c0d748a/cut-live-qa/final-recut/fast.mjs:153:73",
+      "pageErrors": [],
+      "pointerCompensationObserved": true
+    },
+    {
+      "rawRecord": "second.json",
+      "rawRecordSha256": "fcf47fa26332bdc2939d54fdf7278d1fff7ecba64165638cd093a9a78f52d93c",
+      "browserVersion": "149.0.7827.0",
+      "trustedMouseDown": [
+        {
+          "type": "mousedown",
+          "target": "debug-scene",
+          "lock": "debug-scene",
+          "trusted": true,
+          "timestampMs": 14147.39999999851
+        }
+      ],
+      "firstCut": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "fragment": {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+        "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+        "cellCount": 384,
+        "massKg": 1722.65625,
+        "fallMeters": 1.5000865002067716,
+        "observedBodyPosition": {
+          "x": 7.293549537658691,
+          "y": 0.9914951324462891,
+          "z": -5.333448886871338
+        }
+      },
+      "resumeAndSecondClick": [],
+      "aimGestures": 20,
+      "previewAtSecondClick": null,
+      "movingReceipt": null,
+      "toolMoving": {
+        "state": "Idle",
+        "last": null,
+        "issued": 0
+      },
+      "terminal": {
+        "nativeStatus": "Running",
+        "ticks": 2188,
+        "terrainTransaction": "Idle",
+        "playerInput": {
+          "owner": "Player",
+          "locked": true,
+          "jumpEdges": 0,
+          "neutralizations": 1,
+          "pressedKeys": []
+        },
+        "bridge": false,
+        "terrainGeneration": 1,
+        "toolMessage": "Kein Ziel innerhalb 4 m",
+        "visibleModal": false,
+        "fragmentCenterDistanceM": 1.2481622311875977,
+        "angleToFragmentCenterDegrees": 163.04521382717556,
+        "movingPreview": null,
+        "movingSequence": 0
+      },
+      "validationError": "Error: Keine aktive Zielvorschau auf das gefallene Fragment innerhalb des Spielerfensters\n    at file:///workspace/scratch/5b1f8c0d748a/cut-live-qa/final-recut/last.mjs:160:73",
+      "pageErrors": [],
+      "pointerCompensationObserved": true
+    }
+  ],
+  "blocker": "The native moving-target preview never identified the fallen owner while the pointer was locked. The runner guarded the second click on that owner. No moving command was issued. The crosshair observation cannot distinguish the underlying product hit test from this headless pointer-control limitation."
+}

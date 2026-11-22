@@ -1,0 +1,7 @@
+RUN  v4.1.11 /workspace/scratch/5b1f8c0d748a/cut-live-integration/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  16:56:34
+   Duration  15.30s (transform 1.34s, setup 0ms, import 1.58s, tests 13.45s, environment 0ms)

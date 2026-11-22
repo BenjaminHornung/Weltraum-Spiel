@@ -1,0 +1,126 @@
+{
+  "workerBuilds": {
+    "physicsWorker": [
+      "physicsWorker-lzxa3YSJ.js",
+      "6e1b68cdebf7c78cc56a9e049ef46a8bd749924e97c6a8a9691a56676e8f8f7b"
+    ],
+    "streamingWorker": [
+      "streamingWorker-KdDAIE4n.js",
+      "1bcd66d3666f52b8d1faeed8f4b43b5594425605eb0e035da92c67d6f1f8b161"
+    ]
+  },
+  "attempts": [
+    {
+      "file": "r3-private/lab/lab-fresh-result.json",
+      "sha256": "8336d5462cac9dd73459efa6152a46b5c6b86bc92037087580e0de9f3874279a",
+      "passed": true,
+      "processInstance": "845debe2-b487-4bd1-843c-6c416a17077e",
+      "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+      "completedStreamingJobs": 256,
+      "nativeStatusAtRecut": null,
+      "failure": null,
+      "recut": null,
+      "removedCells": null,
+      "massBefore": null,
+      "massAfter": null,
+      "resaveRevision": null,
+      "dispose": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "liveThreads": 0
+    },
+    {
+      "file": "r3-private/lab/lab-cold-result.json",
+      "sha256": "32936d6569a5adc9fc89eea2265edc3184553515858862bcafc08a6f3bfb9f12",
+      "passed": false,
+      "processInstance": "163418ab-1583-4044-94f1-258a22394441",
+      "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+      "completedStreamingJobs": 256,
+      "nativeStatusAtRecut": "SimulationHold",
+      "failure": "{\"state\":\"Idle\",\"last\":{\"id\":\"p1-lab-recut\",\"status\":\"Rejected\",\"reason\":\"Error: Moving cut unavailable\"},\"issued\":1}\n+ actual - expected\n\n+ 'Rejected'\n- 'Applied'\n",
+      "recut": null,
+      "removedCells": null,
+      "massBefore": null,
+      "massAfter": null,
+      "resaveRevision": null,
+      "dispose": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "liveThreads": 0
+    },
+    {
+      "file": "r3-private-unrestricted/lab/lab-cold-result.json",
+      "sha256": "924314f60f51d2512f01451da4238d42a13fd48802ab6c5f31263a072b3c57e1",
+      "passed": true,
+      "processInstance": "9e229d7e-36a0-4e0b-a516-b6505d4eda1a",
+      "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+      "completedStreamingJobs": 257,
+      "nativeStatusAtRecut": "Running",
+      "failure": null,
+      "recut": "Applied",
+      "removedCells": 1,
+      "massBefore": 150,
+      "massAfter": 148.828125,
+      "resaveRevision": 2,
+      "dispose": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "liveThreads": 0
+    },
+    {
+      "file": "r3-private-unrestricted/cross-lab/lab-cold-result.json",
+      "sha256": "8f5044604256f38f08f7bae41135bde107827eea13d4c60b870c8f73e2b6e51a",
+      "passed": true,
+      "processInstance": "b855cd1f-6a11-4dc7-860f-f4012a7496fd",
+      "exportSha256": "2bd56bc84529171ab43fe9ef4aa2fdcfed26abae21dc2e5352f0f45d73fae5c1",
+      "completedStreamingJobs": 257,
+      "nativeStatusAtRecut": "Running",
+      "failure": null,
+      "recut": "Applied",
+      "removedCells": 1,
+      "massBefore": 150,
+      "massAfter": 148.828125,
+      "resaveRevision": 2,
+      "dispose": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "liveThreads": 0
+    }
+  ]
+}

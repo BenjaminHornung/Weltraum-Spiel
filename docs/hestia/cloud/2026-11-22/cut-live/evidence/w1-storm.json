@@ -1,0 +1,74 @@
+{
+  "profile": {
+    "digest": "sha256:d4d6c1b21c905a458dac366f8c5029bd5fcd4107e00f7a8935ca9c08eee5c85f",
+    "id": "wxg.weather.HestiaAuthoring",
+    "version": 1
+  },
+  "body": "planet.hestia",
+  "condensibleSpecies": [],
+  "gasMixture": [
+    {
+      "moleFraction": 1,
+      "speciesId": "N2"
+    }
+  ],
+  "cases": [
+    {
+      "tick": 14400000,
+      "wind": {
+        "x": -3.5447993473965163,
+        "y": -9.929280188054394,
+        "z": -0.48654617800253663
+      },
+      "stormIds": [
+        "sha256:d4d6c1b21c905a458dac366f8c5029bd5fcd4107e00f7a8935ca9c08eee5c85f/epoch.0/slot.1",
+        "sha256:d4d6c1b21c905a458dac366f8c5029bd5fcd4107e00f7a8935ca9c08eee5c85f/epoch.1/slot.1"
+      ],
+      "temperatureK": 276.72208349085696,
+      "precipitation": [],
+      "weatherSnapshot": "sha256:5cb1344db30a6a90ef72a6ca51f2abbd379e569a93aef22d1176f8211631c3e2"
+    },
+    {
+      "tick": 21600000,
+      "wind": {
+        "x": -0.46996163845990824,
+        "y": -10.395386757413148,
+        "z": -8.86848874213127e-19
+      },
+      "stormIds": [
+        "sha256:d4d6c1b21c905a458dac366f8c5029bd5fcd4107e00f7a8935ca9c08eee5c85f/epoch.1/slot.1"
+      ],
+      "temperatureK": 275.6519209082167,
+      "precipitation": [],
+      "weatherSnapshot": "sha256:4adc1633ebfe5a5dc6080f92d74d529661c6cbf2a48eec5a5aa688f0a8843f9f"
+    },
+    {
+      "tick": 28800000,
+      "wind": {
+        "x": 7.589156366433338,
+        "y": 3.825529789496944,
+        "z": 0
+      },
+      "stormIds": [
+        "sha256:d4d6c1b21c905a458dac366f8c5029bd5fcd4107e00f7a8935ca9c08eee5c85f/epoch.2/slot.1"
+      ],
+      "temperatureK": 271.12951340341004,
+      "precipitation": [],
+      "weatherSnapshot": "sha256:9d5b220447a557cd2933fae643ff85c67fa9ecafd0e3e90050d28c5a45905cb9"
+    },
+    {
+      "tick": 36000000,
+      "wind": {
+        "x": -0.2935324351897161,
+        "y": -11.94927736978126,
+        "z": -0.8134240571653079
+      },
+      "stormIds": [
+        "sha256:d4d6c1b21c905a458dac366f8c5029bd5fcd4107e00f7a8935ca9c08eee5c85f/epoch.3/slot.1"
+      ],
+      "temperatureK": 278.22109161486895,
+      "precipitation": [],
+      "weatherSnapshot": "sha256:75173ef07e0cb4ed040b82069cea2a2a86d16d30db8ae394722222bd4c3759ff"
+    }
+  ]
+}

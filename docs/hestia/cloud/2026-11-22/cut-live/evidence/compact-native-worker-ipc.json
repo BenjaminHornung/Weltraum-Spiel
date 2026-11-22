@@ -1,0 +1,51 @@
+{
+  "capability": "hvp-compact-native-ipc-qualification-v1",
+  "identity": {
+    "kind": "hvp-compact-runtime-v1",
+    "sessionId": "p1-handoff",
+    "epoch": 7,
+    "generation": 1,
+    "terrainDigest": "b7bbcf89",
+    "ownerId": "hvp:terrain-fragment:r1:0ba87bbe",
+    "membershipDigest": "hvp-material-cells-v1:1903c3523c1afcaf",
+    "registryDigest": "c1be281a"
+  },
+  "legacyDigest": "fnv1a64-v1:4b50640f94b804fd",
+  "samples": [
+    {
+      "phase": "worker-wasm-init",
+      "roundTripMs": 538.9009470000001
+    },
+    {
+      "phase": "warm-ipc-compact-and-publish",
+      "roundTripMs": 17.965833000000202
+    },
+    {
+      "phase": "query-before-step",
+      "roundTripMs": 1.849880000000212
+    },
+    {
+      "phase": "native-step",
+      "roundTripMs": 25.740856999999778
+    },
+    {
+      "phase": "archive-and-save",
+      "roundTripMs": 174.70958299999984
+    },
+    {
+      "phase": "live-recut",
+      "roundTripMs": 1454.3076959999999
+    },
+    {
+      "phase": "cold-restore",
+      "roundTripMs": 604.8619920000001
+    },
+    {
+      "phase": "cold-recut",
+      "roundTripMs": 746.1870440000002
+    }
+  ],
+  "commit": "89cc6176f4d06f4639f2671d67da50a462b14e40",
+  "endpoint": "sequential isolated Node workers, capability-gated fixture entry, product R05 native and v1 body APIs",
+  "sampling": "one end-to-end sequence, no p95 or DOM measurement"
+}
