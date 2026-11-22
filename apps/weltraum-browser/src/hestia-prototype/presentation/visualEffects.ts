@@ -3,6 +3,8 @@ import type { ThreeRendererPort } from "../../render/three/backend/threeRenderBa
 import { createDefaultGraphicsSettings, resolveGraphicsPixelRatio, type GraphicsSettingsV1 } from "../../settings";
 import { HVP_SHADOW_REVISION_MAX_BYTES, sameHvpShadowRevision, type HvpShadowAtom, type HvpShadowCasterRevision,
   type HvpShadowRevision } from "./shadowRevision";
+import type { HvpFramePasses } from "./framePasses";
+import { HVP_PHYSICS_DT } from "../physics/tick";
 import { HVP_EFFECT_VERSION } from "./look";
 export { HVP_EFFECT_VERSION } from "./look";
 
@@ -10,15 +12,25 @@ export { HVP_EFFECT_VERSION } from "./look";
 export const HVP_EFFECT_COST = Object.freeze({ triangles: 528, drawCalls: 1, meshBytes: 13568,
   cpuBytes: 16384 + 65536 + 2 * HVP_SHADOW_REVISION_MAX_BYTES });
 
-export const shadeHvpSurface = (material: THREE.Material, water: boolean): void => {
+export const shadeHvpSurface = (material: THREE.Material, water: boolean, extinction?: THREE.IUniform<number>): void => {
   // A single flat sheet has no front/back transparency ordering to resolve.
   if (water) { material.forceSinglePass = true; }
-  material.customProgramCacheKey = () => `${HVP_EFFECT_VERSION}:${water ? "water" : "opaque"}`;
+  material.customProgramCacheKey = () => `${HVP_EFFECT_VERSION}:${water ? "water" : "opaque"}${extinction ? ":weather" : ""}`;
   material.onBeforeCompile = (shader) => {
     shader.vertexShader = `varying vec3 vHvpWorld;\n${shader.vertexShader}`.replace(
       "#include <worldpos_vertex>", "#include <worldpos_vertex>\nvHvpWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;"
     );
     shader.fragmentShader = `varying vec3 vHvpWorld;\n${shader.fragmentShader}`;
+    if (extinction) {
+      shader.uniforms.hvpExtinctionPerM = extinction;
+      shader.fragmentShader = `uniform float hvpExtinctionPerM;\n${shader.fragmentShader}`.replace("#include <fog_fragment>", `
+        #include <fog_fragment>
+        #ifdef USE_FOG
+          float weatherFog = 1.0-exp(-hvpExtinctionPerM*distance(cameraPosition,vHvpWorld));
+          gl_FragColor.rgb = mix(gl_FragColor.rgb,fogColor,weatherFog);
+        #endif
+      `);
+    }
     if (water) {
       // Surface-only stationary ripples: no displaced vertices, collision or invented waves.
       shader.fragmentShader = shader.fragmentShader.replace("#include <normal_fragment_maps>", `
@@ -52,7 +64,8 @@ export const createHvpVisualRenderer = (
   makeRenderer = (options: THREE.WebGLRendererParameters): THREE.WebGLRenderer => new THREE.WebGLRenderer(options),
   onDispose?: (remaining:Readonly<{geometries:number;textures:number}>)=>void,
   diagnostics = false,
-  display: Pick<GraphicsSettingsV1["display"], "renderScale" | "maxDevicePixelRatio"> = createDefaultGraphicsSettings().display
+  display: Pick<GraphicsSettingsV1["display"], "renderScale" | "maxDevicePixelRatio"> = createDefaultGraphicsSettings().display,
+  passes?: HvpFramePasses
 ): ThreeRendererPort => {
   const renderer = makeRenderer({ ...parameters, canvas, powerPreference:"high-performance" });
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -88,17 +101,49 @@ export const createHvpVisualRenderer = (
   cloudMap.wrapS=cloudMap.wrapT=THREE.RepeatWrapping;
   cloudMap.magFilter=cloudMap.minFilter=THREE.LinearFilter;
   cloudMap.needsUpdate=true;
+  const cloudOffset = new THREE.Vector2();
+  const precipitation = new THREE.Vector2();
+  const cloudCoverage = {value: -1};
+  const extinction = {value: 0};
+  let lastWeather: ReturnType<NonNullable<typeof passes>["beginDraw"]>;
+  const clearWeather = (): void => {
+    cloudOffset.set(0, 0); precipitation.set(0, 0);
+    cloudCoverage.value = -1; extinction.value = 0; lastWeather = undefined;
+  };
+  const updateWeather = (): void => {
+    const current = passes?.beginDraw();
+    if (!current) { clearWeather(); return; }
+    const {weather, tick} = current, previous = lastWeather;
+    if (previous && previous.weather.worldId === weather.worldId && previous.weather.sessionId === weather.sessionId &&
+        previous.weather.epoch === weather.epoch && tick >= previous.tick) {
+      // One repeat of the authored cloud tile spans 256 presentation metres.
+      const step = (tick - previous.tick) * HVP_PHYSICS_DT / 256;
+      cloudOffset.set((cloudOffset.x - weather.windMps[0] * step) % 1, (cloudOffset.y - weather.windMps[2] * step) % 1);
+    } else cloudOffset.set(0, 0);
+    cloudCoverage.value = weather.cloudCoverage; extinction.value = weather.extinctionPerM;
+    if (weather.exposure === "Open") precipitation.set(weather.rain01, weather.snow01);
+    else precipitation.set(0, 0);
+    lastWeather = current;
+  };
   const skyGeometry = new THREE.SphereGeometry(600, 24, 12);
-  const skyMaterial = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false,uniforms:{cloudMap:{value:cloudMap}},
+  const skyMaterial = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, toneMapped: false,uniforms:{cloudMap:{value:cloudMap},cloudOffset:{value:cloudOffset}, cloudCoverage, precipitation:{value:precipitation}},
     vertexShader: "varying vec3 direction; void main(){direction=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}",
     fragmentShader: `varying vec3 direction; uniform sampler2D cloudMap;
+      uniform vec2 cloudOffset;
+      uniform float cloudCoverage;
+      uniform vec2 precipitation;
       void main(){
         vec3 d=normalize(direction);
         vec3 color=mix(vec3(0.5294118,0.7098039,0.8509804),vec3(0.17,0.46,0.76),smoothstep(0.0,0.8,d.y));
         vec2 p=d.xz/max(0.15,d.y)*3.0;
-        float field=texture2D(cloudMap,p*0.065).r;
-        float cloud=smoothstep(0.5,0.72,field)*smoothstep(0.05,0.22,d.y);
-        gl_FragColor=vec4(mix(color,vec3(0.93,0.96,0.94),cloud*0.82),1.0);
+        float field=texture2D(cloudMap,p*0.065+cloudOffset).r;
+        float coverage=cloudCoverage<0.0 ? 0.3 : cloudCoverage;
+        float lower=cloudCoverage<0.0 ? 0.5 : 0.65-0.5*coverage;
+        float cloud=min(1.0,coverage/0.3)*smoothstep(lower,lower+0.22,field)*smoothstep(0.05,0.22,d.y);
+        vec3 skyColor=mix(color,vec3(0.93,0.96,0.94),cloud*0.82);
+        skyColor=mix(skyColor,vec3(0.36,0.44,0.51),precipitation.x*0.65);
+        skyColor=mix(skyColor,vec3(0.83,0.88,0.90),precipitation.y*0.65);
+        gl_FragColor=vec4(skyColor,1.0);
       }` });
   const sky = new THREE.Mesh(skyGeometry, skyMaterial);
   sky.name = "hvp-presentation-sky";
@@ -108,7 +153,7 @@ export const createHvpVisualRenderer = (
   let frame = 0;
   const prepareMaterial = (material:THREE.Material,water:boolean):void => {
     if (!seenMaterials.has(material)) {
-      shadeHvpSurface(material,water);
+      shadeHvpSurface(material,water,passes ? extinction : undefined);
       seenMaterials.add(material);
       surfaceHooks.add(material.onBeforeCompile);
       surfaceKeys.add(material.customProgramCacheKey);
@@ -207,15 +252,19 @@ export const createHvpVisualRenderer = (
     renderer.setDrawingBufferSize(width, height, ratio);
     viewport = { width, height, devicePixelRatio };
   };
+  const resetPasses = (): void => { passes?.reset(); clearWeather(); };
   const restoreViewport = (): void => {
     prior = undefined;
+    resetPasses();
     if (viewport) setViewportSize(viewport.width, viewport.height, viewport.devicePixelRatio);
   };
+  canvas.addEventListener?.("webglcontextlost", resetPasses);
   canvas.addEventListener?.("webglcontextrestored", restoreViewport);
   return {
     setPixelRatio: (value) => renderer.setPixelRatio(value),
     setSize: (width,height,updateStyle) => renderer.setSize(width,height,updateStyle),
     setViewportSize,
+    onFrameSubmitted: passes?.confirmDraw,
     getDrawingBufferSize: (target) => {
       const gl = renderer.getContext();
       return target.set(gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -228,6 +277,7 @@ export const createHvpVisualRenderer = (
         scene.add(sky);
         attachedScene = scene;
       }
+      if (passes) updateWeather();
       sky.position.copy(camera.position);
       scene.updateMatrixWorld(true);
       frame += 1;
@@ -272,6 +322,8 @@ export const createHvpVisualRenderer = (
     dispose: () => {
       if (disposed) { return; }
       disposed = true;
+      resetPasses();
+      canvas.removeEventListener?.("webglcontextlost", resetPasses);
       canvas.removeEventListener?.("webglcontextrestored", restoreViewport);
       attachedScene?.remove(sky);
       attachedScene = undefined;
