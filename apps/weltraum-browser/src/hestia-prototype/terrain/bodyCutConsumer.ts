@@ -43,6 +43,7 @@ export const createHvpBodyCutConsumer=(physics:Pick<HvpPhysicsClient,"read"|"com
         return Promise.reject(new Error("Invalid moving intent"));
       }
       const request={id:input.id,ownerId:input.ownerId,sourceDigest:input.sourceDigest,edge:input.edge,direction:{x:input.direction.x,y:input.direction.y,z:input.direction.z},
+        ...(input.eyeReceipt?{eyeReceipt:{...input.eyeReceipt}}:{}),
         ...(input.expectedEye?{expectedEye:{x:input.expectedEye.x,y:input.expectedEye.y,z:input.expectedEye.z}}:{}),
         ...(input.brush==="Sphere"?{brush:"Sphere" as const}:{})};
       const signature=JSON.stringify(request),old=receipts.get(request.id);

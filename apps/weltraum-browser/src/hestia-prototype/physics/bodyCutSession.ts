@@ -1,3 +1,4 @@
+import type {HvpPlayerEyeReceipt} from "./publishedPlayerEye";
 import {StructuralPhysicsCommitError} from "../../voxel/structural";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {readHvpBodyCells,readHvpOwnedBodyCellsSteps} from "./bodyCutPlan";
@@ -18,7 +19,7 @@ import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 import {countHvpOwnedBodyMeshSteps,quoteHvpBodyMeshWork,HVP_BODY_RENDER_BYTES_PER_FACE,type HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
 
 type Vec=Readonly<{x:number;y:number;z:number}>;
-export interface HvpMovingCutRequest {readonly id:string;readonly ownerId:string;readonly sourceDigest:string;readonly edge:number;readonly direction:Vec;readonly expectedEye?:Vec;readonly brush?:"Box"|"Sphere"}
+export interface HvpMovingCutRequest {readonly id:string;readonly ownerId:string;readonly sourceDigest:string;readonly edge:number;readonly direction:Vec;readonly expectedEye?:Vec;readonly eyeReceipt?:HvpPlayerEyeReceipt;readonly brush?:"Box"|"Sphere"}
 export interface HvpMovingCutPreparation {readonly payload:HvpBodyCutPayload;readonly cells:ReturnType<typeof readHvpBodyCells>;readonly issuedTick:number;readonly compact?:Readonly<{version:"hvp-compact-moving-cut-v1";removedDigest:string;projection:HvpBodyChildProjection}>}
 /** Private mesh input from a finished owner-local plan; data only, never native/recipe authority. */
 export interface HvpBodyChildProjection extends Pick<HvpBodyCutPayload,"sessionId"|"epoch"|"commandId"|"ownerId"|"sourceId"|"sourceDigest"|"revision"> {
@@ -356,7 +357,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     settledPlan(work);
   };
   let opening:{id:string;cancelled:boolean}|undefined;
-  const capture=(request:HvpMovingCutRequest,eye:Vec,tick:number)=>{
+  const capture=(request:HvpMovingCutRequest,eye:Vec,tick:number,reachFrom?:Vec)=>{
       if(opening||pending||held||retiredWork!==undefined||!request||!/^[A-Za-z0-9:._-]{1,128}$/.test(request.id)||!Number.isSafeInteger(request.edge)||request.edge<1||request.edge>8){throw new Error("Body cut Pending or invalid");}
       if(request.brush!==undefined&&request.brush!=="Box"&&request.brush!=="Sphere"){throw new Error("Invalid body brush");}
       // A player ray enters only from the confirmed eye. A deferred click cannot move its ray to a new origin.
@@ -364,7 +365,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       if(origin&&(![origin.x,origin.y,origin.z].every(Number.isFinite)||Math.hypot(origin.x-eye.x,origin.y-eye.y,origin.z-eye.z)>1e-5)){
         throw Error("Augenposition geändert. Fragment erneut anvisieren.");
       }
-      const hit=captureHvpBodyHit(world,targets,eye,request.direction,tick),target=targets.get(request.ownerId);
+      const hit=captureHvpBodyHit(world,targets,eye,request.direction,tick,reachFrom),target=targets.get(request.ownerId);
       if(!hit||!target||hit.ownerId!==request.ownerId||hit.sourceDigest!==request.sourceDigest){throw new Error("Stale or missing moving contact within 4 m");}
       return {hit,target};
   };
@@ -406,13 +407,13 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       preview=!opening&&!pending&&!held&&eye&&direction?previewHvpBodyHit(world,targets,eye,direction,tick,
         contact===undefined?castHvpPlayerRay(world,eye,direction):contact):null;
     },
-    begin(request:HvpMovingCutRequest,eye:Vec,tick:number):HvpMovingCutPreparation {
-      const {hit,target}=capture(request,eye,tick);
+    begin(request:HvpMovingCutRequest,eye:Vec,tick:number,reachFrom?:Vec):HvpMovingCutPreparation {
+      const {hit,target}=capture(request,eye,tick,reachFrom);
       return beginCaptured(request,hit,target,readHvpBodyCells(target.recipe.source));
     },
-    async beginCompact(request:HvpMovingCutRequest,eye:Vec,tick:number,host:HvpBodyPlanHost,createLedger:()=>ReturnType<typeof createStructuralOwnerLedger>,targetFor?:(body:R.RigidBody,owner:HvpCompactNativeOwner)=>HvpCuttableBody):Promise<HvpMovingCutPreparation> {
+    async beginCompact(request:HvpMovingCutRequest,eye:Vec,tick:number,host:HvpBodyPlanHost,createLedger:()=>ReturnType<typeof createStructuralOwnerLedger>,targetFor?:(body:R.RigidBody,owner:HvpCompactNativeOwner)=>HvpCuttableBody,reachFrom?:Vec):Promise<HvpMovingCutPreparation> {
       // Capture the native hit before yielding. The parent can rotate or move while its immutable archive is encoded.
-      const {hit,target}=capture(request,eye,tick);
+      const {hit,target}=capture(request,eye,tick,reachFrom);
       const owner=target.compactOwner;
       if(!owner)throw new Error("Compact moving owner required");
       const ledger=createLedger();

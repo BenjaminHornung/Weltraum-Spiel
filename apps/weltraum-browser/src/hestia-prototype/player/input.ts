@@ -115,7 +115,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   listeners.add(win,"blur",stop);
   const captureCutRay=(s=physics.read())=>{
     if(!active||activating||isBlocked()||!s.player||doc.pointerLockElement!==canvas)return;
-    return {origin:new Vector3(s.player.position.x,s.player.position.y+0.75,s.player.position.z),
+    return {...(s.playerEyeReceipt?{eyeReceipt:s.playerEyeReceipt}:{}),origin:new Vector3(s.player.position.x,s.player.position.y+0.75,s.player.position.z),
       direction:new Vector3(0,0,-1).applyEuler(new Euler(pitch,yaw,0,"YXZ"))};
   };
   return {

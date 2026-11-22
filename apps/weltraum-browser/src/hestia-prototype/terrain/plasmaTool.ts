@@ -1,3 +1,4 @@
+import type {HvpPlayerEyeReceipt} from "../physics/publishedPlayerEye";
 import { Vector3 } from "three";
 import {createHvpRegionalCutRead,type HvpRegionalCutCoveragePort} from "./regionalCutCoverage";
 import { pickHvpCell, type HvpCell } from "./picking";
@@ -12,7 +13,7 @@ import type {HvpToolCheckpoint} from "../persistence/gameCheckpoint";
 /** Canonical intent only: no mouse ray ever edits a render buffer or collider. */
 export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot>,
   consumer: ReturnType<typeof createHvpTerrainConsumer>,
-  readAim: () => {origin:Vector3;direction:Vector3}|undefined,
+  readAim: () => {origin:Vector3;direction:Vector3;eyeReceipt?:HvpPlayerEyeReceipt}|undefined,
   preview: (cells:readonly HvpCell[], allowed:boolean)=>void,
    supports: readonly Readonly<{x:number;z:number}>[],
    structure?:{physics:Pick<HvpPhysicsClient,"read"|"setCutAim">;consumer:ReturnType<typeof createHvpStructuralConsumer>;admit:()=>void},
@@ -27,7 +28,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
   let displayedBody:{ownerId:string;sourceDigest:string}|undefined;
   type PlayerRay=NonNullable<ReturnType<typeof readAim>>;
   type MovingIntent={ownerId:string;sourceDigest:string;mode:number;origin:PlayerRay["origin"];direction:PlayerRay["direction"];
-    sessionId:string;epoch:number;stamp:number;expires:number};
+    sessionId:string;epoch:number;stamp:number;expires:number;eyeReceipt?:HvpPlayerEyeReceipt};
   let pending:MovingIntent|undefined;
   let feedback:{text:string;until:number}|undefined;
   const explain=(text:string)=>{feedback={text,until:performance.now()+2000};};
@@ -42,7 +43,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
     const {ownerId,sourceDigest,direction,origin}=intent;
     coverage?.cancel();feedback=undefined;
     try{
-      await moving!.submit({id:`moving-cut-${++movingSequence}`,ownerId,sourceDigest,direction,expectedEye:origin,
+      await moving!.submit({id:`moving-cut-${++movingSequence}`,ownerId,sourceDigest,direction,expectedEye:origin,...(intent.eyeReceipt?{eyeReceipt:intent.eyeReceipt}:{}),
         edge:intent.mode===1?1:4,...(intent.mode===3?{brush:"Sphere" as const}:{})});
       const outcome=moving!.read().last;
       if(outcome?.status==="Rejected")explain(outcome.reason);
@@ -129,7 +130,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
         if(pending){explain("Ein Fragmentschnitt wartet bereits.");return;}
         const state=root.read();
         const intent:MovingIntent={...displayedBody,origin:ray.origin.clone(),direction:ray.direction.clone(),mode,
-          sessionId:state.sessionId,epoch:state.epoch,stamp:eventStamp??now,expires:now+1500};
+          sessionId:state.sessionId,epoch:state.epoch,eyeReceipt:ray.eyeReceipt,stamp:eventStamp??now,expires:now+1500};
         if(!writable()){pending=intent;explain("Fragmentschnitt wartet auf die Weltfreigabe.");return;}
         await submitMoving(intent);return;
       }
@@ -145,7 +146,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
         coverage?.cancel();
         if(["Pending","RecoveryHold"].includes(consumer.read().state)||structure.consumer.read().state!=="Ready"){message="Andere Mutation Pending";return;}
         const aim=readAim();if(!aim){return;}
-        try{await moving.submit({id:`moving-cut-${++movingSequence}`,ownerId:body.ownerId,sourceDigest:body.sourceDigest,edge:mode===1?1:4,direction:aim.direction,...(player?{expectedEye:inputAim.origin}:{}),
+        try{await moving.submit({id:`moving-cut-${++movingSequence}`,ownerId:body.ownerId,sourceDigest:body.sourceDigest,edge:mode===1?1:4,direction:aim.direction,...(player?{expectedEye:inputAim.origin,eyeReceipt:inputAim.eyeReceipt}:{}),
           ...(mode===3?{brush:"Sphere" as const}:{})});}
         catch(error){message=String(error);}key="";return;
       }

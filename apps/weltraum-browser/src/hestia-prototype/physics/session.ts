@@ -1,4 +1,5 @@
 import {readHvpBodyCells} from "./bodyCutPlan";
+import {createPublishedPlayerEyes} from "./publishedPlayerEye";
 import { resolveHvpGravity, HVP_INERTIA_CELLS, HVP_INERTIA_KEY, HVP_PLAYER_PROFILE, HVP_SOLVER_VERSION, assertHvpPublicSaveCutover } from "./profile";
 import {validateHvpChunkStaticLayout,validateHvpChunkCollisionSteps,type HvpChunkStaticLayout} from "./staticTerrainLayout";
 export { resolveHvpGravity } from "./profile";
@@ -626,16 +627,26 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         try{return owner.materializeV1Sync(ledger.reserve);}finally{ledger.release();}
       }
     });
-    const bodyCutStart=()=>{
+    const publishedEyes=workerOwned?createPublishedPlayerEyes(sessionId):undefined;
+    const bodyCutStart=(request:HvpMovingCutRequest)=>{
       if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Running"){throw new Error("Moving cut unavailable");}
       // A rollback before Stage must never resume from the previous command's run state.
       movingWasRunning=false;
-      return {eye:playerEye(),tick:tick.read().ticks};
+      const current=playerEye(),ticks=tick.read().ticks;
+      let eye=current;
+      if(request.eyeReceipt){
+        if(!request.expectedEye||!publishedEyes)throw Error("Fehlender Augenpositionsnachweis");
+        eye=publishedEyes.resolve(request.eyeReceipt,request.expectedEye,ticks,terrainGeneration,moving.read().sequence);
+      }
+      return {eye,tick:ticks,reachFrom:current};
     };
     const read = (includeBranchCells=false) => {const structural=disposed?null:branch?.read(includeBranchCells)??null;
       let activeDynamic=0,residentDynamic=disposed?0:residency!.count;
       if(!disposed){world.bodies.forEach(b=>{if(b.isDynamic()){residentDynamic+=1;if(!b.isSleeping()){activeDynamic+=1;}}});}
-      return Object.freeze({ ...tick.read(), status:bodyResidencyWork?.hold?"RecoveryHold" as const:coverageHeld?"CoverageHold" as const:tick.read().status,gravity, gravityProfile: "local-tangent-gravity-v1",activeDynamic,residentDynamic,
+      const clock=tick.read(),avatar=disposed?null:character?.read()??null;
+      const eyeReceipt=publishedEyes&&avatar?.status==="Walking"&&clock.status==="Running"?
+        publishedEyes.record(clock.ticks,terrainGeneration,moving.read().sequence,{x:avatar.position.x,y:avatar.position.y+HVP_PLAYER_PROFILE.eyeHeight-HVP_PLAYER_PROFILE.height/2,z:avatar.position.z}):undefined;
+      return Object.freeze({ ...clock,...(eyeReceipt?{playerEyeReceipt:eyeReceipt}:{}), status:bodyResidencyWork?.hold?"RecoveryHold" as const:coverageHeld?"CoverageHold" as const:tick.read().status,gravity, gravityProfile: "local-tangent-gravity-v1",activeDynamic,residentDynamic,
       solver: R.PHY01_SOLVER_VERSION, stepCpuMs, bodyCount: disposed ? 0 : world.bodies.len(),
       colliderCount: disposed ? 0 : world.colliders.len(), nativeBytes: "unsupported", terrainGeneration,
        collisionBytes: disposed ? 0 : collisionBytes(), terrainTransaction: terrainHeld?"RecoveryHold":staged === undefined ? "Idle" : staged.committed ? "CommittedHeld" : "PreparedHeld",
@@ -647,9 +658,9 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
          bodyResidencyId:disposed?null:bodyResidencyWork?.id??null,
          bodyResidencyTransaction:disposed?"Idle":bodyResidencyWork?.hold?"RecoveryHold":bodyResidencyWork?(bodyResidencyWork.committed?"CommittedHeld":"PreparedHeld"):"Idle",
         neighborTransaction:disposed?"Idle":residency!.held?"RecoveryHold":neighbor?.read().state??"Idle",
-        neighborPinned:disposed?false:neighbor?.pinned(character?.read().position)??false,
+        neighborPinned:disposed?false:neighbor?.pinned(avatar?.position)??false,
        preparedTerrainFragments:disposed?[]:(staged?.fragments??[]).map(fragmentView),
-      player: disposed ? null : character?.read() ?? null,
+      player:avatar,
        structural,
        moving:moving.read(),
         lastImpulse,impulseTarget:disposed?noImpulseTarget:impulseTarget,lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,
@@ -829,14 +840,14 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
        },
        pause(): void { impulseTarget=noImpulseTarget;if(staged) { staged.running=false; }if(bodyResidencyWork){bodyResidencyWork.running=false;}
          if(bodyHoldStart!==undefined){bodyHoldManual=true;if(bodySpans&&bodySpans.holdMs===null){bodySpans=Object.freeze({...bodySpans,manualPause:true});}}
-         branchWasRunning=false;movingWasRunning=false;neighborWasRunning=false;coverageWasRunning=false;character?.setEnabled(false); tick.pause(); },
+         publishedEyes?.clear();branchWasRunning=false;movingWasRunning=false;neighborWasRunning=false;coverageWasRunning=false;character?.setEnabled(false); tick.pause(); },
        resume(): void { if(terrainHeld||moving.holdsWorld||extraHeld()){throw new Error("RecoveryHold, coverage or body transaction");}tick.resume(); },
        play(): void {
          if(terrainHeld||moving.holdsWorld||extraHeld()){throw new Error("RecoveryHold, coverage or body transaction");}
         if (character === undefined) { throw new Error("Player collision is unavailable"); }
         character.setEnabled(true); tick.resume();
       },
-      inspect(): void { character?.setEnabled(false);impulseTarget=noImpulseTarget; },
+      inspect(): void { publishedEyes?.clear();character?.setEnabled(false);impulseTarget=noImpulseTarget; },
       input(value: HvpPlayerInput): void { character?.setInput(value); },
       camera(offset?: Readonly<{ x: number; y: number; z: number }>): void { character?.setCameraOffset(offset); },
       aimBranch(direction?:Readonly<{x:number;y:number;z:number}>):void {
@@ -850,14 +861,14 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         moving.preview(eye,direction,clock.ticks,contact);
       },
       beginBodyCut(request:HvpMovingCutRequest){
-        const command=bodyCutStart();
-        return moving.begin(request,command.eye,command.tick);
+        const command=bodyCutStart(request);
+        return moving.begin(request,command.eye,command.tick,command.reachFrom);
       },
       beginBodyCutForWorker(request:HvpMovingCutRequest){
-        const command=bodyCutStart();
-        if(!movingBodies.get(request.ownerId)?.compactOwner)return moving.begin(request,command.eye,command.tick);
+        const command=bodyCutStart(request);
+        if(!movingBodies.get(request.ownerId)?.compactOwner)return moving.begin(request,command.eye,command.tick,command.reachFrom);
         return moving.beginCompact(request,command.eye,command.tick,borrowedBodyHost,
-          ()=>createStructuralOwnerLedger(bodySourceResidentBytes()+retainedCollisionBytes(),undefined,128),compactFragment);
+          ()=>createStructuralOwnerLedger(bodySourceResidentBytes()+retainedCollisionBytes(),undefined,128),compactFragment,command.reachFrom);
       },
       /** Source-only plan work before any World hold; Read/Input and simulation continue between phases. */
       async prepareBodyCutPlan(id:string):Promise<void> {
@@ -1150,7 +1161,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
          bodyChannel?.port1.close();bodyChannel?.port2.close();bodyChannel=undefined;
          const waiting=bodyYield;bodyYield=undefined;waiting?.reject(new Error("Moving preparation disposed"));
          for(const f of [...movingBodies.values(),...(staged?.fragments??[])])f.compactOwner?.dispose();
-         bodies.clear();movingBodies.clear();residency!.dispose();world.free();moving.dispose();collision.clear();
+         publishedEyes?.clear();bodies.clear();movingBodies.clear();residency!.dispose();world.free();moving.dispose();collision.clear();
          restored=undefined;saved=undefined;checkpoint=undefined;inertiaRecipe=null;branch=undefined;neighbor=undefined;sectors=[];
          coldRecipes=undefined;coldResidentBytes=0;
       }

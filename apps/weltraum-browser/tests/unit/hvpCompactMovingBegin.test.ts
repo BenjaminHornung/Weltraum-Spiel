@@ -29,6 +29,7 @@ it.each(["move", "rollback", "replace", "dispose"] as const)("captures before th
   const moving = createHvpOwnedHashBodyCutSession(world, targets, new Map([[target.ownerId,body]]), "compact-moving");
   const eye = {x:-1,y:1.25,z:-12.5*.125}, direction = {x:1,y:0,z:0};
   const hit = captureHvpBodyHit(world, targets, eye, direction, 42)!;
+  expect(captureHvpBodyHit(world,targets,eye,direction,42,{x:eye.x+7,y:eye.y,z:eye.z})).toBeNull();
   const request = {id:"recut",ownerId:target.ownerId,sourceDigest:hit.sourceDigest,edge:1,direction};
   let clock = 0;
   const now = vi.spyOn(performance,"now").mockImplementation(() => ++clock);

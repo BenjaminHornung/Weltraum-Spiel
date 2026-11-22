@@ -75,9 +75,14 @@ const projectBodyContact=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBo
 /** A projection carries no authority to cut a body, even on its original tick. */
 export const previewHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number,ray:HvpPlayerContact)=>
   projectBodyContact(world,targets,eye,direction,issuedTick,ray)?.hit ?? null;
-export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number)=>{
+export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number,reachFrom?:Vec)=>{
   validateBodyRay(eye,direction,issuedTick);
-  const result=projectBodyContact(world,targets,eye,direction,issuedTick,castHvpPlayerRay(world,eye,direction));
+  const native=castHvpPlayerRay(world,eye,direction);
+  if(reachFrom&&native){
+    const t=native.timeOfImpact;
+    if(Math.hypot(eye.x+t*direction.x-reachFrom.x,eye.y+t*direction.y-reachFrom.y,eye.z+t*direction.z-reachFrom.z)>4)return null;
+  }
+  const result=projectBodyContact(world,targets,eye,direction,issuedTick,native);
   if(!result){return null;}
   hits.set(result.hit,{source:result.target.compactOwner??result.target.recipe,body:result.target.body});
   return result.hit;

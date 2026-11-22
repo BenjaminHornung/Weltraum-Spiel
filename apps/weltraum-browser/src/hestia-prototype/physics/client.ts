@@ -739,7 +739,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         if(movingProtocol)await primeTerrainRecovery();
         movingIntent=request;movingProjection=undefined;movingRolledBack=undefined;
         await send({kind:"BeginBodyCut",request:{id:request.id,ownerId:request.ownerId,sourceDigest:request.sourceDigest,edge:request.edge,
-         direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.expectedEye?{expectedEye:{...request.expectedEye}}:{}),...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})}},[],true,reply=>{
+         direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.expectedEye?{expectedEye:{...request.expectedEye}}:{}),...(request.eyeReceipt?{eyeReceipt:{...request.eyeReceipt}}:{}),...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})}},[],true,reply=>{
            preparation=reply.bodyPreparation;
            if(preparation!==undefined){bodyProjectionTicket={binding:hvpBodyProjectionBinding(preparation,reply.id),beginSequence:reply.sequence};}
          });
