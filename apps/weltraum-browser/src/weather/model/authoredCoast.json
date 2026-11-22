@@ -1,0 +1,288 @@
+{
+  "bundle": {
+    "binding": {
+      "atmosphereEpoch": "atmosphere.1",
+      "authorityRevision": "1",
+      "checkpointDigest": null,
+      "climateNormals": {
+        "digest": "sha256:c61826b2e89992da0510fadb8ea4f9f6cc48989970c67b3d8cd49ccfa6e27f5f",
+        "id": "fixture.climate.HestiaAuthoring",
+        "version": 1
+      },
+      "eventCursor": "0",
+      "eventDigest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "macroGeography": {
+        "digest": "sha256:3784bb8c30dc81a82eecbb4ccb3d93b92918db4c8bb76f47ec2f5b01938c72cc",
+        "id": "fixture.macro-projection.HestiaAuthoring",
+        "version": 1
+      },
+      "model": {
+        "digest": "sha256:6a51ff1ab2ca347befe5aca796e230034368671abb98d1fe83a504025ed20c4e",
+        "id": "authored-diagnostic-read-v1",
+        "version": 1
+      },
+      "profile": {
+        "digest": "sha256:80b1367b0034ad2965002da544f586a3d3d26245175f7eb716149e90550caba8",
+        "id": "fixture.weather.HestiaAuthoring",
+        "version": 1
+      },
+      "sessionId": "fixture.session",
+      "simulationTick": 120,
+      "sourceDigest": "sha256:ef8073ea6c42c4450a3ed727ffce9c304189423e189455bedc6dc5227cea1abc",
+      "sourceEpoch": "source.1",
+      "sourceOwner": "fixture.author",
+      "sourceRevision": "1",
+      "worldId": "fixture.world"
+    },
+    "climate": {
+      "bodyId": "planet.hestia",
+      "provenance": {
+        "kind": "TestAssumption",
+        "note": "Synthetic schema/read fixture only; not natural constants or product climate."
+      },
+      "schema": "fixture.climate-binding/v1"
+    },
+    "events": [],
+    "geography": {
+      "bodyId": "planet.hestia",
+      "coverage": "single-authored-query",
+      "provenance": {
+        "kind": "TestAssumption",
+        "note": "Synthetic schema/read fixture only; not natural constants or product climate."
+      },
+      "schema": "fixture.macro-data-projection/v1",
+      "sourceOwner": "PlanetaryMacroData-candidate"
+    },
+    "name": "HestiaAuthoring",
+    "optics": {
+      "coefficientUnit": "1/m",
+      "digest": "sha256:576c240435d94d639bfe0919646990708f1b671fc4bbed6b8d50e405dc4aedf6",
+      "id": "fixture.optics.HestiaAuthoring",
+      "mieAnisotropy": 0.5,
+      "miePerM": 1e-05,
+      "physics": {
+        "digest": "sha256:0feaed9b6bcbb1ec71a2ecf52512d3f00a1aada2a7027445dd03b3ceba257e3e",
+        "id": "fixture.physics.HestiaAuthoring",
+        "version": 1
+      },
+      "provenance": {
+        "kind": "TestAssumption",
+        "note": "Synthetic schema/read fixture only; not natural constants or product climate."
+      },
+      "rayleighPerM": {
+        "x": 1e-05,
+        "y": 2e-05,
+        "z": 3e-05
+      },
+      "schema": "cel.atmosphere-optics/v1",
+      "version": 1
+    },
+    "physics": {
+      "aerosolSpecies": [],
+      "assumptionProvenance": {
+        "kind": "TestAssumption",
+        "note": "Synthetic schema/read fixture only; not natural constants or product climate."
+      },
+      "body": {
+        "digest": "sha256:8e8e6c5d49565d89168da17ed9ef825c615f422c34d6d06d49b1d14a02bc41e4",
+        "id": "planet.hestia",
+        "version": 1
+      },
+      "bondAlbedo": 0.3,
+      "classificationProvenance": {
+        "kind": "Catalog",
+        "note": "Exact unchanged starterSystem atmosphere classification."
+      },
+      "condensibleSpecies": [],
+      "digest": "sha256:0feaed9b6bcbb1ec71a2ecf52512d3f00a1aada2a7027445dd03b3ceba257e3e",
+      "ephemeris": {
+        "digest": "sha256:f5b8f1c740f2a683a128d52e4763e22ccdf39b2e3ffeb9e9b4bc6ef1296f9f84",
+        "id": "ephemeris.planet.hestia",
+        "version": 1
+      },
+      "frameId": "frame:body-fixed.planet.hestia",
+      "gasMixture": [
+        {
+          "moleFraction": 1,
+          "speciesId": "N2"
+        }
+      ],
+      "hasAtmosphere": true,
+      "hazards": [
+        "HighOxygen",
+        "HighPressure",
+        "Storms"
+      ],
+      "id": "fixture.physics.HestiaAuthoring",
+      "internalHeatFluxWPerM2": 0,
+      "outerRadiusMeters": 8292000,
+      "pressureCoordinate": "AltitudeMeters",
+      "pressureRangePa": [
+        0,
+        1000000
+      ],
+      "radiusMeters": 8282000,
+      "referencePressurePa": 145000,
+      "rotation": {
+        "mode": "Free",
+        "provenance": {
+          "kind": "Catalog",
+          "note": "Exact unchanged starterSystem rotation."
+        },
+        "value": {
+          "axialTiltDegrees": 10,
+          "primeMeridianAtEpochDegrees": 0,
+          "retrograde": false,
+          "rotationPeriodSeconds": 129600,
+          "schemaVersion": 1
+        }
+      },
+      "scaleHeightMeters": 1000,
+      "schema": "cel.atmosphere-physics/v1",
+      "star": {
+        "digest": "sha256:6f07d94417ad71a0edb304902cfd7f859c1919bac471178dae052048f30a3323",
+        "id": "star.aurelia",
+        "version": 1
+      },
+      "temperatureRangeK": [
+        50,
+        600
+      ],
+      "thermodynamics": {
+        "molarMassKgPerMol": 0.028,
+        "provenance": {
+          "kind": "TestAssumption",
+          "note": "Synthetic authoring constants, not accepted planetary climate or natural atmosphere data."
+        },
+        "specificHeatJPerKgK": 1000
+      },
+      "units": {
+        "length": "m",
+        "pressure": "Pa",
+        "temperature": "K"
+      },
+      "version": 1
+    },
+    "profile": {
+      "bodyId": "planet.hestia",
+      "climateNormals": {
+        "digest": "sha256:c61826b2e89992da0510fadb8ea4f9f6cc48989970c67b3d8cd49ccfa6e27f5f",
+        "id": "fixture.climate.HestiaAuthoring",
+        "version": 1
+      },
+      "digest": "sha256:80b1367b0034ad2965002da544f586a3d3d26245175f7eb716149e90550caba8",
+      "frameId": "frame:body-fixed.planet.hestia",
+      "id": "fixture.weather.HestiaAuthoring",
+      "macroGeography": {
+        "digest": "sha256:3784bb8c30dc81a82eecbb4ccb3d93b92918db4c8bb76f47ec2f5b01938c72cc",
+        "id": "fixture.macro-projection.HestiaAuthoring",
+        "version": 1
+      },
+      "model": {
+        "digest": "sha256:6a51ff1ab2ca347befe5aca796e230034368671abb98d1fe83a504025ed20c4e",
+        "id": "authored-diagnostic-read-v1",
+        "version": 1
+      },
+      "numerics": {
+        "digest": "sha256:64e7977f9b510d74aa61fc37edae076c94ef7a3d0fda09b1fd9cf14e364bb714",
+        "id": "deterministicMathV1",
+        "version": 1
+      },
+      "optics": {
+        "digest": "sha256:576c240435d94d639bfe0919646990708f1b671fc4bbed6b8d50e405dc4aedf6",
+        "id": "fixture.optics.HestiaAuthoring",
+        "version": 1
+      },
+      "physics": {
+        "digest": "sha256:0feaed9b6bcbb1ec71a2ecf52512d3f00a1aada2a7027445dd03b3ceba257e3e",
+        "id": "fixture.physics.HestiaAuthoring",
+        "version": 1
+      },
+      "schema": "cel.planet-weather/v1",
+      "strategy": "analytic-synoptic-v1",
+      "ticksPerWeatherStep": 72000,
+      "version": 1
+    },
+    "query": {
+      "bodyFixedPositionMeters": {
+        "x": 8282000,
+        "y": 0,
+        "z": 0
+      },
+      "bodyId": "planet.hestia",
+      "frameId": "frame:body-fixed.planet.hestia",
+      "frameKind": "BodyFixed",
+      "requiredAccuracy": "macro",
+      "simulationTick": 120,
+      "vertical": {
+        "altitudeMeters": 0,
+        "kind": "AltitudeMeters"
+      }
+    },
+    "records": [
+      {
+        "provenance": {
+          "kind": "TestAssumption",
+          "note": "Synthetic schema/read fixture only; not natural constants or product climate."
+        },
+        "query": {
+          "bodyFixedPositionMeters": {
+            "x": 8282000,
+            "y": 0,
+            "z": 0
+          },
+          "bodyId": "planet.hestia",
+          "frameId": "frame:body-fixed.planet.hestia",
+          "frameKind": "BodyFixed",
+          "requiredAccuracy": "macro",
+          "simulationTick": 120,
+          "vertical": {
+            "altitudeMeters": 0,
+            "kind": "AltitudeMeters"
+          }
+        },
+        "sample": {
+          "aerosols": [],
+          "condensates": [],
+          "extinctionPerM": 1e-05,
+          "precipitation": [],
+          "pressurePa": 145000,
+          "stormIds": [],
+          "temperatureK": 280,
+          "windBodyFixedMps": {
+            "x": 0,
+            "y": 3,
+            "z": 0
+          }
+        },
+        "status": "Known",
+        "supportRadiusMeters": 200000
+      }
+    ]
+  },
+  "config": {
+    "schema": "wxg.synthetic-climate-config/v1",
+    "referenceTemperatureK": 280,
+    "solarFluxWPerM2": 1360,
+    "longwaveAtReferenceWPerM2": 238,
+    "feedbackWPerM2K": 2,
+    "diffusionWPerM2K": 0.6,
+    "p2ForcingWPerM2": -60,
+    "lapseKPerM": 0.003,
+    "seasonalAmplitudeK": 8,
+    "seasonPeriodTicks": 3784320000,
+    "tidalContrastK": 20,
+    "substellarDirection": {
+      "x": 1,
+      "y": 0,
+      "z": 0
+    },
+    "circulationHeightMeters": 10000,
+    "circulationDeltaK": 40,
+    "zonalWindMps": 12,
+    "provenance": {
+      "kind": "TestAssumption",
+      "note": "Synthetic authoring constants, not accepted planetary climate or natural atmosphere data."
+    }
+  }
+}
