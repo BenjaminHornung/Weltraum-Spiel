@@ -6,8 +6,9 @@ import {validateFrame,rebaseFrame,type AtmosphereFrame,type V3} from './optics';
 import rainOptics from '../shaders/rain-optics.glsl';
 import {createSingleFlight,disposeOwnedAsync} from './init';
 import {createViewerWetness} from './wetness';
+import {createPlaybackTickReader,scenarioTime,scenarioTickFromSource} from './scenario-time';
 import {prepareTemporalRequests,type OwnerPortInputs} from './temporal-boundary';
-import {createOpticalReadPort,assertCurrentAnalytic,tangentBasis,type AnalyticInput,type PlanetWeatherQuery} from './weather-port';
+import {bindOpticalReadView,createAnalyticReadView,createSimulationTick,UNIVERSE_TICKS_PER_SECOND,assertCurrentAnalytic,tangentBasis,type AnalyticInput,type PlanetWeatherQuery} from './weather-port';
 const status=document.querySelector('#status') as HTMLElement,canvas=document.querySelector('canvas')!,mode=document.querySelector('#mode') as HTMLSelectElement;
 declare const __DATA_BINDINGS__:Record<string,{bytes:number;sha256:string}>;
 declare const __ROOT_PATH__:string;
@@ -24,7 +25,7 @@ async function start(){
  const input:AnalyticInput=JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-input.json')));
  const query:PlanetWeatherQuery=JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-query.json')));
  const optics=JSON.parse(new TextDecoder().decode(await checked('fixtures/optics-config.json')));
- const weatherPort=await createOpticalReadPort(input);
+ const weatherPort=bindOpticalReadView(await createAnalyticReadView(input));
  const projected=await weatherPort.read(query,{cloudCoverage:optics.cloudCoverage,rain01:optics.rain01},{originMeters:[0,0,0],sourceRevision:0,atlasEpoch:1});
  if(projected.frame===null){status.textContent='WEATHER_'+projected.status+': no optical frame; no renderer started.';return;}
  await assertCurrentAnalytic(JSON.parse(new TextDecoder().decode(await checked('fixtures/chosen-weather-result.json'))),query,weatherPort.view);
@@ -87,7 +88,9 @@ async function start(){
     if(wd<1.0&&rainDist>rainDistance(screenUv,wd))diffuseColor.a*=0.44;
     #include <opaque_fragment>`);
   };material.customProgramCacheKey=()=> 'atm.rd-rain-optics.v1';});
- let takram:Awaited<ReturnType<typeof createTakram>>|undefined,presentationTick=0,rdTick=0,currentFrame=validateFrame({...frame,sourceRevision:rainSourceRevision}),wetnessResult:ReturnType<typeof wetness.update>|undefined;
+ const playbackTick=createPlaybackTickReader();
+ let weatherRequest=0;
+ let takram:Awaited<ReturnType<typeof createTakram>>|undefined,rdTick=0,currentFrame=validateFrame({...frame,sourceRevision:rainSourceRevision}),wetnessResult:ReturnType<typeof wetness.update>|undefined;
  volume.setFrame(currentFrame);
  const matrix=new T.Matrix4().makeBasis(east,up,north);matrix.setPosition(up.clone().multiplyScalar(frame.bodyRadiusMeters));
  const initialize=own(createSingleFlight(signal=>createTakram(renderer,scene,camera,frame,matrix,new T.Vector3(-0.4,0.8,-0.4472135955).transformDirection(matrix),signal)));
@@ -107,18 +110,38 @@ async function start(){
   }
  }
  mode.onchange=()=>{select().catch(e=>{status.textContent='TAKRAM FAIL: '+e.message;mode.value='analytic';});};
- function renderTick(tick:number){if(disposed)throw Error('VIEWER_DISPOSED');if(initialize.busy||replacing)throw Error('VIEWER_PREPARING');
+ function renderTick(tick:number){weatherRequest++;if(disposed)throw Error('VIEWER_DISPOSED');if(initialize.busy||replacing)throw Error('VIEWER_PREPARING');
   if(!Number.isSafeInteger(tick)||tick<0||tick>WET_LIMITS.maxTick)throw Error('VIEW_TICK');rdTick=tick;
-  rain.setFrame({tick:rdTick,seconds:rdTick/60,paused:false,cameraId:'near',sourceRevision:rainSourceRevision,weather:rdWeather});
+  rain.setFrame({...scenarioTime(rdTick),paused:false,cameraId:'near',sourceRevision:rainSourceRevision,weather:rdWeather});
   wetnessResult=wetness.update(rdTick,rdWeather,currentFrame.originMeters);
   const wind=applyWindInputs('control.decor',rdTick,0.4,rdWeather,[0,0,0,1]);setWind(wind.angles.x,wind.angles.z);
   const result=volume.render(mode.value==='takram'&&takram?()=>takram!.render():undefined,rainScene);
-  status.textContent=`${mode.value} / ${position.value} / LOCAL_WINDOWS_ISOLATED diagnostic\nStorm ${frame.stormIds[0]}\nAdapter ${adapter??'UNAVAILABLE'}\nGPU timer NOT_RUN, reference NOT_RUN, integration NO\n${result.status}`;
+  status.textContent=`${mode.value} / ${position.value} / LOCAL_WINDOWS_ISOLATED diagnostic\nStorm ${currentFrame.stormIds[0]}\nAdapter ${adapter??'UNAVAILABLE'}\nGPU timer NOT_RUN, reference NOT_RUN, integration NO\n${result.status}`;
   return result;
+ }
+ async function stepFromSimulationTick(tick:number,ticksPerSecond:number){
+  if(!headless)throw Error('HEADLESS_MANUAL_PUMP_REQUIRED');
+  if(disposed||initialize.busy||replacing)throw Error('VIEWER_UNAVAILABLE');
+  if(ticksPerSecond!==UNIVERSE_TICKS_PER_SECOND)throw new RangeError('WEATHER_TIMEBASE');
+  const scenarioTick=scenarioTickFromSource(tick,frame.simulationTick,ticksPerSecond);
+  if(scenarioTick>WET_LIMITS.maxTick)throw Error('VIEW_TICK');
+  const request=++weatherRequest,before=currentFrame;
+  const next=await weatherPort.read({...query,simulationTick:createSimulationTick(tick)},
+   {cloudCoverage:optics.cloudCoverage,rain01:optics.rain01},
+   {originMeters:before.originMeters,sourceRevision:before.sourceRevision,atlasEpoch:before.atlasEpoch});
+  if(disposed||initialize.busy||replacing||request!==weatherRequest||before!==currentFrame)throw Error('STALE_WEATHER_REQUEST');
+  if(next.frame===null)return {status:next.status,weatherSnapshotId:next.result.WeatherSnapshotId,simulationTick:tick};
+  volume.setFrame(next.frame);
+  currentFrame=next.frame;
+  rdWeather.windMps=next.frame.windMps;
+  rdWeather.cloud01=next.frame.authoredCloudCoverage;
+  rdWeather.rain01=next.frame.rain01;
+  return renderTick(scenarioTick);
  }
  const headless=new URLSearchParams(location.search).get('diagnostic')==='1';
  function schedule(){if(disposed)return;raf=requestAnimationFrame(loop);loopScheduled=true;}
- function loop(){loopScheduled=false;if(disposed)return;if(initialize.busy||replacing){schedule();return;}presentationTick++;const tick=Math.floor(presentationTick/2);
+ function loop(timestampMs:number){loopScheduled=false;if(disposed)return;
+  const paused=initialize.busy||replacing,tick=playbackTick(timestampMs,paused);if(paused){schedule();return;}
   if(tick>WET_LIMITS.maxTick){status.textContent='FINITE_TICK_BUDGET_REACHED';return;}
   try{renderTick(tick);}catch(error){status.textContent='FAIL: '+String(error);void dispose().catch(console.error);return;}schedule();}
  function rebase(offset:V3=[1024,0,0]){const next=rebaseFrame(currentFrame,offset),shift=new T.Vector3(...offset);scene.position.sub(shift);rainScene.position.sub(shift);camera.position.sub(shift);
@@ -132,19 +155,20 @@ async function start(){
   scene.getObjectByName('roof')!.visible=false;scene.getObjectByName('cave.roof')!.visible=false;
   rainRoot.traverse(o=>{if((o as T.Mesh).isMesh&&!['rain-drops','rain-splashes'].includes(o.name))o.visible=false;});currentFrame=validateFrame({...currentFrame,sourceRevision:rainSourceRevision});volume.setFrame(currentFrame);}finally{replacing=false;}}
  const onOpen=()=>{void openRoof().catch(error=>{status.textContent='OPEN_ROOF_FAIL: '+String(error);});};document.querySelector('#open')!.addEventListener('click',onOpen);owned.push(()=>document.querySelector('#open')!.removeEventListener('click',onOpen));
- const api={diagnostics:()=>({volume:volume.diagnostics(),renderer:renderer.info.memory,actualAdapter:adapter,weatherSnapshotId:frame.weatherSnapshotId,weatherSimulationTick:frame.simulationTick,stormIds:frame.stormIds,rdTick,
+ const api={diagnostics:()=>({volume:volume.diagnostics(),renderer:renderer.info.memory,actualAdapter:adapter,weatherSnapshotId:currentFrame.weatherSnapshotId,weatherSimulationTick:currentFrame.simulationTick,stormIds:currentFrame.stormIds,rdTick,
   wetness:wetnessResult?{unknownSamples:wetnessResult.unknownSamples,fixtureDigest:wetnessResult.fixtureDigest,sourceRevision:wetnessResult.sourceRevision}:null,lightningOwner:'AUTHORED_DIAGNOSTIC_CONTROL_NOT_WEATHER_EVENT',canvases:document.querySelectorAll('canvas').length,mainLoops:loopScheduled?1:0,headlessManualPump:headless&&!disposed,temporalReady:false,referenceAcceptance:false}),
   step:(tick:number)=>{if(!headless)throw Error('HEADLESS_MANUAL_PUMP_REQUIRED');return renderTick(tick);},
+  stepFromSimulationTick,
   setView:(value:string)=>{if(!(value in poses))throw Error('VIEW');position.value=value;pose();},
   setMode:async(value:string)=>{if(!['analytic','lut','takram','low'].includes(value))throw Error('MODE');mode.value=value;await select();},
   setDefect:(value:number)=>volume.setMode(mode.value==='lut'?1:mode.value==='low'?3:0,value),
   setLightning:(id:string|null)=>volume.lightning(id),openRoof,rebase,resize,dispose,
-  prepareTemporal:(owners:OwnerPortInputs={})=>{const path='fixtures/chosen-weather-result.json',binding=__DATA_BINDINGS__[path];return prepareTemporalRequests(currentFrame,{sourceId:'frozen-wxg-chosen-result',absolutePath:__ROOT_PATH__+'/'+path,...binding},owners);},
+  prepareTemporal:(owners:OwnerPortInputs={})=>{if(currentFrame.weatherSnapshotId!==frame.weatherSnapshotId)throw Error('NO_FROZEN_TEMPORAL_SOURCE');const path='fixtures/chosen-weather-result.json',binding=__DATA_BINDINGS__[path];return prepareTemporalRequests(currentFrame,{sourceId:'frozen-wxg-chosen-result',absolutePath:__ROOT_PATH__+'/'+path,...binding},owners);},
   loseContext:()=>{if(!lossExtension)return {status:'Unsupported',reason:'WEBGL_LOSE_CONTEXT_UNAVAILABLE'};lossExtension.loseContext();return {status:'REQUESTED'};},
   restoreContext:()=>{if(!lossExtension)return {status:'Unsupported',reason:'WEBGL_LOSE_CONTEXT_UNAVAILABLE'};lossExtension.restoreContext();return {status:'REQUESTED'};}};
  owned.push(()=>{mode.onchange=null;position.onchange=null;controller.abort();});
  Object.assign(window,{ATM:api});const onHide=()=>{void dispose().catch(console.error);};window.addEventListener('pagehide',onHide,{once:true});owned.push(()=>window.removeEventListener('pagehide',onHide));
- if(!headless)loop();return api;
+ if(!headless)schedule();return api;
  }catch(error){try{await dispose();}catch(cleanup){throw new AggregateError([error,cleanup],'VIEWER_INIT_AND_CLEANUP_FAILED',{cause:error});}throw error;}
 }
 start().catch(e=>{status.textContent='FAIL: '+e.message;console.error(e);});

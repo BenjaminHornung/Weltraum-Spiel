@@ -11,11 +11,7 @@ import type {
  * Source-bound 0.21 candidate with explicit no-step query publication.
  */
 export { R };
-// Pinned compatibility build: the numeric EXCLUDE_SENSORS flag also rejected
-// a dynamic solid in the real ray oracle. Predicate semantics are explicit.
-export const isHvpSolidCollider = (collider:R.Collider):boolean => !collider.isSensor();
-export const isHvpStaticCollider = (collider:R.Collider):boolean =>
-  !collider.isSensor()&&(collider.parent()?.isFixed()??true);
+export { isHvpSolidCollider, isHvpStaticCollider } from "./rapier021Candidate";
 let initialization: Promise<void> | undefined;
 export const initializeHvpRapier = (): Promise<void> => {
   initialization ??= R.init().catch((error: unknown) => {

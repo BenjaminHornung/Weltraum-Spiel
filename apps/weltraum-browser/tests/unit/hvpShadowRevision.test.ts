@@ -33,10 +33,15 @@ describe("HVP shadow revision comparator", () => {
 const fixture = () => {
   const shadowMap = { enabled: false, type: THREE.BasicShadowMap, autoUpdate: true, needsUpdate: false };
   const updates: boolean[] = [];
-  const render = vi.fn(() => { updates.push(shadowMap.needsUpdate); shadowMap.needsUpdate = false; });
+  const renderInfo = { frame: 0, calls: 1, triangles: 12 };
+  const render = vi.fn(() => {
+    renderInfo.frame++;
+    updates.push(shadowMap.needsUpdate);
+    shadowMap.needsUpdate = false;
+  });
   const release = vi.fn();
   const renderer = { shadowMap, render, dispose: release, setSize: vi.fn(), setPixelRatio: vi.fn(),
-    localClippingEnabled: false, clippingPlanes: [], info: { render: { calls: 1, triangles: 12 }, memory: { geometries: 0, textures: 0 } }
+    localClippingEnabled: false, clippingPlanes: [], info: { render: renderInfo, memory: { geometries: 0, textures: 0 } }
   } as unknown as THREE.WebGLRenderer;
   const dataset: Record<string, string> = {};
   const canvas = { ownerDocument: { body: { dataset } } } as unknown as HTMLCanvasElement;
@@ -202,6 +207,20 @@ describe("HVP shadow collector through the real visual adapter", () => {
       f.render.mockImplementationOnce(() => { f.shadowMap.needsUpdate = false; throw original; });
       expect(() => f.port.render(f.scene, f.camera)).toThrow(original);
       expect(f.draw()).toBe(true); expect(f.draw()).toBe(false);
+    } finally { f.dispose(); }
+  });
+
+  it("waits for a confirmed submit before caching a changed caster", () => {
+    const f = fixture();
+    try {
+      for (let attempt = 1; attempt <= 58; attempt++) { f.draw(); }
+      f.mesh.position.x = 2;
+      f.render.mockImplementationOnce(() => {}); // WebGL early return without advancing info.render.frame.
+      expect(f.port.render(f.scene, f.camera)).toBe(false);
+      expect(f.port.render(f.scene, f.camera)).toBe(true);
+      const diagnostics = JSON.parse(f.dataset.hestiaPrototypeFrameDiagnostics!);
+      expect(diagnostics.shadowCache).toBe("updated");
+      expect(f.draw()).toBe(false);
     } finally { f.dispose(); }
   });
 

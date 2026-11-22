@@ -1,7 +1,7 @@
-import {createAnalyticReadView,assertCurrentAnalytic,type AnalyticInput} from '../inputs/wxg/repo/spikes/wxg-01-04-analytic/dist/src/weather.js';
-import type {PlanetWeatherQuery,WeatherResult} from '../inputs/wxg/repo/spikes/wxg-01-04-analytic/dist/src/common.js';
+import {createAnalyticReadView,assertCurrentAnalytic,type AnalyticInput,type AnalyticReadView} from '../inputs/wxg/repo/spikes/wxg-01-04-analytic/dist/src/weather.js';
+import {UNIVERSE_TICKS_PER_SECOND,createSimulationTick,immutable,same,validateQuery,type PlanetWeatherQuery,type WeatherResult} from '../inputs/wxg/repo/spikes/wxg-01-04-analytic/dist/src/common.js';
 import {validateFrame,type AtmosphereFrame,type V3} from './optics';
-export {createAnalyticReadView,assertCurrentAnalytic};
+export {createAnalyticReadView,assertCurrentAnalytic,createSimulationTick,UNIVERSE_TICKS_PER_SECOND};
 export type {AnalyticInput,PlanetWeatherQuery,WeatherResult};
 export interface AuthoredOpticalMask {cloudCoverage:number;rain01:number}
 export interface OpticalPresentation {originMeters:V3;sourceRevision:number;atlasEpoch:number}
@@ -17,9 +17,24 @@ export function tangentBasis(position:{x:number;y:number;z:number}){
 }
 /** Read-only optical projection of the frozen WXG model. Mask/epochs are authored presentation inputs, not producer resources. */
 export async function createOpticalReadPort(input:AnalyticInput){
- const view=await createAnalyticReadView(input);
- return Object.freeze({view,read:async(query:PlanetWeatherQuery,mask:AuthoredOpticalMask,presentation:OpticalPresentation)=>{
+ return bindOpticalReadView(await createAnalyticReadView(input));
+}
+
+type OpticalSource = Pick<AnalyticReadView,'read'|'profile'> & { readonly input: Pick<AnalyticInput,'bundle'> };
+
+/** Consume the owner's view, including analytic views backed by normal PMD geography. */
+export function bindOpticalReadView<View extends OpticalSource>(view:View){
+ return Object.freeze({view,read:async(rawQuery:PlanetWeatherQuery,mask:AuthoredOpticalMask,presentation:OpticalPresentation)=>{
+  const query=immutable(rawQuery), bundle=view.input.bundle;
+  validateQuery(query,bundle.physics,bundle.profile.bodyId);
   const result=await view.read(query);
+  same(result.query,query,'OPTICAL_QUERY');
+  same(result.binding.profile,view.profile,'OPTICAL_PROFILE');
+  if(result.binding.simulationTick!==query.simulationTick)throw Error('OPTICAL_TICK');
+  for(const key of ['worldId','sessionId','sourceOwner','sourceEpoch','sourceRevision','sourceDigest',
+      'atmosphereEpoch','authorityRevision','eventCursor','eventDigest','checkpointDigest'] as const){
+   if(result.binding[key]!==bundle.binding[key])throw Error('OPTICAL_SOURCE:'+key);
+  }
   if(result.status!=='Known'&&result.status!=='NoAtmosphere')return {status:result.status,result,frame:null};
   const {up,east,north}=tangentBasis(result.query.bodyFixedPositionMeters);
   const wind=result.status==='Known'?result.sample.windBodyFixedMps:{x:0,y:0,z:0};

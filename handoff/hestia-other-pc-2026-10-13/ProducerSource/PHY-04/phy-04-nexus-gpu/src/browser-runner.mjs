@@ -8,12 +8,16 @@ export function requireRunnerLease(lease) {
     throw new Error('EXPLICIT_A0_RUNNER_SLOT_REQUIRED');
   }
 }
-export async function runBoundNexus({lease,count=10,scenario='zeroGravity',bindings,fetchBytes,
+export async function runBoundNexus({lease,count=10,scenario='zeroGravity',destroyAtTick,bindings,fetchBytes,
   loadModule=async(_path,bytes)=>{
     const url=URL.createObjectURL(new Blob([bytes],{type:'text/javascript'}));
     try{return await import(url);}finally{URL.revokeObjectURL(url);}
   }}) {
   requireRunnerLease(lease);
+  // This is the single controlled-destroy case admitted by the Rust harness.
+  if (destroyAtTick !== undefined && (destroyAtTick !== 5 || count !== 10)) {
+    throw new Error('NEXUS_INVALID_DESTROY_FIXTURE');
+  }
   const fixture=makeFixture(count,scenario);
   if(bindings?.status!=='PASS' || !/^[0-9a-f]{64}$/.test(bindings.wasm?.sha256??'') ||
     !/^[0-9a-f]{64}$/.test(bindings.module?.sha256??'') || !bindings.shaders?.length){
@@ -31,8 +35,14 @@ export async function runBoundNexus({lease,count=10,scenario='zeroGravity',bindi
   const module=await loadModule(bindings.module.path,moduleBytes);
   await module.default({module_or_path:wasm});
   const begin=performance.now();
-  const raw=Array.from(await module.run_fixture(true,count,scenario==='zeroGravity',scenario==='dynamicGeometry',
-    fixture.bodies.map(x=>x.velocity[0]),undefined));
+  const result=await module.run_fixture(true,count,scenario==='zeroGravity',scenario==='dynamicGeometry',
+    fixture.bodies.map(x=>x.velocity[0]),destroyAtTick);
+  if (destroyAtTick !== undefined) {
+    // The current Rust ABI signals both device loss and unconfirmed destruction by rejection.
+    // A return here must never be published as a state or a loss acknowledgement.
+    throw new Error('NEXUS_DESTROY_RETURNED_READBACK');
+  }
+  const raw=Array.from(result);
   const totalBridgeMs=performance.now()-begin;
   if(raw.length!==6+count*6 || raw.some(x=>!Number.isFinite(x))) throw new Error('NEXUS_READBACK_CONTRACT');
   const rows=fixture.bodies.map((body,i)=>{

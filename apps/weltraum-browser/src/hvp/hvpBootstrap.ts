@@ -26,6 +26,7 @@ import {createPersistenceSignature} from "../persistence";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../voxel/adaptive";
 import { createHvpPlasmaTool } from "../hestia-prototype/terrain/plasmaTool";
 import { createHvpVisualRenderer, HVP_EFFECT_COST, HVP_EFFECT_VERSION } from "../hestia-prototype/presentation/visualEffects";
+import { loadGraphicsSettings } from "../settings";
 import { createSynchronousBatch } from "../hestia-prototype/presentation/synchronousBatch";
 import { createHvpPhysicsClient,createHvpFreshLabPhysicsClient,createHvpLabPhysicsClient,prepareHvpStaticCollision,prepareHvpLabStaticCollision,
   type HvpPhysicsClient,type HvpLabPhysicsClient } from "../hestia-prototype/physics/client";
@@ -139,7 +140,7 @@ type HvpWindowPort = Pick<Window,
   | "cancelAnimationFrame"
   | "addEventListener"
   | "removeEventListener"
-> & Partial<Pick<Window,"location"|"confirm">>;
+> & Partial<Pick<Window,"location"|"confirm"|"localStorage">>;
 type HvpBackend = RenderBackend & {
   resizeViewport?:ThreeRenderBackend["resizeViewport"];
   dispatchOwnedSteps?:(command:RenderCommand)=>Generator<string,RenderCommandResult,unknown>;
@@ -1084,6 +1085,9 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     if (flightHud) flightHud.hidden = true;
     reticle?.setAttribute("style", "display:none");
 
+    let graphicsStorage: Storage | undefined;
+    try { graphicsStorage = windowPort.localStorage; } catch { /* Browser storage may be disabled. */ }
+    const display = loadGraphicsSettings(graphicsStorage).settings.display;
     backend = (overrides.createBackend ?? ((options) => new ThreeRenderBackend(options)))({
       canvas,
       width: Math.max(1, windowPort.innerWidth),
@@ -1100,7 +1104,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
          const renderer=new THREE.WebGLRenderer(options),draw=renderer.render.bind(renderer);
          renderer.render=(scene,camera)=>{if(submitDraw){draw(scene,camera);documentPort.body.dataset.hestiaExperimentDrawSubmits=String(++experimentalDrawSubmits);}};
          return renderer;
-       },remaining=>{visualDisposal=remaining;},measurement.enabled)
+       },remaining=>{visualDisposal=remaining;},measurement.enabled,display)
     });
     requireAccepted(backend.dispatch(createRenderCommand({
       kind: "InitializeBackend",
@@ -1829,7 +1833,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       isInputBlocked: () => playerInput?.active ?? false });
     const resizeViewport=()=>{
       if(disposed||myEpoch!==hvpMountEpoch||backend===undefined){return;}
-      const result=backend.resizeViewport?.(Math.max(1,windowPort.innerWidth),Math.max(1,windowPort.innerHeight));
+      const result=backend.resizeViewport?.(Math.max(1,windowPort.innerWidth),Math.max(1,windowPort.innerHeight),Math.max(1,windowPort.devicePixelRatio));
       if(result!==undefined){requireAccepted(result,"HVP viewport resize");}
     };
     listeners.add(windowPort,"resize",resizeViewport);

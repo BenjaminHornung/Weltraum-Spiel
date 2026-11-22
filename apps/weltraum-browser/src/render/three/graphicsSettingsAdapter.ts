@@ -4,6 +4,7 @@ import {
   createDefaultRuntimeSnapshot,
   deepFreeze,
   detectGraphicsCapabilities,
+  resolveGraphicsPixelRatio,
   resolveShadowPolicy,
   resolveTexturePolicy,
   type FpsLimit,
@@ -144,10 +145,9 @@ export class ThreeGraphicsSettingsAdapter implements GraphicsRuntimePort {
     this.options.camera.aspect = width / height;
     this.options.camera.updateProjectionMatrix();
 
-    const requested = Math.min(window.devicePixelRatio, this.settings.display.maxDevicePixelRatio) * this.settings.display.renderScale;
-    const maxTextureSize = Math.max(1, this.options.renderer.capabilities.maxTextureSize);
-    const hardwareLimit = Math.min(maxTextureSize / width, maxTextureSize / height);
-    const effectivePixelRatio = Math.max(Number.EPSILON, Math.min(requested, hardwareLimit));
+    const effectivePixelRatio = resolveGraphicsPixelRatio(
+      this.settings.display, window.devicePixelRatio, width, height, this.options.renderer.capabilities.maxTextureSize
+    );
     this.options.renderer.setPixelRatio(effectivePixelRatio);
     this.options.renderer.setSize(width, height, false);
     this.runtime = deepFreeze(structuredClone({

@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {scenarioTime} from './scenario-time';
 import {createWetnessSourceCache,createWetnessPreset,DEFAULT_WETNESS_PRESET,WET_LIMITS,ownerPose,fixtureRevision} from './reuse';
 import type {LabFixtureV1,Vec3} from '../inputs/rd/src/contracts/fixture';
 import type {LabFrameInput} from '../inputs/rd/src/contracts/experiment';
@@ -28,7 +29,7 @@ export function createViewerWetness(fixture:LabFixtureV1,meshes:readonly T.Mesh[
    surfaces.push({mesh,start,faces:p.count/4});
   });
   if(points.length>WET_LIMITS.surfaceSamples)throw Error('WETNESS_SAMPLE_BUDGET');
-  const result=cache.evaluate({tick,seconds:tick/60,paused:false,cameraId:'near',sourceRevision:fixtureRevision(current),weather},preset,sourceStartTick,points);
+  const result=cache.evaluate({...scenarioTime(tick),paused:false,cameraId:'near',sourceRevision:fixtureRevision(current),weather},preset,sourceStartTick,points);
   for(const surface of surfaces){const wet=surface.mesh.geometry.getAttribute('labWetness');for(let face=0;face<surface.faces;face++)for(let vertex=0;vertex<4;vertex++)wet.setX(face*4+vertex,result.samples[surface.start+face].wetness01);wet.needsUpdate=true;}
   return result;
  };

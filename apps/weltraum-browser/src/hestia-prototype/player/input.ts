@@ -13,6 +13,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const movementKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ShiftLeft", "ShiftRight", "Space"]);
   let active = false;
   let activating = false;
+  let firstLockedMove = false;
   let disposed = false;
   let yaw = Math.PI;
   let pitch = 0;
@@ -52,7 +53,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const locked = (): void => {
     if (disposed) { return; }
     if (doc.pointerLockElement !== canvas||isBlocked()) { stop(); return; }
-    active = true; activating = true; keys.clear(); jump = false;
+    active = true; activating = true; firstLockedMove = true; keys.clear(); jump = false;
     canvas.focus({ preventScroll: true });
     void physics.command("Play").then(() => { activating = false; }).catch(value => { error(value); stop(); });
   };
@@ -74,6 +75,11 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const keyUp = (event: KeyboardEvent): void => { keys.delete(event.code); };
   const mouseMove = (event: MouseEvent): void => {
     if (!active || isBlocked() || doc.pointerLockElement !== canvas) { return; }
+    if (firstLockedMove) {
+      firstLockedMove = false;
+      // Chromium can report moving the pointer from the lock point to (0, 0) on acquisition.
+      if (event.movementX === -event.clientX && event.movementY === -event.clientY) { return; }
+    }
     yaw -= event.movementX * 0.002;
     pitch = Math.max(-1.4, Math.min(1.4, pitch - event.movementY * 0.002));
   };

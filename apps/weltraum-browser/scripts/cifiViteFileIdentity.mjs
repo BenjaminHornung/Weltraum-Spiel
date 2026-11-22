@@ -11,10 +11,11 @@ const splitId = value => {
 export function physicalFileIdentity(root, id) {
   if (isUrlOrVirtual(id)) return id;
   const [file, suffix] = splitId(id);
+  if (file.startsWith("\\\\")) throw new Error("Build file outside owned local root");
   if (!path.isAbsolute(file)) return id;
   const physicalRoot = normalize(realpathSync.native(root)).replace(/\/$/, "");
   const inside = value => value.toLowerCase().startsWith(physicalRoot.toLowerCase() + "/");
-  if (file.startsWith("\\\\") || !inside(normalize(file))) throw new Error("Build file outside owned local root");
+  if (!inside(normalize(file))) throw new Error("Build file outside owned local root");
   const physical = normalize(realpathSync.native(file));
   if (physical.startsWith("//") || !inside(physical) || !statSync(physical).isFile()) throw new Error("Build target is not an owned local regular file");
   return physical + suffix;

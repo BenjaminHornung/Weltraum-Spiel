@@ -20,7 +20,7 @@ import {
   type MeshArtifact,
   type MeshArtifactInput
 } from "../../src/presentation";
-import { ThreeRenderBackend, type ThreeRendererPort } from "../../src/render/three/backend";
+import { ThreeRenderBackend, type ThreeRendererPort, type ThreeSubmittedFrameSource } from "../../src/render/three/backend";
 
 const key = representationKey("planet:parent");
 const materialId = materialProfileId("surface:unlit");
@@ -77,10 +77,10 @@ class FakeRenderer implements ThreeRendererPort {
   dispose(): void { this.disposals += 1; }
 }
 
-const setup = (): { readonly backend: ThreeRenderBackend; readonly renderers: FakeRenderer[] } => {
+const setup = (canvas = {} as HTMLCanvasElement): { readonly backend: ThreeRenderBackend; readonly renderers: FakeRenderer[] } => {
   const renderers: FakeRenderer[] = [];
   const backend = new ThreeRenderBackend({
-    canvas: {} as HTMLCanvasElement,
+    canvas,
     lightingMode: "None",
     rendererFactory: () => {
       const renderer = new FakeRenderer();
@@ -93,6 +93,118 @@ const setup = (): { readonly backend: ThreeRenderBackend; readonly renderers: Fa
 };
 
 describe("A75 submitted camera metadata boundary", () => {
+  it("lets a delayed consumer commit only the original frame still published by its own backend", async () => {
+    const first = setup();
+    const second = setup();
+    first.renderers[0]!.outcome = second.renderers[0]!.outcome = true;
+    first.backend.renderFrame();
+    second.backend.renderFrame();
+    const source: ThreeSubmittedFrameSource = first.backend;
+    const frame = source.readSubmittedFrameMetadata()!;
+    expect(source.isSubmittedFrameCurrent(frame)).toBe(true);
+    expect(source.isSubmittedFrameCurrent({ ...frame })).toBe(false);
+    expect(second.backend.isSubmittedFrameCurrent(frame)).toBe(false);
+    const acceptResult = Promise.resolve().then(() => source.isSubmittedFrameCurrent(frame));
+    first.backend.renderFrame();
+    expect(await acceptResult).toBe(false);
+    const current = source.readSubmittedFrameMetadata()!;
+    expect(source.isSubmittedFrameCurrent(current)).toBe(true);
+    first.backend.dispatch({ kind: "DisposeBackend", backendRevision: backendRevision(0) });
+    expect(source.isSubmittedFrameCurrent(current)).toBe(false);
+  });
+
+  it("cannot republish a draw invalidated by context loss and restoration during submit", () => {
+    const canvas = new EventTarget() as HTMLCanvasElement;
+    const { backend, renderers } = setup(canvas);
+    const renderer = renderers[0]!;
+    renderer.outcome = true;
+    const draw = renderer.render.bind(renderer);
+    backend.renderFrame();
+    const before = backend.readSubmittedFrameMetadata()!;
+    renderer.render = (scene, camera) => {
+      canvas.dispatchEvent(new Event("webglcontextlost"));
+      expect(backend.isSubmittedFrameCurrent(before)).toBe(false);
+      canvas.dispatchEvent(new Event("webglcontextrestored"));
+      return draw(scene, camera);
+    };
+    backend.renderFrame();
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+    renderer.render = draw;
+    canvas.dispatchEvent(new Event("webglcontextlost"));
+    backend.renderFrame();
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+    canvas.dispatchEvent(new Event("webglcontextrestored"));
+    backend.renderFrame();
+    const restored = backend.readSubmittedFrameMetadata()!;
+    expect(backend.isSubmittedFrameCurrent(restored)).toBe(true);
+    expect(restored.previous).toBeNull();
+    expect(restored.resetReason).toBe("ContextRestored");
+  });
+
+  it("discards an in-flight draw when a viewport resize invalidates it even at identical port dimensions", () => {
+    const { backend, renderers } = setup();
+    const renderer = renderers[0]!;
+    renderer.outcome = true;
+    backend.renderFrame();
+    const last = backend.readSubmittedFrameMetadata()!;
+    const draw = renderer.render.bind(renderer);
+    renderer.render = (scene, camera) => {
+      backend.resizeViewport(800, 600);
+      return draw(scene, camera);
+    };
+    backend.renderFrame();
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+    expect(backend.isSubmittedFrameCurrent(last)).toBe(false);
+    renderer.render = draw;
+    backend.renderFrame();
+    expect(backend.readSubmittedFrameMetadata()!.resetReason).toBe("ViewportResize");
+  });
+
+  it("withholds both publications when the renderer submits another frame during a draw", () => {
+    const { backend, renderers } = setup();
+    const renderer = renderers[0]!;
+    renderer.outcome = true;
+    const draw = renderer.render.bind(renderer);
+    renderer.render = (scene, camera) => {
+      renderer.render = draw;
+      backend.renderFrame();
+      return draw(scene, camera);
+    };
+    backend.renderFrame();
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+    backend.renderFrame();
+    expect(backend.readSubmittedFrameMetadata()!.previous).toBeNull();
+  });
+
+  it("rejects a replacement projection during draw even when its camera matrices are identical", () => {
+    const { backend, renderers } = setup();
+    const renderer = renderers[0]!;
+    const project = (revision: number) => backend.dispatch({
+      kind: "ApplyFrameProjection", backendRevision: backendRevision(0),
+      snapshot: createFrameProjectionSnapshot({
+        frameId: frameId("local:camera"), frameRevision: frameRevision(revision),
+        cameraPositionRelative: { x: 0, y: 0, z: 5 },
+        cameraOrientation: { x: 0, y: 0, z: 0, w: 1 },
+        projectionParameters: { kind: "Perspective", verticalFovDegrees: 50, aspect: 1, near: 0.1, far: 100 },
+        representationTransforms: []
+      })
+    });
+    renderer.outcome = true;
+    const draw = renderer.render.bind(renderer);
+    expect(project(1).status).toBe("Accepted");
+    renderer.render = (scene, camera) => {
+      expect(project(2).status).toBe("Accepted");
+      return draw(scene, camera);
+    };
+    backend.renderFrame();
+    expect(backend.readSubmittedFrameMetadata()).toBeUndefined();
+    renderer.render = draw;
+    backend.renderFrame();
+    const next = backend.readSubmittedFrameMetadata()!;
+    expect(next.projectionRevision).toBe(frameRevision(2));
+    expect(next.previous).toBeNull();
+  });
+
   it("does not promote a legacy void return or an explicitly skipped submit", () => {
     const { backend, renderers } = setup();
     expect(backend.renderFrame().status).toBe("Accepted");

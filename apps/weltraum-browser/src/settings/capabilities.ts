@@ -1,5 +1,14 @@
 import { cloneAndFreeze } from "./schema";
-import type { GraphicsCapability, GraphicsCapabilityMap, GraphicsCapabilityProbe, GraphicsSettingId } from "./types";
+import type { GraphicsCapability, GraphicsCapabilityMap, GraphicsCapabilityProbe, GraphicsSettingId, GraphicsSettingsV1 } from "./types";
+
+export function resolveGraphicsPixelRatio(
+  display: Pick<GraphicsSettingsV1["display"], "renderScale" | "maxDevicePixelRatio">,
+  devicePixelRatio: number, cssWidth: number, cssHeight: number, maxTextureSize: number
+): number {
+  const requested = Math.min(devicePixelRatio, display.maxDevicePixelRatio) * display.renderScale;
+  const limit = Math.max(1, maxTextureSize);
+  return Math.max(Number.EPSILON, Math.min(requested, limit / cssWidth, limit / cssHeight));
+}
 
 function capability(status: GraphicsCapability["status"], reason: string, numericLimit?: number): GraphicsCapability {
   return numericLimit === undefined ? { status, reason } : { status, reason, numericLimit };

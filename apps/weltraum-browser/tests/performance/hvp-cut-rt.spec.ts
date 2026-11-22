@@ -785,7 +785,8 @@ test(`${pairedGate} paired384 normal Source Ready Save ColdLoad and recut`,async
   if(pairedGate==="D3+D4"&&!baselineUrl){throw new Error("Combined D3+D4 requires the frozen D2 baseline");}
   const directory=await createHvpCutRtEvidenceDirectory(root,app,`${pairedGate.toLowerCase().replace("+","-")}-pair-${testInfo.repeatEachIndex}`);
   const source=await inventoryHvpCutRtFiles(path.join(app,"src"),app),build=await inventoryHvpCutRtFiles(buildRoot,app);
-  const bindings={gate:pairedGate,classification:"BOUNDED_PAIRED384_PREPARATION_NOT_42_OR_1400",head:execFileSync(git,["rev-parse","HEAD"],{cwd:app,encoding:"utf8"}).trim(),source,build,
+  const solverBinding=await readPhy01SolverBinding(app,buildRoot);
+  const bindings={gate:pairedGate,solverBinding,classification:"BOUNDED_PAIRED384_PREPARATION_NOT_42_OR_1400",head:execFileSync(git,["rev-parse","HEAD"],{cwd:app,encoding:"utf8"}).trim(),source,build,
     gpuProfile:forcePerformanceGpu?"SUPPLEMENTAL_NVIDIA_DIAGNOSTIC_NOT_ARC_REFERENCE":"ARC_REFERENCE",
     browserArgs:["--force-device-scale-factor=1",...(forcePerformanceGpu?["--force-high-performance-gpu"]:[])],
     sourceSha256:sha(JSON.stringify(source)),buildSha256:sha(JSON.stringify(build)),nodeSha256:sha(await readFile(process.execPath)),
@@ -1015,7 +1016,7 @@ for (const {variant, temperature, session, attempts} of series.sessions) {
           if (!configFile) { throw new Error("Actual measurement configuration path is required"); }
           const solverBinding=await readPhy01SolverBinding(app);
           const source = await inventoryHvpCutRtFiles(path.join(app, "src"), app), build = await inventoryHvpCutRtFiles(path.join(app, "dist"), app);
-          const fixture = await Promise.all(["tests/performance/phy01SolverBinding.ts", "tests/performance/hvp-cut-rt.spec.ts", "tests/performance/hvpCutRtReport.ts", "tests/e2e/hvp-performance-evidence.ts", "playwright.performance.config.ts", configFile]
+          const fixture = await Promise.all(["scripts/r05Build.mjs","tests/performance/phy01SolverBinding.ts", "tests/performance/hvp-cut-rt.spec.ts", "tests/performance/hvpCutRtReport.ts", "tests/e2e/hvp-performance-evidence.ts", "playwright.performance.config.ts", configFile]
             .map(async file => ({path: path.relative(app, path.resolve(app, file)).replaceAll("\\", "/"), sha256: sha(await readFile(path.resolve(app, file)))})));
           const tools = await Promise.all([process.execPath, pwsh, git, powercfg].map(async file => ({path: file, sha256: sha(await readFile(file))})));
           const scheme = power(), supply = powerSource();

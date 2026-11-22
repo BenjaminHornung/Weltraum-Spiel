@@ -17,6 +17,28 @@ export function cachedPredicate(world: C.World, predicate?: (collider: C.Collide
   return collider => allowed.has(collider.handle);
 }
 
+/** Only these two function identities have a native equivalent in the pinned R05 build. */
+export const isHvpSolidCollider = (collider: C.Collider): boolean => !collider.isSensor();
+export const isHvpStaticCollider = (collider: C.Collider): boolean =>
+  !collider.isSensor() && (collider.parent()?.isFixed() ?? true);
+
+// Older builds share the solver profile ID. Their flag behavior must be checked separately.
+const supportsHvpNativeFilters =
+  profile.wasmSha256 === "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb";
+
+function prepareQueryFilter(world: C.World, args: unknown[], flagIndex: number, predicateIndex: number): void {
+  const predicate = args[predicateIndex] as ((collider: C.Collider) => boolean) | undefined;
+  if (predicate === undefined) { return; }
+  if (!supportsHvpNativeFilters || (predicate !== isHvpSolidCollider && predicate !== isHvpStaticCollider)) {
+    args[predicateIndex] = cachedPredicate(world, predicate);
+    return;
+  }
+  const existing = args[flagIndex] as C.QueryFilterFlags | undefined;
+  const bodyFilter = predicate === isHvpStaticCollider ? C.QueryFilterFlags.ONLY_FIXED : 0;
+  args[flagIndex] = (existing ?? 0) | C.QueryFilterFlags.EXCLUDE_SENSORS | bodyFilter;
+  args[predicateIndex] = undefined;
+}
+
 export class World extends C.World {
   override createRigidBody(description: C.RigidBodyDesc): C.RigidBody {
     const body = super.createRigidBody(description);
@@ -28,36 +50,36 @@ export class World extends C.World {
     return Object.setPrototypeOf(super.restoreSnapshot(bytes), World.prototype) as World;
   }
   override castRay(...args: Parameters<C.World["castRay"]>): ReturnType<C.World["castRay"]> {
-    args[7] = cachedPredicate(this, args[7]); return super.castRay(...args);
+    prepareQueryFilter(this, args, 3, 7); return super.castRay(...args);
   }
   override castRayAndGetNormal(...args: Parameters<C.World["castRayAndGetNormal"]>): ReturnType<C.World["castRayAndGetNormal"]> {
-    args[7] = cachedPredicate(this, args[7]); return super.castRayAndGetNormal(...args);
+    prepareQueryFilter(this, args, 3, 7); return super.castRayAndGetNormal(...args);
   }
   override intersectionsWithRay(...args: Parameters<C.World["intersectionsWithRay"]>): void {
-    args[8] = cachedPredicate(this, args[8]); super.intersectionsWithRay(...args);
+    prepareQueryFilter(this, args, 4, 8); super.intersectionsWithRay(...args);
   }
   override intersectionWithShape(...args: Parameters<C.World["intersectionWithShape"]>): ReturnType<C.World["intersectionWithShape"]> {
-    args[7] = cachedPredicate(this, args[7]); return super.intersectionWithShape(...args);
+    prepareQueryFilter(this, args, 3, 7); return super.intersectionWithShape(...args);
   }
   override projectPoint(...args: Parameters<C.World["projectPoint"]>): ReturnType<C.World["projectPoint"]> {
-    args[6] = cachedPredicate(this, args[6]); return super.projectPoint(...args);
+    prepareQueryFilter(this, args, 2, 6); return super.projectPoint(...args);
   }
   override projectPointAndGetFeature(...args: Parameters<C.World["projectPointAndGetFeature"]>): ReturnType<C.World["projectPointAndGetFeature"]> {
-    args[5] = cachedPredicate(this, args[5]); return super.projectPointAndGetFeature(...args);
+    prepareQueryFilter(this, args, 1, 5); return super.projectPointAndGetFeature(...args);
   }
   override intersectionsWithPoint(...args: Parameters<C.World["intersectionsWithPoint"]>): void {
-    args[6] = cachedPredicate(this, args[6]); super.intersectionsWithPoint(...args);
+    prepareQueryFilter(this, args, 2, 6); super.intersectionsWithPoint(...args);
   }
   override castShape(...args: Parameters<C.World["castShape"]>): ReturnType<C.World["castShape"]> {
-    args[11] = cachedPredicate(this, args[11]); return super.castShape(...args);
+    prepareQueryFilter(this, args, 7, 11); return super.castShape(...args);
   }
   override intersectionsWithShape(...args: Parameters<C.World["intersectionsWithShape"]>): void {
-    args[8] = cachedPredicate(this, args[8]); super.intersectionsWithShape(...args);
+    prepareQueryFilter(this, args, 4, 8); super.intersectionsWithShape(...args);
   }
   override createCharacterController(offset: number): C.KinematicCharacterController {
     const controller = super.createCharacterController(offset), compute = controller.computeColliderMovement, world = this;
     controller.computeColliderMovement = function (...args: Parameters<C.KinematicCharacterController["computeColliderMovement"]>): void {
-      args[4] = cachedPredicate(world, args[4]); compute.call(this, ...args);
+      prepareQueryFilter(world, args, 2, 4); compute.call(this, ...args);
     };
     return controller;
   }

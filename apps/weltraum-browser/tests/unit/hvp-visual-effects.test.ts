@@ -5,10 +5,15 @@ import { createHvpVisualRenderer, HVP_EFFECT_COST, shadeHvpSurface } from "../..
 const diagnosticsFixture = (diagnostics?: boolean) => {
   const shadowMap = { enabled:false,type:THREE.BasicShadowMap,autoUpdate:true,needsUpdate:false };
   const shadowUpdates: boolean[] = [];
-  const render = vi.fn(() => { shadowUpdates.push(shadowMap.needsUpdate); shadowMap.needsUpdate=false; });
+  const renderInfo = { frame: 0, calls: 1, triangles: 12 };
+  const render = vi.fn(() => {
+    renderInfo.frame++;
+    shadowUpdates.push(shadowMap.needsUpdate);
+    shadowMap.needsUpdate=false;
+  });
   const dispose = vi.fn();
   const renderer = { shadowMap,render,dispose,setSize:vi.fn(),setPixelRatio:vi.fn(),
-    info:{render:{calls:1,triangles:12},memory:{geometries:0,textures:0}} } as unknown as THREE.WebGLRenderer;
+    info:{render:renderInfo,memory:{geometries:0,textures:0}} } as unknown as THREE.WebGLRenderer;
   const dataset: Record<string,string> = {};
   const canvas = { ownerDocument:{body:{dataset}} } as unknown as HTMLCanvasElement;
   const factory=vi.fn(()=>renderer),port = createHvpVisualRenderer(canvas,{},factory,undefined,diagnostics);
@@ -45,8 +50,13 @@ describe("HVP visual effects", () => {
     const shadowMap = { enabled:false,type:THREE.BasicShadowMap,autoUpdate:true,needsUpdate:false };
     const updates: boolean[] = [];
     const dispose = vi.fn();
-    const renderer = { shadowMap,setSize:vi.fn(),setPixelRatio:vi.fn(),dispose,
-      render:()=>{ updates.push(shadowMap.needsUpdate); shadowMap.needsUpdate=false; }
+    const renderInfo = { frame: 0 };
+    const renderer = { shadowMap,setSize:vi.fn(),setPixelRatio:vi.fn(),dispose,info:{ render: renderInfo },
+      render:()=>{
+        renderInfo.frame++;
+        updates.push(shadowMap.needsUpdate);
+        shadowMap.needsUpdate=false;
+      }
     } as unknown as THREE.WebGLRenderer;
     const port = createHvpVisualRenderer({} as HTMLCanvasElement,{},()=>renderer);
     const scene = new THREE.Scene();

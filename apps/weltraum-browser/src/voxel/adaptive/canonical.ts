@@ -56,6 +56,7 @@ export type AdaptiveCanonicalValue =
   | readonly AdaptiveCanonicalValue[]
   | { readonly [key: string]: AdaptiveCanonicalValue };
 
+// Each recursive call returns a primitive or a fully frozen, newly owned container.
 const canonicalize = (value: unknown, path: string, ancestors: WeakSet<object>): AdaptiveCanonicalValue => {
   if (value === null || typeof value === "boolean") return value;
   if (typeof value === "string") return requireCanonicalString(value, path);
@@ -75,7 +76,7 @@ const canonicalize = (value: unknown, path: string, ancestors: WeakSet<object>):
       (entry: unknown, index: number) => canonicalize(entry, `${path}/${index}`, ancestors)
     ) as AdaptiveCanonicalValue[];
     ancestors.delete(value);
-    return deepFreeze(result);
+    return Object.freeze(result);
   }
   const record = requirePlainRecord(value, path);
   if (ancestors.has(record)) return fail("InvalidCanonicalValue", path, "Cycles are not canonical.");
@@ -85,7 +86,7 @@ const canonicalize = (value: unknown, path: string, ancestors: WeakSet<object>):
     result[key] = canonicalize(record[key], `${path}/${key}`, ancestors);
   }
   ancestors.delete(record);
-  return deepFreeze(result);
+  return Object.freeze(result);
 };
 
 const serialize = (value: AdaptiveCanonicalValue): string => {

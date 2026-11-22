@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import type { ThreeRendererPort } from "../../render/three/backend/threeRenderBackend";
+import { createDefaultGraphicsSettings, resolveGraphicsPixelRatio, type GraphicsSettingsV1 } from "../../settings";
 import { HVP_SHADOW_REVISION_MAX_BYTES, sameHvpShadowRevision, type HvpShadowAtom, type HvpShadowCasterRevision,
   type HvpShadowRevision } from "./shadowRevision";
 import { HVP_EFFECT_VERSION } from "./look";
@@ -50,7 +51,8 @@ export const createHvpVisualRenderer = (
   parameters: THREE.WebGLRendererParameters,
   makeRenderer = (options: THREE.WebGLRendererParameters): THREE.WebGLRenderer => new THREE.WebGLRenderer(options),
   onDispose?: (remaining:Readonly<{geometries:number;textures:number}>)=>void,
-  diagnostics = false
+  diagnostics = false,
+  display: Pick<GraphicsSettingsV1["display"], "renderScale" | "maxDevicePixelRatio"> = createDefaultGraphicsSettings().display
 ): ThreeRendererPort => {
   const renderer = makeRenderer({ ...parameters, canvas, powerPreference:"high-performance" });
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -199,10 +201,25 @@ export const createHvpVisualRenderer = (
     for (const entry of lights) { add(light, entry.id, ...entry.values); }
     return { revision: { light, casters } satisfies HvpShadowRevision, bytes };
   };
+  let viewport: { width: number; height: number; devicePixelRatio: number } | undefined;
+  const setViewportSize = (width: number, height: number, devicePixelRatio: number): void => {
+    const ratio = resolveGraphicsPixelRatio(display, devicePixelRatio, width, height, renderer.capabilities.maxTextureSize);
+    renderer.setDrawingBufferSize(width, height, ratio);
+    viewport = { width, height, devicePixelRatio };
+  };
+  const restoreViewport = (): void => {
+    prior = undefined;
+    if (viewport) setViewportSize(viewport.width, viewport.height, viewport.devicePixelRatio);
+  };
+  canvas.addEventListener?.("webglcontextrestored", restoreViewport);
   return {
     setPixelRatio: (value) => renderer.setPixelRatio(value),
     setSize: (width,height,updateStyle) => renderer.setSize(width,height,updateStyle),
-    getDrawingBufferSize: (target) => renderer.getDrawingBufferSize(target),
+    setViewportSize,
+    getDrawingBufferSize: (target) => {
+      const gl = renderer.getContext();
+      return target.set(gl.drawingBufferWidth, gl.drawingBufferHeight);
+    },
     render: (scene,camera) => {
       if (disposed) { return false; }
       const preparationStarted = performance.now();
@@ -255,6 +272,7 @@ export const createHvpVisualRenderer = (
     dispose: () => {
       if (disposed) { return; }
       disposed = true;
+      canvas.removeEventListener?.("webglcontextrestored", restoreViewport);
       attachedScene?.remove(sky);
       attachedScene = undefined;
       prior = undefined;

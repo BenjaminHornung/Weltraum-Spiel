@@ -50,7 +50,7 @@ test("HVP14 records a frozen workload population, never promotes a diagnostic ru
   await mkdir(directory,{recursive:true});if((await readdir(directory)).length!==0){throw new Error("Measurement directory is not fresh");}
   const solverBinding=await readPhy01SolverBinding();
   const source=await inventory("src"),build=await inventory("dist");
-  const fixture=await Promise.all(["tests/performance/phy01SolverBinding.ts","tests/performance/hvpCutRtReport.ts","tests/performance/hvp-performance.spec.ts","tests/performance/hvp-workloads.ts","playwright.performance.config.ts","tests/e2e/hvp-performance-evidence.ts"]
+  const fixture=await Promise.all(["scripts/r05Build.mjs","tests/performance/phy01SolverBinding.ts","tests/performance/hvpCutRtReport.ts","tests/performance/hvp-performance.spec.ts","tests/performance/hvp-workloads.ts","playwright.performance.config.ts","tests/e2e/hvp-performance-evidence.ts"]
     .map(async p=>({path:p,sha256:sha(await readFile(p))})));
   const adapters=JSON.parse(shell("Get-CimInstance Win32_VideoController | Select-Object Name,DriverVersion,CurrentRefreshRate,CurrentHorizontalResolution | ConvertTo-Json -Compress")) as {Name:string;DriverVersion:string;CurrentRefreshRate:number;CurrentHorizontalResolution:number}[];
   const power=()=>shell("powercfg /getactivescheme")+" / "+shell("Get-CimInstance -Namespace root/wmi -ClassName BatteryStatus | Select-Object PowerOnline,Charging,Discharging | ConvertTo-Json -Compress");

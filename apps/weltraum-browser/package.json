@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/r05Build.mjs prepare",
+    "postbuild": "node scripts/r05Build.mjs verify",
     "build": "tsc -p tsconfig.json && vite build --config vite.build.config.mjs --configLoader native",
     "test:build-paths": "node tests/unit/cifiViteFileIdentity.test.mjs",
     "test": "vitest run",
@@ -16,7 +18,8 @@
   "dependencies": {
     "@hestia/rapier3d-phy01-candidate": "file:vendor/rapier-phy01-migration2",
     "@pmndrs/upscaler": "0.5.0",
-    "three": "0.186.1"
+    "three": "0.186.1",
+    "three-mesh-bvh": "0.9.16"
   },
   "devDependencies": {
     "@playwright/test": "1.61.1",

@@ -53,6 +53,8 @@ import { ThreeResourceRegistry, type ThreeResourceRecord } from "./threeResource
 export interface ThreeRendererPort {
   setPixelRatio(value: number): void;
   setSize(width: number, height: number, updateStyle?: boolean): void;
+  /** Optional joint update of CSS viewport dimensions and device DPR. Leaves the canvas style to the host. */
+  setViewportSize?(cssWidth: number, cssHeight: number, devicePixelRatio: number): void;
   render(scene: THREE.Scene, camera: THREE.Camera): boolean | void;
   getDrawingBufferSize?(target: THREE.Vector2): THREE.Vector2;
   dispose(): void;
@@ -84,6 +86,12 @@ export interface ThreeSubmittedFrameMetadata {
   readonly resetReason: string | null;
   readonly attachmentPublication: "UNAVAILABLE";
   readonly originEpoch: "UNAVAILABLE";
+}
+
+/** Read-only CPU camera publication. Recheck the original snapshot before using a deferred result. */
+export interface ThreeSubmittedFrameSource {
+  readSubmittedFrameMetadata(): ThreeSubmittedFrameMetadata | undefined;
+  isSubmittedFrameCurrent(frame: ThreeSubmittedFrameMetadata): boolean;
 }
 
 /** A suppressed/lost-context render leaves Three's CPU frame serial unchanged. */
@@ -134,7 +142,7 @@ const privateProfilesSignature=(profiles:readonly MaterialProfile[])=>{
   return privateSignature([...profiles].sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0));
 };
 
-export class ThreeRenderBackend implements RenderBackend {
+export class ThreeRenderBackend implements RenderBackend, ThreeSubmittedFrameSource {
   #privateMeshes=new PrivateWeakMap<ThreePrivateMeshHandle,PrivateMeshEntry>();
   #privateHandles=new Set<ThreePrivateMeshHandle>();
   #privateInstalled=new Map<RepresentationKey,ThreePrivateMeshHandle>();
@@ -155,10 +163,18 @@ export class ThreeRenderBackend implements RenderBackend {
   private metadataGeneration = 0;
   private metadataResetReason: string | null = "FirstSubmit";
   private readonly drawingBufferSize = new THREE.Vector2();
-  private readonly contextLost = (): void => { this.invalidateSubmittedFrame("ContextLost"); };
-  private readonly contextRestored = (): void => { this.invalidateSubmittedFrame("ContextRestored"); };
+  private contextIsLost = false;
+  private readonly contextLost = (): void => {
+    this.contextIsLost = true;
+    this.invalidateSubmittedFrame("ContextLost");
+  };
+  private readonly contextRestored = (): void => {
+    this.contextIsLost = false;
+    this.invalidateSubmittedFrame("ContextRestored");
+  };
   private viewportWidth:number;
   private viewportHeight:number;
+  private viewportDevicePixelRatio: number;
   private rendererTeardownUncertain=false;
   private visibilityPlan: VisibilityPlan | undefined;
   private visibilitySignature: ContentHash | undefined;
@@ -171,6 +187,7 @@ export class ThreeRenderBackend implements RenderBackend {
     this.rendererFactory = options.rendererFactory ?? defaultRendererFactory;
     this.viewportWidth=options.width??640;
     this.viewportHeight=options.height??360;
+    this.viewportDevicePixelRatio = options.pixelRatio ?? 1;
     this.diagnostics = createDiagnosticState(backendRevision(0));
     options.canvas.addEventListener?.("webglcontextlost", this.contextLost);
     options.canvas.addEventListener?.("webglcontextrestored", this.contextRestored);
@@ -351,6 +368,12 @@ export class ThreeRenderBackend implements RenderBackend {
     if (this.diagnostics.backendState !== "Available" || this.renderer === undefined) {
       return this.finish(renderCommandResult("BackendUnavailable", "NotApplicable", "BackendNotAvailable"));
     }
+    if (this.contextIsLost) {
+      return this.finish(renderCommandResult("AlreadyApplied", "NotApplicable", "PresentationSkipped"));
+    }
+    const generation = this.metadataGeneration;
+    const projection = this.projection;
+    const serial = this.submittedFrameSerial;
     let submitted: boolean | void;
     this.submittedFrame = undefined;
     try {
@@ -359,8 +382,12 @@ export class ThreeRenderBackend implements RenderBackend {
       submitted = this.renderer.render(this.scene, this.camera);
       if (submitted === true) {
         const after = this.captureCameraSample();
-        if (JSON.stringify(before) === JSON.stringify(after)) this.captureSubmittedFrame(after);
-        else this.invalidateSubmittedFrame("CameraChangedDuringSubmit");
+        if (serial !== this.submittedFrameSerial || projection !== this.projection) {
+          this.invalidateSubmittedFrame("SceneChangedDuringSubmit");
+        } else if (generation === this.metadataGeneration) {
+          if (JSON.stringify(before) === JSON.stringify(after)) this.captureSubmittedFrame(after);
+          else this.invalidateSubmittedFrame("CameraChangedDuringSubmit");
+        }
       }
     }
     catch (error) { this.invalidateSubmittedFrame("RenderFailed"); throw error; }
@@ -374,6 +401,10 @@ export class ThreeRenderBackend implements RenderBackend {
 
   readSubmittedFrameMetadata(): ThreeSubmittedFrameMetadata | undefined {
     return this.submittedFrame;
+  }
+
+  isSubmittedFrameCurrent(frame: ThreeSubmittedFrameMetadata): boolean {
+    return this.submittedFrame !== undefined && this.submittedFrame === frame;
   }
 
   private invalidateSubmittedFrame(reason: string): void {
@@ -421,17 +452,20 @@ export class ThreeRenderBackend implements RenderBackend {
     this.metadataResetReason = null;
   }
 
-  resizeViewport(width:number,height:number):RenderCommandResult {
-    if(!Number.isSafeInteger(width)||width<=0||!Number.isSafeInteger(height)||height<=0){
+  resizeViewport(width:number,height:number,devicePixelRatio=this.viewportDevicePixelRatio):RenderCommandResult {
+    if(!Number.isSafeInteger(width)||width<=0||!Number.isSafeInteger(height)||height<=0
+      || !Number.isFinite(devicePixelRatio) || devicePixelRatio <= 0){
       return this.finish(renderCommandResult("RejectedInvalidArtifact","NotApplicable","InvalidViewport"));
     }
     if(this.diagnostics.backendState!=="Available"||this.renderer===undefined){
       return this.finish(renderCommandResult("BackendUnavailable","NotApplicable","BackendNotAvailable"));
     }
-    if(width===this.viewportWidth&&height===this.viewportHeight){return this.finish(renderCommandResult("Accepted"));}
+    const ratioChanged = devicePixelRatio !== this.viewportDevicePixelRatio;
+    if(width===this.viewportWidth&&height===this.viewportHeight&&!ratioChanged){return this.finish(renderCommandResult("Accepted"));}
     this.invalidateSubmittedFrame("ViewportResize");
-    this.renderer.setSize(width,height,false);
+    this.configureRendererViewport(this.renderer, width, height, devicePixelRatio, ratioChanged);
     this.viewportWidth=width;this.viewportHeight=height;
+    this.viewportDevicePixelRatio = devicePixelRatio;
     return this.finish(renderCommandResult("Accepted"));
   }
 
@@ -954,6 +988,15 @@ export class ThreeRenderBackend implements RenderBackend {
     try{return action();}finally{try{this.options.onTiming(phase,start,performance.now()-start,key);}catch{/* Timing cannot change ownership or installation. */}}
   }
 
+  private configureRendererViewport(renderer: ThreeRendererPort, width: number, height: number, devicePixelRatio: number, setRatio: boolean): void {
+    if (renderer.setViewportSize) {
+      renderer.setViewportSize(width, height, devicePixelRatio);
+    } else {
+      if (setRatio) renderer.setPixelRatio(devicePixelRatio);
+      renderer.setSize(width, height, false);
+    }
+  }
+
   private createRenderer(): ThreeRendererPort {
     const renderer = this.rendererFactory(this.options.canvas, {
       antialias: this.options.antialias ?? true,
@@ -961,8 +1004,7 @@ export class ThreeRenderBackend implements RenderBackend {
       preserveDrawingBuffer: this.options.preserveDrawingBuffer ?? false
     });
     try {
-      renderer.setPixelRatio(this.options.pixelRatio ?? 1);
-      renderer.setSize(this.viewportWidth,this.viewportHeight,false);
+      this.configureRendererViewport(renderer, this.viewportWidth, this.viewportHeight, this.viewportDevicePixelRatio, true);
       return renderer;
     } catch (error) {
       renderer.dispose();
