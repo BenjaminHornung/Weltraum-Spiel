@@ -1,0 +1,633 @@
+{
+  "context": "Isolated native and TypeScript fixture, without browser scheduling. Paired measurements are only planning time.",
+  "structuralOracle": {
+    "localCommit": "e092788db7a20e68bc2edd68a15805f31f0427e0",
+    "pairedRawSha256": "eef0f67e53c203f0e838771e4ba100a40dda91d888253c9fb2a377e726e66e6c",
+    "summary": {
+      "compact": {
+        "count": 33,
+        "median": 0.21091100000012375,
+        "p95": 0.4163449999978184
+      },
+      "structural": {
+        "count": 33,
+        "median": 1231.6378479999985,
+        "p95": 2085.5092860000004
+      }
+    },
+    "rows": [
+      {
+        "i": 0,
+        "side": "structural",
+        "elapsed": 1105.1080040000006,
+        "cpuMs": 929.015
+      },
+      {
+        "i": 0,
+        "side": "compact",
+        "elapsed": 0.2622270000001663,
+        "cpuMs": 0.264
+      },
+      {
+        "i": 1,
+        "side": "compact",
+        "elapsed": 0.21091100000012375,
+        "cpuMs": 0.319
+      },
+      {
+        "i": 1,
+        "side": "structural",
+        "elapsed": 1211.4298129999997,
+        "cpuMs": 1009.507
+      },
+      {
+        "i": 2,
+        "side": "structural",
+        "elapsed": 1281.6124579999996,
+        "cpuMs": 1137.253
+      },
+      {
+        "i": 2,
+        "side": "compact",
+        "elapsed": 0.3736910000006901,
+        "cpuMs": 0.38
+      },
+      {
+        "i": 3,
+        "side": "compact",
+        "elapsed": 0.3869699999995646,
+        "cpuMs": 0.393
+      },
+      {
+        "i": 3,
+        "side": "structural",
+        "elapsed": 1210.9084190000012,
+        "cpuMs": 1019.399
+      },
+      {
+        "i": 4,
+        "side": "structural",
+        "elapsed": 1356.1676509999998,
+        "cpuMs": 1171.404
+      },
+      {
+        "i": 4,
+        "side": "compact",
+        "elapsed": 0.3701259999998001,
+        "cpuMs": 0.373
+      },
+      {
+        "i": 5,
+        "side": "compact",
+        "elapsed": 0.25080999999954656,
+        "cpuMs": 0.255
+      },
+      {
+        "i": 5,
+        "side": "structural",
+        "elapsed": 1231.6378479999985,
+        "cpuMs": 1149.128
+      },
+      {
+        "i": 6,
+        "side": "structural",
+        "elapsed": 1213.2055919999984,
+        "cpuMs": 1145.335
+      },
+      {
+        "i": 6,
+        "side": "compact",
+        "elapsed": 0.2814649999982066,
+        "cpuMs": 0.281
+      },
+      {
+        "i": 7,
+        "side": "compact",
+        "elapsed": 0.24551199999950768,
+        "cpuMs": 0.247
+      },
+      {
+        "i": 7,
+        "side": "structural",
+        "elapsed": 1231.9544559999995,
+        "cpuMs": 1165.141
+      },
+      {
+        "i": 8,
+        "side": "structural",
+        "elapsed": 933.7454159999998,
+        "cpuMs": 955.106
+      },
+      {
+        "i": 8,
+        "side": "compact",
+        "elapsed": 0.21293400000104157,
+        "cpuMs": 0.214
+      },
+      {
+        "i": 9,
+        "side": "compact",
+        "elapsed": 0.10400300000037532,
+        "cpuMs": 0.105
+      },
+      {
+        "i": 9,
+        "side": "structural",
+        "elapsed": 1051.1268390000005,
+        "cpuMs": 968.678
+      },
+      {
+        "i": 10,
+        "side": "structural",
+        "elapsed": 1222.4833560000006,
+        "cpuMs": 977.697
+      },
+      {
+        "i": 10,
+        "side": "compact",
+        "elapsed": 0.1911020000006829,
+        "cpuMs": 0.191
+      },
+      {
+        "i": 11,
+        "side": "compact",
+        "elapsed": 0.10499500000150874,
+        "cpuMs": 0.105
+      },
+      {
+        "i": 11,
+        "side": "structural",
+        "elapsed": 1801.042046999999,
+        "cpuMs": 1458.663
+      },
+      {
+        "i": 12,
+        "side": "structural",
+        "elapsed": 978.164939000002,
+        "cpuMs": 1087.014
+      },
+      {
+        "i": 12,
+        "side": "compact",
+        "elapsed": 0.3108089999986987,
+        "cpuMs": 0.315
+      },
+      {
+        "i": 13,
+        "side": "compact",
+        "elapsed": 0.1967399999994086,
+        "cpuMs": 0.198
+      },
+      {
+        "i": 13,
+        "side": "structural",
+        "elapsed": 1264.3736900000004,
+        "cpuMs": 1149.321
+      },
+      {
+        "i": 14,
+        "side": "structural",
+        "elapsed": 2085.5092860000004,
+        "cpuMs": 1649.595
+      },
+      {
+        "i": 14,
+        "side": "compact",
+        "elapsed": 0.32072400000106427,
+        "cpuMs": 0.322
+      },
+      {
+        "i": 15,
+        "side": "compact",
+        "elapsed": 0.18025699999998324,
+        "cpuMs": 0.214
+      },
+      {
+        "i": 15,
+        "side": "structural",
+        "elapsed": 1973.0562480000008,
+        "cpuMs": 1415.46
+      },
+      {
+        "i": 16,
+        "side": "structural",
+        "elapsed": 1186.7355400000015,
+        "cpuMs": 944.957
+      },
+      {
+        "i": 16,
+        "side": "compact",
+        "elapsed": 0.38318599999911385,
+        "cpuMs": 0.389
+      },
+      {
+        "i": 17,
+        "side": "compact",
+        "elapsed": 0.17733199999929639,
+        "cpuMs": 0.179
+      },
+      {
+        "i": 17,
+        "side": "structural",
+        "elapsed": 1537.1071120000015,
+        "cpuMs": 1287.837
+      },
+      {
+        "i": 18,
+        "side": "structural",
+        "elapsed": 2770.3288920000014,
+        "cpuMs": 1444.314
+      },
+      {
+        "i": 18,
+        "side": "compact",
+        "elapsed": 0.3690249999999651,
+        "cpuMs": 0.373
+      },
+      {
+        "i": 19,
+        "side": "compact",
+        "elapsed": 0.2006760000003851,
+        "cpuMs": 0.202
+      },
+      {
+        "i": 19,
+        "side": "structural",
+        "elapsed": 1310.470094999997,
+        "cpuMs": 1066.576
+      },
+      {
+        "i": 20,
+        "side": "structural",
+        "elapsed": 1489.6423510000022,
+        "cpuMs": 1164.284
+      },
+      {
+        "i": 20,
+        "side": "compact",
+        "elapsed": 0.3201130000015837,
+        "cpuMs": 0.327
+      },
+      {
+        "i": 21,
+        "side": "compact",
+        "elapsed": 0.11691200000495883,
+        "cpuMs": 0.117
+      },
+      {
+        "i": 21,
+        "side": "structural",
+        "elapsed": 1259.4945399999997,
+        "cpuMs": 934.968
+      },
+      {
+        "i": 22,
+        "side": "structural",
+        "elapsed": 1146.9035490000024,
+        "cpuMs": 851.816
+      },
+      {
+        "i": 22,
+        "side": "compact",
+        "elapsed": 0.1217499999984284,
+        "cpuMs": 0.123
+      },
+      {
+        "i": 23,
+        "side": "compact",
+        "elapsed": 0.051855999998224434,
+        "cpuMs": 0.052
+      },
+      {
+        "i": 23,
+        "side": "structural",
+        "elapsed": 1177.7640339999998,
+        "cpuMs": 1088.644
+      },
+      {
+        "i": 24,
+        "side": "structural",
+        "elapsed": 1132.5824899999934,
+        "cpuMs": 913.506
+      },
+      {
+        "i": 24,
+        "side": "compact",
+        "elapsed": 0.4163449999978184,
+        "cpuMs": 0.304
+      },
+      {
+        "i": 25,
+        "side": "compact",
+        "elapsed": 0.06935299999895506,
+        "cpuMs": 0.069
+      },
+      {
+        "i": 25,
+        "side": "structural",
+        "elapsed": 1526.108527999997,
+        "cpuMs": 1313.192
+      },
+      {
+        "i": 26,
+        "side": "structural",
+        "elapsed": 947.3755320000055,
+        "cpuMs": 801.888
+      },
+      {
+        "i": 26,
+        "side": "compact",
+        "elapsed": 0.279753000002529,
+        "cpuMs": 0.283
+      },
+      {
+        "i": 27,
+        "side": "compact",
+        "elapsed": 0.11157499999535503,
+        "cpuMs": 0.113
+      },
+      {
+        "i": 27,
+        "side": "structural",
+        "elapsed": 1546.0649860000049,
+        "cpuMs": 1281.556
+      },
+      {
+        "i": 28,
+        "side": "structural",
+        "elapsed": 1042.8449460000047,
+        "cpuMs": 910.434
+      },
+      {
+        "i": 28,
+        "side": "compact",
+        "elapsed": 1.4492190000019036,
+        "cpuMs": 0.194
+      },
+      {
+        "i": 29,
+        "side": "compact",
+        "elapsed": 0.09423900000547292,
+        "cpuMs": 0.094
+      },
+      {
+        "i": 29,
+        "side": "structural",
+        "elapsed": 1325.8426189999955,
+        "cpuMs": 1020.25
+      },
+      {
+        "i": 30,
+        "side": "structural",
+        "elapsed": 1350.4499859999996,
+        "cpuMs": 966.813
+      },
+      {
+        "i": 30,
+        "side": "compact",
+        "elapsed": 0.13487899999745423,
+        "cpuMs": 0.138
+      },
+      {
+        "i": 31,
+        "side": "compact",
+        "elapsed": 0.08534599999984493,
+        "cpuMs": 0.085
+      },
+      {
+        "i": 31,
+        "side": "structural",
+        "elapsed": 1179.5458670000007,
+        "cpuMs": 940.45
+      },
+      {
+        "i": 32,
+        "side": "structural",
+        "elapsed": 810.5680349999966,
+        "cpuMs": 802.624
+      },
+      {
+        "i": 32,
+        "side": "compact",
+        "elapsed": 0.11578100000042468,
+        "cpuMs": 0.116
+      }
+    ]
+  },
+  "focused": {
+    "publishedInput": "b58c0dd51df0b442e9210c2b6d997c8b9fd8a964",
+    "buildExit": 0,
+    "testExit": 0,
+    "reportSha256": "4c3a24652f582a4300618011ab48e1ee16d232cc4168198ebf6c5562af5f91fb",
+    "passed": 143,
+    "failed": 0,
+    "pending": 0,
+    "cases": [
+      {
+        "file": "hvp-body-residency.test.ts",
+        "outcomes": {
+          "captures canonical live motion with the exact issued owned recipe and rejects an unowned recipe": "passed",
+          "wakes the actual cold parked Body384 with its exact prepared recipe and owned Source instead of decoding again": "passed",
+          "keeps one exact owned recipe across real live park wake park wake and complete native Saves": "passed",
+          "prepares a legacy live recipe once at park and reuses the private owned result on every wake": "passed",
+          "rejects private park preparation above the original cap before any native removal and releases its ledger": "passed",
+          "holds the private preparation ledger until parked custody and the native removal outcome are settled": "passed",
+          "admits a real connected64-brick live owner under the unchanged preparation cap": "passed",
+          "quotes complete sparse Source metadata before capture without constructing its Save projection": "passed",
+          "pins active/near bodies and conserves actual material, pose and sleep over twenty native cycles": "passed",
+          "retains a checkpoint and holds after an uncertain native removal instead of losing matter": "passed",
+          "preserves parked custody and the original restore failure (null)": "passed",
+          "preserves parked custody and the original restore failure (undefined)": "passed",
+          "preserves parked custody and the original restore failure (ordinary)": "passed",
+          "preserves parked custody and the original restore failure (not-restored)": "passed",
+          "preserves parked custody and the original restore failure (getter)": "passed",
+          "preserves parked custody and the original restore failure (proxy)": "passed",
+          "uses the actual installer rollback and retains failure causes (create-null)": "passed",
+          "uses the actual installer rollback and retains failure causes (collider-undefined)": "passed",
+          "uses the actual installer rollback and retains failure causes (cleanup-undefined)": "passed",
+          "uses the actual installer rollback and retains failure causes (readback)": "passed",
+          "uses the actual installer rollback and retains failure causes (coercion)": "passed",
+          "holds after actual restored-body publication fails (target/null)": "passed",
+          "holds after actual restored-body publication fails (target/undefined)": "passed",
+          "holds after actual restored-body publication fails (body/null)": "passed",
+          "holds after actual restored-body publication fails (body/undefined)": "passed",
+          "uses the actual saved-body rollback after install (surface-null)": "passed",
+          "uses the actual saved-body rollback after install (cleanup-undefined)": "passed",
+          "uses the actual saved-body rollback after install (readback)": "passed",
+          "uses the actual saved-body rollback after install (coercion)": "passed"
+        }
+      },
+      {
+        "file": "hvp-body-save.test.ts",
+        "outcomes": {
+          "restores a rotated moving full-inertia body into ten fresh Worlds from only serialized bytes": "passed",
+          "retains sleeping/static states and rejects altered or missing source-bound motion before a World write": "passed",
+          "does not remove existing bodies on restore failure and reports unproven native cleanup": "passed",
+          "restores the F7 mixed-material cross-leaf fixture with its actual 0.6875 m COM": "passed"
+        }
+      },
+      {
+        "file": "hvp-terrain-worker-recovery.test.ts",
+        "outcomes": {
+          "reconstructs both sides of L with exact queries, motion and the R05 safety clock (overrun=false)": "passed",
+          "reconstructs both sides of L with exact queries, motion and the R05 safety clock (overrun=true)": "passed"
+        }
+      },
+      {
+        "file": "hvpCompactChildArchive.test.ts",
+        "outcomes": {
+          "canonicalizes cloned projections and rejects duplicate, malformed or excess cell input": "passed",
+          "binds the retained and removed materials to the original root independently of run boundaries": "passed",
+          "reopens legacy v1 separately from a proven child and checks modified ID, lineage and membership on cold admission": "passed",
+          "preserves one child identity, canonical source, colliders and motion across native park, cold load, wake and the next park": "passed",
+          "validates a parked child beside legacy bodies in the private solver world before allocating a replacement": "passed"
+        }
+      },
+      {
+        "file": "hvpCompactMovingPlan.test.ts",
+        "outcomes": {
+          "matches exact cells, masses, all inertia entries and native occupied volume for 'fallen rock arm'": "passed",
+          "matches exact cells, masses, all inertia entries and native occupied volume for 'spherical rock recut'": "passed",
+          "matches exact cells, masses, all inertia entries and native occupied volume for 'two disconnected U-arm owners'": "passed",
+          "matches exact cells, masses, all inertia entries and native occupied volume for 'mixed-density hollow U'": "passed",
+          "matches exact cells, masses, all inertia entries and native occupied volume for 'mixed-material diagonal'": "passed"
+        }
+      },
+      {
+        "file": "hvpCompactMovingRuntime.test.ts",
+        "outcomes": {
+          "uses the bound exact native rock child at the current rotating pose: finalize": "passed",
+          "uses the bound exact native rock child at the current rotating pose: rollback staged": "passed",
+          "uses the bound exact native rock child at the current rotating pose: rollback committed": "passed",
+          "uses the bound exact native rock child at the current rotating pose: dispose": "passed",
+          "restores the compact parent after a recoverable native installation failure": "passed",
+          "erases a whole small body without issuing an invented child": "passed"
+        }
+      },
+      {
+        "file": "hvpCompactNativeOwner.test.ts",
+        "outcomes": {
+          "retains the compact material identity through an actual sleep, park and wake": "passed",
+          "binds the moving tool's original compact material hit to the genuine archive through a late recut": "passed",
+          "publishes the rotated U's exact native collider and inertia before any v1 authority is constructed": "passed",
+          "keeps its own immutable material source and invalidates post-disposal native installation": "passed",
+          "rejects a matching-volume hull, disconnected craft, foreign generation and forged source claims": "passed",
+          "admits a four-leaf archive-profile edge (1024 cells/128 material runs) and reconstructs its exact v1 body": "passed",
+          "compares the published native Rock Arm against the eager recipe on the same 64-cell cut": "passed"
+        }
+      },
+      {
+        "file": "hvpCompactSessionIdentity.test.ts",
+        "outcomes": {
+          "publishes the compact material identity before archive creation and preserves it in native recovery": "passed"
+        }
+      },
+      {
+        "file": "hvpCutTrace.test.ts",
+        "outcomes": {
+          "models bounded main and worker reply payloads inside the existing controlled reserve": "passed",
+          "returns disabled sync values and errors without reading the clock": "passed",
+          "records one enabled sync span and preserves the value reference": "passed",
+          "preserves a sync error when the diagnostic sink throws": "passed",
+          "preserves a successful sync value when the diagnostic sink throws": "passed",
+          "emits no async span while a deferred operation is pending": "passed",
+          "preserves an async rejection when the diagnostic sink throws": "passed",
+          "preserves a successful async value when the diagnostic sink throws": "passed",
+          "returns the disabled async value without clock reads": "passed",
+          "preserves a disabled async rejection without reading either clock value": "passed",
+          "waits through old rendered frames until the cut revision has its new visible keys": "passed",
+          "measures the DOM event through the matching native publication independently of callback timing": "passed",
+          "keeps a missing or foreign DOM timestamp out of the deadline series": "passed",
+          "bounds actual maximal observer input, key and child records before accepted render": "passed",
+          "accepts only matching compact moving identities: bound": "passed",
+          "accepts only matching compact moving identities: foreign parent": "passed",
+          "accepts only matching compact moving identities: foreign child": "passed",
+          "accepts only matching compact moving identities: removed tag": "passed",
+          "accepts only matching compact moving identities: invalid digest": "passed",
+          "rejects a rendered key beyond the real 128-character representation boundary": "passed",
+          "rejects a foreign main-clock terminal instead of attributing its duration to the real input": "passed",
+          "binds body input and an actual matching render separately from the unchanged terrain generation": "passed",
+          "permits a confirmed complete body removal without fabricating a child": "passed",
+          "rejects a pending body render after restored outcome changes": "passed",
+          "rejects a pending body render after native sequence changes": "passed",
+          "rejects a pending body render after native command changes": "passed",
+          "rejects a pending body render after native status changes": "passed",
+          "rejects a pending body render after native pending changes": "passed",
+          "rejects a pending body render after child digest changes": "passed",
+          "rejects a pending body render after child key changes": "passed",
+          "rejects a pending body render after visible parent changes": "passed",
+          "rejects a pending body render after missing child changes": "passed",
+          "rejects a pending body render after root restore changes": "passed",
+          "never captures malformed body facts: missing facts": "passed",
+          "never captures malformed body facts: too many children": "passed",
+          "never captures malformed body facts: duplicate child": "passed",
+          "never captures malformed body facts: oversized key": "passed",
+          "never captures malformed body facts: invalid digest": "passed",
+          "keeps unavailable and throwing body renders honest and preserves result/error identity": "passed",
+          "invalidates a terrain candidate before checking an ineligible body Applied event": "passed",
+          "keeps colliding terrain/body identifiers separate and removes rejected body input": "passed",
+          "does not recreate body state after reentrant disposal from the input sink": "passed",
+          "P07 retains the exact input timestamp before a possibly timed-out command (body=false)": "passed",
+          "P07 retains the exact input timestamp before a possibly timed-out command (body=true)": "passed",
+          "P07 input-marker sink throw cannot alter the operation or recreate released input": "passed",
+          "P07 input-marker sink dispose cannot alter the operation or recreate released input": "passed",
+          "binds actual synchronous input and records each terminal outcome once": "passed",
+          "records the Applied input interval": "passed",
+          "records the NoOp input interval": "passed",
+          "records the Rejected input interval": "passed",
+          "records the RecoveryHold input interval": "passed",
+          "binds before synchronous targeting and preserves the original operation result": "passed",
+          "preserves confirm error identity and restores nested input scope": "passed",
+          "keeps nine input records bounded and rejects duplicate bindings without overwriting": "passed",
+          "does not rebind after a submitted sink disposes the observer": "passed",
+          "does not recreate a pending render after an input-latency sink disposes it": "passed",
+          "invalidates an old Applied candidate before replacement eligibility is checked": "passed",
+          "invalidates an old candidate before an invalid Applied id is inspected": "passed",
+          "prevents a reentrant render from attributing an old candidate during Applied relay": "passed",
+          "does not let a newer Applied event resurrect an older candidate through sink reentrancy": "passed",
+          "does not let a newer Applied event resurrect an older candidate through readFrame reentrancy": "passed",
+          "does not create a render candidate without an Applied marker": "passed",
+          "requires exact root, native, active, visible and recovery facts for one Accepted render": "passed",
+          "excludes post-read cost from the successful render latency": "passed",
+          "does not resurrect a superseded pending observation after temporary rollback": "passed",
+          "keeps BackendUnavailable pending, rejects mismatches, and distinguishes a new Root identity": "passed",
+          "emits exactly one success after BackendUnavailable when facts remain unchanged": "passed",
+          "rejects native, recovery and stale-extra-visible mismatches": "passed",
+          "preserves render result and thrown identity across pre/post, clock and sink failures": "passed",
+          "guards pre and post comparison faults while preserving callback count and throw identity": "passed",
+          "does not emit success after a post-probe disposal": "passed",
+          "calls render once when pre-read fails and keeps a later accepted result exact": "passed",
+          "does not claim success when the clock or WeakRef is unavailable": "passed",
+          "validates bounded keys and raw span timing without retaining invalid payload": "passed",
+          "rejects negative translated times before retaining or recording terminal input": "passed",
+          "rejects overflowing confirm time and terminal endpoints while cleaning known ids": "passed",
+          "lets replay and conflict markers relay without rebinding input": "passed",
+          "replaces old pending observations for missing-input and oversized Applied events": "passed",
+          "cleans terminal input for invalid raw timing and ignores late samples after dispose": "passed",
+          "counts both pending and input state when disposed": "passed"
+        }
+      }
+    ]
+  },
+  "rotatingMomentum": {
+    "publishedInput": "9aac4f39ee1979001cf058afc47e4fb1c7505628",
+    "testExit": 0,
+    "reportSha256": "22778d85f93385eb0432533d8d21aa490378c0242489da711f6ca9a6ff4d8c50",
+    "passed": 6,
+    "failed": 0,
+    "pending": 0,
+    "cases": [
+      {
+        "file": "hvpCompactMovingRuntime.test.ts",
+        "outcomes": {
+          "uses the bound exact native rock child at the current rotating pose: finalize": "passed",
+          "uses the bound exact native rock child at the current rotating pose: rollback staged": "passed",
+          "uses the bound exact native rock child at the current rotating pose: rollback committed": "passed",
+          "uses the bound exact native rock child at the current rotating pose: dispose": "passed",
+          "restores the compact parent after a recoverable native installation failure": "passed",
+          "erases a whole small body without issuing an invented child": "passed"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,328 @@
+{
+  "scope": "Normal pointer input, isolated browser window before the original-ray fix, manual resume available. Renderer SwiftShader.",
+  "rawSha256": "9dd311e81b24bf47db59052222ba72bd94a6aef7dbddfb8fc3e5d8ba90f9feaf",
+  "browser": "149.0.7827.0",
+  "viewport": {
+    "width": 640,
+    "height": 400
+  },
+  "allowResume": true,
+  "pauseAfterClick": false,
+  "pageErrors": [],
+  "consoleErrors": [],
+  "consoleWarnings": [],
+  "workerPlan": [],
+  "resumes": [
+    {
+      "tick": 361,
+      "status": "SimulationHold"
+    },
+    {
+      "tick": 925,
+      "status": "SimulationHold"
+    },
+    {
+      "tick": 925,
+      "status": "SimulationHold"
+    },
+    {
+      "tick": 2003,
+      "status": "SimulationHold"
+    },
+    {
+      "tick": 2528,
+      "status": "SimulationHold"
+    },
+    {
+      "tick": 2933,
+      "status": "SimulationHold"
+    }
+  ],
+  "referenceDeviceVerified": false,
+  "measurementsEnabled": true,
+  "phase": "second player receipt",
+  "reducedPresentation": true,
+  "first": {
+    "receipt": {
+      "commandId": "cut-1",
+      "status": "Applied",
+      "removedCells": 64,
+      "reason": "Terrain and collision committed",
+      "revision": 1,
+      "transferredCells": 384,
+      "transferredMassKg": 1722.65625,
+      "materialRemovedKg": 300
+    },
+    "fragment": {
+      "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+      "sourceDigest": "hvp-material-cells-v1:02005d2b8da9f1c1",
+      "centerOfMass": {
+        "x": 23.50561224489796,
+        "y": 10.49158163265306,
+        "z": 9.755612244897959
+      },
+      "cellCount": 384,
+      "massKg": 1722.65625,
+      "colliders": 1,
+      "sourceBytes": 262144
+    },
+    "fallenPose": {
+      "x": 7.545141696929932,
+      "y": 0.9915091395378113,
+      "z": -5.200088977813721
+    },
+    "hit": {
+      "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+      "sourceDigest": "hvp-material-cells-v1:02005d2b8da9f1c1",
+      "revision": 0,
+      "issuedTick": 752,
+      "cell": [
+        190,
+        85,
+        79
+      ],
+      "pose": {
+        "position": {
+          "x": 7.545141696929932,
+          "y": 0.9915091395378113,
+          "z": -5.200088977813721
+        },
+        "rotation": {
+          "x": -1.7124111764132977e-05,
+          "y": 0.5309561491012573,
+          "z": -1.4941192603146192e-05,
+          "w": 0.8473992943763733
+        }
+      }
+    }
+  },
+  "clicksAtIssue": [
+    {
+      "target": "debug-scene",
+      "locked": "debug-scene",
+      "trusted": true,
+      "absoluteMs": 1795369469497.4,
+      "x": 0,
+      "y": 0,
+      "handled": true,
+      "tick": 164,
+      "native": "Running"
+    },
+    {
+      "target": "debug-scene",
+      "locked": "debug-scene",
+      "trusted": true,
+      "absoluteMs": 1795369482022.9,
+      "x": 0,
+      "y": 0,
+      "handled": true,
+      "tick": 905,
+      "native": "Running"
+    }
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: Player could not keep the session running\n    at handleHold (file:///workspace/scratch/5b1f8c0d748a/followup-moving-runtime/apps/weltraum-browser/tests/performance/cut-moving-player.mjs:82:10)\n    at waitState (file:///workspace/scratch/5b1f8c0d748a/followup-moving-runtime/apps/weltraum-browser/tests/performance/cut-moving-player.mjs:99:66)\n    at async file:///workspace/scratch/5b1f8c0d748a/followup-moving-runtime/apps/weltraum-browser/tests/performance/cut-moving-player.mjs:202:17",
+  "terminal": {
+    "status": "SimulationHold",
+    "moving": {
+      "sequence": 0,
+      "pendingId": null,
+      "state": "Idle",
+      "preview": null,
+      "last": null
+    },
+    "tool": {
+      "mode": "Box 0,5 m",
+      "edges": 1,
+      "issued": 1,
+      "message": "Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)",
+      "state": "Applied",
+      "queued": 0,
+      "receipts": 1,
+      "last": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "structural": {
+        "state": "Ready",
+        "issued": 0,
+        "last": null
+      },
+      "moving": {
+        "state": "Idle",
+        "last": null,
+        "issued": 0
+      }
+    },
+    "tick": 3113
+  },
+  "input": {
+    "clicks": [
+      {
+        "target": "debug-scene",
+        "locked": "debug-scene",
+        "trusted": true,
+        "absoluteMs": 1795369469497.4,
+        "x": 0,
+        "y": 0,
+        "handled": true,
+        "tick": 164,
+        "native": "Running"
+      },
+      {
+        "target": "debug-scene",
+        "locked": "debug-scene",
+        "trusted": true,
+        "absoluteMs": 1795369482022.9,
+        "x": 0,
+        "y": 0,
+        "handled": true,
+        "tick": 905,
+        "native": "Running"
+      }
+    ],
+    "holds": [
+      {
+        "origin": 1795369463166.7,
+        "at": 8040.599999997765,
+        "simulationElapsedMs": 101.59999999776483,
+        "gapMs": 101.59999999776483,
+        "advanceMs": 17.5,
+        "ticks": 361,
+        "backlogSeconds": 0.03683333332960813,
+        "previousCommand": "Read",
+        "handlerMs": 0.7999999970197678
+      },
+      {
+        "origin": 1795369463166.7,
+        "at": 18461.199999999255,
+        "simulationElapsedMs": 92.60000000149012,
+        "gapMs": 92.60000000149012,
+        "advanceMs": 4.399999998509884,
+        "ticks": 925,
+        "backlogSeconds": 0.04090000000223552,
+        "previousCommand": "Read",
+        "handlerMs": 8
+      },
+      {
+        "origin": 1795369463166.7,
+        "at": 39978,
+        "simulationElapsedMs": 92.5,
+        "gapMs": 92.5,
+        "advanceMs": 13.899999998509884,
+        "ticks": 2003,
+        "backlogSeconds": 0.038633333334079006,
+        "previousCommand": "Read",
+        "handlerMs": 1.300000000745058
+      },
+      {
+        "origin": 1795369463166.7,
+        "at": 50671.89999999851,
+        "simulationElapsedMs": 72.10000000149012,
+        "gapMs": 72.10000000149012,
+        "advanceMs": 0.8999999985098839,
+        "ticks": 2528,
+        "backlogSeconds": 0.020500000000000292,
+        "previousCommand": "Read",
+        "handlerMs": 0.8000000007450581
+      },
+      {
+        "origin": 1795369463166.7,
+        "at": 58238.099999997765,
+        "simulationElapsedMs": 90.80000000074506,
+        "gapMs": 90.80000000074506,
+        "advanceMs": 14.300000000745058,
+        "ticks": 2933,
+        "backlogSeconds": 0.025500000000000283,
+        "previousCommand": "Read",
+        "handlerMs": 0.8999999985098839
+      },
+      {
+        "origin": 1795369463166.7,
+        "at": 63200.199999999255,
+        "simulationElapsedMs": 112.10000000149012,
+        "gapMs": 112.10000000149012,
+        "advanceMs": 38.19999999925494,
+        "ticks": 3113,
+        "backlogSeconds": 0.060699999999255044,
+        "previousCommand": "Read",
+        "handlerMs": 0.8000000007450581
+      }
+    ],
+    "phases": []
+  },
+  "worker": "http://127.0.0.1:46175/assets/physicsWorker-EVdQjSh4.js",
+  "holdsAfterFirstClick": [
+    {
+      "origin": 1795369463166.7,
+      "at": 8040.599999997765,
+      "simulationElapsedMs": 101.59999999776483,
+      "gapMs": 101.59999999776483,
+      "advanceMs": 17.5,
+      "ticks": 361,
+      "backlogSeconds": 0.03683333332960813,
+      "previousCommand": "Read",
+      "handlerMs": 0.7999999970197678
+    },
+    {
+      "origin": 1795369463166.7,
+      "at": 18461.199999999255,
+      "simulationElapsedMs": 92.60000000149012,
+      "gapMs": 92.60000000149012,
+      "advanceMs": 4.399999998509884,
+      "ticks": 925,
+      "backlogSeconds": 0.04090000000223552,
+      "previousCommand": "Read",
+      "handlerMs": 8
+    },
+    {
+      "origin": 1795369463166.7,
+      "at": 39978,
+      "simulationElapsedMs": 92.5,
+      "gapMs": 92.5,
+      "advanceMs": 13.899999998509884,
+      "ticks": 2003,
+      "backlogSeconds": 0.038633333334079006,
+      "previousCommand": "Read",
+      "handlerMs": 1.300000000745058
+    },
+    {
+      "origin": 1795369463166.7,
+      "at": 50671.89999999851,
+      "simulationElapsedMs": 72.10000000149012,
+      "gapMs": 72.10000000149012,
+      "advanceMs": 0.8999999985098839,
+      "ticks": 2528,
+      "backlogSeconds": 0.020500000000000292,
+      "previousCommand": "Read",
+      "handlerMs": 0.8000000007450581
+    },
+    {
+      "origin": 1795369463166.7,
+      "at": 58238.099999997765,
+      "simulationElapsedMs": 90.80000000074506,
+      "gapMs": 90.80000000074506,
+      "advanceMs": 14.300000000745058,
+      "ticks": 2933,
+      "backlogSeconds": 0.025500000000000283,
+      "previousCommand": "Read",
+      "handlerMs": 0.8999999985098839
+    },
+    {
+      "origin": 1795369463166.7,
+      "at": 63200.199999999255,
+      "simulationElapsedMs": 112.10000000149012,
+      "gapMs": 112.10000000149012,
+      "advanceMs": 38.19999999925494,
+      "ticks": 3113,
+      "backlogSeconds": 0.060699999999255044,
+      "previousCommand": "Read",
+      "handlerMs": 0.8000000007450581
+    }
+  ]
+}
