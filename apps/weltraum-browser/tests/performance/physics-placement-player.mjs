@@ -5,8 +5,9 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
-const [url,output]=process.argv.slice(2);
-if(!url||!output)throw new Error("Usage: node tests/performance/physics-placement-player.mjs URL NEW_OUTPUT_DIR");
+const [url,output,pairArgument="2"]=process.argv.slice(2);
+const pairs=Number(pairArgument);
+if(!url||!output||!Number.isSafeInteger(pairs)||pairs<1||pairs>1000)throw new Error("Usage: node tests/performance/physics-placement-player.mjs URL NEW_OUTPUT_DIR [PAIRS]");
 await mkdir(output);
 const run=promisify(execFile);
 const probe=fileURLToPath(new URL("./cut-publication.mjs",import.meta.url));
@@ -17,11 +18,12 @@ const stats=sample=>{
   const q=f=>s[Math.ceil(f*s.length)-1];
   return {n:s.length,p50:q(.5),p95:q(.95),p99:q(.99),max:s.at(-1)};
 };
-for(const placement of ["worker","main","main","worker"]) {
+const order=Array.from({length:pairs},(_,i)=>i%2===0?["worker","main"]:["main","worker"]).flat();
+for(const placement of order) {
   const prefix=join(output,String(attempts.length+1)+"-"+placement);
   let outcome;
   try{
-    const {stdout,stderr}=await run(process.execPath,[probe,url],{env:{...process.env,HVP_PHYSICS_PLACEMENT:placement,HVP_CUT_EVENTS:prefix+".events.ndjson"},
+    const {stdout,stderr}=await run(process.execPath,[probe,url],{env:{...process.env,...(process.env.HVP_CUT_CHROME_TRACE?{HVP_CUT_CHROME_TRACE:prefix+".chrome.json.gz"}:{}),HVP_PHYSICS_PLACEMENT:placement,HVP_CUT_EVENTS:prefix+".events.ndjson"},
       timeout:150_000,killSignal:"SIGKILL",maxBuffer:16*1024*1024});
     const x=JSON.parse(stdout);
     await writeFile(prefix+".json",stdout);
@@ -29,7 +31,7 @@ for(const placement of ["worker","main","main","worker"]) {
     const published=x.metrics["hvp.cutDomInputToPhysicsPublishedMs"];
     const beforeAck=x.frames.filter(f=>f.start+f.duration>=x.eventTimeStamp && f.start<x.eventTimeStamp+published.duration);
     outcome={placement,exit:0,owner:x.ownerPlacement,physicsMs:published.duration,submitMs:x.domToSubmitMs,
-      result:x.result,renderer:x.renderer,activeCutFrameIntervalsMs:stats(beforeAck),observedSolverStepsMs:stats(x.solver)};
+      result:x.result,renderer:x.renderer,criticalPath:x.criticalPath,trace:x.browserTrace,activeCutFrameIntervalsMs:stats(beforeAck),observedSolverStepsMs:stats(x.solver)};
   }catch(error){
     await writeFile(prefix+".log",String(error.stderr??"")+"\n"+String(error.message));
     outcome={placement,exit:error.code??error.signal??1,error:String(error.message).slice(0,1000)};
@@ -38,4 +40,16 @@ for(const placement of ["worker","main","main","worker"]) {
   await writeFile(join(output,"summary.json"),JSON.stringify({url,physicalPresentationMeasured:false,referenceDeviceVerified:false,attempts},null,2)+"\n");
   console.log(JSON.stringify(outcome));
 }
-if(attempts.some(row=>row.exit!==0||row.physicsMs>10))process.exitCode=1;
+const requestedGpu=process.env.HVP_REFERENCE_GPU?.toLowerCase();
+const hardwareMatches=requestedGpu?attempts.every(row=>typeof row.renderer==="string" &&
+  row.renderer.toLowerCase().includes(requestedGpu) && !/swiftshader|llvmpipe|software/i.test(row.renderer)):null;
+const summary={url,pairs,physicalPresentationMeasured:false,referenceDeviceVerified:false,requestedGpuMatches:hardwareMatches,attempts,
+  byPlacement:Object.fromEntries(["worker","main"].map(mode=>{
+    const sample=attempts.filter(r=>r.placement===mode);
+    return [mode,{attempted:sample.length,completed:sample.filter(r=>r.exit===0).length,
+      inputToPublicationMs:stats(sample.filter(r=>r.exit===0).map(r=>({duration:r.physicsMs}))),
+      meeting10ms:sample.filter(r=>r.exit===0&&r.physicsMs<=10).length,
+      meetingThreeStages:sample.filter(r=>r.criticalPath?.withinStageBudget).length}];
+  }))};
+await writeFile(join(output,"summary.json"),JSON.stringify(summary,null,2)+"\n");
+if(hardwareMatches===false||attempts.some(row=>row.exit!==0||row.physicsMs>10||!row.criticalPath?.withinStageBudget))process.exitCode=1;
