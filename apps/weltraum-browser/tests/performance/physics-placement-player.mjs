@@ -4,7 +4,7 @@ import { mkdir,writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import {cutSeriesChecks} from "./cut-work.mjs";
+import {cutGameplayTiming,cutSeriesChecks} from "./cut-work.mjs";
 
 const [url,output,pairArgument="2"]=process.argv.slice(2);
 const pairs=Number(pairArgument);
@@ -38,7 +38,7 @@ for(const placement of order) {
     const submitAt = x.eventTimeStamp + x.domToSubmitMs;
     const frameBoundaries = x.frames.filter(f => f.start + f.duration > ackAt && f.start + f.duration <= submitAt);
     outcome={placement,exit:0,owner:x.ownerPlacement,physicsMs:published.duration,submitMs:x.domToSubmitMs,
-      browser:x.browser, result:x.result, renderer:x.renderer, ackToSubmitMs:submitAt - ackAt,
+      browser:x.browser, result:x.result, renderer:x.renderer, compactActivation:x.compactActivation, gameplay:cutGameplayTiming(x), ackToSubmitMs:submitAt - ackAt,
       frameBoundariesAfterAckBeforeSubmit:frameBoundaries.length, criticalPath:x.criticalPath,trace:x.browserTrace,activeCutFrameIntervalsMs:stats(beforeAck),observedSolverStepsMs:stats(x.solver)};
   }catch(error){
     await writeFile(prefix+".log",String(error.stderr??"")+"\n"+String(error.message));
@@ -59,6 +59,8 @@ const summary={url,pairs,physicalPresentationMeasured:false,referenceDeviceVerif
     const checks=cutSeriesChecks(sample,frames,steps);
     return [mode,{checks,cutFrameIntervalsMs:frames,solverStepsMs:steps,attempted:sample.length,completed:sample.filter(r=>r.exit===0).length,
       inputToPublicationMs:stats(sample.filter(r=>r.exit===0).map(r=>({duration:r.physicsMs}))),
+      inputToGameplayReadyMs:stats(sample.flatMap(row=>row.gameplay?[{duration:row.gameplay.inputToGameplayReadyMs}]:[])),
+      meetingGameplay10ms:sample.filter(row=>row.gameplay && row.gameplay.inputToGameplayReadyMs<=10).length,
       meeting10ms:sample.filter(r=>r.exit===0&&r.physicsMs<=10).length,
       meetingThreeStages:sample.filter(r=>r.criticalPath?.withinStageBudget).length,
       meetingSolverP95:sample.filter(r=>r.observedSolverStepsMs?.p95<=4).length,
