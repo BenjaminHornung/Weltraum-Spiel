@@ -87,6 +87,26 @@ describe("browser storage codec", () => {
     });
   });
 
+  it("preserves the V1 wire digest and returns a detached, frozen player payload", async () => {
+    const fixture = createSaveGameEnvelopeV1Fixture();
+    const values = [-0, 2, 0, "ß"];
+    const source = {
+      ...fixture,
+      gameVersion: "fixture-🚀",
+      player: {
+        ...fixture.player,
+        data: { ...fixture.player.data, "3": "three", "2": "two", Z: values }
+      }
+    };
+    const codec = createSaveCodec(createDefinitionResolutionFixture());
+    const encoded = await codec.encode(source);
+    values[1] = 3;
+
+    expect(encoded.contentHash).toBe("sha256:71951408f1c632c47ec71309ee3796e2079302fe6cb96ea5055d8674181c3ec8");
+    expect(encoded.envelope.player.data.Z).toEqual([0, 2, 0, "ß"]);
+    expect(Object.isFrozen(encoded.envelope.player.data.Z)).toBe(true);
+  });
+
   it.each([
     ["257-character", "v".repeat(257)],
     ["internal-control-character", "fixture\u0001v1"]

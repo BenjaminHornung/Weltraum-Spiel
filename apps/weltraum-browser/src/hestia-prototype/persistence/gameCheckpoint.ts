@@ -1,4 +1,4 @@
-import {canonicalizePersistenceValue,createPersistenceSignature,serializeCanonicalPersistenceValue} from "../../persistence";
+import {canonicalizePersistenceValue,createPersistenceSignature} from "../../persistence";
 import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_SOURCE_VERSION,restoreHvpOwnedCoastGrid} from "../../hvp/hvpCoastSource";
 import type {HvpCameraCheckpoint} from "../../hvp/hvpCamera";
 import {HVP_VEGETATION_VERSION} from "../presentation/vegetation";
@@ -116,11 +116,11 @@ const decodeGame=(value:unknown,cold:{admitPrepare:(workingBytes:number)=>void;r
   // validate all per-field budgets before canonical cloning/serialization.
   const admittedSignature=p.signature;
   cold?.admitPrepare(decodeWorkingBytes);
-  const text=serializeCanonicalPersistenceValue(p);
-  if(text.length>HVP_SAVE_TRANSPORT_BYTES||new TextEncoder().encode(text).byteLength>HVP_SAVE_TRANSPORT_BYTES){throw new Error("Hestia save transport budget");}
-  const {signature,...data}=p;
-  if(signature!==admittedSignature||admittedSignature!==createPersistenceSignature(data)){throw new Error("Hestia save signature mismatch");}
   const owned=canonicalizePersistenceValue(p) as unknown as HvpGameCheckpoint|HvpLabGameCheckpoint;
+  const text=JSON.stringify(owned);
+  if(text.length>HVP_SAVE_TRANSPORT_BYTES||new TextEncoder().encode(text).byteLength>HVP_SAVE_TRANSPORT_BYTES){throw new Error("Hestia save transport budget");}
+  const {signature,...data}=owned;
+  if(signature!==admittedSignature||admittedSignature!==createPersistenceSignature(data)){throw new Error("Hestia save signature mismatch");}
   // Cold admission has completed before the owned snapshot is decoded.
   const snapshot=cold?owned:p;
   const decodedBase=decodeHvpGrid(snapshot.terrain.base);

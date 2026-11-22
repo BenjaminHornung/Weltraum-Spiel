@@ -1,6 +1,6 @@
 import {
+  canonicalizeSaveGameEnvelopeV1,
   deserializeSaveGameEnvelopeV1,
-  serializeSaveGameEnvelopeV1,
   type DefinitionResolutionSnapshot,
   type SaveGameEnvelopeV1
 } from "../persistence";
@@ -47,8 +47,8 @@ export const createCanonicalSavePayload = (
   value: unknown,
   definitionSnapshots: readonly DefinitionResolutionSnapshot[]
 ): CanonicalSavePayload => {
-  const canonicalPayload = serializeSaveGameEnvelopeV1(value, definitionSnapshots);
-  const envelope = deserializeSaveGameEnvelopeV1(canonicalPayload, definitionSnapshots);
+  const envelope = canonicalizeSaveGameEnvelopeV1(value, definitionSnapshots);
+  const canonicalPayload = JSON.stringify(envelope);
   return Object.freeze({
     envelope,
     canonicalPayload,
@@ -62,7 +62,7 @@ export const parseCanonicalSavePayload = (
 ): CanonicalSavePayload => {
   const canonicalPayload = decodeUtf8Fatal(payloadBytes);
   const envelope = deserializeSaveGameEnvelopeV1(canonicalPayload, definitionSnapshots);
-  if (serializeSaveGameEnvelopeV1(envelope, definitionSnapshots) !== canonicalPayload) {
+  if (JSON.stringify(envelope) !== canonicalPayload) {
     throw new Error("Save payload is valid JSON but is not the compact canonical representation.");
   }
   return Object.freeze({

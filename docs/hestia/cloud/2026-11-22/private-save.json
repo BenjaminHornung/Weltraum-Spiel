@@ -1,0 +1,141 @@
+{
+  "scope": "Private lab, MemorySaveRepository, fresh process and real workers for cold restore",
+  "referenceHardware": false,
+  "physicalGPU": false,
+  "workerSha256": "388bd198dee0ab31165855c03a359ec7ce6b78df8cd538cd82506c179f23ea96",
+  "wasmSha256": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+  "wireComparisons": {
+    "hestia": {
+      "bytes": 173205,
+      "sha256": "035d0cc885fe62c24e854f4bbd59148762a5dfc8d31e019ccdf0daf1e7be1d6e"
+    },
+    "unicode": {
+      "bytes": 1187,
+      "sha256": "71951408f1c632c47ec71309ee3796e2079302fe6cb96ea5055d8674181c3ec8"
+    }
+  },
+  "privateColdRestores": [
+    {
+      "inputBuild": "current",
+      "checkpointBytes": 221572,
+      "wireSHA256": "f334b99196b7a6a73f257d472d06f149e7a21b8445d46b7a42ce64a27228e26c",
+      "streamJobs": 257,
+      "receipt": "Applied",
+      "beforeMassKg": 150,
+      "afterMassKg": 148.828125,
+      "removedCells": 1,
+      "saveRevision": 2,
+      "disposed": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "liveThreads": 0
+    },
+    {
+      "inputBuild": "R2",
+      "checkpointBytes": 221567,
+      "wireSHA256": "4b0e86692e27b3d44cefac0eae5d224f20cbd4a74d15ece41ac47fc6a7da387c",
+      "streamJobs": 257,
+      "receipt": "Applied",
+      "beforeMassKg": 150,
+      "afterMassKg": 148.828125,
+      "removedCells": 1,
+      "saveRevision": 2,
+      "disposed": {
+        "workers": 0,
+        "pendingJobs": 0,
+        "timers": 0,
+        "timingSinkFailures": 0,
+        "listeners": 0,
+        "native": {
+          "status": "Disposed",
+          "bodies": 0,
+          "colliders": 0
+        }
+      },
+      "liveThreads": 0
+    }
+  ],
+  "unchangedTestBudgetMs": 5000,
+  "codecTest": {
+    "R2Ms": 5062,
+    "R2Exit": 1,
+    "combinedMs": 3984,
+    "combinedExit": 0
+  },
+  "cloudFixtureDecode": {
+    "control": {
+      "allSampleMedianMs": 315.6707059999999,
+      "raw": {
+        "warmMedian": 315.6707059999999,
+        "separateCold": [
+          490.32916399999976,
+          305.349909
+        ],
+        "runs": [
+          [
+            490.32916399999976,
+            784.9784689999997,
+            321.10084000000006,
+            327.5197369999996,
+            289.3090769999999,
+            360.3598830000001,
+            325.7241690000001,
+            301.96946600000047
+          ],
+          [
+            305.349909,
+            277.74393999999984,
+            255.92253299999993,
+            263.6305319999997,
+            799.5290530000002,
+            310.2405719999997,
+            321.6573619999999,
+            261.29451700000027
+          ]
+        ]
+      }
+    },
+    "candidate": {
+      "allSampleMedianMs": 245.51179049999996,
+      "raw": {
+        "warmMedian": 242.50690299999974,
+        "separateCold": [
+          755.1273509999996,
+          258.56134599999996
+        ],
+        "runs": [
+          [
+            755.1273509999996,
+            243.4941670000003,
+            236.43195500000002,
+            241.5196389999992,
+            220.34343400000034,
+            252.6267029999999,
+            262.6276029999999,
+            658.3288080000002
+          ],
+          [
+            258.56134599999996,
+            269.78769999999986,
+            573.8649329999998,
+            219.90692200000012,
+            229.89860899999985,
+            247.52941399999963,
+            235.21624299999985,
+            221.79091100000005
+          ]
+        ]
+      }
+    }
+  },
+  "publicSaveCutover": false
+}
