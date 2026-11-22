@@ -37,7 +37,7 @@ const q=MICROVOXEL_BASE_QUANTUM_METERS;
 const materials=Object.freeze(HVP_COAST_MATERIAL_REGISTRY.map(m=>Object.freeze({materialId:m.slot,
   densityKgPerCubicMeter:m.densityKgPerM3,structuralClass:m.role,destructible:true,tags:null})));
 const meters=(p:HvpCell)=>Object.freeze({x:p[0]*q,y:p[1]*q,z:p[2]*q});
-const adjacent=(a:Box,b:Box)=> {
+export const compactBoxesShareFace=(a:Box,b:Box)=> {
   let touched=0;
   for(let axis=0;axis<3;axis++) {
     if(a.max[axis]===b.min[axis] || b.max[axis]===a.min[axis]) touched++;
@@ -48,7 +48,7 @@ const adjacent=(a:Box,b:Box)=> {
 function connected(boxes:readonly Box[]) {
   const seen=new Set([0]),queue=[0];
   for(let at=0;at<queue.length;at++) for(let i=0;i<boxes.length;i++) {
-    if(!seen.has(i)&&adjacent(boxes[queue[at]!]!,boxes[i]!)) { seen.add(i);queue.push(i); }
+    if(!seen.has(i)&&compactBoxesShareFace(boxes[queue[at]!]!,boxes[i]!)) { seen.add(i);queue.push(i); }
   }
   return seen.size===boxes.length;
 }
@@ -132,6 +132,10 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
   issued.add(recipe);
   const owner=Object.freeze({
     identity,recipe,cellCount:count,leafCount,bounds:box(min,max),
+    materialRuns(){
+      if(disposed)throw new Error("Compact owner disposed");
+      return Object.freeze(spans!.map(s=>Object.freeze({...s})));
+    },
     readMaterial(x:number,y:number,z:number) {
       if(disposed) throw new Error("Compact owner disposed");
       if(![x,y,z].every(Number.isSafeInteger)) throw new Error("Integer compact source coordinates required");

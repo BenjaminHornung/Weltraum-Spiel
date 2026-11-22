@@ -2,7 +2,7 @@ import { HVP_COAST_MATERIAL_REGISTRY } from "../../../hvp/hvpCoastSource";
 import type { Vec3 } from "../../../core/vector";
 import type { StructuralInertiaTensor } from "../types";
 import type { HvpCell } from "../../../hestia-prototype/terrain/picking";
-import { box, cell, exactShapes, orderedSpans, type Box, type CompactTerrainPart } from "./exactShapes";
+import { box, cell, exactShapes, orderedSpans, type Box, type Span, type CompactTerrainPart } from "./exactShapes";
 
 export interface CompactMass {
   readonly totalMassKg:number;
@@ -45,6 +45,13 @@ export function combineMass(parts:readonly PartFacts[]):CompactMass {
 export function preparePart(origin:HvpCell,leafRevision:number,label:number,runs:number[]):PartFacts {
   const part:CompactTerrainPart=Object.freeze({origin,leafRevision,label,runs:Object.freeze(runs)});
   const spans=orderedSpans([part]);
+  const facts=measureCompactMaterialSpans(spans);
+  return {part,...facts,shapes:exactShapes(spans,facts.count,facts.bounds)};
+}
+
+/** Exact first and centered second moments of an occupied coast-material run list. */
+export function measureCompactMaterialSpans(spans:readonly Span[]) {
+  if(!spans.length)throw new Error("Empty compact mass input");
   let xmin=Infinity,ymin=Infinity,zmin=Infinity,xmax=0,ymax=0,zmax=0;
   let count=0,total=0,fx=0,fy=0,fz=0;
   for(const {x,end,y,z,material} of spans) {
@@ -64,7 +71,7 @@ export function preparePart(origin:HvpCell,leafRevision:number,label:number,runs
     xy-=m*dx*dy;xz-=m*dx*dz;yz-=m*dy*dz;
   }
   const bounds=box(cell(xmin,ymin,zmin),cell(xmax,ymax,zmax));
-  return {part,bounds,count,shapes:exactShapes(spans,count,bounds),mass:Object.freeze({
+  return {bounds,count,mass:Object.freeze({
     totalMassKg:total,firstMomentKgMeters:vec(fx,fy,fz),centerOfMassMeters:center,
     inertiaTensorKgMetersSquared:Object.freeze({xx,yy,zz,xy,xz,yz})})};
 }

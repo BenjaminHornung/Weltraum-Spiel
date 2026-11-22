@@ -35,6 +35,18 @@ export const readHvpBodyCells=(source:StructuralObject):readonly HvpStructuralCe
 /** Same extraction/cache, bounded when the owner borrows its parent's reserve. */
 export const readHvpOwnedBodyCellsSteps=(source:StructuralObject,reserve:StructuralOwnedReserve)=>bodyCellsSteps(source,reserve);
 
+export function hvpMovingBrush(cell:HvpCell,edge:number,brush:"Box"|"Sphere"){
+  if(!Number.isSafeInteger(edge)||edge<1||edge>8||cell.length!==3||!cell.every(Number.isSafeInteger)){
+    throw new Error("Invalid local body cut");
+  }
+  if(brush!=="Box"&&brush!=="Sphere"){throw new Error("Invalid body brush");}
+  const min={x:Math.floor(cell[0]/edge)*edge,y:Math.floor(cell[1]/edge)*edge,z:Math.floor(cell[2]/edge)*edge};
+  const max={x:min.x+edge,y:min.y+edge,z:min.z+edge};
+  const shape:HvpCutShape=brush==="Sphere"?{kind:"Sphere",center2:[2*cell[0]+1,2*cell[1]+1,2*cell[2]+1],radius2:edge}
+    :{kind:"Box",min:[min.x,min.y,min.z],max:[max.x,max.y,max.z]};
+  return {min,max,shape};
+}
+
 /** Worker-safe local work: no body handle, world pose or render transform. */
 export function* prepareHvpLocalBodyCutSteps(source:StructuralObject,cell:HvpCell,commandId:string,edge=4,brush:"Box"|"Sphere"="Box",probe?:HvpPlanProbe){
   return yield* localBodyCutSteps(false,source,cell,commandId,edge,brush,probe);
@@ -45,15 +57,8 @@ export function* prepareHvpLocalBodyCutOwnedHashSteps(source:StructuralObject,ce
 }
 function* localBodyCutSteps(ownedHash:boolean,source:StructuralObject,cell:HvpCell,commandId:string,edge:number,brush:"Box"|"Sphere",probe?:HvpPlanProbe,parentRecipe?:HvpRigidRecipe,reserve?:StructuralOwnedReserve){
   if(ownedHash&&reserve!==undefined&&isProbeKernelEnabled()&&source.objectId.startsWith("hvp:terrain-fragment:")){markProbeSource(source);}
-  if(!Number.isSafeInteger(edge)||edge<1||edge>8||cell.length!==3||!cell.every(Number.isSafeInteger)){
-    throw new Error("Invalid local body cut");
-  }
-  if(brush!=="Box"&&brush!=="Sphere"){throw new Error("Invalid body brush");}
   reserve?.(8_192);
-  const min={x:Math.floor(cell[0]/edge)*edge,y:Math.floor(cell[1]/edge)*edge,z:Math.floor(cell[2]/edge)*edge};
-  const max={x:min.x+edge,y:min.y+edge,z:min.z+edge};
-  const shape:HvpCutShape=brush==="Sphere"?{kind:"Sphere",center2:[2*cell[0]+1,2*cell[1]+1,2*cell[2]+1],radius2:edge}
-    :{kind:"Box",min:[min.x,min.y,min.z],max:[max.x,max.y,max.z]};
+  const {min,max,shape}=hvpMovingBrush(cell,edge,brush);
   reserve?.(65_536);
   const selected=new Set(selectHvpCutCells(shape).map(c=>c.join(":")));
   const plan=shape.kind==="Sphere"
