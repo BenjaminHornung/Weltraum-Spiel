@@ -27,7 +27,14 @@ export function summarizeCutBrowserTrace(events, state) {
     const local=xs.filter(e=>e.ts<end && e.ts+e.dur>start);
     const busy=unionMs(tasks,start,end);
     const inRange=tasks.filter(e=>e.ts<end && e.ts+e.dur>start);
-    return {elapsedMs:to-from,mainTaskElapsedMs:busy,uncoveredMs:Math.max(0,to-from-busy),
+    const clippedUs = e => Math.min(end, e.ts+e.dur) - Math.max(start, e.ts);
+    const longest = inRange.reduce((best, event) => !best || clippedUs(event) > clippedUs(best) ? event : best, null);
+    const longestTask = longest && {
+      source:longest.args?.src_file, operation:longest.args?.src_func,
+      overlapMs:clippedUs(longest)/1000, wholeTaskElapsedMs:longest.dur/1000,
+      wholeTaskThreadCpuMs:Number.isFinite(longest.tdur) ? longest.tdur/1000 : null
+    };
+    return {longestTask, elapsedMs:to-from,mainTaskElapsedMs:busy,uncoveredMs:Math.max(0,to-from-busy),
       mainTaskCount:inRange.length, longestOverlappingTaskMs:Math.max(0,...inRange.map(e=>(Math.min(end,e.ts+e.dur)-Math.max(start,e.ts))/1000)),
       mainGcElapsedMs:unionMs(local.filter(e=>/MinorGC|MajorGC|V8\.GC|CppGC|BlinkGC/i.test(e.name)),start,end),
       mainPaintAndCompositingMs:unionMs(local.filter(e=>/^(Paint|PrePaint|CompositeLayers|Layerize|RasterTask|UpdateLayerTree|PaintImage)$/.test(e.name)),start,end),
@@ -38,7 +45,7 @@ export function summarizeCutBrowserTrace(events, state) {
   const gaps=work.slice(1).map((p,i)=>[work[i].startTime+work[i].duration,p.startTime])
     .filter(([a,b])=>b>a).map(([a,b])=>span(a,b));
   return {sampled:true,traceRendererPid:mark.pid,traceMainTid:mark.tid,inputToAck:span(state.eventTimeStamp,ack.startTime+ack.duration),
-    ackToRenderSubmit:span(ack.startTime+ack.duration,submit.startTime+submit.duration),
+    ackToRenderSubmit:submit ? span(ack.startTime+ack.duration,submit.startTime+submit.duration) : null,
     staticCollisionGaps:gaps};
 }
 

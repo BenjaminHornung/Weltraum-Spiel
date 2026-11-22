@@ -76,6 +76,19 @@ try {
   const finishTrace=process.env.HVP_CUT_CHROME_TRACE ? await startCutBrowserTrace(page,process.env.HVP_CUT_CHROME_TRACE) : undefined;
   await page.mouse.down();
   await page.mouse.up();
+  let ackTrace;
+  if (finishTrace && process.env.HVP_CUT_TRACE_END === "ack") {
+    await page.waitForFunction(() => Boolean(window.readCutPublication().metrics["hvp.cutDomInputToPhysicsPublishedMs"]), null, {timeout:40000});
+    const capture = await page.evaluate(() => {
+      const state = window.readCutPublication();
+      const receipt = state.metrics["hvp.cutDomInputToPhysicsPublishedMs"].detail.data;
+      return {...state, result:{commandId:receipt.commandId}};
+    });
+    // A trace stopped at the receipt cannot attest the subsequent visual publication.
+    delete capture.metrics["hvp.cutFirstCommittedRenderSubmitMs"];
+    ackTrace = await finishTrace(capture);
+    writeFileSync(process.env.HVP_CUT_CHROME_TRACE + ".summary.json", JSON.stringify(ackTrace,null,2)+"\n", {flag:"wx"});
+  }
   try {
     await page.waitForFunction(() => {
       const last=JSON.parse(document.body.dataset.hestiaPrototypeTool || "{}").last;
@@ -129,7 +142,7 @@ try {
   assert.deepEqual(errors, []);
   assert.equal(state.testBridgePresent, false);
   assert.equal(ack.detail.data.sourceDigest, submit.detail.data.savedDigest);
-  const browserTrace=finishTrace ? await finishTrace(state) : undefined;
+  const browserTrace=ackTrace ?? (finishTrace ? await finishTrace(state) : undefined);
   if(process.env.QA_SHOT) await page.screenshot({path:process.env.QA_SHOT,timeout:30000});
   console.log(JSON.stringify({browser:browser.version(), target:target.pathname+target.search, loadedAssets:[...new Set(loadedAssets)].sort(), ...state,
     domToSubmitMs:submit.startTime + submit.duration - state.eventTimeStamp,
