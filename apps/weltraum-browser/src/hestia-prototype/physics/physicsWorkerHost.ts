@@ -452,7 +452,8 @@ port.onmessage = async ({ data }) => {
           const ticket:TerrainPlanTicket={owner,requestId:data.id,id:data.transactionId,generation:data.generation,sourceDigest:data.sourceDigest,
             sourceSessionId:data.sourceSessionId,sourceEpoch:data.sourceEpoch,pump,work:Promise.resolve()};
           terrainPlanTicket=ticket;
-          ticket.work=(async()=>{ticket.plan=await owner.prepareTerrainPlan(data.transactionId,data.generation,data.replacements,data.fragments,reserve,pump.host);})();
+          ticket.work=(async()=>{ticket.plan=await owner.prepareTerrainPlan(data.transactionId,data.generation,data.replacements,data.fragments,reserve,pump.host,
+            {sessionId:data.sourceSessionId,epoch:data.sourceEpoch,generation:data.generation+1,terrainDigest:data.sourceDigest});})();
           try{await ticket.work;current();reserve(256+1024*ticket.plan!.fragments.length);
             if(measure&&ticket.plan!.sourceTiming){clock.lastTerrainSourceTiming=Object.freeze({commandId:ticket.id,...ticket.plan!.sourceTiming});}
             const sourceViews=owner.terrainPlanSourceViews(ticket.plan!);

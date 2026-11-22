@@ -1,3 +1,4 @@
+import {matchesHvpFragmentSourceDigest} from "./compactFragmentIdentity";
 import { WorkerPool } from "../../workers/workerPool";
 import { algorithmVersion, byteCount, contentRevision, jobDeadline, planningEpoch, workerEpoch, workerJobId, workerJobKind, workerTargetKey } from "../../workers/ids";
 import { fnv1aBytes, type TransferableBufferBundle,type WorkerJobRequest } from "../../workers/protocol";
@@ -870,7 +871,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
                 requireExactKeys(view,["ownerId","sourceDigest","centerOfMass","cellCount","massKg","colliders","sourceBytes"],"terrainPlan/sourceViews");
                 const center=requirePlainRecord(view.centerOfMass,"terrainPlan/sourceViews/centerOfMass");
                 requireExactKeys(center,["x","y","z"],"terrainPlan/sourceViews/centerOfMass");
-                if(view.ownerId!==request.ownerId||typeof view.sourceDigest!=="string"||!/^fnv1a64-v1:[a-f0-9]{16}$/.test(view.sourceDigest)
+                if(view.ownerId!==request.ownerId||!matchesHvpFragmentSourceDigest(view.sourceDigest,request)
                   ||![center.x,center.y,center.z].every(v=>typeof v==="number"&&Number.isFinite(v))||view.cellCount!==request.cells.length
                   ||typeof view.massKg!=="number"||!Number.isFinite(view.massKg)||view.massKg<=0||Math.abs(view.massKg-request.massKg)>1e-8
                   ||!Number.isSafeInteger(view.colliders)||view.colliders!==request.colliderBoxes.length

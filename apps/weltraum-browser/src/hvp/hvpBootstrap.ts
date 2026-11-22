@@ -1,3 +1,4 @@
+import {hvpFragmentArchiveDigest} from "../hestia-prototype/physics/compactFragmentIdentity";
 import {createHvpLiveSupport} from "../hestia-prototype/terrain/liveSupport";
 import * as THREE from "three";
 import {presentHvpFailure} from "./hvpRoute";
@@ -1618,7 +1619,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     const fixedBranchOwners=new Set(branch.parts.filter(p=>p.anchored).map(p=>p.ownerId));
     branchProducts=meshHvpBranchProducts(branch).filter(p=>!coldGame||p.decoration||fixedBranchOwners.has(p.ownerId));
     const coldFragments=coldGame?.world.bodies.filter(b=>b.checkpoint.family==="terrain"||(b.checkpoint.family==="branch"&&b.checkpoint.dynamic)).map(b=>{
-      const cells=readHvpBodyCells(b.recipe.source),mesh=meshHvpBodyCells(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),b.recipe.source.contentHash);
+      const cells=readHvpBodyCells(b.recipe.source),mesh=meshHvpBodyCells(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),hvpFragmentArchiveDigest(b.recipe));
       return {ownerId:b.checkpoint.ownerId,family:b.checkpoint.family as "terrain"|"branch",mesh,cells:cells.length,
         sourceBytes:b.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES,group:createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true})};
     })??[];
@@ -2855,8 +2856,8 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
          const nextFragments:ReturnType<typeof makeFragmentEntry>[]=[];
          for(const b of game.world.bodies.filter(b=>b.checkpoint.family==="terrain"||(b.checkpoint.family==="branch"&&b.checkpoint.dynamic))){
            const owner=b.checkpoint.ownerId,key=registerEphemeral(scope,{kind:"fragment"},candidate),cells=readHvpBodyCells(b.recipe.source);
-           const mesh=renderPump?await renderPump.run(meshHvpOwnedBodyCellsSteps(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),b.recipe.source.contentHash))
-             :meshHvpBodyCells(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),b.recipe.source.contentHash);
+           const mesh=renderPump?await renderPump.run(meshHvpOwnedBodyCellsSteps(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),hvpFragmentArchiveDigest(b.recipe)))
+             :meshHvpBodyCells(cells,hvpObjectLocalCenterOfMass(b.recipe.source,b.recipe.mass.centerOfMassMeters!),hvpFragmentArchiveDigest(b.recipe));
            const sourceBytes=b.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES;
            nextFragments.push(renderPump?await renderPump.run(makeFragmentEntrySteps(owner,mesh,sourceBytes,cells.length,root.revision,b.checkpoint.family as "terrain"|"branch",key,undefined,true,root,renderContext))
              :makeFragmentEntry(owner,mesh,sourceBytes,cells.length,root.revision,b.checkpoint.family as "terrain"|"branch",key));
