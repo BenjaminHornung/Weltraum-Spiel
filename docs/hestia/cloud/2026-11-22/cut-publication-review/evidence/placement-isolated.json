@@ -1,0 +1,226 @@
+{
+  "browser": "149.0.7827.0",
+  "node": "v24.22.3",
+  "bundleSha256": "c5235ac58ed2b4111e800beca7501f0c56b229d9969dc931f3a6819f7f76259a",
+  "wasmSha256": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+  "environment": "isolated browser fixture, no HVP render workload",
+  "sampleOrder": [
+    "worker",
+    "main",
+    "main",
+    "worker"
+  ],
+  "summary": {
+    "worker": {
+      "emptyRttMs": {
+        "n": 512,
+        "p50": 0.07000000029802322,
+        "p95": 0.7049999982118607,
+        "p99": 4.634999997913837,
+        "max": 11.79500000178814
+      },
+      "nativeStepMs": {
+        "n": 1024,
+        "p50": 0.054999999701976776,
+        "p95": 0.17499999701976776,
+        "p99": 1.3450000025331974,
+        "max": 13.550000000745058
+      },
+      "stepRoundTripMs": {
+        "n": 1024,
+        "p50": 0.1550000011920929,
+        "p95": 3.655000001192093,
+        "p99": 8.519999999552965,
+        "max": 16.820000000298023
+      },
+      "cut": [
+        {
+          "kind": "cut",
+          "warm": false,
+          "rtt": 22.99499999731779,
+          "inbound": 6.72505859285593,
+          "work": 16.070000000298023,
+          "outbound": 0.19994140416383743
+        },
+        {
+          "kind": "cut",
+          "warm": false,
+          "rtt": 61.92000000178814,
+          "inbound": 0.31493164226412773,
+          "work": 61.05500000342727,
+          "outbound": 0.5500683560967445
+        }
+      ]
+    },
+    "main": {
+      "emptyRttMs": {
+        "n": 512,
+        "p50": 0,
+        "p95": 0.005000002682209015,
+        "p99": 0.009999997913837433,
+        "max": 1.375
+      },
+      "nativeStepMs": {
+        "n": 1024,
+        "p50": 0.030000001192092896,
+        "p95": 0.1550000011920929,
+        "p99": 2.930000003427267,
+        "max": 11.425000000745058
+      },
+      "stepRoundTripMs": {
+        "n": 1024,
+        "p50": 0.03500000014901161,
+        "p95": 0.1899999976158142,
+        "p99": 3.6649999991059303,
+        "max": 11.449999999254942
+      },
+      "cut": [
+        {
+          "kind": "cut",
+          "warm": false,
+          "rtt": 13.984999999403954,
+          "inbound": 0,
+          "work": 13.975000001490116,
+          "outbound": 0.009999997913837433
+        },
+        {
+          "kind": "cut",
+          "warm": false,
+          "rtt": 4.574999999254942,
+          "inbound": 0,
+          "work": 4.570000000298023,
+          "outbound": 0.004999998956918716
+        }
+      ]
+    }
+  },
+  "warmup": {
+    "pings": 8,
+    "steps": 32
+  },
+  "testExit": 0,
+  "branchCommit": "47ea7ce02a5dccabafab9fabd87444d5f3599e89",
+  "sourceRows": [
+    {
+      "placement": "worker",
+      "beforeFirstStep": {
+        "checks": {
+          "supportRay": false,
+          "supportCapsule": false,
+          "armRay": true,
+          "armCapsule": true,
+          "armMoves": true
+        },
+        "nativeMassKg": 1722.6561279296875,
+        "cells": 384,
+        "massKg": 1722.65625,
+        "boxes": 1
+      },
+      "originalStaticQueries": {
+        "supportRay": true,
+        "supportCapsule": true,
+        "armRay": true,
+        "armCapsule": true,
+        "armMoves": false
+      },
+      "finalDynamicY": 1.1164698600769043
+    },
+    {
+      "placement": "main",
+      "beforeFirstStep": {
+        "checks": {
+          "supportRay": false,
+          "supportCapsule": false,
+          "armRay": true,
+          "armCapsule": true,
+          "armMoves": true
+        },
+        "nativeMassKg": 1722.6561279296875,
+        "cells": 384,
+        "massKg": 1722.65625,
+        "boxes": 1
+      },
+      "originalStaticQueries": {
+        "supportRay": true,
+        "supportCapsule": true,
+        "armRay": true,
+        "armCapsule": true,
+        "armMoves": false
+      },
+      "finalDynamicY": 1.1164698600769043
+    },
+    {
+      "placement": "main",
+      "beforeFirstStep": {
+        "checks": {
+          "supportRay": false,
+          "supportCapsule": false,
+          "armRay": true,
+          "armCapsule": true,
+          "armMoves": true
+        },
+        "nativeMassKg": 1722.6561279296875,
+        "cells": 384,
+        "massKg": 1722.65625,
+        "boxes": 1
+      },
+      "originalStaticQueries": {
+        "supportRay": true,
+        "supportCapsule": true,
+        "armRay": true,
+        "armCapsule": true,
+        "armMoves": false
+      },
+      "finalDynamicY": 1.1164698600769043
+    },
+    {
+      "placement": "worker",
+      "beforeFirstStep": {
+        "checks": {
+          "supportRay": false,
+          "supportCapsule": false,
+          "armRay": true,
+          "armCapsule": true,
+          "armMoves": true
+        },
+        "nativeMassKg": 1722.6561279296875,
+        "cells": 384,
+        "massKg": 1722.65625,
+        "boxes": 1
+      },
+      "originalStaticQueries": {
+        "supportRay": true,
+        "supportCapsule": true,
+        "armRay": true,
+        "armCapsule": true,
+        "armMoves": false
+      },
+      "finalDynamicY": 1.1164698600769043
+    }
+  ],
+  "rawSha256": "522e3c8af9288d92098f6c3ec2dbc2708b4768af00f777b15794e2cd721f44aa",
+  "rawFile": "isolated.json",
+  "population": "64 actual Hestia support cells removed; one exact 384-cell Hestia arm, a fixed floor, same body constantly reawakened; separate fresh pages in ABBA order. Geometry and query checks precede first world.step in both cases. Uses fixed Hestia dt and gravity; narrow capsule radius .025 m, half-height .035 m. No full player, no cloud GPU rendering or reference device in this run.",
+  "comparator": "main direct dispatch in the fixture measures same native handler with no interthread hop; full game main placement also preserves structured clone and transferable semantics.",
+  "timeUnits": "performance.now elapsed milliseconds; nativeStepMs brackets world.step only; stepRoundTrip includes caller, post, owner and reply. Raw cross-origin-normalized slices can be slightly negative due to clock resolution.",
+  "isolatedRunExit": 0,
+  "focusedTypeScript": {
+    "scope": "transitive dependencies of the placement fixture and its colocated-owner test",
+    "exit": 0
+  },
+  "focusedVitest": {
+    "files": 4,
+    "passed": 16,
+    "failed": 1,
+    "exit": 1,
+    "initialFailure": "worker clock exceeded 30s while other groups ran",
+    "pairedReproduction": {
+      "candidate": "public Checkpoint missing at tests/unit/hvp-physics-worker-clock.test.ts:150",
+      "input": "same assertion, same line on product-equivalent incoming baseline",
+      "candidateExit": 1,
+      "inputExit": 1
+    },
+    "newMainThreadOwnerLifecyclePassed": true
+  },
+  "playerHarnessCommit": "d54629c690cbd8070d1b2e8b7ce1ea1b64c45c9c"
+}

@@ -1,0 +1,23 @@
+{
+  "localSourceCommit": "f84e8ac28983cc21aec816301db98555fbd2aa4b",
+  "publishedCommit": "0bfd2f417d4eb71ff262525e68c38c5496c3d209",
+  "tree": "fdf337ab996f5e8c72c7ddafc8cf9b4017523f99",
+  "runtimeSourceDigest": "0fa1d97699758cacb38e8d21380f11785d3f22132dd803f84bd169e841291d6d",
+  "runtimeInputFiles": 631,
+  "completeDistDigest": "f52009e31d82e81b6f0da006e07ce5a8bcd4a0ab44d5a7e08dea849e5059a3cd",
+  "kit": {
+    "backend-CeiXS8eZ.js": "5c184541eaf23814097e7780ef90198791d02a6c43f706d001375cd6c120db46",
+    "browserBridge-CUatRecR.js": "b7508a528b771cc96cf88ed00e3150ae041c449f2047fde6d4e5794d2e1acb53",
+    "hvpBootstrap-DDu9Fssx.js": "a0fca2f57a3f2bcbced06f3fe2e4e496c07423126be54151eda30712b1f4a54f",
+    "index-2aILjI5Z.js": "447c46bc11d5a0cc38fb20872fc5a169616f3d1e8c6c42b46691cb1f058e362f",
+    "index-GeJ96uLU.css": "252d286768f545feda6b7a69f8242535aaa7fbe6645ab93e2fb1500e3941e188",
+    "labCollisionCapture-D5TGGqr6.js": "6298831631cf27400c97a7fc98c6493352e69b952a095e1605e2451b4e099aed",
+    "mainThreadPhysics-DXprhNUj.js": "85b0016117becb64e39ab047ea7c90040612f4cf9cb83aeec9274da831ba786e",
+    "physicsWorker-DpJSLZc3.js": "ab65a0f2ad9b073faadaa63066f42b0584d3ee9afe6794435872ac63c3ed8cd6",
+    "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+    "streamingWorker-DYHRTkdr.js": "09265da316a53ae67a6c684730299241b8981e056745414c7393331c7e6b4518",
+    "surface-lab-92FQgMxk.js": "39be29f3160553d3eafb3353a32ceae405636ba075cc264ef6a9d07d01af5a55"
+  },
+  "buildExit": 0,
+  "priorIntegratedTree": "c5b3697961ca0c5036acf6005bea4c3950f4ef09"
+}

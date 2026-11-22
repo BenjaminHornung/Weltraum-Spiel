@@ -1,0 +1,136 @@
+{
+  "build": "fdf337ab996f5e8c72c7ddafc8cf9b4017523f99",
+  "profile": "isolated CPU, no solver or renderer",
+  "count": 72,
+  "processExit": 0,
+  "receiptSha256": "4e1cc2213cb41d2b5598a1d73cc1517d27adfcb8da63bd1e7ed8aca6dc8d0291",
+  "cases": [
+    "diagonal-11-blocks",
+    "diagonal-11-blocks-second-anchor",
+    "diagonal-3-blocks",
+    "diagonal-3-blocks-second-anchor",
+    "diagonal-7-blocks",
+    "diagonal-7-blocks-second-anchor",
+    "mixed-u",
+    "rock-arm"
+  ],
+  "work": [
+    {
+      "id": "rock-arm",
+      "trial": 0,
+      "state": "cold",
+      "directRemoved": 64,
+      "fragments": 1,
+      "cells": [
+        384
+      ],
+      "shapes": [
+        1
+      ],
+      "prepareMs": 65.97495199999958,
+      "oracleMs": 976.7609640000005,
+      "counters": {
+        "partReferences": 2,
+        "voxelPayloadBytesCopied": 0,
+        "descriptorReferencesReused": 0,
+        "descriptorsBuilt": 1,
+        "partDescriptorsPrepared": 464,
+        "materialRunsReferenced": 34,
+        "anchoredWitnesses": 1,
+        "blockBuildMs": 58.80982800000311,
+        "fragmentMassMs": 0.19840300000032585,
+        "fragmentShapeMs": 0.07190599999921687,
+        "fragmentMembershipMs": 1.1864310000000842,
+        "workingBytes": 27678674,
+        "floorColumnReads": 0,
+        "blocksBuilt": 47,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 192512,
+        "seamPairsBuilt": 100,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 782194,
+        "localComponentsBuilt": 44
+      }
+    },
+    {
+      "id": "rock-arm",
+      "trial": 0,
+      "state": "streamed",
+      "directRemoved": 64,
+      "fragments": 1,
+      "cells": [
+        384
+      ],
+      "shapes": [
+        1
+      ],
+      "prepareMs": 5.228914000000259,
+      "oracleMs": 976.7609640000005,
+      "counters": {
+        "partReferences": 2,
+        "voxelPayloadBytesCopied": 0,
+        "descriptorReferencesReused": 0,
+        "descriptorsBuilt": 1,
+        "partDescriptorsPrepared": 7,
+        "materialRunsReferenced": 34,
+        "anchoredWitnesses": 1,
+        "blockBuildMs": 1.4026990000002115,
+        "fragmentMassMs": 0.07977800000026036,
+        "fragmentShapeMs": 0.023264000000381202,
+        "fragmentMembershipMs": 1.5725099999999657,
+        "workingBytes": 2386710,
+        "floorColumnReads": 0,
+        "blocksBuilt": 2,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 8192,
+        "seamPairsBuilt": 100,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 27190,
+        "localComponentsBuilt": 2
+      }
+    },
+    {
+      "id": "rock-arm",
+      "trial": 0,
+      "state": "repeated",
+      "directRemoved": 64,
+      "fragments": 1,
+      "cells": [
+        384
+      ],
+      "shapes": [
+        1
+      ],
+      "prepareMs": 7.782401000000391,
+      "oracleMs": 976.7609640000005,
+      "counters": {
+        "partReferences": 2,
+        "voxelPayloadBytesCopied": 0,
+        "descriptorReferencesReused": 0,
+        "descriptorsBuilt": 1,
+        "partDescriptorsPrepared": 7,
+        "materialRunsReferenced": 34,
+        "anchoredWitnesses": 1,
+        "blockBuildMs": 1.404472000000169,
+        "fragmentMassMs": 0.0302639999999883,
+        "fragmentShapeMs": 0.01971899999989546,
+        "fragmentMembershipMs": 0.4108859999996639,
+        "workingBytes": 2386710,
+        "floorColumnReads": 0,
+        "blocksBuilt": 2,
+        "dirtyBlocksBuilt": 2,
+        "sourceCellsScanned": 8192,
+        "seamPairsBuilt": 14,
+        "componentsVisited": 21,
+        "edgesVisited": 97,
+        "outputCells": 384,
+        "blockTypedArrayBytesAllocated": 27190,
+        "localComponentsBuilt": 2
+      }
+    }
+  ]
+}

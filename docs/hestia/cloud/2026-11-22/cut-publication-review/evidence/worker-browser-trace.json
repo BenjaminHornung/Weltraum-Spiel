@@ -1,0 +1,67 @@
+{
+  "sourceCommit": "f84e8ac28983cc21aec816301db98555fbd2aa4b",
+  "tree": "fdf337ab996f5e8c72c7ddafc8cf9b4017523f99",
+  "rawTraceSha256": "a62440baf0a1c9d6f01b9965e90226676311c7ad7a01e64772f17f4b4d662d85",
+  "render": "SwiftShader",
+  "physicalPresentationMeasured": false,
+  "result": {
+    "commandId": "cut-1",
+    "status": "Applied",
+    "removedCells": 64,
+    "reason": "Terrain and collision committed",
+    "revision": 1,
+    "transferredCells": 384,
+    "transferredMassKg": 1722.65625,
+    "materialRemovedKg": 300
+  },
+  "criticalPath": {
+    "scope": "Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
+    "complete": true,
+    "placement": "worker",
+    "handler": 1,
+    "crossThreadDeliveries": 9,
+    "dispatches": 4,
+    "replies": 4,
+    "recoveryMessages": 1,
+    "collisionResumes": 0,
+    "copyResumes": 0,
+    "planResumes": 1,
+    "observedStages": 11,
+    "targetStages": 3,
+    "withinStageBudget": false,
+    "activeElapsedMs": {
+      "index": 21.100000001490116,
+      "staticCollision": 10.199999999254942,
+      "nativePlan": 5.400000002235174
+    }
+  },
+  "browser": "149.0.7827.0",
+  "summary": {
+    "sampled": true,
+    "traceRendererPid": 82,
+    "traceMainTid": 82,
+    "inputToAck": {
+      "elapsedMs": 97.80000000074506,
+      "mainTaskElapsedMs": 88.137,
+      "uncoveredMs": 9.663000000745058,
+      "mainTaskCount": 35,
+      "longestOverlappingTaskMs": 67.332,
+      "mainGcElapsedMs": 0,
+      "mainPaintAndCompositingMs": 0.364,
+      "mainAnimationCallbackMs": 21.845
+    },
+    "ackToRenderSubmit": {
+      "elapsedMs": 5812.10000000149,
+      "mainTaskElapsedMs": 1896.041,
+      "uncoveredMs": 3916.05900000149,
+      "mainTaskCount": 207,
+      "longestOverlappingTaskMs": 1439.519,
+      "mainGcElapsedMs": 31.293,
+      "mainPaintAndCompositingMs": 0.821,
+      "mainAnimationCallbackMs": 27.044
+    },
+    "staticCollisionGaps": []
+  },
+  "totalInputToSubmitMs": 5909.900000002235,
+  "processExit": 0
+}

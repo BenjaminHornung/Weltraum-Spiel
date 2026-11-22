@@ -1,0 +1,314 @@
+{
+  "build": "fdf337ab996f5e8c72c7ddafc8cf9b4017523f99",
+  "processExit": 0,
+  "rows": [
+    {
+      "evidence": "lab/lab-fresh-result.json",
+      "mode": "fresh",
+      "passed": true,
+      "liveThreadsAtExit": 0,
+      "exportSha256": "29b22d8a35adf839f807cfbfa801722573fb78b1ec0172a94f797b6e4e87e3d9",
+      "recut": null,
+      "resave": null,
+      "stages": [
+        {
+          "name": "bind host modules",
+          "ms": 1682.414336
+        },
+        {
+          "name": "materialize authored private coast",
+          "ms": 888.7427459999999
+        },
+        {
+          "name": "prepare terrain compiler",
+          "ms": 398.0782280000003
+        },
+        {
+          "name": "compile full 256 primary chunks",
+          "ms": 5995.713807
+        },
+        {
+          "name": "initialize bound fresh physics worker",
+          "ms": 3705.9981439999992
+        },
+        {
+          "name": "cut canonical branch",
+          "ms": 994.9252729999989
+        },
+        {
+          "name": "observe live detached motion",
+          "ms": 57.06722699999955
+        },
+        {
+          "name": "checkpoint private world",
+          "ms": 917.4168929999996
+        },
+        {
+          "name": "write private lab slot",
+          "ms": 2165.5747450000017
+        }
+      ],
+      "receiptSha256": "403600c27e7e23d3a661b59238e0d071a0ded5c5e5370a9371b327ed0cbdc02b"
+    },
+    {
+      "evidence": "lab/lab-cold-result.json",
+      "mode": "cold",
+      "passed": true,
+      "liveThreadsAtExit": 0,
+      "exportSha256": "29b22d8a35adf839f807cfbfa801722573fb78b1ec0172a94f797b6e4e87e3d9",
+      "recut": {
+        "receipt": {
+          "id": "p1-lab-recut",
+          "status": "Applied",
+          "parentId": "hvp-branch:r1:p1",
+          "children": [
+            "hvp-branch:r1:p1:r1:p0"
+          ],
+          "removedCells": 1,
+          "removedMassKg": 1.171875,
+          "issuedTick": 9,
+          "commitTick": 10,
+          "parentPose": {
+            "position": {
+              "x": -10.5,
+              "y": 2.832092761993408,
+              "z": -13.25
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": -1.965743064880371,
+              "z": 0
+            },
+            "angularVelocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "removedMomentum": {
+            "massKg": 1.171875,
+            "referencePoint": {
+              "x": -10.5,
+              "y": 2.832092761993408,
+              "z": -13.25
+            },
+            "center": {
+              "x": -10.6875,
+              "y": 2.894592761993408,
+              "z": -13.4375
+            },
+            "linear": {
+              "x": 0,
+              "y": -2.303605154156685,
+              "z": 0
+            },
+            "angular": {
+              "x": -0.4319259664043784,
+              "y": 0,
+              "z": 0.4319259664043784
+            }
+          }
+        },
+        "priorSequence": 0,
+        "afterSequence": 1,
+        "parentMassKg": 150,
+        "remainingMassKg": 148.828125,
+        "checkpointTick": 10
+      },
+      "resave": {
+        "slot": "hvp-phy01-migration2-lab-r01",
+        "revision": 2,
+        "signature": "fnv1a32:92c7894d",
+        "bytes": 223903,
+        "sha256": "21745f4beccfe2d0fab99d2ef9177274e2d453a539e4b04da3814850713f761c"
+      },
+      "stages": [
+        {
+          "name": "bind host modules",
+          "ms": 2611.8694109999997
+        },
+        {
+          "name": "import isolated lab slot",
+          "ms": 5190.043309000001
+        },
+        {
+          "name": "decode bounded cold game",
+          "ms": 2121.8890279999996
+        },
+        {
+          "name": "prepare terrain compiler",
+          "ms": 337.9820779999991
+        },
+        {
+          "name": "compile full 256 primary chunks",
+          "ms": 7473.440071000001
+        },
+        {
+          "name": "initialize bound cold physics worker",
+          "ms": 8493.942600999999
+        },
+        {
+          "name": "observe restored moving target",
+          "ms": 101.41937900000266
+        },
+        {
+          "name": "private native body plan and mesh budget",
+          "ms": 398.6553230000027
+        },
+        {
+          "name": "compile child geometry in streaming worker",
+          "ms": 26.877208999998402
+        },
+        {
+          "name": "native child mesh admission",
+          "ms": 26.314909000000625
+        },
+        {
+          "name": "recut restored dynamic fragment",
+          "ms": 514.4090130000004
+        },
+        {
+          "name": "resave same private slot with CAS",
+          "ms": 2468.467882000001
+        }
+      ],
+      "receiptSha256": "6e182849b2e358b555ad55fc87580493c811c1a5f1a46bcf4ad7bdffe3ecd810"
+    },
+    {
+      "evidence": "cross-lab/lab-cold-result.json",
+      "mode": "cold",
+      "passed": true,
+      "liveThreadsAtExit": 0,
+      "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+      "recut": {
+        "receipt": {
+          "id": "p1-lab-recut",
+          "status": "Applied",
+          "parentId": "hvp-branch:r1:p1",
+          "children": [
+            "hvp-branch:r1:p1:r1:p0"
+          ],
+          "removedCells": 1,
+          "removedMassKg": 1.171875,
+          "issuedTick": 5,
+          "commitTick": 5,
+          "parentPose": {
+            "position": {
+              "x": -10.5,
+              "y": 2.9569993019104004,
+              "z": -13.25
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": -0.982871949672699,
+              "z": 0
+            },
+            "angularVelocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "removedMomentum": {
+            "massKg": 1.171875,
+            "referencePoint": {
+              "x": -10.5,
+              "y": 2.9569993019104004,
+              "z": -13.25
+            },
+            "center": {
+              "x": -10.6875,
+              "y": 3.0194993019104004,
+              "z": -13.4375
+            },
+            "linear": {
+              "x": 0,
+              "y": -1.151803066022694,
+              "z": 0
+            },
+            "angular": {
+              "x": -0.21596307487925515,
+              "y": 0,
+              "z": 0.21596307487925515
+            }
+          }
+        },
+        "priorSequence": 0,
+        "afterSequence": 1,
+        "parentMassKg": 150,
+        "remainingMassKg": 148.828125,
+        "checkpointTick": 5
+      },
+      "resave": {
+        "slot": "hvp-phy01-migration2-lab-r01",
+        "revision": 2,
+        "signature": "fnv1a32:fc68bc22",
+        "bytes": 223906,
+        "sha256": "5a39216145014df52fea6e9fcbed99dd8428f360af095252396125895c0faa32"
+      },
+      "stages": [
+        {
+          "name": "bind host modules",
+          "ms": 2596.9202370000003
+        },
+        {
+          "name": "import isolated lab slot",
+          "ms": 1284.985835
+        },
+        {
+          "name": "decode bounded cold game",
+          "ms": 1369.764287
+        },
+        {
+          "name": "prepare terrain compiler",
+          "ms": 164.4633249999997
+        },
+        {
+          "name": "compile full 256 primary chunks",
+          "ms": 5047.216786999999
+        },
+        {
+          "name": "initialize bound cold physics worker",
+          "ms": 4031.7481000000007
+        },
+        {
+          "name": "observe restored moving target",
+          "ms": 63.45283399999971
+        },
+        {
+          "name": "private native body plan and mesh budget",
+          "ms": 157.19273000000067
+        },
+        {
+          "name": "compile child geometry in streaming worker",
+          "ms": 21.723884999999427
+        },
+        {
+          "name": "native child mesh admission",
+          "ms": 14.645700000000943
+        },
+        {
+          "name": "recut restored dynamic fragment",
+          "ms": 214.00148900000022
+        },
+        {
+          "name": "resave same private slot with CAS",
+          "ms": 1036.9143110000005
+        }
+      ],
+      "receiptSha256": "d5f917e89f9ab56a13e72f3c62e2691f79838228f6ebedb9fabfa15444449341"
+    }
+  ]
+}

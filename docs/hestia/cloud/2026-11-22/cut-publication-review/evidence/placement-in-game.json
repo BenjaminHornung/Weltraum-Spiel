@@ -1,0 +1,149 @@
+{
+  "url": "http://127.0.0.1:46807",
+  "pairs": 2,
+  "physicalPresentationMeasured": false,
+  "referenceDeviceVerified": false,
+  "requestedGpuMatches": null,
+  "attempts": [
+    {
+      "placement": "worker",
+      "exit": 0,
+      "owner": "worker",
+      "physicsMs": 1925.4000000022352,
+      "submitMs": 3934.10000000149,
+      "result": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "criticalPath": {
+        "scope": "Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
+        "complete": true,
+        "placement": "worker",
+        "handler": 1,
+        "crossThreadDeliveries": 9,
+        "dispatches": 4,
+        "replies": 4,
+        "recoveryMessages": 1,
+        "collisionResumes": 0,
+        "copyResumes": 0,
+        "planResumes": 1,
+        "observedStages": 11,
+        "targetStages": 3,
+        "withinStageBudget": false,
+        "activeElapsedMs": {
+          "index": 14.300000000745058,
+          "staticCollision": 3.199999999254942,
+          "nativePlan": 15.300000000745058
+        }
+      },
+      "activeCutFrameIntervalsMs": {
+        "n": 8,
+        "p50": 199.89999999999782,
+        "p95": 650,
+        "p99": 650,
+        "max": 650
+      },
+      "observedSolverStepsMs": {
+        "n": 192,
+        "p50": 0.30000000074505806,
+        "p95": 3,
+        "p99": 40.30000000074506,
+        "max": 62
+      }
+    },
+    {
+      "placement": "main",
+      "exit": 1,
+      "error": "Command failed: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/5b1f8c0d748a/cut-followup/apps/weltraum-browser/tests/performance/cut-publication.mjs http://127.0.0.1:46807\n{\"tool\":{\"mode\":\"Box 0,5 m\",\"edges\":0,\"issued\":0,\"message\":\"64 Stützzellen · Zusammenhang wird vor Commit geprüft\",\"state\":\"Idle\",\"queued\":0,\"receipts\":0,\"structural\":{\"state\":\"Ready\",\"issued\":0,\"last\":null},\"moving\":{\"state\":\"Idle\",\"last\":null,\"issued\":0}},\"status\":\"SimulationHold\",\"terrainTransaction\":\"Idle\",\"generation\":0,\"metrics\":{},\"phases\":[]}\nnode:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\npage.waitForFunction: Timeout 40000ms exceeded.\n    at /workspace/scratch/5b1f8c0d748a/cut-followup/apps/weltraum-browser/tests/performance/cut-publication.mjs:79:16 {\n  log: [],\n  name: 'TimeoutError'\n}\n\nNode.js v24.22.3\n"
+    },
+    {
+      "placement": "main",
+      "exit": 1,
+      "error": "Command failed: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/5b1f8c0d748a/cut-followup/apps/weltraum-browser/tests/performance/cut-publication.mjs http://127.0.0.1:46807\n{\"tool\":{\"mode\":\"Box 0,5 m\",\"edges\":0,\"issued\":0,\"message\":\"64 Stützzellen · Zusammenhang wird vor Commit geprüft\",\"state\":\"Idle\",\"queued\":0,\"receipts\":0,\"structural\":{\"state\":\"Ready\",\"issued\":0,\"last\":null},\"moving\":{\"state\":\"Idle\",\"last\":null,\"issued\":0}},\"status\":\"SimulationHold\",\"terrainTransaction\":\"Idle\",\"generation\":0,\"metrics\":{},\"phases\":[]}\nnode:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\npage.waitForFunction: Timeout 40000ms exceeded.\n    at /workspace/scratch/5b1f8c0d748a/cut-followup/apps/weltraum-browser/tests/performance/cut-publication.mjs:79:16 {\n  log: [],\n  name: 'TimeoutError'\n}\n\nNode.js v24.22.3\n"
+    },
+    {
+      "placement": "worker",
+      "exit": 0,
+      "owner": "worker",
+      "physicsMs": 180.90000000223517,
+      "submitMs": 6992.60000000149,
+      "result": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "criticalPath": {
+        "scope": "Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
+        "complete": true,
+        "placement": "worker",
+        "handler": 1,
+        "crossThreadDeliveries": 9,
+        "dispatches": 4,
+        "replies": 4,
+        "recoveryMessages": 1,
+        "collisionResumes": 0,
+        "copyResumes": 0,
+        "planResumes": 0,
+        "observedStages": 10,
+        "targetStages": 3,
+        "withinStageBudget": false,
+        "activeElapsedMs": {
+          "index": 8.5,
+          "staticCollision": 3.199999999254942,
+          "nativePlan": 12.899999998509884
+        }
+      },
+      "activeCutFrameIntervalsMs": {
+        "n": 6,
+        "p50": 16.700000000000728,
+        "p95": 66.59999999999854,
+        "p99": 66.59999999999854,
+        "max": 66.59999999999854
+      },
+      "observedSolverStepsMs": {
+        "n": 68,
+        "p50": 0.30000000074505806,
+        "p95": 5.099999997764826,
+        "p99": 79.29999999701977,
+        "max": 79.29999999701977
+      }
+    }
+  ],
+  "byPlacement": {
+    "worker": {
+      "attempted": 2,
+      "completed": 2,
+      "inputToPublicationMs": {
+        "n": 2,
+        "p50": 180.90000000223517,
+        "p95": 1925.4000000022352,
+        "p99": 1925.4000000022352,
+        "max": 1925.4000000022352
+      },
+      "meeting10ms": 0,
+      "meetingThreeStages": 0
+    },
+    "main": {
+      "attempted": 2,
+      "completed": 0,
+      "inputToPublicationMs": {
+        "n": 0
+      },
+      "meeting10ms": 0,
+      "meetingThreeStages": 0
+    }
+  }
+}

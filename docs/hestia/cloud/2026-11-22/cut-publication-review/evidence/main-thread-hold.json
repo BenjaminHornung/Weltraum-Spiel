@@ -1,0 +1,644 @@
+{
+  "commit": "f84e8ac28983cc21aec816301db98555fbd2aa4b",
+  "placement": [
+    {
+      "t": 21497.699999999255,
+      "detail": {
+        "owner": "main"
+      }
+    }
+  ],
+  "sha256": {
+    "run.json": "1cd13cbea0ddb439943669e4e39516fdb164088ff81549d32d0122ce8182792a",
+    "timing.json.gz": "498abc6f7d98495d156fcb858fdb7ca86d83d34beba70e79f66ffc59e9a2a1e1"
+  },
+  "stages": [
+    {
+      "stage": "ready",
+      "at": 29197.5,
+      "ticks": 41,
+      "status": "SimulationHold",
+      "player": "Inspection",
+      "grounded": false,
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 0,
+        "pressedKeys": []
+      },
+      "issued": 0,
+      "last": null
+    },
+    {
+      "stage": "aimed",
+      "at": 29502.300000000745,
+      "ticks": 41,
+      "status": "SimulationHold",
+      "player": "Inspection",
+      "grounded": false,
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "issued": 0,
+      "last": null
+    },
+    {
+      "stage": "played",
+      "at": 29708.400000002235,
+      "ticks": 41,
+      "status": "Running",
+      "player": "Walking",
+      "grounded": false,
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "issued": 0,
+      "last": null
+    },
+    {
+      "stage": "firstClick",
+      "at": 29969.699999999255,
+      "ticks": 45,
+      "status": "SimulationHold",
+      "player": "Inspection",
+      "grounded": true,
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 3,
+        "pressedKeys": []
+      },
+      "issued": 0,
+      "last": null
+    },
+    {
+      "stage": "terminal",
+      "at": 30987.400000002235,
+      "ticks": 45,
+      "status": "SimulationHold",
+      "player": "Inspection",
+      "grounded": true,
+      "input": {
+        "owner": "Inspection",
+        "locked": false,
+        "jumpEdges": 0,
+        "neutralizations": 3,
+        "pressedKeys": []
+      },
+      "issued": 0,
+      "last": null
+    }
+  ],
+  "input": [
+    {
+      "type": "keydown",
+      "at": 29402.10000000149,
+      "stamp": 29390.60000000149,
+      "key": "Enter",
+      "lock": null
+    },
+    {
+      "type": "click",
+      "at": 29403.900000002235,
+      "stamp": 29390.60000000149,
+      "key": null,
+      "lock": null
+    },
+    {
+      "type": "keyup",
+      "at": 29458.5,
+      "stamp": 29420.400000002235,
+      "key": "Enter",
+      "lock": null
+    },
+    {
+      "type": "keydown",
+      "at": 29568.400000002235,
+      "stamp": 29564.300000000745,
+      "key": "Enter",
+      "lock": null
+    },
+    {
+      "type": "click",
+      "at": 29568.60000000149,
+      "stamp": 29564.300000000745,
+      "key": null,
+      "lock": null
+    },
+    {
+      "type": "keyup",
+      "at": 29579.5,
+      "stamp": 29573.199999999255,
+      "key": "Enter",
+      "lock": null
+    },
+    {
+      "type": "pointerlockchange",
+      "at": 29603.300000000745,
+      "stamp": 29579.699999999255,
+      "key": null,
+      "lock": "debug-scene"
+    },
+    {
+      "type": "mousedown",
+      "at": 29915.5,
+      "stamp": 29868,
+      "key": null,
+      "lock": null
+    },
+    {
+      "type": "mouseup",
+      "at": 29951.800000000745,
+      "stamp": 29932.10000000149,
+      "key": null,
+      "lock": null
+    },
+    {
+      "type": "click",
+      "at": 29952.10000000149,
+      "stamp": 29932.10000000149,
+      "key": null,
+      "lock": null
+    },
+    {
+      "type": "pointerlockchange",
+      "at": 29961.5,
+      "stamp": 29879.5,
+      "key": null,
+      "lock": null
+    }
+  ],
+  "holdCount": 2,
+  "holds": [
+    {
+      "raw": {
+        "origin": 1795366300934.9,
+        "at": 27851.900000002235,
+        "simulationElapsedMs": 2994.2000000029802,
+        "gapMs": 2994.2000000029802,
+        "advanceMs": 5.099999997764826,
+        "ticks": 41,
+        "backlogSeconds": 2.9327666666681567,
+        "previousCommand": "Initialize",
+        "handlerMs": 2734
+      },
+      "simulationInterval": {
+        "windowMs": [
+          24857.7,
+          27851.9
+        ],
+        "mainRunTaskElapsedMs": 2993.887,
+        "frameCallbackMs": 0.144,
+        "mainGcMs": 19.411,
+        "mainPaintMs": 0.092,
+        "topEventUnionsMs": {
+          "ThreadControllerImpl::RunTask": 2993.887,
+          "v8.callFunction": 2992.357,
+          "UserTiming::Measure": 214.534,
+          "SimpleWatcher::OnHandleReady": 19.732,
+          "MinorGC": 14.602,
+          "V8.GCScavenger": 14.166,
+          "V8.GC_SCAVENGER": 14.058,
+          "V8.GC_SCAVENGER_SCAVENGE": 13.803,
+          "V8.DeoptimizeCode": 12.66,
+          "FunctionCall": 7.01
+        },
+        "longestFunctionCallbacks": [
+          {
+            "startMs": 27825.916,
+            "endMs": 27831.836,
+            "elapsedMs": 5.92,
+            "function": "PerformanceObserver.observe.type",
+            "url": "",
+            "line": 21,
+            "column": 27
+          },
+          {
+            "startMs": 24857.737,
+            "endMs": 24858.603,
+            "elapsedMs": 0.866,
+            "function": "",
+            "url": "http://127.0.0.1:46137/assets/mainThreadPhysics-DXprhNUj.js",
+            "line": 1,
+            "column": 4661446,
+            "original": {
+              "file": "../../src/hestia-prototype/physics/physicsWorkerHost.ts",
+              "line": 291,
+              "column": 17
+            }
+          },
+          {
+            "startMs": 27851.832,
+            "endMs": 27851.9,
+            "elapsedMs": 0.068,
+            "function": "",
+            "url": "http://127.0.0.1:46137/assets/mainThreadPhysics-DXprhNUj.js",
+            "line": 1,
+            "column": 4661446,
+            "original": {
+              "file": "../../src/hestia-prototype/physics/physicsWorkerHost.ts",
+              "line": 291,
+              "column": 17
+            }
+          },
+          {
+            "startMs": 27824.717,
+            "endMs": 27824.771,
+            "elapsedMs": 0.054,
+            "function": "frame",
+            "url": "",
+            "line": 22,
+            "column": 15
+          },
+          {
+            "startMs": 24858.991,
+            "endMs": 24859.031,
+            "elapsedMs": 0.04,
+            "function": "frame",
+            "url": "",
+            "line": 22,
+            "column": 15
+          },
+          {
+            "startMs": 27832.086,
+            "endMs": 27832.117,
+            "elapsedMs": 0.031,
+            "function": "n",
+            "url": "http://127.0.0.1:46137/assets/index-2aILjI5Z.js",
+            "line": 4227,
+            "column": 78429,
+            "original": {
+              "file": "../../src/workers/hvpBoundedPump.ts",
+              "line": 48,
+              "column": 13
+            }
+          }
+        ]
+      },
+      "timerInterval": {
+        "windowMs": [
+          24857.7,
+          27851.9
+        ],
+        "mainRunTaskElapsedMs": 2993.887,
+        "frameCallbackMs": 0.144,
+        "mainGcMs": 19.411,
+        "mainPaintMs": 0.092,
+        "topEventUnionsMs": {
+          "ThreadControllerImpl::RunTask": 2993.887,
+          "v8.callFunction": 2992.357,
+          "UserTiming::Measure": 214.534,
+          "SimpleWatcher::OnHandleReady": 19.732,
+          "MinorGC": 14.602,
+          "V8.GCScavenger": 14.166,
+          "V8.GC_SCAVENGER": 14.058,
+          "V8.GC_SCAVENGER_SCAVENGE": 13.803,
+          "V8.DeoptimizeCode": 12.66,
+          "FunctionCall": 7.01
+        },
+        "longestFunctionCallbacks": [
+          {
+            "startMs": 27825.916,
+            "endMs": 27831.836,
+            "elapsedMs": 5.92,
+            "function": "PerformanceObserver.observe.type",
+            "url": "",
+            "line": 21,
+            "column": 27
+          },
+          {
+            "startMs": 24857.737,
+            "endMs": 24858.603,
+            "elapsedMs": 0.866,
+            "function": "",
+            "url": "http://127.0.0.1:46137/assets/mainThreadPhysics-DXprhNUj.js",
+            "line": 1,
+            "column": 4661446,
+            "original": {
+              "file": "../../src/hestia-prototype/physics/physicsWorkerHost.ts",
+              "line": 291,
+              "column": 17
+            }
+          },
+          {
+            "startMs": 27851.832,
+            "endMs": 27851.9,
+            "elapsedMs": 0.068,
+            "function": "",
+            "url": "http://127.0.0.1:46137/assets/mainThreadPhysics-DXprhNUj.js",
+            "line": 1,
+            "column": 4661446,
+            "original": {
+              "file": "../../src/hestia-prototype/physics/physicsWorkerHost.ts",
+              "line": 291,
+              "column": 17
+            }
+          },
+          {
+            "startMs": 27824.717,
+            "endMs": 27824.771,
+            "elapsedMs": 0.054,
+            "function": "frame",
+            "url": "",
+            "line": 22,
+            "column": 15
+          },
+          {
+            "startMs": 24858.991,
+            "endMs": 24859.031,
+            "elapsedMs": 0.04,
+            "function": "frame",
+            "url": "",
+            "line": 22,
+            "column": 15
+          },
+          {
+            "startMs": 27832.086,
+            "endMs": 27832.117,
+            "elapsedMs": 0.031,
+            "function": "n",
+            "url": "http://127.0.0.1:46137/assets/index-2aILjI5Z.js",
+            "line": 4227,
+            "column": 78429,
+            "original": {
+              "file": "../../src/workers/hvpBoundedPump.ts",
+              "line": 48,
+              "column": 13
+            }
+          }
+        ]
+      }
+    },
+    {
+      "raw": {
+        "origin": 1795366300934.9,
+        "at": 29784.60000000149,
+        "simulationElapsedMs": 176.5,
+        "gapMs": 181.40000000223517,
+        "advanceMs": 15.599999997764826,
+        "ticks": 45,
+        "backlogSeconds": 0.10983333333333334,
+        "previousCommand": "Read",
+        "handlerMs": 5.800000000745058
+      },
+      "simulationInterval": {
+        "windowMs": [
+          29608.1,
+          29784.6
+        ],
+        "mainRunTaskElapsedMs": 176.288,
+        "frameCallbackMs": 135.631,
+        "mainGcMs": 0,
+        "mainPaintMs": 0.66,
+        "topEventUnionsMs": {
+          "ThreadControllerImpl::RunTask": 176.288,
+          "v8.callFunction": 136.916,
+          "FunctionCall": 136.792,
+          "FireAnimationFrame": 135.631,
+          "EventDispatch": 5.746,
+          "Layout": 4.438,
+          "V8.DeoptimizeCode": 3.459,
+          "Receive mojo message": 1.072,
+          "UpdateLayoutTree": 0.362,
+          "PrePaint": 0.238
+        },
+        "longestFunctionCallbacks": [
+          {
+            "startMs": 29609.658,
+            "endMs": 29697.045,
+            "elapsedMs": 87.387,
+            "function": "Ma",
+            "url": "http://127.0.0.1:46137/assets/hvpBootstrap-DDu9Fssx.js",
+            "line": 41,
+            "column": 184771,
+            "original": {
+              "file": "../../src/hvp/hvpBootstrap.ts",
+              "line": 3253,
+              "column": 27
+            }
+          },
+          {
+            "startMs": 29722.292,
+            "endMs": 29769.792,
+            "elapsedMs": 47.5,
+            "function": "Ma",
+            "url": "http://127.0.0.1:46137/assets/hvpBootstrap-DDu9Fssx.js",
+            "line": 41,
+            "column": 184771,
+            "original": {
+              "file": "../../src/hvp/hvpBootstrap.ts",
+              "line": 3253,
+              "column": 27
+            }
+          },
+          {
+            "startMs": 29716.44,
+            "endMs": 29717.014,
+            "elapsedMs": 0.574,
+            "function": "te",
+            "url": "http://127.0.0.1:46137/assets/hvpBootstrap-DDu9Fssx.js",
+            "line": 41,
+            "column": 54753,
+            "original": {
+              "file": "../../src/hestia-prototype/player/input.ts",
+              "line": 84,
+              "column": 22
+            }
+          },
+          {
+            "startMs": 29608.1,
+            "endMs": 29608.54,
+            "elapsedMs": 0.44,
+            "function": "I",
+            "url": "http://127.0.0.1:46137/assets/hvpBootstrap-DDu9Fssx.js",
+            "line": 41,
+            "column": 53801,
+            "original": {
+              "file": "../../src/hestia-prototype/player/input.ts",
+              "line": 53,
+              "column": 9
+            }
+          },
+          {
+            "startMs": 29697.073,
+            "endMs": 29697.323,
+            "elapsedMs": 0.25,
+            "function": "",
+            "url": "",
+            "line": 13,
+            "column": 33
+          },
+          {
+            "startMs": 29769.827,
+            "endMs": 29770.053,
+            "elapsedMs": 0.226,
+            "function": "",
+            "url": "",
+            "line": 13,
+            "column": 33
+          }
+        ]
+      },
+      "timerInterval": {
+        "windowMs": [
+          29603.2,
+          29784.6
+        ],
+        "mainRunTaskElapsedMs": 181.188,
+        "frameCallbackMs": 135.631,
+        "mainGcMs": 0,
+        "mainPaintMs": 0.66,
+        "topEventUnionsMs": {
+          "ThreadControllerImpl::RunTask": 181.188,
+          "v8.callFunction": 141.811,
+          "FunctionCall": 141.684,
+          "FireAnimationFrame": 135.631,
+          "EventDispatch": 10.646,
+          "Layout": 4.438,
+          "V8.DeoptimizeCode": 3.459,
+          "Receive mojo message": 1.072,
+          "UpdateLayoutTree": 0.459,
+          "PrePaint": 0.238
+        },
+        "longestFunctionCallbacks": [
+          {
+            "startMs": 29609.658,
+            "endMs": 29697.045,
+            "elapsedMs": 87.387,
+            "function": "Ma",
+            "url": "http://127.0.0.1:46137/assets/hvpBootstrap-DDu9Fssx.js",
+            "line": 41,
+            "column": 184771,
+            "original": {
+              "file": "../../src/hvp/hvpBootstrap.ts",
+              "line": 3253,
+              "column": 27
+            }
+          },
+          {
+            "startMs": 29722.292,
+            "endMs": 29769.792,
+            "elapsedMs": 47.5,
+            "function": "Ma",
+            "url": "http://127.0.0.1:46137/assets/hvpBootstrap-DDu9Fssx.js",
+            "line": 41,
+            "column": 184771,
+            "original": {
+              "file": "../../src/hvp/hvpBootstrap.ts",
+              "line": 3253,
+              "column": 27
+            }
+          },
+          {
+            "startMs": 29603.331,
+            "endMs": 29608.54,
+            "elapsedMs": 5.209,
+            "function": "I",
+            "url": "http://127.0.0.1:46137/assets/hvpBootstrap-DDu9Fssx.js",
+            "line": 41,
+            "column": 53801,
+            "original": {
+              "file": "../../src/hestia-prototype/player/input.ts",
+              "line": 53,
+              "column": 9
+            }
+          },
+          {
+            "startMs": 29716.44,
+            "endMs": 29717.014,
+            "elapsedMs": 0.574,
+            "function": "te",
+            "url": "http://127.0.0.1:46137/assets/hvpBootstrap-DDu9Fssx.js",
+            "line": 41,
+            "column": 54753,
+            "original": {
+              "file": "../../src/hestia-prototype/player/input.ts",
+              "line": 84,
+              "column": 22
+            }
+          },
+          {
+            "startMs": 29697.073,
+            "endMs": 29697.323,
+            "elapsedMs": 0.25,
+            "function": "",
+            "url": "",
+            "line": 13,
+            "column": 33
+          },
+          {
+            "startMs": 29769.827,
+            "endMs": 29770.053,
+            "elapsedMs": 0.226,
+            "function": "",
+            "url": "",
+            "line": 13,
+            "column": 33
+          }
+        ]
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "name": "document",
+      "at": 110
+    },
+    {
+      "name": "ready",
+      "at": 29197.300000000745
+    },
+    {
+      "name": "aimed",
+      "at": 29502.10000000149
+    },
+    {
+      "name": "played",
+      "at": 29708.199999999255
+    },
+    {
+      "name": "firstClick",
+      "at": 29969.60000000149
+    },
+    {
+      "name": "terminal",
+      "at": 30986.800000000745
+    }
+  ],
+  "traceRendererPid": 76,
+  "traceMainTid": 76,
+  "notes": [
+    "Shared Chromium, SwiftShader. Main thread trace intervals are elapsed overlap, can include descheduling.",
+    "Unions of nested events overlap each other. Preserving the watchdog and timer budget.",
+    "Diagnostic observers add cost. Previous uninstrumented placement comparison is separate."
+  ],
+  "findings": {
+    "cutIssued": 0,
+    "instrumentedTrustedInputStatus": "SimulationHold before trusted mousedown",
+    "periods": [
+      {
+        "after": "Initialize",
+        "elapsedMs": 2994.2,
+        "stage": "Before published Ready"
+      },
+      {
+        "after": "explicit Play resumed",
+        "elapsedMs": 176.5,
+        "rafCallbackElapsedMs": 135.631,
+        "lastReadHandlerMs": 5.8,
+        "solverCatchupIncludingAvatarAndPublicationMs": 15.6
+      }
+    ],
+    "noClockOrProductChange": true
+  }
+}
