@@ -11,6 +11,7 @@ const floor={sizeX:4,sizeY:16,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0}
 
 it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ack","lost-live","stale-root","forged-reply","delayed-ack","duplicates","busy-read"] as const)("applies compact publication with a real R05 owner: %s",async fault=>{
   const commands:{kind:string;incarnation:string}[]=[],replies:string[]=[],spans:HvpCutSpan[]=[];
+  const loading=new AbortController();
   const root=rootFor(uFixture()),cut=cutAt(root,[12,2,4]),competing=cutAt(root,[24,6,4]);
   let nativeTick:()=>void=()=>{},simTime=100,closedRollbackPorts=0,duplicate:((corrupt:boolean)=>Promise<HvpWorkerReply>)|undefined;
   const clocktime=vi.spyOn(performance,"now").mockImplementation(()=>simTime);
@@ -38,7 +39,7 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
       }
       if(reply.id>=20_000){duplicateResponse?.(reply);return;}
       if(reply.terrainPlan && reply.snapshot){
-        if(fault==="stale-root")root.commit(competing);
+        if(fault==="stale-root"){root.commit(competing);loading.abort();}
         if((fault==="delayed-ack"||fault==="lost-live")&&!faulted){
           faulted=true;baseTick=reply.snapshot.ticks;sawAck();release=()=>handler?.({data:reply} as MessageEvent<HvpWorkerReply>);return;
         }
@@ -99,7 +100,7 @@ it.each(["ack","before-install","lost-before-witness","lost-after-base","lost-ac
   }
   vi.stubGlobal("Worker",Transport);
   const index=createTerrainComponentIndex(cut.before);
-  const client=await createHvpPhysicsClient([],{x:2,y:3,z:2},new AbortController().signal);
+  const client=await createHvpPhysicsClient([],{x:2,y:3,z:2},loading.signal);
   try{
     const f=index.prepareCompact(cut).fragments[0]!,compact={generation:1,cellCount:f.cellCount,parts:f.parts};
     const fRequest={ownerId:f.ownerId,cells:materializeCompactCells(compact),compactSource:compact,massKg:f.massKg,colliderBoxes:f.colliderBoxes,origin:HVP_SOURCE_MIN_METERS};

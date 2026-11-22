@@ -911,7 +911,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
             });
             return true;
           }catch(error){
-            if(disposed||signal.aborted)throw error;
+            if(disposed)throw error; // The initialization signal no longer owns a live native publication.
             const packet=await readCompactWitness(inbox.port1,expectedId,expectedIncarnation,binding,worldId)
               .catch(cause=>{fail(cause instanceof Error?cause:new Error(String(cause)));throw cause;});
             traceHvpCutBoundary(work.trace,binding.commandId,"main","cutRecoverySideband",packet.delivered);
