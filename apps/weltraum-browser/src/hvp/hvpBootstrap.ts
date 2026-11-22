@@ -476,6 +476,7 @@ interface HvpPresentationBackend extends RenderBackend {
   batch<T>(action: () => T): T;
   setWaterEnabled(enabled: boolean): void;
   updateProjection(): void;
+  updateFramePose(): void;
 }
 
 export const createHvpPresentationBackend = (
@@ -492,6 +493,18 @@ export const createHvpPresentationBackend = (
   let projectionRevision = 0;
   let waterEnabled = true;
 
+  // An explicit scene publication always refreshes both products. Between mutations,
+  // a camera/physics tick can reuse each independently accepted immutable product.
+  let fullPublication = true;
+  let previousPose: ReturnType<typeof createFrameProjectionSnapshot> | undefined;
+  let previousVisibility: ReadonlyMap<RepresentationKey, boolean> | undefined;
+  let previousRevision: ReturnType<typeof backendRevision> | undefined;
+  const origin = { x: 0, y: 0, z: 0 };
+  const orientation = { ...origin, w: 1 };
+  const scale = { x: 1, y: 1, z: 1 };
+  const sameVector = (a: typeof origin, b: typeof origin) => a.x === b.x && a.y === b.y && a.z === b.z;
+  const sameOrientation = (a: typeof orientation, b: typeof orientation) => a.w === b.w && sameVector(a, b);
+
   const sharedProjectionFrame = ():FrameId|undefined => {
     const current = framesByRepresentation.values().next().value ?? lastFrameId;
     for (const candidate of framesByRepresentation.values()) {
@@ -504,50 +517,58 @@ export const createHvpPresentationBackend = (
     const started=onTiming?performance.now():0;
     const current=sharedProjectionFrame();if(current===undefined){return;}
     const projectionStarted=onTiming?performance.now():0;
-    projectionRevision += 1;
     const camera = readCamera();
     const keys = [...framesByRepresentation.keys()];
     const isVisible = (key: RepresentationKey): boolean => (waterEnabled || (key !== waterRepresentationKey && !key.startsWith(`${waterRepresentationKey}:`))) && isRepresentationVisible(key);
     const objectTransforms = new Map(readObjectTransforms().map((transform) => [transform.representationKey, transform]));
-    const revision = backend.readDiagnostics().backendRevision;
-    requireAccepted(backend.dispatch(Object.freeze({
-      kind: "ApplyFrameProjection",
-      backendRevision: revision,
-      snapshot: createFrameProjectionSnapshot({
-        frameId: current,
-        frameRevision: frameRevision(projectionRevision),
-        cameraPositionRelative: camera.position,
-        cameraOrientation: camera.orientation,
-        projectionParameters: {
-          kind: "Perspective",
-          verticalFovDegrees: camera.verticalFovDegrees,
-          aspect: camera.aspect,
-          near: camera.near,
-          far: camera.far
-        },
-        representationTransforms: keys.map((key) => objectTransforms.get(key) ?? ({
-          representationKey: key,
-          positionRelative: { x: 0, y: 0, z: 0 },
-          orientation: { x: 0, y: 0, z: 0, w: 1 },
-          scale: { x: 1, y: 1, z: 1 }
+    const diagnostics = backend.readDiagnostics();
+    const revision = diagnostics.backendRevision;
+    const reusable = !fullPublication && previousRevision === revision && diagnostics.backendState === "Available";
+    const pose = previousPose;
+    const samePose = reusable && pose?.frameId === current && sameVector(camera.position, pose.cameraPositionRelative)
+      && sameOrientation(camera.orientation, pose.cameraOrientation)
+      && camera.verticalFovDegrees === pose.projectionParameters.verticalFovDegrees && camera.aspect === pose.projectionParameters.aspect
+      && camera.near === pose.projectionParameters.near && camera.far === pose.projectionParameters.far
+      && keys.length === pose.representationTransforms.length && pose.representationTransforms.every(previous => {
+        if (!framesByRepresentation.has(previous.representationKey)) return false;
+        const next = objectTransforms.get(previous.representationKey);
+        return sameVector(previous.positionRelative, next?.positionRelative ?? origin)
+          && sameOrientation(previous.orientation, next?.orientation ?? orientation) && sameVector(previous.scale, next?.scale ?? scale);
+      });
+    const sameVisibility = reusable && previousVisibility?.size === keys.length
+      && keys.every(key => previousVisibility!.get(key) === isVisible(key));
+    if (samePose && sameVisibility) return;
+    // A failed publication must retry in full, including visibility after a successful pose.
+    fullPublication = true;
+    projectionRevision += 1;
+    if (!samePose) {
+      const snapshot = createFrameProjectionSnapshot({
+        frameId: current, frameRevision: frameRevision(projectionRevision),
+        cameraPositionRelative: camera.position, cameraOrientation: camera.orientation,
+        projectionParameters: { kind: "Perspective", verticalFovDegrees: camera.verticalFovDegrees,
+          aspect: camera.aspect, near: camera.near, far: camera.far },
+        representationTransforms: keys.map(key => objectTransforms.get(key) ?? ({
+          representationKey: key, positionRelative: origin, orientation, scale
         }))
-      })
-    })), "HVP frame projection");
+      });
+      requireAccepted(backend.dispatch(Object.freeze({kind:"ApplyFrameProjection", backendRevision:revision, snapshot})), "HVP frame projection");
+      previousPose = snapshot;
+    }
     const projectionEnded=onTiming?performance.now():0;
     const visibilityBuildStarted=onTiming?performance.now():0;
-    const plan=createVisibilityPlan({
-      planRevision: visibilityPlanRevision(projectionRevision),
-      visibleRepresentationKeys: keys.filter(isVisible),
-      fallbackRepresentationKeys: [],
-      hiddenRepresentationKeys: keys.filter(key => !isVisible(key))
-    });
-    const visibilityBuildEnded=onTiming?performance.now():0;
-    const visibilityDispatchStarted=onTiming?performance.now():0;
-    requireAccepted(backend.dispatch(createRenderCommand({
-      kind: "ApplyVisibilityPlan",
-      backendRevision: revision,
-      plan
-    })), "HVP visibility plan");
+    let visibilityBuildEnded=visibilityBuildStarted, visibilityDispatchStarted=visibilityBuildStarted;
+    if (!sameVisibility) {
+      const visibility = new Map(keys.map(key => [key, isVisible(key)]));
+      const plan = createVisibilityPlan({ planRevision: visibilityPlanRevision(projectionRevision),
+        visibleRepresentationKeys: keys.filter(key => visibility.get(key)),
+        fallbackRepresentationKeys: [], hiddenRepresentationKeys: keys.filter(key => !visibility.get(key)) });
+      visibilityBuildEnded=onTiming?performance.now():0;
+      visibilityDispatchStarted=onTiming?performance.now():0;
+      requireAccepted(backend.dispatch(createRenderCommand({kind:"ApplyVisibilityPlan", backendRevision:revision, plan})), "HVP visibility plan");
+      previousVisibility = visibility;
+    }
+    previousRevision = revision;
+    fullPublication = false;
     const visibilityDispatchEnded=onTiming?performance.now():0;
     onTiming?.("startupProjectionSnapshotCpuMs",projectionStarted,projectionEnded-projectionStarted);
     onTiming?.("startupVisibilityPlanBuildCpuMs",visibilityBuildStarted,visibilityBuildEnded-visibilityBuildStarted);
@@ -556,14 +577,20 @@ export const createHvpPresentationBackend = (
   };
   const batcher = createSynchronousBatch(publishCurrentSet);
 
+  const requestFull = (): void => { fullPublication = true; batcher.request(); };
+
   const recordDispatch = (command: RenderCommand,result:RenderCommandResult):RenderCommandResult => {
+    if (command.kind === "ApplyFrameProjection" || command.kind === "ApplyVisibilityPlan" || command.kind === "InitializeBackend"
+      || command.kind === "ResetBackend" || command.kind === "DisposeBackend") {
+      fullPublication = true; previousPose = undefined; previousVisibility = undefined;
+    }
     if (command.kind === "UpsertMeshArtifact" && accepted(result)) {
       lastFrameId = command.artifact.frameId;
       framesByRepresentation.set(command.artifact.representationKey, command.artifact.frameId);
-      batcher.request();
+      requestFull();
     } else if ((command.kind === "RemoveRepresentation" || command.kind === "EvictRepresentation") && accepted(result)) {
       framesByRepresentation.delete(command.representationKey);
-      if(command.kind==="EvictRepresentation"||isRepresentationVisible(command.representationKey)){batcher.request();}
+      if(command.kind==="EvictRepresentation"||isRepresentationVisible(command.representationKey)){requestFull();}
     } else if (command.kind === "ResetBackend" || command.kind === "DisposeBackend") {
       framesByRepresentation.clear();
       lastFrameId = undefined;
@@ -590,14 +617,14 @@ export const createHvpPresentationBackend = (
     const result=yield* upload.call(backend,handle,profiles,binding);
     if(accepted(result)){
       lastFrameId=handle.receipt.frameId;framesByRepresentation.set(handle.receipt.representationKey,handle.receipt.frameId);
-      if(isRepresentationVisible(handle.receipt.representationKey)){batcher.request();}
+      if(isRepresentationVisible(handle.receipt.representationKey)){requestFull();}
       else if(!deferInitialProjection){sharedProjectionFrame();}
     }return result;
   }
   const releasePrivateMesh=(handle:ThreePrivateMeshHandle,binding:ThreePrivateMeshBinding):RenderCommandResult=>{
     const release=(backend as HvpBackend).releasePrivateMesh;if(release===undefined){throw new Error("Private mesh release unavailable");}
     const result=release.call(backend,handle,binding);
-    if(accepted(result)){framesByRepresentation.delete(handle.receipt.representationKey);if(isRepresentationVisible(handle.receipt.representationKey)){batcher.request();}}return result;
+    if(accepted(result)){framesByRepresentation.delete(handle.receipt.representationKey);if(isRepresentationVisible(handle.receipt.representationKey)){requestFull();}}return result;
   };
 
   return Object.freeze({
@@ -607,14 +634,15 @@ export const createHvpPresentationBackend = (
     upsertPrivateMeshSteps,
     releasePrivateMesh,
     batch: batcher.run,
-    updateProjection: () => { deferInitialProjection = false; batcher.request(); },
+    updateFramePose: () => batcher.request(),
+    updateProjection: () => { deferInitialProjection = false; requestFull(); },
     renderFrame: () => backend.renderFrame(),
     getCapabilities: () => backend.getCapabilities(),
     readDiagnostics: () => backend.readDiagnostics(),
     setWaterEnabled(enabled: boolean): void {
       if (waterEnabled === enabled) return;
       waterEnabled = enabled;
-      batcher.request();
+      requestFull();
     }
   });
 };
@@ -3295,7 +3323,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
         if (state.ticks !== physicsTick || playerInput!.active || cameraChanged) {
           physicsTick = state.ticks;
           syncPhysicsTransforms();
-          presentation.updateProjection();
+          presentation.updateFramePose();
           projectedCamera.position.copy(ownedCamera.position);projectedCamera.quaternion.copy(ownedCamera.quaternion);
           projectedCamera.fov=ownedCamera.fov;projectedCamera.aspect=ownedCamera.aspect;
           projectedCamera.near=ownedCamera.near;projectedCamera.far=ownedCamera.far;

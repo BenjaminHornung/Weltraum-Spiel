@@ -4,7 +4,7 @@ import { createHvpPresentationBackend } from "../../src/hvp/hvpBootstrap";
 import { ThreeRenderBackend } from "../../src/render/three/backend/threeRenderBackend";
 import * as projectionModule from "../../src/presentation/visibilityPlan";
 import * as canonicalModule from "../../src/presentation/canonical";
-import { artifactRevision, backendRevision, createMaterialProfile, createMeshArtifact, createRenderCommand,
+import { type RepresentationTransformSnapshot, artifactRevision, backendRevision, createMaterialProfile, createMeshArtifact, createRenderCommand,
   frameId, frameRevision, createFrameProjectionSnapshot, materialProfileId, representationKey, sourceRevision } from "../../src/presentation";
 
 describe("HVP synchronous presentation batch", () => {
@@ -116,9 +116,11 @@ const adapterFixture = (defer = false, onTiming?: (name:string,start:number,dura
     onTiming:onBackendTiming,
     rendererFactory: () => ({ setPixelRatio: () => {}, setSize: () => {}, render: () => {}, dispose: () => {} }) });
   const active = new Set<string>();
-  const adapter = createHvpPresentationBackend(backend, () => ({ position: { x: 0, y: 0, z: 3 },
-    orientation: { x: 0, y: 0, z: 0, w: 1 }, verticalFovDegrees: 60, aspect: 1, near: 0.1, far: 100 }),
-  representationKey("hvp:water"), () => [], key => active.has(key), onTiming, defer);
+  const camera = { position: { x: 0, y: 0, z: 3 }, orientation: { x: 0, y: 0, z: 0, w: 1 },
+    verticalFovDegrees: 60, aspect: 1, near: 0.1, far: 100 };
+  const transforms: RepresentationTransformSnapshot[] = [];
+  const adapter = createHvpPresentationBackend(backend, () => camera,
+    representationKey("hvp:water"), () => transforms, key => active.has(key), onTiming, defer);
   adapter.dispatch(createRenderCommand({ kind: "InitializeBackend", backendRevision: backendRevision(0) }));
   const material = createMaterialProfile({ id: materialProfileId("hvp:batch:material"), kind: "BasicLit",
     baseColor: { r: 0.5, g: 0.5, b: 0.5 }, opacity: 1, doubleSided: false, wireframe: false, depthWrite: true });
@@ -134,8 +136,47 @@ const adapterFixture = (defer = false, onTiming?: (name:string,start:number,dura
     kind: "RemoveRepresentation", backendRevision: backendRevision(0), representationKey: mesh.representationKey,
     expectedSourceRevision: mesh.sourceRevision, expectedArtifactRevision: mesh.artifactRevision, expectedContentHash: mesh.contentHash }));
   const dispose = () => adapter.dispatch(createRenderCommand({ kind: "DisposeBackend", backendRevision: backendRevision(0) }));
-  return { backend, adapter, active, artifact, upsert, remove, dispose };
+  return { backend, adapter, active, artifact, upsert, remove, dispose, camera, transforms };
 };
+
+it("publishes only changed animation-frame products and retains a complete refresh after scene changes", () => {
+  const f=adapterFixture(), mesh=f.artifact("hvp:batch:fragment");
+  const dispatch=vi.spyOn(f.backend,"dispatch");
+  const applied=()=>dispatch.mock.calls.map(([command])=>command.kind).filter(kind=>kind.startsWith("Apply"));
+  try {
+    f.active.add(mesh.representationKey);
+    f.upsert(mesh);
+    dispatch.mockClear();
+    f.adapter.updateFramePose();
+    expect(applied()).toEqual([]);
+
+    f.camera.position.x=1;
+    f.adapter.updateFramePose();
+    expect(applied()).toEqual(["ApplyFrameProjection"]);
+    expect(f.backend.camera.position.x).toBe(1);
+
+    const position={x:3,y:4,z:5};
+    f.transforms.push({representationKey:mesh.representationKey,positionRelative:position,
+      orientation:{x:0,y:0,z:0,w:1},scale:{x:1,y:1,z:1}});
+    dispatch.mockClear();
+    f.adapter.updateFramePose();
+    position.x=7;
+    f.adapter.updateFramePose();
+    f.adapter.updateFramePose();
+    expect(applied()).toEqual(["ApplyFrameProjection","ApplyFrameProjection"]);
+    expect(f.backend.representationRoot.children[0]?.position.x).toBe(7);
+
+    dispatch.mockClear();
+    f.active.delete(mesh.representationKey);
+    f.adapter.updateFramePose();
+    expect(applied()).toEqual(["ApplyVisibilityPlan"]);
+    expect(f.backend.readDiagnostics().visibleRepresentationKeys).toEqual([]);
+
+    dispatch.mockClear();
+    f.adapter.batch(()=>{ f.adapter.updateProjection(); f.adapter.updateFramePose(); });
+    expect(applied()).toEqual(["ApplyFrameProjection","ApplyVisibilityPlan"]);
+  } finally { dispatch.mockRestore(); f.dispose(); }
+});
 
 it("measures projection and visibility as contained nonoverlapping publication breakdowns",()=>{
   const spans:{name:string;start:number;duration:number}[]=[];
