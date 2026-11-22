@@ -2388,7 +2388,11 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
              const next=runVisual(()=>work.next());
              if(next.done){
                const staged=next.value;
-               return {publish:()=>runVisual(()=>staged.publish()),rollback:()=>runVisual(()=>staged.rollback()),finish:()=>runVisual(()=>staged.finish())};
+               return {
+                 publish:()=>measureCut(commandId,"cutGraphicsPublishMs",()=>runVisual(()=>staged.publish())),
+                 rollback:()=>runVisual(()=>staged.rollback()),
+                 finish:()=>measureCut(commandId,"cutGraphicsRetireMs",()=>runVisual(()=>staged.finish()))
+               };
              }
              yield next.value;
            }
