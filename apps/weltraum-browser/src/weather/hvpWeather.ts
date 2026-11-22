@@ -53,10 +53,21 @@ export async function createHvpCoastWeatherModel(worldId: string, sessionId: str
   return createAnalyticReadView({bundle, macro, config:authored.config as ClimateConfig});
 }
 
-function project(binding: HvpWeatherBinding, result: WeatherResult, query: PlanetWeatherQuery, exposure:HvpWeatherFrame["exposure"]): HvpWeatherFrame | undefined {
+function project(binding: HvpWeatherBinding, result: WeatherResult, query: PlanetWeatherQuery, model:Model, exposure:HvpWeatherFrame["exposure"]): HvpWeatherFrame | undefined {
   if (result.status !== "Known" || result.binding.worldId !== binding.worldId ||
       result.binding.sessionId !== binding.sessionId || result.binding.simulationTick !== query.simulationTick ||
-      result.query.frameId !== query.frameId || result.query.bodyId !== query.bodyId) return undefined;
+      result.query.frameId !== query.frameId || result.query.bodyId !== query.bodyId ||
+      result.query.frameKind!==query.frameKind || result.query.requiredAccuracy!==query.requiredAccuracy ||
+      result.query.simulationTick!==query.simulationTick || result.query.vertical.kind!=="AltitudeMeters" ||
+      query.vertical.kind!=="AltitudeMeters" || result.query.vertical.altitudeMeters!==query.vertical.altitudeMeters ||
+      result.query.bodyFixedPositionMeters.x!==query.bodyFixedPositionMeters.x ||
+      result.query.bodyFixedPositionMeters.y!==query.bodyFixedPositionMeters.y ||
+      result.query.bodyFixedPositionMeters.z!==query.bodyFixedPositionMeters.z ||
+      result.binding.profile.digest!==model.profile.digest || result.binding.macroGeography?.digest!==model.input.macro?.digest ||
+      result.binding.climateNormals.digest!==model.climate.binding.digest) return undefined;
+  const origin=model.input.bundle.binding;
+  for (const key of ["sourceOwner","sourceEpoch","sourceRevision","sourceDigest","atmosphereEpoch","authorityRevision",
+    "eventCursor","eventDigest","checkpointDigest"] as const) if(result.binding[key]!==origin[key]) return undefined;
   const {windBodyFixedMps: wind, precipitation} = result.sample;
   // The authored query starts at the prime meridian on the equator. At that anchor
   // +east = body +Y, +up = body +X, +south = body -Z. Use the actual sample basis.
@@ -79,7 +90,7 @@ function project(binding: HvpWeatherBinding, result: WeatherResult, query: Plane
     stormIds:Object.freeze([...result.sample.stormIds])});
 }
 
-type Model = Pick<Awaited<ReturnType<typeof createHvpCoastWeatherModel>>,"input"|"read">;
+type Model = Pick<Awaited<ReturnType<typeof createHvpCoastWeatherModel>>,"input"|"read"|"profile"|"climate">;
 type SampleRequest = {binding:HvpWeatherBinding; tick:number; x:number; y:number; z:number; exposure:HvpWeatherFrame["exposure"]};
 const sameBinding = (a:HvpWeatherBinding, b:HvpWeatherBinding) => a.worldId===b.worldId && a.sessionId===b.sessionId &&
   a.epoch===b.epoch && a.revision===b.revision && a.sourceDigest===b.sourceDigest;
@@ -125,7 +136,7 @@ export function createHvpWeatherReadView(loadModel:(world:string,session:string)
       if(altitude>10_000) return;
       const query=trajectoryQuery(producer.input.bundle,direction,tick,altitude);
       const result=await producer.read(query);
-      if(!disposed && desired===request) frame=project(binding,result,query,request.exposure);
+      if(!disposed && desired===request) frame=project(binding,result,query,producer,request.exposure);
     } catch {
       // A missing optional weather product leaves this frame unavailable.
       if(desired===request) model=undefined;
@@ -145,7 +156,8 @@ export function createHvpWeatherReadView(loadModel:(world:string,session:string)
       }
       const tick=Math.floor(input.tick*universeTicksPerPhysicsTick/samplingPeriod)*samplingPeriod;
       const x=Math.round(input.position.x/4)*4, y=Math.round(input.position.y), z=Math.round(input.position.z/4)*4;
-      const exposure=localExposure(input);
+      let exposure:HvpWeatherFrame["exposure"];
+      try { exposure=localExposure(input); } catch { exposure="Unknown"; }
       if(frame && tick-frame.sampleTick>samplingPeriod) frame=undefined;
       if(!desired || !sameBinding(desired.binding,input) || exposure!==desired.exposure || desired.tick!==tick || desired.x!==x || desired.y!==y || desired.z!==z) {
         const {worldId,sessionId,epoch,revision,sourceDigest}=input;

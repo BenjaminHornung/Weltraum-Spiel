@@ -56,6 +56,8 @@ export interface ThreeRendererPort {
   /** Optional joint update of CSS viewport dimensions and device DPR. Leaves the canvas style to the host. */
   setViewportSize?(cssWidth: number, cssHeight: number, devicePixelRatio: number): void;
   render(scene: THREE.Scene, camera: THREE.Camera): boolean | void;
+  /** Called only after this port's draw received its backend-owned submission identity. */
+  onFrameSubmitted?(frame: ThreeSubmittedFrameMetadata): void;
   getDrawingBufferSize?(target: THREE.Vector2): THREE.Vector2;
   dispose(): void;
 }
@@ -92,6 +94,8 @@ export interface ThreeSubmittedFrameMetadata {
 export interface ThreeSubmittedFrameSource {
   readSubmittedFrameMetadata(): ThreeSubmittedFrameMetadata | undefined;
   isSubmittedFrameCurrent(frame: ThreeSubmittedFrameMetadata): boolean;
+  /** Optional late-consumer check for camera or output changes between submissions. */
+  isSubmittedViewUnchanged?(frame: ThreeSubmittedFrameMetadata): boolean;
 }
 
 /** A suppressed/lost-context render leaves Three's CPU frame serial unchanged. */
@@ -407,6 +411,20 @@ export class ThreeRenderBackend implements RenderBackend, ThreeSubmittedFrameSou
     return this.submittedFrame !== undefined && this.submittedFrame === frame;
   }
 
+  isSubmittedViewUnchanged(frame: ThreeSubmittedFrameMetadata): boolean {
+    if (!this.isSubmittedFrameCurrent(frame)) return false;
+    const {camera} = this, sample = frame.current;
+    camera.updateWorldMatrix(true, false);
+    const size = this.renderer?.getDrawingBufferSize?.(this.drawingBufferSize);
+    const output = sample.drawingBuffer;
+    return (output ? size?.x === output.widthPx && size.y === output.heightPx : !size) &&
+      camera.near === sample.near && camera.far === sample.far && camera.fov === sample.verticalFovDegrees &&
+      camera.aspect === sample.aspect &&
+      camera.projectionMatrix.elements.every((value, i) => value === sample.projectionMatrix[i]) &&
+      camera.matrixWorld.elements.every((value, i) => value === sample.cameraWorldMatrix[i]) &&
+      camera.matrixWorldInverse.elements.every((value, i) => value === sample.viewMatrix[i]);
+  }
+
   private invalidateSubmittedFrame(reason: string): void {
     this.submittedFrame = undefined;
     this.lastSubmittedFrame = undefined;
@@ -450,6 +468,7 @@ export class ThreeRenderBackend implements RenderBackend, ThreeSubmittedFrameSou
     });
     this.lastSubmittedFrame = this.submittedFrame;
     this.metadataResetReason = null;
+    this.renderer?.onFrameSubmitted?.(this.submittedFrame);
   }
 
   resizeViewport(width:number,height:number,devicePixelRatio=this.viewportDevicePixelRatio):RenderCommandResult {

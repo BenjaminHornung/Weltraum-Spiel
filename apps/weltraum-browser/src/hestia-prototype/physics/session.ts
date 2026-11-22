@@ -338,7 +338,9 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
   }
   if(recovery){
     const motion=recovery.motion;
-    checkpoint={...recovery.assets.world,tick:motion.tick,player:motion.player,impulses:motion.impulses,
+    // The persistent codec remains paused-only. Reapply the separately validated volatile overrun after installing every shape.
+    const seedTick=motion.tick.status==="SimulationHold"?{...motion.tick,status:"Paused" as const,backlogSeconds:0}:motion.tick;
+    checkpoint={...recovery.assets.world,tick:seedTick,player:motion.player,impulses:motion.impulses,
       lastImpulse:motion.lastImpulse,lastImpulseTick:motion.lastImpulseTick};
   }else if(checkpoint!==undefined){checkpointContext.admitRestore();}
   const decodeContext=recovery?labCheckpointContext:checkpointContext;
@@ -703,13 +705,14 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       captureBeforeNativeInstall(binding:HvpTerrainBinding):HvpTerrainMotion{
         const clock=tick.read();
         if(disposed||staged||terrainHeld||branch?.busy||moving.busy||extraHeld()||terrainGeneration!==binding.baseRevision
-          ||(clock.status!=="Paused"&&clock.status!=="Running")){throw new Error("No recoverable native installation tick");}
+          ||(clock.status!=="Paused"&&clock.status!=="Running"&&clock.status!=="SimulationHold")){throw new Error("No recoverable native installation tick");}
         // The caller posts this packet and installs synchronously in the same worker turn. No solver step can intervene.
-        return captureTerrainMotion(binding,clock.status==="Running",{...clock,status:"Paused"});
+        return captureTerrainMotion(binding,clock.status==="Running",clock.status==="Running"?{...clock,status:"Paused"}:clock);
       },
       captureTerrainRecovery(binding:HvpTerrainBinding):HvpTerrainMotion {
         const tx=requireStage(binding.commandId);
-        if(tx.expected!==binding.baseRevision||disposed||terrainHeld||tick.read().status!=="Paused"){
+        const status=tick.read().status;
+        if(tx.expected!==binding.baseRevision||disposed||terrainHeld||(status!=="Paused"&&status!=="SimulationHold")){
           throw new Error("Invalid terrain recovery boundary");
         }
         return captureTerrainMotion(binding,tx.running,tick.read());
@@ -1138,7 +1141,8 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       }
       world.propagateModifiedBodyPositionsToColliders();world.updateSceneQueries();
       if(motion.walking){character?.setEnabled(true);if(motion.input){character?.setInput(motion.input);}}
-      if(motion.running){tick.resume();}
+      if(motion.tick.status==="SimulationHold"){tick.restoreSimulationHold(motion.tick);}
+      else if(motion.running){tick.resume();}
     }
     return session;
   } catch (error) {probeTerrainSource?.dispose();world.free();throw error;}
@@ -1158,7 +1162,7 @@ export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"pub
 export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"phy01-lab",measure:boolean):Promise<HvpLabPhysicsSession>;
 export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"phy01-lab"|"public",measure:boolean){
   const {assets,motion,journal}=image;
-  if(assets.world.solver!==HVP_SOLVER_VERSION||assets.world.sessionId!==motion.worldId||motion.tick.status!=="Paused"||!Array.isArray(journal)||journal.length>256
+  if(assets.world.solver!==HVP_SOLVER_VERSION||assets.world.sessionId!==motion.worldId||(motion.tick.status!=="Paused"&&(motion.tick.status!=="SimulationHold"||motion.running))||!Array.isArray(journal)||journal.length>256
     ||assets.world.terrainGeneration+journal.length!==motion.revision||!Number.isSafeInteger(motion.binding.baseRevision)
     ||![motion.binding.baseRevision,motion.binding.baseRevision+1].includes(motion.revision)){
     throw new Error("Invalid terrain recovery image");

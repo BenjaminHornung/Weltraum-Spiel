@@ -179,6 +179,18 @@ export const createHvpNeighborController=(options:{
     }finally{seams?.discard?.();}
   };
   const release=()=>{activeLease?.release();activeLease=undefined;activeProducts=undefined;activePrimaryDigest=undefined;if(!options.cache){cache.clear();}east=undefined;saved=undefined;checkpointSource=undefined;};
+  const update=(x:number,pinned:boolean):void=>{
+      if(disposed||hold||(pending&&publishing)){return;}const previous=policy.read(),action=policy.update(x,pinned);
+      if(pending){if(previous.wanted!==policy.read().wanted||previous.lod!==policy.read().lod){abort?.abort();}return;}
+      if(options.blocked()||retryBlocked){return;}
+      if(!policy.read().wanted&&policy.read().state==="Evicted"&&activeProducts&&activePrimaryDigest!==options.primary().sourceDigest){
+        abort=new AbortController();pending=load(true).finally(()=>{pending=undefined;abort=undefined;publishing=false;});return;
+      }
+      const needsRefresh=policy.read().wanted&&(!activeLease||activePrimaryDigest!==options.primary().sourceDigest||activeLod!==policy.read().lod);
+      if(action==="Unload"||needsRefresh||action==="Load"){
+        abort=new AbortController();pending=(action==="Unload"?unload():load()).finally(()=>{pending=undefined;abort=undefined;publishing=false;});
+      }
+    };
   return {
     async initialize(root:ReturnType<typeof createHvpTerrainRoot>,lod:.125|.5){
       if(pending||east||saved||activeLease||disposed){throw new Error("Neighbour already initialized");}
@@ -196,17 +208,18 @@ export const createHvpNeighborController=(options:{
       abort=new AbortController();pending=load().finally(()=>{pending=undefined;abort=undefined;publishing=false;});
       await pending;if(hold||failure||!activeLease){throw new Error(failure||"Restored neighbour publication failed");}
     },
-    update(x:number,pinned:boolean):void{
-      if(disposed||hold||(pending&&publishing)){return;}const previous=policy.read(),action=policy.update(x,pinned);
-      if(pending){if(previous.wanted!==policy.read().wanted||previous.lod!==policy.read().lod){abort?.abort();}return;}
-      if(options.blocked()||retryBlocked){return;}
-      if(!policy.read().wanted&&policy.read().state==="Evicted"&&activeProducts&&activePrimaryDigest!==options.primary().sourceDigest){
-        abort=new AbortController();pending=load(true).finally(()=>{pending=undefined;abort=undefined;publishing=false;});return;
-      }
-      const needsRefresh=policy.read().wanted&&(!activeLease||activePrimaryDigest!==options.primary().sourceDigest||activeLod!==policy.read().lod);
-      if(action==="Unload"||needsRefresh||action==="Load"){
-        abort=new AbortController();pending=(action==="Unload"?unload():load()).finally(()=>{pending=undefined;abort=undefined;publishing=false;});
-      }
+    update,
+    async requestEastCutCoverage(primary:HvpTerrainSnapshot,eyeX:number):Promise<HvpTerrainSnapshot|undefined>{
+      if(!valid()||hold||options.primary()!==primary||!Number.isFinite(eyeX)){return undefined;}
+      // A four-metre player ray must reach the eastern region. Use the normal residency path.
+      const edge=primary.originMeters.x+primary.sizeX*primary.cellMeters;
+      if(eyeX<edge-4||eyeX>=edge+primary.sizeX*primary.cellMeters+4){return undefined;}
+      if(!pending)update(eyeX,Boolean(options.physics.read().neighborPinned));
+      if(pending)await pending;
+      const source=east?.read(),native=options.physics.read().neighbor;
+      if(!valid()||hold||options.primary()!==primary||!source||!policy.read().collisionReady||
+        !activeLease?.isValid||activePrimaryDigest!==primary.sourceDigest||!native?.resident||native.sourceDigest!==source.sourceDigest){return undefined;}
+      return source;
     },
     retry(){if(!hold&&!pending){failure="";retryBlocked=false;}},
     read:()=>Object.freeze({...policy.read(),busy:pending!==undefined,recoveryHold:hold,error:failure,key:lastKey,loadOperation,

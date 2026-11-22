@@ -31,7 +31,7 @@ export const handoffCounters=()=>({
 type HandoffCounters=ReturnType<typeof handoffCounters>;
 
 // The existing owner/digest is FNV32 of the ordered JSON cells. Stream from spans without allocating cell objects.
-function contentDigest(spans:readonly Span[]): string | undefined {
+export function compactTerrainOwnerDigest(spans:readonly Span[]): string | undefined {
   let hash=0x811c9dc5;
   function append(value:string) { for(let i=0;i<value.length;i++) hash=Math.imul(hash^value.charCodeAt(i),0x01000193); }
   let runs=0,previous:Span|undefined;
@@ -57,7 +57,7 @@ export function buildFragment(source:HvpTerrainSnapshot,facts:readonly PartFacts
   const parts=Object.freeze(facts.map(f=>f.part));
   const affectedLeaves=Object.freeze([...new Set(parts.map(p=>p.origin.map(v=>v>>4).join(":")))].sort());
   if(affectedLeaves.length>128) return undefined; // Existing 16 MiB structural brick admission.
-  const spans=orderedSpans(parts),digest=contentDigest(spans);
+  const spans=orderedSpans(parts),digest=compactTerrainOwnerDigest(spans);
   if(digest===undefined) return undefined;
   stats.materialRunsReferenced+=spans.length;
   stats.partReferences+=parts.length;
@@ -95,7 +95,7 @@ export function buildFragment(source:HvpTerrainSnapshot,facts:readonly PartFacts
     parts,cellCount:count,min:bounds.min,max:bounds.max,affectedLeaves,massKg:mass.totalMassKg,mass,colliderBoxes});
 }
 
-export function materializeCompactCells(fragment:Pick<CompactTerrainFragment,"parts">):readonly HvpStructuralCell[] {
+export function checkedCompactSpans(fragment:Pick<CompactTerrainFragment,"parts">):readonly Span[] {
   // The receiver may have no resident index. Validate work bounds before expanding a wire clone.
   const {parts}=fragment;
   if(!Array.isArray(parts) || parts.length<1 || parts.length>32768) throw new Error("Invalid compact fragment part count");
@@ -119,15 +119,24 @@ export function materializeCompactCells(fragment:Pick<CompactTerrainFragment,"pa
       next=offset+length;
     }
   }
+  const spans=orderedSpans(parts);
+  for(let i=1;i<spans.length;i++) {
+    const previous=spans[i-1]!,span=spans[i]!;
+    if(previous.z===span.z && previous.y===span.y && previous.end>span.x) throw new Error("Overlapping compact components");
+  }
+  return spans;
+}
+
+export function cellsFromCompactSpans(spans:readonly Span[]):readonly HvpStructuralCell[] {
   const cells:HvpStructuralCell[]=[];
-  let previous:Span|undefined;
-  for(const span of orderedSpans(parts)) {
-    const {x,end,y,z,material}=span;
-    if(previous && previous.z===z && previous.y===y && previous.end>x) throw new Error("Overlapping compact components");
+  for(const {x,end,y,z,material} of spans) {
     for(let at=x;at<end;at++) cells.push(Object.freeze({x:at,y,z,materialId:material}));
-    previous=span;
   }
   return Object.freeze(cells);
+}
+
+export function materializeCompactCells(fragment:Pick<CompactTerrainFragment,"parts">):readonly HvpStructuralCell[] {
+  return cellsFromCompactSpans(checkedCompactSpans(fragment));
 }
 
 /** Historical source/save/mesh consumers explicitly request a cell array at their boundary. */

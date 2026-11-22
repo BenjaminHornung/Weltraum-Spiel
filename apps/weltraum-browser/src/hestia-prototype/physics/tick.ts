@@ -33,6 +33,13 @@ export const createHvpTick = (step: (tick: number) => void, saved?:HvpTickCheckp
       backlogSeconds = 0;
       status = "Running";
     },
+    restoreSimulationHold(held:HvpTickCheckpoint):void {
+      if(status!=="Paused"||held.status!=="SimulationHold"||held.ticks!==ticks||held.discardedSeconds!==discardedSeconds
+        ||!Number.isFinite(held.backlogSeconds)||held.backlogSeconds+1e-10<HVP_PHYSICS_DT){
+        throw new Error("Invalid stopped simulation recovery clock");
+      }
+      backlogSeconds=held.backlogSeconds;status="SimulationHold";
+    },
     dispose(): void { status = "Disposed"; },
     read: () => Object.freeze({ ticks, backlogSeconds, discardedSeconds, status })
   };

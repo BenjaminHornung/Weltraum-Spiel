@@ -39,7 +39,7 @@ export interface HvpPhysicsClock {
   readonly lastTerrainSourceTiming?:import("./session").HvpTerrainSourceTiming&{readonly commandId:string};
 }
 export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
-  | { readonly kind: "Initialize"; readonly sectors: readonly HvpCollisionSector[]; readonly spawn: { x: number; y: number; z: number }; readonly gravity: number;
+  | { readonly kind: "Initialize";readonly primeOnInitialize?:true; readonly sectors: readonly HvpCollisionSector[]; readonly spawn: { x: number; y: number; z: number }; readonly gravity: number;
       readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean;readonly staticLayout?:HvpChunkStaticLayout;readonly experimentalKernel?:"direct-known-cells-v1"|"owned-moving-subset-v2"|"owned-terrain-subset-v3" }
    | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };
        readonly cutAim?:{x:number;y:number;z:number};readonly measure?:false }
@@ -89,11 +89,11 @@ export type HvpPhysicsReply = HvpPhysicsBinding & { readonly id: number; readonl
 type HvpLabSharedRequest=Exclude<HvpPhysicsRequest,{readonly kind:"Initialize"|"Checkpoint"|"PrepareRestore"}>&{readonly labMode:HvpLabPhysicsMode};
 /** @internal Separate fixed-context wire forms. Only the existing owner/client module constructs these. */
 export type HvpLabPhysicsRequest=HvpLabSharedRequest
-  |{readonly kind:"InitializeFreshLab";readonly labMode:HvpLabPhysicsMode;readonly sourceHeader:HvpFreshLabSourceHeader;
+  |{readonly kind:"InitializeFreshLab";readonly primeOnInitialize?:true;readonly labMode:HvpLabPhysicsMode;readonly sourceHeader:HvpFreshLabSourceHeader;
     readonly sectors:readonly HvpCollisionSector[];readonly staticLayout:HvpChunkStaticLayout;readonly spawn:Readonly<{x:number;y:number;z:number}>;
     readonly gravity:number;readonly player?:Readonly<{spawn:{x:number;y:number;z:number};coverage:readonly HvpCollisionCoverage[]}>;
     readonly inertiaSpawn?:Readonly<{x:number;y:number;z:number}>;readonly branchSpawn?:Readonly<{x:number;y:number;z:number}>;readonly measure?:boolean}
-  |{readonly kind:"InitializeLab";readonly labMode:HvpLabPhysicsMode;readonly sectors:readonly HvpCollisionSector[];readonly staticLayout:HvpChunkStaticLayout;
+  |{readonly kind:"InitializeLab";readonly primeOnInitialize?:true;readonly labMode:HvpLabPhysicsMode;readonly sectors:readonly HvpCollisionSector[];readonly staticLayout:HvpChunkStaticLayout;
     readonly checkpointBytes:ArrayBuffer;readonly measure?:boolean}
   |{readonly kind:"CheckpointLab";readonly labMode:HvpLabPhysicsMode}
   |{readonly kind:"PrepareLabRestore";readonly labMode:HvpLabPhysicsMode;readonly transactionId:string;readonly checkpointBytes:ArrayBuffer;
@@ -244,7 +244,7 @@ port.onmessage = async ({ data }) => {
         session=publicSession;labSession=undefined;
       }else if(data.kind==="InitializeFreshLab"){
         const record=requirePlainRecord(data,"fresh LAB initialization");
-        const allowed=["kind","id","protocol","incarnation","labMode","sourceHeader","sectors","staticLayout","spawn","gravity","player","inertiaSpawn","branchSpawn","measure"];
+        const allowed=["kind","id","protocol","incarnation","labMode","primeOnInitialize","sourceHeader","sectors","staticLayout","spawn","gravity","player","inertiaSpawn","branchSpawn","measure"];
         if(Object.keys(record).some(key=>!allowed.includes(key))){throw new Error("Invalid fresh LAB initialization fields");}
         if(data.gravity!==resolveHvpGravity()){throw new Error("Invalid fresh LAB gravity profile");}
         const header=readHvpFreshLabSourceHeader(data.sourceHeader),layout=validateHvpChunkStaticLayout(data.staticLayout);
@@ -265,6 +265,10 @@ port.onmessage = async ({ data }) => {
       }
       if (disposed) { session.dispose(); }
       else {
+        // The asset catalog and its cross-thread clone are startup work. Begin wall-time accounting only once they exist.
+        if(data.kind!=="RecoverTerrain"&&data.primeOnInitialize===true){
+          post({id:data.id,recoveryAssets:session.captureTerrainAssets()});
+        }
          previous = performance.now();simulationPrevious=previous;releasedPrepareHoldMs=0;
         timer = setInterval(() => {
           try {

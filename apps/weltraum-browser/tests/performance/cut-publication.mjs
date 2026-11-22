@@ -7,6 +7,9 @@ const target = new URL("/?hestiaPrototype=1&hvpMeasure=1&hvpScenario=rock-arm",
 const planner = process.env.HVP_CUT_PLANNER ?? "indexed";
 if (planner !== "indexed" && planner !== "oracle") throw new Error("Invalid HVP_CUT_PLANNER");
 if (planner === "oracle") target.searchParams.set("hvpCutPlanner", planner);
+const visual=process.env.HVP_CUT_VISUAL;
+if (visual && visual!=="worker" && visual!=="local") throw new Error("Invalid HVP_CUT_VISUAL");
+if (visual) target.searchParams.set("hvpCutVisual",visual);
 const browser = await chromium.launch({
   executablePath: process.env.CHROMIUM_BIN,
   args: process.env.HVP_SOFTWARE_RENDERER === "1" ? ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] : [],
@@ -43,17 +46,27 @@ try {
     && JSON.parse(document.body.dataset.hestiaPrototypeTool).message.startsWith("64 Stützzellen"), null, {timeout:35000});
   await page.mouse.down();
   await page.mouse.up();
-  try { await page.waitForFunction(() => JSON.parse(document.body.dataset.hestiaPrototypeTool)?.last?.status === "Applied"
-    && window.readCutPublication().metrics["hvp.cutFirstCommittedRenderSubmitMs"], null, {timeout:40000}); }
-  catch (error) {
-    const diagnostic = await page.evaluate(() => {
-      const data = document.body.dataset;
-      const owner = JSON.parse(data.hestiaPrototypePhysics || "{}");
-      return {tool:JSON.parse(data.hestiaPrototypeTool || "{}"), status:owner.status,
-        terrainTransaction:owner.terrainTransaction, generation:owner.terrainGeneration,
-        metrics:window.readCutPublication().metrics, phases:window.readCutPublication().phases.map(e => [e.name,e.duration])};
-    });
-    console.error(JSON.stringify(diagnostic));
+  try {
+    await page.waitForFunction(() => {
+      const last=JSON.parse(document.body.dataset.hestiaPrototypeTool || "{}").last;
+      if (!last) return false;
+      return last.status!=="Applied" || Boolean(window.readCutPublication().metrics["hvp.cutFirstCommittedRenderSubmitMs"]);
+    }, null, {timeout:40000});
+    const outcome=await page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypeTool).last);
+    assert.equal(outcome.status,"Applied",JSON.stringify(outcome));
+  } catch (error) {
+    try {
+      const diagnostic = await page.evaluate(() => {
+        const data = document.body.dataset;
+        const owner = JSON.parse(data.hestiaPrototypePhysics || "{}");
+        return {tool:JSON.parse(data.hestiaPrototypeTool || "{}"), status:owner.status,
+          terrainTransaction:owner.terrainTransaction, generation:owner.terrainGeneration,
+          metrics:window.readCutPublication().metrics, phases:window.readCutPublication().phases.map(e => [e.name,e.duration])};
+      });
+      console.error(JSON.stringify(diagnostic));
+    } catch (diagnosticError) {
+      console.error("Could not read the terminal browser state",String(diagnosticError));
+    }
     throw error;
   }
   const state = await page.evaluate(() => {

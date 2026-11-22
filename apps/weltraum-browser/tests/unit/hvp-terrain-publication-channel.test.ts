@@ -8,11 +8,11 @@ import {collisionSectors} from "../../src/hestia-prototype/physics/terrainCollid
 vi.mock("../../src/workers/workerPool",()=>({WorkerPool:class {async start(){} async shutdown(){}}}));
 const floor={sizeX:4,sizeY:16,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0},readSlot:(_x:number,y:number)=>y===0?1:0};
 
-it.each(["delayed","before-L","after-L","after-two","during-install","bad-prepare","recovery-rejected"] as const)("keeps the normal consumer and real solver coupled across %s delivery",async fault=>{
+it.each(["delayed","before-L","after-L","after-two","overrun","during-install","bad-prepare","recovery-rejected"] as const)("keeps the normal consumer and real solver coupled across %s delivery",async fault=>{
   type Host={onmessage:(event:MessageEvent<HvpPhysicsMessage>)=>Promise<void>;postMessage:(reply:HvpPhysicsReply)=>void};
   const host=globalThis as unknown as Host,ports=new Map<string,ChannelWorker>(),commands:string[]=[],closing:Promise<void>[]=[];
   const oldOn=Object.getOwnPropertyDescriptor(host,"onmessage");
-  let sawBarrier!:()=>void,resume!:()=>void;
+  let sawBarrier!:()=>void,resume!:()=>void,clockStarted=false;
   const barrier=new Promise<void>(resolve=>{sawBarrier=resolve;}),release=new Promise<void>(resolve=>{resume=resolve;});
   let catalogReceipts=0,hotProofs=0,faulted=false,oldDelivery:(()=>void)|undefined;
   class ChannelWorker{
@@ -53,7 +53,7 @@ it.each(["delayed","before-L","after-L","after-two","during-install","bad-prepar
       if(fault==="bad-prepare"&&reply.snapshot?.terrainTransaction==="PreparedHeld"&&reply.terrainReceipt?.commandId==="one"){
         reply={...reply,terrainReceipt:{...reply.terrainReceipt,baseDigest:"wrong-digest"}};
       }
-      if(reply.recoveryAssets){catalogReceipts++;}
+      if(reply.recoveryAssets){expect(clockStarted).toBe(false);catalogReceipts++;}
       if(reply.terrainMotion){
         hotProofs++;expect(reply.recoveryAssets).toBeUndefined();
         expect(Object.keys(reply.terrainMotion)).not.toContain("collision");
@@ -69,7 +69,10 @@ it.each(["delayed","before-L","after-L","after-two","during-install","bad-prepar
   }
   vi.stubGlobal("Worker",ChannelWorker);
   vi.stubGlobal("postMessage",(reply:HvpPhysicsReply)=>ports.get(reply.incarnation)?.receive(reply));
-  const timer=vi.spyOn(globalThis,"setInterval").mockImplementation(()=>1 as unknown as ReturnType<typeof setInterval>);
+  let nativeTimer:()=>void=()=>{throw new Error("Missing worker clock");};
+  const timer=vi.spyOn(globalThis,"setInterval").mockImplementation(handler=>{
+    clockStarted=true;nativeTimer=handler as ()=>void;return 1 as unknown as ReturnType<typeof setInterval>;
+  });
   const physics=await createHvpPhysicsClient([],{x:2,y:3,z:2},new AbortController().signal);
   const root=createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},sourceDigest:"12345678",
     readSlot:(_x,y,_z)=>y<80?1:0},"channel",1);
@@ -79,7 +82,11 @@ it.each(["delayed","before-L","after-L","after-two","during-install","bad-prepar
   const request=(id:string,x:number):HvpCutRequest=>({commandId:id,sessionId:"channel",epoch:1,
     revision:root.read().revision,sourceDigest:root.read().sourceDigest,toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[x,79,56],max:[x+1,80,57]}});
   try{
-    await physics.primeTerrainRecovery!();expect(catalogReceipts).toBe(1);
+    await physics.primeTerrainRecovery!();expect(catalogReceipts).toBe(1);expect(commands).not.toContain("PrimeTerrainRecovery");
+    if(fault==="overrun"){
+      await new Promise(resolve=>setTimeout(resolve,100));nativeTimer();await physics.command("Inspect");
+      expect(physics.read().status).toBe("SimulationHold");
+    }
     if(fault==="after-two"){
       for(let i=0;i<2;i++){const prior=await consumer.submit(request("prefill"+i,42+i));expect(prior.status,prior.reason).toBe("Applied");}
     }
@@ -105,6 +112,7 @@ it.each(["delayed","before-L","after-L","after-two","during-install","bad-prepar
     expect(catalogReceipts).toBe(1);expect(hotProofs).toBeGreaterThan(1);
     expect(physics.lifecycle?.().terrainRecovery).toMatchObject({catalogs:1,entries:root.read().revision,sectors:1,held:0});
     expect(uploads).toBe(0);await consumer.presentNext();expect(consumer.read().renderError).toMatch(/device loss/);
+    if(fault==="overrun"){expect(physics.read().status).toBe("SimulationHold");}
     expect(physics.read().terrainTransaction).toBe("Idle");expect(consumer.read().state).toBe("Applied");
   }finally{
     resume();consumer.dispose();

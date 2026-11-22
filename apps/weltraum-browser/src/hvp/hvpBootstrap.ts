@@ -26,6 +26,8 @@ import {replaceHvpScene,replaceHvpLabScene} from "../hestia-prototype/persistenc
 import {createPersistenceSignature} from "../persistence";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../voxel/adaptive";
 import { createHvpPlasmaTool } from "../hestia-prototype/terrain/plasmaTool";
+import {createHvpWeatherReadView} from "../weather/hvpWeather";
+import {createHvpFramePasses,type HvpFrameInputs} from "../hestia-prototype/presentation/framePasses";
 import { createHvpVisualRenderer, HVP_EFFECT_COST, HVP_EFFECT_VERSION } from "../hestia-prototype/presentation/visualEffects";
 import { loadGraphicsSettings } from "../settings";
 import { createSynchronousBatch } from "../hestia-prototype/presentation/synchronousBatch";
@@ -876,6 +878,9 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
   documentPort.body.dataset.hestiaPrototypeCutReadiness=JSON.stringify({policy:"hvp-ready-prewarm-v2",sourceMode:privateCutSource?"private-cow":"control",state:"Preparing"});
 
   let backend: HvpBackend | undefined;
+  const weatherView=createHvpWeatherReadView();
+  let frameInputs:HvpFrameInputs|undefined;
+  const framePasses=createHvpFramePasses(()=>frameInputs,()=>backend instanceof ThreeRenderBackend?backend:undefined);
   let camera: ReturnType<typeof createHvpCamera> | undefined;
   let hud: ReturnType<typeof createHvpHud> | undefined;
   let physics: HvpPhysicsClient | HvpLabPhysicsClient | undefined;
@@ -1013,6 +1018,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       await attempt(()=>closingTerrainConsumer?.whenRenderIdle());
       await attempt(()=>terrainCompiler?.dispose());terrainCompiler=undefined;
       liveSupport?.dispose();liveSupport=undefined;
+      framePasses.dispose();weatherView.dispose();frameInputs=undefined;
       await attempt(()=>closingBodyConsumer?.whenIdle());
       await attempt(()=>closingTerrainConsumer?.whenIdle());
       await attempt(()=>closingStructuralConsumer?.whenIdle());
@@ -1115,7 +1121,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
          const renderer=new THREE.WebGLRenderer(options),draw=renderer.render.bind(renderer);
          renderer.render=(scene,camera)=>{if(submitDraw){draw(scene,camera);documentPort.body.dataset.hestiaExperimentDrawSubmits=String(++experimentalDrawSubmits);}};
          return renderer;
-       },remaining=>{visualDisposal=remaining;},measurement.enabled,display)
+       },remaining=>{visualDisposal=remaining;},measurement.enabled,display,framePasses)
     });
     requireAccepted(backend.dispatch(createRenderCommand({
       kind: "InitializeBackend",
@@ -1463,7 +1469,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     terrainCompiler=overrides.createTerrainCompiler?overrides.createTerrainCompiler():createHvpTerrainCompiler(undefined,measurement.enabled?(phase,start,duration)=>{
       const metric={primaryCopy:"NeighborPrimaryCopyMs",eastCopy:"NeighborEastCopyMs",inputDigest:"NeighborInputDigestMs",workerWait:"NeighborWorkerWaitMs",decode:"NeighborDecodeMs"}[phase];
       measurement.record(`${startupMeasuring?"startup":"runtime"}${metric}`,start,duration);
-    }:undefined);
+    }:undefined,!(measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutVisual")==="local"));
     const preparingCompiler=terrainCompiler,poolPreparationStart=measurement.enabled?performance.now():0;
     await preparingCompiler.prepare(()=>!disposed&&hvpMountEpoch===myEpoch&&terrainCompiler===preparingCompiler&&terrainRoot.read()===initialSource,privateCutSource?terrainRoot:undefined);
     if(measurement.enabled){measurement.record("startupCutPoolPrepareMs",poolPreparationStart,performance.now()-poolPreparationStart);}
@@ -2669,7 +2675,10 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
      };
     plasmaTool=createHvpPlasmaTool(terrainRoot,terrainConsumer,()=>neighbor?.read().busy||neighbor?.read().recoveryHold||dormancy?.read().busy||dormancy?.read().recoveryHold?undefined:playerInput!.readAim(),showCutPreview,
       plants.filter(p=>p.kind==="tree").map(p=>p.position),{physics,consumer:structuralConsumer,
-       admit:()=>admitScene({...ledger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,ledger,0,physicsPrepareBytes)})},bodyCutConsumer);
+       admit:()=>admitScene({...ledger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,ledger,0,physicsPrepareBytes)})},bodyCutConsumer,{
+       readAim:()=>playerInput!.readAim(),
+       request:(primary,x)=>neighbor?.requestEastCutCoverage(primary,x)??Promise.resolve(undefined)
+     });
     const previewRockSupport=async():Promise<void>=>{
       if(supportPending||disposed){return;}
       supportPending=true;
@@ -3211,7 +3220,17 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
      let firstReadyFrame=false;
      let residencyDiagnosticFrames=0;
      let physicsTick = -1;
-     const submitRenderFrame=():RenderCommandResult=>backend!.renderFrame();
+    const submitRenderFrame=():RenderCommandResult=>{
+      const terrain=terrainRoot.read(),native=physics!.read(),command=terrainConsumer?.read();
+      frameInputs=undefined;
+      if(native.player && native.terrainGeneration===terrain.revision && !saveBusy &&
+        command?.state!=="Pending" && !command?.renderPending){
+        const binding={worldId:renderWorldId,sessionId:terrain.sessionId,epoch:terrain.epoch,
+          revision:terrain.revision,sourceDigest:terrain.sourceDigest,tick:native.ticks};
+        frameInputs={...binding,weather:weatherView.update({...binding,position:native.player.position,terrain})};
+      }
+      return backend!.renderFrame();
+    };
      const failFrame=(error:unknown)=>{
        const show=(cause:unknown)=>{
          if(hvpMountEpoch!==myEpoch){return;}

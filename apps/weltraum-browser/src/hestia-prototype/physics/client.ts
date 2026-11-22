@@ -343,10 +343,18 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       if(p!==undefined||data.id===-1){fail(new Error("Invalid physics reply binding"));}
       return;
     }
+    const initializing=p?.kind==="Initialize"||p?.kind==="InitializeLab"||p?.kind==="InitializeFreshLab";
+    if(initializing&&data.recoveryAssets&&data.snapshot===undefined){
+      // Initialization remains pending until the worker reports its live clock and native snapshot.
+      catalog=data.recoveryAssets;recoveryEnabled=true;return;
+    }
+    if(initializing&&catalog&&data.snapshot&&data.snapshot.terrainGeneration!==catalog.world.terrainGeneration){
+      fail(new Error("Stale terrain startup catalog"));return;
+    }
     if(data.beforeTerrainInstall){
       const motion=data.beforeTerrainInstall;
       if(p?.kind==="PrepareTerrain"&&matches(motion.binding)&&motion.worldId===catalog?.world.sessionId
-        &&motion.revision===terrainBinding!.baseRevision&&motion.tick.status==="Paused"&&baseMotion===undefined){baseMotion=motion;}
+        &&motion.revision===terrainBinding!.baseRevision&&(motion.tick.status==="Paused"||(motion.tick.status==="SimulationHold"&&!motion.running))&&baseMotion===undefined){baseMotion=motion;}
       return;
     }
     // A late settled-request error is not the live owner's independent fatal timer channel.
@@ -418,7 +426,10 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       await send({kind:"RecoverTerrain",image,measure:onTimings!==undefined},[],false,reply=>{
         const restored=reply.snapshot;
         if(!matches(reply.terrainReceipt)||restored?.terrainTransaction!=="Idle"||restored.terrainGeneration!==motion.revision
-          ||restored.ticks!==motion.tick.ticks){throw new Error("Invalid reconstructed terrain generation");}
+          ||restored.ticks!==motion.tick.ticks||(motion.tick.status==="SimulationHold"&&(restored.status!=="SimulationHold"
+            ||restored.backlogSeconds!==motion.tick.backlogSeconds||restored.discardedSeconds!==motion.tick.discardedSeconds))){
+          throw new Error("Invalid reconstructed terrain generation");
+        }
         const expected=motion.bodies.map(b=>b.ownerId);
         if(expected.some(id=>!restored.bodies.some(b=>b.ownerId===id))){throw new Error("Reconstructed terrain ownership mismatch");}
         snapshot=restored;lastSnapshotSequence=reply.sequence;
@@ -452,15 +463,15 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     const sectorTransfers=sectors.flatMap(s=>[s.vertices.buffer as ArrayBuffer,s.indices.buffer as ArrayBuffer]);
     if(labGame!==undefined){
       const wire=prepareHvpLabGameWire(labGame,createStructuralOwnerLedger(collisionBytes+labGame.decodedBytes+labGame.decodeWorkingBytes,96*1024*1024,128));
-      try{await send({kind:"InitializeLab",labMode:HVP_LAB_PHYSICS_MODE,sectors,staticLayout:staticLayout!,checkpointBytes:wire.checkpointBytes,measure:onTimings!==undefined},
+      try{await send({kind:"InitializeLab",primeOnInitialize:true,labMode:HVP_LAB_PHYSICS_MODE,sectors,staticLayout:staticLayout!,checkpointBytes:wire.checkpointBytes,measure:onTimings!==undefined},
         [...sectorTransfers,wire.checkpointBytes]);}
       finally{wire.release();}
     }else if(freshBinding!==undefined){
-      await send({kind:"InitializeFreshLab",labMode:HVP_LAB_PHYSICS_MODE,sourceHeader:freshBinding.header,sectors,staticLayout:staticLayout!,
+      await send({kind:"InitializeFreshLab",primeOnInitialize:true,labMode:HVP_LAB_PHYSICS_MODE,sourceHeader:freshBinding.header,sectors,staticLayout:staticLayout!,
         spawn,gravity:resolveHvpGravity(),inertiaSpawn,branchSpawn,measure:onTimings!==undefined,
         ...(playerSpawn===undefined?{}:{player:{spawn:playerSpawn,coverage}})},sectorTransfers);
     }else{
-      await send({ kind: "Initialize", sectors, spawn, gravity: resolveHvpGravity(), inertiaSpawn,branchSpawn,checkpoint,branchKind,measure:onTimings!==undefined,...(staticLayout===null?{}:{staticLayout}),...(experimentalKernel===undefined?{}:{experimentalKernel}),
+      await send({ kind: "Initialize", primeOnInitialize:true,sectors, spawn, gravity: resolveHvpGravity(), inertiaSpawn,branchSpawn,checkpoint,branchKind,measure:onTimings!==undefined,...(staticLayout===null?{}:{staticLayout}),...(experimentalKernel===undefined?{}:{experimentalKernel}),
         sessionId:checkpoint?.sessionId??prepared.worldId??crypto.randomUUID(), player: playerSpawn === undefined ? undefined : { spawn: playerSpawn, coverage } },sectorTransfers);
     }
     if (signal.aborted || snapshot === undefined) { throw new Error("Physics initialization did not publish a snapshot"); }

@@ -361,7 +361,7 @@ export const copyHvpTerrainSlots=async(source:HvpTerrainSnapshot,cancelled:()=>b
 /** At most two concurrent derived jobs; accepted edits remain in the source owner. */
 type HvpNeighborTimingPhase="primaryCopy"|"eastCopy"|"inputDigest"|"workerWait"|"decode";
 export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,duration:number)=>void),
-  observeNeighbor?:((phase:HvpNeighborTimingPhase,start:number,duration:number)=>void)) => {
+  observeNeighbor?:((phase:HvpNeighborTimingPhase,start:number,duration:number)=>void),workerVisualOracle=true) => {
   const observeNeighborSync=<T>(phase:HvpNeighborTimingPhase,run:()=>T):T=>{
     if(observeNeighbor===undefined){return run();}
     const start=performance.now();
@@ -807,23 +807,30 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
                 currentRender();
                 const ids=[...new Set(pending)],phase=createHvpSupportPhaseCredits(32_768,chunkResident(residentBytes??0));
                 try{
-                  const renderLane=phase.beginLane(1),renderReserve=createHvpBodyMeshPhaseReserve(renderLane.bytes);
-                  const renderPump=createHvpBodyMeshTaskPump(currentRender,observe("cutTerrainVisualMeshWorkMs"));
-                  const raw={render:new Map<number,HvpCompactMesh>()};
-                  let retained=0;
-                  try{
-                    for(const id of ids){
-                      const {slots,payload}=await renderPump.run(chunkSourceInputSteps(source,id,nextCache.worldId,
-                        nextCache.neighbor,nextCache.renderNeighbor,renderReserve,true));
-                      const mesh=nextCache.collision.get(id)!;
-                      const rendered=await renderPump.run(buildHvpLiveRenderChunkSteps(slots,payload,
-                        mesh.vertices.byteLength+mesh.indices.byteLength,renderReserve));
-                      raw.render.set(id,rendered);
-                      retained+=chunkMeshBytes(rendered);
-                    }
-                  }finally{renderPump.dispose();phase.endLane(renderLane,retained);}
+                  let updated:Map<number,HvpCompactMesh>;
+                  if(workerVisualOracle){
+                    const raw=await compileSectors(source,[],[],256,undefined,undefined,count,phase,undefined,
+                      {ids,worldId:nextCache.worldId,neighbor:nextCache.neighbor,renderNeighbor:nextCache.renderNeighbor,assertCurrent:currentRender});
+                    updated=new Map(raw.render);
+                  }else{
+                    updated=new Map();
+                    const renderLane=phase.beginLane(1),renderReserve=createHvpBodyMeshPhaseReserve(renderLane.bytes);
+                    const renderPump=createHvpBodyMeshTaskPump(currentRender,observe("cutTerrainVisualMeshWorkMs"));
+                    let retained=0;
+                    try{
+                      for(const id of ids){
+                        const {slots,payload}=await renderPump.run(chunkSourceInputSteps(source,id,nextCache.worldId,
+                          nextCache.neighbor,nextCache.renderNeighbor,renderReserve,true));
+                        const mesh=nextCache.collision.get(id)!;
+                        const rendered=await renderPump.run(buildHvpLiveRenderChunkSteps(slots,payload,
+                          mesh.vertices.byteLength+mesh.indices.byteLength,renderReserve));
+                        updated.set(id,rendered);
+                        retained+=chunkMeshBytes(rendered);
+                      }
+                    }finally{renderPump.dispose();phase.endLane(renderLane,retained);}
+                  }
                   const joined=new Map(nextCache.render);
-                  for(const [id,mesh] of raw.render){joined.set(id,mesh);}
+                  for(const [id,mesh] of updated){joined.set(id,mesh);}
                   const columns=new Set(ids.map(id=>{const [x,,z]=hvpChunkCoordinates(id);return Math.floor(x/2)+Math.floor(z/2)*4;}));
                   const lane=phase.beginLane(1),reserve=createHvpBodyMeshPhaseReserve(lane.bytes),pump=createHvpBodyMeshTaskPump(currentRender,observe("cutTerrainVisualCompositionWorkMs"));
                   const render=new Map<number,HvpCompactMesh>();let bytes=0;
@@ -831,7 +838,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
                   finally{pump.dispose();phase.endLane(lane,bytes);}
                   currentRender();
                   const live=nextCache.render as Map<number,HvpCompactMesh>;
-                  for(const [id,mesh] of raw.render){nextCache.bytes+=chunkMeshBytes(mesh)-chunkMeshBytes(live.get(id)!);live.set(id,mesh);}
+                  for(const [id,mesh] of updated){nextCache.bytes+=chunkMeshBytes(mesh)-chunkMeshBytes(live.get(id)!);live.set(id,mesh);}
                   return render;
                 }finally{phase.release();}
               }};

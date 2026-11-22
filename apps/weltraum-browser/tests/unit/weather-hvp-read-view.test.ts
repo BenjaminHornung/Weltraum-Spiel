@@ -54,11 +54,13 @@ describe("confirmed HVP weather projection",()=>{
   });
   it("uses precipitation flux from the producer and suppresses unknown or foreign world replies",async()=>{
     const source=await model;
-    let mode:"rain"|"unknown"|"foreign"="rain";
+    let mode:"rain"|"unknown"|"foreign"|"stale-position"|"stale-profile"="rain";
     const read=async(q:Parameters<typeof source.read>[0]):Promise<WeatherResult>=>{
       const r=await source.read(q);if(r.status!=="Known")throw Error("Known fixture required");
       if(mode==="unknown")return {...r,status:"UnknownCoverage",reasonCode:"missing-known-neighbor"};
       if(mode==="foreign")return {...r,binding:{...r.binding,worldId:"other"}};
+      if(mode==="stale-position")return {...r,query:{...r.query,bodyFixedPositionMeters:{...r.query.bodyFixedPositionMeters,x:0}}};
+      if(mode==="stale-profile")return {...r,binding:{...r.binding,profile:{...r.binding.profile,digest:r.WeatherSnapshotId}}};
       return {...r,sample:{...r.sample,precipitation:[
         {speciesId:"H2O",phase:"liquid",massFluxKgPerM2S:2.5/3600},
         {speciesId:"H2O",phase:"solid",massFluxKgPerM2S:5/3600}] }};
@@ -73,7 +75,7 @@ describe("confirmed HVP weather projection",()=>{
     const recut={...input,revision:2,sourceDigest:"open",terrain:{...input.terrain!,revision:2,sourceDigest:"open"}};
     expect(owner.update(recut)).toBeUndefined();
     await vi.waitFor(()=>expect(owner.update(recut)).toMatchObject({exposure:"Open",rain01:.25,snow01:.5}));
-    for(const [i,next] of (["unknown","foreign"] as const).entries()){
+    for(const [i,next] of (["unknown","foreign","stale-position","stale-profile"] as const).entries()){
       mode=next;const change={...input,revision:i+3};
       expect(owner.update(change)).toBeUndefined();
       await vi.waitFor(()=>expect(settled).toHaveBeenCalledTimes(i+4));
