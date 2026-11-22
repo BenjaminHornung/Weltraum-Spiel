@@ -623,6 +623,12 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         try{return owner.materializeV1Sync(ledger.reserve);}finally{ledger.release();}
       }
     });
+    const bodyCutStart=()=>{
+      if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Running"){throw new Error("Moving cut unavailable");}
+      // A rollback before Stage must never resume from the previous command's run state.
+      movingWasRunning=false;
+      return {eye:playerEye(),tick:tick.read().ticks};
+    };
     const read = (includeBranchCells=false) => {const structural=disposed?null:branch?.read(includeBranchCells)??null;
       let activeDynamic=0,residentDynamic=disposed?0:residency!.count;
       if(!disposed){world.bodies.forEach(b=>{if(b.isDynamic()){residentDynamic+=1;if(!b.isSleeping()){activeDynamic+=1;}}});}
@@ -840,11 +846,14 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         moving.preview(eye,direction,clock.ticks,contact);
       },
       beginBodyCut(request:HvpMovingCutRequest){
-        if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Running"){throw new Error("Moving cut unavailable");}
-        const preparation=moving.begin(request,playerEye(),tick.read().ticks);
-        // A rollback before Stage must never resume from the previous command's run state.
-        movingWasRunning=false;
-        return preparation;
+        const command=bodyCutStart();
+        return moving.begin(request,command.eye,command.tick);
+      },
+      beginBodyCutForWorker(request:HvpMovingCutRequest){
+        const command=bodyCutStart();
+        if(!movingBodies.get(request.ownerId)?.compactOwner)return moving.begin(request,command.eye,command.tick);
+        return moving.beginCompact(request,command.eye,command.tick,borrowedBodyHost,
+          ()=>createStructuralOwnerLedger(bodySourceResidentBytes()+retainedCollisionBytes(),undefined,128));
       },
       /** Source-only plan work before any World hold; Read/Input and simulation continue between phases. */
       async prepareBodyCutPlan(id:string):Promise<void> {

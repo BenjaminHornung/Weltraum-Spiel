@@ -1,6 +1,6 @@
 import {StructuralPhysicsCommitError} from "../../voxel/structural";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
-import {readHvpBodyCells} from "./bodyCutPlan";
+import {readHvpBodyCells,readHvpOwnedBodyCellsSteps} from "./bodyCutPlan";
 import {castHvpPlayerRay, type HvpPlayerContact} from "./playerAimRay";
 import {captureHvpBodyHit,previewHvpBodyHit,prepareHvpBodyCutOwnedHashSteps,prepareHvpBodyCutSteps,stageHvpBodyCut,type HvpBodyCutPlan,type HvpBodyHit,type HvpCuttableBody} from "./bodyCut";
 import type {R} from "./rapierPort";
@@ -345,6 +345,22 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     }
     settledPlan(work);
   };
+  let opening:{id:string;cancelled:boolean}|undefined;
+  const capture=(request:HvpMovingCutRequest,eye:Vec,tick:number)=>{
+      if(opening||pending||held||retiredWork!==undefined||!request||!/^[A-Za-z0-9:._-]{1,128}$/.test(request.id)||!Number.isSafeInteger(request.edge)||request.edge<1||request.edge>8){throw new Error("Body cut Pending or invalid");}
+      if(request.brush!==undefined&&request.brush!=="Box"&&request.brush!=="Sphere"){throw new Error("Invalid body brush");}
+      const hit=captureHvpBodyHit(world,targets,eye,request.direction,tick),target=targets.get(request.ownerId);
+      if(!hit||!target||hit.ownerId!==request.ownerId||hit.sourceDigest!==request.sourceDigest){throw new Error("Stale or missing moving contact within 4 m");}
+      return {hit,target};
+  };
+  const beginCaptured=(request:HvpMovingCutRequest,hit:HvpBodyHit,target:HvpCuttableBody,cells:HvpMovingCutPreparation["cells"]):HvpMovingCutPreparation=>{
+      const payload:HvpBodyCutPayload=Object.freeze({sessionId,epoch:0,commandId:request.id,ownerId:target.ownerId,sourceId:target.recipe.source.objectId,
+        sourceDigest:target.recipe.source.contentHash,revision:hit.revision,cellCount:cells.length,massKg:target.recipe.mass.totalMassKg,cell:hit.cell,edge:request.edge,materials:target.recipe.source.materials,
+        ...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})});
+      const preparation=Object.freeze({payload,cells,issuedTick:hit.issuedTick});
+      pending={request:{id:request.id,ownerId:request.ownerId,sourceDigest:request.sourceDigest,edge:request.edge,
+        direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})},hit,target,preparation};return preparation;
+  };
   return {
     resources:()=>pending?.work?.ledger?.resources??retiredWork?.ledger?.resources??lastResources,
     dispose():void {
@@ -352,31 +368,56 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       if((stage!==undefined||held)&&(world.bodies!==undefined||world.colliders!==undefined)){
         throw new Error("Moving Dispose requires confirmed native World release");
       }
+      if(opening)opening.cancelled=true;
       if(pending!==undefined){retireWork(pending);pending=undefined;}
       // Destroyed native storage does not prove a failed rollback was restored.
       stage=undefined;children=[];committed=false;
     },
-    get busy(){return pending!==undefined||held||retiredWork!==undefined;},get holdsWorld(){return stage!==undefined||held;},
+    get busy(){return opening!==undefined||pending!==undefined||held||retiredWork!==undefined;},get holdsWorld(){return stage!==undefined||held;},
     checkpoint():HvpMovingCheckpoint {
-      if(pending||held||retiredWork!==undefined){throw new Error("Moving checkpoint requires confirmed ownership");}
+      if(opening||pending||held||retiredWork!==undefined){throw new Error("Moving checkpoint requires confirmed ownership");}
       return Object.freeze({sequence,last});
     },
     preview(eye:Vec|undefined,direction:Vec|undefined,tick:number,contact?:HvpPlayerContact):void {
-      preview=!pending&&!held&&eye&&direction?previewHvpBodyHit(world,targets,eye,direction,tick,
+      preview=!opening&&!pending&&!held&&eye&&direction?previewHvpBodyHit(world,targets,eye,direction,tick,
         contact===undefined?castHvpPlayerRay(world,eye,direction):contact):null;
     },
     begin(request:HvpMovingCutRequest,eye:Vec,tick:number):HvpMovingCutPreparation {
-      if(pending||held||retiredWork!==undefined||!request||!/^[A-Za-z0-9:._-]{1,128}$/.test(request.id)||!Number.isSafeInteger(request.edge)||request.edge<1||request.edge>8){throw new Error("Body cut Pending or invalid");}
-      if(request.brush!==undefined&&request.brush!=="Box"&&request.brush!=="Sphere"){throw new Error("Invalid body brush");}
-      const hit=captureHvpBodyHit(world,targets,eye,request.direction,tick),target=targets.get(request.ownerId);
-      if(!hit||!target||hit.ownerId!==request.ownerId||hit.sourceDigest!==request.sourceDigest){throw new Error("Stale or missing moving contact within 4 m");}
-      const cells=readHvpBodyCells(target.recipe.source);
-      const payload:HvpBodyCutPayload=Object.freeze({sessionId,epoch:0,commandId:request.id,ownerId:target.ownerId,sourceId:target.recipe.source.objectId,
-        sourceDigest:target.recipe.source.contentHash,revision:hit.revision,cellCount:cells.length,massKg:target.recipe.mass.totalMassKg,cell:hit.cell,edge:request.edge,materials:target.recipe.source.materials,
-        ...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})});
-      const preparation=Object.freeze({payload,cells,issuedTick:tick});
-      pending={request:{id:request.id,ownerId:request.ownerId,sourceDigest:request.sourceDigest,edge:request.edge,
-        direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})},hit,target,preparation};return preparation;
+      const {hit,target}=capture(request,eye,tick);
+      return beginCaptured(request,hit,target,readHvpBodyCells(target.recipe.source));
+    },
+    async beginCompact(request:HvpMovingCutRequest,eye:Vec,tick:number,host:HvpBodyPlanHost,createLedger:()=>ReturnType<typeof createStructuralOwnerLedger>):Promise<HvpMovingCutPreparation> {
+      // Capture the native hit before yielding. The parent can rotate or move while its immutable archive is encoded.
+      const {hit,target}=capture(request,eye,tick);
+      const owner=target.compactOwner;
+      if(!owner)throw new Error("Compact moving owner required");
+      const ledger=createLedger();
+      const ticket={id:request.id,cancelled:false};
+      opening=ticket;
+      const current=()=>{
+        host.assertCurrent();
+        if(ticket.cancelled||opening!==ticket||targets.get(target.ownerId)!==target||world.getRigidBody(target.body.handle)!==target.body){
+          throw new Error("Compact body preparation cancelled");
+        }
+      };
+      const yieldTask=async()=>{current();await host.yieldTask();current();};
+      try {
+        const recipe=await owner.materializeV1(ledger.reserve,yieldTask);
+        current();
+        if(!owner.ownsArchive(recipe))throw new Error("Stale compact body archive");
+        const steps=readHvpOwnedBodyCellsSteps(recipe.source,ledger.reserve);
+        try {
+          let deadline=performance.now()+2;
+          for(;;){
+            const next=steps.next();
+            if(next.done)return beginCaptured(request,hit,target,next.value);
+            if(performance.now()>=deadline){await yieldTask();deadline=performance.now()+2;}
+          }
+        }finally{steps.return(undefined as never);}
+      }finally{
+        ledger.release();
+        if(opening===ticket)opening=undefined;
+      }
     },
     /** Measurement opt-out: no further trace allocation or emission, including in-flight plan work. */
     disablePlanObservation():void {
@@ -573,6 +614,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       committed=true;sequence+=1;preview=null;last=Object.freeze({...last!,status:"CommittedHeld"});
     },
     rollback(id:string):void {
+      if(opening?.id===id){opening.cancelled=true;return;}
       if(!pending||id!==pending.request.id){throw new Error("Stale body rollback");}
       if(held){throw new Error("RecoveryHold: moving restoration is unproven");}
       try{stage?.rollback();restoreRegistry();if(committed){sequence-=1;}retireWork(pending);stage=undefined;pending=undefined;committed=false;children=[];if(last){last=Object.freeze({...last,status:"Rejected"});}}
@@ -587,7 +629,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
         else{held=true;}throw error;
       }
     },
-    read:()=>Object.freeze({sequence,pendingId:pending?.request.id??null,state:held?"RecoveryHold":stage?committed?"CommittedHeld":"PreparedHeld":pending?"Preparing":"Idle",preview,last})
+    read:()=>Object.freeze({sequence,pendingId:pending?.request.id??opening?.id??null,state:held?"RecoveryHold":stage?committed?"CommittedHeld":"PreparedHeld":(pending||opening)?"Preparing":"Idle",preview,last})
   };
 };
 export const createHvpBodyCutSession=bodyCutSessionFor(false);

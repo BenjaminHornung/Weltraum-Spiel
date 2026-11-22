@@ -496,10 +496,16 @@ port.onmessage = async ({ data }) => {
         case "CommitBranch":session.commitBranch(data.transactionId);break;
         case "RollbackBranch":session.rollbackBranch(data.transactionId);break;
         case "FinalizeBranch":session.finalizeBranch(data.transactionId);break;
-        case "BeginBodyCut":
-          bodyPreparation=session.beginBodyCut(data.request);
-          bodyProjectionTicket={owner:session,binding:hvpBodyProjectionBinding(bodyPreparation,data.id)};
+        case "BeginBodyCut":{
+          const owner=session;
+          bodyPreparation=await owner.beginBodyCutForWorker(data.request);
+          if(disposed||restore||owner!==session){
+            if(!disposed&&owner===session&&owner.read().moving.pendingId===data.request.id)owner.rollbackBodyCut(data.request.id);
+            throw new Error("Stale body preparation owner");
+          }
+          bodyProjectionTicket={owner,binding:hvpBodyProjectionBinding(bodyPreparation,data.id)};
           break;
+        }
         case "PrepareBodyChildProjection":
         case "PrepareBodyMeshWork":
         case "AdmitBodyChildMesh":{
