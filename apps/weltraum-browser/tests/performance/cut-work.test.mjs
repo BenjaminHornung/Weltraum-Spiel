@@ -39,3 +39,10 @@ test("clips nested main tasks, excludes other threads and keeps inter-slice gaps
   assert.equal(d.staticCollisionGaps[0].elapsedMs,5);
   assert.equal(d.ackToRenderSubmit.mainTaskElapsedMs,2);
 });
+
+test("inline owner envelopes retain the DTO operation but add zero thread transitions",()=>{
+  const inline=cutWork([...core,entry("cutCollisionTaskResume")],"T","indexed","main");
+  assert.equal(inline.dispatches,1);
+  assert.equal(inline.crossThreadDeliveries,0);
+  assert.equal(inline.observedStages,2);
+});

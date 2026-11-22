@@ -116,7 +116,7 @@ try {
   if(process.env.QA_SHOT) await page.screenshot({path:process.env.QA_SHOT,timeout:30000});
   console.log(JSON.stringify({browser:browser.version(), target:target.pathname+target.search, loadedAssets:[...new Set(loadedAssets)].sort(), ...state,
     domToSubmitMs:submit.startTime + submit.duration - state.eventTimeStamp,
-    browserTrace, criticalPath:cutWork(state.phases,state.result.commandId,planner),
+    browserTrace, criticalPath:cutWork(state.phases,state.result.commandId,planner,state.ownerPlacement),
     within10ms:ack.duration <= 10, presentMeasured:false}, null, 2));
 } finally {
   await browser.close();

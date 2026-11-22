@@ -1,6 +1,6 @@
 // A stage is the input handler or a delivered message/task on the acknowledged command.
 // Promise continuations in the same task do not add a stage.
-export function cutWork(phases, commandId, planner = "indexed") {
+export function cutWork(phases, commandId, planner = "indexed", placement = "worker") {
   const own = phases.filter(p => p.detail?.data?.commandId === commandId);
   const named = name => own.filter(p => p.name === "hvp." + name);
   const count = name => named(name).reduce((n, p) => n + p.detail.data.count, 0);
@@ -15,10 +15,12 @@ export function cutWork(phases, commandId, planner = "indexed") {
   const complete = planner === "indexed" && dispatches > 0 && dispatches === replies
     && plans.length === 1 && named("cutStaticCollisionWorkMs").length > 0
     && [dispatches,replies,recoveryMessages,collisionResumes,copyResumes,planResumes].every(Number.isSafeInteger);
-  const stages = 1 + dispatches + replies + recoveryMessages + collisionResumes + copyResumes + planResumes;
+  // The placement probe delivers DTOs inline in the same JS task, preserving their copy/validation cost.
+  const crossThreadDeliveries = placement === "worker" ? dispatches + replies + recoveryMessages : 0;
+  const stages = 1 + crossThreadDeliveries + collisionResumes + copyResumes + planResumes;
   return {
     scope:"Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
-    complete, handler:1, dispatches, replies, recoveryMessages, collisionResumes, copyResumes, planResumes,
+    complete, placement, handler:1, crossThreadDeliveries, dispatches, replies, recoveryMessages, collisionResumes, copyResumes, planResumes,
     observedStages:stages, targetStages:3, withinStageBudget:complete && stages <= 3,
     activeElapsedMs:{
       index:sumMs("cutComponentIndexMs"), staticCollision:sumMs("cutStaticCollisionWorkMs"),
