@@ -1,5 +1,8 @@
 import {beforeAll,expect,it} from "vitest";
 import {R,initializeHvpRapier} from "../../src/hestia-prototype/physics/rapierPort";
+import {createHvpWorkerBodyResidency} from "../../src/hestia-prototype/physics/bodyResidency";
+import {hvpFragmentArchiveDigest} from "../../src/hestia-prototype/physics/compactFragmentIdentity";
+import type {HvpCuttableBody} from "../../src/hestia-prototype/physics/bodyCut";
 import {HVP_PLAYER_PROFILE} from "../../src/hestia-prototype/physics/profile";
 import {issueHvpCompactNativeOwner} from "../../src/hestia-prototype/physics/compactNativeOwner";
 import {captureHvpBodyHit,captureHvpCompactBodyHit,prepareHvpBodyCut,stageHvpBodyCut} from "../../src/hestia-prototype/physics/bodyCut";
@@ -31,6 +34,32 @@ function fixture() {
       generation:cut.after.revision,terrainDigest:cut.after.sourceDigest}};
   } finally {index.dispose();}
 }
+
+it("retains the compact material identity through an actual sleep, park and wake",()=>{
+  const {request,binding}=fixture(),budget=ledger(),world=new R.World({x:0,y:0,z:0});
+  const owner=issueHvpCompactNativeOwner(request,binding,budget.reserve),id=request.ownerId;
+  try {
+    const body=installHvpRigidBody(world,owner.recipe,pose),shapes=body.numColliders();
+    const target:HvpCuttableBody={ownerId:id,family:"terrain",body,compactOwner:owner,
+      get recipe(){return owner.materializeV1Sync(budget.reserve);}};
+    const targets=new Map([[id,target]]),bodies=new Map([[id,body]]);
+    const residency=createHvpWorkerBodyResidency(world,targets,bodies,()=>true);
+    body.sleep();
+    expect(owner.archiveReady()).toBe(false);
+    expect(residency.park(id,{x:99,y:0,z:99})).toBe(true);
+    expect([world.bodies.len(),world.colliders.len(),targets.size,bodies.size]).toEqual([0,0,0,0]);
+    expect(residency.sources()[0]).toMatchObject({ownerId:id,sourceDigest:owner.identity.membershipDigest,colliders:shapes});
+    expect(()=>owner.readMaterial(12,11,4)).toThrow(/disposed/);
+    const saved=decodeHvpBody(residency.checkpoint()[0]!);
+    expect(residency.restore(id)).toBe(true);
+    expect([world.bodies.len(),world.colliders.len(),targets.size,bodies.size]).toEqual([1,shapes,1,1]);
+    const woke=targets.get(id)!;
+    expect(woke.recipe.source.contentHash).toBe(saved.recipe.source.contentHash);
+    expect(hvpFragmentArchiveDigest(woke.recipe)).toBe(owner.identity.membershipDigest);
+    expect(woke.body.isSleeping()).toBe(true);
+    residency.dispose();
+  }finally{owner.dispose();world.free();budget.release();}
+});
 
 it("binds the moving tool's original compact material hit to the genuine archive through a late recut",async()=>{
   const {request,binding}=fixture(),budget=ledger(),world=new R.World({x:0,y:0,z:0});
