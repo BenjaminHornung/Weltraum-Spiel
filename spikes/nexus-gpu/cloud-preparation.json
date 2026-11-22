@@ -60,5 +60,16 @@
   ],
   "shaderCompiled": false,
   "harnessWasmBuilt": false,
-  "gpuDispatchRun": false
+  "gpuDispatchRun": false,
+  "browserTargetCheck": {
+    "cargoFetchLocked": 0,
+    "resolvedPackages": 219,
+    "versionsSourcesAndChecksumsIdentical": true,
+    "command": "cargo check --target wasm32-unknown-unknown --jobs 1 --offline --locked --manifest-path harness/Cargo.toml -p getrandom@0.2.17",
+    "originalExit": 101,
+    "compilerDiagnostic": "error: the wasm*-unknown-unknown targets are not supported by default, you may need to enable the \"js\" feature. For more information see: https://docs.rs/getrandom/#webassembly-support",
+    "patchedExit": 0,
+    "patchedCargoLockSha256": "b144cdcfb89c9d6fa235730099fd14c24f063ec6eb78ed20c7c27317b83a3740",
+    "scope": "WASM-target entropy crate in the actual Nexus dependency graph; no solver or GPU claim"
+  }
 }

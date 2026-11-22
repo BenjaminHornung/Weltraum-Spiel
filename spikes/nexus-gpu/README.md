@@ -1,6 +1,6 @@
 # PHY-04 Nexus build on Linux x86-64
 
-The portable build compiles the existing PHY-04 Rust/WebGPU harness. It materializes verified upstream source trees and uses the Cargo.lock shipped with that harness. The historical Windows handoff and its PLT/PHY-01 review receipts use a separate schema and remain in the handoff directory.
+The portable build compiles the existing PHY-04 Rust/WebGPU harness. It materializes verified upstream source trees and applies a hash-pinned browser overlay to the shipped harness. Its transitive `bvh → rand → getrandom` dependency requires the `js` feature on wasm32-unknown-unknown. The overlay enables the Web Crypto entropy backend on the browser target. Its lockfile changes add three dependency edges and retain the original package versions and checksums. The historical Windows handoff and its PLT/PHY-01 review receipts use a separate schema and remain in the handoff directory.
 
 ## Build
 

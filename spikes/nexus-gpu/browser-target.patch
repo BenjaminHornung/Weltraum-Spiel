@@ -1,0 +1,21 @@
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -25 +25,5 @@
+ vortx-shaders = { path = "../upstream/source/vortx-e7b9add21702a2656d7c39dbd848d33157e51b17/vortx-shaders" }
++
++# The browser backend for the pinned bvh -> rand -> getrandom dependency.
++[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
++getrandom = { version = "=0.2.17", features = ["js"] }
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -440,4 +440,6 @@
+  "cfg-if",
++ "js-sys",
+  "libc",
+  "wasi",
++ "wasm-bindgen",
+ ]
+@@ -1180,2 +1182,3 @@
+ dependencies = [
++ "getrandom",
+  "khal",

@@ -30,5 +30,13 @@
     "cargoGpu": "0.10.0",
     "wasmBindgen": "0.2.129",
     "wasmBindgenLinuxX64ArchiveSha256": "82d12bb940e2d4e72e0d5605387fc1b8ca179044e012b620f0ce4e7440e8320e"
+  },
+  "browserOverlay": {
+    "patchSha256": "9969c001939cce6b30b5c68653505685057a276eec3bdf8879a80b186a70e289",
+    "harnessSha256": {
+      "Cargo.toml": "f771e0f7d75417a5ae69b2fd34440628ebf5472da17f8075d5c516a4a128afd0",
+      "Cargo.lock": "b144cdcfb89c9d6fa235730099fd14c24f063ec6eb78ed20c7c27317b83a3740",
+      "src/lib.rs": "09facd906b50a0f7a5c401bd2bc88446e11ea075dcf9d2d392a7d5576895ce43"
+    }
   }
 }

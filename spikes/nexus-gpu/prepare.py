@@ -88,7 +88,15 @@ def prepare(build, cache):
         target = build / "harness" / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
-    return {"schema": pins["schema"], "gitBlobsVerified": counts,
+    patch = HERE / "browser-target.patch"
+    overlay = pins["browserOverlay"]
+    if hashlib.sha256(patch.read_bytes()).hexdigest() != overlay["patchSha256"]:
+        raise ValueError("browser overlay hash mismatch")
+    subprocess.run(["git", "apply", "--no-index", patch], cwd=build / "harness", check=True)
+    for name, expected in overlay["harnessSha256"].items():
+        if hashlib.sha256((build / "harness" / name).read_bytes()).hexdigest() != expected:
+            raise ValueError(f"patched browser harness mismatch: {name}")
+    return {"schema": pins["schema"], "gitBlobsVerified": counts, "browserOverlay": overlay,
             "harnessSha256": pins["harnessSha256"], "upstream": pins["upstream"]}
 
 
