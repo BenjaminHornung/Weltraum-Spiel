@@ -343,6 +343,16 @@ describe("HVP cut trace", () => {
       return {root,id,sink,observer,readFrame,apply,body:()=>body,setBody:(next:typeof body)=>{body=next;},setFrame:(next:HvpCutRenderFacts)=>{frame=next;}};
     };
 
+    it.each(["bound", "foreign parent", "foreign child", "removed tag", "invalid digest"])("accepts only matching compact moving identities: %s",kind=>{
+      const f=bodyFixture(),b=f.body(), parentId="hvp:terrain-fragment:r1:12345678";
+      const ownerId=parentId+(kind==="foreign child"?":r2:p0":":r1:p0");
+      const sourceDigest=kind==="removed tag"?"hvp-material-removed-v1:0123456789abcdef":kind==="invalid digest"
+        ?"hvp-material-child-v1:0123456789abcdeX":"hvp-material-child-v1:0123456789abcdef";
+      f.setBody({...b,receipt:{...b.receipt,parentId:kind==="foreign parent"?"other":parentId,children:[ownerId]},
+        children:[{ownerId,sourceDigest,renderKey:ownerId}],activeKeys:[ownerId],visibleKeys:[ownerId]});
+      f.apply();expect(f.observer.read().pendingRender).toBe(kind==="bound");f.observer.dispose();
+    });
+
     it("rejects a rendered key beyond the real 128-character representation boundary",()=>{
       const f=bodyFixture(),key=`hvp:fragment:${"a".repeat(129-"hvp:fragment:".length)}`;
       expect(key).toHaveLength(129);

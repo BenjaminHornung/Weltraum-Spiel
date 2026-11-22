@@ -4,6 +4,12 @@ import {installHvpRigidBody} from "./rigidBody";
 import {isIssuedHvpStructuralPlan,type HvpStructuralBreakPlan} from "./structuralPlan";
 export {prepareHvpStructuralBreak,type HvpStructuralBreakPlan} from "./structuralPlan";
 import { R } from "./rapierPort";
+import {ownsCompactMovingPlan} from "./compactMovingPreparation";
+import {ownsHvpCompactBody} from "./rigidBody";
+import {isIssuedHvpCompactNativeOwner,type HvpCompactNativeOwner,type HvpCompactNativeRecipe} from "./compactNativeOwner";
+import type {HvpRigidRecipe} from "./rigidRecipe";
+type BreakPart={ownerId:string;anchored:boolean;cells:readonly HvpStructuralCell[];recipe:HvpRigidRecipe|HvpCompactNativeRecipe};
+type Center=Readonly<{x:number;y:number;z:number}>;
 
 const committing=new WeakSet<R.World>();
 
@@ -13,6 +19,17 @@ export const stageHvpStructuralBreak=(world:R.World,parent:R.RigidBody,live:Stru
   if(committing.has(world)||!isIssuedHvpStructuralPlan(plan)||plan.before!==live||world.getRigidBody(parent.handle)!==parent) {
     throw new StructuralPhysicsCommitError("CommitFailed","hvp/structural-preflight","Stale, foreign or reentrant structural commit","validate",true);
   }
+  return stageKnownBreak(world,parent,plan,additionalResidentBodies);
+};
+
+export function stageCompactMovingBreak(world:R.World,parent:R.RigidBody,owner:HvpCompactNativeOwner,
+  plan:{preCutCenter:Center;parts:readonly BreakPart[];removedMassKg:number;after:undefined},resident:number){
+  if(!Number.isSafeInteger(resident)||resident<0||resident>64||committing.has(world)||!isIssuedHvpCompactNativeOwner(owner)
+    ||!ownsCompactMovingPlan(plan,owner)||!ownsHvpCompactBody(world,parent,owner.recipe))throw new Error("Stale compact moving parent");
+  return stageKnownBreak(world,parent,plan,resident);
+}
+function stageKnownBreak<Source>(world:R.World,parent:R.RigidBody,plan:{preCutCenter:Center;parts:readonly BreakPart[];removedMassKg:number;after:Source},
+  additionalResidentBodies:number){
   let dynamicCount=0;
   world.forEachRigidBody(body=>{if(body.isDynamic()) { dynamicCount+=1; }});
   if(dynamicCount+plan.parts.filter(part=>!part.anchored).length>32||world.bodies.len()+additionalResidentBodies+plan.parts.length>64

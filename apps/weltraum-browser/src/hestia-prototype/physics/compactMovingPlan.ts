@@ -26,7 +26,7 @@ function connectedBoxGroups(boxes:readonly Box[]) {
   return {groups,result};
 }
 
-/** Private source/shape candidate. The archive solver remains the owner of committed moving cuts. */
+/** Exact source and shape preparation. The caller decides which verified shapes fit the live native admission profile. */
 export function prepareCompactMovingPlan(owner:HvpCompactNativeOwner, hit:HvpCell, edge:number, brush:"Box"|"Sphere") {
   if (!isIssuedHvpCompactNativeOwner(owner) || !owner.readMaterial(...hit)) throw Error("Missing live compact material hit");
   const {shape} = hvpMovingBrush(hit,edge,brush);

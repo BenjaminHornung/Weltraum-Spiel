@@ -1,3 +1,4 @@
+import {writeFileSync} from "node:fs";
 import {beforeAll, expect, it} from "vitest";
 import {createTerrainComponentIndex, materializeCompactCells} from "../../src/voxel/structural/componentIndex";
 import type {Box, Span} from "../../src/voxel/structural/componentIndex/exactShapes";
@@ -94,7 +95,8 @@ it.each(cases)("matches exact cells, masses, all inertia entries and native occu
             samples.push({i,side,elapsed,cpuMs:(used.user+used.system)/1000});
           }
         }
-        console.info("compact-moving-pairs "+JSON.stringify(samples));
+        if(process.env.HVP_MOVING_PLAN_BENCH_OUT)writeFileSync(process.env.HVP_MOVING_PLAN_BENCH_OUT,JSON.stringify(samples));
+        else console.info("compact-moving-pairs "+JSON.stringify(samples));
       }
     }
   }finally{f.owner.dispose();}

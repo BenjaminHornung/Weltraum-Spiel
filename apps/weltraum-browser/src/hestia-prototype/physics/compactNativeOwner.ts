@@ -1,11 +1,12 @@
-import {compactRuntimeMembershipDigest} from "./compactFragmentIdentity";
+import {bindHvpCompactChildArchive,createHvpCompactChildIdentity,compactRuntimeMembershipDigest} from "./compactFragmentIdentity";
 export {compactRuntimeMembershipDigest} from "./compactFragmentIdentity";
 import {MICROVOXEL_BASE_QUANTUM_METERS} from "../../voxel/adaptive";
 import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_REGISTRY_DIGEST,HVP_SOURCE_MIN_METERS} from "../../hvp/hvpCoastSource";
 import {box,cell,exactShapes,type Box,type Span} from "../../voxel/structural/componentIndex/exactShapes";
 import {cellsFromCompactSpans,checkedCompactSpans,compactTerrainOwnerDigest} from "../../voxel/structural/componentIndex/fragment";
-import {combineMass,preparePart,type CompactMass} from "../../voxel/structural/componentIndex/partFacts";
+import {combineMass,measureCompactMaterialSpans,preparePart,type CompactMass} from "../../voxel/structural/componentIndex/partFacts";
 import type {StructuralColliderBoxMeters} from "../../voxel/structural/physicsTransition";
+import {createStructuralMaterialTable} from "../../voxel/structural/model";
 import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 import type {HvpCell} from "../terrain/picking";
 import {prepareHvpStructuralIngestOwnedSteps} from "../terrain/structuralIngest";
@@ -22,7 +23,7 @@ export interface HvpCompactNativeRecipe {
 }
 const issued=new WeakSet<object>();
 const issuedOwners=new WeakSet<object>();
-export type HvpCompactNativeOwner=ReturnType<typeof issueHvpCompactNativeOwner>;
+export type HvpCompactNativeOwner=ReturnType<typeof makeCompactOwner>;
 export const isIssuedHvpCompactNativeOwner=(owner:object):owner is HvpCompactNativeOwner=>issuedOwners.has(owner);
 export const isIssuedHvpCompactNativeRecipe=(recipe:object):recipe is HvpCompactNativeRecipe=>issued.has(recipe);
 
@@ -34,7 +35,7 @@ export interface HvpCompactRuntimeBinding {
 }
 
 const q=MICROVOXEL_BASE_QUANTUM_METERS;
-const materials=Object.freeze(HVP_COAST_MATERIAL_REGISTRY.map(m=>Object.freeze({materialId:m.slot,
+export const compactCoastMaterials=createStructuralMaterialTable(HVP_COAST_MATERIAL_REGISTRY.map(m=>Object.freeze({materialId:m.slot,
   densityKgPerCubicMeter:m.densityKgPerM3,structuralClass:m.role,destructible:true,tags:null})));
 const meters=(p:HvpCell)=>Object.freeze({x:p[0]*q,y:p[1]*q,z:p[2]*q});
 export const compactBoxesShareFace=(a:Box,b:Box)=> {
@@ -92,14 +93,32 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
     || !connected(shapes)) throw new Error("Invalid compact native collision coverage or connectivity");
   const mass=combineMass(facts);
   if(Math.abs(mass.totalMassKg-request.massKg)>Math.max(1,request.massKg)*1e-10) throw new Error("Invalid compact native mass");
+  const identity=Object.freeze({kind:"hvp-compact-runtime-v1" as const,sessionId,epoch,generation,terrainDigest,ownerId,
+    membershipDigest:compactRuntimeMembershipDigest(checked,count),registryDigest:HVP_COAST_REGISTRY_DIGEST});
+  return makeCompactOwner(identity,checked,count,leafCount,box(min,max),mass,shapes);
+}
+
+type CompactIdentity=Readonly<HvpCompactRuntimeBinding & {kind:"hvp-compact-runtime-v1";ownerId:string;membershipDigest:string;registryDigest:string}>;
+export function issueCompactMovingChild(parent:HvpCompactNativeOwner,removed:readonly Span[],kept:readonly Span[]){
+  if(!isIssuedHvpCompactNativeOwner(parent))throw new Error("Missing authoritative moving parent");
+  const identity=createHvpCompactChildIdentity({ownerId:parent.identity.ownerId,revision:0,sourceDigest:parent.identity.membershipDigest,spans:parent.materialRuns()},removed,kept);
+  if(!identity)return;
+  const f=measureCompactMaterialSpans(kept),shapes=exactShapes(kept,f.count,f.bounds);
+  if(!shapes||!connected(shapes))throw new Error("Unverified moving child collision coverage");
+  const leaves=new Set(kept.map(s=>[s.x>>4,s.y>>4,s.z>>4].join(",")));
+  const child=makeCompactOwner(Object.freeze({...parent.identity,ownerId:identity.ownerId,membershipDigest:identity.sourceDigest}),
+    kept,f.count,leaves.size,f.bounds,f.mass,shapes,recipe=>{bindHvpCompactChildArchive(recipe,identity.proof);});
+  return {child,removedDigest:identity.removedDigest};
+}
+function makeCompactOwner(identity:CompactIdentity,checked:readonly Span[],count:number,leafCount:number,bounds:Box,mass:CompactMass,
+  shapes:readonly Box[],bindArchive?:(archive:HvpRigidRecipe)=>void){
+  const ownerId=identity.ownerId;
   const axes=hvpPrincipalAxes(mass.inertiaTensorKgMetersSquared);
   if(![mass.totalMassKg,...Object.values(axes.principalInertia)].every(v=>Number.isFinite(Math.fround(v))&&Math.fround(v)>0)) {
     throw new Error("Invalid compact native precision");
   }
   const recipe:HvpCompactNativeRecipe=Object.freeze({kind:"hvp-compact-native-v1",mass,axes,colliders:Object.freeze(
     shapes.map(b=>Object.freeze({minMeters:meters(b.min),maxMeters:meters(b.max)})))});
-  const identity=Object.freeze({kind:"hvp-compact-runtime-v1" as const,sessionId,epoch,generation,terrainDigest,ownerId,
-    membershipDigest:compactRuntimeMembershipDigest(checked,count),registryDigest:HVP_COAST_REGISTRY_DIGEST});
   // Duplicate owner IDs are rejected by the Worker. Exact membership is retained even if an
   // unrelated source in another session or revision happens to have the same FNV32 suffix.
   let spans:readonly Span[]|undefined=checked;
@@ -111,9 +130,10 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
     if(disposed) throw new Error("Compact owner disposed");
     credit(2048+count*256,true);
     const cells=cellsFromCompactSpans(spans!);
-    const source=yield* prepareHvpStructuralIngestOwnedSteps(ownerId,cells,materials,[],credit,undefined,true);
+    const source=yield* prepareHvpStructuralIngestOwnedSteps(ownerId,cells,compactCoastMaterials,[],credit,undefined,true);
     const result=yield* admitHvpTransferredRigidBodyOwnedSteps(source,{massKg:mass.totalMassKg,colliderBoxes:shapes!},undefined,credit,true);
     if(disposed) throw new Error("Compact owner disposed");
+    bindArchive?.(result);
     archive=result;
     return result;
   }
@@ -131,7 +151,7 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
   }
   issued.add(recipe);
   const owner=Object.freeze({
-    identity,recipe,cellCount:count,leafCount,bounds:box(min,max),
+    identity,recipe,cellCount:count,leafCount,bounds,
     materialRuns(){
       if(disposed)throw new Error("Compact owner disposed");
       return Object.freeze(spans!.map(s=>Object.freeze({...s})));

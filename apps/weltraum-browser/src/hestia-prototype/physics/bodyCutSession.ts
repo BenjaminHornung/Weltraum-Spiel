@@ -2,7 +2,10 @@ import {StructuralPhysicsCommitError} from "../../voxel/structural";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {readHvpBodyCells,readHvpOwnedBodyCellsSteps} from "./bodyCutPlan";
 import {castHvpPlayerRay, type HvpPlayerContact} from "./playerAimRay";
-import {captureHvpBodyHit,previewHvpBodyHit,prepareHvpBodyCutOwnedHashSteps,prepareHvpBodyCutSteps,stageHvpBodyCut,type HvpBodyCutPlan,type HvpBodyHit,type HvpCuttableBody} from "./bodyCut";
+import {prepareLiveCompactMovingCut} from "./compactMovingPreparation";
+import {stageCompactMovingBreak} from "./structuralBreak";
+import type {HvpCompactNativeOwner} from "./compactNativeOwner";
+import {removedMovingMomentum,captureHvpBodyHit,previewHvpBodyHit,prepareHvpBodyCutOwnedHashSteps,prepareHvpBodyCutSteps,stageHvpBodyCut,type HvpBodyCutPlan,type HvpBodyHit,type HvpCuttableBody} from "./bodyCut";
 import type {R} from "./rapierPort";
 import {HVP_PLAN_FINAL_PHASE,type HvpPlanProbe} from "./structuralPlan";
 import {HVP_CHILD_HASH_PHASE,type HvpRigidRecipeSpans} from "./rigidRecipe";
@@ -16,7 +19,7 @@ import {countHvpOwnedBodyMeshSteps,quoteHvpBodyMeshWork,HVP_BODY_RENDER_BYTES_PE
 
 type Vec=Readonly<{x:number;y:number;z:number}>;
 export interface HvpMovingCutRequest {readonly id:string;readonly ownerId:string;readonly sourceDigest:string;readonly edge:number;readonly direction:Vec;readonly brush?:"Box"|"Sphere"}
-export interface HvpMovingCutPreparation {readonly payload:HvpBodyCutPayload;readonly cells:ReturnType<typeof readHvpBodyCells>;readonly issuedTick:number}
+export interface HvpMovingCutPreparation {readonly payload:HvpBodyCutPayload;readonly cells:ReturnType<typeof readHvpBodyCells>;readonly issuedTick:number;readonly compact?:Readonly<{version:"hvp-compact-moving-cut-v1";removedDigest:string;projection:HvpBodyChildProjection}>}
 /** Private mesh input from a finished owner-local plan; data only, never native/recipe authority. */
 export interface HvpBodyChildProjection extends Pick<HvpBodyCutPayload,"sessionId"|"epoch"|"commandId"|"ownerId"|"sourceId"|"sourceDigest"|"revision"> {
   readonly issuedTick:number;
@@ -105,9 +108,11 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
   observePlan?:(trace:HvpBodyPlanTrace)=>void)=>{
   let observer=observePlan;
   let preview:HvpBodyHit|null=null,held=false,sequence=saved?.sequence??0;
-  type Pending={request:HvpMovingCutRequest;hit:HvpBodyHit;target:HvpCuttableBody;preparation:HvpMovingCutPreparation;work?:HvpBodyPlanWork};
+  type LiveCompact=NonNullable<ReturnType<typeof prepareLiveCompactMovingCut>>&{ledger:ReturnType<typeof createStructuralOwnerLedger>;targetFor:(body:R.RigidBody,owner:HvpCompactNativeOwner)=>HvpCuttableBody};
+  type Pending={compact?:LiveCompact;request:HvpMovingCutRequest;hit:HvpBodyHit;target:HvpCuttableBody;preparation:HvpMovingCutPreparation;work?:HvpBodyPlanWork};
   let pending:Pending|undefined;
-  let stage:ReturnType<typeof stageHvpBodyCut>|undefined;
+  type NativeStage=Pick<ReturnType<typeof stageHvpBodyCut>,"rollback"|"commit"|"finalize"|"parentPose"|"removedMomentum">&{result:Pick<ReturnType<typeof stageHvpBodyCut>["result"],"parts">};
+  let stage:NativeStage|undefined;
   let children:HvpCuttableBody[]=[],committed=false;
   let last:HvpMovingReceipt|null=saved?.last??null;
   let lastResources:ReturnType<typeof createStructuralOwnerLedger>["resources"]|null=null;
@@ -119,6 +124,11 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     if(retiredWork===work){retiredWork=undefined;}
   };
   const retireWork=(ticket:Pending,completed=false):void=>{
+    if(ticket.compact){
+      ticket.compact.ledger.release(completed);lastResources=ticket.compact.ledger.resources;
+      if(!completed)for(const owner of ticket.compact.owners)owner.dispose();
+      ticket.compact=undefined;
+    }
     const work=ticket.work;if(work===undefined){return;}
     work.retired??={completed};
     if(work.ledger!==undefined){retiredWork=work;}
@@ -362,7 +372,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
         direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})},hit,target,preparation};return preparation;
   };
   return {
-    resources:()=>pending?.work?.ledger?.resources??retiredWork?.ledger?.resources??lastResources,
+    resources:()=>pending?.compact?.ledger.resources??pending?.work?.ledger?.resources??retiredWork?.ledger?.resources??lastResources,
     dispose():void {
       // Rapier 0.12 World.free clears both sets. A held native transaction needs that actual terminal.
       if((stage!==undefined||held)&&(world.bodies!==undefined||world.colliders!==undefined)){
@@ -386,12 +396,23 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       const {hit,target}=capture(request,eye,tick);
       return beginCaptured(request,hit,target,readHvpBodyCells(target.recipe.source));
     },
-    async beginCompact(request:HvpMovingCutRequest,eye:Vec,tick:number,host:HvpBodyPlanHost,createLedger:()=>ReturnType<typeof createStructuralOwnerLedger>):Promise<HvpMovingCutPreparation> {
+    async beginCompact(request:HvpMovingCutRequest,eye:Vec,tick:number,host:HvpBodyPlanHost,createLedger:()=>ReturnType<typeof createStructuralOwnerLedger>,targetFor?:(body:R.RigidBody,owner:HvpCompactNativeOwner)=>HvpCuttableBody):Promise<HvpMovingCutPreparation> {
       // Capture the native hit before yielding. The parent can rotate or move while its immutable archive is encoded.
       const {hit,target}=capture(request,eye,tick);
       const owner=target.compactOwner;
       if(!owner)throw new Error("Compact moving owner required");
       const ledger=createLedger();
+      if(targetFor){
+        try {
+          // At most 1,024 cells and 128 material runs. Budget the input, remaining immutable runs and cloned projection.
+          ledger.reserve(65536+owner.cellCount*1024,true);
+          const fast=prepareLiveCompactMovingCut(owner,request,hit,sessionId);
+          if(fast){
+            pending={request,hit,target,preparation:fast.preparation,compact:{...fast,ledger,targetFor}};
+            return fast.preparation;
+          }
+        }catch(error){ledger.release();throw error;}
+      }
       const ticket={id:request.id,cancelled:false};
       opening=ticket;
       const current=()=>{
@@ -428,10 +449,11 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     },
     /** Finishes this command's plan without yielding; a finished plan is reused, never re-derived. */
     completePlan(id:string):void {
-      completePlan(requirePreparing(id));
+      const ticket=requirePreparing(id);
+      if(!ticket.compact)completePlan(ticket);
     },
     /** Source-only preparation with real task yields; the World keeps running meanwhile. */
-    preparePlan,
+    async preparePlan(id:string,host:HvpBodyPlanHost){if(requirePreparing(id).compact)return;await preparePlan(id,host);},
     /** Unwired owner-first input: reuse the one plan, borrow its frozen children, never recut. */
     async prepareChildProjection(id:string,host:HvpBodyPlanHost,residentBytes?:number):Promise<HvpBodyChildProjection> {
       const ticket=requirePreparing(id);
@@ -592,6 +614,30 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     },
     stage(id:string,products:HvpBodyCutAdmission,tick:number):void {
       const ticket=requirePreparing(id);
+      if(ticket.compact){
+        const compact=ticket.compact,expected=compact.projection.parts;
+        if(products.removedCells!==compact.projection.removedCells||products.removedMassKg!==compact.projection.removedMassKg
+          ||products.parts.length!==expected.length||products.parts.some((part,i)=>{
+            const e=expected[i]!;
+            return part.ownerId!==e.ownerId||part.sourceDigest!==e.sourceDigest||part.massKg!==e.massKg||!part.center
+              ||part.center.x!==e.center.x||part.center.y!==e.center.y||part.center.z!==e.center.z;
+          }))throw new Error("Foreign compact moving admission");
+        const body=ticket.target.body,position={...body.translation()},rotation={...body.rotation()},velocity={...body.linvel()},angularVelocity={...body.angvel()};
+        const removedMomentum=removedMovingMomentum(compact.removedMass,compact.nativePlan.preCutCenter,position,rotation,velocity,angularVelocity);
+        try{
+          const native=stageCompactMovingBreak(world,body,ticket.target.compactOwner!,compact.nativePlan,additionalResidentBodies());
+          stage={...native,parentPose:Object.freeze({position,rotation,velocity,angularVelocity}),removedMomentum};
+          children=compact.owners.map((owner,i)=>compact.targetFor(native.result.parts[i]!.body,owner));
+        }catch(error){
+          if(error instanceof StructuralPhysicsCommitError&&!error.worldRestored)held=true;
+          throw error;
+        }
+        committed=false;
+        last=Object.freeze({id,status:"PreparedHeld",parentId:ticket.target.ownerId,children:Object.freeze(children.map(c=>c.ownerId)),
+          removedCells:compact.projection.removedCells,removedMassKg:compact.projection.removedMassKg,issuedTick:ticket.hit.issuedTick,commitTick:tick,
+          parentPose:stage.parentPose,removedMomentum});
+        return;
+      }
       if(ticket.work?.failure!==undefined){throw ticket.work.failure.error;}
       if(ownedHash&&ticket.work?.projection!==undefined&&ticket.work.meshAdmitted!==true){
         throw new Error("Body mesh owner admission required");

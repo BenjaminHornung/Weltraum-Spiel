@@ -276,7 +276,10 @@ const bodyFactsStatus = (body: HvpBodyCutRenderFacts | undefined, commandId: str
     const child = body.children[i];
      if (!child || typeof child.ownerId !== "string" || child.ownerId.length === 0 || child.ownerId.length > 128
       || child.ownerId === body.receipt.parentId || child.ownerId !== body.receipt.children[i]
-      || typeof child.sourceDigest !== "string" || !/^fnv1a64-v1:[a-f0-9]{16}$/.test(child.sourceDigest)
+      || typeof child.sourceDigest !== "string"
+      || !(/^fnv1a64-v1:[a-f0-9]{16}$/.test(child.sourceDigest)
+        || /^hvp:terrain-fragment:r[1-9][0-9]{0,15}:[a-f0-9]{8}$/.test(body.receipt.parentId)
+          && child.ownerId === body.receipt.parentId + ":r1:p0" && /^hvp-material-child-v1:[a-f0-9]{16}$/.test(child.sourceDigest))
       || typeof child.renderKey !== "string" || !body.activeKeys.includes(child.renderKey)) { return "invalidFrame"; }
     for (let previous = 0; previous < i; previous += 1) {
       if (body.children[previous]!.ownerId === child.ownerId || body.children[previous]!.renderKey === child.renderKey) { return "invalidFrame"; }

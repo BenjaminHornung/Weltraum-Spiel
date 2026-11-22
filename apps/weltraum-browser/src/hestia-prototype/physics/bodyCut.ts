@@ -139,6 +139,20 @@ export const prepareHvpBodyCut=(hit:HvpBodyHit,target:HvpCuttableBody,id:string,
   drainHvpPlanSteps(prepareHvpBodyCutSteps(hit,target,id,edge,brush));
 export type HvpBodyCutPlan=ReturnType<typeof prepareHvpBodyCut>;
 
+export function removedMovingMomentum(mass:Pick<HvpRigidRecipe["mass"],"centerOfMassMeters"|"totalMassKg"|"inertiaTensorKgMetersSquared">,before:Vec,
+  position:Vec,rotation:Readonly<Vec&{w:number}>,velocity:Vec,angularVelocity:Vec){
+  const center=mass.centerOfMassMeters!;
+  const offset=rotateStructuralWorldVector(rotation,{x:center.x-before.x,y:center.y-before.y,z:center.z-before.z});
+  const worldCenter={x:position.x+offset.x,y:position.y+offset.y,z:position.z+offset.z};
+  const removedVelocity=deriveStructuralWorldSplitVelocity(velocity,angularVelocity,position,worldCenter);
+  const linearMomentum={x:mass.totalMassKg*removedVelocity.x,y:mass.totalMassKg*removedVelocity.y,z:mass.totalMassKg*removedVelocity.z};
+  const w=rotateStructuralWorldVector({x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w},angularVelocity),t=mass.inertiaTensorKgMetersSquared;
+  const spin=rotateStructuralWorldVector(rotation,{x:t.xx*w.x+t.xy*w.y+t.xz*w.z,y:t.xy*w.x+t.yy*w.y+t.yz*w.z,z:t.xz*w.x+t.yz*w.y+t.zz*w.z});
+  return Object.freeze({massKg:mass.totalMassKg,referencePoint:position,center:Object.freeze(worldCenter),
+    linear:Object.freeze(linearMomentum),angular:Object.freeze({x:spin.x+offset.y*linearMomentum.z-offset.z*linearMomentum.y,
+      y:spin.y+offset.z*linearMomentum.x-offset.x*linearMomentum.z,z:spin.z+offset.x*linearMomentum.y-offset.y*linearMomentum.x})});
+}
+
 export const stageHvpBodyCut=(world:R.World,target:HvpCuttableBody,plan:HvpBodyCutPlan,additionalResidentBodies=0)=>{
   const originalBody=plans.get(plan);
   if(originalBody===undefined||originalBody!==target.body||plan.ownerId!==target.ownerId
@@ -147,16 +161,7 @@ export const stageHvpBodyCut=(world:R.World,target:HvpCuttableBody,plan:HvpBodyC
   }
   const position=Object.freeze({...target.body.translation()}),rotation=Object.freeze({...target.body.rotation()}),
     velocity=Object.freeze({...target.body.linvel()}),angularVelocity=Object.freeze({...target.body.angvel()});
-  const mass=plan.local.removedMass,center=mass.centerOfMassMeters!,before=plan.local.plan.preCutCenter;
-  const offset=rotateStructuralWorldVector(rotation,{x:center.x-before.x,y:center.y-before.y,z:center.z-before.z});
-  const worldCenter={x:position.x+offset.x,y:position.y+offset.y,z:position.z+offset.z};
-  const removedVelocity=deriveStructuralWorldSplitVelocity(velocity,angularVelocity,position,worldCenter);
-  const linearMomentum={x:mass.totalMassKg*removedVelocity.x,y:mass.totalMassKg*removedVelocity.y,z:mass.totalMassKg*removedVelocity.z};
-  const w=rotateStructuralWorldVector({x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w},angularVelocity),t=mass.inertiaTensorKgMetersSquared;
-  const spin=rotateStructuralWorldVector(rotation,{x:t.xx*w.x+t.xy*w.y+t.xz*w.z,y:t.xy*w.x+t.yy*w.y+t.yz*w.z,z:t.xz*w.x+t.yz*w.y+t.zz*w.z});
-  const removedMomentum=Object.freeze({massKg:mass.totalMassKg,referencePoint:position,center:Object.freeze(worldCenter),
-    linear:Object.freeze(linearMomentum),angular:Object.freeze({x:spin.x+offset.y*linearMomentum.z-offset.z*linearMomentum.y,
-      y:spin.y+offset.z*linearMomentum.x-offset.x*linearMomentum.z,z:spin.z+offset.x*linearMomentum.y-offset.y*linearMomentum.x})});
+  const removedMomentum=removedMovingMomentum(plan.local.removedMass,plan.local.plan.preCutCenter,position,rotation,velocity,angularVelocity);
   const stage=stageHvpStructuralBreak(world,target.body,target.recipe.source,plan.local.plan,additionalResidentBodies);
   return {...stage,parentPose:Object.freeze({position,rotation,velocity,angularVelocity}),removedMomentum};
 };

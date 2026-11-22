@@ -1,3 +1,4 @@
+import {readCompactMovingProjection} from "../hestia-prototype/presentation/compactMovingProjection";
 import {hvpFragmentArchiveDigest} from "../hestia-prototype/physics/compactFragmentIdentity";
 import {createHvpLiveSupport} from "../hestia-prototype/terrain/liveSupport";
 import * as THREE from "three";
@@ -14,6 +15,7 @@ import {assertHvpSupportCurrent,releaseHvpOwnedSupportPlan,type HvpSupportPlan} 
 import type {HvpCell} from "../hestia-prototype/terrain/picking";
 import { createHvpTerrainCompiler, meshInitialHvpTerrain, releaseHvpOwnedTerrainProducts, discardHvpOwnedTerrainProducts,bindHvpChunkPhysicsInput, type HvpTerrainProducts } from "../hestia-prototype/terrain/terrainProducts";
 import { createHvpTerrainConsumer, type HvpStagedTerrain,type HvpPreparedTerrainBody } from "../hestia-prototype/terrain/terrainConsumer";
+import {HVP_BODY_RENDER_BYTES_PER_FACE} from "../hestia-prototype/presentation/bodyMeshAdmission";
 import {meshHvpTerrainFragment,meshHvpBodyCells} from "../hestia-prototype/presentation/terrainFragment";
 import {readHvpBodyCells} from "../hestia-prototype/physics/bodyCutPlan";
 import {hvpObjectLocalCenterOfMass} from "../hestia-prototype/physics/rigidRecipe";
@@ -2462,6 +2464,15 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     const bodyMeshPhysics=physics;
     bodyCutConsumer=createHvpBodyCutConsumer(physics,async source=>{
       const compiler=terrainCompiler!,id=source.payload.commandId;
+      if(source.compact){
+        const projection=readCompactMovingProjection(source);
+        // Exact owner-authorized membership. Native admission still checks the requested child IDs, hashes, masses and centers.
+        const cells=projection.parts.reduce((n,p)=>n+p.cells.length,0);
+        admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes+65536+cells*(6*HVP_BODY_RENDER_BYTES_PER_FACE+1024)});
+        return {removedCells:projection.removedCells,removedMassKg:projection.removedMassKg,parts:projection.parts.map(part=>({
+          ...part,mesh:meshHvpBodyCells(part.cells,part.center,part.sourceDigest)
+        }))};
+      }
       const current=()=>{if(disposed||hvpMountEpoch!==myEpoch||physics!==bodyMeshPhysics||terrainCompiler!==compiler){throw new Error("Moving mesh preparation cancelled");}};
       current();
       if(bodyMeshPhysics.prepareBodyMeshWork===undefined||bodyMeshPhysics.admitBodyMeshOutput===undefined||bodyMeshPhysics.releaseBodyMeshWork===undefined){

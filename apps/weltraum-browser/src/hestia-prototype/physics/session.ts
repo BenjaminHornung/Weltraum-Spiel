@@ -854,7 +854,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         const command=bodyCutStart();
         if(!movingBodies.get(request.ownerId)?.compactOwner)return moving.begin(request,command.eye,command.tick);
         return moving.beginCompact(request,command.eye,command.tick,borrowedBodyHost,
-          ()=>createStructuralOwnerLedger(bodySourceResidentBytes()+retainedCollisionBytes(),undefined,128));
+          ()=>createStructuralOwnerLedger(bodySourceResidentBytes()+retainedCollisionBytes(),undefined,128),compactFragment);
       },
       /** Source-only plan work before any World hold; Read/Input and simulation continue between phases. */
       async prepareBodyCutPlan(id:string):Promise<void> {
