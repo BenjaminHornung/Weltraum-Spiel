@@ -47,7 +47,7 @@ export interface HvpTerrainRecoveryAssets {
 }
 type Vec3=Readonly<{x:number;y:number;z:number}>;
 export interface HvpTerrainMotion {
-  readonly binding:HvpTerrainBinding;readonly revision:number;readonly tick:HvpWorldCheckpoint["tick"];
+  readonly worldId:string;readonly binding:HvpTerrainBinding;readonly revision:number;readonly tick:HvpWorldCheckpoint["tick"];
   readonly running:boolean;readonly walking:boolean;readonly player:HvpWorldCheckpoint["player"];readonly input?:HvpPlayerInput;
   readonly impulses:number;readonly lastImpulse:HvpWorldCheckpoint["lastImpulse"];readonly lastImpulseTick:number|null;
   readonly bodies:readonly {ownerId:string;position:Vec3;orientation:Vec3&{w:number};velocity:Vec3;angularVelocity:Vec3;sleeping:boolean;sourceDigest?:string}[];
@@ -659,6 +659,12 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
           neighbor:neighbor?.read().checkpoint??null,parked:Object.freeze(residency!.read().map(p=>p.ownerId)),
           lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,lastImpulse} as const;
     };
+    const captureTerrainMotion=(binding:HvpTerrainBinding,running:boolean,heldTick:HvpWorldCheckpoint["tick"]):HvpTerrainMotion=>(
+      {worldId:sessionId,binding,revision:terrainGeneration,tick:heldTick,player:character?.heldMotion()??null,input:character?.heldInput(),
+          running,walking:character?.read().status==="Walking",impulses,lastImpulse,
+          lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,bodies:[...bodies].map(([ownerId,b])=>({
+            ownerId,position:{...b.translation()},orientation:{...b.rotation()},velocity:{...b.linvel()},angularVelocity:{...b.angvel()},
+            sleeping:b.isSleeping(),sourceDigest:movingBodies.get(ownerId)?.recipe.source.contentHash}))});
     const session={
       staticTerrainLayout:()=>staticLayout??null,
       read,
@@ -683,21 +689,30 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         const parent=ray.collider.parent(),owner=parent?[...bodies].find(([,body])=>body.handle===parent.handle)?.[0]:undefined;
         return {ownerId:owner??null,distance:ray.timeOfImpact};
       },
+      queryTerrainCapsule(origin:Vec3,direction:Vec3,distance:number,halfHeight:number,radius:number){
+        if(disposed||terrainHeld){throw new Error("Terrain query unavailable");}
+        const hit=world.castShape(origin,{x:0,y:0,z:0,w:1},direction,new R.Capsule(halfHeight,radius),0,distance,true);
+        if(!hit){return null;}
+        const parent=hit.collider.parent(),owner=parent?[...bodies].find(([,body])=>body.handle===parent.handle)?.[0]:undefined;
+        return {ownerId:owner??null,distance:hit.time_of_impact};
+      },
       captureTerrainAssets():HvpTerrainRecoveryAssets{
         if(disposed||staged||terrainHeld||branch?.busy||moving.busy||extraHeld()){throw new Error("Terrain recovery catalog pending");}
         return {world:labCheckpointContext.build(captureWorld(true)),collision:allCollision(),layout:staticLayout??null};
+      },
+      captureBeforeNativeInstall(binding:HvpTerrainBinding):HvpTerrainMotion{
+        const clock=tick.read();
+        if(disposed||staged||terrainHeld||branch?.busy||moving.busy||extraHeld()||terrainGeneration!==binding.baseRevision
+          ||(clock.status!=="Paused"&&clock.status!=="Running")){throw new Error("No recoverable native installation tick");}
+        // The caller posts this packet and installs synchronously in the same worker turn. No solver step can intervene.
+        return captureTerrainMotion(binding,clock.status==="Running",{...clock,status:"Paused"});
       },
       captureTerrainRecovery(binding:HvpTerrainBinding):HvpTerrainMotion {
         const tx=requireStage(binding.commandId);
         if(tx.expected!==binding.baseRevision||disposed||terrainHeld||tick.read().status!=="Paused"){
           throw new Error("Invalid terrain recovery boundary");
         }
-        return {binding,revision:terrainGeneration,tick:tick.read(),player:character?.heldMotion()??null,input:character?.heldInput(),
-          running:tx.running,walking:character?.read().status==="Walking",impulses,lastImpulse,
-          lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,bodies:[...bodies].map(([ownerId,b])=>({
-            ownerId,position:{...b.translation()},orientation:{...b.rotation()},velocity:{...b.linvel()},angularVelocity:{...b.angvel()},
-            sleeping:b.isSleeping(),sourceDigest:movingBodies.get(ownerId)?.recipe.source.contentHash}))};
-
+        return captureTerrainMotion(binding,tx.running,tick.read());
       },
       copyCollision():readonly HvpCollisionSector[]{
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){throw new Error("Collision checkpoint requires an idle paused World");}
@@ -1095,19 +1110,28 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
     }
     if(recovery){
       const {motion}=recovery;
+      let digest:string|undefined;
       for(const frame of recovery.journal){
         const {binding}=frame;
-        if(binding.baseRevision!==terrainGeneration){throw new Error("Discontinuous terrain recovery journal");}
+        if(binding.baseRevision!==terrainGeneration||binding.sessionId!==motion.binding.sessionId||binding.epoch!==motion.binding.epoch
+          ||(digest!==undefined&&binding.baseDigest!==digest)){throw new Error("Discontinuous terrain recovery journal");}
+        digest=binding.targetDigest;
         // Superseded sector updates were compacted out. The native transaction still advances this generation without stepping.
         const replacements=frame.replacements.length?frame.replacements:[{index:0,mesh:collision.get(0)!.mesh}];
         session.prepareTerrain(binding.commandId,binding.baseRevision,replacements,frame.fragments);
         session.commitTerrain(binding.commandId);session.finalizeTerrain(binding.commandId);
       }
-      if(terrainGeneration!==motion.revision||bodies.size!==motion.bodies.length
+      const expectedDigest=motion.revision===motion.binding.baseRevision?motion.binding.baseDigest:motion.binding.targetDigest;
+      if((digest!==undefined&&digest!==expectedDigest)||terrainGeneration!==motion.revision||bodies.size!==motion.bodies.length
         ||new Set(motion.bodies.map(b=>b.ownerId)).size!==bodies.size){throw new Error("Reconstructed terrain membership mismatch");}
       for(const m of motion.bodies){
         const native=bodies.get(m.ownerId);
-        if(!native||movingBodies.get(m.ownerId)?.recipe.source.contentHash!==m.sourceDigest){throw new Error("Reconstructed body source mismatch");}
+        const vectors=[m.position,m.velocity,m.angularVelocity,m.orientation];
+        if(!native||movingBodies.get(m.ownerId)?.recipe.source.contentHash!==m.sourceDigest
+          ||!vectors.every(v=>[v.x,v.y,v.z].every(n=>Number.isFinite(Math.fround(n))))
+          ||!Number.isFinite(m.orientation.w)||Math.abs(Math.hypot(m.orientation.x,m.orientation.y,m.orientation.z,m.orientation.w)-1)>.001){
+          throw new Error("Reconstructed body source or motion mismatch");
+        }
         native.setTranslation(m.position,false);native.setRotation(m.orientation,false);
         native.setLinvel(m.velocity,false);native.setAngvel(m.angularVelocity,false);
         if(m.sleeping){native.sleep();}else{native.wakeUp();}
@@ -1134,7 +1158,7 @@ export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"pub
 export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"phy01-lab",measure:boolean):Promise<HvpLabPhysicsSession>;
 export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"phy01-lab"|"public",measure:boolean){
   const {assets,motion,journal}=image;
-  if(assets.world.solver!==HVP_SOLVER_VERSION||motion.tick.status!=="Paused"||!Array.isArray(journal)||journal.length>256
+  if(assets.world.solver!==HVP_SOLVER_VERSION||assets.world.sessionId!==motion.worldId||motion.tick.status!=="Paused"||!Array.isArray(journal)||journal.length>256
     ||assets.world.terrainGeneration+journal.length!==motion.revision||!Number.isSafeInteger(motion.binding.baseRevision)
     ||![motion.binding.baseRevision,motion.binding.baseRevision+1].includes(motion.revision)){
     throw new Error("Invalid terrain recovery image");

@@ -8,13 +8,13 @@ import {collisionSectors} from "../../src/hestia-prototype/physics/terrainCollid
 vi.mock("../../src/workers/workerPool",()=>({WorkerPool:class {async start(){} async shutdown(){}}}));
 const floor={sizeX:4,sizeY:16,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0},readSlot:(_x:number,y:number)=>y===0?1:0};
 
-it.each(["delayed","before-L","after-L"] as const)("keeps the normal consumer and real solver coupled across %s delivery",async fault=>{
+it.each(["delayed","before-L","after-L","after-two","during-install","bad-prepare","recovery-rejected"] as const)("keeps the normal consumer and real solver coupled across %s delivery",async fault=>{
   type Host={onmessage:(event:MessageEvent<HvpPhysicsMessage>)=>Promise<void>;postMessage:(reply:HvpPhysicsReply)=>void};
   const host=globalThis as unknown as Host,ports=new Map<string,ChannelWorker>(),commands:string[]=[],closing:Promise<void>[]=[];
   const oldOn=Object.getOwnPropertyDescriptor(host,"onmessage");
   let sawBarrier!:()=>void,resume!:()=>void;
   const barrier=new Promise<void>(resolve=>{sawBarrier=resolve;}),release=new Promise<void>(resolve=>{resume=resolve;});
-  let faulted=false,oldDelivery:(()=>void)|undefined;
+  let catalogReceipts=0,hotProofs=0,faulted=false,oldDelivery:(()=>void)|undefined;
   class ChannelWorker{
     onmessage:((event:MessageEvent<HvpPhysicsReply>)=>void)|null=null;
     onerror:((event:ErrorEvent)=>void)|null=null;onmessageerror=null;
@@ -28,11 +28,12 @@ it.each(["delayed","before-L","after-L"] as const)("keeps the normal consumer an
     }
     postMessage(value:HvpPhysicsMessage){
       const message=structuredClone(value);commands.push(message.kind);
+      if(fault==="recovery-rejected"&&message.kind==="RecoverTerrain"){Object.assign(message.image.motion,{worldId:"foreign-world"});}
       if(message.kind==="Initialize"){Object.assign(message,{sectors:[...collisionSectors(floor)]});}
-      if(!faulted&&(fault==="before-L"?message.kind==="CommitTerrain":message.kind==="FinalizeTerrain")){
+      if(fault!=="during-install"&&!faulted&&"transactionId" in message&&message.transactionId==="one"&&(fault==="bad-prepare"?message.kind==="PrepareTerrain":fault==="before-L"?message.kind==="CommitTerrain":message.kind==="FinalizeTerrain")){
         faulted=true;sawBarrier();
         void release.then(()=>{
-          if(fault==="delayed"){void this.dispatch(message);}
+          if(fault==="delayed"||fault==="bad-prepare"){void this.dispatch(message);}
           else{
             const saved=this.onmessage;
             oldDelivery=()=>saved?.({data:{protocol:message.protocol,id:message.id,incarnation:message.incarnation,
@@ -43,6 +44,21 @@ it.each(["delayed","before-L","after-L"] as const)("keeps the normal consumer an
       }else{void this.dispatch(message);}
     }
     receive(reply:HvpPhysicsReply){
+      if(fault==="during-install"&&!faulted&&reply.beforeTerrainInstall?.binding.commandId==="one"){
+        this.onmessage?.({data:structuredClone(reply)} as MessageEvent<HvpPhysicsReply>);hotProofs++;
+        faulted=true;sawBarrier();void release.then(()=>this.onerror?.({message:"lost native installation"} as ErrorEvent));return;
+      }
+      if(fault==="during-install"&&reply.terrainReceipt?.commandId==="one"&&reply.snapshot?.terrainTransaction==="PreparedHeld"){return;}
+      if(reply.beforeTerrainInstall){hotProofs++;}
+      if(fault==="bad-prepare"&&reply.snapshot?.terrainTransaction==="PreparedHeld"&&reply.terrainReceipt?.commandId==="one"){
+        reply={...reply,terrainReceipt:{...reply.terrainReceipt,baseDigest:"wrong-digest"}};
+      }
+      if(reply.recoveryAssets){catalogReceipts++;}
+      if(reply.terrainMotion){
+        hotProofs++;expect(reply.recoveryAssets).toBeUndefined();
+        expect(Object.keys(reply.terrainMotion)).not.toContain("collision");
+        expect(JSON.stringify(reply.terrainMotion).length).toBeLessThan(4096);
+      }
       this.onmessage?.({data:structuredClone(reply)} as MessageEvent<HvpPhysicsReply>);
       if(reply.terrainReceipt){this.onmessage?.({data:structuredClone(reply)} as MessageEvent<HvpPhysicsReply>);}
     }
@@ -63,23 +79,38 @@ it.each(["delayed","before-L","after-L"] as const)("keeps the normal consumer an
   const request=(id:string,x:number):HvpCutRequest=>({commandId:id,sessionId:"channel",epoch:1,
     revision:root.read().revision,sourceDigest:root.read().sourceDigest,toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[x,79,56],max:[x+1,80,57]}});
   try{
+    await physics.primeTerrainRecovery!();expect(catalogReceipts).toBe(1);
+    if(fault==="after-two"){
+      for(let i=0;i<2;i++){const prior=await consumer.submit(request("prefill"+i,42+i));expect(prior.status,prior.reason).toBe("Applied");}
+    }
+    const initial=root.read().revision,preL=fault==="before-L"||fault==="bad-prepare"||fault==="during-install";
     const first=request("one",40),second=request("two",41),cut=consumer.submit(first);
-    await barrier;expect(root.read().revision).toBe(fault==="before-L"?0:1);
+    await barrier;expect(root.read().revision).toBe(initial+(preL?0:1));
     expect(consumer.submit(first)).toBe(cut);
     const conflict=await consumer.submit({...first,shape:second.shape});expect(conflict.reason).toBe("IdempotencyConflict");
     const next=consumer.submit(second,source=>({...second,revision:source.revision,sourceDigest:source.sourceDigest}));
     await expect(consumer.checkpoint()).rejects.toThrow(/boundary/);resume();
     const [one,two]=await Promise.all([cut,next]);
-    expect(one.status,one.reason).toBe(fault==="before-L"?"Rejected":"Applied");expect(two.status,two.reason).toBe("Applied");
-    expect(root.read().revision).toBe(fault==="before-L"?1:2);
+    if(fault==="recovery-rejected"){
+      expect(one.status).toBe("RecoveryHold");expect(two.status).toBe("Rejected");
+      expect(root.read().revision).toBe(initial+1);expect(consumer.submit(first)).toBe(cut);
+      await expect(consumer.checkpoint()).rejects.toThrow(/boundary/);expect(()=>physics.read()).toThrow(/RecoveryHold/);return;
+    }
+    expect(one.status,one.reason).toBe(preL?"Rejected":"Applied");expect(two.status,two.reason).toBe("Applied");
+    expect(root.read().revision).toBe(initial+(preL?1:2));
     oldDelivery?.();expect(physics.read().terrainGeneration).toBe(root.read().revision);
     expect(consumer.submit(first)).toBe(cut);const saved=await consumer.checkpoint();
     expect(saved.entries.filter(e=>e.outcome.status==="Applied")).toHaveLength(root.read().revision);
-    expect(commands.filter(c=>c==="RecoverTerrain")).toHaveLength(fault==="delayed"?0:1);
+    expect(commands.filter(c=>c==="RecoverTerrain")).toHaveLength(fault==="delayed"||fault==="bad-prepare"?0:1);
+    expect(catalogReceipts).toBe(1);expect(hotProofs).toBeGreaterThan(1);
+    expect(physics.lifecycle?.().terrainRecovery).toMatchObject({catalogs:1,entries:root.read().revision,sectors:1,held:0});
     expect(uploads).toBe(0);await consumer.presentNext();expect(consumer.read().renderError).toMatch(/device loss/);
     expect(physics.read().terrainTransaction).toBe("Idle");expect(consumer.read().state).toBe("Applied");
   }finally{
-    resume();consumer.dispose();await physics.dispose();await Promise.allSettled(closing);timer.mockRestore();vi.unstubAllGlobals();
+    resume();consumer.dispose();
+    if(fault==="recovery-rejected"){await expect(physics.dispose()).rejects.toThrow(/RecoveryHold/);}else{await physics.dispose();}
+    expect(physics.lifecycle?.().terrainRecovery).toEqual({catalogs:0,entries:0,sectors:0,fragments:0,held:0});
+    await Promise.allSettled(closing);timer.mockRestore();vi.unstubAllGlobals();
     if(oldOn){Object.defineProperty(host,"onmessage",oldOn);}else{Reflect.deleteProperty(host,"onmessage");}
   }
 },60000);

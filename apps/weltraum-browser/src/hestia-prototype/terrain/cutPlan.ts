@@ -166,7 +166,9 @@ const createTerrainRoot = (base: HvpCellReader & { sourceDigest: string }, sessi
     if(ownedBaseCopy!==undefined){ownedLeafCopies.set(snapshot,(x,y,z)=>{
       if(![x,y,z].every(Number.isSafeInteger)){return undefined;}
       // Public COW production keeps its Species observations; it supplies no exclusive-copy capability.
-      if(leaves.has(`${x}:${y}:${z}`)){return undefined;}return ownedBaseCopy(x,y,z);
+      const overlay=leaves.get(`${x}:${y}:${z}`);
+      if(overlay){return exclusive?copyHvpOwnedSlots(overlay.slots):undefined;}
+      return ownedBaseCopy(x,y,z);
     });}
     if(ownedBaseBlock!==undefined&&base.sizeX===256&&base.sizeY===128&&base.sizeZ===256){ownedSlotSteps.set(snapshot,function*(target){
       const total=base.sizeX*base.sizeY*base.sizeZ;

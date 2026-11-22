@@ -24,6 +24,7 @@ import {HVP_NEIGHBOR_JOB,HVP_NEIGHBOR_MAX_OUTPUT,hvpNeighborInputDigest,decodeHv
 import {encodeHvpProjectionPacket} from "../runtime/projectionPacket";
 import type {HvpNeighborProxies} from "../runtime/neighborProducts";
 import {buildHvpChunkInputSteps,hvpChunkCoordinates,hvpDirtyChunks,hvpRestoreChunksSteps,type HvpChunkPayload} from "./terrainChunkInput";
+import {buildHvpLiveRenderChunkSteps} from "./liveRenderDelta";
 import {patchHvpChunkCollisionSteps} from "../../voxel/structural/componentIndex/terrainCollision";
 import {HVP_CHUNK_JOB,HVP_CHUNK_MAX_OUTPUT,decodeHvpChunkOutput,decodeHvpChunkOutputSteps,hvpChunkInputDigestSteps} from "../../workers/hvpChunkJob";
 import {HVP_EAST_CHUNK_COLLISION_JOB,HVP_EAST_CHUNK_COLLISION_PURPOSE,HVP_EAST_CHUNK_COLLISION_ALGORITHM,HVP_EAST_CHUNK_COLLISION_MAX_OUTPUT,
@@ -281,11 +282,8 @@ function* jobInputSteps(source:HvpTerrainSnapshot,id:number,render:boolean,seque
 }
 const terrainDigestFromHash=(p:{sessionId:string;epoch:number;sector:number;generation:number;sourceDigest:string},hash:string)=>
   fnv1aHash(JSON.stringify([p.sessionId,p.epoch,p.sector,p.generation,p.sourceDigest,hash]));
-function* chunkJobInputSteps(source:HvpTerrainSnapshot,id:number,sequence:number,worldId:string,neighbor:HvpTerrainSnapshot|undefined,
-  renderNeighbor:HvpTerrainSnapshot|undefined,
-  reserve:import("../../voxel/structural/validation").StructuralOwnedReserve,eastCollisionOnly=false):Generator<string,
-    {kind:"chunk";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpChunkPayload}|
-    {kind:"east-collision";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpEastChunkCollisionPayload},unknown>{
+function* chunkSourceInputSteps(source:HvpTerrainSnapshot,id:number,worldId:string,neighbor:HvpTerrainSnapshot|undefined,
+  renderNeighbor:HvpTerrainSnapshot|undefined,reserve:import("../../voxel/structural/validation").StructuralOwnedReserve,ownedCore=false){
   if(neighbor!==undefined&&renderNeighbor!==neighbor){throw new Error("Unmatched physical chunk neighbour");}
   reserve(16_384);const tops=new Map<string,number>();
   const halo=(x:number,y:number,z:number):number|undefined=>{
@@ -298,7 +296,14 @@ function* chunkJobInputSteps(source:HvpTerrainSnapshot,id:number,sequence:number
     return source.originMeters.y+(y+1)*.125<=top?1:0;
   };
   const haloBinding=renderNeighbor?`render:${renderNeighbor.sessionId}:${renderNeighbor.epoch}:${renderNeighbor.revision}:${renderNeighbor.sourceDigest}:${renderNeighbor.baseDigest}:${renderNeighbor.originMeters.x}:${renderNeighbor.originMeters.y}:${renderNeighbor.originMeters.z}:authored-v5`:`closed-exterior:authored-v5`;
-  const {slots,payload}=yield* buildHvpChunkInputSteps(source,id,halo,haloBinding,reserve,worldId,neighbor),buffers=[slots.buffer as ArrayBuffer];
+  return yield* buildHvpChunkInputSteps(source,id,halo,haloBinding,reserve,worldId,neighbor,ownedCore);
+}
+function* chunkJobInputSteps(source:HvpTerrainSnapshot,id:number,sequence:number,worldId:string,neighbor:HvpTerrainSnapshot|undefined,
+  renderNeighbor:HvpTerrainSnapshot|undefined,
+  reserve:import("../../voxel/structural/validation").StructuralOwnedReserve,eastCollisionOnly=false):Generator<string,
+    {kind:"chunk";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpChunkPayload}|
+    {kind:"east-collision";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpEastChunkCollisionPayload},unknown>{
+  const {slots,payload}=yield* chunkSourceInputSteps(source,id,worldId,neighbor,renderNeighbor,reserve),buffers=[slots.buffer as ArrayBuffer];
   const bundle:TransferableBufferBundle={buffers,ownership:"SenderToWorker",revision:contentRevision(source.revision),byteLength:byteCount(slots.byteLength),
     views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
   if(eastCollisionOnly){
@@ -764,7 +769,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
         }finally{supportAnalyzing=false;}
       });
     },
-    async compile(plan:HvpPreparedCut,support?:HvpSupportPlan,residentBytes?:number,deferRender=false):Promise<HvpTerrainProducts> {
+    async compile(plan:HvpPreparedCut,support?:HvpSupportPlan,residentBytes?:number,deferRender=false,trace?:HvpCutTrace):Promise<HvpTerrainProducts> {
       const credits=support===undefined?undefined:bindHvpOwnedSupportCut(support,plan);
       return withOperation(async()=>{
         if(chunkCache!==undefined){
@@ -781,7 +786,10 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
             if(deferRender){
               const source=plan.after,dirty=hvpDirtyChunks(plan),collision=new Map<number,HvpCollisionSector>();
               const cachedCollision=new Map(cache.collision),lane=phase.beginLane(1),reserve=createHvpBodyMeshPhaseReserve(lane.bytes);
-              const pump=createHvpBodyMeshTaskPump(current);let retained=0;
+              const observe=(phase:string)=>trace===undefined?undefined:(_label:string,start:number,duration:number)=>{
+                trace({commandId:plan.request.commandId,thread:"main",phase,origin:performance.timeOrigin,start,duration});
+              };
+              const pump=createHvpBodyMeshTaskPump(current,observe("cutStaticCollisionWorkMs"));let retained=0;
               try{
                 for(const id of dirty){
                   const previous=cache.collision.get(id);
@@ -799,12 +807,25 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
                 currentRender();
                 const ids=[...new Set(pending)],phase=createHvpSupportPhaseCredits(32_768,chunkResident(residentBytes??0));
                 try{
-                  const raw=await compileSectors(source,[],[],256,undefined,undefined,count,phase,undefined,
-                    {ids,worldId:nextCache.worldId,neighbor:nextCache.neighbor,renderNeighbor:nextCache.renderNeighbor,assertCurrent:currentRender});
+                  const renderLane=phase.beginLane(1),renderReserve=createHvpBodyMeshPhaseReserve(renderLane.bytes);
+                  const renderPump=createHvpBodyMeshTaskPump(currentRender,observe("cutTerrainVisualMeshWorkMs"));
+                  const raw={render:new Map<number,HvpCompactMesh>()};
+                  let retained=0;
+                  try{
+                    for(const id of ids){
+                      const {slots,payload}=await renderPump.run(chunkSourceInputSteps(source,id,nextCache.worldId,
+                        nextCache.neighbor,nextCache.renderNeighbor,renderReserve,true));
+                      const mesh=nextCache.collision.get(id)!;
+                      const rendered=await renderPump.run(buildHvpLiveRenderChunkSteps(slots,payload,
+                        mesh.vertices.byteLength+mesh.indices.byteLength,renderReserve));
+                      raw.render.set(id,rendered);
+                      retained+=chunkMeshBytes(rendered);
+                    }
+                  }finally{renderPump.dispose();phase.endLane(renderLane,retained);}
                   const joined=new Map(nextCache.render);
                   for(const [id,mesh] of raw.render){joined.set(id,mesh);}
                   const columns=new Set(ids.map(id=>{const [x,,z]=hvpChunkCoordinates(id);return Math.floor(x/2)+Math.floor(z/2)*4;}));
-                  const lane=phase.beginLane(1),reserve=createHvpBodyMeshPhaseReserve(lane.bytes),pump=createHvpBodyMeshTaskPump(currentRender);
+                  const lane=phase.beginLane(1),reserve=createHvpBodyMeshPhaseReserve(lane.bytes),pump=createHvpBodyMeshTaskPump(currentRender,observe("cutTerrainVisualCompositionWorkMs"));
                   const render=new Map<number,HvpCompactMesh>();let bytes=0;
                   try{for(const id of columns){const mesh=await pump.run(composeHvpTerrainColumnSteps(joined,source,id,reserve));render.set(id,mesh);bytes+=chunkMeshBytes(mesh);}}
                   finally{pump.dispose();phase.endLane(lane,bytes);}

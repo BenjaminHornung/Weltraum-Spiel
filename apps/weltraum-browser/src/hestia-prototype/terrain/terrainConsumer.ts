@@ -69,12 +69,17 @@ export const createHvpTerrainConsumer = (
         }
         if(disposed||pendingRender!==delta||root.read()!==delta.source){return;}
         const products={source:delta.source,render:meshes,collision:new Map()};
+        const stillResident=(body:HvpPreparedTerrainBody,live:HvpPhysicsSnapshot["terrainFragments"]|undefined)=>
+          live===undefined||live.some(o=>o.ownerId===body.request.ownerId&&o.sourceDigest===body.state.sourceDigest);
         const live=physics.read?.().terrainFragments;
-        const bodies=live?delta.bodies.filter(f=>live.some(o=>o.ownerId===f.request.ownerId)):delta.bodies;
+        const bodies=delta.bodies.filter(f=>stillResident(f,live));
         staged=await measureHvpCutAsync(trace,delta.commandId,"main","cutGraphicsStageMs",async()=>stageOwned&&bodies.length
           ?stageOwned(products,bodies,trace?delta.commandId:undefined)
           :trace?stage(products,bodies,delta.commandId):bodies.length?stage(products,bodies):stage(products));
-        if(disposed||pendingRender!==delta||root.read()!==delta.source){staged.rollback();return;}
+        const afterStage=physics.read?.().terrainFragments;
+        if(disposed||pendingRender!==delta||root.read()!==delta.source||bodies.some(f=>!stillResident(f,afterStage))){
+          staged.rollback();return;
+        }
         staged.publish();published=true;presented=delta.source;pendingRender=undefined;renderError=undefined;
         retirement=staged;staged.finish();retirement=undefined;
       }catch(error){
@@ -142,7 +147,7 @@ export const createHvpTerrainConsumer = (
         const measure=<T>(phase:string,runPhase:()=>T):T=>measureHvpCut(trace,bound.commandId,"main",phase,runPhase);
         const measureAsync=<T>(phase:string,runPhase:()=>Promise<T>):Promise<T>=>measureHvpCutAsync(trace,bound.commandId,"main",phase,runPhase);
         try {
-          if(disposed||held) { throw new Error(disposed?"Disposed":"RecoveryHold"); }
+          if(disposed||held){return finishTerminal(outcome(bound,"Rejected",0,disposed?"Disposed":"RecoveryHold"));}
           const current=root.read();
           if(revalidate&&(current.revision!==bound.revision||current.sourceDigest!==bound.sourceDigest)){
             const updated=snapshotHvpCutRequest(revalidate(current));

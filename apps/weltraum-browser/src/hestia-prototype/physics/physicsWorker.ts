@@ -75,7 +75,7 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
 );
 export type HvpPhysicsRequest = HvpPhysicsMessage extends infer M ? M extends HvpPhysicsMessage ? Omit<M,"id"|keyof HvpPhysicsBinding> : never : never;
 export type HvpPhysicsReply = HvpPhysicsBinding & { readonly id: number; readonly sequence:number; readonly snapshot?: HvpPhysicsSnapshot; readonly error?: string; readonly rejected?: string;readonly bodyPreparation?:HvpMovingCutPreparation;
-  readonly terrainReceipt?:HvpTerrainBinding;readonly terrainMotion?:HvpTerrainMotion;readonly recoveryAssets?:HvpTerrainRecoveryAssets;
+  readonly terrainReceipt?:HvpTerrainBinding;readonly terrainMotion?:HvpTerrainMotion;readonly beforeTerrainInstall?:HvpTerrainMotion;readonly recoveryAssets?:HvpTerrainRecoveryAssets;
   readonly bodyChildProjection?:HvpBodyProjectionReply;
   readonly bodyMeshAdmission?:HvpBodyMeshAdmissionReply;
   readonly bodyMeshWork?:{readonly beginRequestId:number;readonly projection:HvpBodyChildProjection;readonly budget:HvpBodyMeshBudget};
@@ -439,6 +439,7 @@ port.onmessage = async ({ data }) => {
             ||(data.sourceDigest!==undefined&&(data.sourceDigest!==binding.targetDigest||data.sourceEpoch!==binding.epoch||data.sourceSessionId!==binding.sessionId)))){
             throw new Error("Invalid terrain publication binding");
           }
+          if(binding){post({id:data.id,beforeTerrainInstall:session.captureBeforeNativeInstall(binding)});}
           if(data.prepareRequestId===undefined){if(terrainPlanTicket!==undefined){throw new Error("Native terrain preparation pending");}
             session.prepareTerrain(data.transactionId,data.generation,data.replacements,data.fragments);}
           else{
@@ -448,9 +449,6 @@ port.onmessage = async ({ data }) => {
               ||ticket.sourceSessionId!==data.sourceSessionId||ticket.sourceEpoch!==data.sourceEpoch){throw new Error("Stale Native terrain preparation ticket");}
             terrainPlanTicket=undefined;
             session.prepareTerrain(ticket.id,ticket.generation,ticket.plan.replacements,ticket.plan.fragments,ticket.plan);
-          }
-          if(binding){
-            try{motion=session.captureTerrainRecovery(binding);}catch(error){session.rollbackTerrain(data.transactionId);throw error;}
           }
           terrainBinding=binding;receipt=binding;break;
         }

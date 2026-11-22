@@ -25,11 +25,11 @@ const setup=(fault="",trace?:HvpCutTrace,compileWait?:Promise<void>)=>{
   return {root,consumer,request,events,spans,clearFault:()=>{fault="";},stageCommandId:()=>stageCommandId,stageArity:()=>stageArity,read:()=>({visible,world,held})};
 };
 describe("HVP paired terrain consumer",()=>{
-  it.each(["ready","render-recovery","ownerId","sourceDigest","centerOfMass","cellCount","massKg","colliders","sourceBytes"] as const)("validates native source identity before L and defers display (%s)",async fault=>{
+  it.each(["ready","render-recovery","recut-during-upload","ownerId","sourceDigest","centerOfMass","cellCount","massKg","colliders","sourceBytes"] as const)("validates native source identity before L and defers display (%s)",async fault=>{
     const cells=new Set<string>();for(let y=0;y<=80;y+=1){cells.add(`176:${y}:77`);}cells.add("177:80:77");cells.add("178:80:77");
     const root=createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},sourceDigest:"12345678",
       readSlot:(x,y,z)=>cells.has(`${x}:${y}:${z}`)?1:0},"pregraphics",0),before=root.read(),events:string[]=[];
-    let actual:ReturnType<HvpPhysicsClient["preparedTerrainFragments"]>=[],released=false;
+    let actual:ReturnType<HvpPhysicsClient["preparedTerrainFragments"]>=[],released=false,recut=false;
     const prepare:HvpPhysicsClient["prepareTerrain"]=async(_id,_rev,_meshes,fragments,work)=>{
       const views=(fragments??[]).map(f=>({ownerId:f.ownerId,sourceDigest:"fnv1a64-v1:0000000000000001",centerOfMass:{x:0,y:1,z:0},
         cellCount:f.cells.length,massKg:f.massKg,colliders:1,sourceBytes:131072}));
@@ -37,26 +37,31 @@ describe("HVP paired terrain consumer",()=>{
       actual=views.map(view=>{
         if(fault==="centerOfMass"){return {...view,centerOfMass:{...view.centerOfMass,x:1}};}
         if(fault==="ownerId"||fault==="sourceDigest"){return {...view,[fault]:view[fault]+"different"};}
-        if(fault!=="ready"&&fault!=="render-recovery"){return {...view,[fault]:view[fault]+1};}
+        if(fault!=="ready"&&fault!=="render-recovery"&&fault!=="recut-during-upload"){return {...view,[fault]:view[fault]+1};}
         return view;
       });events.push("prepare");
     };
     const consumer=createHvpTerrainConsumer(root,async plan=>({source:plan.after,render:new Map(),collision:new Map()}),
-      (_products,bodies)=>{events.push("graphics");expect(bodies).toHaveLength(1);
+      (_products,bodies)=>{events.push("graphics");expect(bodies??[]).toHaveLength(recut?0:1);
+        if(fault==="recut-during-upload"){recut=true;}
         if(fault==="render-recovery"){throw new HvpRenderStageRecoveryError([new Error("upload")],"device lost");}
         return {publish(){events.push("visible");},rollback(){},finish(){}};},
-      {prepareTerrain:prepare,preparedTerrainFragments:()=>actual,async commitTerrain(){events.push("commit");},publishTerrain(){events.push("hold");},
+      {prepareTerrain:prepare,preparedTerrainFragments:()=>actual,
+        read:()=>({terrainFragments:recut?[]:actual,terrainTransaction:"Idle"} as ReturnType<HvpPhysicsClient["read"]>),async commitTerrain(){events.push("commit");},publishTerrain(){events.push("hold");},
         async rollbackTerrain(){events.push("rollback");},async finalizeTerrain(){events.push("finalize");},async command(){}},[],
       async cut=>bindHvpSupportPlan(cut,analyzeHvpTerrainSupport(cut),()=>{released=true;},createHvpSupportPhaseCredits(4096,0)));
     const result=await consumer.submit({sessionId:before.sessionId,epoch:0,revision:0,sourceDigest:before.sourceDigest,commandId:"under",toolPolicy:"hvp-plasma-v1",
       shape:{kind:"Box",min:[176,79,77],max:[177,80,78]}});
     expect(released).toBe(true);
-    if(fault!=="ready"&&fault!=="render-recovery"){
+    if(fault!=="ready"&&fault!=="render-recovery"&&fault!=="recut-during-upload"){
       expect(result.status).toBe("Rejected");expect(root.read()).toBe(before);expect(events).toEqual(["prepare","rollback"]);return;
     }
     expect(events).toEqual(["prepare","commit","hold","finalize"]);expect(result.status).toBe("Applied");
     await consumer.presentNext();expect(events).toContain("graphics");expect(root.read().revision).toBe(1);
-    if(fault==="render-recovery"){expect(consumer.read().renderError).toMatch(/device lost/);}else{expect(events).toContain("visible");}
+    if(fault==="recut-during-upload"){
+      expect(events).not.toContain("visible");expect(consumer.read().renderPending).toBe(true);
+      await consumer.presentNext();expect(events).toContain("visible");expect(consumer.presentedRoot()).toBe(root.read());
+    }else if(fault==="render-recovery"){expect(consumer.read().renderError).toMatch(/device lost/);}else{expect(events).toContain("visible");}
   });
   it("replays the saved exact outcome without recompiling or committing the cut again",async()=>{
     const s=setup(),request=s.request(),pending=s.consumer.submit(request);
@@ -168,15 +173,18 @@ describe("HVP paired terrain consumer",()=>{
     expect((await Promise.all(tasks)).every(r=>r.status==="Rejected")).toBe(true);
     expect(s.root.read().revision).toBe(0);
   });
-  it("cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing",async()=>{
-    for(const fault of ["compile","stage","prepare","commit","publish","world-publish","finalize","retire",""]){
+  it.each(["compile","stage","prepare","commit","publish","world-publish","finalize","retire","success"])(
+    "keeps canonical outcomes and publication order across trace modes (%s)",async phase=>{
+      const fault=phase==="success"?"":phase;
       const plain=setup(fault),observed=setup(fault,()=>{}),throwing=setup(fault,()=>{throw new Error("trace sink");});
-      const results=await Promise.all([plain.consumer.submit(plain.request()),observed.consumer.submit(observed.request()),throwing.consumer.submit(throwing.request())]);
+      const lanes=[plain,observed,throwing];
+      const results=await Promise.all(lanes.map(lane=>lane.consumer.submit(lane.request())));
+      await Promise.all(lanes.map(lane=>lane.consumer.presentNext()));
       expect(results[1]).toEqual(results[0]);expect(results[2]).toEqual(results[0]);
-      expect(observed.root.checkpoint()).toEqual(plain.root.checkpoint());expect(throwing.root.checkpoint()).toEqual(plain.root.checkpoint());
+      const checkpoint=plain.root.checkpoint();
+      expect(observed.root.checkpoint()).toEqual(checkpoint);expect(throwing.root.checkpoint()).toEqual(checkpoint);
       expect(observed.events).toEqual(plain.events);expect(throwing.events).toEqual(plain.events);
-    }
-  });
+    });
   it("cut trace records one real command interval, ordered phases, and the traced stage command ID",async()=>{
     const plain=setup(""),s=setup("",()=>{});const request=s.request();const task=s.consumer.submit(request);expect(s.consumer.submit(request)).toBe(task);
     await plain.consumer.submit(plain.request());await plain.consumer.presentNext();expect(plain.stageArity()).toBe(1);

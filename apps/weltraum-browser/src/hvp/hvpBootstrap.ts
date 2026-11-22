@@ -2364,7 +2364,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
        admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
       const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;
       admitScene({...ledger,totalCpuBytes:resident+physicsPrepareBytes});
-      return terrainCompiler!.compile(plan,support,resident,liveSupport!==undefined);
+      return terrainCompiler!.compile(plan,support,resident,privateCutSource&&overrides.createTerrainCompiler===undefined,cutTraceDispatch);
       },stageTerrain,physics,plants.filter(p=>p.kind==="tree").map(p=>p.position),async plan=>{
         admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
         const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;

@@ -1,6 +1,6 @@
 import type { HvpCell } from "../../../hestia-prototype/terrain/picking";
 
-import type { HvpTerrainSnapshot } from "../../../hestia-prototype/terrain/cutPlan";
+import { copyHvpOwnedTerrainLeaf,type HvpTerrainSnapshot } from "../../../hestia-prototype/terrain/cutPlan";
 import { preparePart, type PartFacts } from "./partFacts";
 
 export const SIDE = 16;
@@ -37,18 +37,30 @@ export const localOffset = (x: number, y: number, z: number) => (x & 15) + ((y &
 export function buildBlock(source: HvpTerrainSnapshot, key: number, origin: HvpCell): ComponentBlock {
   const [ox, oy, oz] = origin;
   const labels = new Int16Array(VOLUME);
-  labels.fill(UNKNOWN);
-  const slots = new Uint8Array(VOLUME);
-  let occupied = 0;
-  for (let z = 0; z < SIDE && z + oz < source.sizeZ; z++) {
-    for (let y = 0; y < SIDE && y + oy < source.sizeY; y++) {
-      for (let x = 0; x < SIDE && x + ox < source.sizeX; x++) {
-        const value = source.readSlot(ox + x, oy + y, oz + z);
-        if (value === undefined) continue;
-        if (!Number.isInteger(value) || value < 0 || value > 4) throw new Error("Invalid support material");
-        slots[localOffset(x,y,z)] = value;
-        labels[localOffset(x,y,z)] = value === 0 ? 0 : SOLID;
-        if (value !== 0) occupied++;
+  // Only a producer-issued complete leaf can bypass per-cell reads. Partial, unknown,
+  // public COW and foreign readers keep their scalar coverage checks.
+  const complete=(ox+SIDE<=source.sizeX && oy+SIDE<=source.sizeY && oz+SIDE<=source.sizeZ)
+    ? copyHvpOwnedTerrainLeaf(source,ox>>4,oy>>4,oz>>4):undefined;
+  const slots=complete??new Uint8Array(VOLUME);
+  let occupied=0;
+  if(complete) {
+    for(let pos=0;pos<VOLUME;pos++){
+      const slot=slots[pos];
+      if(slot>4) throw new Error("Invalid support material");
+      if(slot!==0){labels[pos]=SOLID;occupied++;}
+    }
+  } else {
+    labels.fill(UNKNOWN);
+    for(let z=0;z<SIDE && z+oz<source.sizeZ;z++) {
+      for(let y=0;y<SIDE && y+oy<source.sizeY;y++) {
+        for(let x=0;x<SIDE && x+ox<source.sizeX;x++) {
+          const value=source.readSlot(ox+x,oy+y,oz+z);
+          if(value===undefined) continue;
+          if(!Number.isInteger(value) || value<0 || value>4) throw new Error("Invalid support material");
+          const pos=x+(y<<4)+(z<<8);
+          slots[pos]=value;labels[pos]=value===0?0:SOLID;
+          if(value!==0) occupied++;
+        }
       }
     }
   }

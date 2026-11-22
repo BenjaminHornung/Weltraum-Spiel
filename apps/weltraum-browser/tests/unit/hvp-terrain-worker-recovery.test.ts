@@ -11,6 +11,8 @@ it("reconstructs both sides of L with exact queries, sources and body motion at 
   const owner=await createHvpWorkerPhysicsSession([...collisionSectors(floor)],{x:1,y:2,z:1},undefined,{spawn:{x:2,y:2,z:2},coverage:[{minX:-16,maxX:16,minZ:-16,maxZ:16}]},undefined,undefined,"hvp-world");
   const ray=(s:typeof owner)=>[s.queryTerrainRay({x:.4,y:1,z:.4},{x:0,y:-1,z:0},2),
     s.queryTerrainRay({x:.06,y:2,z:.06},{x:0,y:-1,z:0},1)];
+  const capsule=(s:typeof owner)=>[s.queryTerrainCapsule({x:.8,y:1,z:.4},{x:0,y:-1,z:0},2,.6,.3),
+    s.queryTerrainCapsule({x:.06,y:3,z:.06},{x:0,y:-1,z:0},2,.6,.3)];
   try{
     const assets=structuredClone(owner.captureTerrainAssets());
     owner.play();owner.advance(1/60);
@@ -21,6 +23,7 @@ it("reconstructs both sides of L with exact queries, sources and body motion at 
       replacements:[{index:0,mesh:{vertices:new Float32Array(),indices:new Uint32Array()}}],fragments:[fragment]}]},held=owner.read();
     expect(after.motion.tick.ticks).toBe(before.motion.tick.ticks);
     expect(ray(owner)).toEqual([null,{ownerId:fragment.ownerId,distance:expect.any(Number)}]);
+    expect(capsule(owner)).toEqual([null,{ownerId:fragment.ownerId,distance:expect.any(Number)}]);
     owner.finalizeTerrain("cut");
     const released=owner.read();
     for(const [image,rev] of [[before,0],[after,1]] as const){
@@ -29,7 +32,7 @@ it("reconstructs both sides of L with exact queries, sources and body motion at 
         const snap=recovered.read();
         expect(snap).toMatchObject({ticks:held.ticks,terrainGeneration:rev,terrainTransaction:"Idle"});
         if(rev===1){
-          expect(ray(recovered)).toEqual(ray(owner));expect(snap.terrainFragments).toEqual(released.terrainFragments);
+          expect(capsule(recovered)).toEqual(capsule(owner));expect(ray(recovered)).toEqual(ray(owner));expect(snap.terrainFragments).toEqual(released.terrainFragments);
           expect(snap.bodyCount).toBe(released.bodyCount);expect(snap.colliderCount).toBe(released.colliderCount);
           expect(snap.bodies).toEqual(released.bodies);expect(snap.player).toEqual(released.player);
         }else{expect(ray(recovered)).toEqual([{ownerId:null,distance:expect.any(Number)},null]);expect(snap.terrainFragments).toEqual([]);}

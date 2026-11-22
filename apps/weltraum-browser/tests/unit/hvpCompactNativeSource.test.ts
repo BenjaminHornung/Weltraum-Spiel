@@ -11,6 +11,10 @@ import {admitHvpTransferredRigidBodyOwnedSteps, hvpRigidColliderBoxes, prepareHv
 import {ingestHvpStructuralCells, prepareHvpStructuralIngestOwnedSteps,
   type HvpStructuralCell} from "../../src/hestia-prototype/terrain/structuralIngest";
 
+import {createOwnedAdaptiveBrickScope, adaptiveMaterializeBrickSteps, materializeAdaptiveBrick} from "../../src/voxel/adaptive/materialization";
+import {adaptiveEditJournalSteps, adaptiveValidateEditJournalSteps, type AdaptiveEditInput} from "../../src/voxel/adaptive/edits";
+import {authorityRevision, createAdaptiveBaseFieldDescriptor, createAdaptiveBrickKey, stableAuthorityId} from "../../src/voxel/adaptive";
+
 const materials = [1, 2, 3, 4].map(i => ({materialId: i, densityKgPerCubicMeter: 2400 - i * 63,
   structuralClass: `m${i}`, destructible: true, tags: null}));
 type Triple = readonly [number, number, number];
@@ -135,3 +139,39 @@ it("installs identical R05 bodies, restores their checkpoint and recuts the rest
       .toEqual(prepareHvpLocalBodyCut(original.source, hit, "recut", 2, "Box"));
   } finally { for (const world of worlds) world.free(); }
 }, 30_000);
+
+
+it("reuses only its own issued journal until disposal and rasterizes clipped overlapping runs in journal order", () => {
+  withinBudget(reserve => {
+    const run = (index: number, x: number, width: number): AdaptiveEditInput => ({
+      operation: "AddBox", sequence: index, expectedRegionRevision: index - 1, resultRegionRevision: index,
+      editId: "overlay." + index, actorId: "test", sourceId: "fixture", materialId: "hvp.material." + index,
+      box: {min: {x, y: -1, z: 0}, max: {x: x + width, y: 0, z: 1}},
+    });
+    const scope = createOwnedAdaptiveBrickScope(reserve, true);
+    let disposed = false;
+    try {
+      const journal = drain(adaptiveEditJournalSteps([run(1, -4, 12), run(2, 5, 15)], 0, scope.options));
+      expect(drain(adaptiveValidateEditJournalSteps(journal, scope.options))).toBe(journal);
+      const corrupt = Object.freeze({...journal, digest: "fnv1a64-v1:0000000000000000"});
+      expect(() => drain(adaptiveValidateEditJournalSteps(corrupt, scope.options))).toThrow(/digest/i);
+      const sparse = Array(2);
+      sparse[1] = journal.records[1];
+      expect(() => drain(adaptiveValidateEditJournalSteps(Object.freeze({...journal, records: Object.freeze(sparse)}), scope.options))).toThrow();
+
+      const key = createAdaptiveBrickKey({bodyId: "body.hestia", surfaceFrameId: "frame.hvp", regionId: "region.raster",
+        generatorVersion: "test", level: 4, originQuantum: {x: 0, y: -16, z: 0}});
+      const baseField = createAdaptiveBaseFieldDescriptor({kind: "constant-v1", identity: stableAuthorityId("base.raster"),
+        version: stableAuthorityId("v1"), sourceRevision: authorityRevision(1), sample: {density: 0, occupancy: 0, materialId: null}});
+      const input = {key, baseField, editJournal: journal};
+      const candidate = drain(adaptiveMaterializeBrickSteps(input, scope.options));
+      expect(candidate).toEqual(materializeAdaptiveBrick(input));
+      expect(candidate.material.slice(240, 256)).toEqual([...Array(5).fill("hvp.material.1"), ...Array(11).fill("hvp.material.2")]);
+      scope.dispose();
+      disposed = true;
+      const revalidated = drain(adaptiveValidateEditJournalSteps(journal, scope.options));
+      expect(revalidated).toEqual(journal);
+      expect(revalidated).not.toBe(journal);
+    } finally { if (!disposed) scope.dispose(); }
+  });
+});

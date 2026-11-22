@@ -147,6 +147,57 @@ export function* prepareHvpStructuralIngestJournalOwnedSteps(id:string,input:rea
     baseField:raw.baseField,editJournal:raw.editJournal});
 }
 
+/** The compact receiver already expanded the material runs. Capture them into a bounded
+ * private array once. No map, mutable source record, or partial run escapes this generator. */
+function* compactJournalPrefixSteps(id: string, input: readonly HvpStructuralCell[], materialInput: readonly unknown[],
+  owned: AdaptiveOwnedJournalOptions): Generator<void, OwnedIngestPrefix, void> {
+  if (!/^[a-zA-Z0-9_.:-]{1,96}$/.test(id)) throw new Error("Invalid HVP structural ID");
+  if (input.length === 0 || input.length > 1024) throw new Error("Invalid compact terrain cell count");
+  const materials = yield* structuralMaterialTableSteps(materialInput, owned.reserve);
+  const ids = new Set<number>(materials.map(m => m.materialId));
+  const values = yield* adaptiveDenseArraySteps(input, "ingest/cells", "InvalidCanonicalValue",
+    {maximumLength: 1024}, owned.reserve);
+  const compare = (a: HvpStructuralCell, b: HvpStructuralCell) => a.z - b.z || a.y - b.y || a.x - b.x;
+  const cells: HvpStructuralCell[] = [];
+  let ordered = true;
+  owned.reserve(4096 + input.length * 1024, true);
+  for (let i = 0; i < values.length; i++) {
+    const cell = values[i] as HvpStructuralCell | undefined;
+    if (!cell) throw new Error("Invalid canonical HVP cell/material");
+    const {x, y, z, materialId} = cell;
+    if (![x, y, z].every(n => Number.isSafeInteger(n) && Math.abs(n) <= 1_000_000) || !ids.has(materialId)) {
+      throw new Error("Invalid canonical HVP cell/material");
+    }
+    cells.push({x, y, z, materialId});
+    if (i && compare(cells[i - 1]!, cells[i]!) > 0) ordered = false;
+    if (i % 64 === 63) yield;
+  }
+  if (!ordered) cells.sort(compare);
+  const origins = new Map<string, {x:number; y:number; z:number}>();
+  const runs: IngestRun[] = [];
+  for (let i = 0; i < cells.length; i++) {
+    const cell = cells[i]!;
+    if (i && compare(cell, cells[i - 1]!) === 0) throw new Error("Duplicate HVP cell");
+    const run = runs.at(-1);
+    if (run && run.y === cell.y && run.z === cell.z && run.end === cell.x && run.materialId === cell.materialId) {
+      run.end++;
+    } else {
+      runs.push({...cell, end: cell.x + 1});
+    }
+    const x = Math.floor(cell.x / 16) * 16, y = Math.floor(cell.y / 16) * 16, z = Math.floor(cell.z / 16) * 16;
+    const key = x + "," + y + "," + z;
+    if (!origins.has(key)) {
+      origins.set(key, {x, y, z});
+      if (origins.size * ADAPTIVE_BRICK_ESTIMATED_BYTES > 16 * 1024 * 1024) throw new Error("HVP ingest BudgetExceeded: brick working set");
+    }
+    if (i % 64 === 63) yield;
+  }
+  const journal = yield* journalPreparationSteps(id, runs, owned);
+  Object.freeze(journal.frame.objectOriginQuantum);
+  Object.freeze(journal.frame);
+  return {cells, runs, origins: [...origins.values()], materials, ...journal};
+}
+
 /** Direct-module only, NO Worker/public-root caller or issuer. Counts bounds, not physical/time proof. */
 export const createOwnedHvpStructuralIngestJournalCursor=(id:string,input:readonly HvpStructuralCell[],
   materialInput:readonly unknown[],residentBytesValue:number,prepareLimitBytes=96*1024*1024)=>{
@@ -356,6 +407,7 @@ function* ingestHvpStructuralSteps(id:string,input:readonly HvpStructuralCell[],
   owned?:AdaptiveOwnedJournalOptions,measure:IngestMeasure=noMeasure,onPhase?:(phase:string)=>void,runMaterialization=false){
   onPhase?.("ownerIngestPrefix");
   const prefix=owned===undefined?adaptiveDrainSteps(ingestJournalPrefixSteps(id,input,materialInput,undefined,measure))
+    :runMaterialization ? yield* compactJournalPrefixSteps(id,input,materialInput,owned)
     :yield* prepareHvpStructuralIngestJournalOwnedSteps(id,input,materialInput,owned.reserve,owned.hash);
   onPhase?.("ownerIngestBricks");
   const bricks=owned===undefined?measure("ingestMaterializeMs",()=>adaptiveDrainSteps(ingestBricksSteps(prefix)))
