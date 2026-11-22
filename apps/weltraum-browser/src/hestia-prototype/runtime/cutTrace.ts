@@ -58,6 +58,7 @@ import type { createHvpMeasurements } from "./measurements";
 import type { RenderCommandResult } from "../../presentation/renderCommands";
 
 export interface HvpCutRenderFacts {
+  readonly terrainPresentationPending?: boolean;
   readonly root: HvpTerrainSnapshot;
   readonly nativeGeneration: number;
   readonly recoveryHold: boolean;
@@ -117,11 +118,12 @@ type HvpRawSpan = Readonly<{
   duration: number;
 }>;
 type HvpSpanTiming = Readonly<{ origin: number; start: number; end: number }>;
-type HvpInputRecord = Readonly<{ origin: number; start: number }>;
+type HvpInputRecord = Readonly<{ origin: number; start: number; eventTimeStamp?: number }>;
 type HvpPendingRender = Readonly<{
   commandId: string;
   input: HvpInputRecord;
   root: WeakRef<HvpTerrainSnapshot>;
+  awaitingPresentation?: boolean;
   revision: number;
   digest: string;
   nativeGeneration: number;
@@ -267,7 +269,8 @@ export function createHvpCutObservation(
   sink: HvpCutObservationSink,
   readFrame: (bodyCommandId?: string) => HvpCutRenderFacts
 ): {
-  confirm(run: () => void): void;
+  confirm(run: () => void, eventTimeStamp?: number): void;
+  terrainPublished(commandId: string, root: HvpTerrainSnapshot, nativeGeneration: number): void;
   trace: HvpCutTrace;
   render(run: () => RenderCommandResult): RenderCommandResult;
   read(): HvpCutObservationState;
@@ -388,7 +391,7 @@ export function createHvpCutObservation(
         return;
       }
       if (recoveryHold || nativeGeneration !== root.revision
-        || !sameKeys(activeTerrainKeys, visibleTerrainKeys)) {
+        || (!facts.terrainPresentationPending && !sameKeys(activeTerrainKeys, visibleTerrainKeys))) {
         if (isCurrent(generation)) {
           drop("invalidFrame");
         }
@@ -411,7 +414,8 @@ export function createHvpCutObservation(
         return;
       }
       pending = Object.freeze({ commandId, input, root: new WeakRef(root), revision: root.revision,
-        digest: root.sourceDigest, nativeGeneration, activeTerrainKeys: activeKeys, ...(body ? { body } : {}) });
+        digest: root.sourceDigest, nativeGeneration, activeTerrainKeys: activeKeys,
+        awaitingPresentation: !bodyCommand && facts.terrainPresentationPending === true, ...(body ? { body } : {}) });
     } catch {
       if (isCurrent(generation)) {
         drop("invalidFrame");
@@ -448,7 +452,7 @@ export function createHvpCutObservation(
     }
   };
 
-  const confirm = (run: () => void): void => {
+  const confirm = (run: () => void, eventTimeStamp?: number): void => {
     const previous = activeInput;
     const generation = operationGeneration;
     activeInput = undefined;
@@ -470,7 +474,9 @@ export function createHvpCutObservation(
         if (!isFiniteNonNegative(start) || !isFiniteNonNegative(origin) || !Number.isFinite(absoluteStart)) {
           drop("invalidSpan");
         } else {
-          activeInput = Object.freeze({ origin, start });
+          // Preserve the callback-based series for historical A/B runs.
+          const sameClock = isFiniteNonNegative(eventTimeStamp) && eventTimeStamp <= start;
+          activeInput = Object.freeze(sameClock ? { origin, start, eventTimeStamp } : { origin, start });
         }
       }
     }
@@ -609,7 +615,7 @@ export function createHvpCutObservation(
   };
 
   const render = (run: () => RenderCommandResult): RenderCommandResult => {
-    const candidate = pending;
+    let candidate = pending;
     if (disposed || !candidate) {
       return run();
     }
@@ -638,6 +644,14 @@ export function createHvpCutObservation(
       consumePending("invalidFrame");
       return run();
     } else {
+      if (candidate.awaitingPresentation && candidate.root.deref() === before.root && before.nativeGeneration === candidate.nativeGeneration && !before.recoveryHold) {
+        if (before.terrainPresentationPending) return run();
+        if (factsStatus(before)!=="valid" || !sameKeys(before.activeTerrainKeys,before.visibleTerrainKeys)) {
+          consumePending("invalidFrame");
+          return run();
+        }
+        candidate = pending = Object.freeze({...candidate, awaitingPresentation:false, activeTerrainKeys:Object.freeze([...before.activeTerrainKeys])});
+      }
       const reason = comparePending(candidate, before);
       if (!isCurrent(generation) || pending !== candidate) {
         return run();
@@ -759,5 +773,25 @@ export function createHvpCutObservation(
     activeInput = undefined;
   };
 
-  return { confirm, trace, render, read, dispose };
+  const terrainPublished = (commandId: string, root: HvpTerrainSnapshot, nativeGeneration: number): void => {
+    const input = inputs.get(`terrain:${commandId}`);
+    if (disposed || input?.eventTimeStamp === undefined || nativeGeneration !== root.revision) {
+      return;
+    }
+    try {
+      const end = performance.now();
+      if (input.origin !== performance.timeOrigin || !Number.isFinite(end) || end < input.start) {
+        drop("invalidSpan");
+        return;
+      }
+      sink.record("cutDomInputToPhysicsPublishedMs", input.eventTimeStamp, end - input.eventTimeStamp, {
+        commandId, sessionId: root.sessionId, epoch: root.epoch, revision: root.revision,
+        sourceDigest: root.sourceDigest, nativeGeneration, callbackStart: input.start
+      });
+    } catch {
+      drop("diagnosticFailure");
+    }
+  };
+
+  return { confirm, trace, render, read, dispose, terrainPublished };
 }

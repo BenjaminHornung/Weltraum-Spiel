@@ -1,6 +1,6 @@
 import {HVP_COAST_REGISTRY_DIGEST} from "../../hvp/hvpCoastSource";
 import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
-import type {HvpPreparedCut,HvpTerrainSnapshot} from "./cutPlan";
+import {copyHvpOwnedTerrainLeaf,type HvpPreparedCut,type HvpTerrainSnapshot} from "./cutPlan";
 
 export const HVP_CHUNK_EDGE=32;
 export const HVP_CHUNK_HALO=34;
@@ -36,7 +36,7 @@ export const buildHvpChunkInput=(s:HvpTerrainSnapshot,id:number,readHalo:(x:numb
   for(;;){const step=steps.next();if(step.done){return step.value;}}
 };
 export function* buildHvpChunkInputSteps(s:HvpTerrainSnapshot,id:number,readHalo:(x:number,y:number,z:number)=>number|undefined,
-  haloBinding:string,reserve?:StructuralOwnedReserve,worldId=s.sessionId,neighbor?:HvpTerrainSnapshot):Generator<string,{slots:Uint8Array;payload:HvpChunkPayload},unknown>{
+  haloBinding:string,reserve?:StructuralOwnedReserve,worldId=s.sessionId,neighbor?:HvpTerrainSnapshot,ownedCore=false):Generator<string,{slots:Uint8Array;payload:HvpChunkPayload},unknown>{
   validateSource(s);const [cx,cy,cz]=hvpChunkCoordinates(id),sx=cx*32,sy=cy*32,sz=cz*32;
   if(typeof readHalo!=="function"||!/^[-A-Za-z0-9:._]{1,512}$/.test(haloBinding)||!/^[-A-Za-z0-9:._]{1,128}$/.test(worldId)){throw new Error("Invalid chunk halo binding");}
   let physicalHalo:HvpChunkPayload["physicalHalo"]="closed-exterior",haloNeighbor:HvpChunkPayload["haloNeighbor"]=null;
@@ -48,7 +48,31 @@ export function* buildHvpChunkInputSteps(s:HvpTerrainSnapshot,id:number,readHalo
       sourceDigest:neighbor.sourceDigest,baseDigest:neighbor.baseDigest,originMeters:Object.freeze({...neighbor.originMeters})});
   }
   reserve?.(8192+34**3);const slots=new Uint8Array(34**3);let work=0;
+  let corePacked=false;
+  if(ownedCore){
+    // Owner-issued defensive copies. Generic/foreign readers retain their per-cell reads and halo order.
+    const first=copyHvpOwnedTerrainLeaf(s,sx>>4,sy>>4,sz>>4);
+    if(first){
+      reserve?.(8*4096+512);
+      corePacked=true;
+      for(let leaf=0;leaf<8;leaf++){
+        const dx=(leaf&1)*16,dy=((leaf>>1)&1)*16,dz=(leaf>>2)*16;
+        const page=leaf===0?first:copyHvpOwnedTerrainLeaf(s,(sx+dx)>>4,(sy+dy)>>4,(sz+dz)>>4);
+        if(!page){corePacked=false;break;}
+        for(let z=0;z<16;z++)for(let y=0;y<16;y++){
+          const from=(z*16+y)*16,to=((dz+z+1)*34+dy+y+1)*34+dx+1;
+          for(let x=0;x<16;x++){
+            const slot=page[from+x]!;
+            if(slot>4)throw new Error("Invalid chunk material");
+            slots[to+x]=slot;
+          }
+        }
+        if(reserve)yield "chunkCoreLeaf";
+      }
+    }
+  }
   for(let z=-1;z<=32;z+=1){for(let y=-1;y<=32;y+=1){for(let x=-1;x<=32;x+=1){
+    if(corePacked&&z>=0&&z<32&&y>=0&&y<32&&x===0){x=31;continue;}
     const gx=sx+x,gy=sy+y,gz=sz+z;
     const inside=gx>=0&&gx<256&&gy>=0&&gy<128&&gz>=0&&gz<256;
     const value=inside?s.readSlot(gx,gy,gz):readHalo(gx,gy,gz);
@@ -68,10 +92,12 @@ export const hvpDirtyChunks=(plan:Pick<HvpPreparedCut,"changed">):number[]=>{
   const ids=new Set<number>();
   for(const {cell:[x,y,z]} of plan.changed){
     if(![x,y,z].every(Number.isSafeInteger)||x<0||x>=256||y<0||y>=128||z<0||z>=256){throw new Error("Invalid chunk change coverage");}
-    for(const dz of [-1,0,1]){for(const dy of [-1,0,1]){for(const dx of [-1,0,1]){
-      const a=x+dx,b=y+dy,c=z+dz;
-      if(a>=0&&a<256&&b>=0&&b<128&&c>=0&&c<256){ids.add(Math.floor(a/32)+Math.floor(b/32)*8+Math.floor(c/32)*32);}
-    }}}
+    const firstX=Math.max(0,x-1)>>5,lastX=Math.min(255,x+1)>>5;
+    const firstY=Math.max(0,y-1)>>5,lastY=Math.min(127,y+1)>>5;
+    const firstZ=Math.max(0,z-1)>>5,lastZ=Math.min(255,z+1)>>5;
+    for(let cz=firstZ;cz<=lastZ;cz++)for(let cy=firstY;cy<=lastY;cy++)for(let cx=firstX;cx<=lastX;cx++){
+      ids.add(cx+cy*8+cz*32);
+    }
   }
   return [...ids].sort((a,b)=>a-b);
 };

@@ -255,6 +255,47 @@ describe("HVP cut trace", () => {
     return { root, sink, observer, setFacts: (next: HvpCutRenderFacts) => { facts = next; }, setReadFailure: (value: boolean) => { readFailure = value; } };
   };
 
+  it("waits through old rendered frames until the cut revision has its new visible keys",()=>{
+    const f=observerFixture(), result=renderCommandResult("Accepted");
+    f.setFacts({...makeFacts(f.root,["hvp:terrain:s0:r0"]),terrainPresentationPending:true});
+    f.observer.confirm(()=>f.observer.trace(submitted()));
+    f.observer.trace(terminal("cutTotalAppliedMs"));
+    f.observer.render(()=>result);
+    expect(f.observer.read().pendingRender).toBe(true);
+    expect(f.sink.record.mock.calls.some(([name])=>name==="cutFirstCommittedRenderSubmitMs")).toBe(false);
+    f.setFacts({...makeFacts(f.root,["hvp:terrain:s0:r1"]),terrainPresentationPending:false});
+    f.observer.render(()=>result);
+    expect(f.observer.read().pendingRender).toBe(false);
+    expect(f.sink.record.mock.calls.find(([name])=>name==="cutFirstCommittedRenderSubmitMs")?.[3]).toMatchObject({activeTerrainKeys:["hvp:terrain:s0:r1"]});
+  });
+
+  it("measures the DOM event through the matching native publication independently of callback timing", () => {
+    const f = observerFixture();
+    const now = vi.spyOn(performance, "now").mockReturnValue(82);
+    try {
+      const root = f.root.read();
+      f.observer.confirm(() => f.observer.trace(submitted("held", 82)), 37);
+      now.mockReturnValue(89);
+      f.observer.terrainPublished("foreign", root, root.revision);
+      f.observer.terrainPublished("held", root, root.revision + 1);
+      expect(f.sink.record.mock.calls.filter(([name]) => name === "cutDomInputToPhysicsPublishedMs")).toHaveLength(0);
+      f.observer.terrainPublished("held", root, root.revision);
+      expect(f.sink.record).toHaveBeenCalledWith("cutDomInputToPhysicsPublishedMs", 37, 52,
+        expect.objectContaining({commandId:"held", sessionId:root.sessionId, epoch:root.epoch,
+          revision:root.revision, nativeGeneration:root.revision, callbackStart:82}));
+      f.observer.trace(terminal("cutTotalAppliedMs", "held", 82, 10));
+      expect(f.sink.record).toHaveBeenCalledWith("cutInputToAppliedMs", 82, 10, expect.any(Object));
+    } finally { now.mockRestore(); }
+  });
+
+  it.each([undefined, NaN, Infinity, -1, 1e12])("keeps a missing or foreign DOM timestamp out of the deadline series", stamp => {
+    const f = observerFixture();
+    const root = f.root.read();
+    f.observer.confirm(() => f.observer.trace(submitted("test")), stamp);
+    f.observer.terrainPublished("test", root, root.revision);
+    expect(f.sink.record.mock.calls.some(([name]) => name === "cutDomInputToPhysicsPublishedMs")).toBe(false);
+  });
+
   it("bounds actual maximal observer input, key and child records before accepted render",()=>{
     const root=makeRoot("bounded-observer"),id="moving-cut-0".padEnd(128,"x");
     const mainKeys=Array.from({length:64},(_,index)=>`hvp:terrain:s${index}`.padEnd(128,"x"));

@@ -8,7 +8,8 @@ export interface HvpCellReader {
   readSlot(x: number, y: number, z: number): number | undefined;
 }
 export type HvpCellHit = { readonly kind: "Hit"; readonly cell: HvpCell; readonly slot: number; readonly distance: number; readonly normal: HvpCell }
-  | { readonly kind: "Unknown" | "Miss"; readonly distance: number };
+  | { readonly kind: "Unknown"; readonly cell: HvpCell; readonly distance: number }
+  | { readonly kind: "Miss"; readonly distance: number };
 
 /** Direction-owned half-open cells, including exact negative boundaries. No mesh input. */
 export const pickHvpCell = (source: HvpCellReader, origin: HvpCell, direction: HvpCell, range = 4): HvpCellHit => {
@@ -27,9 +28,9 @@ export const pickHvpCell = (source: HvpCellReader, origin: HvpCell, direction: H
   let distance = 0;
   let normal: HvpCell = [0, 0, 0];
   for (let visited = 0; visited < 100 && distance <= range; visited += 1) {
-    if (cell.some((v, a) => v < 0 || v >= sizes[a]!)) { return { kind: "Unknown", distance }; }
+    if (cell.some((v, a) => v < 0 || v >= sizes[a]!)) { return { kind: "Unknown", cell: Object.freeze([...cell]) as HvpCell, distance }; }
     const slot = source.readSlot(cell[0]!, cell[1]!, cell[2]!);
-    if (slot === undefined) { return { kind: "Unknown", distance }; }
+    if (slot === undefined) { return { kind: "Unknown", cell: Object.freeze([...cell]) as HvpCell, distance }; }
     if (slot !== 0) {
       return Object.freeze({ kind: "Hit", cell: Object.freeze([...cell]) as HvpCell, slot, distance, normal });
     }

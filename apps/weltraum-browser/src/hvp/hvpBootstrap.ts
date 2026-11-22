@@ -1,3 +1,4 @@
+import {createHvpLiveSupport} from "../hestia-prototype/terrain/liveSupport";
 import * as THREE from "three";
 import {presentHvpFailure} from "./hvpRoute";
 export {presentHvpFailure,startHvpRoute,type HvpModule} from "./hvpRoute";
@@ -25,6 +26,8 @@ import {replaceHvpScene,replaceHvpLabScene} from "../hestia-prototype/persistenc
 import {createPersistenceSignature} from "../persistence";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../voxel/adaptive";
 import { createHvpPlasmaTool } from "../hestia-prototype/terrain/plasmaTool";
+import {createHvpWeatherReadView} from "../weather/hvpWeather";
+import {createHvpFramePasses,type HvpFrameInputs} from "../hestia-prototype/presentation/framePasses";
 import { createHvpVisualRenderer, HVP_EFFECT_COST, HVP_EFFECT_VERSION } from "../hestia-prototype/presentation/visualEffects";
 import { loadGraphicsSettings } from "../settings";
 import { createSynchronousBatch } from "../hestia-prototype/presentation/synchronousBatch";
@@ -875,6 +878,10 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
   documentPort.body.dataset.hestiaPrototypeCutReadiness=JSON.stringify({policy:"hvp-ready-prewarm-v2",sourceMode:privateCutSource?"private-cow":"control",state:"Preparing"});
 
   let backend: HvpBackend | undefined;
+  const weatherView=createHvpWeatherReadView();
+  let frameInputs:HvpFrameInputs|undefined;
+  let readCurrentFrameInputs:()=>HvpFrameInputs|undefined=()=>undefined;
+  const framePasses=createHvpFramePasses(()=>readCurrentFrameInputs(),()=>backend instanceof ThreeRenderBackend?backend:undefined);
   let camera: ReturnType<typeof createHvpCamera> | undefined;
   let hud: ReturnType<typeof createHvpHud> | undefined;
   let physics: HvpPhysicsClient | HvpLabPhysicsClient | undefined;
@@ -889,6 +896,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
   let terrainCompiler: ReturnType<typeof createHvpTerrainCompiler> | undefined;
   let terrainConsumer: ReturnType<typeof createHvpTerrainConsumer> | undefined;
   let supportPending=false;
+  let liveSupport:ReturnType<typeof createHvpLiveSupport>|undefined;
   let structuralConsumer:ReturnType<typeof createHvpStructuralConsumer>|undefined;
   let bodyCutConsumer:ReturnType<typeof createHvpBodyCutConsumer>|undefined;
   let neighbor:ReturnType<typeof createHvpNeighborController>|undefined;
@@ -910,7 +918,14 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
   };
   let saveBusy=false,saveHold=false;
   let saveView:{state:string;message:string;revision:number|null}={state:"Idle",message:"Lokaler Hestia-Spielstand",revision:null};
+  // Only synchronous operations on an already committed render delta enter this scope.
+  let postCommitPresentation=false;
+  const runVisual=<T>(action:()=>T):T=>{
+    const previous=postCommitPresentation;postCommitPresentation=true;
+    try{return action();}finally{postCommitPresentation=previous;}
+  };
   const enterRenderRecoveryHold=(message:string):never=>{
+    if(postCommitPresentation) throw new HvpRenderStageRecoveryError([],message);
     saveHold=true;saveView={state:"RecoveryHold",message,revision:saveView.revision};hud?.updateSave();
     void physics?.command("Pause").catch(()=>{});
     throw new Error(`RecoveryHold: ${message}`);
@@ -1001,7 +1016,10 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       await attempt(()=>bodyCutConsumer?.dispose());bodyCutConsumer=undefined;
       await attempt(()=>dormancy?.dispose());dormancy=undefined;
       await attempt(()=>neighbor?.dispose());neighbor=undefined;neighborCache.clear();
+      await attempt(()=>closingTerrainConsumer?.whenRenderIdle());
       await attempt(()=>terrainCompiler?.dispose());terrainCompiler=undefined;
+      liveSupport?.dispose();liveSupport=undefined;
+      framePasses.dispose();weatherView.dispose();frameInputs=undefined;readCurrentFrameInputs=()=>undefined;
       await attempt(()=>closingBodyConsumer?.whenIdle());
       await attempt(()=>closingTerrainConsumer?.whenIdle());
       await attempt(()=>closingStructuralConsumer?.whenIdle());
@@ -1104,7 +1122,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
          const renderer=new THREE.WebGLRenderer(options),draw=renderer.render.bind(renderer);
          renderer.render=(scene,camera)=>{if(submitDraw){draw(scene,camera);documentPort.body.dataset.hestiaExperimentDrawSubmits=String(++experimentalDrawSubmits);}};
          return renderer;
-       },remaining=>{visualDisposal=remaining;},measurement.enabled,display)
+       },remaining=>{visualDisposal=remaining;},measurement.enabled,display,framePasses)
     });
     requireAccepted(backend.dispatch(createRenderCommand({
       kind: "InitializeBackend",
@@ -1149,6 +1167,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       const started=measurement.enabled?performance.now():0;
       try{return materialFactory.acquire(profiles);}catch(error){
         if(error instanceof MaterialAcquireReleaseUncertainError){
+          if(postCommitPresentation) throw new HvpRenderStageRecoveryError(error.errors,error.message);
           saveHold=true;saveView={state:"RecoveryHold",message:error.message,revision:saveView.revision};hud?.updateSave();
           void physics?.command("Pause").catch(()=>{});
           throw new HvpRenderStageRecoveryError(error.errors,error.message);
@@ -1338,7 +1357,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
           if(child.visible){yield name.slice(HVP_CUT_REPRESENTATION_PREFIX.length);}
         }
       })(),"visible");
-      return {root,nativeGeneration:native.terrainGeneration,recoveryHold:saveHold
+      return {root,terrainPresentationPending:terrainConsumer?.read().renderPending===true,nativeGeneration:native.terrainGeneration,recoveryHold:saveHold
         ||Boolean(neighbor?.read().recoveryHold||dormancy?.read().recoveryHold)
         ||terrainConsumer?.read().state==="RecoveryHold"
         ||structuralConsumer?.read().state==="RecoveryHold"
@@ -1356,7 +1375,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       if(!Number.isSafeInteger(bytes)||bytes<0||bytes>caps.maxCpuBytes){throw new Error("Invalid experimental CPU reservation");}
       // Pending products remain debited inside Prepare96; the persistent cache is outside that phase.
       const privateBytes=backend?.readPrivateMeshBytes?.();
-      return bytes+ownedCameraCpuReserveBytes+coldRecipeRetainedBytes+privateProjectionInputBytes+(terrainCompiler?.diagnostics().chunkCacheBytes??0)+(privateBytes?.custody??0)+(privateBytes?.pending??0);
+      return bytes+(liveSupport?.residentBytes()??0)+ownedCameraCpuReserveBytes+coldRecipeRetainedBytes+privateProjectionInputBytes+(terrainCompiler?.diagnostics().chunkCacheBytes??0)+(privateBytes?.custody??0)+(privateBytes?.pending??0);
     };
     const reportResources=(candidate:Parameters<typeof resourceReport>[0],limits:HvpResourceCaps)=>resourceReport({...candidate,totalCpuBytes:candidate.totalCpuBytes+extraCpu()},limits);
     const recordAdmission=(metric:"SceneAdmissionFailure"|"CutObservationBudgetDisabled",error:unknown,
@@ -1435,6 +1454,10 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     documentPort.body.dataset.hestiaPrototypeSourceDigest = prepared.sourceDigest;
     const terrainRoot = createHvpTerrainOwner(coldGame?.root??(privateCutSource?createHvpPrivateTerrainRoot:createHvpTerrainRoot)(prepared, `hvp-session-${myEpoch}`, myEpoch));
     const terrainCommandRoot=privateCutSource?terrainRoot:{...terrainRoot};
+    const legacyPlanner=measurement.enabled && new URLSearchParams(windowPort.location?.search??"").get("hvpCutPlanner")==="oracle";
+    if(privateCutSource&&!legacyPlanner&&!overrides.createTerrainCompiler){
+      liveSupport=createHvpLiveSupport(terrainRoot.read());
+    }
     if(overrides.onDisposed){readFinalTerrainRoot=()=>{const value=terrainRoot.read();return {
       sourceSessionId:value.sessionId,epoch:value.epoch,revision:value.revision,sourceDigest:value.sourceDigest};};}
     documentPort.body.dataset.hestiaPrototypeRestoreSource=coldGame?"artifact":"authored-start";
@@ -1447,7 +1470,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     terrainCompiler=overrides.createTerrainCompiler?overrides.createTerrainCompiler():createHvpTerrainCompiler(undefined,measurement.enabled?(phase,start,duration)=>{
       const metric={primaryCopy:"NeighborPrimaryCopyMs",eastCopy:"NeighborEastCopyMs",inputDigest:"NeighborInputDigestMs",workerWait:"NeighborWorkerWaitMs",decode:"NeighborDecodeMs"}[phase];
       measurement.record(`${startupMeasuring?"startup":"runtime"}${metric}`,start,duration);
-    }:undefined);
+    }:undefined,!(measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutVisual")==="local"),measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutPriority")==="input");
     const preparingCompiler=terrainCompiler,poolPreparationStart=measurement.enabled?performance.now():0;
     await preparingCompiler.prepare(()=>!disposed&&hvpMountEpoch===myEpoch&&terrainCompiler===preparingCompiler&&terrainRoot.read()===initialSource,privateCutSource?terrainRoot:undefined);
     if(measurement.enabled){measurement.record("startupCutPoolPrepareMs",poolPreparationStart,performance.now()-poolPreparationStart);}
@@ -1840,9 +1863,9 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     resizeViewport();
     playerInput = createHvpPlayerInput(canvas, ownedCamera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
-     },{confirm:()=>{
+     },{confirm:eventTimeStamp=>{
        const run=()=>{void plasmaTool?.confirm();};
-       if(cutObservation!==undefined){cutObservation.confirm(run);}else{run();}
+       if(cutObservation!==undefined){cutObservation.confirm(run,eventTimeStamp);}else{run();}
      },select:mode=>plasmaTool?.select(mode)},()=>!cutReady||saveBusy||saveHold||supportPending||Boolean(dormancy?.read().recoveryHold));
     if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
     const dropProfile = createMaterialProfile({ id: materialProfileId("hvp:drop-limestone-v1"), kind: "BasicLit",
@@ -2313,30 +2336,55 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
         }
         throw error;
       }
+      let publishStarted=false;
       return {
         publish() {
+          publishStarted=true;
           for(const e of previous) { activeTerrainKeys.delete(e.artifact.representationKey); }
           for(const e of next) { terrainEntries.set(e.id,e);activeTerrainKeys.add(e.artifact.representationKey); }
           for(const e of added){activeFragmentKeys.add(e.artifact.representationKey);fragmentEntries.set(e.ownerId,e);}
           ledger=publishedLedger;syncPhysicsTransforms();
           presentation.updateProjection();updateTerrainState();
         },
-        rollback() { restore();presentation.batch(()=>{for(const e of [...next,...added]) { removeTerrainEntry(e); }}); },
+        rollback() { if(publishStarted)restore();presentation.batch(()=>{for(const e of [...next,...added]) { removeTerrainEntry(e); }}); },
         finish() { presentation.batch(()=>{for(const e of previous) { removeTerrainEntry(e); }});updateTerrainState(); }
       };
        });
        }
+       function* terrainPresentationSteps(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[],commandId:string|undefined,owned:boolean):Generator<string,HvpStagedTerrain,unknown>{
+         const work=stageTerrainSteps(products,fragments,commandId,owned);
+         if(products.source!==terrainRoot.read()) return yield* work;
+         try {
+           for(;;){
+             const next=runVisual(()=>work.next());
+             if(next.done){
+               const staged=next.value;
+               return {publish:()=>runVisual(()=>staged.publish()),rollback:()=>runVisual(()=>staged.rollback()),finish:()=>runVisual(()=>staged.finish())};
+             }
+             yield next.value;
+           }
+         }finally{runVisual(()=>work.return(undefined as never));}
+       }
        const stageTerrain=(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[]=[],commandId?:string):HvpStagedTerrain=>
-         stageTerrainSteps(products,fragments,commandId,false).next().value as HvpStagedTerrain;
+         terrainPresentationSteps(products,fragments,commandId,false).next().value as HvpStagedTerrain;
     terrainConsumer=createHvpTerrainConsumer(terrainCommandRoot,(plan,support)=>{
        admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
       const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;
       admitScene({...ledger,totalCpuBytes:resident+physicsPrepareBytes});
-      return terrainCompiler!.compile(plan,support,resident);
+      return terrainCompiler!.compile(plan,support,resident,privateCutSource&&overrides.createTerrainCompiler===undefined,cutTraceDispatch);
       },stageTerrain,physics,plants.filter(p=>p.kind==="tree").map(p=>p.position),async plan=>{
         admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
         const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;
         admitScene({...ledger,totalCpuBytes:resident+physicsPrepareBytes});
+        if(liveSupport){
+          const started=performance.now();
+          const result=liveSupport.analyze(plan,resident);
+          if(measurement.enabled){
+            measurement.record("cutComponentIndexMs",started,performance.now()-started,
+              {commandId:plan.request.commandId,...result.counters});
+          }
+          return result.plan;
+        }
         const support=await terrainCompiler!.analyze(plan,resident,measurement.enabled?cutTraceDispatch:undefined);
         if(measurement.enabled&&support.timings!==undefined){
           try{measurement.record("cutSupportPhasesMs",performance.now(),0,Object.freeze({commandId:plan.request.commandId,
@@ -2362,9 +2410,12 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
         const pump=createHvpBodyMeshTaskPump(current,cutTraceDispatch===undefined?undefined:(_label,start,duration)=>{
           if(commandId!==undefined)cutTraceDispatch({commandId,thread:"main",phase:"cutGraphicsWorkQuantumMs",origin:performance.timeOrigin,start,duration});
         });
-        try{return await pump.run(stageTerrainSteps(products,fragments,commandId,true));}
+        try{return await pump.run(terrainPresentationSteps(products,fragments,commandId,true));}
         catch(error){if(saveHold&&!(error instanceof HvpRenderStageRecoveryError))throw new HvpRenderStageRecoveryError([error],"Owned terrain graphics cleanup is unproven");throw error;}
         finally{pump.dispose();}
+      },(commandId,root,generation,cut)=>{
+        cutObservation?.terrainPublished(commandId,root,generation);
+        if(cut) liveSupport?.committed(cut,root);
       });
      const syncPhysicsTransforms=()=>{
        physicsTransforms=physics!.read().bodies.map(p=>({representationKey:representationKey(p.ownerId),positionRelative:p.position,orientation:p.orientation,scale:{x:1,y:1,z:1}}));
@@ -2625,7 +2676,10 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
      };
     plasmaTool=createHvpPlasmaTool(terrainRoot,terrainConsumer,()=>neighbor?.read().busy||neighbor?.read().recoveryHold||dormancy?.read().busy||dormancy?.read().recoveryHold?undefined:playerInput!.readAim(),showCutPreview,
       plants.filter(p=>p.kind==="tree").map(p=>p.position),{physics,consumer:structuralConsumer,
-       admit:()=>admitScene({...ledger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,ledger,0,physicsPrepareBytes)})},bodyCutConsumer);
+       admit:()=>admitScene({...ledger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,ledger,0,physicsPrepareBytes)})},bodyCutConsumer,{
+       readAim:()=>playerInput!.readAim(),
+       request:(primary,x)=>neighbor?.requestEastCutCoverage(primary,x)??Promise.resolve(undefined)
+     });
     const previewRockSupport=async():Promise<void>=>{
       if(supportPending||disposed){return;}
       supportPending=true;
@@ -2957,6 +3011,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       hud?.updateSave();
       try{
         if(owner.kind==="public"){assertHvpPublicSaveCutover();}
+        await Promise.all([terrainConsumer!.whenIdle(),bodyCutConsumer!.whenIdle(),structuralConsumer!.whenIdle()]);
         if(!confirmed()){throw new Error("Mutation/RecoveryHold: zuerst laufenden Befehl abschließen");}
         playerInput!.stop();showCutPreview([],false);await physics!.command("Pause");
         // Before decoding B, reserve A + the bounded checkpoint working set.
@@ -3133,6 +3188,16 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
      // Compare canonical doubles so renderer f32 rounding cannot keep a paused view dirty.
      const projectedCamera={position:ownedCamera.position.clone(),quaternion:ownedCamera.quaternion.clone(),
        fov:ownedCamera.fov,aspect:ownedCamera.aspect,near:ownedCamera.near,far:ownedCamera.far};
+     if(liveSupport&&physics!.read().player){
+       const index=liveSupport,source=terrainRoot.read(),position=physics!.read().player!.position;
+       const started=performance.now();
+       const pump=createHvpBodyMeshTaskPump(()=>{if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==source)throw new Error("Stale terrain prewarm");});
+       try{
+         await pump.run((function*(){while(index.warmNear(source,position)>0)yield "playerTopologyPrewarm";})());
+       }finally{pump.dispose();}
+       measurement.record("playerTopologyPrewarmMs",started,performance.now()-started,{residentBytes:index.residentBytes()});
+     }
+     await physics!.primeTerrainRecovery?.();
      if(disposed||hvpMountEpoch!==myEpoch){throw new Error("Scene disposed before tool Ready");}
      cutReady=true;preparingNotice.remove();
      hud.update("Ready", camera.readPose(), stats);
@@ -3156,7 +3221,26 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
      let firstReadyFrame=false;
      let residencyDiagnosticFrames=0;
      let physicsTick = -1;
-     const submitRenderFrame=():RenderCommandResult=>backend!.renderFrame();
+    // Invalidate a deferred tile even if no subsequent render has refreshed frameInputs.
+    readCurrentFrameInputs=()=>{
+      if(!frameInputs||disposed||saveBusy)return undefined;
+      const live=terrainRoot.read(),native=physics?.read();
+      if(live.revision!==frameInputs.revision||live.sourceDigest!==frameInputs.sourceDigest||
+        live.sessionId!==frameInputs.sessionId||live.epoch!==frameInputs.epoch||renderWorldId!==frameInputs.worldId||
+        native?.terrainGeneration!==frameInputs.revision||native.ticks!==frameInputs.tick)return undefined;
+      return frameInputs;
+    };
+    const submitRenderFrame=():RenderCommandResult=>{
+      const terrain=terrainRoot.read(),native=physics!.read(),command=terrainConsumer?.read();
+      frameInputs=undefined;
+      if(native.player && native.terrainGeneration===terrain.revision && !saveBusy &&
+        command?.state!=="Pending" && !command?.renderPending){
+        const binding={worldId:renderWorldId,sessionId:terrain.sessionId,epoch:terrain.epoch,
+          revision:terrain.revision,sourceDigest:terrain.sourceDigest,tick:native.ticks};
+        frameInputs={...binding,weather:weatherView.update({...binding,position:native.player.position,terrain})};
+      }
+      return backend!.renderFrame();
+    };
      const failFrame=(error:unknown)=>{
        const show=(cause:unknown)=>{
          if(hvpMountEpoch!==myEpoch){return;}
@@ -3231,6 +3315,13 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
        let rendered:RenderCommandResult;
        try{rendered=cutObservation!==undefined&&submitDraw?cutObservation.render(submitRenderFrame):submitRenderFrame();}
        catch(error){failFrame(error);return;}
+      if(rendered.status==="Accepted"&&submitDraw){
+        void terrainConsumer?.presentNext();
+        const avatar=physics?.read().player;
+        if(avatar&&liveSupport&&!saveBusy&&terrainConsumer?.read().state!=="Pending"){
+          liveSupport.warmNear(terrainRoot.read(),avatar.position);
+        }
+      }
       if(rendered.status==="Accepted"&&submitDraw&&!firstSceneReadyV2){
         firstSceneReadyV2=true;const now=performance.now();measurement.record("coldSceneReadyV2Ms",0,now,{policy:"hvp-ready-prewarm-v2",toolReady:cutReady});
       }

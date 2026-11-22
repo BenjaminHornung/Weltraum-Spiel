@@ -1,14 +1,15 @@
+import {STRUCTURAL_BRICK_SCHEMA_VERSION,STRUCTURAL_SOURCE_BINDING_SCHEMA_VERSION} from "../../voxel/structural/types";
 import {
   ADAPTIVE_BRICK_ESTIMATED_BYTES, ADAPTIVE_BRICK_ESTIMATED_WORK, authorityRevision,
   createAdaptiveAuthorityRetention, createAdaptiveBaseFieldDescriptor, createAdaptiveBrickKey,
   createAdaptiveEditJournal, createAdaptiveResidentValidationProofs, materializeAdaptiveBrick,
-  stableAuthorityId, type AdaptiveEditInput, type AdaptivePlannerSnapshot
+  hasAdaptiveResidentValidationProofBrand, stableAuthorityId, type AdaptiveEditInput, type AdaptivePlannerSnapshot
 } from "../../voxel/adaptive";
 import { createStructuralMaterialTable, createStructuralObjectFromAdaptive, createStructuralCellAddress, STRUCTURAL_FRAME_BINDING_SCHEMA_VERSION } from "../../voxel/structural";
 import {measureHvpCut,type HvpCutSpan,type HvpCutTrace} from "../runtime/cutTrace";
 import {adaptiveDrainSteps,adaptiveDenseArraySteps,adaptiveMapSteps,adaptiveSortSteps,adaptiveFreezeArraySteps} from "../../voxel/adaptive/validation";
 import {adaptiveEditJournalSteps,type AdaptiveOwnedJournalOptions} from "../../voxel/adaptive/edits";
-import {structuralMaterialTableSteps,createStructuralOwnerLedger,ownedStructuralAdaptiveIngestSteps} from "../../voxel/structural/model";
+import {structuralMaterialTableSteps,createStructuralOwnerLedger,ownedStructuralAdaptiveIngestSteps,structuralReconstructionSteps} from "../../voxel/structural/model";
 import {structuralNonNegativeSafeInteger,structuralPositiveBudget,structuralFail,type StructuralOwnedReserve} from "../../voxel/structural/validation";
 import type {StructuralCursorStep} from "../../voxel/structural/occupiedEntries";
 import {createOwnedCanonicalHashCursor} from "../../voxel/adaptive/ownedCanonicalHashSteps";
@@ -144,6 +145,57 @@ export function* prepareHvpStructuralIngestJournalOwnedSteps(id:string,input:rea
   Object.freeze(raw.frame);
   return Object.freeze({materials:raw.materials,cells,origins:frozenOrigins,runs,frame:raw.frame,
     baseField:raw.baseField,editJournal:raw.editJournal});
+}
+
+/** The compact receiver already expanded the material runs. Capture them into a bounded
+ * private array once. No map, mutable source record, or partial run escapes this generator. */
+function* compactJournalPrefixSteps(id: string, input: readonly HvpStructuralCell[], materialInput: readonly unknown[],
+  owned: AdaptiveOwnedJournalOptions): Generator<void, OwnedIngestPrefix, void> {
+  if (!/^[a-zA-Z0-9_.:-]{1,96}$/.test(id)) throw new Error("Invalid HVP structural ID");
+  if (input.length === 0 || input.length > 1024) throw new Error("Invalid compact terrain cell count");
+  const materials = yield* structuralMaterialTableSteps(materialInput, owned.reserve);
+  const ids = new Set<number>(materials.map(m => m.materialId));
+  const values = yield* adaptiveDenseArraySteps(input, "ingest/cells", "InvalidCanonicalValue",
+    {maximumLength: 1024}, owned.reserve);
+  const compare = (a: HvpStructuralCell, b: HvpStructuralCell) => a.z - b.z || a.y - b.y || a.x - b.x;
+  const cells: HvpStructuralCell[] = [];
+  let ordered = true;
+  owned.reserve(4096 + input.length * 1024, true);
+  for (let i = 0; i < values.length; i++) {
+    const cell = values[i] as HvpStructuralCell | undefined;
+    if (!cell) throw new Error("Invalid canonical HVP cell/material");
+    const {x, y, z, materialId} = cell;
+    if (![x, y, z].every(n => Number.isSafeInteger(n) && Math.abs(n) <= 1_000_000) || !ids.has(materialId)) {
+      throw new Error("Invalid canonical HVP cell/material");
+    }
+    cells.push({x, y, z, materialId});
+    if (i && compare(cells[i - 1]!, cells[i]!) > 0) ordered = false;
+    if (i % 64 === 63) yield;
+  }
+  if (!ordered) cells.sort(compare);
+  const origins = new Map<string, {x:number; y:number; z:number}>();
+  const runs: IngestRun[] = [];
+  for (let i = 0; i < cells.length; i++) {
+    const cell = cells[i]!;
+    if (i && compare(cell, cells[i - 1]!) === 0) throw new Error("Duplicate HVP cell");
+    const run = runs.at(-1);
+    if (run && run.y === cell.y && run.z === cell.z && run.end === cell.x && run.materialId === cell.materialId) {
+      run.end++;
+    } else {
+      runs.push({...cell, end: cell.x + 1});
+    }
+    const x = Math.floor(cell.x / 16) * 16, y = Math.floor(cell.y / 16) * 16, z = Math.floor(cell.z / 16) * 16;
+    const key = x + "," + y + "," + z;
+    if (!origins.has(key)) {
+      origins.set(key, {x, y, z});
+      if (origins.size * ADAPTIVE_BRICK_ESTIMATED_BYTES > 16 * 1024 * 1024) throw new Error("HVP ingest BudgetExceeded: brick working set");
+    }
+    if (i % 64 === 63) yield;
+  }
+  const journal = yield* journalPreparationSteps(id, runs, owned);
+  Object.freeze(journal.frame.objectOriginQuantum);
+  Object.freeze(journal.frame);
+  return {cells, runs, origins: [...origins.values()], materials, ...journal};
 }
 
 /** Direct-module only, NO Worker/public-root caller or issuer. Counts bounds, not physical/time proof. */
@@ -305,10 +357,57 @@ function* ingestStructuralSteps(id:string,prefix:CompletePrefix,bricks:IngestBri
     :yield* ownedStructuralAdaptiveIngestSteps(Object.freeze(input),owned.reserve);
 }
 
+/** The local batch has admitted each ready brick against one snapshot and minted its resident proof.
+ * Build exactly the sparse Structural projection from those same channel arrays. */
+function* admittedTerrainSourceSteps(id: string, prefix: CompletePrefix, bricks: IngestBricks,
+  {proofs}: IngestProofs, reserve: StructuralOwnedReserve) {
+  reserve(16_384 + bricks.length * 1024 + prefix.cells.length * 1024, true);
+  const first = proofs[0]!;
+  const source = {
+    schemaVersion: STRUCTURAL_SOURCE_BINDING_SCHEMA_VERSION,
+    baseFieldIdentity: prefix.baseField.identity, baseFieldVersion: prefix.baseField.version,
+    baseFieldDescriptorDigest: first.baseFieldDescriptorDigest, journalDigest: first.journalDigest,
+    snapshotProjectionDigest: first.snapshotProjectionDigest, proofDigests: proofs.map(proof => proof.proofDigest).sort(),
+    sourceRevision: first.sourceRevision, editRevision: first.editRevision,
+    brickRevision: first.brickRevision, planningEpoch: first.planningEpoch,
+  };
+  const materials = new Map<string, number>(prefix.materials.map(m => [`hvp.material.${m.materialId}`, m.materialId] as const));
+  const structuralBricks = [];
+  let occupiedCount = 0;
+  for (let i = 0; i < bricks.length; i++) {
+    const brick = bricks[i]!;
+    const proof = proofs[i]!;
+    if (!hasAdaptiveResidentValidationProofBrand(proof) || proof.contentHash !== brick.contentHash
+      || proof.provenanceHash !== brick.provenance.provenanceHash || proof.snapshotProjectionDigest !== first.snapshotProjectionDigest) {
+      throw new Error("Invalid terrain resident proof");
+    }
+    const cells = [];
+    for (let start = 0; start < brick.cellCount; start += 128) {
+      const stop = Math.min(start + 128, brick.cellCount);
+      for (let index = start; index < stop; index++) {
+        if (brick.occupancy[index] === 0) continue;
+        const material = brick.material[index];
+        const materialId = typeof material === "string" ? materials.get(material) : undefined;
+        if (brick.occupancy[index] !== 1 || materialId === undefined || brick.semantic[index] !== null) {
+          throw new Error("Invalid terrain channel");
+        }
+        cells.push({localIndex: index, state: {materialId, partId: null, damageKey: null, semanticKey: null}});
+      }
+      yield;
+    }
+    occupiedCount += cells.length;
+    structuralBricks.push({schemaVersion: STRUCTURAL_BRICK_SCHEMA_VERSION, key: brick.key, cells});
+  }
+  if (occupiedCount !== prefix.cells.length) throw new Error("Terrain sparse projection loses occupancy");
+  return yield* structuralReconstructionSteps({objectId: id, frame: prefix.frame, source, materials: prefix.materials,
+    bricks: structuralBricks, anchors: [], joints: [], objectRevision: 0, editRevision: 0, commandEvidence: []}, reserve);
+}
+
 function* ingestHvpStructuralSteps(id:string,input:readonly HvpStructuralCell[],materialInput:readonly unknown[],anchorInput:readonly IngestAnchor[],
-  owned?:AdaptiveOwnedJournalOptions,measure:IngestMeasure=noMeasure,onPhase?:(phase:string)=>void){
+  owned?:AdaptiveOwnedJournalOptions,measure:IngestMeasure=noMeasure,onPhase?:(phase:string)=>void,runMaterialization=false){
   onPhase?.("ownerIngestPrefix");
   const prefix=owned===undefined?adaptiveDrainSteps(ingestJournalPrefixSteps(id,input,materialInput,undefined,measure))
+    :runMaterialization ? yield* compactJournalPrefixSteps(id,input,materialInput,owned)
     :yield* prepareHvpStructuralIngestJournalOwnedSteps(id,input,materialInput,owned.reserve,owned.hash);
   onPhase?.("ownerIngestBricks");
   const bricks=owned===undefined?measure("ingestMaterializeMs",()=>adaptiveDrainSteps(ingestBricksSteps(prefix)))
@@ -317,6 +416,9 @@ function* ingestHvpStructuralSteps(id:string,input:readonly HvpStructuralCell[],
   const proofs=owned===undefined?measure("ingestProofsMs",()=>adaptiveDrainSteps(ingestProofsSteps(prefix,bricks)))
     :yield* ingestProofsSteps(prefix,bricks,owned);
   onPhase?.("ownerIngestStructural");
+  if (runMaterialization && owned && !anchorInput.length) {
+    return yield* admittedTerrainSourceSteps(id, prefix, bricks, proofs, owned.reserve);
+  }
   return owned===undefined?measure("ingestStructuralMs",()=>adaptiveDrainSteps(ingestStructuralSteps(id,prefix,bricks,proofs,anchorInput)))
     :yield* ingestStructuralSteps(id,prefix,bricks,proofs,anchorInput,owned);
 }
@@ -336,9 +438,10 @@ export const ingestHvpStructuralCells = (id:string, input:readonly HvpStructural
  * inputs/old/results belong to ONE higher aggregate ledger; this nested form never releases it.
  * Only the existing full proof/Structural issuers run. No plan, recipe, World or caller activation. */
 export function* prepareHvpStructuralIngestOwnedSteps(id:string,input:readonly HvpStructuralCell[],materialInput:readonly unknown[],
-  anchorInput:readonly IngestAnchor[],reserve:StructuralOwnedReserve,onPhase?:(phase:string)=>void){
+  anchorInput:readonly IngestAnchor[],reserve:StructuralOwnedReserve,onPhase?:(phase:string)=>void,runMaterialization=false){
   reserve(16_384);
-  const scope=createOwnedAdaptiveBrickScope(reserve);
-  try{return yield* ingestHvpStructuralSteps(id,input,materialInput,anchorInput,scope.options,noMeasure,onPhase);}
+  runMaterialization = runMaterialization && input.length <= 1024 && anchorInput.length === 0;
+  const scope=createOwnedAdaptiveBrickScope(reserve,runMaterialization);
+  try{return yield* ingestHvpStructuralSteps(id,input,materialInput,anchorInput,scope.options,noMeasure,onPhase,runMaterialization);}
   finally{scope.dispose();}
 }

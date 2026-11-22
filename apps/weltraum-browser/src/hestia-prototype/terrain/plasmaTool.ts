@@ -1,4 +1,5 @@
 import { Vector3 } from "three";
+import {createHvpRegionalCutRead,type HvpRegionalCutCoveragePort} from "./regionalCutCoverage";
 import { pickHvpCell, type HvpCell } from "./picking";
 import { assertHvpSafeQuarry, selectHvpCutCells, type HvpCutShape, createHvpTerrainRoot } from "./cutPlan";
 import type { createHvpTerrainConsumer } from "./terrainConsumer";
@@ -15,8 +16,10 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
   preview: (cells:readonly HvpCell[], allowed:boolean)=>void,
    supports: readonly Readonly<{x:number;z:number}>[],
    structure?:{physics:Pick<HvpPhysicsClient,"read"|"setCutAim">;consumer:ReturnType<typeof createHvpStructuralConsumer>;admit:()=>void},
-   moving?:ReturnType<typeof createHvpBodyCutConsumer>) => {
+   moving?:ReturnType<typeof createHvpBodyCutConsumer>,regional?:HvpRegionalCutCoveragePort) => {
+  const coverage=regional?createHvpRegionalCutRead(root.read,regional):undefined;
   let mode=1, sequence=0, key="", target:HvpCutShape|undefined, message="Spielen: 1 Zelle · 2 Box · 3 Kugel · Linksklick";
+  let terrainHit:Readonly<{cell:HvpCell;slot:number}>|undefined;
   let edges=0;
   let structureSequence=0;
   let movingSequence=0;
@@ -28,7 +31,11 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
   const update=():void=>{
     const aim=readAim();
     structure?.physics.setCutAim(aim?.direction);
-    if(!aim) { if(key!=="") { preview([],false);key=""; }target=undefined;return; }
+    if(!aim) {
+      if(coverage?.read()?.state==="PendingCoverage"&&!regional?.readAim())coverage.cancel();
+      if(key!=="") { preview([],false);key=""; }
+      target=undefined;terrainHit=undefined;return;
+    }
     const state=structure?.physics.read(),body=state?.moving?.preview,branch=state?.structural;
     if(body&&moving){
       target=undefined;const next=JSON.stringify(["moving",mode,body.ownerId,body.sourceDigest,body.cell]);
@@ -44,6 +51,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
       preview([],false);return;
     }
     const hit=pickHvpCell(root.read(),[aim.origin.x,aim.origin.y,aim.origin.z],[aim.direction.x,aim.direction.y,aim.direction.z],4);
+    terrainHit=hit.kind==="Hit"?{cell:hit.cell,slot:hit.slot}:undefined;
     const next=JSON.stringify([root.read().revision,mode,hit.kind==="Hit"?hit.cell:hit.kind]);
     if(next===key) { return; } key=next;target=undefined;
     if(hit.kind!=="Hit") { message=hit.kind==="Unknown"?"Keine bestätigte Zellabdeckung":"Kein Ziel innerhalb 4 m";preview([],false);return; }
@@ -67,18 +75,25 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
     preview(cells,allowed);
   };
   return {
-    checkpoint():HvpToolCheckpoint{return Object.freeze({mode,sequence,structureSequence,movingSequence,edges});},
+    checkpoint():HvpToolCheckpoint{coverage?.cancel();return Object.freeze({mode,sequence,structureSequence,movingSequence,edges});},
     restore(value:HvpToolCheckpoint):void{
       if(readAim()||![value.sequence,value.structureSequence,value.movingSequence,value.edges].every(n=>Number.isSafeInteger(n)&&n>=0)
         ||!Number.isInteger(value.mode)||value.mode<1||value.mode>3){throw new Error("Invalid paused tool checkpoint");}
-      ({mode,sequence,structureSequence,movingSequence,edges}=value);key="";target=undefined;preview([],false);
+      coverage?.cancel();({mode,sequence,structureSequence,movingSequence,edges}=value);key="";target=undefined;preview([],false);
     },
-    select(value:number):void { if(Number.isInteger(value)&&value>=1&&value<=3) { mode=value;key="";update(); } },
+    select(value:number):void { if(Number.isInteger(value)&&value>=1&&value<=3) { coverage?.cancel();mode=value;key="";update(); } },
     update,
     async confirm():Promise<void> {
-      if(!readAim()) { return; } edges+=1;key="";update();
+      const inputAim=readAim();
+      if(!inputAim){
+        if(coverage?.tryRequest())edges+=1;
+        return;
+      }
+      edges+=1;
+      update();
       const body=structure?.physics.read().moving?.preview;
       if(moving&&body&&structure){
+        coverage?.cancel();
         if(["Pending","RecoveryHold"].includes(consumer.read().state)||structure.consumer.read().state!=="Ready"){message="Andere Mutation Pending";return;}
         const aim=readAim();if(!aim){return;}
         try{await moving.submit({id:`moving-cut-${++movingSequence}`,ownerId:body.ownerId,sourceDigest:body.sourceDigest,edge:mode===1?1:4,direction:aim.direction,
@@ -88,6 +103,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
       if(moving&&moving.read().state!=="Idle"){message="Moving cut Pending";return;}
       const branch=structure?.physics.read().structural;
       if(branch?.preview&&structure) {
+        coverage?.cancel();
         if(mode!==(branch.cutEdge===1?1:2)){return;}
         if(["Pending","RecoveryHold"].includes(consumer.read().state)){message="Terrain Pending";return;}
         const aim=readAim();if(!aim){return;}
@@ -95,12 +111,28 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
         catch(error){message=error instanceof Error?error.message:String(error);}key="";return;
       }
       if(structure&&structure.consumer.read().state!=="Ready"){message="Structural Pending";return;}
-      if(!target) { return; }
-      try { await consumer.submit(request(target,`cut-${++sequence}`)); }
+      if(!target||!terrainHit) { coverage?.tryRequest();return; }
+      coverage?.cancel();
+      const intent=request(target,`cut-${++sequence}`);
+      const intendedHit=terrainHit;
+      const origin:HvpCell=[inputAim.origin.x,inputAim.origin.y,inputAim.origin.z];
+      const direction:HvpCell=[inputAim.direction.x,inputAim.direction.y,inputAim.direction.z];
+      try { await consumer.submit(intent,current=>{
+        if(current.sessionId!==intent.sessionId||current.epoch!==intent.epoch) throw new Error("Sitzung gewechselt");
+        const hit=pickHvpCell(current,origin,direction,4);
+        if(hit.kind!=="Hit"||hit.slot!==intendedHit.slot||hit.cell.some((v,i)=>v!==intendedHit.cell[i])
+          ||structure?.physics.read().moving?.preview||structure?.physics.read().structural?.preview){
+          throw new Error("Schnittziel hat sich geändert");
+        }
+        return {...intent,revision:current.revision,sourceDigest:current.sourceDigest};
+      }); }
       catch(error) { message=error instanceof Error?error.message:String(error); }
       key="";
     },
-    read:()=>Object.freeze({mode:["","Zelle","Box 0,5 m","Kugel 0,25 m"][mode],edges,issued:sequence,message,...consumer.read(),structural:structure?.consumer.read(),moving:moving?.read()}),
-    dispose():void { preview([],false); }
+    read:()=>{
+      const regional=coverage?.read();
+      const feedback=regional&&(regional.state==="PendingCoverage"||!terrainHit)?regional.reason:message;
+      return Object.freeze({...(regional?{coverage:regional}:{}),mode:["","Zelle","Box 0,5 m","Kugel 0,25 m"][mode],edges,issued:sequence,message:feedback,...consumer.read(),structural:structure?.consumer.read(),moving:moving?.read()});},
+    dispose():void { coverage?.cancel();preview([],false); }
   };
 };

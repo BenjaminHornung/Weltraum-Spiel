@@ -24,6 +24,8 @@ import {HVP_NEIGHBOR_JOB,HVP_NEIGHBOR_MAX_OUTPUT,hvpNeighborInputDigest,decodeHv
 import {encodeHvpProjectionPacket} from "../runtime/projectionPacket";
 import type {HvpNeighborProxies} from "../runtime/neighborProducts";
 import {buildHvpChunkInputSteps,hvpChunkCoordinates,hvpDirtyChunks,hvpRestoreChunksSteps,type HvpChunkPayload} from "./terrainChunkInput";
+import {buildHvpLiveRenderChunkSteps} from "./liveRenderDelta";
+import {patchHvpChunkCollisionSteps} from "../../voxel/structural/componentIndex/terrainCollision";
 import {HVP_CHUNK_JOB,HVP_CHUNK_MAX_OUTPUT,decodeHvpChunkOutput,decodeHvpChunkOutputSteps,hvpChunkInputDigestSteps} from "../../workers/hvpChunkJob";
 import {HVP_EAST_CHUNK_COLLISION_JOB,HVP_EAST_CHUNK_COLLISION_PURPOSE,HVP_EAST_CHUNK_COLLISION_ALGORITHM,HVP_EAST_CHUNK_COLLISION_MAX_OUTPUT,
   hvpEastChunkCollisionInputDigestSteps,decodeHvpEastChunkCollisionOutput,decodeHvpEastChunkCollisionOutputSteps,type HvpEastChunkCollisionPayload} from "../../workers/hvpChunkJob";
@@ -75,6 +77,8 @@ type HvpChunkPoolSummary=ReturnType<ReturnType<typeof createHvpChunkPoolObservat
 
 export interface HvpTerrainProducts {
   readonly render: ReadonlyMap<number, HvpCompactMesh>;
+  readonly dirtyRender?: readonly number[];
+  readonly renderAfterCommit?: (dirty:readonly number[])=>Promise<ReadonlyMap<number,HvpCompactMesh>>;
   readonly collision: ReadonlyMap<number, HvpCollisionSector>;
   readonly source: HvpTerrainSnapshot;
 }
@@ -278,11 +282,8 @@ function* jobInputSteps(source:HvpTerrainSnapshot,id:number,render:boolean,seque
 }
 const terrainDigestFromHash=(p:{sessionId:string;epoch:number;sector:number;generation:number;sourceDigest:string},hash:string)=>
   fnv1aHash(JSON.stringify([p.sessionId,p.epoch,p.sector,p.generation,p.sourceDigest,hash]));
-function* chunkJobInputSteps(source:HvpTerrainSnapshot,id:number,sequence:number,worldId:string,neighbor:HvpTerrainSnapshot|undefined,
-  renderNeighbor:HvpTerrainSnapshot|undefined,
-  reserve:import("../../voxel/structural/validation").StructuralOwnedReserve,eastCollisionOnly=false):Generator<string,
-    {kind:"chunk";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpChunkPayload}|
-    {kind:"east-collision";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpEastChunkCollisionPayload},unknown>{
+function* chunkSourceInputSteps(source:HvpTerrainSnapshot,id:number,worldId:string,neighbor:HvpTerrainSnapshot|undefined,
+  renderNeighbor:HvpTerrainSnapshot|undefined,reserve:import("../../voxel/structural/validation").StructuralOwnedReserve,ownedCore=false){
   if(neighbor!==undefined&&renderNeighbor!==neighbor){throw new Error("Unmatched physical chunk neighbour");}
   reserve(16_384);const tops=new Map<string,number>();
   const halo=(x:number,y:number,z:number):number|undefined=>{
@@ -295,7 +296,14 @@ function* chunkJobInputSteps(source:HvpTerrainSnapshot,id:number,sequence:number
     return source.originMeters.y+(y+1)*.125<=top?1:0;
   };
   const haloBinding=renderNeighbor?`render:${renderNeighbor.sessionId}:${renderNeighbor.epoch}:${renderNeighbor.revision}:${renderNeighbor.sourceDigest}:${renderNeighbor.baseDigest}:${renderNeighbor.originMeters.x}:${renderNeighbor.originMeters.y}:${renderNeighbor.originMeters.z}:authored-v5`:`closed-exterior:authored-v5`;
-  const {slots,payload}=yield* buildHvpChunkInputSteps(source,id,halo,haloBinding,reserve,worldId,neighbor),buffers=[slots.buffer as ArrayBuffer];
+  return yield* buildHvpChunkInputSteps(source,id,halo,haloBinding,reserve,worldId,neighbor,ownedCore);
+}
+function* chunkJobInputSteps(source:HvpTerrainSnapshot,id:number,sequence:number,worldId:string,neighbor:HvpTerrainSnapshot|undefined,
+  renderNeighbor:HvpTerrainSnapshot|undefined,
+  reserve:import("../../voxel/structural/validation").StructuralOwnedReserve,eastCollisionOnly=false):Generator<string,
+    {kind:"chunk";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpChunkPayload}|
+    {kind:"east-collision";request:import("../../workers/protocol").WorkerJobRequest;bundle:TransferableBufferBundle;payload:HvpEastChunkCollisionPayload},unknown>{
+  const {slots,payload}=yield* chunkSourceInputSteps(source,id,worldId,neighbor,renderNeighbor,reserve),buffers=[slots.buffer as ArrayBuffer];
   const bundle:TransferableBufferBundle={buffers,ownership:"SenderToWorker",revision:contentRevision(source.revision),byteLength:byteCount(slots.byteLength),
     views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
   if(eastCollisionOnly){
@@ -353,7 +361,7 @@ export const copyHvpTerrainSlots=async(source:HvpTerrainSnapshot,cancelled:()=>b
 /** At most two concurrent derived jobs; accepted edits remain in the source owner. */
 type HvpNeighborTimingPhase="primaryCopy"|"eastCopy"|"inputDigest"|"workerWait"|"decode";
 export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,duration:number)=>void),
-  observeNeighbor?:((phase:HvpNeighborTimingPhase,start:number,duration:number)=>void)) => {
+  observeNeighbor?:((phase:HvpNeighborTimingPhase,start:number,duration:number)=>void),workerVisualOracle=true,inputPriority=false) => {
   const observeNeighborSync=<T>(phase:HvpNeighborTimingPhase,run:()=>T):T=>{
     if(observeNeighbor===undefined){return run();}
     const start=performance.now();
@@ -761,7 +769,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
         }finally{supportAnalyzing=false;}
       });
     },
-    async compile(plan:HvpPreparedCut,support?:HvpSupportPlan,residentBytes?:number):Promise<HvpTerrainProducts> {
+    async compile(plan:HvpPreparedCut,support?:HvpSupportPlan,residentBytes?:number,deferRender=false,trace?:HvpCutTrace):Promise<HvpTerrainProducts> {
       const credits=support===undefined?undefined:bindHvpOwnedSupportCut(support,plan);
       return withOperation(async()=>{
         if(chunkCache!==undefined){
@@ -775,18 +783,88 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
           if(credits===undefined){ledger=createStructuralOwnerLedger(resident,96*1024*1024,128);ledger.reserve(96*1024*1024);}
           let handedOff=false,products:HvpTerrainProducts|undefined;
           try{
-            products=await compileChunks(plan.after,hvpDirtyChunks(plan),cache.worldId,cache.neighbor,phase,cache,current,undefined,false,cache.renderNeighbor);
+            if(deferRender){
+              const source=plan.after,dirty=hvpDirtyChunks(plan),collision=new Map<number,HvpCollisionSector>();
+              const cachedCollision=new Map(cache.collision),lane=phase.beginLane(1),reserve=createHvpBodyMeshPhaseReserve(lane.bytes);
+              const observe=(phase:string)=>trace===undefined?undefined:(_label:string,start:number,duration:number)=>{
+                trace({commandId:plan.request.commandId,thread:"main",phase,origin:performance.timeOrigin,start,duration});
+              };
+              const pump=createHvpBodyMeshTaskPump(current,observe("cutStaticCollisionWorkMs"),inputPriority);let retained=0;
+              try{
+                for(const id of dirty){
+                  const previous=cache.collision.get(id);
+                  if(!previous){throw new Error("Missing published chunk collision");}
+                  const mesh=await pump.run(patchHvpChunkCollisionSteps(plan,id,cache.source,previous,reserve));
+                  collision.set(id,mesh);cachedCollision.set(id,await pump.run(copyChunkCollisionSteps(mesh,reserve)));
+                  retained+=2*(mesh.vertices.byteLength+mesh.indices.byteLength+320);
+                }
+              }finally{pump.dispose();phase.endLane(lane,retained);}
+              const nextCache:ChunkCache={...cache,source,collision:cachedCollision,bytes:cache.bytes+
+                dirty.reduce((n,id)=>{const old=cache.collision.get(id)!,next=cachedCollision.get(id)!;
+                  return n+next.vertices.byteLength+next.indices.byteLength-old.vertices.byteLength-old.indices.byteLength;},0)};
+              products={source,collision,render:new Map(),dirtyRender:dirty,renderAfterCommit:async pending=>{
+                const currentRender=()=>{if(disposed||binding?.read()!==source||chunkCache!==nextCache){throw new Error("Stale terrain presentation");}};
+                currentRender();
+                const ids=[...new Set(pending)],phase=createHvpSupportPhaseCredits(32_768,chunkResident(residentBytes??0));
+                try{
+                  let updated:Map<number,HvpCompactMesh>;
+                  if(workerVisualOracle){
+                    const raw=await compileSectors(source,[],[],256,undefined,undefined,count,phase,undefined,
+                      {ids,worldId:nextCache.worldId,neighbor:nextCache.neighbor,renderNeighbor:nextCache.renderNeighbor,assertCurrent:currentRender});
+                    updated=new Map(raw.render);
+                  }else{
+                    updated=new Map();
+                    const renderLane=phase.beginLane(1),renderReserve=createHvpBodyMeshPhaseReserve(renderLane.bytes);
+                    const renderPump=createHvpBodyMeshTaskPump(currentRender,observe("cutTerrainVisualMeshWorkMs"));
+                    let retained=0;
+                    try{
+                      for(const id of ids){
+                        const {slots,payload}=await renderPump.run(chunkSourceInputSteps(source,id,nextCache.worldId,
+                          nextCache.neighbor,nextCache.renderNeighbor,renderReserve,true));
+                        const mesh=nextCache.collision.get(id)!;
+                        const rendered=await renderPump.run(buildHvpLiveRenderChunkSteps(slots,payload,
+                          mesh.vertices.byteLength+mesh.indices.byteLength,renderReserve));
+                        updated.set(id,rendered);
+                        retained+=chunkMeshBytes(rendered);
+                      }
+                    }finally{renderPump.dispose();phase.endLane(renderLane,retained);}
+                  }
+                  const joined=new Map(nextCache.render);
+                  for(const [id,mesh] of updated){joined.set(id,mesh);}
+                  const columns=new Set(ids.map(id=>{const [x,,z]=hvpChunkCoordinates(id);return Math.floor(x/2)+Math.floor(z/2)*4;}));
+                  const lane=phase.beginLane(1),reserve=createHvpBodyMeshPhaseReserve(lane.bytes),pump=createHvpBodyMeshTaskPump(currentRender,observe("cutTerrainVisualCompositionWorkMs"));
+                  const render=new Map<number,HvpCompactMesh>();let bytes=0;
+                  try{for(const id of columns){const mesh=await pump.run(composeHvpTerrainColumnSteps(joined,source,id,reserve));render.set(id,mesh);bytes+=chunkMeshBytes(mesh);}}
+                  finally{pump.dispose();phase.endLane(lane,bytes);}
+                  currentRender();
+                  const live=nextCache.render as Map<number,HvpCompactMesh>;
+                  for(const [id,mesh] of updated){nextCache.bytes+=chunkMeshBytes(mesh)-chunkMeshBytes(live.get(id)!);live.set(id,mesh);}
+                  return render;
+                }finally{phase.release();}
+              }};
+              pendingChunks.set(products,{cache:nextCache,bytes:retained});
+            }else{products=await compileChunks(plan.after,hvpDirtyChunks(plan),cache.worldId,cache.neighbor,phase,cache,current,undefined,false,cache.renderNeighbor);}
             current();
             const accepted=products;ownedProducts.set(accepted,{credits:phase,release:()=>{releaseChunkCandidate(accepted);retainedProducts.delete(accepted);ledger?.release();}});
             retainedProducts.add(products);handedOff=true;return products;
           }finally{if(!handedOff){if(products){pendingChunks.delete(products);}if(credits===undefined){phase.release();}ledger?.release();}}
         }
-        if(credits!==undefined||residentBytes===undefined){return compileSectors(plan.after,hvpDirtySectors(plan,64),hvpDirtySectors(plan,32),64,undefined,undefined,count,credits);}
+        const renderIds=hvpDirtySectors(plan,64);
+        const compileSectorCut=async(phase?:HvpSupportPhaseCredits)=>{
+          const source=plan.after,base=await compileSectors(source,deferRender?[]:renderIds,hvpDirtySectors(plan,32),64,undefined,undefined,count,phase);
+          if(!deferRender){return base;}
+          return {...base,dirtyRender:renderIds,renderAfterCommit:async(ids:readonly number[])=>{
+            const rendering=createHvpSupportPhaseCredits(32_768,residentBytes??0);
+            try{return (await compileSectors(source,[...new Set(ids)],[],16,undefined,undefined,count,rendering)).render;}
+            finally{rendering.release();}
+          }};
+        };
+        if(credits!==undefined||residentBytes===undefined){return compileSectorCut(credits);}
         if(activeOperations!==1||supportAnalyzing||retainedSupport.size!==0||retainedProducts.size!==0){throw new Error("Terrain resource lifetime pending");}
         const ledger=createStructuralOwnerLedger(residentBytes,96*1024*1024,128),phase=createHvpSupportPhaseCredits(32_768,residentBytes);
         ledger.reserve(96*1024*1024);let handedOff=false;
         try{
-          const products=await compileSectors(plan.after,hvpDirtySectors(plan,64),hvpDirtySectors(plan,32),64,undefined,undefined,count,phase);
+          const products=await compileSectorCut(phase);
           ownedProducts.set(products,{credits:phase,release:()=>{retainedProducts.delete(products);ledger.release();}});
           retainedProducts.add(products);handedOff=true;return products;
         }finally{if(!handedOff){phase.release();ledger.release();}}

@@ -166,7 +166,9 @@ const createTerrainRoot = (base: HvpCellReader & { sourceDigest: string }, sessi
     if(ownedBaseCopy!==undefined){ownedLeafCopies.set(snapshot,(x,y,z)=>{
       if(![x,y,z].every(Number.isSafeInteger)){return undefined;}
       // Public COW production keeps its Species observations; it supplies no exclusive-copy capability.
-      if(leaves.has(`${x}:${y}:${z}`)){return undefined;}return ownedBaseCopy(x,y,z);
+      const overlay=leaves.get(`${x}:${y}:${z}`);
+      if(overlay){return exclusive?copyHvpOwnedSlots(overlay.slots):undefined;}
+      return ownedBaseCopy(x,y,z);
     });}
     if(ownedBaseBlock!==undefined&&base.sizeX===256&&base.sizeY===128&&base.sizeZ===256){ownedSlotSteps.set(snapshot,function*(target){
       const total=base.sizeX*base.sizeY*base.sizeZ;
@@ -236,6 +238,15 @@ const createTerrainRoot = (base: HvpCellReader & { sourceDigest: string }, sessi
       }}));
     }
   };
+  // A one-cell halo crosses a leaf boundary only at local coordinate 0 or 15.
+  const addDependencies=(set:Set<string>,x:number,y:number,z:number):void=>{
+    const minX=Math.max(0,x-1)>>4,maxX=Math.min(base.sizeX-1,x+1)>>4;
+    const minY=Math.max(0,y-1)>>4,maxY=Math.min(base.sizeY-1,y+1)>>4;
+    const minZ=Math.max(0,z-1)>>4,maxZ=Math.min(base.sizeZ-1,z+1)>>4;
+    for(let bz=minZ;bz<=maxZ;bz++)for(let by=minY;by<=maxY;by++)for(let bx=minX;bx<=maxX;bx++){
+      set.add(`${bx}:${by}:${bz}`);
+    }
+  };
   const prepare=(request:HvpCutRequest,privateRequested=false):HvpPreparedCut=>{
       const exclusive=privateRequested&&privateSnapshots.has(current);
       if (request.sessionId !== sessionId || request.epoch !== epoch || request.revision !== current.revision || request.sourceDigest !== current.sourceDigest) {
@@ -251,9 +262,7 @@ const createTerrainRoot = (base: HvpCellReader & { sourceDigest: string }, sessi
         if (slot !== 0 && (slot < 1 || slot > 4 || protectedCell(...cell))) { throw new Error("ProtectedMaterial"); }
         if (slot !== 0) {
           changed.push(Object.freeze({ cell, before: slot, after: 0 })); content.add(leafKey(...cell));
-          for (let z=-1;z<=1;z+=1) { for (let y=-1;y<=1;y+=1) { for (let x=-1;x<=1;x+=1) {
-            if (inside(cell[0]+x,cell[1]+y,cell[2]+z)) { dependencies.add(leafKey(cell[0]+x,cell[1]+y,cell[2]+z)); }
-          } } }
+          addDependencies(dependencies,...cell);
         }
       }
       const leaves = new Map(maps.get(current)!);
@@ -280,23 +289,32 @@ const createTerrainRoot = (base: HvpCellReader & { sourceDigest: string }, sessi
       const exclusive=privateRequested&&privateCutSources.has(cut)&&privateSnapshots.has(cut.after);
       if(cells.length<1||cells.length>32_768){throw new Error("Transfer BudgetExceeded");}
       const changed=[...cut.changed],content=new Set(cut.contentLeaves),dependencies=new Set(cut.dependencyLeaves);
-      const seen=new Set<string>();
+      const leaves=new Map(maps.get(cut.after)!);
+      const modified=new Map<string,Uint8Array>();
       for(const c of cells){
         const cell=Object.freeze([c.x,c.y,c.z]) as HvpCell;
-        if(!integerCell(cell)||!Number.isInteger(c.materialId)||c.materialId<1||c.materialId>4
-          ||cut.after.readSlot(...cell)!==c.materialId||protectedCell(...cell)||seen.has(cell.join(":"))){throw new Error("Invalid transfer occupancy");}
-        seen.add(cell.join(":"));content.add(leafKey(...cell));
-        if(content.size>8){throw new Error("Transfer leaf BudgetExceeded");}
+        if(!integerCell(cell)||!inside(...cell)||!Number.isInteger(c.materialId)||c.materialId<1||c.materialId>4){
+          throw new Error("Invalid transfer occupancy");
+        }
+        const key=leafKey(...cell);
+        let slots=modified.get(key);
+        if(slots===undefined){
+          content.add(key);
+          if(content.size>8)throw new Error("Transfer leaf BudgetExceeded");
+          const bx=c.x>>4,by=c.y>>4,bz=c.z>>4;
+          slots=exclusive?copyPrivateLeaf(cut.after,bx,by,bz):cut.after.copyLeaf(bx,by,bz);
+          modified.set(key,slots);
+        }
+        const at=leafIndex(...cell);
+        // The private page also detects double assignment of a cell already transferred.
+        if(slots[at]!==c.materialId||protectedCell(...cell))throw new Error("Invalid transfer occupancy");
+        slots[at]=0;
         changed.push(Object.freeze({cell,before:c.materialId,after:0}));
-        for(let z=-1;z<=1;z+=1){for(let y=-1;y<=1;y+=1){for(let x=-1;x<=1;x+=1){
-          if(inside(c.x+x,c.y+y,c.z+z)){dependencies.add(leafKey(c.x+x,c.y+y,c.z+z));}
-        }}}
+        addDependencies(dependencies,...cell);
       }
-      const leaves=new Map(maps.get(cut.after)!);
-      for(const key of content){
-        const [x,y,z]=key.split(":").map(Number),slots=exclusive?copyPrivateLeaf(cut.after,x!,y!,z!):cut.after.copyLeaf(x!,y!,z!);
-        for(const c of cells){if(leafKey(c.x,c.y,c.z)===key){slots[leafIndex(c.x,c.y,c.z)]=0;}}
-        leaves.set(key,{slots,revision:(maps.get(current)!.get(key)?.revision??0)+1,digest:exclusive?hashHvpOwnedSlots(slots):fnv1aBytes([slots.buffer as ArrayBuffer])});
+      for(const [key,slots] of modified){
+        leaves.set(key,{slots,revision:(maps.get(current)!.get(key)?.revision??0)+1,
+          digest:exclusive?hashHvpOwnedSlots(slots):fnv1aBytes([slots.buffer as ArrayBuffer])});
       }
       changed.sort((a,b)=>a.cell[2]-b.cell[2]||a.cell[1]-b.cell[1]||a.cell[0]-b.cell[0]);
       const result:HvpPreparedCut=Object.freeze({before:current,after:make(leaves,current.revision+1,exclusive),request:cut.request,

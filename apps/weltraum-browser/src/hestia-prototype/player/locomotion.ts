@@ -29,7 +29,11 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
   let coverageHold = saved?.coverageHold??false;
   let cameraFraction = 1;
   const neutralize = (): void => { input = { x: 0, z: 0, sprint: false, jump: false }; jumpPending = false; };
+  const motion=():HvpPlayerCheckpoint=>Object.freeze({version:"hvp-player-checkpoint-v1",profileDigest,gravity,
+    position:Object.freeze({...body.translation()}),grounded,velocityY,jumpCount,coverageHold});
   return {
+    heldMotion:motion,
+    heldInput:()=>({...input,jump:jumpPending}),
     setCameraOffset(offset?: Readonly<{ x: number; y: number; z: number }>): void {
       cameraFraction = 1;
       if (offset === undefined || disposed) { return; }
@@ -44,7 +48,7 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
     setEnabled(value: boolean): void { enabled = value; neutralize(); },
     checkpoint():HvpPlayerCheckpoint {
       if(disposed||enabled){throw new Error("Player checkpoint requires a paused live owner");}
-      return Object.freeze({version:"hvp-player-checkpoint-v1",profileDigest,gravity,position:Object.freeze({...body.translation()}),grounded,velocityY,jumpCount,coverageHold});
+      return motion();
     },
     setInput(value: HvpPlayerInput): void {
       if (![value.x, value.z].every(Number.isFinite) || Math.abs(value.x) > 1 || Math.abs(value.z) > 1

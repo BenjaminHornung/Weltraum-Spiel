@@ -144,3 +144,21 @@ it("prunes only unleased obsolete context and separates completed-packet copying
     expect(copy).toBeGreaterThan(0);expect(admissions[copy+1].preparing).toBe(true);
   }finally{await h.controller.dispose();lease.release();cache.clear();}
 },120_000);
+
+it("releases cut-ray coverage only after published native, source and primary identity agree",async()=>{
+  let release!:()=>void;
+  const barrier=new Promise<void>(resolve=>{release=resolve;});
+  const h=harness("",()=>barrier),primary=h.primary.read();
+  try{
+    expect(await h.controller.requestEastCutCoverage(primary,-12)).toBeUndefined();
+    expect(h.load).not.toHaveBeenCalled();
+    const first=h.controller.requestEastCutCoverage(primary,15.9),second=h.controller.requestEastCutCoverage(primary,15.9);
+    await vi.waitFor(()=>expect(h.compiler.neighborProjection).toHaveBeenCalledTimes(1));
+    expect(h.controller.read().collisionReady).toBe(false);
+    expect(h.physics.prepareNeighbor).not.toHaveBeenCalled();
+    release();
+    expect(await first).toBe(east.read());expect(await second).toBe(east.read());
+    expect(h.live()).toMatchObject({resident:true,sourceDigest:east.read().sourceDigest});
+    expect(await h.controller.requestEastCutCoverage({...primary},15.9)).toBeUndefined();
+  }finally{release();await h.controller.dispose();}
+});
