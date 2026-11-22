@@ -77,5 +77,13 @@
   },
   "localPlanWallMs": 1314.7000000011176,
   "phasesAreWallClock": true,
-  "includesYieldWait": true
+  "includesYieldWait": true,
+  "supportMainThreadSlices": {
+    "count": 68,
+    "sumElapsedMs": 163.8,
+    "medianElapsedMs": 2.05,
+    "maxElapsedMs": 10.5,
+    "planTimeOutsideRecordedSlicesMs": 1150.9,
+    "intervalDefinition": "Elapsed time inside the bounded pump between resumptions and yields. Time outside the slices includes scheduler gaps and bookkeeping. Neither quantity measures process CPU time."
+  }
 }

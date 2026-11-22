@@ -16,6 +16,8 @@ Der Integrationsbranch `codex/hestia-a0-core-r2-2026-11-22` baut auf dem veröff
 
 Der gemessene Felsarm-Schnitt benötigte vom Mausklick bis zur Bestätigung 1.608,3 ms und bis zur ersten zum Commit passenden Renderübergabe 2.155,1 ms. Die 1.314,7 ms der lokalen Stützplanung enthalten die Wartezeiten zwischen den Arbeitsschritten. Davon entfielen 551,1 ms auf die Startzellen der Zusammenhangssuche und 463,6 ms auf die Stützprüfung. Die native Welt war für 7,6 ms belegt. Collider-Aufbereitung und Installation dauerten 1,1 und 0,4 ms. Überlappende Messwerte dürfen nicht addiert werden.
 
+68 disjunkte Messintervalle desselben Main-Thread-Tasks liegen vollständig innerhalb der Stützplanung. Ihre Laufzeiten summieren sich auf 163,8 ms. Das längste Intervall dauerte 10,5 ms. Die übrigen 1.150,9 ms lagen außerhalb dieser Intervalle, unter anderem zwischen Abgabe und Wiederaufnahme des Tasks. Diese Aufteilung misst verstrichene Zeit. Sie lässt offen, welcher Anteil auf Rendering, sonstige Browserarbeit oder Scheduling entfällt.
+
 Der nächste A0-Vergleich liegt in `hestia-prototype/terrain/supportPlan.ts` und dem Aufruf in `terrainProducts.ts`. Für Startzellen und Zusammenhangssuche sind aktive Rechenzeit und Wartezeit zwischen den Arbeitsschritten getrennt zu erfassen. Zellmenge, Masse, Fragmente, Revision und Renderbindung gehören in denselben Vorher-Nachher-Vergleich. Für den nächsten Browserlauf sollen beim echten Klick beziehungsweise Tastendruck Pointer Lock, Pause, Spielertick, Zielentfernung und Worker-Antwort demselben Befehl zugeordnet werden.
 
 ## Reproduktion
