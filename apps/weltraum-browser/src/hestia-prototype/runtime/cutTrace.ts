@@ -58,6 +58,7 @@ import type { createHvpMeasurements } from "./measurements";
 import type { RenderCommandResult } from "../../presentation/renderCommands";
 
 export interface HvpCutRenderFacts {
+  readonly terrainPresentationPending?: boolean;
   readonly root: HvpTerrainSnapshot;
   readonly nativeGeneration: number;
   readonly recoveryHold: boolean;
@@ -122,6 +123,7 @@ type HvpPendingRender = Readonly<{
   commandId: string;
   input: HvpInputRecord;
   root: WeakRef<HvpTerrainSnapshot>;
+  awaitingPresentation?: boolean;
   revision: number;
   digest: string;
   nativeGeneration: number;
@@ -389,7 +391,7 @@ export function createHvpCutObservation(
         return;
       }
       if (recoveryHold || nativeGeneration !== root.revision
-        || !sameKeys(activeTerrainKeys, visibleTerrainKeys)) {
+        || (!facts.terrainPresentationPending && !sameKeys(activeTerrainKeys, visibleTerrainKeys))) {
         if (isCurrent(generation)) {
           drop("invalidFrame");
         }
@@ -412,7 +414,8 @@ export function createHvpCutObservation(
         return;
       }
       pending = Object.freeze({ commandId, input, root: new WeakRef(root), revision: root.revision,
-        digest: root.sourceDigest, nativeGeneration, activeTerrainKeys: activeKeys, ...(body ? { body } : {}) });
+        digest: root.sourceDigest, nativeGeneration, activeTerrainKeys: activeKeys,
+        awaitingPresentation: !bodyCommand && facts.terrainPresentationPending === true, ...(body ? { body } : {}) });
     } catch {
       if (isCurrent(generation)) {
         drop("invalidFrame");
@@ -612,7 +615,7 @@ export function createHvpCutObservation(
   };
 
   const render = (run: () => RenderCommandResult): RenderCommandResult => {
-    const candidate = pending;
+    let candidate = pending;
     if (disposed || !candidate) {
       return run();
     }
@@ -641,6 +644,14 @@ export function createHvpCutObservation(
       consumePending("invalidFrame");
       return run();
     } else {
+      if (candidate.awaitingPresentation && candidate.root.deref() === before.root && before.nativeGeneration === candidate.nativeGeneration && !before.recoveryHold) {
+        if (before.terrainPresentationPending) return run();
+        if (factsStatus(before)!=="valid" || !sameKeys(before.activeTerrainKeys,before.visibleTerrainKeys)) {
+          consumePending("invalidFrame");
+          return run();
+        }
+        candidate = pending = Object.freeze({...candidate, awaitingPresentation:false, activeTerrainKeys:Object.freeze([...before.activeTerrainKeys])});
+      }
       const reason = comparePending(candidate, before);
       if (!isCurrent(generation) || pending !== candidate) {
         return run();

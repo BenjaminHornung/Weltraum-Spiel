@@ -21,7 +21,7 @@ import {
 } from "./validation";
 import { brickExtentQuantumForLevel, compareAdaptiveBrickKeys, quantumBoundsForKey, validateAdaptiveBrickKey, validateQuantumBounds } from "./coordinates";
 import { validateAdaptiveEditJournal, adaptiveValidateEditJournalSteps, type AdaptiveOwnedJournalOptions } from "./edits";
-import { validateMaterializedAdaptiveBrick, adaptiveValidateMaterializedBrickSteps } from "./materialization";
+import { validateMaterializedAdaptiveBrick, adaptiveValidateMaterializedBrickSteps, readOwnedRunBrick } from "./materialization";
 import type {
   AdaptiveBaseFieldDescriptor,
   AdaptiveBaseFieldSample,
@@ -626,7 +626,7 @@ function* residentProofIssueSteps(value: MaterializedAdaptiveBrick, revisionValu
 ): Generator<void, AdaptiveResidentValidationProof, void> {
   owned?.reserve(16_384);
   const brick = owned === undefined ? validateMaterializedAdaptiveBrick(value)
-    : yield* adaptiveValidateMaterializedBrickSteps(value, owned);
+    : readOwnedRunBrick(value,owned.reserve) ?? (yield* adaptiveValidateMaterializedBrickSteps(value, owned));
   const brickRevision = authorityRevision(revisionValue);
   const expected = yield* plannerResidentFindSteps(projection.resident,
     entry => canonicalAdaptiveJson(entry.key) === canonicalAdaptiveJson(brick.key), owned);

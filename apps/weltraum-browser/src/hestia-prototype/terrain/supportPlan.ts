@@ -11,6 +11,7 @@ export interface HvpTerrainFragment {
   readonly id:string;readonly digest:string;readonly cells:readonly HvpStructuralCell[];
   readonly min:HvpCell;readonly max:HvpCell;readonly massKg:number;readonly colliders:number;
   readonly affectedLeaves:readonly string[];readonly colliderBoxes:readonly HvpTransferredColliderBox[];
+  readonly compactSource?:import("../physics/compactTerrainWire").HvpCompactTerrainSource;
   readonly sourceRegion?:string;
   readonly sourceSubset?:import("../physics/terrainFragment").HvpTerrainSourceSubset;
 }

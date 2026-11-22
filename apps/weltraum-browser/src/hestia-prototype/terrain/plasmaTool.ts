@@ -17,6 +17,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
    structure?:{physics:Pick<HvpPhysicsClient,"read"|"setCutAim">;consumer:ReturnType<typeof createHvpStructuralConsumer>;admit:()=>void},
    moving?:ReturnType<typeof createHvpBodyCutConsumer>) => {
   let mode=1, sequence=0, key="", target:HvpCutShape|undefined, message="Spielen: 1 Zelle · 2 Box · 3 Kugel · Linksklick";
+  let terrainHit:Readonly<{cell:HvpCell;slot:number}>|undefined;
   let edges=0;
   let structureSequence=0;
   let movingSequence=0;
@@ -44,6 +45,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
       preview([],false);return;
     }
     const hit=pickHvpCell(root.read(),[aim.origin.x,aim.origin.y,aim.origin.z],[aim.direction.x,aim.direction.y,aim.direction.z],4);
+    terrainHit=hit.kind==="Hit"?{cell:hit.cell,slot:hit.slot}:undefined;
     const next=JSON.stringify([root.read().revision,mode,hit.kind==="Hit"?hit.cell:hit.kind]);
     if(next===key) { return; } key=next;target=undefined;
     if(hit.kind!=="Hit") { message=hit.kind==="Unknown"?"Keine bestätigte Zellabdeckung":"Kein Ziel innerhalb 4 m";preview([],false);return; }
@@ -76,7 +78,10 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
     select(value:number):void { if(Number.isInteger(value)&&value>=1&&value<=3) { mode=value;key="";update(); } },
     update,
     async confirm():Promise<void> {
-      if(!readAim()) { return; } edges+=1;key="";update();
+      const inputAim=readAim();
+      if(!inputAim) return;
+      edges+=1;
+      update();
       const body=structure?.physics.read().moving?.preview;
       if(moving&&body&&structure){
         if(["Pending","RecoveryHold"].includes(consumer.read().state)||structure.consumer.read().state!=="Ready"){message="Andere Mutation Pending";return;}
@@ -95,8 +100,20 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
         catch(error){message=error instanceof Error?error.message:String(error);}key="";return;
       }
       if(structure&&structure.consumer.read().state!=="Ready"){message="Structural Pending";return;}
-      if(!target) { return; }
-      try { await consumer.submit(request(target,`cut-${++sequence}`)); }
+      if(!target||!terrainHit) { return; }
+      const intent=request(target,`cut-${++sequence}`);
+      const intendedHit=terrainHit;
+      const origin:HvpCell=[inputAim.origin.x,inputAim.origin.y,inputAim.origin.z];
+      const direction:HvpCell=[inputAim.direction.x,inputAim.direction.y,inputAim.direction.z];
+      try { await consumer.submit(intent,current=>{
+        if(current.sessionId!==intent.sessionId||current.epoch!==intent.epoch) throw new Error("Sitzung gewechselt");
+        const hit=pickHvpCell(current,origin,direction,4);
+        if(hit.kind!=="Hit"||hit.slot!==intendedHit.slot||hit.cell.some((v,i)=>v!==intendedHit.cell[i])
+          ||structure?.physics.read().moving?.preview||structure?.physics.read().structural?.preview){
+          throw new Error("Schnittziel hat sich geändert");
+        }
+        return {...intent,revision:current.revision,sourceDigest:current.sourceDigest};
+      }); }
       catch(error) { message=error instanceof Error?error.message:String(error); }
       key="";
     },

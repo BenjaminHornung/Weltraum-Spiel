@@ -159,7 +159,7 @@ function* chunkJobSteps(r:WorkerJobRequest,b:TransferableBufferBundle,reserve?:S
   return {bundle:output,result:{jobId:r.jobId,targetKey:r.targetKey,workerEpoch:r.workerEpoch,planningEpoch:r.planningEpoch,inputRevision:r.inputRevision,
     sourceInputDigest:r.sourceInputDigest,outputRevision:contentRevision(p.generation),algorithmVersion:r.algorithmVersion,outputBytes:output.byteLength,contentHash:output.contentHash}};
 }
-function* chunkCollisionSteps(p:HvpChunkPayload,slots:Uint8Array,allAir:boolean,reserve?:StructuralOwnedReserve):Generator<string,HvpCollisionSector,unknown>{
+export function* chunkCollisionSteps(p:HvpChunkPayload,slots:Uint8Array,allAir:boolean,reserve?:StructuralOwnedReserve):Generator<string,HvpCollisionSector,unknown>{
   if(allAir){
     // Fully validated zero slots stay empty under every inside/confirmed-neighbor physical mask.
     reserve?.(8192);return {vertices:new Float32Array(0),indices:new Uint32Array(0)};

@@ -1,5 +1,5 @@
 // First-party owner factories: the only route that selects the owned-payload child transition hash.
-import { createHvpWorkerPhysicsSession, createHvpChunkWorkerPhysicsSession, createHvpChunkLabPhysicsSession,createHvpFreshChunkLabPhysicsSession,
+import { restoreHvpTerrainWorker,type HvpTerrainBinding,type HvpTerrainRecoveryImage,type HvpTerrainRecoveryAssets,type HvpTerrainMotion,createHvpWorkerPhysicsSession, createHvpChunkWorkerPhysicsSession, createHvpChunkLabPhysicsSession,createHvpFreshChunkLabPhysicsSession,
   decodeHvpLabWorkerGameWire,releaseHvpLabWorkerGameWireAdmission,type HvpPhysicsSession,type HvpLabPhysicsSession,type HvpLabWorkerGameWireAdmission } from "./session";
 import {validateHvpChunkStaticLayout,type HvpChunkStaticLayout} from "./staticTerrainLayout";
 import {requirePlainRecord} from "../../voxel/adaptive/validation";
@@ -45,7 +45,9 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
        readonly cutAim?:{x:number;y:number;z:number};readonly measure?:false }
   | { readonly kind: "Pause" | "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
   | { readonly kind: "Impulse"; readonly direction: {x:number;y:number;z:number} }
-  | { readonly kind: "PrepareTerrain"; readonly transactionId: string; readonly generation: number;
+  | { readonly kind:"PrimeTerrainRecovery" }
+  | { readonly kind:"RecoverTerrain";readonly image:HvpTerrainRecoveryImage;readonly measure?:boolean }
+  | { readonly kind: "PrepareTerrain";readonly publication?:HvpTerrainBinding; readonly transactionId: string; readonly generation: number;
       readonly replacements: readonly { index: number; mesh: HvpCollisionSector }[];readonly fragments?:readonly HvpTerrainFragmentRequest[];
       readonly prepareRequestId?:number;readonly sourceDigest?:string;readonly sourceSessionId?:string;readonly sourceEpoch?:number }
   | {readonly kind:"PrepareTerrainPlan";readonly transactionId:string;readonly generation:number;readonly sourceDigest:string;readonly sourceSessionId:string;readonly sourceEpoch:number;readonly allowanceBytes:number;
@@ -73,6 +75,7 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
 );
 export type HvpPhysicsRequest = HvpPhysicsMessage extends infer M ? M extends HvpPhysicsMessage ? Omit<M,"id"|keyof HvpPhysicsBinding> : never : never;
 export type HvpPhysicsReply = HvpPhysicsBinding & { readonly id: number; readonly sequence:number; readonly snapshot?: HvpPhysicsSnapshot; readonly error?: string; readonly rejected?: string;readonly bodyPreparation?:HvpMovingCutPreparation;
+  readonly terrainReceipt?:HvpTerrainBinding;readonly terrainMotion?:HvpTerrainMotion;readonly recoveryAssets?:HvpTerrainRecoveryAssets;
   readonly bodyChildProjection?:HvpBodyProjectionReply;
   readonly bodyMeshAdmission?:HvpBodyMeshAdmissionReply;
   readonly bodyMeshWork?:{readonly beginRequestId:number;readonly projection:HvpBodyChildProjection;readonly budget:HvpBodyMeshBudget};
@@ -141,6 +144,7 @@ let bodyMeshWorkTicket:typeof bodyProjectionTicket;
 type TerrainPlanTicket={owner:HvpPhysicsSession|HvpLabPhysicsSession;requestId:number;id:string;generation:number;sourceDigest:string;sourceSessionId:string;sourceEpoch:number;
   plan?:Awaited<ReturnType<HvpPhysicsSession["prepareTerrainPlan"]>>;pump:ReturnType<typeof createHvpBodyMeshTaskPump>;work:Promise<void>};
 let terrainPlanTicket:TerrainPlanTicket|undefined;
+let terrainBinding:HvpTerrainBinding|undefined;
 const closeTerrainPlan=async()=>{const ticket=terrainPlanTicket;terrainPlanTicket=undefined;
   if(ticket){ticket.pump.dispose();try{await ticket.work;}catch{/* Source work has no World side effect. */}}};
 // A single worker owns the coupled World. No other worker can mutate its handles.
@@ -157,8 +161,8 @@ port.onmessage = async ({ data }) => {
     post({id:data.id,rejected:"Invalid physics owner mode binding"},typeof data.incarnation==="string"?data.incarnation:"");return;
   }
   if(incarnation===undefined){
-    const publicInitialize=data.kind==="Initialize"&&!taggedLab;
-    const labInitialize=(data.kind==="InitializeLab"||data.kind==="InitializeFreshLab")&&taggedLab;
+    const publicInitialize=(data.kind==="Initialize"||data.kind==="RecoverTerrain")&&!taggedLab;
+    const labInitialize=(data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain")&&taggedLab;
     if((!publicInitialize&&!labInitialize)||data.protocol!==HVP_PHYSICS_PROTOCOL
       ||typeof data.incarnation!=="string"||!/^[A-Za-z0-9_-]{1,128}$/.test(data.incarnation)){
     post({id:data.id,rejected:"Invalid physics initialization binding"},typeof data.incarnation==="string"?data.incarnation:"");return;
@@ -166,7 +170,7 @@ port.onmessage = async ({ data }) => {
     // Bind mode and incarnation synchronously, before initialization can await codec/Native work.
     ownerMode=labInitialize?"phy01-lab":"public";incarnation=data.incarnation;
   }
-  if((data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab")&&(initializing||session!==undefined||disposed)){
+  if((data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain")&&(initializing||session!==undefined||disposed)){
     post({id:data.id,rejected:"Physics already initialized/disposed"});return;
   }
   const started=performance.now();
@@ -207,7 +211,7 @@ port.onmessage = async ({ data }) => {
       ...(clock.holdTransitions===undefined?{}:{holdTransitions:clock.holdTransitions.map(value=>({...value}))})},timings},incarnation??"",transfers);
   };
   let bodyPreparation:HvpMovingCutPreparation|undefined;
-  let releasingHeld=false;
+  let releasingHeld=false,receipt:HvpTerrainBinding|undefined,motion:HvpTerrainMotion|undefined;
   try {
     if (!Number.isSafeInteger(data.id) || data.id < 0) { throw new Error("Invalid physics message id"); }
     if(data.kind==="PrepareTerrain"||data.kind==="CommitTerrain"||data.kind==="RollbackTerrain"||data.kind==="FinalizeTerrain"){
@@ -226,11 +230,15 @@ port.onmessage = async ({ data }) => {
     }
     if (data.kind === "Dispose") { disposed = true;bodyProjectionTicket=undefined; clearInterval(timer);timer=undefined;
       await closeTerrainPlan();restore?.transaction?.dispose();session?.dispose(); }
-    else if (data.kind === "Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab") {
+    else if (data.kind === "Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain") {
       initializing = true;
       if(data.kind==="Initialize"&&data.experimentalKernel!==undefined){if(!["direct-known-cells-v1","owned-moving-subset-v2","owned-terrain-subset-v3"].includes(data.experimentalKernel)){throw new Error("Unknown experimental kernel");}enableProbeKernel(data.experimentalKernel!=="direct-known-cells-v1",data.experimentalKernel==="owned-terrain-subset-v3");}
       measure=data.measure===true;
-      if(data.kind==="Initialize"){
+      if(data.kind==="RecoverTerrain"){
+        receipt=data.image.motion.binding;
+        if(ownerMode==="phy01-lab"){labSession=await restoreHvpTerrainWorker(data.image,"phy01-lab",measure);session=labSession;}
+        else{publicSession=await restoreHvpTerrainWorker(data.image,"public",measure);session=publicSession;}
+      }else if(data.kind==="Initialize"){
         const args=[data.sectors,data.spawn,data.gravity,data.player,data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind,measure] as const;
         publicSession=await (data.staticLayout===undefined?createHvpWorkerPhysicsSession(...args):createHvpChunkWorkerPhysicsSession(data.staticLayout,...args));
         session=publicSession;labSession=undefined;
@@ -378,6 +386,9 @@ port.onmessage = async ({ data }) => {
       if(terrainPlanTicket!==undefined&&!["Read","Pause","Inspect","PrepareTerrain"].includes(data.kind)){
         throw new Error("Native terrain preparation pending");
       }
+      if(data.kind==="PrimeTerrainRecovery"){
+        reply({id:data.id,recoveryAssets:session.captureTerrainAssets()});return;
+      }
       if(data.kind==="Checkpoint"){if(!publicSession){throw new Error("Public checkpoint owner unavailable");}
         reply({id:data.id,snapshot:publicSession.read(),checkpoint:publicSession.checkpoint()});return;}
       if(data.kind==="CheckpointLab"){
@@ -422,6 +433,12 @@ port.onmessage = async ({ data }) => {
           return;
         }
         case "PrepareTerrain":{
+          const binding=data.publication;
+          if(binding&&(binding.commandId!==data.transactionId||binding.baseRevision!==data.generation
+            ||!Number.isSafeInteger(binding.epoch)||!binding.sessionId||!binding.baseDigest||!binding.targetDigest
+            ||(data.sourceDigest!==undefined&&(data.sourceDigest!==binding.targetDigest||data.sourceEpoch!==binding.epoch||data.sourceSessionId!==binding.sessionId)))){
+            throw new Error("Invalid terrain publication binding");
+          }
           if(data.prepareRequestId===undefined){if(terrainPlanTicket!==undefined){throw new Error("Native terrain preparation pending");}
             session.prepareTerrain(data.transactionId,data.generation,data.replacements,data.fragments);}
           else{
@@ -431,11 +448,20 @@ port.onmessage = async ({ data }) => {
               ||ticket.sourceSessionId!==data.sourceSessionId||ticket.sourceEpoch!==data.sourceEpoch){throw new Error("Stale Native terrain preparation ticket");}
             terrainPlanTicket=undefined;
             session.prepareTerrain(ticket.id,ticket.generation,ticket.plan.replacements,ticket.plan.fragments,ticket.plan);
-          }break;
+          }
+          if(binding){
+            try{motion=session.captureTerrainRecovery(binding);}catch(error){session.rollbackTerrain(data.transactionId);throw error;}
+          }
+          terrainBinding=binding;receipt=binding;break;
         }
-        case "CommitTerrain": session.commitTerrain(data.transactionId); break;
-        case "RollbackTerrain": session.rollbackTerrain(data.transactionId); break;
-        case "FinalizeTerrain": session.finalizeTerrain(data.transactionId); break;
+        case "CommitTerrain":
+          session.commitTerrain(data.transactionId);
+          if(terrainBinding){motion=session.captureTerrainRecovery(terrainBinding);receipt=terrainBinding;}
+          break;
+        case "RollbackTerrain":
+          session.rollbackTerrain(data.transactionId);receipt=terrainBinding;terrainBinding=undefined;break;
+        case "FinalizeTerrain":
+          session.finalizeTerrain(data.transactionId);receipt=terrainBinding;terrainBinding=undefined;break;
         case "PrepareBranch":session.prepareBranch(data.request);break;
         case "CommitBranch":session.commitBranch(data.transactionId);break;
         case "RollbackBranch":session.rollbackBranch(data.transactionId);break;
@@ -512,9 +538,9 @@ port.onmessage = async ({ data }) => {
       // Deliberately held transaction/pause time is not simulation backlog.
        if(data.kind==="Resume"||data.kind==="Play"||data.kind==="Drop"||releasingHeld){simulationPrevious=performance.now();releasedPrepareHoldMs=0;}
     }
-    reply({ id: data.id, snapshot: session?.read(data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="PrepareBranch"),bodyPreparation });
+    reply({ id: data.id,...(receipt?{terrainReceipt:receipt}:{}),...(motion?{terrainMotion:motion}:{}),snapshot: session?.read(data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain"||data.kind==="PrepareBranch"),bodyPreparation });
   } catch (error) {
-    if(data.kind==="PrepareBodyChildProjection"||data.kind==="PrepareBodyMeshWork"||data.kind==="ReleaseBodyMeshWork"||data.kind==="AdmitBodyChildMesh"||data.kind==="PrepareTerrainPlan"||data.kind==="ReleaseTerrainPlan"){
+    if(data.kind==="PrimeTerrainRecovery"||data.kind==="PrepareBodyChildProjection"||data.kind==="PrepareBodyMeshWork"||data.kind==="ReleaseBodyMeshWork"||data.kind==="AdmitBodyChildMesh"||data.kind==="PrepareTerrainPlan"||data.kind==="ReleaseTerrainPlan"){
       reply({id:data.id,rejected:error instanceof Error?error.message:"Transaction rejected"});return;
     }
     if(data.kind==="PrepareTerrain"){

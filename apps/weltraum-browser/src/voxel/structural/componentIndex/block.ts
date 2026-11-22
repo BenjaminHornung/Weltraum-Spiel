@@ -1,4 +1,7 @@
-import type { HvpCell, HvpCellReader } from "../../../hestia-prototype/terrain/picking";
+import type { HvpCell } from "../../../hestia-prototype/terrain/picking";
+
+import type { HvpTerrainSnapshot } from "../../../hestia-prototype/terrain/cutPlan";
+import { preparePart, type PartFacts } from "./partFacts";
 
 export const SIDE = 16;
 export const VOLUME = SIDE ** 3;
@@ -10,30 +13,32 @@ export const DIRECTIONS: readonly HvpCell[] = [
 const STRIDES = [-16, 16, -1, 1, -256, 256];
 
 export interface LocalComponent {
-  readonly start: number;
   readonly length: number;
   readonly atFloor: boolean;
   readonly touchesUnknown: boolean;
   readonly faceMask: number;
 }
 
-export type SeamCache = WeakMap<ComponentBlock, Map<number, Set<number>>>;
+export type SeamCache = Map<number, {other: WeakRef<ComponentBlock>; targets: Map<number, Set<number>>; bytes:number}>;
 
 export interface ComponentBlock {
   readonly key: number;
   readonly origin: HvpCell;
   readonly labels: Int16Array;
-  readonly members: Uint16Array;
+  readonly parts: readonly PartFacts[];
+  readonly typedBytesAllocated: number;
+  readonly retainedBytes: number;
   readonly components: LocalComponent[];
   readonly seams: SeamCache;
 }
 
 export const localOffset = (x: number, y: number, z: number) => (x & 15) + ((y & 15) << 4) + ((z & 15) << 8);
 
-export function buildBlock(source: HvpCellReader, key: number, origin: HvpCell): ComponentBlock {
+export function buildBlock(source: HvpTerrainSnapshot, key: number, origin: HvpCell): ComponentBlock {
   const [ox, oy, oz] = origin;
   const labels = new Int16Array(VOLUME);
   labels.fill(UNKNOWN);
+  const slots = new Uint8Array(VOLUME);
   let occupied = 0;
   for (let z = 0; z < SIDE && z + oz < source.sizeZ; z++) {
     for (let y = 0; y < SIDE && y + oy < source.sizeY; y++) {
@@ -41,13 +46,14 @@ export function buildBlock(source: HvpCellReader, key: number, origin: HvpCell):
         const value = source.readSlot(ox + x, oy + y, oz + z);
         if (value === undefined) continue;
         if (!Number.isInteger(value) || value < 0 || value > 4) throw new Error("Invalid support material");
+        slots[localOffset(x,y,z)] = value;
         labels[localOffset(x,y,z)] = value === 0 ? 0 : SOLID;
         if (value !== 0) occupied++;
       }
     }
   }
 
-  // The flood queue is also the permanent compact list of members, grouped by component.
+  // Reuse the bounded flood queue for all local components.
   const members = new Uint16Array(occupied);
   const components: LocalComponent[] = [];
   let tail = 0;
@@ -74,16 +80,31 @@ export function buildBlock(source: HvpCellReader, key: number, origin: HvpCell):
         members[tail++] = next;
       }
     }
-    components.push({start, length: tail - start, atFloor, touchesUnknown, faceMask});
+    components.push({length: tail - start, atFloor, touchesUnknown, faceMask});
   }
-  return {key, origin, labels, members, components, seams: new WeakMap()};
+  // Encode exact membership during classification. No fragment ever borrows a mutable slot page.
+  const groups = components.map(():number[]=>[]);
+  for (let pos = 0; pos < VOLUME;) {
+    const slot = slots[pos];
+    if (!slot) { pos++; continue; }
+    const start = pos, rowEnd = (start | 15) + 1;
+    do { pos++; } while (pos < rowEnd && slots[pos] === slot);
+    groups[labels[start]-1].push(start | ((pos-start-1)<<12) | (slot<<16));
+  }
+  const leafRevision = source.leafRevision(ox>>4,oy>>4,oz>>4);
+  Object.freeze(origin);
+  const parts = groups.map((runs,i)=>preparePart(origin,leafRevision,i+1,runs));
+  const retainedBytes = 2048 + labels.byteLength + parts.reduce((n,p)=>
+    n+1536+p.part.runs.length*32+(p.shapes?.length??0)*384,0);
+  return {key, origin, labels, components, parts, seams: new Map(), retainedBytes,
+    typedBytesAllocated:slots.byteLength+labels.byteLength+members.byteLength};
 }
 
 // A seam is valid only for these two exact block versions. Connecting the same pair
 // in the opposite direction computes its own reverse lookup at most once.
 export function readSeam(block: ComponentBlock, other: ComponentBlock, face: number, cache: SeamCache): Map<number, Set<number>> {
-  const cached = cache.get(other);
-  if (cached) return cached;
+  const cached = cache.get(face);
+  if (cached?.other.deref() === other) return cached.targets;
   const targets = new Map<number, Set<number>>();
   const stride = Math.abs(STRIDES[face]);
   for (let v = 0; v < SIDE; v++) {
@@ -98,6 +119,7 @@ export function readSeam(block: ComponentBlock, other: ComponentBlock, face: num
       list.add(to);
     }
   }
-  cache.set(other,targets);
+  const bytes=256+[...targets.values()].reduce((sum,links)=>sum+256+links.size*96,0);
+  cache.set(face,{other:new WeakRef(other),targets,bytes});
   return targets;
 }

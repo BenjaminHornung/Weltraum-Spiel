@@ -17,7 +17,7 @@ const setup=(fault="",trace?:HvpCutTrace,compileWait?:Promise<void>)=>{
   const consumer=createHvpTerrainConsumer(root,async plan=>{fail("compile");if(compileWait){await compileWait;}return {source:plan.after,render:new Map(),collision:new Map()};},
     (...args:unknown[])=>{stageArity=args.length;stageCommandId=args[2] as string|undefined;fail("stage");return {publish(){visible=1;fail("publish");},rollback(){visible=0;fail("render-rollback");},finish(){fail("retire");}};},
     {async prepareTerrain(){fail("prepare");held=true;},async commitTerrain(){world=1;fail("commit");},
-      publishTerrain(){expect(root.read().revision).toBe(visible);expect(visible).toBe(world);fail("world-publish");},
+      publishTerrain(){expect(root.read().revision+1).toBe(world);fail("world-publish");},
       async rollbackTerrain(){world=0;held=false;fail("world-rollback");},async finalizeTerrain(){fail("finalize");held=false;},
       async command(){held=true;events.push("hold");}},[],undefined,observer);
   const request=(id="cut-1"):HvpCutRequest=>({sessionId:"session",epoch:1,revision:root.read().revision,sourceDigest:root.read().sourceDigest,
@@ -25,59 +25,38 @@ const setup=(fault="",trace?:HvpCutTrace,compileWait?:Promise<void>)=>{
   return {root,consumer,request,events,spans,clearFault:()=>{fault="";},stageCommandId:()=>stageCommandId,stageArity:()=>stageArity,read:()=>({visible,world,held})};
 };
 describe("HVP paired terrain consumer",()=>{
-  it.each(["ready","async-ready","async-disposed","async-recovery","preStage-reject","quote-disposed","render-recovery","ownerId","sourceDigest","centerOfMass","cellCount","massKg","colliders","sourceBytes"] as const)("stages owned graphics before NativeStage and compares exact actual Source views (%s)",async fault=>{
+  it.each(["ready","render-recovery","ownerId","sourceDigest","centerOfMass","cellCount","massKg","colliders","sourceBytes"] as const)("validates native source identity before L and defers display (%s)",async fault=>{
     const cells=new Set<string>();for(let y=0;y<=80;y+=1){cells.add(`176:${y}:77`);}cells.add("177:80:77");cells.add("178:80:77");
     const root=createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},sourceDigest:"12345678",
       readSlot:(x,y,z)=>cells.has(`${x}:${y}:${z}`)?1:0},"pregraphics",0),before=root.read(),events:string[]=[];
-    let actual:ReturnType<HvpPhysicsClient["preparedTerrainFragments"]>=[],visible=0,world=0,held=false,released=false;
-    const stage=(_products:HvpTerrainProducts,bodies?:readonly HvpPreparedTerrainBody[])=>{
-      events.push("graphics");expect(held).toBe(false);expect(bodies).toHaveLength(1);
-      if(fault==="render-recovery"){throw new HvpRenderStageRecoveryError([new Error("upload"),new Error("unproven cleanup")],"hidden owner release unproven");}
-      return {publish(){visible=1;events.push("publish");},rollback(){visible=0;events.push("graphics-rollback");},finish(){events.push("retire");}};
-    };
-    const prepare: HvpPhysicsClient["prepareTerrain"]=async(_id,_generation,_replacements,fragments,work)=>{
-      events.push("source");expect(work?.onSourcePrepared).toBeTypeOf("function");
+    let actual:ReturnType<HvpPhysicsClient["preparedTerrainFragments"]>=[],released=false;
+    const prepare:HvpPhysicsClient["prepareTerrain"]=async(_id,_rev,_meshes,fragments,work)=>{
       const views=(fragments??[]).map(f=>({ownerId:f.ownerId,sourceDigest:"fnv1a64-v1:0000000000000001",centerOfMass:{x:0,y:1,z:0},
         cellCount:f.cells.length,massKg:f.massKg,colliders:1,sourceBytes:131072}));
-      try{await work!.onSourcePrepared!(views);}catch(error){events.push("source-release");throw error;}
-      expect(events.indexOf("graphics")).toBeGreaterThan(events.indexOf("source"));
-      if(fault==="preStage-reject"){events.push("source-release");throw new Error("before Stage rejected");}
-      held=true;events.push("NativeStage");actual=views.map(view=>{
+      await work!.onSourcePrepared!(views);
+      actual=views.map(view=>{
         if(fault==="centerOfMass"){return {...view,centerOfMass:{...view.centerOfMass,x:1}};}
         if(fault==="ownerId"||fault==="sourceDigest"){return {...view,[fault]:view[fault]+"different"};}
-        if(fault!=="ready"&&fault!=="async-ready"&&fault!=="async-disposed"&&fault!=="async-recovery"&&fault!=="quote-disposed"&&fault!=="render-recovery"){return {...view,[fault]:view[fault]+1};}
+        if(fault!=="ready"&&fault!=="render-recovery"){return {...view,[fault]:view[fault]+1};}
         return view;
-      });
+      });events.push("prepare");
     };
-    const consumer=createHvpTerrainConsumer(root,async plan=>({source:plan.after,render:new Map(),collision:new Map()}),stage,
-      {prepareTerrain:prepare,preparedTerrainFragments:()=>actual,async commitTerrain(){world=1;events.push("commit");},publishTerrain(){events.push("world-publish");},
-        async rollbackTerrain(){held=false;world=0;events.push("NativeRollback");},async finalizeTerrain(){held=false;events.push("finalize");},async command(){},
-        read:()=>({terrainTransaction:held?"PreparedHeld":"Idle"} as ReturnType<HvpPhysicsClient["read"]>)},[],
-      async cut=>bindHvpSupportPlan(cut,analyzeHvpTerrainSupport(cut),()=>{released=true;},createHvpSupportPhaseCredits(4096,0)),undefined,
-      async()=>{events.push("quote");if(fault==="quote-disposed"){consumer.dispose();}return 1024;},
-      fault.startsWith("async-")?async(products,bodies)=>{
-        events.push("async-start");expect(held).toBe(false);await Promise.resolve();expect(held).toBe(false);
-        if(fault==="async-recovery"){throw new HvpRenderStageRecoveryError([new Error("async cleanup")],"async release unproven");}
-        const staged=stage(products,bodies);if(fault==="async-disposed"){consumer.dispose();}return staged;
-      }:undefined);
+    const consumer=createHvpTerrainConsumer(root,async plan=>({source:plan.after,render:new Map(),collision:new Map()}),
+      (_products,bodies)=>{events.push("graphics");expect(bodies).toHaveLength(1);
+        if(fault==="render-recovery"){throw new HvpRenderStageRecoveryError([new Error("upload")],"device lost");}
+        return {publish(){events.push("visible");},rollback(){},finish(){}};},
+      {prepareTerrain:prepare,preparedTerrainFragments:()=>actual,async commitTerrain(){events.push("commit");},publishTerrain(){events.push("hold");},
+        async rollbackTerrain(){events.push("rollback");},async finalizeTerrain(){events.push("finalize");},async command(){}},[],
+      async cut=>bindHvpSupportPlan(cut,analyzeHvpTerrainSupport(cut),()=>{released=true;},createHvpSupportPhaseCredits(4096,0)));
     const result=await consumer.submit({sessionId:before.sessionId,epoch:0,revision:0,sourceDigest:before.sourceDigest,commandId:"under",toolPolicy:"hvp-plasma-v1",
       shape:{kind:"Box",min:[176,79,77],max:[177,80,78]}});
-    if(fault==="render-recovery"||fault==="async-recovery"){
-      expect(result.status).toBe("RecoveryHold");expect(released).toBe(false);expect(root.read()).toBe(before);
-      expect(events).toContain("source-release");expect(events).not.toContain("NativeStage");expect(events).not.toContain("commit");
-      expect(consumer.read().state).toBe("RecoveryHold");
-      expect((await consumer.submit({sessionId:before.sessionId,epoch:0,revision:0,sourceDigest:before.sourceDigest,commandId:"next",toolPolicy:"hvp-plasma-v1",
-        shape:{kind:"Box",min:[176,79,77],max:[177,80,78]}})).reason).toBe("RecoveryHold");return;
-    }
     expect(released).toBe(true);
-    if(fault==="quote-disposed"){expect(result.status).toBe("Rejected");expect(events).toEqual(["quote"]);expect(root.read()).toBe(before);return;}
-    expect(events.indexOf("graphics")).toBeLessThan(events.indexOf("NativeStage")<0?Infinity:events.indexOf("NativeStage"));
-    if(fault==="ready"||fault==="async-ready"){expect(result.status).toBe("Applied");expect([visible,world,held]).toEqual([1,1,false]);if(fault==="async-ready")expect(events).toContain("async-start");}
-    else{expect(result.status).toBe("Rejected");expect(root.read()).toBe(before);expect([visible,world,held]).toEqual([0,0,false]);
-      expect(events).toContain("graphics-rollback");expect(events).not.toContain("commit");expect(events).not.toContain("publish");
-      if(fault==="preStage-reject"||fault==="async-disposed"){expect(events).toContain("source-release");expect(events).not.toContain("NativeRollback");}
-      else{expect(events).toContain("NativeRollback");}
+    if(fault!=="ready"&&fault!=="render-recovery"){
+      expect(result.status).toBe("Rejected");expect(root.read()).toBe(before);expect(events).toEqual(["prepare","rollback"]);return;
     }
+    expect(events).toEqual(["prepare","commit","hold","finalize"]);expect(result.status).toBe("Applied");
+    await consumer.presentNext();expect(events).toContain("graphics");expect(root.read().revision).toBe(1);
+    if(fault==="render-recovery"){expect(consumer.read().renderError).toMatch(/device lost/);}else{expect(events).toContain("visible");}
   });
   it("replays the saved exact outcome without recompiling or committing the cut again",async()=>{
     const s=setup(),request=s.request(),pending=s.consumer.submit(request);
@@ -95,7 +74,7 @@ describe("HVP paired terrain consumer",()=>{
     expect(()=>loaded.restoreReceipts(bad)).toThrow(/terrain outcome/);
     expect(await loaded.submit(request)).toEqual(outcome);
   },120_000);
-  it.each([{failUpload:false,trace:false},{failUpload:true,trace:false},{failUpload:false,trace:true},{failUpload:true,trace:true}])("adopts removed and transferred cells together and restores both on upload failure=$failUpload trace=$trace",async ({failUpload,trace})=>{
+  it.each([{failUpload:false,trace:false},{failUpload:true,trace:false},{failUpload:false,trace:true},{failUpload:true,trace:true}])("keeps removed and transferred cells committed across upload failure=$failUpload trace=$trace",async ({failUpload,trace})=>{
     const cells=new Set<string>();for(let y=0;y<=80;y+=1){cells.add(`176:${y}:77`);}cells.add("177:80:77");cells.add("178:80:77");
     const root=createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},sourceDigest:"12345678",
       readSlot:(x,y,z)=>cells.has(`${x}:${y}:${z}`)?1:0},"transfer",0),before=root.read();
@@ -103,7 +82,7 @@ describe("HVP paired terrain consumer",()=>{
     const spans:HvpCutSpan[]=[];
     function stage(_products:HvpTerrainProducts,bodies?:readonly HvpPreparedTerrainBody[],commandId?:string){
        stageArity=arguments.length;stageCommandId=commandId;events.push("stage");
-       expect(root.read()).toBe(before);expect(bodies).toHaveLength(1);if(failUpload){throw new Error("upload");}
+       expect(root.read().revision).toBe(before.revision+1);expect(bodies).toHaveLength(1);if(failUpload){throw new Error("upload");}
        return {publish(){expect(world).toBe(1);expect(published).toBe(1);visible=1;},rollback(){visible=0;},finish(){}};
     }
     const consumer=createHvpTerrainConsumer(root,async plan=>({source:plan.after,render:new Map(),collision:new Map()}),stage,{async prepareTerrain(_id,_generation,_mesh,requests){events.push("prepare");fragments=requests??[];},async commitTerrain(){world=1;},
@@ -111,10 +90,10 @@ describe("HVP paired terrain consumer",()=>{
       publishTerrain(){published=world;},async finalizeTerrain(){},async rollbackTerrain(){expect(visible).toBe(0);world=0;published=0;fragments=[];},async command(){}},[],async cut=>analyzeHvpTerrainSupport(cut),trace?span=>spans.push(span):undefined);
     const result=await consumer.submit({sessionId:"transfer",epoch:0,revision:0,sourceDigest:before.sourceDigest,commandId:"under",toolPolicy:"hvp-plasma-v1",
       shape:{kind:"Box",min:[176,79,77],max:[177,80,78]}});
-    expect(stageArity).toBe(trace?3:2);expect(stageCommandId).toBe(trace?"under":undefined);expect(events.indexOf("prepare")).toBeLessThan(events.indexOf("stage"));
+    expect(stageArity).toBe(0);await consumer.presentNext();expect(stageArity).toBe(trace?3:2);expect(stageCommandId).toBe(trace?"under":undefined);expect(events.indexOf("prepare")).toBeLessThan(events.indexOf("stage"));
     if(trace){expect(spans.map(span=>span.phase)).toContain("cutSupportAnalyzeMs");expect(spans.map(span=>span.phase)).toContain("cutTransferPrepareMs");
       expect(spans.map(span=>span.phase).indexOf("cutNativePrepareMs")).toBeLessThan(spans.map(span=>span.phase).indexOf("cutGraphicsStageMs"));}
-    if(failUpload){expect(result.status).toBe("Rejected");expect(root.read()).toBe(before);expect(fragments).toHaveLength(0);}
+    if(failUpload){expect(result.status).toBe("Applied");expect(consumer.read().renderError).toMatch(/upload/);expect(root.read().revision).toBe(1);expect(fragments).toHaveLength(1);}
     else{expect(result).toMatchObject({status:"Applied",removedCells:1,transferredCells:3,materialRemovedKg:4.6875,transferredMassKg:14.0625});
       expect(root.read().readSlot(178,80,77)).toBe(0);expect([visible,world,published]).toEqual([1,1,1]);}
   });
@@ -123,8 +102,8 @@ describe("HVP paired terrain consumer",()=>{
     const task=s.consumer.submit(request);expect(s.consumer.submit(request)).toBe(task);
     expect(s.root.read()).toBe(before);
     expect((await task).status).toBe("Applied");expect(s.root.read().readSlot(40,79,56)).toBe(0);
-    expect(s.read()).toEqual({visible:1,world:1,held:false});
-    expect(s.events).toEqual(["compile","stage","prepare","commit","publish","world-publish","finalize","retire"]);
+    await s.consumer.presentNext();expect(s.read()).toEqual({visible:1,world:1,held:false});
+    expect(s.events).toEqual(["compile","prepare","commit","world-publish","finalize","stage","publish","retire"]);
     expect(s.consumer.submit(request)).toBe(task);
     expect((await s.consumer.submit({...request,shape:{kind:"Box",min:[41,79,56],max:[42,80,57]}})).reason).toBe("IdempotencyConflict");
     expect((await s.consumer.submit(s.request("again"))).status).toBe("NoOp");expect(s.root.read().revision).toBe(1);
@@ -140,7 +119,7 @@ describe("HVP paired terrain consumer",()=>{
     expect(s.consumer.submit(original)).toBe(pending);
     expect((await s.consumer.submit(request)).reason).toBe("IdempotencyConflict");
   });
-  it.each(["compile","stage","prepare","commit","publish","world-publish","finalize"])("restores the previous generation after %s failure",async fault=>{
+  it.each(["compile","prepare","commit","world-publish"])("restores the previous generation after %s failure",async fault=>{
     const s=setup(fault),before=s.root.read();const result=await s.consumer.submit(s.request());
     expect(result.status).toBe("Rejected");expect(s.root.read()).toBe(before);expect(s.read()).toEqual({visible:0,world:0,held:false});
   });
@@ -154,15 +133,29 @@ describe("HVP paired terrain consumer",()=>{
     expect(s.events).toEqual(events);expect(s.consumer.read().receipts).toBe(1);
     s.clearFault();
     expect((await s.consumer.submit(s.request("retry-cut"))).status).toBe("Applied");
-    expect(s.root.read().revision).toBe(1);expect(s.read()).toEqual({visible:1,world:1,held:false});
+    await s.consumer.presentNext();expect(s.root.read().revision).toBe(1);expect(s.read()).toEqual({visible:1,world:1,held:false});
     expect(s.consumer.read().receipts).toBe(2);
     expect(s.consumer.submit(request)).toBe(original);expect(await s.consumer.submit(request)).toBe(failed);
-    expect(s.events).toEqual(events.concat(["compile","stage","prepare","commit","publish","world-publish","finalize","retire"]));
+    expect(s.events).toEqual(events.concat(["compile","prepare","commit","world-publish","finalize","stage","publish","retire"]));
   });
-  it("reports RecoveryHold instead of rolling back an already finalized cleanup",async()=>{
-    const s=setup("retire");expect((await s.consumer.submit(s.request())).status).toBe("RecoveryHold");
-    expect(s.root.read().revision).toBe(1);expect(s.read()).toEqual({visible:1,world:1,held:true});
+  it("keeps L irreversible while release is unproven and never exposes a false Applied receipt",async()=>{
+    const s=setup("finalize");expect((await s.consumer.submit(s.request())).status).toBe("RecoveryHold");
+    expect(s.root.read().revision).toBe(1);expect(s.read()).toEqual({visible:0,world:1,held:true});
     expect((await s.consumer.submit(s.request("next"))).reason).toBe("RecoveryHold");
+    await expect(s.consumer.checkpoint()).rejects.toThrow(/boundary/);
+  });
+  it("retries failed graphics on the next display opportunity with no second native commit",async()=>{
+    const s=setup("stage");const accepted=await s.consumer.submit(s.request());expect(accepted.status).toBe("Applied");
+    await s.consumer.presentNext();expect(s.consumer.read().renderError).toMatch(/stage/);const saved=await s.consumer.checkpoint();
+    expect(saved.entries[0]!.outcome.revision).toBe(1);s.clearFault();await s.consumer.presentNext();
+    expect(s.consumer.presentedRoot()).toBe(s.root.read());expect(s.events.filter(x=>x==="commit")).toHaveLength(1);
+  });
+  it("retries retirement without republishing a mesh or pausing the solver",async()=>{
+    const s=setup("retire");expect((await s.consumer.submit(s.request())).status).toBe("Applied");
+    await s.consumer.presentNext();expect(s.consumer.read()).toMatchObject({state:"Applied",renderPending:true});
+    expect(s.consumer.presentedRoot()).toBe(s.root.read());s.clearFault();await s.consumer.presentNext();
+    expect(s.events.filter(e=>e==="publish")).toHaveLength(1);expect(s.events.filter(e=>e==="retire")).toHaveLength(2);
+    expect(s.consumer.read().renderPending).toBeUndefined();
   });
   it("bounds queued commands and rejects stale compiler identity without publication",async()=>{
     const s=setup();let release!:(value:HvpTerrainProducts)=>void;
@@ -186,12 +179,12 @@ describe("HVP paired terrain consumer",()=>{
   });
   it("cut trace records one real command interval, ordered phases, and the traced stage command ID",async()=>{
     const plain=setup(""),s=setup("",()=>{});const request=s.request();const task=s.consumer.submit(request);expect(s.consumer.submit(request)).toBe(task);
-    await plain.consumer.submit(plain.request());expect(plain.stageArity()).toBe(1);
+    await plain.consumer.submit(plain.request());await plain.consumer.presentNext();expect(plain.stageArity()).toBe(1);
     const result=await task;expect(result.status).toBe("Applied");expect(s.consumer.submit(request)).toBe(task);
-    expect(s.stageCommandId()).toBe("cut-1");expect(s.stageArity()).toBe(3);
+    await s.consumer.presentNext();expect(s.stageCommandId()).toBe("cut-1");expect(s.stageArity()).toBe(3);
     expect(s.spans.map(span=>span.phase)).toEqual(["cutSubmittedMs","cutIdempotencyReplayMs","cutQueueWaitMs","cutRootPrepareMs","cutCompileMs",
-      "cutGraphicsStageMs","cutNativePrepareMs","cutNativeCommitMs","cutRootCommitMs","cutPublishMs","cutNativeFinalizeMs",
-      "cutCleanupMs","cutTotalAppliedMs","cutIdempotencyReplayMs"]);
+      "cutNativePrepareMs","cutNativeCommitMs","cutRootCommitMs","cutNativeFinalizeMs",
+      "cutTotalAppliedMs","cutIdempotencyReplayMs","cutGraphicsStageMs"]);
     const queue=s.spans.find(span=>span.phase==="cutQueueWaitMs")!,total=s.spans.find(span=>span.phase==="cutTotalAppliedMs")!;
     expect(queue.duration).toBeGreaterThanOrEqual(0);expect(total.duration).toBeGreaterThanOrEqual(queue.duration);
     expect(s.spans.filter(span=>span.phase==="cutSubmittedMs")).toHaveLength(1);expect(s.spans.filter(span=>span.phase==="cutTotalAppliedMs")).toHaveLength(1);
@@ -218,7 +211,7 @@ describe("HVP paired terrain consumer",()=>{
       expect(traced.consumer.submit(request)).toBe(task);await Promise.resolve();traced.consumer.disableTrace();settle();
       const [observed,expected]=await Promise.all([task,plain.consumer.submit(plain.request())]);
       expect(observed).toEqual(expected);expect(traced.root.checkpoint()).toEqual(plain.root.checkpoint());expect(traced.events).toEqual(plain.events);
-      expect(traced.consumer.submit(request)).toBe(task);expect(traced.stageArity()).toBe(1);
+      expect(traced.consumer.submit(request)).toBe(task);await traced.consumer.presentNext();expect(traced.stageArity()).toBe(1);
       expect(traced.spans.map(span=>span.phase)).toEqual(["cutSubmittedMs","cutIdempotencyReplayMs","cutQueueWaitMs","cutRootPrepareMs","cutCompileMs"]);
     } finally {
       settle();await task.catch(()=>undefined);

@@ -1,3 +1,4 @@
+import { createFnv1a64State, updateFnv1a64State, fnv1a64StateHex } from "../../core/fnv1a64";
 import {
   evaluateAdaptiveBaseFieldDescriptor,
   adaptiveBaseFieldDescriptorHashSteps,
@@ -43,13 +44,14 @@ import {
   stableAuthorityId
 } from "./validation";
 
+const CONTENT_HASH_SCHEMA = "adaptive-microvoxel-content-hash-input-v1";
 const hashPattern = /^fnv1a64-v1:[0-9a-f]{16}$/;
 
-type OwnedBrickScope={active:boolean;options:AdaptiveOwnedJournalOptions;validated:Map<MaterializedAdaptiveBrick,MaterializedAdaptiveBrick|undefined>};
+type OwnedBrickScope={runMaterialization:boolean;active:boolean;options:AdaptiveOwnedJournalOptions;validated:Map<MaterializedAdaptiveBrick,MaterializedAdaptiveBrick|undefined>};
 const ownedBrickScopes=new WeakMap<AdaptiveOwnedJournalOptions,OwnedBrickScope>();
 const ownedBrickProducers=new WeakMap<MaterializedAdaptiveBrick,OwnedBrickScope>();
 /** Private HVP ingest lifetime: fixed canonical hasher, one parent ledger, no public admission. */
-export const createOwnedAdaptiveBrickScope=(reserve:AdaptiveOwnedJournalOptions["reserve"])=>{
+export const createOwnedAdaptiveBrickScope=(reserve:AdaptiveOwnedJournalOptions["reserve"],runMaterialization=false)=>{
   reserve(1_024,true);
   const options:AdaptiveOwnedJournalOptions=Object.freeze({reserve,hash:function*(payload:unknown):Generator<void,string,void>{
     reserve(32_768,false,"hash");
@@ -57,7 +59,7 @@ export const createOwnedAdaptiveBrickScope=(reserve:AdaptiveOwnedJournalOptions[
     try{for(;;){const result=cursor.advance(128);if(result!==undefined){return result.contentHash;}yield;}}
     finally{cursor.dispose();}
   }});
-  const scope:OwnedBrickScope={active:true,options,validated:new Map()};
+  const scope:OwnedBrickScope={runMaterialization,active:true,options,validated:new Map()};
   ownedBrickScopes.set(options,scope);
   return Object.freeze({options,dispose():void{
     if(!scope.active){return;}scope.active=false;ownedBrickScopes.delete(options);
@@ -65,6 +67,13 @@ export const createOwnedAdaptiveBrickScope=(reserve:AdaptiveOwnedJournalOptions[
     scope.validated.clear();
   }});
 };
+/** Only the compact producer may use its own verified channels during resident-proof issuance. */
+export function readOwnedRunBrick(brick: MaterializedAdaptiveBrick, reserve: AdaptiveOwnedJournalOptions["reserve"]) {
+  const scope = ownedBrickProducers.get(brick);
+  return scope?.active && scope.runMaterialization && scope.options.reserve === reserve
+    && scope.validated.get(brick) === brick ? brick : undefined;
+}
+
 /** Only the exact fully validated result inside its producing active ingest can be reused. */
 export const readOwnedValidatedAdaptiveBrick=(brick:MaterializedAdaptiveBrick,reserve:AdaptiveOwnedJournalOptions["reserve"]):MaterializedAdaptiveBrick|undefined=>{
   const scope=ownedBrickProducers.get(brick);
@@ -263,13 +272,48 @@ function* contentHashForSteps(
 ): Generator<void, string, void> {
   owned?.reserve(2_048);
   return yield* materializationHashSteps({
-    schemaVersion: "adaptive-microvoxel-content-hash-input-v1",
+    schemaVersion: CONTENT_HASH_SCHEMA,
     authorityInputDigest: yield* authorityInputDigestSteps(key, metadata, owned),
     cellSizeQuantum: cellSizeQuantumForLevel(key.level),
     cellSizeMeters: cellSizeMetersForLevel(key.level),
     cellCount: ADAPTIVE_BRICK_CELL_COUNT,
     ...channels
   }, owned);
+}
+
+/** A locally validated HVP level-4 brick has only bounded material IDs and binary channels.
+ * Fold the canonical key order and encode equal consecutive channel scalars as repeated JSON tokens. */
+function* runChannelHashSteps(authorityDigest: string, key: AdaptiveBrickKey, channels: Pick<MaterializedAdaptiveBrick,
+  "density" | "material" | "occupancy" | "semantic">, owned: AdaptiveOwnedJournalOptions): Generator<void, string, void> {
+  owned.reserve(98_304, false, "hash");
+  const state = createFnv1a64State();
+  const encoder = new TextEncoder();
+  const fold = (text: string) => updateFnv1a64State(state, encoder.encode(text));
+  fold(`{"authorityInputDigest":${JSON.stringify(authorityDigest)},"cellCount":${ADAPTIVE_BRICK_CELL_COUNT},`
+    + `"cellSizeMeters":${cellSizeMetersForLevel(key.level)},"cellSizeQuantum":${cellSizeQuantumForLevel(key.level)}`);
+  for (const name of ["density", "material", "occupancy", "semantic"] as const) {
+    if (name === "semantic") fold(`,"schemaVersion":${JSON.stringify(CONTENT_HASH_SCHEMA)}`);
+    fold(`,"${name}":[`);
+    const values = channels[name];
+    for (let first = 0; first < ADAPTIVE_BRICK_CELL_COUNT; first += 256) {
+      const stop = first + 256;
+      let tokens = first === 0 ? "" : ",";
+      for (let index = first; index < stop;) {
+        const value = values[index];
+        let end = index + 1;
+        while (end < stop && values[end] === value) end++;
+        const token = JSON.stringify(value);
+        tokens += token + ("," + token).repeat(end - index - 1);
+        if (end < stop) tokens += ",";
+        index = end;
+      }
+      fold(tokens);
+      yield;
+    }
+    fold("]");
+  }
+  fold("}");
+  return `fnv1a64-v1:${fnv1a64StateHex(state)}`;
 }
 
 export interface MaterializeAdaptiveBrickInput {
@@ -327,6 +371,17 @@ export function* adaptiveMaterializeBrickSteps(input: MaterializeAdaptiveBrickIn
     }
     overlappingEdits = filtered;
   }
+  // Constant air + AddBox can only write density -1 and occupancy 1. All other
+  // samples keep density 0, occupancy 0 and null material. The validated edits
+  // supply the bounded material IDs; neither path writes semantic IDs.
+  const runScope = owned === undefined ? undefined : ownedBrickScopes.get(owned);
+  const runMaterialization = runScope?.runMaterialization === true && key.level === 4
+    && baseSample.density === 0 && baseSample.occupancy === 0 && baseSample.materialId === null
+    && (baseSample.semanticId ?? null) === null && overlappingEdits.length <= 128
+    && overlappingEdits.every(edit => edit.operation === "AddBox" && edit.box !== undefined
+      && edit.box.max.y === edit.box.min.y + 1 && edit.box.max.z === edit.box.min.z + 1
+      && edit.semanticId === undefined && typeof edit.materialId === "string"
+      && /^hvp\.material\.[0-9]{1,5}$/.test(edit.materialId));
   const channelFactory=owned===undefined?undefined:createOwnedAdaptiveChannelFactory(owned.reserve);
   try{
   const density = yield* filledChannelSteps(baseSample.density, owned,channelFactory);
@@ -401,7 +456,7 @@ export function* adaptiveMaterializeBrickSteps(input: MaterializeAdaptiveBrickIn
     }
     if (owned !== undefined) { yield; }
   }
-  for (let index = 0; index < ADAPTIVE_BRICK_CELL_COUNT; index += 1) {
+  for (let index = 0; !runMaterialization && index < ADAPTIVE_BRICK_CELL_COUNT; index += 1) {
     density[index] = requireFinite(density[index]!, `density/${index}`);
     occupancy[index] = requireFinite(occupancy[index]!, `occupancy/${index}`);
     if (owned !== undefined) { yield; }
@@ -441,7 +496,9 @@ export function* adaptiveMaterializeBrickSteps(input: MaterializeAdaptiveBrickIn
     sourceRevision,
     editRevision: journal.revision
   };
-  const contentHash = yield* contentHashForSteps(key, authorityMetadata, channels, owned);
+  const contentHash = runMaterialization
+    ? yield* runChannelHashSteps(yield* authorityInputDigestSteps(key, authorityMetadata, owned), key, channels, owned!)
+    : yield* contentHashForSteps(key, authorityMetadata, channels, owned);
   const parentHash = yield* expectedParentProvenanceHashSteps(key, authorityMetadata, owned);
   const provenancePayload = {
     schemaVersion: "adaptive-microvoxel-provenance-v1" as const,
@@ -465,7 +522,11 @@ export function* adaptiveMaterializeBrickSteps(input: MaterializeAdaptiveBrickIn
   };
   if(owned===undefined){return deepFreeze(result);}
   const frozen=Object.freeze(result),scope=ownedBrickScopes.get(owned);
-  if(scope?.active){owned.reserve(256,true);scope.validated.set(frozen,undefined);ownedBrickProducers.set(frozen,scope);}
+  if (scope?.active) {
+    owned.reserve(256, true);
+    scope.validated.set(frozen, runMaterialization ? frozen : undefined);
+    ownedBrickProducers.set(frozen, scope);
+  }
   return frozen;
   }finally{channelFactory?.dispose();}
 }

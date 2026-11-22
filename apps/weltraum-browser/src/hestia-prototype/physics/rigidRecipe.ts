@@ -186,12 +186,13 @@ export const admitHvpTransferredRigidBody=(source:StructuralObject,
 };
 /** Same full Native admission, borrowing one parent's Source/claim lifetime; no worker authority. */
 export function* admitHvpTransferredRigidBodyOwnedSteps(source:StructuralObject,
-  claimed:{massKg:number;colliderBoxes:readonly HvpTransferredColliderBox[]},spans:HvpRigidRecipeSpans|undefined,reserve:StructuralOwnedReserve){
+  claimed:{massKg:number;colliderBoxes:readonly HvpTransferredColliderBox[]},spans:HvpRigidRecipeSpans|undefined,reserve:StructuralOwnedReserve,
+  allowSolidCuboidProof=false){
   if(!isIssuedStructuralObject(source)){throw new Error("Owned transferred admission requires an issued source");}
-  return yield* transferredRigidSteps(source,claimed,spans,reserve);
+  return yield* transferredRigidSteps(source,claimed,spans,reserve,allowSolidCuboidProof);
 }
 function* transferredRigidSteps(source:StructuralObject,claimed:{massKg:number;colliderBoxes:readonly HvpTransferredColliderBox[]},
-  spans?:HvpRigidRecipeSpans,reserve?:StructuralOwnedReserve):Generator<string,HvpRigidRecipe,unknown>{
+  spans?:HvpRigidRecipeSpans,reserve?:StructuralOwnedReserve,allowSolidCuboidProof=false):Generator<string,HvpRigidRecipe,unknown>{
   reserve?.(16_384);
   if(!claimed||typeof claimed.massKg!=="number"||!Number.isFinite(claimed.massKg)||claimed.massKg<=0
     ||!Array.isArray(claimed.colliderBoxes)||claimed.colliderBoxes.length<1||claimed.colliderBoxes.length>64){
@@ -216,6 +217,47 @@ function* transferredRigidSteps(source:StructuralObject,claimed:{massKg:number;c
   if(Math.abs(mass.totalMassKg-claimed.massKg)>Math.max(1,claimed.massKg)*1e-10){
     throw new Error("Transferred rigid mass mismatch");
   }
+  const proofStart = spans && allowSolidCuboidProof ? performance.now() : 0;
+  const solid = allowSolidCuboidProof && claimed.colliderBoxes.length === 1
+    && matchesSolidCuboid(mass, claimed.colliderBoxes[0]!);
+  if (!solid) {
+    yield* verifyTransferredPartitionSteps(source, claimed, mass, spans, reserve);
+  } else if (spans) {
+    spans.verifyMs = (spans.verifyMs ?? 0) + performance.now() - proofStart;
+  }
+  if (spans) t = performance.now();
+  const axes=hvpPrincipalAxes(mass.inertiaTensorKgMetersSquared);
+  if(spans){spans.axesMs=(spans.axesMs??0)+performance.now()-t;}
+  if(![mass.totalMassKg,axes.principalInertia.x,axes.principalInertia.y,axes.principalInertia.z]
+    .every(v=>Number.isFinite(Math.fround(v))&&Math.fround(v)>0)){throw new Error("Mass/inertia exceeds pinned solver precision");}
+  const toMeters=(q:number)=>q*MICROVOXEL_BASE_QUANTUM_METERS;
+  reserve?.(4096+claimed.colliderBoxes.length*512,true);
+  const colliders=Object.freeze(claimed.colliderBoxes.map(box=>Object.freeze({
+    minMeters:Object.freeze({x:toMeters(box.min[0]!),y:toMeters(box.min[1]!),z:toMeters(box.min[2]!)}),
+    maxMeters:Object.freeze({x:toMeters(box.max[0]!),y:toMeters(box.max[1]!),z:toMeters(box.max[2]!)})})));
+  const recipe=Object.freeze({source,mass,axes,colliders});
+  issued.add(recipe);return recipe;
+}
+
+// Structural admission guarantees distinct level-4 unit cells. If every cube lies inside
+// the claimed faces and their count fills that volume, the entire box is occupied. Its
+// face-connected occupancy has exactly one cuboid in the x/y/z greedy partition.
+function matchesSolidCuboid(mass: HvpRigidRecipe["mass"], box: HvpTransferredColliderBox): boolean {
+  const bounds = mass.boundsMeters;
+  if (bounds === null) return false;
+  const [x0, y0, z0] = box.min;
+  const [x1, y1, z1] = box.max;
+  const volume = (x1 - x0) * (y1 - y0) * (z1 - z0);
+  const side = MICROVOXEL_BASE_QUANTUM_METERS;
+  return Number.isSafeInteger(volume) && volume === mass.occupiedVoxelCount
+    && bounds.min.x === x0 * side && bounds.max.x === x1 * side
+    && bounds.min.y === y0 * side && bounds.max.y === y1 * side
+    && bounds.min.z === z0 * side && bounds.max.z === z1 * side;
+}
+
+function* verifyTransferredPartitionSteps(source: StructuralObject,
+  claimed: {colliderBoxes: readonly HvpTransferredColliderBox[]}, mass: HvpRigidRecipe["mass"],
+  spans?: HvpRigidRecipeSpans, reserve?: StructuralOwnedReserve): Generator<string, void, unknown> {
   const cells=reserve===undefined?readHvpBodyCells(source):yield* readHvpOwnedBodyCellsSteps(source,reserve);
   if(cells.length===0||cells.length>32_768||mass.occupiedVoxelCount!==cells.length){
     throw new Error("Transferred rigid cell count mismatch");
@@ -269,16 +311,5 @@ function* transferredRigidSteps(source:StructuralObject,claimed:{massKg:number;c
       throw new Error("Transferred rigid collider partition mismatch");
     }
   }
-  if(spans){spans.verifyMs=(spans.verifyMs??0)+performance.now()-tVerify;t=performance.now();}
-  const axes=hvpPrincipalAxes(mass.inertiaTensorKgMetersSquared);
-  if(spans){spans.axesMs=(spans.axesMs??0)+performance.now()-t;}
-  if(![mass.totalMassKg,axes.principalInertia.x,axes.principalInertia.y,axes.principalInertia.z]
-    .every(v=>Number.isFinite(Math.fround(v))&&Math.fround(v)>0)){throw new Error("Mass/inertia exceeds pinned solver precision");}
-  const toMeters=(q:number)=>q*MICROVOXEL_BASE_QUANTUM_METERS;
-  reserve?.(4096+claimed.colliderBoxes.length*512,true);
-  const colliders=Object.freeze(claimed.colliderBoxes.map(box=>Object.freeze({
-    minMeters:Object.freeze({x:toMeters(box.min[0]!),y:toMeters(box.min[1]!),z:toMeters(box.min[2]!)}),
-    maxMeters:Object.freeze({x:toMeters(box.max[0]!),y:toMeters(box.max[1]!),z:toMeters(box.max[2]!)})})));
-  const recipe=Object.freeze({source,mass,axes,colliders});
-  issued.add(recipe);return recipe;
+  if(spans){spans.verifyMs=(spans.verifyMs??0)+performance.now()-tVerify;}
 }

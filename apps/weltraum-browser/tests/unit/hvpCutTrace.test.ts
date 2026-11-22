@@ -255,6 +255,20 @@ describe("HVP cut trace", () => {
     return { root, sink, observer, setFacts: (next: HvpCutRenderFacts) => { facts = next; }, setReadFailure: (value: boolean) => { readFailure = value; } };
   };
 
+  it("waits through old rendered frames until the cut revision has its new visible keys",()=>{
+    const f=observerFixture(), result=renderCommandResult("Accepted");
+    f.setFacts({...makeFacts(f.root,["hvp:terrain:s0:r0"]),terrainPresentationPending:true});
+    f.observer.confirm(()=>f.observer.trace(submitted()));
+    f.observer.trace(terminal("cutTotalAppliedMs"));
+    f.observer.render(()=>result);
+    expect(f.observer.read().pendingRender).toBe(true);
+    expect(f.sink.record.mock.calls.some(([name])=>name==="cutFirstCommittedRenderSubmitMs")).toBe(false);
+    f.setFacts({...makeFacts(f.root,["hvp:terrain:s0:r1"]),terrainPresentationPending:false});
+    f.observer.render(()=>result);
+    expect(f.observer.read().pendingRender).toBe(false);
+    expect(f.sink.record.mock.calls.find(([name])=>name==="cutFirstCommittedRenderSubmitMs")?.[3]).toMatchObject({activeTerrainKeys:["hvp:terrain:s0:r1"]});
+  });
+
   it("measures the DOM event through the matching native publication independently of callback timing", () => {
     const f = observerFixture();
     const now = vi.spyOn(performance, "now").mockReturnValue(82);
