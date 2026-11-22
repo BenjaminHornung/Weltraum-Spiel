@@ -1,0 +1,231 @@
+{
+  "git": "cd444c00f99e435e66c8e8181c84998c684dbb22",
+  "base": "f84e8ac28983cc21aec816301db98555fbd2aa4b",
+  "build": {
+    "script": "npm run build",
+    "exit": 0
+  },
+  "focused": {
+    "originalPass": 98,
+    "originalFail": 1,
+    "knownTimeout": "T05 wood mass and COM are independent of cosmetic palette, 5000ms timeout",
+    "rerunIsolatedWith120sDeadline": {
+      "pass": 1,
+      "exit": 0
+    }
+  },
+  "stateOracle": {
+    "displayedKeysCameraAndFragmentPosesMatchedAll80Frames": true,
+    "fixture": "48 resident meshes, 80 ticks, 16 moving-body updates, 10 camera updates, 5 visibility changes",
+    "cpuWallComparisons": [
+      {
+        "mode": "full",
+        "projection": 80,
+        "visibility": 80,
+        "n": 80,
+        "medianMs": 0.4148320000003878,
+        "p95Ms": 0.8962019999999029,
+        "maxMs": 7.116726999999628
+      },
+      {
+        "mode": "frame",
+        "projection": 24,
+        "visibility": 5,
+        "n": 80,
+        "medianMs": 0.032999000000017986,
+        "p95Ms": 0.5198170000003302,
+        "maxMs": 9.542605000000549
+      },
+      {
+        "mode": "frame",
+        "projection": 24,
+        "visibility": 5,
+        "n": 80,
+        "medianMs": 0.028602000000319094,
+        "p95Ms": 0.40423600000031,
+        "maxMs": 2.750796999999693
+      },
+      {
+        "mode": "full",
+        "projection": 80,
+        "visibility": 80,
+        "n": 80,
+        "medianMs": 0.35013600000002043,
+        "p95Ms": 0.6961069999997562,
+        "maxMs": 3.7297960000005332
+      }
+    ],
+    "raw": {
+      "path": "frame-replay.json",
+      "sha256": "d69336bebb9f0dcd3bb38644eaa4767d9d5db7cd61efd09ce88fb692dd756805"
+    }
+  },
+  "browser": {
+    "runner": "tests/performance/cut-publication.mjs",
+    "cases": [
+      {
+        "label": "control1",
+        "physicsMs": 1925.4000000022352,
+        "inputToRenderSubmitMs": 3934.10000000149,
+        "commitToStageStartMs": 228.09999999776483,
+        "graphicsStageMs": 155.5,
+        "stageFinishToSubmitMs": 1625.1000000014901,
+        "graphicsPublishMs": null,
+        "graphicsRetireMs": null,
+        "retirementEndToCompleteSubmitMs": null,
+        "sourceDigest": "26d5308d",
+        "revision": 1,
+        "criticalPath": {
+          "scope": "Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
+          "complete": true,
+          "placement": "worker",
+          "handler": 1,
+          "crossThreadDeliveries": 9,
+          "dispatches": 4,
+          "replies": 4,
+          "recoveryMessages": 1,
+          "collisionResumes": 0,
+          "copyResumes": 0,
+          "planResumes": 1,
+          "observedStages": 11,
+          "targetStages": 3,
+          "withinStageBudget": false,
+          "activeElapsedMs": {
+            "index": 14.300000000745058,
+            "staticCollision": 3.199999999254942,
+            "nativePlan": 15.300000000745058
+          }
+        },
+        "result": {
+          "commandId": "cut-1",
+          "status": "Applied",
+          "removedCells": 64,
+          "reason": "Terrain and collision committed",
+          "revision": 1,
+          "transferredCells": 384,
+          "transferredMassKg": 1722.65625,
+          "materialRemovedKg": 300
+        },
+        "physicsOwner": "worker",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "productAssets": [
+          "/assets/hvpBootstrap-DDu9Fssx.js",
+          "/assets/physicsWorker-DpJSLZc3.js"
+        ],
+        "verifiedPhysicalDisplay": false,
+        "rawSha256": "883dec4096e426ef1b9084f65267dde29edd1ac4788ea45b8f3cf73d87bf2aae"
+      },
+      {
+        "label": "control4",
+        "physicsMs": 180.90000000223517,
+        "inputToRenderSubmitMs": 6992.60000000149,
+        "commitToStageStartMs": 323.3999999985099,
+        "graphicsStageMs": 149.10000000149012,
+        "stageFinishToSubmitMs": 6339.199999999255,
+        "graphicsPublishMs": null,
+        "graphicsRetireMs": null,
+        "retirementEndToCompleteSubmitMs": null,
+        "sourceDigest": "26d5308d",
+        "revision": 1,
+        "criticalPath": {
+          "scope": "Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
+          "complete": true,
+          "placement": "worker",
+          "handler": 1,
+          "crossThreadDeliveries": 9,
+          "dispatches": 4,
+          "replies": 4,
+          "recoveryMessages": 1,
+          "collisionResumes": 0,
+          "copyResumes": 0,
+          "planResumes": 0,
+          "observedStages": 10,
+          "targetStages": 3,
+          "withinStageBudget": false,
+          "activeElapsedMs": {
+            "index": 8.5,
+            "staticCollision": 3.199999999254942,
+            "nativePlan": 12.899999998509884
+          }
+        },
+        "result": {
+          "commandId": "cut-1",
+          "status": "Applied",
+          "removedCells": 64,
+          "reason": "Terrain and collision committed",
+          "revision": 1,
+          "transferredCells": 384,
+          "transferredMassKg": 1722.65625,
+          "materialRemovedKg": 300
+        },
+        "physicsOwner": "worker",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "productAssets": [
+          "/assets/hvpBootstrap-DDu9Fssx.js",
+          "/assets/physicsWorker-DpJSLZc3.js"
+        ],
+        "verifiedPhysicalDisplay": false,
+        "rawSha256": "167d3f43ec94682878055fdeae624c585ae3cef4166d4f481361e812f418882e"
+      },
+      {
+        "label": "candidate",
+        "physicsMs": 535.3999999985099,
+        "inputToRenderSubmitMs": 2285.800097655505,
+        "commitToStageStartMs": 375.30000000074506,
+        "graphicsStageMs": 241.39999999850988,
+        "stageFinishToSubmitMs": 1133.7000976577401,
+        "graphicsPublishMs": 12.100000001490116,
+        "graphicsRetireMs": 2.099999997764826,
+        "retirementEndToCompleteSubmitMs": 1119.2000976577401,
+        "sourceDigest": "26d5308d",
+        "revision": 1,
+        "criticalPath": {
+          "scope": "Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
+          "complete": true,
+          "placement": "worker",
+          "handler": 1,
+          "crossThreadDeliveries": 2,
+          "dispatches": 1,
+          "replies": 1,
+          "recoveryMessages": 0,
+          "collisionResumes": 0,
+          "copyResumes": 0,
+          "planResumes": 0,
+          "recoveryMailbox": {
+            "writes": 1,
+            "bodies": 2,
+            "captureAndCloneMs": 0.4000000022351742
+          },
+          "observedStages": 3,
+          "targetStages": 3,
+          "withinStageBudget": true,
+          "activeElapsedMs": {
+            "index": 7.600000001490116,
+            "staticCollision": 3,
+            "nativePlan": 6.800000000745058
+          }
+        },
+        "result": {
+          "commandId": "cut-1",
+          "status": "Applied",
+          "removedCells": 64,
+          "reason": "Terrain and collision committed",
+          "revision": 1,
+          "transferredCells": 384,
+          "transferredMassKg": 1722.65625,
+          "materialRemovedKg": 300
+        },
+        "physicsOwner": "worker",
+        "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+        "productAssets": [
+          "/assets/hvpBootstrap-BapeIKSG.js",
+          "/assets/physicsWorker-COoqw_tA.js"
+        ],
+        "verifiedPhysicalDisplay": false,
+        "rawSha256": "05a7d4f9393dd499f2961e53ecbcd30207f047cffd7be8c005249c22023e6acb"
+      }
+    ],
+    "referenceHardware": false
+  },
+  "integratedCommit": "059cf669763b576e873b7745faae3365f9cc54e3"
+}
