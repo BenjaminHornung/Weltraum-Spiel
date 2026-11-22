@@ -9,7 +9,7 @@ export function readMovingPublication(port:MessagePort,id:number,incarnation:str
     const close=()=>{port.removeEventListener("close",closed);port.onmessage=null;port.close();clearTimeout(timer);};
     const fail=()=>{close();reject(new Error("RecoveryHold: moving publication witness unavailable"));};
     const closed=()=>{if(base){close();resolve({base});}else fail();};
-    const timer=setTimeout(fail,2000);
+    const timer=setTimeout(fail,20_000);
     port.addEventListener("close",closed);
     port.onmessage=({data})=>{
       const motion=(data?.kind==="Forward"?data.forward?.motion:data?.motion) as HvpTerrainMotion|undefined;

@@ -70,6 +70,7 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
   | {readonly kind:"ReleaseBodyMeshWork";readonly binding:HvpBodyProjectionRequest}
   | {readonly kind:"AdmitBodyChildMesh";readonly binding:HvpBodyProjectionRequest;readonly request:WorkerJobRequest;readonly output:TransferableBufferBundle}
   | {readonly kind:"StageBodyCut";readonly transactionId:string;readonly products:HvpBodyCutAdmission}
+  | {readonly kind:"InspectMovingPublication";readonly publication:HvpTerrainBinding}
   | {readonly kind:"PublishMovingCut";readonly transactionId:string;readonly parentId:string;readonly parentDigest:string;readonly sequence:number;readonly publication:HvpTerrainBinding;readonly recoveryPort:MessagePort}
   | {readonly kind:"CommitBodyCut"|"RollbackBodyCut"|"FinalizeBodyCut";readonly transactionId:string}
   | {readonly kind:"Checkpoint"}
@@ -210,7 +211,7 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
     firstStepAfterActivation={commandId:activation.binding.commandId,since:activation.since,tick:activation.tick};
     simulationPrevious=now;releasedPrepareHoldMs=0;activation=undefined;
   }
-  if(activation&&data.kind!=="ApplyCompactTerrain"&&data.kind!=="InspectCompactPublication"&&data.kind!=="Dispose"){
+  if(activation&&data.kind!=="ApplyCompactTerrain"&&data.kind!=="InspectCompactPublication"&&data.kind!=="InspectMovingPublication"&&data.kind!=="Dispose"){
     post({id:data.id,rejected:"Compact publication awaits bound confirmation"});return;
   }
   const started=performance.now();
@@ -663,6 +664,11 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
           }
           break;
         }
+        case "InspectMovingPublication":{
+          if(!activation||!sameCompactBinding(activation.binding,data.publication)||session.read().moving.last?.id!==data.publication.commandId)
+            throw new Error("Unknown moving publication");
+          receipt=data.publication;break;
+        }
         case "PublishMovingCut":{
           const id=data.transactionId,binding=data.publication,channel=data.recoveryPort;
           const envelope={id:data.id,incarnation};
@@ -699,7 +705,7 @@ const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
     }
     reply({ id: data.id,...(/^(Initialize|RecoverTerrain)/.test(data.kind)?{movingPublicationVersion:1 as const}:{}),...(recoveryAssets?{recoveryAssets}:{}),...(receipt?{terrainReceipt:receipt}:{}),...(motion?{terrainMotion:motion}:{}),snapshot: session?.read(data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain"||data.kind==="PrepareBranch"),bodyPreparation });
   } catch (error) {
-    if(data.kind==="InspectCompactPublication"){reply({id:data.id,rejected:String(error)});return;}
+    if(data.kind==="InspectCompactPublication"||data.kind==="InspectMovingPublication"){reply({id:data.id,rejected:String(error)});return;}
     if(data.kind==="ApplyCompactTerrain"){
       const state=session?.read();
       if(!activation&&state?.terrainTransaction==="Idle"&&state.terrainGeneration===data.generation

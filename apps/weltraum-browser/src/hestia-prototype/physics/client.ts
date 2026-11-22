@@ -473,7 +473,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     if(phase==="PreparedHeld"){baseMotion=motion;}else{forwardMotion=motion;}
   };
   const restoreNativeImage=async(image:HvpTerrainRecoveryImage,holdForCompactRetry=false,fenceCompactForward?:number,movingFenced=false)=>{
-    const {motion}=image;
+    const {motion}=image,retiringMeshTicket=bodyMeshWorkTicket;
     let reconstructed:{value:HvpPhysicsSnapshot;sequence:number}|undefined;
     fail(new Error("Terrain worker superseded"));worker=openWorker();incarnation=crypto.randomUUID();
     terminated=false;failure=undefined;publishRequestFloor=-1;lastSnapshotSequence=-1;lastClockSequence=-1;lastRestoreSequence=-1;
@@ -492,6 +492,10 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         if(fenceCompactForward===undefined&&!movingFenced){snapshot=restored;lastSnapshotSequence=reply.sequence;}
       });
     }catch(error){fail(new Error("RecoveryHold: "+String(error)));throw failure;}
+    // The old endpoint was terminated. Volatile mesh ownership never crosses this replacement boundary.
+    if(retiringMeshTicket?.binding.commandId===motion.binding.commandId&&bodyMeshWorkTicket===retiringMeshTicket){
+      bodyMeshWorkTicket=undefined;bodyMeshWorkRelease=undefined;
+    }
     return reconstructed!;
   };
   const recoverTerrain=async(motion:HvpTerrainMotion|undefined,holdForCompactRetry=false,fenceCompactForward?:number)=>{
@@ -842,10 +846,22 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       const normal=send({kind:"PublishMovingCut",transactionId:id,parentId:intent.ownerId,parentDigest:intent.sourceDigest,sequence,
         publication:binding,recoveryPort:channel.port2},[channel.port2],false,value=>{reply=value;});
       // Observe delivery on both independently ordered channels. A transport failure never authorizes an inverse mutation.
-      let delivered=true;
-      try{await normal;}catch{delivered=false;}
+      const settled=normal.then(()=>true,()=>false);
       try{
         const witness=await readMovingPublication(channel.port1,requestId,ownerIncarnation,binding,assets.world.sessionId);
+        // An authenticated forward can arrive first on its private port. A short grace lets the normal ACK settle.
+        // If it was lost, query the still-fenced live owner rather than waiting for a transport-wide timeout.
+        if(witness.forward&&!reply&&!failure){
+          let grace:ReturnType<typeof setTimeout>|undefined;
+          try{await Promise.race([settled,new Promise<void>(r=>{grace=setTimeout(r,16);})]);}
+          finally{if(grace!==undefined)clearTimeout(grace);}
+        }
+        if(!reply&&witness.forward&&!failure){
+          try{await send({kind:"InspectMovingPublication",publication:binding},[],false,value=>{reply=value;});}
+          catch{/* The private forward can restore a replacement at this held tick. */}
+        }
+        const waiting=pending.get(requestId);
+        if(waiting){clearTimeout(waiting.timeout);pending.delete(requestId);waiting.reject(new Error("Moving request settled through private witness"));}
         if(!witness.forward){
           await restoreNativeImage({assets,motion:witness.base,journal});
           movingRolledBack=id;throw new Error("Moving native publication rejected before commit");
@@ -862,7 +878,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         if(f.checkpoint.sequence!==sequence+1||f.checkpoint.last?.parentId!==intent.ownerId||f.checkpoint.last.children.length!==parts.length
           ||parts.some(p=>!f.checkpoint.last!.children.includes(p.ownerId))||f.delta?.children.some(c=>!parts.some(p=>p.ownerId===c.ownerId&&p.sourceDigest===c.digest)))
           throw new Error("Invalid moving forward children");
-        if(delivered&&reply&&sameCompactBinding(reply.terrainReceipt,binding)&&verifies(reply.snapshot)){
+        if(reply&&sameCompactBinding(reply.terrainReceipt,binding)&&verifies(reply.snapshot)){
           movingForward.confirmed={value:reply.snapshot!,sequence:reply.sequence};
         }else{
           const restored=await restoreNativeImage(image,false,undefined,true);
@@ -895,7 +911,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       if(bodyProjectionTicket?.binding.commandId===id)bodyProjectionTicket=undefined;
       if(movingProtocol){
         if(movingForward?.id!==id||movingForward.confirmed?.value!==snapshot)throw new Error("Moving world is not published");
-        const image=movingForward.image,binding=image.motion.binding,at=snapshot.moving.sequence;
+        const image=movingForward.image,binding=image.motion.binding,at=movingForward.confirmed!.value.moving.sequence;
         // Until this explicit input read, neither the original owner nor a replacement may tick.
         if(failure){
           const restored=await restoreNativeImage(image,false,undefined,true);
