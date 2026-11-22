@@ -18,8 +18,8 @@ try {
 } finally {await bundle.close();}
 console.error("Compiled shared placement fixture");
 const sha=data=>createHash("sha256").update(data).digest("hex");
-const embedded=[...code.matchAll(/atob\(\s*([`"'])(AGFzbQ[A-Za-z0-9+/=]*)\1\s*\)/g)];
-assert.equal(embedded.length,1);
+const embedded=[...code.matchAll(/(["'`])(AGFzbQ[A-Za-z0-9+/=]+)\1/g)];
+assert.equal(embedded.length,1,"exactly one embedded native payload");
 const wasmSha=sha(Buffer.from(embedded[0][2],"base64"));
 assert.equal(wasmSha,"f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb");
 const server=createServer((req,res)=>{
