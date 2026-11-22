@@ -19,7 +19,9 @@ const page = await browser.newPage({viewport});
 page.setDefaultTimeout(10000);
 const cdp = await page.context().newCDPSession(page);
 const report = {browser: browser.version(), viewport, allowResume, pauseAfterClick, pageErrors: [], consoleErrors: [], consoleWarnings: [], workerPlan: [], resumes: [], referenceDeviceVerified: false};
-page.on("pageerror", error => report.pageErrors.push(error.message));
+const progress = text => { if(process.env.HVP_PLAYER_PROGRESS === "1") console.error(new Date().toISOString(),text); };
+page.on("pageerror", error => {report.pageErrors.push(error.message);progress("Page error "+error.message);});
+page.on("worker", worker=>progress("Worker "+worker.url()));
 page.on("console", message => {
   if (message.type() === "debug" && message.text().startsWith("hvp-owned-body-plan-budget ")) {
     report.workerPlan.push(JSON.parse(message.text().slice("hvp-owned-body-plan-budget ".length)));
@@ -82,7 +84,7 @@ async function handleHold(s) {
   }
 }
 async function waitState(label, select, timeout) {
-  report.phase = label;
+  report.phase = label;progress(label);
   const expires = Date.now() + timeout;
   while (Date.now() < expires) {
     const s = await read();
@@ -118,7 +120,16 @@ try {
   scenario.search = new URLSearchParams({hestiaPrototype:"1",hvpScenario:"rock-arm",...(report.measurementsEnabled?{hvpMeasure:"1"}:{})});
   report.phase = "startup";
   await page.goto(scenario.href, {waitUntil: "domcontentloaded", timeout: 30000});
-  await page.waitForFunction(() => document.querySelector("#hvp-state")?.textContent.includes("State: Ready"), null, {timeout: 150000});
+  let ready=false;
+  for(let attempt=0;attempt<150;attempt++){
+    const state=await page.evaluate(()=>document.querySelector("#hvp-state")?.textContent??document.body.innerText.slice(0,450));
+    if(state?.includes("State: Ready")){ready=true;break;}
+    if(attempt%10===0)progress("Startup "+state);
+    if(state?.includes("State: Failed")||state?.includes("Fehler"))throw Error(state);
+    await delay(1000);
+  }
+  assert.ok(ready,"Product did not publish Ready");
+  progress("Ready");
   const initial = await read();
   assert.equal(initial.generation, 0);
   assert.equal(initial.fragments.length, 0);
@@ -213,11 +224,12 @@ try {
   report.passed = true;
 } catch (error) {
   report.error = String(error.stack ?? error);
-  const terminal = await read().catch(() => null);
+  progress(report.error);
+  const terminal = await Promise.race([read().catch(() => null), delay(3000).then(()=>null)]);
   if (terminal) report.terminal = {status: terminal.status, moving: terminal.moving, tool: terminal.tool, tick: terminal.tick};
   process.exitCode = 1;
 } finally {
-  report.input = await page.evaluate(() => window.readObservedPlayerInput()).catch(() => null);
+  report.input = await Promise.race([page.evaluate(() => window.readObservedPlayerInput()).catch(() => null),delay(3000).then(()=>null)]);
   if (finishThreadTrace) report.threadCpu = await finishThreadTrace(report.input?.phases ?? []).catch(e => ({sampled:false, message:String(e)}));
   report.worker = page.workers().find(w => w.url().includes("physicsWorker"))?.url();
   if (report.input) {
