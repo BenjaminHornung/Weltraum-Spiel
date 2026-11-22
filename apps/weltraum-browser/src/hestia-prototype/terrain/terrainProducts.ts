@@ -18,14 +18,14 @@ import {analyzeHvpTerrainSupport,analyzeHvpSupportSnapshotOwnedSteps,createHvpSu
 import type {HvpMovingCutPreparation,HvpBodyChildProjection} from "../physics/bodyCutSession";
 import {buildHvpBodyMeshInput,buildHvpBodyMeshInputSteps,HVP_BODY_MESH_JOB,HVP_BODY_MESH_ALGORITHM,HVP_BODY_MESH_MAX_OUTPUT} from "../../workers/hvpBodyMeshJob";
 import {createHvpBodyMeshPhaseReserve,type HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
-import {measureHvpCutAsync,type HvpCutTrace} from "../runtime/cutTrace";
+import {measureHvpCut,measureHvpCutAsync,traceHvpCutBoundary,type HvpCutTrace} from "../runtime/cutTrace";
 import {HVP_BODY_CUT_JOB,HVP_BODY_CUT_ALGORITHM,HVP_BODY_CUT_MAX_OUTPUT,hvpBodyCutInputDigest,validateHvpBodyCutPayload,decodeHvpBodyCutOutput} from "../../workers/hvpBodyCutJob";
 import {HVP_NEIGHBOR_JOB,HVP_NEIGHBOR_MAX_OUTPUT,hvpNeighborInputDigest,decodeHvpNeighborOutput,type HvpNeighborPayload} from "../../workers/hvpNeighborJob";
 import {encodeHvpProjectionPacket} from "../runtime/projectionPacket";
 import type {HvpNeighborProxies} from "../runtime/neighborProducts";
 import {buildHvpChunkInputSteps,hvpChunkCoordinates,hvpDirtyChunks,hvpRestoreChunksSteps,type HvpChunkPayload} from "./terrainChunkInput";
 import {buildHvpLiveRenderChunkSteps} from "./liveRenderDelta";
-import {patchHvpChunkCollisionSteps} from "../../voxel/structural/componentIndex/terrainCollision";
+import {buildHvpChunkCollisionIndexSteps,hvpChunkOccupancySteps,patchIndexedHvpChunkCollisionSteps,canPatchHvpCollisionInOneTask,type HvpChunkCollisionIndex} from "../../voxel/structural/componentIndex/terrainCollision";
 import {HVP_CHUNK_JOB,HVP_CHUNK_MAX_OUTPUT,decodeHvpChunkOutput,decodeHvpChunkOutputSteps,hvpChunkInputDigestSteps} from "../../workers/hvpChunkJob";
 import {HVP_EAST_CHUNK_COLLISION_JOB,HVP_EAST_CHUNK_COLLISION_PURPOSE,HVP_EAST_CHUNK_COLLISION_ALGORITHM,HVP_EAST_CHUNK_COLLISION_MAX_OUTPUT,
   hvpEastChunkCollisionInputDigestSteps,decodeHvpEastChunkCollisionOutput,decodeHvpEastChunkCollisionOutputSteps,type HvpEastChunkCollisionPayload} from "../../workers/hvpChunkJob";
@@ -378,7 +378,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
   let pool=createPool(),started:Promise<void>|undefined,sequence=0,disposed=false,rollingOver=false,rolloverFailed=false,activeOperations=0;
   let readyRoot:{read:()=>HvpTerrainSnapshot}|undefined;
   type ChunkCache={source:HvpTerrainSnapshot;worldId:string;neighbor?:HvpTerrainSnapshot;renderNeighbor?:HvpTerrainSnapshot;render:ReadonlyMap<number,HvpCompactMesh>;collision:ReadonlyMap<number,HvpCollisionSector>;
-    neighborCollision?:ReadonlyMap<number,HvpCollisionSector>;neighborCollisionSource?:HvpTerrainSnapshot;bytes:number};
+    collisionIndices:ReadonlyMap<number,HvpChunkCollisionIndex>;neighborCollision?:ReadonlyMap<number,HvpCollisionSector>;neighborCollisionSource?:HvpTerrainSnapshot;bytes:number};
   let chunkCache:ChunkCache|undefined;
   const pendingChunks=new Map<HvpTerrainProducts,{cache:ChunkCache;bytes:number}>();
   const chunkMeshBytes=(m:HvpCompactMesh)=>m.positions.byteLength+m.normals.byteLength+(m.colors?.byteLength??0)+m.indices.byteLength+640+m.materialRanges.length*144;
@@ -399,7 +399,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
   };
   const compileSectors=async(source:HvpTerrainSnapshot,renderIds:readonly number[],collisionIds:readonly number[],limit:number,
     readNeighbor?:(x:number,y:number,z:number)=>number|undefined,signal?:AbortSignal,parallel=count,credits?:HvpSupportPhaseCredits,
-    observeInput?:((start:number,duration:number)=>void),chunks?:{ids:readonly number[];worldId:string;neighbor?:HvpTerrainSnapshot;renderNeighbor?:HvpTerrainSnapshot;assertCurrent:()=>void;eastCollisionOnly?:true},startup?:HvpChunkStartupObservation):Promise<HvpTerrainProducts>=>{
+    observeInput?:((start:number,duration:number)=>void),chunks?:{ids:readonly number[];worldId:string;neighbor?:HvpTerrainSnapshot;renderNeighbor?:HvpTerrainSnapshot;assertCurrent:()=>void;eastCollisionOnly?:true;occupancy?:Map<number,Uint32Array>},startup?:HvpChunkStartupObservation):Promise<HvpTerrainProducts>=>{
     if(disposed||rolloverFailed){throw new Error("Terrain compiler disposed");}
     if(!Number.isInteger(parallel)||parallel<1||parallel>count){throw new Error("Invalid preparation concurrency");}
     const render=new Map<number,HvpCompactMesh>(),collision=new Map<number,HvpCollisionSector>();
@@ -425,6 +425,10 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
       const job=part.chunk?await pump!.run(chunkJobInputSteps(source,part.id,sequence++,chunks!.worldId,chunks!.neighbor,chunks!.renderNeighbor,packReserve!,chunks!.eastCollisionOnly===true)):
         {kind:"sector" as const,...(pump===undefined?jobInput(source,part.id,part.render,sequence++,readNeighbor):await pump.run(jobInputSteps(source,part.id,part.render,sequence++,readNeighbor,packReserve,cacheGhosts)))};
       if(observeInput!==undefined){try{observeInput(inputStart,performance.now()-inputStart);}catch{/* Diagnostics cannot invalidate products. */}}
+      if(chunks?.occupancy && job.kind==="chunk") {
+        const slots=new Uint8Array(job.bundle.buffers[0]!);
+        chunks.occupancy.set(part.id,await pump!.run(hvpChunkOccupancySteps(slots,packReserve!)));
+      }
       const ticket=pump===undefined?pool.enqueue(job.request,job.bundle):await pool.enqueueTerrainDerivative(job.request,job.bundle,workerBytes!,pump.host,packReserve!,resultReserve!);
       active.add(ticket);
       const cancel=()=>{try{ticket.cancel();}catch{/* Still await the real terminal or worker termination. */}};
@@ -456,6 +460,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
         retainedBytes=product.render?product.mesh.positions.byteLength+product.mesh.normals.byteLength+product.mesh.colors!.byteLength
           +product.mesh.indices.byteLength+320+144*product.mesh.materialRanges.length:product.mesh.vertices.byteLength+product.mesh.indices.byteLength+320;
         if(product.render&&product.collision){retainedBytes+=product.collision.vertices.byteLength+product.collision.indices.byteLength+320;}
+        if(chunks?.occupancy){retainedBytes+=4096+80;}
         // Yield a real event-loop turn per finished job, without waiting for its sibling.
         await new Promise<void>(resolve=>setTimeout(resolve,0));
         if(disposed){throw new Error("Terrain compiler disposed");}
@@ -474,7 +479,8 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
   };
   const compileChunks=async(source:HvpTerrainSnapshot,ids:readonly number[],worldId:string,neighbor:HvpTerrainSnapshot|undefined,
     credits:HvpSupportPhaseCredits,before:ChunkCache|undefined,current:()=>void,observeInput?:((start:number,duration:number)=>void),completeCollision=false,renderNeighbor=neighbor,startup?:HvpChunkStartupObservation)=>{
-    current();const raw=await compileSectors(source,[],[],256,undefined,undefined,count,credits,observeInput,{ids,worldId,neighbor,renderNeighbor,assertCurrent:current},startup);
+    current();const occupancy=new Map<number,Uint32Array>();
+    const raw=await compileSectors(source,[],[],256,undefined,undefined,count,credits,observeInput,{ids,worldId,neighbor,renderNeighbor,assertCurrent:current,occupancy},startup);
     const neighborIds=neighbor&&completeCollision?(before?.neighbor===neighbor&&before.neighborCollision!==undefined
       ?before.neighborCollisionSource===source?[]:Array.from({length:32},(_,i)=>i*8):Array.from({length:256},(_,i)=>i)):[];
     const neighborRaw=neighborIds.length===0?undefined:await compileSectors(neighbor!,[],[],256,undefined,undefined,count,credits,observeInput,
@@ -486,8 +492,16 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
       reserve(65_536);const next=new Map(before?.render??[]);
       for(const [id,mesh]of raw.render){next.set(id,mesh);}
       if(next.size!==256||Array.from({length:256},(_,id)=>id).some(id=>!next.has(id))){throw new Error("Incomplete chunk cache coverage");}
-      const nextCollision=new Map(before?.collision??[]);let copiedCollisionBytes=0;
-      for(const [id,mesh]of raw.collision){const copy=await pump.run(copyChunkCollisionSteps(mesh,reserve));nextCollision.set(id,copy);copiedCollisionBytes+=copy.vertices.byteLength+copy.indices.byteLength+320;}
+      const nextCollision=new Map(before?.collision??[]), collisionIndices=new Map(before?.collisionIndices);
+      let copiedCollisionBytes=0;
+      for(const [id,mesh] of raw.collision){
+        const slots=occupancy.get(id);
+        if(!slots) throw new Error("Missing collision chunk occupancy");
+        const copy=await pump.run(copyChunkCollisionSteps(mesh,reserve));
+        const index=await pump.run(buildHvpChunkCollisionIndexSteps(source,id,copy,slots,reserve));
+        nextCollision.set(id,copy);collisionIndices.set(id,index);
+        copiedCollisionBytes+=copy.vertices.byteLength+copy.indices.byteLength+320+index.bytes;
+      }
       if(nextCollision.size!==256||Array.from({length:256},(_,id)=>id).some(id=>!nextCollision.has(id))){throw new Error("Incomplete chunk collision cache coverage");}
       const neighborCollision=neighbor===undefined?undefined:new Map(before?.neighbor===neighbor?before.neighborCollision:undefined);
       for(const [id,mesh]of neighborRaw?.collision??[]){const copy=await pump.run(copyChunkCollisionSteps(mesh,reserve));neighborCollision!.set(id,copy);copiedCollisionBytes+=copy.vertices.byteLength+copy.indices.byteLength+320;}
@@ -496,8 +510,9 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
       const columns=[...new Set(ids.map(id=>{const c=hvpChunkCoordinates(id);return Math.floor(c[0]/2)+Math.floor(c[2]/2)*4;}))].sort((a,b)=>a-b);
       const render=new Map<number,HvpCompactMesh>();
       for(const id of columns){const mesh=await pump.run(composeHvpTerrainColumnSteps(next,source,id,reserve));render.set(id,mesh);retained+=chunkMeshBytes(mesh);}
-      const cache:ChunkCache={source,worldId,neighbor,renderNeighbor,render:next,collision:nextCollision,neighborCollision,neighborCollisionSource:completeCollision?source:before?.neighborCollisionSource,
+      const cache:ChunkCache={source,worldId,neighbor,renderNeighbor,render:next,collision:nextCollision,collisionIndices,neighborCollision,neighborCollisionSource:completeCollision?source:before?.neighborCollisionSource,
         bytes:32_768+[...next.values()].reduce((n,m)=>n+chunkMeshBytes(m),0)
+        +[...collisionIndices.values()].reduce((n,index)=>n+index.bytes,0)
         +[...nextCollision.values(),...(neighborCollision?.values()??[])].reduce((n,m)=>n+m.vertices.byteLength+m.indices.byteLength+320,0)
         +(renderNeighbor!==undefined&&neighbor===undefined?8_388_608+renderNeighbor.overlayBytes*2:0)};
       const products:HvpTerrainProducts={source,render,collision:raw.collision};
@@ -789,19 +804,37 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
               const observe=(phase:string)=>trace===undefined?undefined:(_label:string,start:number,duration:number)=>{
                 trace({commandId:plan.request.commandId,thread:"main",phase,origin:performance.timeOrigin,start,duration});
               };
-              const pump=createHvpBodyMeshTaskPump(current,observe("cutStaticCollisionWorkMs"),inputPriority);let retained=0;
-              try{
+              const collisionIndices=new Map(cache.collisionIndices);
+              const inOneTask=canPatchHvpCollisionInOneTask(plan,dirty,cache.collisionIndices);
+              const pump=inOneTask?undefined:createHvpBodyMeshTaskPump(current,observe("cutStaticCollisionWorkMs"),inputPriority,
+                ()=>traceHvpCutBoundary(trace,plan.request.commandId,"main","cutCollisionTaskResume"));
+              let retained=0,deltaBytes=0;
+              function* patchChunks() {
                 for(const id of dirty){
-                  const previous=cache.collision.get(id);
-                  if(!previous){throw new Error("Missing published chunk collision");}
-                  const mesh=await pump.run(patchHvpChunkCollisionSteps(plan,id,cache.source,previous,reserve));
-                  collision.set(id,mesh);cachedCollision.set(id,await pump.run(copyChunkCollisionSteps(mesh,reserve)));
-                  retained+=2*(mesh.vertices.byteLength+mesh.indices.byteLength+320);
+                  const previous=cache.collision.get(id),index=cache.collisionIndices.get(id);
+                  if(!previous||!index?.slots) throw new Error("Missing published chunk collision index");
+                  const updated=yield* patchIndexedHvpChunkCollisionSteps(plan,id,cache.source,previous,index,reserve);
+                  const {mesh}=updated;
+                  collision.set(id,mesh);
+                  // The native admission owns its input. Never share either mutable buffer
+                  // with the compiler's geometry retained for a later cut.
+                  const owned=yield* copyChunkCollisionSteps(mesh,reserve);
+                  cachedCollision.set(id,owned);collisionIndices.set(id,{...updated.index,mesh:owned});
+                  retained+=2*(mesh.vertices.byteLength+mesh.indices.byteLength+320)+updated.index.bytes;
+                  deltaBytes+=mesh.vertices.byteLength+mesh.indices.byteLength-previous.vertices.byteLength-previous.indices.byteLength
+                    +updated.index.bytes-index.bytes;
                 }
-              }finally{pump.dispose();phase.endLane(lane,retained);}
-              const nextCache:ChunkCache={...cache,source,collision:cachedCollision,bytes:cache.bytes+
-                dirty.reduce((n,id)=>{const old=cache.collision.get(id)!,next=cachedCollision.get(id)!;
-                  return n+next.vertices.byteLength+next.indices.byteLength-old.vertices.byteLength-old.indices.byteLength;},0)};
+              }
+              try{
+                if(pump){await pump.run(patchChunks());}
+                else{
+                  current();
+                  measureHvpCut(trace,plan.request.commandId,"main","cutStaticCollisionWorkMs",()=>{
+                    for(const _ of patchChunks()){ /* Bounded work, no browser task switch. */ }
+                  });
+                }
+              }finally{pump?.dispose();phase.endLane(lane,retained);}
+              const nextCache:ChunkCache={...cache,source,collision:cachedCollision,collisionIndices,bytes:cache.bytes+deltaBytes};
               products={source,collision,render:new Map(),dirtyRender:dirty,renderAfterCommit:async pending=>{
                 const currentRender=()=>{if(disposed||binding?.read()!==source||chunkCache!==nextCache){throw new Error("Stale terrain presentation");}};
                 currentRender();
