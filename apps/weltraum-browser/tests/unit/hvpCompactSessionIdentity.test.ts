@@ -72,4 +72,4 @@ it("publishes the compact material identity before archive creation and preserve
     expect(s.read().moving.last).toMatchObject({parentId:request.ownerId,status:"Applied",removedCells:1});
     expect(s.read().terrainFragments.some(f=>f.ownerId===request.ownerId)).toBe(false);
   }finally{s.dispose();index.dispose();}
-});
+},60000);

@@ -406,7 +406,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
     const measuredCut=terrainTrace&&terrainBinding&&(
       ("transactionId" in message && message.transactionId===terrainBinding.commandId)
-      || message.kind==="PrimeTerrainRecovery"
+      || message.kind==="PrimeTerrainRecovery" || (message.kind==="RecoverTerrain"&&message.image.motion.binding.commandId===terrainBinding.commandId)
     )?terrainBinding.commandId:undefined;
     pending.set(id, {measuredCut,kind:message.kind,resolve,reject,timeout,publish,ownsState,ownsClock,onReply});
     const wireMessage=ownerKind==="phy01-lab"
@@ -835,6 +835,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
       try {
         for(let attempt=0;attempt<2;attempt++){
           const inbox=new MessageChannel(),expectedId=nextId,expectedIncarnation=incarnation;
+          let writeReported=false;
           const outbound=attempt===0?replacements:structuredClone(immutable.replacements);
           try{
             await send({kind:"ApplyCompactTerrain",transactionId:binding.commandId,generation:binding.baseRevision,sourceDigest:binding.targetDigest,
@@ -848,14 +849,15 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
                 ||!plan||plan.prepareRequestId!==expectedId||plan.transactionId!==binding.commandId||plan.generation!==binding.baseRevision
                 ||plan.sourceSessionId!==binding.sessionId||plan.sourceEpoch!==binding.epoch||plan.sourceDigest!==binding.targetDigest)throw new Error("Invalid compact publication receipt");
               const views=readTerrainSourceViews(plan.sourceViews,immutable.fragments);
-              const installed=readTerrainSourceViews(next.terrainFragments.filter(f=>f.ownerId===fragments[0]!.ownerId),immutable.fragments);
-              const a=installed[0]!,b=views[0]!;
-              if(a.sourceBytes!==b.sourceBytes||a.massKg!==b.massKg||a.centerOfMass.x!==b.centerOfMass.x||a.centerOfMass.y!==b.centerOfMass.y
+              const installed=next.terrainFragments.filter(f=>f.ownerId===fragments[0]!.ownerId),a=installed[0],b=views[0]!;
+              if(installed.length!==1||!a?.centerOfMass||a.sourceDigest!==b.sourceDigest||a.cellCount!==b.cellCount||a.colliders!==b.colliders
+                ||a.sourceBytes!==b.sourceBytes||a.massKg!==b.massKg||a.centerOfMass.x!==b.centerOfMass.x||a.centerOfMass.y!==b.centerOfMass.y
                 ||a.centerOfMass.z!==b.centerOfMass.z||!motion.bodies.some(body=>body.ownerId===a.ownerId&&body.sourceDigest===a.sourceDigest)){
                 throw new Error("Compact installed body mismatch");
               }
               if(work.trace){
                 for(const span of plan.spans??[]){try{work.trace(span);}catch{/* optional observation */}}
+                writeReported=true;
                 traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMailboxWrite",1,reply.compactRecoveryWriteMs);
                 traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMotionBodies",reply.compactRecoveryBodies??0);
                 if(plan.sourceTiming)traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutPhysicsPlanTaskResumes",plan.sourceTiming.taskYields,plan.sourceTiming.workElapsedMs);
@@ -878,6 +880,11 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
                 if(data?.id!==expectedId||data?.incarnation!==expectedIncarnation||!motion||!matches(motion.binding)||motion.worldId!==catalog?.world.sessionId
                   ||motion.revision!==binding.baseRevision||!(motion.tick.status==="Paused"||motion.tick.status==="SimulationHold"&&!motion.running)){
                   reject(new Error("RecoveryHold: invalid compact rollback witness"));return;
+                }
+                if(!writeReported){
+                  // The original reply, including the sender-side clone duration, was lost.
+                  traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMailboxWrite");
+                  traceHvpCutBoundary(work.trace,binding.commandId,"physics","cutRecoveryMotionBodies",motion.bodies.length);
                 }
                 resolve(motion);
               };

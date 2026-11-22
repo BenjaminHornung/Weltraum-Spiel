@@ -11,7 +11,7 @@ export type TerrainViews=Readonly<HvpPhysicsSnapshot["preparedTerrainFragments"]
 export function admitsCompactTerrainApply(replacements:TerrainReplacements,fragments:readonly HvpTerrainFragmentRequest[]) {
   const f=fragments[0];
   return fragments.length===1 && !!f?.compactSource && supportsCompactArchive(f.compactSource)
-    && !f.sourceSubset && !f.sourceRegion && f.colliderBoxes.length>0 && f.colliderBoxes.length<=64
+    && (f.cells.length===0 || f.cells.length===f.compactSource.cellCount) && !f.sourceSubset && !f.sourceRegion && f.colliderBoxes.length>0 && f.colliderBoxes.length<=64
     && replacements.length>0 && replacements.length<=8
     && replacements.reduce((n,r)=>n+r.mesh.vertices.byteLength+r.mesh.indices.byteLength,0)<=256*1024;
 }
@@ -24,7 +24,7 @@ export function readTerrainSourceViews(values:unknown,requests:readonly HvpTerra
     const center=requirePlainRecord(view.centerOfMass,"terrainPlan/sourceViews/centerOfMass");
     requireExactKeys(center,["x","y","z"],"terrainPlan/sourceViews/centerOfMass");
     const cellCount=request.compactSource?.cellCount??request.cells.length;
-    if(view.ownerId!==request.ownerId||!matchesHvpFragmentSourceDigest(view.sourceDigest,request)
+    if(request.cells.length>0&&request.cells.length!==cellCount || view.ownerId!==request.ownerId||!matchesHvpFragmentSourceDigest(view.sourceDigest,request)
       ||![center.x,center.y,center.z].every(v=>typeof v==="number"&&Number.isFinite(v))||view.cellCount!==cellCount
       ||typeof view.massKg!=="number"||!Number.isFinite(view.massKg)||view.massKg<=0||Math.abs(view.massKg-request.massKg)>1e-8
       ||!Number.isSafeInteger(view.colliders)||view.colliders!==request.colliderBoxes.length

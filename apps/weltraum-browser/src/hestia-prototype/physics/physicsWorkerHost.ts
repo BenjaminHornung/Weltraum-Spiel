@@ -172,7 +172,7 @@ function closeOwner(): Promise<void> {
   });
   return shutdown;
 }
-port.onmessage = async ({ data }) => {
+const handle = async ({ data }:MessageEvent<HvpWorkerMessage>) => {
   // Old/mixed owner messages cannot mutate or dispose the live World.
   if(incarnation!==undefined&&(data.protocol!==HVP_PHYSICS_PROTOCOL||data.incarnation!==incarnation)){
     post({id:data.id,rejected:"Invalid physics message binding"},typeof data.incarnation==="string"?data.incarnation:"");return;
@@ -467,6 +467,7 @@ port.onmessage = async ({ data }) => {
             ||typeof data.sourceSessionId!=="string"||!/^[A-Za-z0-9:_-]{1,128}$/.test(data.sourceSessionId)||!Number.isSafeInteger(data.sourceEpoch)||data.sourceEpoch<0
             ||!Number.isSafeInteger(data.allowanceBytes)||data.allowanceBytes<=0||data.allowanceBytes>96*1024*1024){throw new Error("Invalid Native terrain preparation binding");}
           const owner=session,ownerIncarnation=incarnation;
+          if(compact&&resumeCompactRetry){owner.resume();resumeCompactRetry=undefined;}
           const current=()=>{if(disposed||session!==owner||restore!==undefined||incarnation!==ownerIncarnation||terrainPlanTicket!==ticket){throw new Error("Native terrain preparation cancelled");}};
           const pump=createHvpBodyMeshTaskPump(current),reserve=createHvpBodyMeshPhaseReserve(data.allowanceBytes);
           Object.defineProperty(reserve,"hashUnits",{value:128});
@@ -482,7 +483,6 @@ port.onmessage = async ({ data }) => {
             if(compact){
               // The rollback port is dormant on the main thread. Deposit the last exact base tick before the first native mutation.
               // Its receiver survives a crash of this Worker. No frame, input or second command can interleave in this block.
-              if(resumeCompactRetry){owner.resume();resumeCompactRetry=undefined;}
               const begin=performance.now(),before=owner.captureBeforeNativeInstall(compact.publication);
               compact.rollbackPort.postMessage({id:data.id,incarnation:ownerIncarnation,motion:before});
               writeMs=performance.now()-begin;journalBodies=before.bodies.length;
@@ -654,7 +654,16 @@ port.onmessage = async ({ data }) => {
     }
     clearInterval(timer);timer=undefined;session?.dispose(); disposed = true;
     reply({ id: data.id, error: error instanceof Error ? error.message : "Physics worker failed" });
-  }finally{if(data.kind==="ApplyCompactTerrain")data.rollbackPort?.close?.();}
+  }
+};
+port.onmessage=async event=>{
+  const received=event.data.kind==="ApplyCompactTerrain"?event.data.rollbackPort:undefined;
+  try{await handle(event);}
+  finally{
+    // Close this transferred endpoint even when the envelope failed before reaching command dispatch.
+    // A previously posted base witness stays queued on the surviving receiver.
+    if(typeof MessagePort!=="undefined"&&received instanceof MessagePort)received.close();
+  }
 };
 
 return closeOwner;
