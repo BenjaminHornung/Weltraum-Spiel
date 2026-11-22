@@ -16,8 +16,12 @@ const viewport = {width: Number(process.env.HVP_PLAYER_WIDTH ?? 640), height: Nu
 const page = await browser.newPage({viewport});
 page.setDefaultTimeout(10000);
 const cdp = await page.context().newCDPSession(page);
-const report = {browser: browser.version(), viewport, allowResume, pageErrors: [], resumes: [], referenceDeviceVerified: false};
+const report = {browser: browser.version(), viewport, allowResume, pageErrors: [], consoleErrors: [], consoleWarnings: [], resumes: [], referenceDeviceVerified: false};
 page.on("pageerror", error => report.pageErrors.push(error.message));
+page.on("console", message => {
+  const entries = message.type() === "error" ? report.consoleErrors : message.type() === "warning" ? report.consoleWarnings : undefined;
+  if (entries && entries.length < 32) entries.push(message.text().slice(0, 500));
+});
 
 await page.addInitScript(() => {
   // Observe actual browser events and the normal HUD's worker clock across resumes.
@@ -162,6 +166,7 @@ try {
   report.testBridgePresent = after.bridge;
   assert.equal(after.bridge, false);
   assert.deepEqual(report.pageErrors, []);
+  assert.deepEqual(report.consoleErrors, []);
   const observed = await page.evaluate(() => window.readObservedPlayerInput());
   assert.equal(observed.clicks.filter(click => click.trusted && click.target === "debug-scene" && click.locked === "debug-scene").length, 2);
   if (!allowResume) assert.deepEqual(observed.holds, []);
