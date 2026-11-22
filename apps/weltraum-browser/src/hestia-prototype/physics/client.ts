@@ -283,7 +283,14 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     if(staticLayout===null||prepared.worldId!==(labGame?.checkpoint.world.sessionId??freshBinding?.header.worldId)){throw new Error("LAB Worker source/Chunk session mismatch");}
     staticLayout=validateHvpChunkStaticLayout(staticLayout);
   }
-  const openWorker = () => new Worker(new URL("./physicsWorker.ts", import.meta.url), { type: "module", name: "hvp-simulation-owner" });
+  const query = typeof window === "undefined" ? undefined : new URLSearchParams(window.location.search);
+  const mainPlacement = query?.get("hvpMeasure") === "1" && query.get("hvpPhysicsPlacement") === "main";
+  const openWorker = mainPlacement
+    ? (await import("./mainThreadPhysics")).createMainThreadPhysicsEndpoint
+    : () => new Worker(new URL("./physicsWorker.ts", import.meta.url), { type: "module", name: "hvp-simulation-owner" });
+  if (query?.get("hvpMeasure") === "1") {
+    performance.mark("hvp.physicsPlacement", { detail: { owner: mainPlacement ? "main" : "worker" } });
+  }
   let worker=openWorker(),nextId=0;
   let incarnation=crypto.randomUUID();
   let terrainTrace:HvpCutTrace|undefined;
