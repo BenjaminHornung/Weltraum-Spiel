@@ -1005,7 +1005,9 @@ test("HVP-10 normal input recuts a terrain-origin body without changing static R
   const cursor={x:playBox.x+playBox.width/2,y:playBox.y+playBox.height/2};
   await page.getByRole("button",{name:"Spielen · WASD / Maus / Space",exact:true}).click();
   await expect.poll(()=>page.evaluate(()=>document.pointerLockElement?.id)).toBe("debug-scene");
-  await expect.poll(async()=>(await read()).physics.player.grounded).toBe(true);
+  // Poll the published player state in the page so serializing the world cannot consume the contact deadline.
+  await page.waitForFunction(() => JSON.parse(document.body.dataset.hestiaPrototypePhysics!).player.grounded === true,
+    undefined, { timeout: 5_000 });
   await expect.poll(async()=>(await read()).tool.message).toContain("Stützzellen");
   await testInfo.attach("rock-arm-before-detach-and-recut",{body:await page.screenshot(),contentType:"image/png"});
   await page.mouse.down();await page.mouse.up();

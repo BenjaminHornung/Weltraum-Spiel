@@ -1,0 +1,113 @@
+{
+  "fixture": "384-cell branch; 64 cells and 75 kg removed; remaining 128 and 192 cells",
+  "scope": "PrepareBranch worker handler; Node worker_threads; cloud diagnostic",
+  "node": "v24.22.3",
+  "workers": {
+    "R2": "993f4cc69bc1e4626e64bad26b5badca51ba6c9ca71e0b9dc35bec373bb35184",
+    "A0": "388bd198dee0ab31165855c03a359ec7ce6b78df8cd538cd82506c179f23ea96"
+  },
+  "wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+  "runs": [
+    {
+      "position": 1,
+      "build": "R2",
+      "handlerMs": 1079.1961310000002,
+      "roundTripMs": 1080.0626779999998
+    },
+    {
+      "position": 2,
+      "build": "A0",
+      "handlerMs": 686.1481650000001,
+      "roundTripMs": 686.9896920000001
+    },
+    {
+      "position": 3,
+      "build": "A0",
+      "handlerMs": 725.398056,
+      "roundTripMs": 726.5998629999999
+    },
+    {
+      "position": 4,
+      "build": "R2",
+      "handlerMs": 738.6312100000002,
+      "roundTripMs": 740.9699889999999
+    },
+    {
+      "position": 5,
+      "build": "A0",
+      "handlerMs": 990.216946,
+      "roundTripMs": 993.4783860000002
+    },
+    {
+      "position": 6,
+      "build": "R2",
+      "handlerMs": 868.1670079999999,
+      "roundTripMs": 869.0443210000001
+    },
+    {
+      "position": 7,
+      "build": "R2",
+      "handlerMs": 906.6015960000002,
+      "roundTripMs": 910.5358699999999
+    },
+    {
+      "position": 8,
+      "build": "A0",
+      "handlerMs": 1042.2189779999999,
+      "roundTripMs": 1042.875675
+    },
+    {
+      "position": 9,
+      "build": "A0",
+      "handlerMs": 762.9036670000003,
+      "roundTripMs": 763.8749659999999
+    },
+    {
+      "position": 10,
+      "build": "R2",
+      "handlerMs": 742.5693610000001,
+      "roundTripMs": 743.2322979999999
+    },
+    {
+      "position": 11,
+      "build": "R2",
+      "handlerMs": 701.3682819999999,
+      "roundTripMs": 702.3382529999999
+    },
+    {
+      "position": 12,
+      "build": "A0",
+      "handlerMs": 553.7314820000001,
+      "roundTripMs": 554.5186139999998
+    },
+    {
+      "position": 13,
+      "build": "R2",
+      "handlerMs": 704.5313500000002,
+      "roundTripMs": 705.4084140000002
+    },
+    {
+      "position": 14,
+      "build": "A0",
+      "handlerMs": 537.1015720000003,
+      "roundTripMs": 537.8163159999999
+    },
+    {
+      "position": 15,
+      "build": "A0",
+      "handlerMs": 560.8466520000002,
+      "roundTripMs": 561.565353
+    },
+    {
+      "position": 16,
+      "build": "R2",
+      "handlerMs": 1038.725714,
+      "roundTripMs": 1040.9096550000002
+    }
+  ],
+  "medianMs": {
+    "R2": 805.3681845,
+    "A0": 705.7731105
+  },
+  "allSourceAndDisposeChecksEqual": true
+}

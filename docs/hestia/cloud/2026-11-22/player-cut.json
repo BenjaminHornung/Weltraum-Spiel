@@ -1,0 +1,81 @@
+{
+  "environment": "Chromium 149.0.7827.0 headless / SwiftShader / cloud",
+  "scope": "one functional player click with observed telemetry, no hardware percentile",
+  "droppedCapturedCutEntries": 0,
+  "assets": {
+    "hvpBootstrap-CDk_vVeO.js": "705270ea405dbc3aafc619f4351d895128d3e7b4c3b58e5ab0cf0fc5b9783433",
+    "physicsWorker-DgjO90de.js": "388bd198dee0ab31165855c03a359ec7ce6b78df8cd538cd82506c179f23ea96",
+    "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb"
+  },
+  "command": {
+    "commandId": "cut-1",
+    "status": "Applied",
+    "removedCells": 64,
+    "reason": "Terrain and collision committed",
+    "revision": 1,
+    "transferredCells": 384,
+    "transferredMassKg": 1722.65625,
+    "materialRemovedKg": 300
+  },
+  "inputToAppliedMs": 1608.300048828125,
+  "inputToCommittedRenderSubmitMs": 2155.099853515625,
+  "appliedToCommittedRenderSubmitMs": 546.7998046875,
+  "renderBinding": {
+    "commandId": "cut-1",
+    "savedRevision": 1,
+    "savedDigest": "26d5308d",
+    "nativeGeneration": 1,
+    "activeTerrainKeys": [
+      "hvp:terrain:s0:r0",
+      "hvp:terrain:s1:r0",
+      "hvp:terrain:s2:r0",
+      "hvp:terrain:s3:r0",
+      "hvp:terrain:s4:r0",
+      "hvp:terrain:s5:r0",
+      "hvp:terrain:s8:r0",
+      "hvp:terrain:s9:r0",
+      "hvp:terrain:s10:r0",
+      "hvp:terrain:s11:r0",
+      "hvp:terrain:s12:r0",
+      "hvp:terrain:s13:r0",
+      "hvp:terrain:s14:r0",
+      "hvp:terrain:s15:r0",
+      "hvp:terrain:s6:e0~5",
+      "hvp:terrain:s7:e0~6"
+    ],
+    "rootIdentityMatches": true,
+    "activeKeysMatch": true,
+    "visibleKeysMatch": true,
+    "nativeGenerationMatches": true,
+    "recoveryHold": false
+  },
+  "solveWorld": {
+    "lastTerrainCommandId": "cut-1",
+    "lastTerrainHoldMs": 7.599999999627471,
+    "lastTerrainCookMs": 1.099999999627471,
+    "lastTerrainInstallMs": 0.40000000037252903,
+    "lastTerrainRecipeMs": 129.2999999988824
+  },
+  "supportPlan": {
+    "seedsMs": 551.0999999996275,
+    "supportMs": 463.59999999962747,
+    "ingestMs": 248.80000000074506,
+    "recipeMs": 50.59999999962747,
+    "fragmentCount": 1,
+    "fragmentCells": 384,
+    "totalMs": 1314.1,
+    "recipeBreakdown": {
+      "massMs": 8.699999997392297,
+      "classifyMs": 24,
+      "transitionMs": 13.199999999254942,
+      "axesMs": 0.599999999627471,
+      "transitionPerVoxelMs": 0,
+      "transitionGreedyMs": 13.199999999254942,
+      "transitionHashMs": 0,
+      "preparedFactsReused": 1
+    }
+  },
+  "localPlanWallMs": 1314.7000000011176,
+  "phasesAreWallClock": true,
+  "includesYieldWait": true
+}
