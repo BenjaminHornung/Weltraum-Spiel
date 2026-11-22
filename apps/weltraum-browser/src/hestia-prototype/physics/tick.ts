@@ -26,12 +26,26 @@ export const createHvpTick = (step: (tick: number) => void, saved?:HvpTickCheckp
       }
       if (backlogSeconds + 1e-10 >= HVP_PHYSICS_DT) { status = "SimulationHold"; }
     },
+    // A synchronous owner operation has exclusive access to this fixed tick. Preserve the
+    // existing fractional backlog and a genuine SimulationHold across its publication.
+    whileStopped<T>(run:()=>T):T {
+      const running=status==="Running";
+      if(running){status="Paused";}
+      try{return run();}finally{if(running){status="Running";}}
+    },
     pause(): void { if (status === "Running") { status = "Paused"; } },
     resume(): void {
       if (status === "Disposed") { return; }
       discardedSeconds += backlogSeconds;
       backlogSeconds = 0;
       status = "Running";
+    },
+    restoreSimulationHold(held:HvpTickCheckpoint):void {
+      if(status!=="Paused"||held.status!=="SimulationHold"||held.ticks!==ticks||held.discardedSeconds!==discardedSeconds
+        ||!Number.isFinite(held.backlogSeconds)||held.backlogSeconds+1e-10<HVP_PHYSICS_DT){
+        throw new Error("Invalid stopped simulation recovery clock");
+      }
+      backlogSeconds=held.backlogSeconds;status="SimulationHold";
     },
     dispose(): void { status = "Disposed"; },
     read: () => Object.freeze({ ticks, backlogSeconds, discardedSeconds, status })

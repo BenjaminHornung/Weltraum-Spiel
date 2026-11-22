@@ -2,16 +2,21 @@ import { StructuralPhysicsCommitError,
   mapStructuralAuthorPointToWorld, type StructuralBodyMotion, type StructuralParentWorldPose } from "../../voxel/structural";
 import { createRapierStructuralPort, R } from "./rapierPort";
 import {assertHvpRigidRecipe,type HvpRigidRecipe} from "./rigidRecipe";
+import {isIssuedHvpCompactNativeRecipe, type HvpCompactNativeRecipe} from "./compactNativeOwner";
 export {prepareHvpRigidBody,type HvpRigidRecipe} from "./rigidRecipe";
+
+const compactBodies=new WeakMap<R.RigidBody,HvpCompactNativeRecipe>();
+export const ownsHvpCompactBody=(world:R.World,body:R.RigidBody,recipe:HvpCompactNativeRecipe):boolean=>
+  world.getRigidBody(body.handle)===body&&compactBodies.get(body)===recipe&&isIssuedHvpCompactNativeRecipe(recipe);
 
 const zero=Object.freeze({x:0,y:0,z:0});
 const identity=Object.freeze({x:0,y:0,z:0,w:1});
 
-export const installHvpRigidBody = (world:R.World, recipe:HvpRigidRecipe,
+export const installHvpRigidBody = (world:R.World, recipe:HvpRigidRecipe | HvpCompactNativeRecipe,
   pose:StructuralParentWorldPose={translationMeters:zero,rotation:identity}, motion:StructuralBodyMotion={velocityMetersPerSecond:zero,angularVelocityRadPerSecond:zero},
   dynamic=true) => {
   if(typeof dynamic!=="boolean") { throw new Error("Invalid rigid motion kind"); }
-  assertHvpRigidRecipe(recipe);
+  if(!isIssuedHvpCompactNativeRecipe(recipe)) assertHvpRigidRecipe(recipe);
   if([pose.translationMeters,motion.velocityMetersPerSecond,motion.angularVelocityRadPerSecond]
     .some(v=>v==null||![v.x,v.y,v.z].every(n=>Number.isFinite(n)&&Number.isFinite(Math.fround(n))))
     ||pose.rotation==null||![pose.rotation.x,pose.rotation.y,pose.rotation.z,pose.rotation.w].every(Number.isFinite)
@@ -34,7 +39,9 @@ export const installHvpRigidBody = (world:R.World, recipe:HvpRigidRecipe,
         principalInertia:recipe.axes.principalInertia,frame:recipe.axes.frame}:{kind:"massless"});
     });
     if(port.bodyColliderCount(ref)!==recipe.colliders.length) { throw new Error("Incomplete exact rigid collision"); }
-    ref.body.enableCcd(true);return ref.body;
+    ref.body.enableCcd(true);
+    if(isIssuedHvpCompactNativeRecipe(recipe)){compactBodies.set(ref.body,recipe);}
+    return ref.body;
   } catch(error) {
     let restored=false,cleanupFailed=false,cleanupError:unknown;
     try {

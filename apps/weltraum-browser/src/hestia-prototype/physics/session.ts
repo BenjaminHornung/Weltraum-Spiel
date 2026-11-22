@@ -8,7 +8,7 @@ import { createHvpLocomotion, type HvpCollisionCoverage, type HvpPlayerInput } f
 import { ingestHvpStructuralCells } from "../terrain/structuralIngest";
 import { prepareHvpRigidBody, installHvpRigidBody } from "./rigidBody";
 import { createHvpBranchSession, type HvpBranchRequest } from "./branchSession";
-import {prepareHvpTerrainFragment,prepareHvpTerrainFragmentOwnedSteps,type HvpTerrainFragmentRequest} from "./terrainFragment";
+import {hvpTerrainFragmentCellCount,prepareHvpTerrainFragment,prepareHvpTerrainFragmentOwnedSteps,type HvpTerrainFragmentRequest} from "./terrainFragment";
 import {prepareHvpProbeTerrainFragmentOwnedSteps,createHvpProbeTerrainSourceOwner} from "./terrainFragment";
 import {isProbeKernelEnabled,isProbeTerrainSubsetEnabled,markProbeSource} from "../experiments/cutKernelProbe";
 import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
@@ -38,6 +38,26 @@ import type {HvpCutSpan} from "../runtime/cutTrace";
 export type HvpPhysicsSession = Awaited<ReturnType<typeof createHvpPhysicsSession>>;
 /** @internal Separate lab return contract; never passed to the public WorldReplacement/Worker DTO. */
 export type HvpLabPhysicsSession = Awaited<ReturnType<ReturnType<typeof physicsSessionFor<HvpLabWorldCheckpoint>>>>;
+export interface HvpTerrainBinding {
+  readonly sessionId:string; readonly epoch:number; readonly commandId:string; readonly baseRevision:number;
+  readonly baseDigest:string; readonly targetDigest:string;
+}
+export interface HvpTerrainRecoveryAssets {
+  readonly world:HvpLabWorldCheckpoint;readonly collision:readonly HvpCollisionSector[];readonly layout:HvpChunkStaticLayout|null;
+}
+type Vec3=Readonly<{x:number;y:number;z:number}>;
+export interface HvpTerrainMotion {
+  readonly worldId:string;readonly binding:HvpTerrainBinding;readonly revision:number;readonly tick:HvpWorldCheckpoint["tick"];
+  readonly running:boolean;readonly walking:boolean;readonly player:HvpWorldCheckpoint["player"];readonly input?:HvpPlayerInput;
+  readonly impulses:number;readonly lastImpulse:HvpWorldCheckpoint["lastImpulse"];readonly lastImpulseTick:number|null;
+  readonly bodies:readonly {ownerId:string;position:Vec3;orientation:Vec3&{w:number};velocity:Vec3;angularVelocity:Vec3;sleeping:boolean;sourceDigest?:string}[];
+}
+export interface HvpTerrainJournalEntry {
+  readonly binding:HvpTerrainBinding;readonly replacements:readonly TerrainReplacement[];readonly fragments:readonly HvpTerrainFragmentRequest[];
+}
+export interface HvpTerrainRecoveryImage {
+  readonly assets:HvpTerrainRecoveryAssets;readonly motion:HvpTerrainMotion;readonly journal:readonly HvpTerrainJournalEntry[];
+}
 type SessionWorld<C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>=Omit<HvpDecodedWorld,"checkpoint">&{readonly checkpoint:C};
 type SessionCheckpointContext<C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>={
   readonly captureKind:"public"|"phy01-lab";
@@ -300,7 +320,7 @@ const logSlowHvpBodyPlan=(trace:HvpBodyPlanTrace):void=>{
 };
 /** `workerOwned` is fixed per factory (never a caller input); only it selects the owned-payload body hash. */
 const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(workerOwned: boolean,
-  checkpointContext:SessionCheckpointContext<C>,staticLayout?:HvpChunkStaticLayout,assertCurrent:()=>void=()=>{}) => async (
+  checkpointContext:SessionCheckpointContext<C>,staticLayout?:HvpChunkStaticLayout,assertCurrent:()=>void=()=>{},recovery?:HvpTerrainRecoveryImage) => async (
   sectors: readonly HvpCollisionSector[],
   spawn: Readonly<{ x: number; y: number; z: number }>,
   gravity = resolveHvpGravity(),
@@ -316,7 +336,14 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
   if (!Number.isFinite(gravity) || gravity <= 0 || ![spawn.x, spawn.y, spawn.z].every(Number.isFinite) || sectors.length > 4094) {
     throw new RangeError("Invalid HVP physics admission");
   }
-  if(checkpoint!==undefined){checkpointContext.admitRestore();}
+  if(recovery){
+    const motion=recovery.motion;
+    // The persistent codec remains paused-only. Reapply the separately validated volatile overrun after installing every shape.
+    const seedTick=motion.tick.status==="SimulationHold"?{...motion.tick,status:"Paused" as const,backlogSeconds:0}:motion.tick;
+    checkpoint={...recovery.assets.world,tick:seedTick,player:motion.player,impulses:motion.impulses,
+      lastImpulse:motion.lastImpulse,lastImpulseTick:motion.lastImpulseTick};
+  }else if(checkpoint!==undefined){checkpointContext.admitRestore();}
+  const decodeContext=recovery?labCheckpointContext:checkpointContext;
   const collisionDigest=hvpCollisionDigest(sectors);
   if(checkpoint!==undefined){
     const header=checkpoint as Partial<Pick<HvpWorldCheckpoint,"gravity"|"sessionId"|"collisionDigest">>|null;
@@ -326,13 +353,13 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
   let coldRecipes:WeakSet<object>|undefined;
   let coldResidentBytes=0;
   let restored=checkpoint===undefined?undefined:workerOwned?(()=>{
-    const allocation=checkpointContext.allocation(checkpoint);
+    const allocation=decodeContext.allocation(checkpoint);
     const ledger=createStructuralOwnerLedger(allocation.sourceBytes+allocation.checkpointBytes
       +sectors.reduce((bytes,sector)=>bytes+sector.vertices.byteLength+sector.indices.byteLength,0)+4096
       +checkpointContext.coexistenceBytes,checkpointContext.prepareAvailableBytes?.(),128);
     try{
       coldRecipes=new WeakSet<object>();
-      const decoded=checkpointContext.decodeCold(checkpoint,ledger.reserve,recipe=>coldRecipes!.add(recipe));
+      const decoded=decodeContext.decodeCold(checkpoint,ledger.reserve,recipe=>coldRecipes!.add(recipe));
       coldResidentBytes=ledger.resources.retainedEstimateBytes+allocation.checkpointBytes+4096
         +(decoded.branchSource?.bricks.length??0)*ADAPTIVE_BRICK_ESTIMATED_BYTES;
       return decoded;
@@ -607,21 +634,8 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         throw new Error("World checkpoint requires a confirmed paused generation");
       }
     };
-    const session={
-      staticTerrainLayout:()=>staticLayout??null,
-      read,
-      readTickClock:tick.read,
-      terrainPrepareSpans:()=>terrainSpans,
-      bodyPrepareSpans:()=>bodySpans,
-      /** Follows the worker's dynamic measurement opt-out for the TEMPORARY plan trace. */
-      disableBodyPlanTrace:():void=>{measureBodyHold=false;moving.disablePlanObservation();},
-      takeBodyReleasedHold:(id:string):number|undefined=>{
-        const released=bodyReleasedHold;bodyReleasedHold=undefined;
-        return released?.id===id?released.ms:undefined;
-      },
-      checkpoint():C {
-        assertCheckpointReady();
-        checkpointContext.admitCapture();
+    // Capture at the held simulation tick. Ownership maps contain R before native commit and R+1 after it.
+    const captureWorld=(held=false)=>{
         const captureReserve=labCaptureReserve;
         const restoredDrop=restored?.bodies.find(b=>b.checkpoint.family==="drop")?.recipe;
         if(captureReserve&&restoredDrop===undefined){reserveCaptureBytes(captureReserve,2*ADAPTIVE_BRICK_ESTIMATED_BYTES+64*1024+64*256);}
@@ -640,12 +654,71 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         for(const b of liveMoving){result.push(encodeHvpBody(b.ownerId,b.family??"terrain",b.recipe,b.body));}
         for(const b of fixedBranch){result.push(encodeHvpBody(b.ownerId,"branch",b.recipe,b.body));}
         result.push(...residency!.checkpoint());
-        return checkpointContext.build({version:"hvp-world-checkpoint-v1",sessionId,gravity,terrainGeneration,
+        return {version:"hvp-world-checkpoint-v1",sessionId,gravity,terrainGeneration,
           tick:tick.read(),collisionDigest:hvpCollisionDigest(allCollision()),dropSpawn:Object.freeze({...spawn}),
-          player:character?.checkpoint()??null,coverage:Object.freeze(coverage.map(c=>Object.freeze({...c}))),
+          player:(held?character?.heldMotion():character?.checkpoint())??null,coverage:Object.freeze(coverage.map(c=>Object.freeze({...c}))),
           bodies:Object.freeze(result),branch:branch?.checkpoint()??null,moving:moving.checkpoint(),impulses,
           neighbor:neighbor?.read().checkpoint??null,parked:Object.freeze(residency!.read().map(p=>p.ownerId)),
-          lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,lastImpulse});
+          lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,lastImpulse} as const;
+    };
+    const captureTerrainMotion=(binding:HvpTerrainBinding,running:boolean,heldTick:HvpWorldCheckpoint["tick"]):HvpTerrainMotion=>(
+      {worldId:sessionId,binding,revision:terrainGeneration,tick:heldTick,player:character?.heldMotion()??null,input:character?.heldInput(),
+          running,walking:character?.read().status==="Walking",impulses,lastImpulse,
+          lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,bodies:[...bodies].map(([ownerId,b])=>({
+            ownerId,position:{...b.translation()},orientation:{...b.rotation()},velocity:{...b.linvel()},angularVelocity:{...b.angvel()},
+            sleeping:b.isSleeping(),sourceDigest:movingBodies.get(ownerId)?.recipe.source.contentHash}))});
+    const session={
+      staticTerrainLayout:()=>staticLayout??null,
+      read,
+      readTickClock:tick.read,
+      terrainPrepareSpans:()=>terrainSpans,
+      bodyPrepareSpans:()=>bodySpans,
+      /** Follows the worker's dynamic measurement opt-out for the TEMPORARY plan trace. */
+      disableBodyPlanTrace:():void=>{measureBodyHold=false;moving.disablePlanObservation();},
+      takeBodyReleasedHold:(id:string):number|undefined=>{
+        const released=bodyReleasedHold;bodyReleasedHold=undefined;
+        return released?.id===id?released.ms:undefined;
+      },
+      checkpoint():C {
+        assertCheckpointReady();
+        checkpointContext.admitCapture();
+        return checkpointContext.build(captureWorld());
+      },
+      queryTerrainRay(origin:{x:number;y:number;z:number},direction:{x:number;y:number;z:number},distance:number){
+        if(disposed||terrainHeld){throw new Error("Terrain query unavailable");}
+        const ray=world.castRay(new R.Ray(origin,direction),distance,true);
+        if(!ray){return null;}
+        const parent=ray.collider.parent(),owner=parent?[...bodies].find(([,body])=>body.handle===parent.handle)?.[0]:undefined;
+        return {ownerId:owner??null,distance:ray.timeOfImpact};
+      },
+      queryTerrainCapsule(origin:Vec3,direction:Vec3,distance:number,halfHeight:number,radius:number){
+        if(disposed||terrainHeld){throw new Error("Terrain query unavailable");}
+        const hit=world.castShape(origin,{x:0,y:0,z:0,w:1},direction,new R.Capsule(halfHeight,radius),0,distance,true);
+        if(!hit){return null;}
+        const parent=hit.collider.parent(),owner=parent?[...bodies].find(([,body])=>body.handle===parent.handle)?.[0]:undefined;
+        return {ownerId:owner??null,distance:hit.time_of_impact};
+      },
+      captureTerrainAssets():HvpTerrainRecoveryAssets{
+        if(disposed||staged||terrainHeld||branch?.busy||moving.busy||extraHeld()){throw new Error("Terrain recovery catalog pending");}
+        return {world:labCheckpointContext.build(captureWorld(true)),collision:allCollision(),layout:staticLayout??null};
+      },
+      publishTerrainCatalog(publish:(assets:HvpTerrainRecoveryAssets)=>void):void {
+        tick.whileStopped(()=>publish(session.captureTerrainAssets()));
+      },
+      captureBeforeNativeInstall(binding:HvpTerrainBinding):HvpTerrainMotion{
+        const clock=tick.read();
+        if(disposed||staged||terrainHeld||branch?.busy||moving.busy||extraHeld()||terrainGeneration!==binding.baseRevision
+          ||(clock.status!=="Paused"&&clock.status!=="Running"&&clock.status!=="SimulationHold")){throw new Error("No recoverable native installation tick");}
+        // The caller posts this packet and installs synchronously in the same worker turn. No solver step can intervene.
+        return captureTerrainMotion(binding,clock.status==="Running",clock.status==="Running"?{...clock,status:"Paused"}:clock);
+      },
+      captureTerrainRecovery(binding:HvpTerrainBinding):HvpTerrainMotion {
+        const tx=requireStage(binding.commandId);
+        const status=tick.read().status;
+        if(tx.expected!==binding.baseRevision||disposed||terrainHeld||(status!=="Paused"&&status!=="SimulationHold")){
+          throw new Error("Invalid terrain recovery boundary");
+        }
+        return captureTerrainMotion(binding,tx.running,tick.read());
       },
       copyCollision():readonly HvpCollisionSector[]{
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){throw new Error("Collision checkpoint requires an idle paused World");}
@@ -860,7 +933,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
           if(terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||terrainGeneration!==expected){throw new Error("Stale terrain preparation");}};
         current();reserve(32_768);
         if(!/^[A-Za-z0-9:._-]{1,128}$/.test(id)||!Array.isArray(replacements)||replacements.length===0||replacements.length>16
-          ||!Array.isArray(fragments)||fragments.length>32||fragments.reduce((n,f)=>n+f.cells.length,0)>32768
+          ||!Array.isArray(fragments)||fragments.length>32||fragments.reduce((n,f)=>n+hvpTerrainFragmentCellCount(f),0)>32768
           ||new Set(fragments.map(f=>f.ownerId)).size!==fragments.length
           ||fragments.some(f=>movingBodies.has(f.ownerId)||residency!.read().some(p=>p.ownerId===f.ownerId))){throw new Error("Stale or invalid terrain transaction");}
         const spans:HvpCutSpan[]|undefined=measureBodyHold?[]:undefined;
@@ -919,7 +992,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
          if (disposed || terrainHeld || staged !== undefined || branch?.busy || moving.busy || extraHeld() || terrainGeneration !== expected || !/^[A-Za-z0-9:._-]{1,128}$/.test(id)
            || replacements.length === 0 || replacements.length > 16||fragments.length>32
            ||new Set(fragments.map(f=>f.ownerId)).size!==fragments.length||fragments.some(f=>movingBodies.has(f.ownerId)||residency!.read().some(p=>p.ownerId===f.ownerId))
-           ||fragments.reduce((n,f)=>n+f.cells.length,0)>32_768) { throw new Error("Stale or invalid terrain transaction"); }
+           ||fragments.reduce((n,f)=>n+hvpTerrainFragmentCellCount(f),0)>32_768) { throw new Error("Stale or invalid terrain transaction"); }
         const old = new Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>();
         let bytes = collisionBytes();
         for (const { index, mesh } of replacements) {
@@ -1041,6 +1114,39 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         }
       });
     }
+    if(recovery){
+      const {motion}=recovery;
+      let digest:string|undefined;
+      for(const frame of recovery.journal){
+        const {binding}=frame;
+        if(binding.baseRevision!==terrainGeneration||binding.sessionId!==motion.binding.sessionId||binding.epoch!==motion.binding.epoch
+          ||(digest!==undefined&&binding.baseDigest!==digest)){throw new Error("Discontinuous terrain recovery journal");}
+        digest=binding.targetDigest;
+        // Superseded sector updates were compacted out. The native transaction still advances this generation without stepping.
+        const replacements=frame.replacements.length?frame.replacements:[{index:0,mesh:collision.get(0)!.mesh}];
+        session.prepareTerrain(binding.commandId,binding.baseRevision,replacements,frame.fragments);
+        session.commitTerrain(binding.commandId);session.finalizeTerrain(binding.commandId);
+      }
+      const expectedDigest=motion.revision===motion.binding.baseRevision?motion.binding.baseDigest:motion.binding.targetDigest;
+      if((digest!==undefined&&digest!==expectedDigest)||terrainGeneration!==motion.revision||bodies.size!==motion.bodies.length
+        ||new Set(motion.bodies.map(b=>b.ownerId)).size!==bodies.size){throw new Error("Reconstructed terrain membership mismatch");}
+      for(const m of motion.bodies){
+        const native=bodies.get(m.ownerId);
+        const vectors=[m.position,m.velocity,m.angularVelocity,m.orientation];
+        if(!native||movingBodies.get(m.ownerId)?.recipe.source.contentHash!==m.sourceDigest
+          ||!vectors.every(v=>[v.x,v.y,v.z].every(n=>Number.isFinite(Math.fround(n))))
+          ||!Number.isFinite(m.orientation.w)||Math.abs(Math.hypot(m.orientation.x,m.orientation.y,m.orientation.z,m.orientation.w)-1)>.001){
+          throw new Error("Reconstructed body source or motion mismatch");
+        }
+        native.setTranslation(m.position,false);native.setRotation(m.orientation,false);
+        native.setLinvel(m.velocity,false);native.setAngvel(m.angularVelocity,false);
+        if(m.sleeping){native.sleep();}else{native.wakeUp();}
+      }
+      world.propagateModifiedBodyPositionsToColliders();world.updateSceneQueries();
+      if(motion.walking){character?.setEnabled(true);if(motion.input){character?.setInput(motion.input);}}
+      if(motion.tick.status==="SimulationHold"){tick.restoreSimulationHold(motion.tick);}
+      else if(motion.running){tick.resume();}
+    }
     return session;
   } catch (error) {probeTerrainSource?.dispose();world.free();throw error;}
 };
@@ -1054,6 +1160,22 @@ export const createHvpWorkerPhysicsSession = physicsSessionFor(true,publicCheckp
 export const createHvpChunkWorkerPhysicsSession=async(layout:HvpChunkStaticLayout,...args:Parameters<typeof createHvpWorkerPhysicsSession>)=>
   physicsSessionFor(true,publicCheckpointContext,validateHvpChunkStaticLayout(layout))(...args);
 
+/** Volatile worker recovery never reads or writes a public save slot. The normal public codec remains gated. */
+export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"public",measure:boolean):Promise<HvpPhysicsSession>;
+export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"phy01-lab",measure:boolean):Promise<HvpLabPhysicsSession>;
+export function restoreHvpTerrainWorker(image:HvpTerrainRecoveryImage,owner:"phy01-lab"|"public",measure:boolean){
+  const {assets,motion,journal}=image;
+  if(assets.world.solver!==HVP_SOLVER_VERSION||assets.world.sessionId!==motion.worldId||(motion.tick.status!=="Paused"&&(motion.tick.status!=="SimulationHold"||motion.running))||!Array.isArray(journal)||journal.length>256
+    ||assets.world.terrainGeneration+journal.length!==motion.revision||!Number.isSafeInteger(motion.binding.baseRevision)
+    ||![motion.binding.baseRevision,motion.binding.baseRevision+1].includes(motion.revision)){
+    throw new Error("Invalid terrain recovery image");
+  }
+  const args=[assets.collision,assets.world.dropSpawn,assets.world.gravity,undefined,undefined,undefined,
+    assets.world.sessionId,undefined,assets.world.branch?.kind??"branch",measure] as const;
+  const layout=assets.layout?validateHvpChunkStaticLayout(assets.layout):undefined;
+  if(owner==="phy01-lab"){return physicsSessionFor(true,labCheckpointContext,layout,undefined,image)(...args);}
+  return physicsSessionFor(true,publicCheckpointContext,layout,undefined,image)(...args);
+}
 /** @internal Shared fixed LAB engine path; only the replacement wrapper may add a captured coexistence allowance. */
 const createHvpLabPhysicsSessionCore=async(
   sectors:readonly HvpCollisionSector[],spawn:Readonly<{x:number;y:number;z:number}>,gravity=resolveHvpGravity(),

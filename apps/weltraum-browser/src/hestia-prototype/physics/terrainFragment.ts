@@ -1,3 +1,4 @@
+import {readCompactTerrainCells,type HvpCompactTerrainSource} from "./compactTerrainWire";
 import {HVP_COAST_MATERIAL_REGISTRY,HVP_SOURCE_MIN_METERS,HVP_ROCK_ARM} from "../../hvp/hvpCoastSource";
 import {ingestHvpStructuralCells,prepareHvpStructuralIngestOwnedSteps,type HvpStructuralCell} from "../terrain/structuralIngest";
 import {admitHvpTransferredRigidBody,admitHvpTransferredRigidBodyOwnedSteps,type HvpTransferredColliderBox} from "./rigidRecipe";
@@ -99,7 +100,16 @@ export const createHvpProbeTerrainSourceOwner=()=>{
     }};
 };
 
+export {copyHvpCompactTerrainSource} from "./compactTerrainWire";
+export const hvpTerrainFragmentCellCount=(fragment:HvpTerrainFragmentRequest):number=>{
+  if(fragment.compactSource===undefined){return fragment.cells.length;}
+  const n=fragment.compactSource.cellCount;
+  if(!Number.isSafeInteger(n)||n<1||n>32_768){throw new Error("Invalid compact fragment size");}
+  return n;
+};
+
 export interface HvpTerrainFragmentRequest {
+  readonly compactSource?:HvpCompactTerrainSource;
   readonly ownerId:string;readonly cells:readonly HvpStructuralCell[];
   readonly origin:Readonly<{x:number;y:number;z:number}>;readonly massKg:number;
   readonly colliderBoxes:readonly HvpTransferredColliderBox[];
@@ -121,6 +131,17 @@ export const prepareHvpTerrainFragmentOwnedSteps=(request:HvpTerrainFragmentRequ
 export const prepareHvpProbeTerrainFragmentOwnedSteps=(request:HvpTerrainFragmentRequest,generation:number,reserve:StructuralOwnedReserve)=>terrainFragmentSteps(request,generation,reserve,true);
 function* terrainFragmentSteps(request:HvpTerrainFragmentRequest,generation:number,reserve?:StructuralOwnedReserve,probe=false,ownedSource?:StructuralObject,
   observe?:(phase:string,start:number,duration:number)=>void,isMeasured?:()=>boolean){
+  if(request.compactSource!==undefined){
+    if(probe||ownedSource||request.sourceRegion!==undefined||request.sourceSubset!==undefined||!Array.isArray(request.cells)){
+      throw new Error("Conflicting terrain fragment sources");
+    }
+    reserve?.(2048+hvpTerrainFragmentCellCount(request)*256,true);
+    const cells=readCompactTerrainCells(request.compactSource,request.ownerId,generation);
+    if(request.cells.length>0&&(request.cells.length!==cells.length||cells.some((c,i)=>{
+      const actual=request.cells[i];return !actual||c.x!==actual.x||c.y!==actual.y||c.z!==actual.z||c.materialId!==actual.materialId;
+    }))){throw new Error("Compact terrain membership mismatch");}
+    request={...request,cells};
+  }
   if(isMeasured?.()===false){observe=undefined;}
   let started=observe===undefined?0:performance.now();
   const report=(phase:string)=>{if(isMeasured?.()===false){observe=undefined;}if(observe===undefined){return;}const now=performance.now();
@@ -153,9 +174,9 @@ function* terrainFragmentSteps(request:HvpTerrainFragmentRequest,generation:numb
     for(const c of cells){if(members.get(`${c.x}:${c.y}:${c.z}`)!==c.materialId){throw new Error("Experimental source occupancy/material binding");}yield "terrainNativeSourceBinding";}
     markProbeSource(source);
   }else{source=reserve===undefined?ingestHvpStructuralCells(request.ownerId,request.cells,materials)
-    :yield* borrowedHvpPlanSteps(prepareHvpStructuralIngestOwnedSteps(request.ownerId,request.cells,materials,[],reserve),"terrainNativeIngest");}
+    :yield* borrowedHvpPlanSteps(prepareHvpStructuralIngestOwnedSteps(request.ownerId,request.cells,materials,[],reserve,undefined,request.compactSource!==undefined),"terrainNativeIngest");}
   report("cutNativeFragmentSourceMs");
   const claim={massKg:request.massKg,colliderBoxes:request.colliderBoxes};
-  const recipe=reserve===undefined?admitHvpTransferredRigidBody(source,claim):yield* admitHvpTransferredRigidBodyOwnedSteps(source,claim,undefined,reserve);
+  const recipe=reserve===undefined?admitHvpTransferredRigidBody(source,claim):yield* admitHvpTransferredRigidBodyOwnedSteps(source,claim,undefined,reserve,request.compactSource!==undefined);
   report("cutNativeFragmentAdmissionMs");return recipe;
 }
