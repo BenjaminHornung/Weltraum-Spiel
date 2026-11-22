@@ -67,6 +67,11 @@ const read = () => page.evaluate(() => {
     bridge: "TestBridge" in window
   };
 });
+async function watchdog(task,label,ms=12000){
+  let timer;
+  try{return await Promise.race([task,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error("Browser stalled at "+label)),ms);})]);}
+  finally{clearTimeout(timer);}
+}
 let finishThreadTrace;
 const pressButton = name => page.getByRole("button", {name, exact: true}).press("Enter");
 let lastResume = 0;
@@ -85,12 +90,13 @@ async function handleHold(s) {
 }
 async function waitState(label, select, timeout) {
   report.phase = label;progress(label);
-  const expires = Date.now() + timeout;
+  const expires = Date.now() + timeout; let nextLog=0;
   while (Date.now() < expires) {
-    const s = await read();
-    const value = await select(s);
+    const s = await watchdog(read(),label+" read");
+    if(Date.now()>nextLog){progress(JSON.stringify({phase:label,tick:s.tick,status:s.status,open:s.open,locked:s.locked,grounded:s.player.grounded,terrain:s.tool.last?.status,body:s.tool.moving?.last?.status,tool:s.tool.message}));nextLog=Date.now()+3000;}
+    const value = await watchdog(select(s),label+" input",pauseAfterClick?45000:12000);
     if (value) return value;
-    if (!(report.playerPauseRequested && s.open)) await handleHold(s);
+    if (!(report.playerPauseRequested && s.open)) await watchdog(handleHold(s),label+" resume");
     await delay(20);
   }
   throw Error("Timed out waiting for " + label);
@@ -122,7 +128,7 @@ try {
   await page.goto(scenario.href, {waitUntil: "domcontentloaded", timeout: 30000});
   let ready=false;
   for(let attempt=0;attempt<150;attempt++){
-    const state=await page.evaluate(()=>document.querySelector("#hvp-state")?.textContent??document.body.innerText.slice(0,450));
+    const state=await watchdog(page.evaluate(()=>document.querySelector("#hvp-state")?.textContent??document.body.innerText.slice(0,450)),"startup",20000);
     if(state?.includes("State: Ready")){ready=true;break;}
     if(attempt%10===0)progress("Startup "+state);
     if(state?.includes("State: Failed")||state?.includes("Fehler"))throw Error(state);
