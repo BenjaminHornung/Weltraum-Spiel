@@ -138,11 +138,12 @@ it("validates a parked child beside legacy bodies in the private solver world be
     const child=encodeHvpBody(issued.ownerId,"terrain",recipe,body);
     if(child.version!=="hvp-body-checkpoint-v2")throw new Error("missing lineage");
     live.pause();
-    const before=live.checkpoint(), saved={...before,bodies:[...before.bodies,child],parked:[issued.ownerId]};
+    const before=live.checkpoint(), saved={...before,terrainGeneration:1,bodies:[...before.bodies,child],parked:[issued.ownerId]};
     const prepared=decodeHvpColdLabWorld(JSON.parse(JSON.stringify(saved)),()=>{});
     expect(prepared.bodies.find(b=>b.checkpoint.ownerId===issued.ownerId)?.recipe.source.contentHash).toBe(recipe.source.contentHash);
     expect(hvpFragmentArchiveDigest(prepared.bodies.find(b=>b.checkpoint.ownerId===issued.ownerId)!.recipe)).toBe(issued.sourceDigest);
     expect(hvpColdLabWorldAllocationBytes(saved).checkpointBytes).toBeGreaterThan(hvpColdLabWorldAllocationBytes(before).checkpointBytes);
+    expect(()=>hvpColdLabWorldAllocationBytes({...saved,terrainGeneration:0})).toThrow(/proof/);
     expect(()=>hvpColdLabWorldAllocationBytes({...saved,bodies:[...before.bodies,{...child,lineage:{
       ...child.lineage,removed:Array.from({length:129},()=>removed[0]!)}}]})).toThrow(/proof/);
   }finally{live.dispose();world.free();}

@@ -183,11 +183,11 @@ function compactArchiveProfile(recipe:HvpRigidRecipe):boolean {
 }
 
 /** Cheap shape/budget check before a world checkpoint is cloned or its Structural region decoded. */
-export function isHvpCompactChildProof(value:unknown):value is HvpCompactChildProof {
+export function isHvpCompactChildProof(value:unknown, maxTerrainRevision=Number.MAX_SAFE_INTEGER):value is HvpCompactChildProof {
   const data=value as HvpCompactChildProof|null;
   return !!data && Object.keys(data).sort().join(",")==="childDigest,parentDigest,parentOwnerId,removed,version"
     && data.version==="hvp-compact-child-proof-v1" && typeof data.parentOwnerId==="string"
-    && terrainRoot.test(data.parentOwnerId) && typeof data.parentDigest==="string" && /^hvp-material-cells-v1:[a-f0-9]{16}$/.test(data.parentDigest)
+    && Number(terrainRoot.exec(data.parentOwnerId)?.[1])<=maxTerrainRevision && typeof data.parentDigest==="string" && /^hvp-material-cells-v1:[a-f0-9]{16}$/.test(data.parentDigest)
     && typeof data.childDigest==="string" && /^hvp-material-child-v1:[a-f0-9]{16}$/.test(data.childDigest)
     && Array.isArray(data.removed) && data.removed.length>0 && data.removed.length<=128
     && data.removed.every(s=>s && Object.keys(s).sort().join(",")==="end,material,x,y,z"

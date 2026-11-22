@@ -115,7 +115,7 @@ const inspectHvpWorld=<S extends HvpWorldSolver>(value:unknown,expectedSolver:S)
   for(const body of c.bodies){
     if(!body)throw new Error("Missing saved body owner");
     if(body.version==="hvp-body-checkpoint-v2"){
-      if(!isHvpCompactChildProof(body.lineage))throw new Error("Invalid saved compact child proof");
+      if(!isHvpCompactChildProof(body.lineage,c.terrainGeneration))throw new Error("Invalid saved compact child proof");
       textBytes+=new TextEncoder().encode(JSON.stringify(body.lineage)).byteLength;
     }
     countBricks(body.region,true);
