@@ -1,0 +1,64 @@
+{
+  "date": "2026-11-22",
+  "sourceTreeBase": "78a7ce6c7ded01049c5c9925c31615f6a0461d24",
+  "inputs": {
+    "schema": "hestia.nexus.cloud-build.v1",
+    "gitBlobsVerified": {
+      "nexus": 348,
+      "khal": 60,
+      "vortx": 98
+    },
+    "harnessSha256": {
+      "Cargo.toml": "735e650138686ed07293b6c726c557e66fa73c3cfc07ad5843517a61df37df4f",
+      "Cargo.lock": "7a44ff4c5043415e2bc3634390192ca0a317b2083d12cbd821c53202717f9135",
+      "src/lib.rs": "09facd906b50a0f7a5c401bd2bc88446e11ea075dcf9d2d392a7d5576895ce43"
+    },
+    "upstream": {
+      "nexus": {
+        "url": "https://github.com/dimforge/nexus.git",
+        "commit": "7c94a9664ddd6468de892c2bad6f56db8f992ed7",
+        "tree": "58c639d704cdbea2a2fd10fa3fa04d615e990d11"
+      },
+      "khal": {
+        "url": "https://github.com/dimforge/khal.git",
+        "commit": "57ad7b6badd5bbdaa59462de282847abe8080912",
+        "tree": "d4fe7fcda23fa17f8c28a8d72a5527a449831147"
+      },
+      "vortx": {
+        "url": "https://github.com/dimforge/vortx.git",
+        "commit": "e7b9add21702a2656d7c39dbd848d33157e51b17",
+        "tree": "02f4db9f60aff414f34f1e4797a1d4dca33da2ce"
+      }
+    }
+  },
+  "tools": {
+    "rustc": "1.97.1 (8bab26f4f 2026-07-14)",
+    "target": "wasm32-unknown-unknown",
+    "wasm-bindgen": "0.2.129",
+    "cargo-gpu": "installation started; explicitly paused for concurrent player tests"
+  },
+  "checks": [
+    {
+      "name": "upstream trees and owned harness",
+      "exitCode": 0
+    },
+    {
+      "name": "cargo metadata --no-deps --locked --offline",
+      "package": "phy04-nexus-browser",
+      "exitCode": 0
+    },
+    {
+      "name": "python3 -m unittest discover -s spikes/nexus-gpu -p test_build.py -v",
+      "passed": 2,
+      "exitCode": 0
+    },
+    {
+      "name": "cargo install cargo-gpu and harness dependency fetch",
+      "exitCode": 130,
+      "result": "paused for player CPU/memory priority"
+    }
+  ],
+  "shaderCompiled": false,
+  "harnessWasmBuilt": false,
+  "gpuDispatchRun": false
+}
