@@ -1,3 +1,4 @@
+import {hvpFragmentArchiveDigest} from "./compactFragmentIdentity";
 import {R} from "./rapierPort";
 import type {HvpCuttableBody} from "./bodyCut";
 import {encodeHvpBody,decodeHvpBody,decodeHvpColdBody,reserveHvpBodyCapture,captureHvpOwnedBody,assertHvpDecodedBody,type HvpBodyCheckpoint,type HvpDecodedBody} from "../persistence/bodyCheckpoint";
@@ -9,7 +10,7 @@ import {isOwnedStructuralGraph,createStructuralOwnerLedger} from "../../voxel/st
 /** Sleeping terrain owners may leave the solver, never their canonical checkpoint. */
 const bodyResidencyFor=(workerOwned:boolean,residentBytes:()=>number=()=>0)=>(world:R.World,targets:Map<string,HvpCuttableBody>,bodies:Map<string,R.RigidBody>,safeTick:()=>boolean,restored:readonly HvpDecodedBody[]=[])=>{
   const preparedBytes=workerOwned?new WeakMap<object,number>():undefined;
-  const describe=(ownerId:string,recipe:HvpCuttableBody["recipe"])=>Object.freeze({ownerId,sourceDigest:recipe.source.contentHash,
+  const describe=(ownerId:string,recipe:HvpCuttableBody["recipe"])=>Object.freeze({ownerId,sourceDigest:hvpFragmentArchiveDigest(recipe),
     centerOfMass:recipe.mass.centerOfMassMeters!,cellCount:recipe.mass.occupiedVoxelCount,massKg:recipe.mass.totalMassKg,
     colliders:recipe.colliders.length,sourceBytes:recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES});
   const parked=new Map<string,{checkpoint:HvpBodyCheckpoint;position:Readonly<{x:number;y:number;z:number}>;source:ReturnType<typeof describe>;bytes:number;decoded?:HvpDecodedBody}>();
@@ -63,7 +64,7 @@ const bodyResidencyFor=(workerOwned:boolean,residentBytes:()=>number=()=>0)=>(wo
           if(world.getRigidBody(target.body.handle)!==null||world.bodies.len()!==beforeBodies-1||world.colliders.len()!==beforeColliders-colliders){
             throw new Error("Native dematerialization was not proven");
           }
-          targets.delete(ownerId);bodies.delete(ownerId);return true;
+          targets.delete(ownerId);bodies.delete(ownerId);target.compactOwner?.dispose();return true;
         }catch(error){
           if(world.getRigidBody(target.body.handle)===target.body&&world.bodies.len()===beforeBodies&&world.colliders.len()===beforeColliders){parked.delete(ownerId);throw error;}
           if(world.getRigidBody(target.body.handle)!==target.body){targets.delete(ownerId);bodies.delete(ownerId);}

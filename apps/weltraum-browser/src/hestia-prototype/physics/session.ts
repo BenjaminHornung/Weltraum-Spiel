@@ -12,6 +12,9 @@ import {hvpTerrainFragmentCellCount,prepareHvpTerrainFragment,prepareHvpTerrainF
 import {prepareHvpProbeTerrainFragmentOwnedSteps,createHvpProbeTerrainSourceOwner} from "./terrainFragment";
 import {isProbeKernelEnabled,isProbeTerrainSubsetEnabled,markProbeSource} from "../experiments/cutKernelProbe";
 import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
+import {issueHvpCompactNativeOwner,isIssuedHvpCompactNativeOwner,type HvpCompactNativeOwner,type HvpCompactRuntimeBinding} from "./compactNativeOwner";
+import {hvpFragmentArchiveDigest,supportsCompactArchive} from "./compactFragmentIdentity";
+import type {HvpRigidRecipe} from "./rigidRecipe";
 import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {validatedFrozenDenseArrayInitializationBytes} from "../../voxel/adaptive/validation";
@@ -283,8 +286,9 @@ export const releaseHvpLabWorldReplacementCapture=(witness:HvpLabWorldReplacemen
 };
 export interface HvpTerrainSourceTiming {readonly origin:number;readonly workElapsedMs:number;readonly yieldWaitMs:number;readonly workSteps:number;readonly taskYields:number;
   readonly maxWork:Readonly<{label:string;start:number;duration:number}>;readonly maxYield:Readonly<{label:string;start:number;duration:number}>}
+type TerrainBodySource=HvpRigidRecipe|HvpCompactNativeOwner;
 type TerrainPlan={readonly id:string;readonly expected:number;readonly replacements:readonly TerrainReplacement[];
-  readonly fragments:readonly HvpTerrainFragmentRequest[];readonly recipes:readonly ReturnType<typeof prepareHvpTerrainFragment>[];readonly recipeMs:number;
+  readonly fragments:readonly HvpTerrainFragmentRequest[];readonly recipes:readonly TerrainBodySource[];readonly recipeMs:number;
   readonly spans?:readonly HvpCutSpan[];readonly sourceTiming?:HvpTerrainSourceTiming};
 /** Ephemeral native contact information, never persisted or used as a command authorization. */
 export interface HvpImpulseTarget {
@@ -422,11 +426,19 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       if(!workerOwned){return coldResidentBytes+[...movingBodies.values()].reduce((bytes,target)=>bytes
         +target.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES+4096+target.recipe.colliders.length*256,0)
         +Math.max(64,validatedFrozenDenseArrayInitializationBytes())+(probeTerrainSource?.residentBytes()??0);}
-      const recipes=new Set([...movingBodies.values()].map(target=>target.recipe));
+      let compactBytes=0;
+      const recipes=new Set<HvpRigidRecipe>();
+      for(const target of movingBodies.values()){
+        if(target.compactOwner){
+          compactBytes+=16384+target.compactOwner.cellCount*1024;
+          if(!target.compactOwner.archiveReady())continue;
+        }
+        recipes.add(target.recipe);
+      }
       for(const recipe of residency?.retainedRecipes()??[]){recipes.add(recipe);}
       if(inertiaRecipe){recipes.add(inertiaRecipe);}
       for(const recipe of branch?.retainedRecipes()??[]){recipes.add(recipe);}
-      let bytes=coldResidentBytes+Math.max(64,validatedFrozenDenseArrayInitializationBytes())+(probeTerrainSource?.residentBytes()??0);
+      let bytes=compactBytes+coldResidentBytes+Math.max(64,validatedFrozenDenseArrayInitializationBytes())+(probeTerrainSource?.residentBytes()??0);
       for(const recipe of recipes){
         if(!coldRecipes?.has(recipe)){bytes+=residency?.recipeBytes(recipe)
           ??recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES+4096+recipe.colliders.length*256;}
@@ -583,7 +595,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         if(world.getCollider(handle)!==value){throw new Error("RecoveryHold: old terrain membership lost");}
       }
       for(const [index,item] of transaction.old){item.collider?.setEnabled(true);collision.set(index,item);}
-      for(const f of transaction.fragments){movingBodies.delete(f.ownerId);bodies.delete(f.ownerId);}
+      for(const f of transaction.fragments){movingBodies.delete(f.ownerId);bodies.delete(f.ownerId);f.compactOwner?.dispose();}
       const newBodies:R.RigidBody[]=[];world.bodies.forEach(b=>{if(!transaction.bodiesBefore.has(b.handle)){newBodies.push(b);}});
       for(const b of newBodies){world.removeRigidBody(b);}
       const newColliders:R.Collider[]=[];world.colliders.forEach(c=>{if(!transaction.collidersBefore.has(c.handle)){newColliders.push(c);}});
@@ -594,9 +606,24 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       if(transaction.running){tick.resume();}
       finishTerrainHold();
     };
-    const fragmentView=(f:Pick<Fragment,"ownerId"|"recipe">)=>Object.freeze({ownerId:f.ownerId,sourceDigest:f.recipe.source.contentHash,
-      centerOfMass:f.recipe.mass.centerOfMassMeters!,cellCount:f.recipe.mass.occupiedVoxelCount,
-      massKg:f.recipe.mass.totalMassKg,colliders:f.recipe.colliders.length,sourceBytes:f.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES});
+    const compactView=(owner:HvpCompactNativeOwner)=>Object.freeze({ownerId:owner.identity.ownerId,sourceDigest:owner.identity.membershipDigest,
+      centerOfMass:owner.recipe.mass.centerOfMassMeters,cellCount:owner.cellCount,massKg:owner.recipe.mass.totalMassKg,
+      colliders:owner.recipe.colliders.length,sourceBytes:owner.leafCount*ADAPTIVE_BRICK_ESTIMATED_BYTES});
+    const archiveView=(ownerId:string,recipe:HvpRigidRecipe)=>Object.freeze({ownerId,sourceDigest:hvpFragmentArchiveDigest(recipe),
+      centerOfMass:recipe.mass.centerOfMassMeters!,cellCount:recipe.mass.occupiedVoxelCount,massKg:recipe.mass.totalMassKg,
+      colliders:recipe.colliders.length,sourceBytes:recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES});
+    const fragmentView=(f:Fragment)=>f.compactOwner?compactView(f.compactOwner):archiveView(f.ownerId,f.recipe);
+    const bodyDigest=(f:Fragment|undefined)=>f&&(f.compactOwner?.identity.membershipDigest??hvpFragmentArchiveDigest(f.recipe));
+    const compactFragment=(body:R.RigidBody,owner:HvpCompactNativeOwner):Fragment=>({
+      ownerId:owner.identity.ownerId,body,compactOwner:owner,family:"terrain",
+      // Save, dormancy and a confirmed recut consume a canonical v1 recipe. Frame snapshots and picking consume runs.
+      get recipe(){
+        const stored=owner.peekArchive();if(stored)return stored;
+        if(labCaptureReserve)return owner.materializeV1Sync(labCaptureReserve);
+        const ledger=createStructuralOwnerLedger(bodySourceResidentBytes()+retainedCollisionBytes(),undefined,128);
+        try{return owner.materializeV1Sync(ledger.reserve);}finally{ledger.release();}
+      }
+    });
     const read = (includeBranchCells=false) => {const structural=disposed?null:branch?.read(includeBranchCells)??null;
       let activeDynamic=0,residentDynamic=disposed?0:residency!.count;
       if(!disposed){world.bodies.forEach(b=>{if(b.isDynamic()){residentDynamic+=1;if(!b.isSleeping()){activeDynamic+=1;}}});}
@@ -666,7 +693,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
           running,walking:character?.read().status==="Walking",impulses,lastImpulse,
           lastImpulseTick:Number.isFinite(lastImpulseTick)?lastImpulseTick:null,bodies:[...bodies].map(([ownerId,b])=>({
             ownerId,position:{...b.translation()},orientation:{...b.rotation()},velocity:{...b.linvel()},angularVelocity:{...b.angvel()},
-            sleeping:b.isSleeping(),sourceDigest:movingBodies.get(ownerId)?.recipe.source.contentHash}))});
+            sleeping:b.isSleeping(),sourceDigest:bodyDigest(movingBodies.get(ownerId))}))});
     const session={
       staticTerrainLayout:()=>staticLayout??null,
       read,
@@ -924,11 +951,13 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       },
       terrainPlanSourceViews(plan:TerrainPlan){
         if(disposed||!terrainPlans.has(plan)||terrainGeneration!==plan.expected){throw new Error("Stale Native terrain preparation ticket");}
-        return Object.freeze(plan.fragments.map((fragment,index)=>fragmentView({ownerId:fragment.ownerId,recipe:plan.recipes[index]!})));
+        return Object.freeze(plan.recipes.map((source,index)=>isIssuedHvpCompactNativeOwner(source)?compactView(source)
+          :archiveView(plan.fragments[index]!.ownerId,source)));
       },
       async prepareTerrainPlan(id:string,expected:number,replacements:readonly TerrainReplacement[],fragments:readonly HvpTerrainFragmentRequest[],
-        reserve:StructuralOwnedReserve,host:ReturnType<typeof createHvpBodyMeshTaskPump>["host"]):Promise<TerrainPlan>{
+        reserve:StructuralOwnedReserve,host:ReturnType<typeof createHvpBodyMeshTaskPump>["host"],binding?:HvpCompactRuntimeBinding):Promise<TerrainPlan>{
         if(!workerOwned){throw new Error("Terrain source preparation is Native worker internal");}
+        if(binding && binding.generation!==expected+1)throw new Error("Stale compact terrain generation");
         const current=()=>{host.assertCurrent();if(disposed){throw new Error("Terrain preparation disposed");}
           if(terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||terrainGeneration!==expected){throw new Error("Stale terrain preparation");}};
         current();reserve(32_768);
@@ -959,8 +988,16 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
           }
           if(bytes>8*1024*1024){throw new Error("Terrain collision BudgetExceeded");}
           if(measureBodyHold){observe?.("cutNativeCollisionValidationMs",collisionStart,performance.now()-collisionStart);}
-          const recipes:ReturnType<typeof prepareHvpTerrainFragment>[]=[],start=performance.now();
-          for(const fragment of fragments){recipes.push(yield* (probeTerrainSource?probeTerrainSource.prepareSteps(fragment,expected+1,reserve)
+          const recipes:TerrainBodySource[]=[],start=performance.now();
+          for(const fragment of fragments){
+            if(workerOwned && binding && fragment.compactSource && !fragment.cells.length
+              && supportsCompactArchive(fragment.compactSource) && !isProbeKernelEnabled()){
+              const start=observe?performance.now():0;
+              recipes.push(issueHvpCompactNativeOwner(fragment,binding,reserve));
+              observe?.("cutNativeCompactOwnerIssueMs",start,performance.now()-start);
+              continue;
+            }
+            recipes.push(yield* (probeTerrainSource?probeTerrainSource.prepareSteps(fragment,expected+1,reserve)
             :workerOwned&&isProbeKernelEnabled()?prepareHvpProbeTerrainFragmentOwnedSteps(fragment,expected+1,reserve)
               :prepareHvpTerrainFragmentOwnedSteps(fragment,expected+1,reserve,observe,()=>measureBodyHold)));yield "terrainNativeRecipe";}
           return {recipes,recipeMs:performance.now()-start,...(spans===undefined||!measureBodyHold?{}:{spans:Object.freeze(spans)})};
@@ -1023,7 +1060,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
             const recipeMs=ready?.recipeMs??performance.now()-tRecipe;
             terrainSpans=Object.freeze({...terrainSpans!,recipeMs});
            if(world.bodies.len()+residency!.count+fragments.length>64||[...bodiesBefore.values()].filter(b=>b.isDynamic()).length+fragments.length>32
-             ||world.colliders.len()+replacements.length+recipes.reduce((n,r)=>n+r.colliders.length,0)>4096){throw new Error("Terrain fragment BudgetExceeded");}
+             ||world.colliders.len()+replacements.length+recipes.reduce((n,r)=>n+(isIssuedHvpCompactNativeOwner(r)?r.recipe:r).colliders.length,0)>4096){throw new Error("Terrain fragment BudgetExceeded");}
            const tCook=performance.now();
            for (const { index, mesh } of [...replacements].sort((a,b)=>a.index-b.index)) {
             const collider = mesh.indices.length === 0 ? undefined : world.createCollider(
@@ -1033,8 +1070,11 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
            const cookMs=performance.now()-tCook,tInstall=performance.now();
            terrainSpans=Object.freeze({...terrainSpans!,cookMs});
             for(const [index,request] of fragments.entries()){
-             const recipe=recipes[index]!,body=installHvpRigidBody(world,recipe,{translationMeters:request.origin,rotation:{x:0,y:0,z:0,w:1}});
-              body.setEnabled(false);transaction.fragments.push({ownerId:request.ownerId,body,recipe,family:"terrain"});
+             const source=recipes[index]!;
+             const nativeRecipe=isIssuedHvpCompactNativeOwner(source)?source.recipe:source;
+             const body=installHvpRigidBody(world,nativeRecipe,{translationMeters:request.origin,rotation:{x:0,y:0,z:0,w:1}});
+             body.setEnabled(false);
+             transaction.fragments.push(isIssuedHvpCompactNativeOwner(source)?compactFragment(body,source):{ownerId:request.ownerId,body,recipe:source,family:"terrain"});
             }
             terrainSpans=Object.freeze({...terrainSpans!,installMs:performance.now()-tInstall});
          } catch(error) {
@@ -1078,6 +1118,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
          disposed = true;probeTerrainSource?.dispose();tick.dispose(); character?.dispose();
          bodyChannel?.port1.close();bodyChannel?.port2.close();bodyChannel=undefined;
          const waiting=bodyYield;bodyYield=undefined;waiting?.reject(new Error("Moving preparation disposed"));
+         for(const f of [...movingBodies.values(),...(staged?.fragments??[])])f.compactOwner?.dispose();
          bodies.clear();movingBodies.clear();residency!.dispose();world.free();moving.dispose();collision.clear();
          restored=undefined;saved=undefined;checkpoint=undefined;inertiaRecipe=null;branch=undefined;neighbor=undefined;sectors=[];
          coldRecipes=undefined;coldResidentBytes=0;
@@ -1133,7 +1174,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       for(const m of motion.bodies){
         const native=bodies.get(m.ownerId);
         const vectors=[m.position,m.velocity,m.angularVelocity,m.orientation];
-        if(!native||movingBodies.get(m.ownerId)?.recipe.source.contentHash!==m.sourceDigest
+        if(!native||bodyDigest(movingBodies.get(m.ownerId))!==m.sourceDigest
           ||!vectors.every(v=>[v.x,v.y,v.z].every(n=>Number.isFinite(Math.fround(n))))
           ||!Number.isFinite(m.orientation.w)||Math.abs(Math.hypot(m.orientation.x,m.orientation.y,m.orientation.z,m.orientation.w)-1)>.001){
           throw new Error("Reconstructed body source or motion mismatch");

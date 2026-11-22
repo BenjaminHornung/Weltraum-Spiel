@@ -6,13 +6,14 @@ import {prepareHvpLocalBodyCutOwnedHashSteps,prepareHvpLocalBodyCutSteps,readHvp
 import {stageHvpStructuralBreak} from "./structuralBreak";
 import {drainHvpPlanSteps,type HvpPlanProbe} from "./structuralPlan";
 import {isIssuedHvpCompactNativeOwner,type HvpCompactNativeOwner} from "./compactNativeOwner";
+import {hvpFragmentArchiveDigest} from "./compactFragmentIdentity";
 import {ownsHvpCompactBody} from "./rigidBody";
 import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 
 type Vec=Readonly<{x:number;y:number;z:number}>;
-export interface HvpCuttableBody {readonly ownerId:string;readonly body:R.RigidBody;readonly recipe:HvpRigidRecipe;readonly family?:"terrain"|"branch"}
+export interface HvpCuttableBody {readonly ownerId:string;readonly body:R.RigidBody;readonly recipe:HvpRigidRecipe;readonly compactOwner?:HvpCompactNativeOwner;readonly family?:"terrain"|"branch"}
 const readers=new WeakMap<HvpRigidRecipe,{reader:HvpCellReader;min:HvpCell}>();
-const hits=new WeakMap<object,{source:HvpRigidRecipe;body:R.RigidBody}>();
+const hits=new WeakMap<object,{source:HvpRigidRecipe|HvpCompactNativeOwner;body:R.RigidBody}>();
 const plans=new WeakMap<object,R.RigidBody>();
 
 const readerFor=(recipe:HvpRigidRecipe)=>{
@@ -48,12 +49,27 @@ const pickContact=(body:R.RigidBody,eye:Vec,direction:Vec,distance:number,center
   return {cell:Object.freeze(picked.cell.map((v,i)=>v+min[i]!)) as HvpCell,
     pose:Object.freeze({position:Object.freeze(position),rotation:Object.freeze(rotation)})};
 };
+function pickCompactContact(world:R.World,body:R.RigidBody,owner:HvpCompactNativeOwner,eye:Vec,direction:Vec,distance:number) {
+  if(!isIssuedHvpCompactNativeOwner(owner)||!ownsHvpCompactBody(world,body,owner.recipe))throw new Error("Unissued compact body/source binding");
+  const {min,max}=owner.bounds;
+  return pickContact(body,eye,direction,distance,owner.recipe.mass.centerOfMassMeters,{min,reader:{
+    sizeX:max[0]-min[0],sizeY:max[1]-min[1],sizeZ:max[2]-min[2],cellMeters:.125,
+    originMeters:{x:min[0]*.125,y:min[1]*.125,z:min[2]*.125},readSlot:(x,y,z)=>owner.readMaterial(x+min[0],y+min[1],z+min[2])}});
+}
 export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number)=>{
   const contact=bodyContact(world,targets,eye,direction,issuedTick);if(!contact){return null;}
   const {target,distance}=contact;
+  const owner=target.compactOwner;
+  if(owner) {
+    if(target.ownerId!==owner.identity.ownerId)throw new Error("Foreign compact body owner");
+    const picked=pickCompactContact(world,target.body,owner,eye,direction,distance);
+    if(!picked)return null;
+    const hit=Object.freeze({ownerId:target.ownerId,sourceDigest:owner.identity.membershipDigest,revision:0,issuedTick,...picked});
+    hits.set(hit,{source:owner,body:target.body});return hit;
+  }
   const center=hvpObjectLocalCenterOfMass(target.recipe.source,target.recipe.mass.centerOfMassMeters!);
   const picked=pickContact(target.body,eye,direction,distance,center,readerFor(target.recipe));if(!picked){return null;}
-  const hit=Object.freeze({ownerId:target.ownerId,sourceDigest:target.recipe.source.contentHash,revision:target.recipe.source.objectRevision,issuedTick,...picked});
+  const hit=Object.freeze({ownerId:target.ownerId,sourceDigest:hvpFragmentArchiveDigest(target.recipe),revision:target.recipe.source.objectRevision,issuedTick,...picked});
   hits.set(hit,{source:target.recipe,body:target.body});return hit;
 };
 
@@ -63,11 +79,8 @@ export interface HvpCompactCuttableBody {readonly owner:HvpCompactNativeOwner; r
 export function captureHvpCompactBodyHit(world:R.World,targets:ReadonlyMap<string,HvpCompactCuttableBody>,eye:Vec,direction:Vec,issuedTick:number){
   const contact=bodyContact(world,targets,eye,direction,issuedTick);if(!contact){return null;}
   const {body,owner}=contact.target;
-  if(!isIssuedHvpCompactNativeOwner(owner)||!ownsHvpCompactBody(world,body,owner.recipe)){throw new Error("Unissued compact body/source binding");}
-  const {min,max}=owner.bounds,origin=owner.recipe.mass.centerOfMassMeters,ownerId=owner.identity.ownerId;
-  const picked=pickContact(body,eye,direction,contact.distance,origin,{min,reader:{
-    sizeX:max[0]-min[0],sizeY:max[1]-min[1],sizeZ:max[2]-min[2],cellMeters:.125,
-    originMeters:{x:min[0]*.125,y:min[1]*.125,z:min[2]*.125},readSlot:(x,y,z)=>owner.readMaterial(x+min[0],y+min[1],z+min[2])}});
+  const ownerId=owner.identity.ownerId;
+  const picked=pickCompactContact(world,body,owner,eye,direction,contact.distance);
   if(!picked){return null;}
   const materialId=owner.readMaterial(...picked.cell);
   const current=()=>{
@@ -100,7 +113,8 @@ export function* prepareHvpBodyCutOwnedHashSteps(hit:HvpBodyHit,target:HvpCuttab
 }
 function* bodyCutSteps(ownedHash:boolean,hit:HvpBodyHit,target:HvpCuttableBody,id:string,edge:number,brush:"Box"|"Sphere",probe?:HvpPlanProbe,reserve?:StructuralOwnedReserve){
   const proof=hits.get(hit);
-  if(!proof||proof.body!==target.body||proof.source!==target.recipe||hit.ownerId!==target.ownerId){throw new Error("Stale or unvalidated body hit");}
+  if(!proof||proof.body!==target.body||proof.source!==(target.compactOwner??target.recipe)
+    ||target.compactOwner&&!target.compactOwner.ownsArchive(target.recipe)||hit.ownerId!==target.ownerId){throw new Error("Stale or unvalidated body hit");}
   reserve?.(4_096);
   const local=ownedHash
     ?yield* prepareHvpLocalBodyCutOwnedHashSteps(target.recipe.source,hit.cell,id,edge,brush,probe,target.recipe,reserve)

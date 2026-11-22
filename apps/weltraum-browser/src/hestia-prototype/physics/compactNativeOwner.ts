@@ -1,4 +1,5 @@
-import {fnv1a64Bytes} from "../../core/fnv1a64";
+import {compactRuntimeMembershipDigest} from "./compactFragmentIdentity";
+export {compactRuntimeMembershipDigest} from "./compactFragmentIdentity";
 import {MICROVOXEL_BASE_QUANTUM_METERS} from "../../voxel/adaptive";
 import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_REGISTRY_DIGEST,HVP_SOURCE_MIN_METERS} from "../../hvp/hvpCoastSource";
 import {box,cell,exactShapes,type Box,type Span} from "../../voxel/structural/componentIndex/exactShapes";
@@ -30,29 +31,6 @@ export interface HvpCompactRuntimeBinding {
   readonly epoch:number;
   readonly generation:number;
   readonly terrainDigest:string;
-}
-
-/** The compact runtime format hashes exactly four little coordinates/material bytes per voxel,
- * in global z/y/x order. Runs can split at any block boundary without changing this binding.
- * The caller supplies checked terrain extents and exact occupied count. */
-export function compactRuntimeMembershipDigest(sorted: readonly Span[], count: number): string {
-  if (!Number.isSafeInteger(count) || count<1 || count>1024) throw new Error("Invalid compact digest count");
-  const bytes=new Uint8Array(count*4);
-  let at=0,previous:Span|undefined;
-  for(const span of sorted) {
-    const {x,end,y,z,material}=span;
-    if(![x,end,y,z,material].every(Number.isSafeInteger) || x<0||x>=end||end>256||y<1||y>=128||z<0||z>=256
-      || material<1||material>4 || (previous && (z<previous.z || z===previous.z && (y<previous.y || y===previous.y && x<previous.end)))) {
-      throw new Error("Invalid compact digest span");
-    }
-    for(let px=x;px<end;px++) {
-      if(at>=bytes.length) throw new Error("Compact digest overflow");
-      bytes[at++]=px;bytes[at++]=y;bytes[at++]=z;bytes[at++]=material;
-    }
-    previous=span;
-  }
-  if(at!==bytes.length) throw new Error("Incomplete compact digest");
-  return `hvp-material-cells-v1:${fnv1a64Bytes(bytes)}`;
 }
 
 const q=MICROVOXEL_BASE_QUANTUM_METERS;
@@ -129,28 +107,31 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
   let pending:Promise<HvpRigidRecipe>|undefined;
   let disposed=false;
 
-  async function buildArchive(credit:StructuralOwnedReserve,yieldTask:()=>Promise<void>):Promise<HvpRigidRecipe> {
+  function* archiveSteps(credit:StructuralOwnedReserve) {
     if(disposed) throw new Error("Compact owner disposed");
     credit(2048+count*256,true);
     const cells=cellsFromCompactSpans(spans!);
-    function* steps() {
-      const source=yield* prepareHvpStructuralIngestOwnedSteps(ownerId,cells,materials,[],credit,undefined,true);
-      return yield* admitHvpTransferredRigidBodyOwnedSteps(source,{massKg:mass.totalMassKg,colliderBoxes:shapes!},undefined,credit,true);
-    }
-    const task=steps();
+    const source=yield* prepareHvpStructuralIngestOwnedSteps(ownerId,cells,materials,[],credit,undefined,true);
+    const result=yield* admitHvpTransferredRigidBodyOwnedSteps(source,{massKg:mass.totalMassKg,colliderBoxes:shapes!},undefined,credit,true);
+    if(disposed) throw new Error("Compact owner disposed");
+    archive=result;
+    return result;
+  }
+  async function buildArchive(credit:StructuralOwnedReserve,yieldTask:()=>Promise<void>):Promise<HvpRigidRecipe> {
+    const task=archiveSteps(credit);
     try {
       let deadline=performance.now()+2;
-      for(;;) {
-        if(disposed) throw new Error("Compact owner disposed");
+      while(!disposed) {
         const next=task.next();
-        if(next.done) {if(disposed) throw new Error("Compact owner disposed");archive=next.value;return archive;}
+        if(next.done) return next.value;
         if(performance.now()>=deadline) {await yieldTask();deadline=performance.now()+2;}
       }
+      throw new Error("Compact owner disposed");
     } finally { task.return(undefined as never); }
   }
   issued.add(recipe);
   const owner=Object.freeze({
-    identity,recipe,cellCount:count,bounds:box(min,max),
+    identity,recipe,cellCount:count,leafCount,bounds:box(min,max),
     readMaterial(x:number,y:number,z:number) {
       if(disposed) throw new Error("Compact owner disposed");
       if(![x,y,z].every(Number.isSafeInteger)) throw new Error("Integer compact source coordinates required");
@@ -162,6 +143,14 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
       return s&&s.y===y&&s.z===z&&s.x<=x&&x<s.end?s.material:0;
     },
     archiveReady:()=>archive!==undefined,
+    peekArchive:()=>archive,
+    ownsArchive:(candidate:HvpRigidRecipe)=>archive!==undefined&&archive===candidate,
+    materializeV1Sync(credit:StructuralOwnedReserve):HvpRigidRecipe {
+      if(disposed||pending) throw new Error("Compact owner disposed or archive in flight");
+      if(archive) return archive;
+      const steps=archiveSteps(credit);
+      for(;;){const next=steps.next();if(next.done)return next.value;}
+    },
     materializeV1(credit:StructuralOwnedReserve,yieldTask:()=>Promise<void>):Promise<HvpRigidRecipe> {
       if(disposed) return Promise.reject(new Error("Compact owner disposed"));
       if(archive) return Promise.resolve(archive);

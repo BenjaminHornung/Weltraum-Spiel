@@ -370,7 +370,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       if(!hit||!target||hit.ownerId!==request.ownerId||hit.sourceDigest!==request.sourceDigest){throw new Error("Stale or missing moving contact within 4 m");}
       const cells=readHvpBodyCells(target.recipe.source);
       const payload:HvpBodyCutPayload=Object.freeze({sessionId,epoch:0,commandId:request.id,ownerId:target.ownerId,sourceId:target.recipe.source.objectId,
-        sourceDigest:hit.sourceDigest,revision:hit.revision,cellCount:cells.length,massKg:target.recipe.mass.totalMassKg,cell:hit.cell,edge:request.edge,materials:target.recipe.source.materials,
+        sourceDigest:target.recipe.source.contentHash,revision:hit.revision,cellCount:cells.length,massKg:target.recipe.mass.totalMassKg,cell:hit.cell,edge:request.edge,materials:target.recipe.source.materials,
         ...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})});
       const preparation=Object.freeze({payload,cells,issuedTick:tick});
       pending={request:{id:request.id,ownerId:request.ownerId,sourceDigest:request.sourceDigest,edge:request.edge,
@@ -579,7 +579,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     finalize(id:string):void {
       if(!stage||!pending||id!==pending.request.id||!committed){throw new Error("Stale body finalization");}
       const ticket=pending;
-      try{stage.finalize();retireWork(ticket,true);stage=undefined;pending=undefined;children=[];committed=false;last=Object.freeze({...last!,status:"Applied"});}
+      try{stage.finalize();ticket.target.compactOwner?.dispose();retireWork(ticket,true);stage=undefined;pending=undefined;children=[];committed=false;last=Object.freeze({...last!,status:"Applied"});}
       catch(error){
         if(error instanceof StructuralPhysicsCommitError&&error.worldRestored){restoreRegistry();sequence-=1;retireWork(ticket);stage=undefined;pending=undefined;children=[];committed=false;last=Object.freeze({...last!,status:"Rejected"});}
         else{held=true;}throw error;
