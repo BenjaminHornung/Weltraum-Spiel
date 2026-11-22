@@ -1,0 +1,14 @@
+{
+  "commit": "6daa056c10fa073a6ad51b8b9de8d9f46209258e",
+  "localTestCommit": "a1639179422ed1f4d8ab9477b860dd3a81518f41",
+  "tree": "5acf1c29082e4219984e9e372b1b478b9eb6dd00",
+  "productionBuildIncludingBuildPathExit": 0,
+  "buildLogSha256": "a1e59ac688398b16d18cf7c9f32f35701526149aebe71fd440ef5f0143539a8a",
+  "qualifiedAssets": {
+    "hvpBootstrap-VDCZizfy.js": "8f790558cecf8e9dd7333bab1c22a73ea070e57ee4b01897c1eb6c62ab642cb2",
+    "physicsWorker-BWC5Nq7E.js": "ec2b3114fb76753399a8c0e1287651c5c072fbd878fbd67094691fd0257934e0",
+    "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb"
+  },
+  "bothStrictAndManualExit": 1,
+  "referenceDeviceTested": false
+}

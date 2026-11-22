@@ -1,0 +1,313 @@
+{
+  "graphics": "SwiftShader",
+  "referenceDeviceVerified": false,
+  "evidence": [
+    {
+      "profile": "strict",
+      "sourceCommit": "a1639179422ed1f4d8ab9477b860dd3a81518f41",
+      "startUtc": "2026-11-22T18:12:11.948967+00:00",
+      "endUtc": "2026-11-22T18:12:40.212160+00:00",
+      "exit": 1,
+      "processReturnCode": 1,
+      "timedOut": false,
+      "sha256": "721c1bc8673a66622e5f1544e3cfdd0c956c4c3689e9da02bc9bd518ed880978",
+      "game": {
+        "browser": "149.0.7827.0",
+        "viewport": {
+          "width": 640,
+          "height": 400
+        },
+        "allowResume": false,
+        "pauseAfterClick": false,
+        "pageErrors": [],
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "workerPlan": [],
+        "resumes": [],
+        "referenceDeviceVerified": false,
+        "measurementsEnabled": false,
+        "phase": "normal support preview",
+        "error": "Error: Player session paused before both cuts completed\n    at handleHold (file:///workspace/scratch/5b1f8c0d748a/followup-qa/paired/moving-r2-tree/apps/weltraum-browser/tests/performance/cut-moving-player.mjs:81:27)\n    at waitState (file:///workspace/scratch/5b1f8c0d748a/followup-qa/paired/moving-r2-tree/apps/weltraum-browser/tests/performance/cut-moving-player.mjs:100:66)\n    at async file:///workspace/scratch/5b1f8c0d748a/followup-qa/paired/moving-r2-tree/apps/weltraum-browser/tests/performance/cut-moving-player.mjs:153:22",
+        "terminal": {
+          "status": "SimulationHold",
+          "moving": {
+            "sequence": 0,
+            "pendingId": null,
+            "state": "Idle",
+            "preview": null,
+            "last": null
+          },
+          "tool": {
+            "mode": "Zelle",
+            "edges": 0,
+            "issued": 0,
+            "message": "Schnitt derzeit nicht verfügbar",
+            "movingInputPending": false,
+            "state": "Idle",
+            "queued": 0,
+            "receipts": 0,
+            "structural": {
+              "state": "Ready",
+              "issued": 0,
+              "last": null
+            },
+            "moving": {
+              "state": "Idle",
+              "last": null,
+              "issued": 0
+            }
+          },
+          "tick": 35
+        },
+        "input": {
+          "clicks": [],
+          "holds": [],
+          "phases": []
+        },
+        "worker": "http://127.0.0.1:46873/assets/physicsWorker-BWC5Nq7E.js",
+        "holdsAfterFirstClick": []
+      }
+    },
+    {
+      "profile": "manual-resume",
+      "sourceCommit": "a1639179422ed1f4d8ab9477b860dd3a81518f41",
+      "startUtc": "2026-11-22T18:12:40.213006+00:00",
+      "endUtc": "2026-11-22T18:13:20.041890+00:00",
+      "exit": 0,
+      "processReturnCode": 0,
+      "timedOut": false,
+      "sha256": "31c97f28e6d8ce52bd27eadeedb94fff36e3fea60e834e90b9f9c5c4dd224633",
+      "game": {
+        "browser": "149.0.7827.0",
+        "viewport": {
+          "width": 640,
+          "height": 400
+        },
+        "allowResume": true,
+        "pauseAfterClick": false,
+        "pageErrors": [],
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "workerPlan": [],
+        "resumes": [
+          {
+            "tick": 196,
+            "status": "SimulationHold"
+          }
+        ],
+        "referenceDeviceVerified": false,
+        "measurementsEnabled": false,
+        "phase": "second player receipt",
+        "first": {
+          "receipt": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "fragment": {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "sourceDigest": "hvp-material-cells-v1:02005d2b8da9f1c1",
+            "centerOfMass": {
+              "x": 23.50561224489796,
+              "y": 10.49158163265306,
+              "z": 9.755612244897959
+            },
+            "cellCount": 384,
+            "massKg": 1722.65625,
+            "colliders": 1,
+            "sourceBytes": 262144
+          },
+          "fallenPose": {
+            "x": 7.293549537658691,
+            "y": 0.9914951324462891,
+            "z": -5.333448886871338
+          },
+          "hit": {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "sourceDigest": "hvp-material-cells-v1:02005d2b8da9f1c1",
+            "revision": 0,
+            "issuedTick": 1059,
+            "cell": [
+              189,
+              85,
+              76
+            ],
+            "pose": {
+              "position": {
+                "x": 7.293549537658691,
+                "y": 0.9914951324462891,
+                "z": -5.333448886871338
+              },
+              "rotation": {
+                "x": -2.5395034754183143e-05,
+                "y": 0.45947569608688354,
+                "z": -1.4307323908724356e-05,
+                "w": 0.8881904482841492
+              }
+            }
+          }
+        },
+        "clicksAtIssue": [
+          {
+            "target": "hvp-player-pause",
+            "trusted": true,
+            "absoluteMs": 1795371177789.3,
+            "x": 0,
+            "y": 0,
+            "handled": false,
+            "tick": 196,
+            "native": "SimulationHold"
+          },
+          {
+            "target": "debug-scene",
+            "locked": "debug-scene",
+            "trusted": true,
+            "absoluteMs": 1795371179564.8,
+            "x": 0,
+            "y": 0,
+            "handled": true,
+            "tick": 196,
+            "native": "Running"
+          },
+          {
+            "target": "debug-scene",
+            "locked": "debug-scene",
+            "trusted": true,
+            "absoluteMs": 1795371193162.4001,
+            "x": 0,
+            "y": 0,
+            "handled": true,
+            "tick": 1060,
+            "native": "Running"
+          }
+        ],
+        "recut": {
+          "id": "moving-cut-1",
+          "status": "Applied",
+          "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "children": [
+            "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+          ],
+          "removedCells": 32,
+          "removedMassKg": 135.9375,
+          "issuedTick": 1063,
+          "commitTick": 1091,
+          "parentPose": {
+            "position": {
+              "x": 7.293549537658691,
+              "y": 0.9914951324462891,
+              "z": -5.333448886871338
+            },
+            "rotation": {
+              "x": -2.5395034754183143e-05,
+              "y": 0.45947569608688354,
+              "z": -1.4307323908724356e-05,
+              "w": 0.8881904482841492
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularVelocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "removedMomentum": {
+            "massKg": 135.9375,
+            "referencePoint": {
+              "x": 7.293549537658691,
+              "y": 0.9914951324462891,
+              "z": -5.333448886871338
+            },
+            "center": {
+              "x": 7.440721913999281,
+              "y": 1.1184363018640453,
+              "z": -5.528697974816921
+            },
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        },
+        "toolReceipt": {
+          "id": "moving-cut-1",
+          "status": "Applied",
+          "reason": "Current-pose fragment replacement"
+        },
+        "children": [
+          {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+            "sourceDigest": "hvp-material-child-v1:bf317f0e6db818ca",
+            "centerOfMass": {
+              "x": 23.484675036927623,
+              "y": 10.480705317577549,
+              "z": 9.754985228951256
+            },
+            "cellCount": 352,
+            "massKg": 1586.71875,
+            "colliders": 3,
+            "sourceBytes": 262144
+          }
+        ],
+        "rootRevision": 1,
+        "testBridgePresent": false,
+        "passed": true,
+        "input": {
+          "clicks": [
+            {
+              "target": "hvp-player-pause",
+              "trusted": true,
+              "absoluteMs": 1795371177789.3,
+              "x": 0,
+              "y": 0,
+              "handled": false,
+              "tick": 196,
+              "native": "SimulationHold"
+            },
+            {
+              "target": "debug-scene",
+              "locked": "debug-scene",
+              "trusted": true,
+              "absoluteMs": 1795371179564.8,
+              "x": 0,
+              "y": 0,
+              "handled": true,
+              "tick": 196,
+              "native": "Running"
+            },
+            {
+              "target": "debug-scene",
+              "locked": "debug-scene",
+              "trusted": true,
+              "absoluteMs": 1795371193162.4001,
+              "x": 0,
+              "y": 0,
+              "handled": true,
+              "tick": 1060,
+              "native": "Running"
+            }
+          ],
+          "holds": [],
+          "phases": []
+        },
+        "worker": "http://127.0.0.1:46873/assets/physicsWorker-BWC5Nq7E.js",
+        "holdsAfterFirstClick": []
+      }
+    }
+  ]
+}
