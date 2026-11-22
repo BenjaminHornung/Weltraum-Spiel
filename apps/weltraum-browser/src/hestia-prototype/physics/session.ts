@@ -1,7 +1,7 @@
 import { resolveHvpGravity, HVP_INERTIA_CELLS, HVP_INERTIA_KEY, HVP_PLAYER_PROFILE, HVP_SOLVER_VERSION, assertHvpPublicSaveCutover } from "./profile";
 import {validateHvpChunkStaticLayout,validateHvpChunkCollisionSteps,type HvpChunkStaticLayout} from "./staticTerrainLayout";
 export { resolveHvpGravity } from "./profile";
-import { R, initializeHvpRapier, isHvpSolidCollider } from "./rapierPort";
+import { R, initializeHvpRapier, isHvpSolidNonKinematicCollider } from "./rapierPort";
 import { createHvpTick, HVP_PHYSICS_DT } from "./tick";
 import type { HvpCollisionSector } from "./terrainColliders";
 import { createHvpLocomotion, type HvpCollisionCoverage, type HvpPlayerInput } from "../player/locomotion";
@@ -551,7 +551,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       const origin={x:avatar.position.x,y:avatar.position.y+HVP_PLAYER_PROFILE.eyeHeight-HVP_PLAYER_PROFILE.height/2,z:avatar.position.z};
       world.propagateModifiedBodyPositionsToColliders();world.updateSceneQueries();
       const hit=world.castRayAndGetNormal(new R.Ray(origin,direction),4,true,undefined,undefined,undefined,undefined,
-        collider=>isHvpSolidCollider(collider)&&collider.parent()?.isKinematic()!==true);
+        isHvpSolidNonKinematicCollider);
       if(!hit){return blocked("NoContact","No contact within 4 m");}
       const point=Object.freeze({x:origin.x+direction.x*hit.timeOfImpact,y:origin.y+direction.y*hit.timeOfImpact,z:origin.z+direction.z*hit.timeOfImpact});
       const body=hit.collider.parent();

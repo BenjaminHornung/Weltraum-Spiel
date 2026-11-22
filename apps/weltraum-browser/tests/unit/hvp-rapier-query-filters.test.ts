@@ -1,5 +1,5 @@
 import { beforeAll, expect, it } from "vitest";
-import { R, initializeHvpRapier, isHvpSolidCollider, isHvpStaticCollider } from "../../src/hestia-prototype/physics/rapierPort";
+import { R, initializeHvpRapier, isHvpSolidCollider, isHvpStaticCollider, isHvpSolidNonKinematicCollider } from "../../src/hestia-prototype/physics/rapierPort";
 
 beforeAll(initializeHvpRapier);
 
@@ -67,7 +67,7 @@ it("matches the borrow-safe reference for all query entry points and every combi
       const player = world.createCollider(R.ColliderDesc.ball(0.2), mover);
       const controller = world.createCharacterController(0.01);
       world.updateSceneQueries();
-      for (const predicate of [isHvpSolidCollider, isHvpStaticCollider]) for (const existing of flags) {
+      for (const predicate of [isHvpSolidCollider, isHvpStaticCollider, isHvpSolidNonKinematicCollider]) for (const existing of flags) {
         const reference = observeQueries(world, controller, mover, player, existing, c => predicate(c));
         const actual = observeQueries(world, controller, mover, player, existing, predicate);
         expect(actual).toEqual(reference);
@@ -117,6 +117,7 @@ it("re-evaluates native filter membership, body cascades, snapshot and independe
     try {
       restored.updateSceneQueries();
       expect(hit(restored,isHvpStaticCollider)).toBe(active.handle);
+      expect(hit(restored,isHvpSolidNonKinematicCollider)).toBe(active.handle);
       world.removeRigidBody(dynamic);
       world.updateSceneQueries();
       expect(hit(world,isHvpStaticCollider)).toBe(fixed.handle);
@@ -130,8 +131,10 @@ it("re-evaluates native filter membership, body cascades, snapshot and independe
       expect(bits(replacement.handle)[1]).not.toBe(bits(active.handle)[1]);
       world.updateSceneQueries();
       expect(hit(world)).toBe(replacement.handle);
+      expect(hit(world,isHvpSolidNonKinematicCollider)).toBe(fixed.handle);
       expect(hit(world,isHvpStaticCollider)).toBe(fixed.handle);
       expect(hit(restored,isHvpStaticCollider)).toBe(active.handle);
+      expect(hit(restored,isHvpSolidNonKinematicCollider)).toBe(active.handle);
       let target = fixed.handle;
       const observed:number[] = [];
       const arbitrary = (collider: R.Collider) => {
@@ -150,5 +153,29 @@ it("re-evaluates native filter membership, body cascades, snapshot and independe
     world.removeCollider(fixed,false);
     world.updateSceneQueries();
     expect(hit(world,isHvpStaticCollider)).toBeUndefined();
+  } finally { world.free(); }
+});
+
+it("avoids a full collider scan for both player aim queries", () => {
+  const world = new R.World(origin);
+  try {
+    const body = world.createRigidBody(R.RigidBodyDesc.dynamic().setTranslation(2, 0, 0));
+    const target = world.createCollider(R.ColliderDesc.ball(.5), body);
+    for (let i = 0; i < 64; ++i) {
+      world.createCollider(R.ColliderDesc.ball(.2).setTranslation(i, 20, 0));
+    }
+    world.updateSceneQueries();
+    let visits = 0;
+    const visit = world.colliders.forEach.bind(world.colliders);
+    world.colliders.forEach = callback => visit(collider => { visits++; callback(collider); });
+    const check = (predicate: (collider: R.Collider) => boolean) => {
+      expect(world.castRay(ray, 4, true, undefined, undefined, undefined, undefined, predicate)?.collider.handle).toBe(target.handle);
+      expect(world.castRayAndGetNormal(ray, 4, true, undefined, undefined, undefined, undefined, predicate)?.collider.handle).toBe(target.handle);
+    };
+    check(collider => isHvpSolidNonKinematicCollider(collider));
+    expect(visits).toBe(world.colliders.len() * 2);
+    visits = 0;
+    check(isHvpSolidNonKinematicCollider);
+    expect(visits).toBe(0);
   } finally { world.free(); }
 });

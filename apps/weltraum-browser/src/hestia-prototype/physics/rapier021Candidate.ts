@@ -17,10 +17,13 @@ export function cachedPredicate(world: C.World, predicate?: (collider: C.Collide
   return collider => allowed.has(collider.handle);
 }
 
-/** Only these two function identities have a native equivalent in the pinned R05 build. */
+/** Only these function identities have a native equivalent in the pinned R05 build. */
 export const isHvpSolidCollider = (collider: C.Collider): boolean => !collider.isSensor();
 export const isHvpStaticCollider = (collider: C.Collider): boolean =>
   !collider.isSensor() && (collider.parent()?.isFixed() ?? true);
+
+export const isHvpSolidNonKinematicCollider = (collider: C.Collider): boolean =>
+  !collider.isSensor() && collider.parent()?.isKinematic() !== true;
 
 // Older builds share the solver profile ID. Their flag behavior must be checked separately.
 const supportsHvpNativeFilters =
@@ -29,12 +32,14 @@ const supportsHvpNativeFilters =
 function prepareQueryFilter(world: C.World, args: unknown[], flagIndex: number, predicateIndex: number): void {
   const predicate = args[predicateIndex] as ((collider: C.Collider) => boolean) | undefined;
   if (predicate === undefined) { return; }
-  if (!supportsHvpNativeFilters || (predicate !== isHvpSolidCollider && predicate !== isHvpStaticCollider)) {
+  if (!supportsHvpNativeFilters || (predicate !== isHvpSolidCollider && predicate !== isHvpStaticCollider && predicate !== isHvpSolidNonKinematicCollider)) {
     args[predicateIndex] = cachedPredicate(world, predicate);
     return;
   }
   const existing = args[flagIndex] as C.QueryFilterFlags | undefined;
-  const bodyFilter = predicate === isHvpStaticCollider ? C.QueryFilterFlags.ONLY_FIXED : 0;
+  let bodyFilter = 0;
+  if (predicate === isHvpStaticCollider) { bodyFilter = C.QueryFilterFlags.ONLY_FIXED; }
+  if (predicate === isHvpSolidNonKinematicCollider) { bodyFilter = C.QueryFilterFlags.EXCLUDE_KINEMATIC; }
   args[flagIndex] = (existing ?? 0) | C.QueryFilterFlags.EXCLUDE_SENSORS | bodyFilter;
   args[predicateIndex] = undefined;
 }

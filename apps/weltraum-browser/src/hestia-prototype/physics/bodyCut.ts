@@ -1,6 +1,6 @@
 import {deriveStructuralWorldSplitVelocity,rotateStructuralWorldVector} from "../../voxel/structural";
 import {pickHvpCell,type HvpCell,type HvpCellReader} from "../terrain/picking";
-import {R,isHvpSolidCollider} from "./rapierPort";
+import {R,isHvpSolidNonKinematicCollider} from "./rapierPort";
 import {assertHvpRigidRecipe,hvpObjectLocalCenterOfMass,type HvpRigidRecipe} from "./rigidRecipe";
 import {prepareHvpLocalBodyCutOwnedHashSteps,prepareHvpLocalBodyCutSteps,readHvpBodyCells} from "./bodyCutPlan";
 import {stageHvpStructuralBreak} from "./structuralBreak";
@@ -33,7 +33,7 @@ const bodyContact=<T extends {body:R.RigidBody}>(world:R.World,targets:ReadonlyM
     ||Math.abs(Math.hypot(direction.x,direction.y,direction.z)-1)>1e-6||!Number.isSafeInteger(issuedTick)||issuedTick<0){throw new Error("Invalid body ray");}
   world.propagateModifiedBodyPositionsToColliders();world.updateSceneQueries();
   const contact=world.castRay(new R.Ray(eye,direction),4,true,undefined,undefined,undefined,undefined,
-    c=>isHvpSolidCollider(c)&&c.parent()?.isKinematic()!==true);
+    isHvpSolidNonKinematicCollider);
   const body=contact?.collider.parent();
   if(!body?.isDynamic()||!contact){return null;}
   const target=[...targets.values()].find(t=>t.body===body);if(!target){return null;}

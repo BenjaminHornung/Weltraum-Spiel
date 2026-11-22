@@ -11,7 +11,7 @@ import type {
  * Source-bound 0.21 candidate with explicit no-step query publication.
  */
 export { R };
-export { isHvpSolidCollider, isHvpStaticCollider } from "./rapier021Candidate";
+export { isHvpSolidCollider, isHvpStaticCollider, isHvpSolidNonKinematicCollider } from "./rapier021Candidate";
 let initialization: Promise<void> | undefined;
 export const initializeHvpRapier = (): Promise<void> => {
   initialization ??= R.init().catch((error: unknown) => {
