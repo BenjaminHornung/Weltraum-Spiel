@@ -45,20 +45,25 @@ const bodyResidencyFor=(workerOwned:boolean,residentBytes:()=>number=()=>0)=>(wo
       if(parked.size>=64){throw new Error("Dormant owner budget");}
       const ledger=workerOwned?createStructuralOwnerLedger(residentBytes(),undefined,128):undefined;
       try{
+        const recipe=target.recipe;
+        if(target.compactOwner && (target.compactOwner.identity.ownerId!==ownerId || !target.compactOwner.ownsArchive(recipe)
+          || target.compactOwner.identity.membershipDigest!==hvpFragmentArchiveDigest(recipe))){
+          throw new Error("Dormant archive does not match the live compact owner");
+        }
         let decoded:HvpDecodedBody|undefined;
         if(ledger){
-          reserveHvpBodyCapture(target.recipe,ledger.reserve);
-          if(isOwnedStructuralGraph(target.recipe.source)){decoded=captureHvpOwnedBody(ownerId,"terrain",target.recipe,target.body);}
+          reserveHvpBodyCapture(recipe,ledger.reserve);
+          if(isOwnedStructuralGraph(recipe.source)){decoded=captureHvpOwnedBody(ownerId,"terrain",recipe,target.body);}
           else{
-            decoded=decodeHvpColdBody(encodeHvpBody(ownerId,"terrain",target.recipe,target.body),ledger.reserve);
+            decoded=decodeHvpColdBody(encodeHvpBody(ownerId,"terrain",recipe,target.body),ledger.reserve);
             preparedBytes!.set(decoded.recipe,ledger.resources.retainedEstimateBytes);
           }
         }
-        const checkpoint=decoded?.checkpoint??encodeHvpBody(ownerId,"terrain",target.recipe,target.body);
+        const checkpoint=decoded?.checkpoint??encodeHvpBody(ownerId,"terrain",recipe,target.body);
         const position=decoded?.motion.translationMeters??Object.freeze({...target.body.translation()});
         const bytes=checkpointBytes(checkpoint);if(storedBytes()+bytes>16*1024*1024){throw new Error("Dormant checkpoint byte budget");}
         admit();if(targets.get(ownerId)!==target||bodies.get(ownerId)!==target.body){throw new Error("Stale residency owner");}
-        parked.set(ownerId,{checkpoint,position,source:describe(ownerId,decoded?.recipe??target.recipe),bytes,...(decoded?{decoded}:{})});
+        parked.set(ownerId,{checkpoint,position,source:describe(ownerId,decoded?.recipe??recipe),bytes,...(decoded?{decoded}:{})});
         try{
           world.removeRigidBody(target.body);
           if(world.getRigidBody(target.body.handle)!==null||world.bodies.len()!==beforeBodies-1||world.colliders.len()!==beforeColliders-colliders){

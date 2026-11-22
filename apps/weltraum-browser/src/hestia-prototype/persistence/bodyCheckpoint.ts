@@ -4,15 +4,27 @@ import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 import {admitOwnedStructuralGraphSteps,isOwnedStructuralGraph,isIssuedStructuralObject} from "../../voxel/structural/model";
 import type {R} from "../physics/rapierPort";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
+import {bindHvpCompactChildArchive,hvpCompactChildArchiveProof,isHvpCompactChildProof,
+  type HvpCompactChildProof} from "../physics/compactFragmentIdentity";
 const decodedBodies=new WeakSet<object>();
 
-export interface HvpBodyCheckpoint {
-  readonly version:"hvp-body-checkpoint-v1";
+interface HvpBodyCheckpointFields {
   readonly ownerId:string;readonly family:"drop"|"inertia"|"terrain"|"branch";
   readonly dynamic:boolean;readonly sleeping:boolean;readonly ccd:boolean;
   readonly region:string;
   readonly surfaces:readonly Readonly<{friction:number;restitution:number;frictionCombine:number;restitutionCombine:number}>[];
 }
+export type HvpBodyCheckpoint=HvpBodyCheckpointFields&(
+  |{readonly version:"hvp-body-checkpoint-v1"}
+  |{readonly version:"hvp-body-checkpoint-v2";readonly lineage:HvpCompactChildProof}
+);
+
+const checkpointIdentity=(ownerId:string,family:HvpBodyCheckpoint["family"],dynamic:boolean,recipe:HvpRigidRecipe)=>{
+  const lineage=hvpCompactChildArchiveProof(recipe);
+  if(!lineage)return {version:"hvp-body-checkpoint-v1"} as const;
+  if(!dynamic || family!=="terrain" || recipe.source.objectId!==ownerId)throw new Error("Invalid compact child checkpoint owner");
+  return {version:"hvp-body-checkpoint-v2",lineage} as const;
+};
 export const encodeHvpBody=(ownerId:string,family:HvpBodyCheckpoint["family"],recipe:HvpRigidRecipe,body:R.RigidBody):HvpBodyCheckpoint=>{
   const classification=deriveStructuralComponentClassification(recipe.source,{maxVisitedCells:32_768,maxComponents:32,maxIndexedFacts:262_144});
   if(classification.fragments.length!==1||body.numColliders()!==recipe.colliders.length||!body.isEnabled()||(!body.isDynamic()&&!body.isFixed())){
@@ -27,11 +39,14 @@ export const encodeHvpBody=(ownerId:string,family:HvpBodyCheckpoint["family"],re
     if(c.isSensor()||!c.isEnabled()){throw new Error("Unsupported disabled/sensor body checkpoint");}
     return Object.freeze({friction:c.friction(),restitution:c.restitution(),frictionCombine:c.frictionCombineRule(),restitutionCombine:c.restitutionCombineRule()});
   });
-  return Object.freeze({version:"hvp-body-checkpoint-v1",ownerId,family,dynamic:body.isDynamic(),sleeping:body.isSleeping(),ccd:body.isCcdEnabled(),region,surfaces:Object.freeze(surfaces)});
+  return Object.freeze({...checkpointIdentity(ownerId,family,body.isDynamic(),recipe),ownerId,family,dynamic:body.isDynamic(),sleeping:body.isSleeping(),ccd:body.isCcdEnabled(),region,surfaces:Object.freeze(surfaces)});
 };
 const decodeBody=(value:unknown,prepareRecipe:(source:StructuralObject)=>HvpRigidRecipe)=>{
   const c=value as HvpBodyCheckpoint|null;
-  if(!c||c.version!=="hvp-body-checkpoint-v1"||Object.keys(c).sort().join(",")!=="ccd,dynamic,family,ownerId,region,sleeping,surfaces,version"
+  const child=c?.version==="hvp-body-checkpoint-v2";
+  if(!c||(!child && c.version!=="hvp-body-checkpoint-v1") || Object.keys(c).sort().join(",")!==(child
+    ?"ccd,dynamic,family,lineage,ownerId,region,sleeping,surfaces,version":"ccd,dynamic,family,ownerId,region,sleeping,surfaces,version")
+    || (child && (c.family!=="terrain" || c.dynamic!==true || !isHvpCompactChildProof(c.lineage) || c.ownerId!==c.lineage.parentOwnerId+":r1:p0"))
     ||typeof c.ownerId!=="string"||!/^[A-Za-z0-9:_-]{1,128}$/.test(c.ownerId)||!["drop","inertia","terrain","branch"].includes(c.family)
     ||typeof c.dynamic!=="boolean"||typeof c.sleeping!=="boolean"||typeof c.ccd!=="boolean"
     ||typeof c.region!=="string"||c.region.length>16*1024*1024||!Array.isArray(c.surfaces)||c.surfaces.length<1||c.surfaces.length>64){
@@ -46,7 +61,8 @@ const decodeBody=(value:unknown,prepareRecipe:(source:StructuralObject)=>HvpRigi
   if(region.parentMotionSource!=="explicit"||region.motions.length!==1){throw new Error("Complete explicit saved body motion required");}
   const recipe=prepareRecipe(region.object),motion=region.motions[0]!;
   if(recipe.colliders.length!==c.surfaces.length){throw new Error("Saved source/collider membership mismatch");}
-  const checkpoint:HvpBodyCheckpoint=Object.freeze({version:c.version,ownerId:c.ownerId,family:c.family,dynamic:c.dynamic,sleeping:c.sleeping,ccd:c.ccd,
+  if(child)bindHvpCompactChildArchive(recipe,c.lineage);
+  const checkpoint:HvpBodyCheckpoint=Object.freeze({...checkpointIdentity(c.ownerId,c.family,c.dynamic,recipe),ownerId:c.ownerId,family:c.family,dynamic:c.dynamic,sleeping:c.sleeping,ccd:c.ccd,
     region:c.region,surfaces:Object.freeze(c.surfaces.map(s=>Object.freeze({...s})))});
   const decoded=Object.freeze({checkpoint,recipe,motion});decodedBodies.add(decoded);return decoded;
 };
@@ -73,6 +89,8 @@ export const reserveHvpBodyCapture=(recipe:HvpRigidRecipe,reserve:StructuralOwne
     throw new Error("Unsupported issued Source capture value");
   };
   quote(recipe.source);
+  const proof=hvpCompactChildArchiveProof(recipe);
+  if(proof)quote(proof);
 };
 /** Private held-tick capture: validate our own complete Save while retaining its exact owned recipe. */
 export const captureHvpOwnedBody=(ownerId:string,family:HvpBodyCheckpoint["family"],recipe:HvpRigidRecipe,body:R.RigidBody)=>{

@@ -1,3 +1,4 @@
+import {isHvpCompactChildProof} from "../physics/compactFragmentIdentity";
 import {fnv1aHash} from "../../core/hash";
 import {fnv1aBytes} from "../../workers/protocol";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
@@ -111,7 +112,14 @@ const inspectHvpWorld=<S extends HvpWorldSolver>(value:unknown,expectedSolver:S)
     sourceBytes+=object.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES;
     if(sourceBytes>64*1024*1024){throw new Error("World decoded source budget");}
   };
-  for(const body of c.bodies){if(!body){throw new Error("Missing saved body owner");}countBricks(body.region,true);}
+  for(const body of c.bodies){
+    if(!body)throw new Error("Missing saved body owner");
+    if(body.version==="hvp-body-checkpoint-v2"){
+      if(!isHvpCompactChildProof(body.lineage))throw new Error("Invalid saved compact child proof");
+      textBytes+=new TextEncoder().encode(JSON.stringify(body.lineage)).byteLength;
+    }
+    countBricks(body.region,true);
+  }
   if(b?.source!==null&&b?.source!==undefined){countBricks(b.source,false);}
   const owners=new Set<string>();
   for(const body of c.bodies){if(!validId(body.ownerId)||owners.has(body.ownerId)){throw new Error("Duplicate or invalid body owner");}owners.add(body.ownerId);}
