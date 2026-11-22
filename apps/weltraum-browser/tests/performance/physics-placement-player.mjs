@@ -4,6 +4,7 @@ import { mkdir,writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+import {cutSeriesChecks} from "./cut-work.mjs";
 
 const [url,output,pairArgument="2"]=process.argv.slice(2);
 const pairs=Number(pairArgument);
@@ -12,6 +13,7 @@ await mkdir(output);
 const run=promisify(execFile);
 const probe=fileURLToPath(new URL("./cut-publication.mjs",import.meta.url));
 const attempts=[];
+const timings = {worker:{frames:[],steps:[]},main:{frames:[],steps:[]}};
 const stats=sample=>{
   if(!sample.length)return {n:0};
   const s=sample.map(row=>row.duration).sort((a,b)=>a-b);
@@ -30,6 +32,8 @@ for(const placement of order) {
     await writeFile(prefix+".log",stderr);
     const published=x.metrics["hvp.cutDomInputToPhysicsPublishedMs"];
     const beforeAck=x.frames.filter(f=>f.start+f.duration>=x.eventTimeStamp && f.start<x.eventTimeStamp+published.duration);
+    timings[placement].frames.push(...beforeAck);
+    timings[placement].steps.push(...x.solver);
     const ackAt = published.startTime + published.duration;
     const submitAt = x.eventTimeStamp + x.domToSubmitMs;
     const frameBoundaries = x.frames.filter(f => f.start + f.duration > ackAt && f.start + f.duration <= submitAt);
@@ -50,7 +54,10 @@ const hardwareMatches=requestedGpu?attempts.every(row=>typeof row.renderer==="st
 const summary={url,pairs,physicalPresentationMeasured:false,referenceDeviceVerified:false,requestedGpuMatches:hardwareMatches,attempts,
   byPlacement:Object.fromEntries(["worker","main"].map(mode=>{
     const sample=attempts.filter(r=>r.placement===mode);
-    return [mode,{attempted:sample.length,completed:sample.filter(r=>r.exit===0).length,
+    const frames=stats(timings[mode].frames);
+    const steps=stats(timings[mode].steps);
+    const checks=cutSeriesChecks(sample,frames,steps);
+    return [mode,{checks,cutFrameIntervalsMs:frames,solverStepsMs:steps,attempted:sample.length,completed:sample.filter(r=>r.exit===0).length,
       inputToPublicationMs:stats(sample.filter(r=>r.exit===0).map(r=>({duration:r.physicsMs}))),
       meeting10ms:sample.filter(r=>r.exit===0&&r.physicsMs<=10).length,
       meetingThreeStages:sample.filter(r=>r.criticalPath?.withinStageBudget).length,
@@ -58,4 +65,4 @@ const summary={url,pairs,physicalPresentationMeasured:false,referenceDeviceVerif
       meetingFrameIntervalP95AndP99:sample.filter(r=>r.activeCutFrameIntervalsMs?.p95<=20 && r.activeCutFrameIntervalsMs?.p99<=33.34).length}];
   }))};
 await writeFile(join(output,"summary.json"),JSON.stringify(summary,null,2)+"\n");
-if(hardwareMatches===false||attempts.some(row=>row.exit!==0||row.physicsMs>10||!row.criticalPath?.withinStageBudget))process.exitCode=1;
+if (hardwareMatches===false || Object.values(summary.byPlacement).some(mode=>!mode.checks.passed)) process.exitCode=1;

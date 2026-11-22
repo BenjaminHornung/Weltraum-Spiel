@@ -30,3 +30,17 @@ export function cutWork(phases, commandId, planner = "indexed", placement = "wor
     },
   };
 }
+
+// Compute percentiles from the pooled raw samples in the series runner.
+// A completed browser process alone says nothing about its frame or solver budget.
+export function cutSeriesChecks(attempts, frames, steps) {
+  const complete = attempts.length > 0 && attempts.every(row => row.exit === 0);
+  const everyCutUnderLimit = complete && attempts.every(row =>
+    Number.isFinite(row.physicsMs) && row.physicsMs >= 0 && row.physicsMs <= 10);
+  const everyCutWithinStageBudget = complete && attempts.every(row => row.criticalPath?.withinStageBudget === true);
+  const solverWithinBudget = Number.isFinite(steps.p95) && steps.n > 0 && steps.p95 <= 4;
+  const framesWithinBudget = frames.n > 0 && Number.isFinite(frames.p95) && Number.isFinite(frames.p99)
+    && frames.p95 <= 20 && frames.p99 <= 33.34;
+  return {complete, everyCutUnderLimit, everyCutWithinStageBudget, solverWithinBudget, framesWithinBudget,
+    passed: everyCutUnderLimit && everyCutWithinStageBudget && solverWithinBudget && framesWithinBudget};
+}

@@ -1,6 +1,6 @@
 import {strict as assert} from "node:assert";
 import test from "node:test";
-import {cutWork} from "./cut-work.mjs";
+import {cutSeriesChecks,cutWork} from "./cut-work.mjs";
 const entry=(name,count=1,activeMs)=>({name:"hvp."+name,duration:0,detail:{data:{commandId:"T",count,activeMs}}});
 const core=[entry("cutPhysicsDispatch"),entry("cutPhysicsReply"),entry("cutPhysicsPlanTaskResumes",0,2.25),entry("cutStaticCollisionWorkMs")];
 test("single round trip and no resumed tasks occupy three stages",()=>{
@@ -45,4 +45,14 @@ test("inline owner envelopes retain the DTO operation but add zero thread transi
   assert.equal(inline.dispatches,1);
   assert.equal(inline.crossThreadDeliveries,0);
   assert.equal(inline.observedStages,2);
+});
+
+test("a good cut cannot conceal missing, slow or incomplete full-game samples",()=>{
+  const ok=[{exit:0,physicsMs:10,criticalPath:{withinStageBudget:true}}];
+  const frames={n:200,p95:20,p99:33.34},steps={n:500,p95:4};
+  assert.equal(cutSeriesChecks(ok,frames,steps).passed,true);
+  assert.equal(cutSeriesChecks(ok,{...frames,p99:33.35},steps).passed,false);
+  assert.equal(cutSeriesChecks(ok,frames,{n:0}).passed,false);
+  assert.equal(cutSeriesChecks(ok,frames,{...steps,p95:4.1}).passed,false);
+  assert.equal(cutSeriesChecks([...ok,{exit:1}],frames,steps).passed,false);
 });
