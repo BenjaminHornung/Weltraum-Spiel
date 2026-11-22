@@ -34,17 +34,31 @@ export async function runHvpBounded<T, R>(
 }
 
 /** Private first-party body work: real task ports, 2ms quantum and bounded cursor cleanup. */
-export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:string,start:number,duration:number)=>void))=>{
+export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:string,start:number,duration:number)=>void),inputPriority=false)=>{
+  const scheduler=inputPriority?(globalThis as typeof globalThis & {
+    scheduler?:{postTask:(callback:()=>void,options:{priority:"user-blocking";signal:AbortSignal})=>Promise<void>}
+  }).scheduler:undefined;
+  const abort=scheduler?.postTask?new AbortController():undefined;
   let disposed=false,channel:MessageChannel|undefined,waiting:{resolve:()=>void;reject:(error:Error)=>void}|undefined;
   let sliceStart=performance.now(),units=0;
   const current=()=>{if(disposed){throw new Error("Body mesh task pump disposed");}assertCurrent();};
   const host={assertCurrent:current,continuePlan:()=>++units<4096&&performance.now()-sliceStart<2,
     yieldTask:()=>new Promise<void>((resolve,reject)=>{
       current();if(waiting!==undefined){reject(new Error("Concurrent body mesh task yield"));return;}
-      if(channel===undefined){channel=new MessageChannel();channel.port1.onmessage=()=>{
+      const resume=()=>{
         const task=waiting;waiting=undefined;sliceStart=performance.now();units=0;task?.resolve();
-      };}
-      waiting={resolve,reject};channel.port2.postMessage(0);
+      };
+      waiting={resolve,reject};
+      if(abort && scheduler){
+        try{
+          void scheduler.postTask(resume,{priority:"user-blocking",signal:abort.signal}).catch(error=>{
+            const task=waiting;waiting=undefined;task?.reject(error);
+          });
+        }catch(error){waiting=undefined;reject(error);}
+      }else{
+        if(channel===undefined){channel=new MessageChannel();channel.port1.onmessage=resume;}
+        channel.port2.postMessage(0);
+      }
     })};
   return {host,async run<T>(steps:Generator<string,T,unknown>):Promise<T>{
     let failed=false,failure:unknown,recording=true,workStart=observe===undefined?0:performance.now();
@@ -61,7 +75,7 @@ export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:
       throw new HvpRenderStageRecoveryError([failure,error],"RecoveryHold: task failed and cursor cleanup is unproven");}}
   },dispose():void {
     if(disposed){return;}disposed=true;
-    channel?.port1.close();channel?.port2.close();channel=undefined;
+    abort?.abort();channel?.port1.close();channel?.port2.close();channel=undefined;
     const task=waiting;waiting=undefined;task?.reject(new Error("Body mesh task pump disposed"));
   }};
 };

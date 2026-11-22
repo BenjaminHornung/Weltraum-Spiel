@@ -1,5 +1,6 @@
+import {fnv1a64Bytes} from "../../core/fnv1a64";
 import {MICROVOXEL_BASE_QUANTUM_METERS} from "../../voxel/adaptive";
-import {HVP_COAST_MATERIAL_REGISTRY,HVP_SOURCE_MIN_METERS} from "../../hvp/hvpCoastSource";
+import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_REGISTRY_DIGEST,HVP_SOURCE_MIN_METERS} from "../../hvp/hvpCoastSource";
 import {box,cell,exactShapes,type Box,type Span} from "../../voxel/structural/componentIndex/exactShapes";
 import {cellsFromCompactSpans,checkedCompactSpans,compactTerrainOwnerDigest} from "../../voxel/structural/componentIndex/fragment";
 import {combineMass,preparePart,type CompactMass} from "../../voxel/structural/componentIndex/partFacts";
@@ -19,6 +20,9 @@ export interface HvpCompactNativeRecipe {
   readonly colliders:readonly StructuralColliderBoxMeters[];
 }
 const issued=new WeakSet<object>();
+const issuedOwners=new WeakSet<object>();
+export type HvpCompactNativeOwner=ReturnType<typeof issueHvpCompactNativeOwner>;
+export const isIssuedHvpCompactNativeOwner=(owner:object):owner is HvpCompactNativeOwner=>issuedOwners.has(owner);
 export const isIssuedHvpCompactNativeRecipe=(recipe:object):recipe is HvpCompactNativeRecipe=>issued.has(recipe);
 
 export interface HvpCompactRuntimeBinding {
@@ -26,6 +30,29 @@ export interface HvpCompactRuntimeBinding {
   readonly epoch:number;
   readonly generation:number;
   readonly terrainDigest:string;
+}
+
+/** The compact runtime format hashes exactly four little coordinates/material bytes per voxel,
+ * in global z/y/x order. Runs can split at any block boundary without changing this binding.
+ * The caller supplies checked terrain extents and exact occupied count. */
+export function compactRuntimeMembershipDigest(sorted: readonly Span[], count: number): string {
+  if (!Number.isSafeInteger(count) || count<1 || count>1024) throw new Error("Invalid compact digest count");
+  const bytes=new Uint8Array(count*4);
+  let at=0,previous:Span|undefined;
+  for(const span of sorted) {
+    const {x,end,y,z,material}=span;
+    if(![x,end,y,z,material].every(Number.isSafeInteger) || x<0||x>=end||end>256||y<1||y>=128||z<0||z>=256
+      || material<1||material>4 || (previous && (z<previous.z || z===previous.z && (y<previous.y || y===previous.y && x<previous.end)))) {
+      throw new Error("Invalid compact digest span");
+    }
+    for(let px=x;px<end;px++) {
+      if(at>=bytes.length) throw new Error("Compact digest overflow");
+      bytes[at++]=px;bytes[at++]=y;bytes[at++]=z;bytes[at++]=material;
+    }
+    previous=span;
+  }
+  if(at!==bytes.length) throw new Error("Incomplete compact digest");
+  return `hvp-material-cells-v1:${fnv1a64Bytes(bytes)}`;
 }
 
 const q=MICROVOXEL_BASE_QUANTUM_METERS;
@@ -93,7 +120,8 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
   }
   const recipe:HvpCompactNativeRecipe=Object.freeze({kind:"hvp-compact-native-v1",mass,axes,colliders:Object.freeze(
     shapes.map(b=>Object.freeze({minMeters:meters(b.min),maxMeters:meters(b.max)})))});
-  const identity=Object.freeze({kind:"hvp-compact-runtime-v1" as const,sessionId,epoch,generation,terrainDigest,ownerId});
+  const identity=Object.freeze({kind:"hvp-compact-runtime-v1" as const,sessionId,epoch,generation,terrainDigest,ownerId,
+    membershipDigest:compactRuntimeMembershipDigest(checked,count),registryDigest:HVP_COAST_REGISTRY_DIGEST});
   // Duplicate owner IDs are rejected by the Worker. Exact membership is retained even if an
   // unrelated source in another session or revision happens to have the same FNV32 suffix.
   let spans:readonly Span[]|undefined=checked;
@@ -121,7 +149,7 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
     } finally { task.return(undefined as never); }
   }
   issued.add(recipe);
-  return Object.freeze({
+  const owner=Object.freeze({
     identity,recipe,cellCount:count,bounds:box(min,max),
     readMaterial(x:number,y:number,z:number) {
       if(disposed) throw new Error("Compact owner disposed");
@@ -140,6 +168,7 @@ export function issueHvpCompactNativeOwner(request:HvpTerrainFragmentRequest,bin
       pending??=Promise.resolve().then(()=>buildArchive(credit,yieldTask)).finally(()=>{pending=undefined;});
       return pending;
     },
-    dispose() {disposed=true;spans=undefined;archive=undefined;issued.delete(recipe);}
+    dispose() {disposed=true;spans=undefined;archive=undefined;issued.delete(recipe);issuedOwners.delete(owner);}
   });
+  issuedOwners.add(owner);return owner;
 }

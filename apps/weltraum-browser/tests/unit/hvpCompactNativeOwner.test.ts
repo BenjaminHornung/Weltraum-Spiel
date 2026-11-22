@@ -2,6 +2,7 @@ import {beforeAll,expect,it} from "vitest";
 import {R,initializeHvpRapier} from "../../src/hestia-prototype/physics/rapierPort";
 import {HVP_PLAYER_PROFILE} from "../../src/hestia-prototype/physics/profile";
 import {issueHvpCompactNativeOwner} from "../../src/hestia-prototype/physics/compactNativeOwner";
+import {captureHvpBodyHit,captureHvpCompactBodyHit,prepareHvpBodyCut,stageHvpBodyCut} from "../../src/hestia-prototype/physics/bodyCut";
 import {installHvpRigidBody} from "../../src/hestia-prototype/physics/rigidBody";
 import {prepareHvpTerrainFragmentOwnedSteps,prepareHvpTerrainFragment,type HvpTerrainFragmentRequest} from "../../src/hestia-prototype/physics/terrainFragment";
 import {decodeHvpBody,encodeHvpBody} from "../../src/hestia-prototype/persistence/bodyCheckpoint";
@@ -30,6 +31,31 @@ function fixture() {
       generation:cut.after.revision,terrainDigest:cut.after.sourceDigest}};
   } finally {index.dispose();}
 }
+
+it("binds the moving tool's original compact material hit to the genuine archive through a late recut",async()=>{
+  const {request,binding}=fixture(),budget=ledger(),world=new R.World({x:0,y:0,z:0});
+  const owner=issueHvpCompactNativeOwner(request,binding,budget.reserve),other=issueHvpCompactNativeOwner(request,binding,budget.reserve);
+  const body=installHvpRigidBody(world,owner.recipe,pose),targets=new Map([[request.ownerId,{owner,body}]]);
+  const eye={x:-1,y:1.25,z:-12.5*.125},direction={x:1,y:0,z:0};
+  try{
+    expect(()=>captureHvpCompactBodyHit(world,new Map([[request.ownerId,{owner:other,body}]]),eye,direction,77)).toThrow(/binding/);
+    const contact=captureHvpCompactBodyHit(world,targets,eye,direction,77)!;
+    expect(contact.identity).toBe(owner.identity);expect(contact.issuedTick).toBe(77);
+    expect(contact.materialId).toBe(owner.readMaterial(...contact.cell));expect(contact.materialId).toBeGreaterThan(0);
+    expect(owner.archiveReady()).toBe(false);
+    const late=contact.forStructuralCut(budget.reserve,yieldTask);
+    const rotation=body.rotation();body.setAngvel({x:.1,y:0,z:.25},true);body.setLinvel({x:1,y:0,z:0},true);
+    body.setTranslation({x:8,y:2,z:1},true);world.step();
+    const {hit,target}=await late;
+    expect(hit.cell).toEqual(contact.cell);expect(hit.pose).toBe(contact.pose);expect(hit.issuedTick).toBe(77);
+    expect(hit.sourceDigest).toBe(target.recipe.source.contentHash);expect(hit.sourceDigest).toMatch(/^fnv1a64-v1:/);
+    expect(captureHvpBodyHit(world,new Map([[request.ownerId,target]]),eye,direction,78)).toBeNull();
+    const plan=prepareHvpBodyCut(hit,target,"moving-cut",1),stage=stageHvpBodyCut(world,target,plan);
+    expect(stage.parentPose.position.x).toBeCloseTo(8+1/60,4);expect(stage.removedMomentum.massKg).toBeGreaterThan(0);
+    expect(stage.parentPose.rotation.w).toBeCloseTo(rotation.w,2);stage.commit();stage.finalize();
+    await expect(contact.forStructuralCut(budget.reserve,yieldTask)).rejects.toThrow(/Stale/);
+  }finally{owner.dispose();other.dispose();world.free();budget.release();}
+});
 
 it("publishes the rotated U's exact native collider and inertia before any v1 authority is constructed",async()=>{
   const {request,binding}=fixture(),budget=ledger(),world=new R.World({x:0,y:-9.81,z:0}),reference=new R.World({x:0,y:-9.81,z:0});

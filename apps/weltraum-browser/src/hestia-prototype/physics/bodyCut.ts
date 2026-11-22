@@ -5,6 +5,8 @@ import {assertHvpRigidRecipe,hvpObjectLocalCenterOfMass,type HvpRigidRecipe} fro
 import {prepareHvpLocalBodyCutOwnedHashSteps,prepareHvpLocalBodyCutSteps,readHvpBodyCells} from "./bodyCutPlan";
 import {stageHvpStructuralBreak} from "./structuralBreak";
 import {drainHvpPlanSteps,type HvpPlanProbe} from "./structuralPlan";
+import {isIssuedHvpCompactNativeOwner,type HvpCompactNativeOwner} from "./compactNativeOwner";
+import {ownsHvpCompactBody} from "./rigidBody";
 import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 
 type Vec=Readonly<{x:number;y:number;z:number}>;
@@ -25,7 +27,7 @@ const readerFor=(recipe:HvpRigidRecipe)=>{
   readers.set(recipe,result);return result;
 };
 
-export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number)=>{
+const bodyContact=<T extends {body:R.RigidBody}>(world:R.World,targets:ReadonlyMap<string,T>,eye:Vec,direction:Vec,issuedTick:number)=>{
   if(![eye.x,eye.y,eye.z,direction.x,direction.y,direction.z].every(Number.isFinite)
     ||Math.abs(Math.hypot(direction.x,direction.y,direction.z)-1)>1e-6||!Number.isSafeInteger(issuedTick)||issuedTick<0){throw new Error("Invalid body ray");}
   world.propagateModifiedBodyPositionsToColliders();world.updateSceneQueries();
@@ -34,18 +36,58 @@ export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCutt
   const body=contact?.collider.parent();
   if(!body?.isDynamic()||!contact){return null;}
   const target=[...targets.values()].find(t=>t.body===body);if(!target){return null;}
+  return {target,distance:contact.timeOfImpact};
+};
+const pickContact=(body:R.RigidBody,eye:Vec,direction:Vec,distance:number,center:Vec,{reader,min}:{reader:HvpCellReader;min:HvpCell})=>{
   const position={...body.translation()},rotation={...body.rotation()},inverse={x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w};
   const local=rotateStructuralWorldVector(inverse,{x:eye.x-position.x,y:eye.y-position.y,z:eye.z-position.z});
-  const ray=rotateStructuralWorldVector(inverse,direction),center=hvpObjectLocalCenterOfMass(target.recipe.source,target.recipe.mass.centerOfMassMeters!);
-  const {reader,min}=readerFor(target.recipe),enter=Math.min(4,contact.timeOfImpact+1e-6);
+  const ray=rotateStructuralWorldVector(inverse,direction),enter=Math.min(4,distance+1e-6);
   const picked=pickHvpCell(reader,[local.x+center.x+ray.x*enter,local.y+center.y+ray.y*enter,local.z+center.z+ray.z*enter],
     [ray.x,ray.y,ray.z],4-enter);
   if(picked.kind!=="Hit"){return null;}
-  const hit=Object.freeze({ownerId:target.ownerId,sourceDigest:target.recipe.source.contentHash,revision:target.recipe.source.objectRevision,issuedTick,
-    cell:Object.freeze(picked.cell.map((v,i)=>v+min[i]!)) as HvpCell,
-    pose:Object.freeze({position:Object.freeze(position),rotation:Object.freeze(rotation)})});
+  return {cell:Object.freeze(picked.cell.map((v,i)=>v+min[i]!)) as HvpCell,
+    pose:Object.freeze({position:Object.freeze(position),rotation:Object.freeze(rotation)})};
+};
+export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number)=>{
+  const contact=bodyContact(world,targets,eye,direction,issuedTick);if(!contact){return null;}
+  const {target,distance}=contact;
+  const center=hvpObjectLocalCenterOfMass(target.recipe.source,target.recipe.mass.centerOfMassMeters!);
+  const picked=pickContact(target.body,eye,direction,distance,center,readerFor(target.recipe));if(!picked){return null;}
+  const hit=Object.freeze({ownerId:target.ownerId,sourceDigest:target.recipe.source.contentHash,revision:target.recipe.source.objectRevision,issuedTick,...picked});
   hits.set(hit,{source:target.recipe,body:target.body});return hit;
 };
+
+export interface HvpCompactCuttableBody {readonly owner:HvpCompactNativeOwner; readonly body:R.RigidBody}
+/** The runtime tag remains separate from a Structural v1 source hash. Only the issuing World may
+ * promote this particular hit at the moving-cut archive boundary. Camera or body motion is allowed. */
+export function captureHvpCompactBodyHit(world:R.World,targets:ReadonlyMap<string,HvpCompactCuttableBody>,eye:Vec,direction:Vec,issuedTick:number){
+  const contact=bodyContact(world,targets,eye,direction,issuedTick);if(!contact){return null;}
+  const {body,owner}=contact.target;
+  if(!isIssuedHvpCompactNativeOwner(owner)||!ownsHvpCompactBody(world,body,owner.recipe)){throw new Error("Unissued compact body/source binding");}
+  const {min,max}=owner.bounds,origin=owner.recipe.mass.centerOfMassMeters,ownerId=owner.identity.ownerId;
+  const picked=pickContact(body,eye,direction,contact.distance,origin,{min,reader:{
+    sizeX:max[0]-min[0],sizeY:max[1]-min[1],sizeZ:max[2]-min[2],cellMeters:.125,
+    originMeters:{x:min[0]*.125,y:min[1]*.125,z:min[2]*.125},readSlot:(x,y,z)=>owner.readMaterial(x+min[0],y+min[1],z+min[2])}});
+  if(!picked){return null;}
+  const materialId=owner.readMaterial(...picked.cell);
+  const current=()=>{
+    const live=targets.get(ownerId);
+    if(live?.owner!==owner||live.body!==body||!ownsHvpCompactBody(world,body,owner.recipe)||owner.readMaterial(...picked.cell)!==materialId){
+      throw new Error("Stale compact moving contact");
+    }
+  };
+  current();
+  return Object.freeze({identity:owner.identity,issuedTick,materialId,...picked,
+    async forStructuralCut(credit:StructuralOwnedReserve,yieldTask:()=>Promise<void>){
+      current();const recipe=await owner.materializeV1(credit,yieldTask);current();
+      const archive=readerFor(recipe),local=picked.cell.map((value,i)=>value-archive.min[i]!) as [number,number,number];
+      if(recipe.source.objectId!==ownerId||archive.reader.readSlot(...local)!==materialId){throw new Error("Compact/archive material mismatch");}
+      const hit=Object.freeze({ownerId,sourceDigest:recipe.source.contentHash,revision:recipe.source.objectRevision,issuedTick,...picked});
+      hits.set(hit,{source:recipe,body});
+      return Object.freeze({hit,target:Object.freeze({ownerId,body,recipe,family:"terrain" as const})});
+    }});
+}
+
 export type HvpBodyHit=NonNullable<ReturnType<typeof captureHvpBodyHit>>;
 
 /** Owner-local plan steps for one issued hit; the plan is issued only after the last step. */

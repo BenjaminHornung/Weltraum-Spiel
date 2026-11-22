@@ -702,6 +702,9 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
         if(disposed||staged||terrainHeld||branch?.busy||moving.busy||extraHeld()){throw new Error("Terrain recovery catalog pending");}
         return {world:labCheckpointContext.build(captureWorld(true)),collision:allCollision(),layout:staticLayout??null};
       },
+      publishTerrainCatalog(publish:(assets:HvpTerrainRecoveryAssets)=>void):void {
+        tick.whileStopped(()=>publish(session.captureTerrainAssets()));
+      },
       captureBeforeNativeInstall(binding:HvpTerrainBinding):HvpTerrainMotion{
         const clock=tick.read();
         if(disposed||staged||terrainHeld||branch?.busy||moving.busy||extraHeld()||terrainGeneration!==binding.baseRevision

@@ -8,12 +8,14 @@ import {collisionSectors} from "../../src/hestia-prototype/physics/terrainCollid
 vi.mock("../../src/workers/workerPool",()=>({WorkerPool:class {async start(){} async shutdown(){}}}));
 const floor={sizeX:4,sizeY:16,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0},readSlot:(_x:number,y:number)=>y===0?1:0};
 
-it.each(["delayed","before-L","after-L","after-two","overrun","during-install","bad-prepare","recovery-rejected"] as const)("keeps the normal consumer and real solver coupled across %s delivery",async fault=>{
+it.each(["delayed","before-L","after-L","after-two","overrun","during-install","bad-prepare","recovery-rejected","catalog-demand","catalog-overrun","catalog-paused"] as const)("keeps the normal consumer and real solver coupled across %s delivery",async fault=>{
   type Host={onmessage:(event:MessageEvent<HvpPhysicsMessage>)=>Promise<void>;postMessage:(reply:HvpPhysicsReply)=>void};
   const host=globalThis as unknown as Host,ports=new Map<string,ChannelWorker>(),commands:string[]=[],closing:Promise<void>[]=[];
   const oldOn=Object.getOwnPropertyDescriptor(host,"onmessage");
   let sawBarrier!:()=>void,resume!:()=>void,clockStarted=false;
   const barrier=new Promise<void>(resolve=>{sawBarrier=resolve;}),release=new Promise<void>(resolve=>{resume=resolve;});
+  let clockTime=0;
+  const time=fault.startsWith("catalog-")?vi.spyOn(performance,"now").mockImplementation(()=>clockTime):undefined;
   let catalogReceipts=0,hotProofs=0,faulted=false,oldDelivery:(()=>void)|undefined;
   class ChannelWorker{
     onmessage:((event:MessageEvent<HvpPhysicsReply>)=>void)|null=null;
@@ -53,7 +55,11 @@ it.each(["delayed","before-L","after-L","after-two","overrun","during-install","
       if(fault==="bad-prepare"&&reply.snapshot?.terrainTransaction==="PreparedHeld"&&reply.terrainReceipt?.commandId==="one"){
         reply={...reply,terrainReceipt:{...reply.terrainReceipt,baseDigest:"wrong-digest"}};
       }
-      if(reply.recoveryAssets){expect(clockStarted).toBe(false);catalogReceipts++;}
+      if(reply.recoveryAssets){
+        if(catalogReceipts===0){expect(clockStarted).toBe(false);}
+        else if(fault.startsWith("catalog-")){clockTime+=583;}
+        catalogReceipts++;
+      }
       if(reply.terrainMotion){
         hotProofs++;expect(reply.recoveryAssets).toBeUndefined();
         expect(Object.keys(reply.terrainMotion)).not.toContain("collision");
@@ -83,6 +89,24 @@ it.each(["delayed","before-L","after-L","after-two","overrun","during-install","
     revision:root.read().revision,sourceDigest:root.read().sourceDigest,toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[x,79,56],max:[x+1,80,57]}});
   try{
     await physics.primeTerrainRecovery!();expect(catalogReceipts).toBe(1);expect(commands).not.toContain("PrimeTerrainRecovery");
+    if(fault.startsWith("catalog-")){
+      // An unbound native mutation invalidates the old geometry catalog, as a branch/body mutation does.
+      await physics.prepareTerrain("legacy",0,[{index:0,mesh:{vertices:new Float32Array(),indices:new Uint32Array()}}]);
+      await physics.commitTerrain("legacy");physics.publishTerrain(1);await physics.finalizeTerrain("legacy");
+      expect(physics.read().status).toBe("Running");physics.update();
+      expect(commands).not.toContain("PrimeTerrainRecovery");
+      if(fault==="catalog-paused"){
+        await physics.command("Pause");expect(physics.read().status).toBe("Paused");
+        expect(commands).not.toContain("PrimeTerrainRecovery");
+      }else{
+        clockTime+=fault==="catalog-overrun"?120:9;
+        await physics.primeTerrainRecovery!();nativeTimer();await physics.command("Inspect");
+        expect(physics.read().status).toBe(fault==="catalog-overrun"?"SimulationHold":"Running");
+        expect(physics.read().backlogSeconds).toBeCloseTo(fault==="catalog-overrun"?.120-4/60:.009,6);
+        expect(physics.read().discardedSeconds).toBe(0);
+      }
+      expect(catalogReceipts).toBe(2);expect(physics.lifecycle?.().terrainRecovery?.catalogs).toBe(1);return;
+    }
     if(fault==="overrun"){
       await new Promise(resolve=>setTimeout(resolve,100));nativeTimer();await physics.command("Inspect");
       expect(physics.read().status).toBe("SimulationHold");
@@ -118,7 +142,7 @@ it.each(["delayed","before-L","after-L","after-two","overrun","during-install","
     resume();consumer.dispose();
     if(fault==="recovery-rejected"){await expect(physics.dispose()).rejects.toThrow(/RecoveryHold/);}else{await physics.dispose();}
     expect(physics.lifecycle?.().terrainRecovery).toEqual({catalogs:0,entries:0,sectors:0,fragments:0,held:0});
-    await Promise.allSettled(closing);timer.mockRestore();vi.unstubAllGlobals();
+    await Promise.allSettled(closing);timer.mockRestore();time?.mockRestore();vi.unstubAllGlobals();
     if(oldOn){Object.defineProperty(host,"onmessage",oldOn);}else{Reflect.deleteProperty(host,"onmessage");}
   }
 },60000);

@@ -5,6 +5,10 @@ import {assertHvpRigidRecipe,type HvpRigidRecipe} from "./rigidRecipe";
 import {isIssuedHvpCompactNativeRecipe, type HvpCompactNativeRecipe} from "./compactNativeOwner";
 export {prepareHvpRigidBody,type HvpRigidRecipe} from "./rigidRecipe";
 
+const compactBodies=new WeakMap<R.RigidBody,HvpCompactNativeRecipe>();
+export const ownsHvpCompactBody=(world:R.World,body:R.RigidBody,recipe:HvpCompactNativeRecipe):boolean=>
+  world.getRigidBody(body.handle)===body&&compactBodies.get(body)===recipe&&isIssuedHvpCompactNativeRecipe(recipe);
+
 const zero=Object.freeze({x:0,y:0,z:0});
 const identity=Object.freeze({x:0,y:0,z:0,w:1});
 
@@ -35,7 +39,9 @@ export const installHvpRigidBody = (world:R.World, recipe:HvpRigidRecipe | HvpCo
         principalInertia:recipe.axes.principalInertia,frame:recipe.axes.frame}:{kind:"massless"});
     });
     if(port.bodyColliderCount(ref)!==recipe.colliders.length) { throw new Error("Incomplete exact rigid collision"); }
-    ref.body.enableCcd(true);return ref.body;
+    ref.body.enableCcd(true);
+    if(isIssuedHvpCompactNativeRecipe(recipe)){compactBodies.set(ref.body,recipe);}
+    return ref.body;
   } catch(error) {
     let restored=false,cleanupFailed=false,cleanupError:unknown;
     try {

@@ -43,7 +43,8 @@ export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
       readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean;readonly staticLayout?:HvpChunkStaticLayout;readonly experimentalKernel?:"direct-known-cells-v1"|"owned-moving-subset-v2"|"owned-terrain-subset-v3" }
    | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };
        readonly cutAim?:{x:number;y:number;z:number};readonly measure?:false }
-  | { readonly kind: "Pause" | "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
+  | { readonly kind:"Pause";readonly refreshRecoveryWhilePaused?:true }
+  | { readonly kind: "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
   | { readonly kind: "Impulse"; readonly direction: {x:number;y:number;z:number} }
   | { readonly kind:"PrimeTerrainRecovery" }
   | { readonly kind:"RecoverTerrain";readonly image:HvpTerrainRecoveryImage;readonly measure?:boolean }
@@ -211,7 +212,7 @@ port.onmessage = async ({ data }) => {
       ...(clock.holdTransitions===undefined?{}:{holdTransitions:clock.holdTransitions.map(value=>({...value}))})},timings},incarnation??"",transfers);
   };
   let bodyPreparation:HvpMovingCutPreparation|undefined;
-  let releasingHeld=false,receipt:HvpTerrainBinding|undefined,motion:HvpTerrainMotion|undefined;
+  let releasingHeld=false,receipt:HvpTerrainBinding|undefined,motion:HvpTerrainMotion|undefined,recoveryAssets:HvpTerrainRecoveryAssets|undefined;
   try {
     if (!Number.isSafeInteger(data.id) || data.id < 0) { throw new Error("Invalid physics message id"); }
     if(data.kind==="PrepareTerrain"||data.kind==="CommitTerrain"||data.kind==="RollbackTerrain"||data.kind==="FinalizeTerrain"){
@@ -391,7 +392,10 @@ port.onmessage = async ({ data }) => {
         throw new Error("Native terrain preparation pending");
       }
       if(data.kind==="PrimeTerrainRecovery"){
-        reply({id:data.id,recoveryAssets:session.captureTerrainAssets()});return;
+        const wasRunning=session.readTickClock().status==="Running",begin=performance.now();
+        try{session.publishTerrainCatalog(assets=>reply({id:data.id,recoveryAssets:assets}));}
+        finally{if(wasRunning){releasedPrepareHoldMs+=performance.now()-begin;}}
+        return;
       }
       if(data.kind==="Checkpoint"){if(!publicSession){throw new Error("Public checkpoint owner unavailable");}
         reply({id:data.id,snapshot:publicSession.read(),checkpoint:publicSession.checkpoint()});return;}
@@ -408,7 +412,13 @@ port.onmessage = async ({ data }) => {
       }
       switch (data.kind) {
         case "Read": if (data.input !== undefined) { session.input(data.input); } session.camera(data.cameraOffset);session.aimBranch(data.cutAim); break;
-        case "Pause": session.pause(); break;
+        case "Pause":
+          session.pause();
+          if(data.refreshRecoveryWhilePaused&&session.readTickClock().status==="Paused"){
+            // Geometry capture is optional for Pause. A later cut requires a proven catalog.
+            try{recoveryAssets=session.captureTerrainAssets();}catch{recoveryAssets=undefined;}
+          }
+          break;
         case "Resume": session.resume(); break;
         case "Drop": session.drop(); break;
         case "Impulse": session.impulse(data.direction); break;
@@ -540,7 +550,7 @@ port.onmessage = async ({ data }) => {
       // Deliberately held transaction/pause time is not simulation backlog.
        if(data.kind==="Resume"||data.kind==="Play"||data.kind==="Drop"||releasingHeld){simulationPrevious=performance.now();releasedPrepareHoldMs=0;}
     }
-    reply({ id: data.id,...(receipt?{terrainReceipt:receipt}:{}),...(motion?{terrainMotion:motion}:{}),snapshot: session?.read(data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain"||data.kind==="PrepareBranch"),bodyPreparation });
+    reply({ id: data.id,...(recoveryAssets?{recoveryAssets}:{}),...(receipt?{terrainReceipt:receipt}:{}),...(motion?{terrainMotion:motion}:{}),snapshot: session?.read(data.kind==="Initialize"||data.kind==="InitializeLab"||data.kind==="InitializeFreshLab"||data.kind==="RecoverTerrain"||data.kind==="PrepareBranch"),bodyPreparation });
   } catch (error) {
     if(data.kind==="PrimeTerrainRecovery"||data.kind==="PrepareBodyChildProjection"||data.kind==="PrepareBodyMeshWork"||data.kind==="ReleaseBodyMeshWork"||data.kind==="AdmitBodyChildMesh"||data.kind==="PrepareTerrainPlan"||data.kind==="ReleaseTerrainPlan"){
       reply({id:data.id,rejected:error instanceof Error?error.message:"Transaction rejected"});return;

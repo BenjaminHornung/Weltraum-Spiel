@@ -1,6 +1,7 @@
 // Run against a built Vite preview. CHROMIUM_BIN can select an installed target browser.
 import assert from "node:assert/strict";
 import {chromium} from "playwright";
+import {appendFileSync, writeFileSync} from "node:fs";
 
 const target = new URL("/?hestiaPrototype=1&hvpMeasure=1&hvpScenario=rock-arm",
   process.argv[2] ?? "http://127.0.0.1:4173");
@@ -10,6 +11,7 @@ if (planner === "oracle") target.searchParams.set("hvpCutPlanner", planner);
 const visual=process.env.HVP_CUT_VISUAL;
 if (visual && visual!=="worker" && visual!=="local") throw new Error("Invalid HVP_CUT_VISUAL");
 if (visual) target.searchParams.set("hvpCutVisual",visual);
+if(process.env.HVP_CUT_PRIORITY==="input")target.searchParams.set("hvpCutPriority","input");
 const browser = await chromium.launch({
   executablePath: process.env.CHROMIUM_BIN,
   args: process.env.HVP_SOFTWARE_RENDERER === "1" ? ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] : [],
@@ -20,6 +22,12 @@ try {
   const loadedAssets=[];
   page.on("requestfinished", r => {const n=new URL(r.url()).pathname;if(n.startsWith("/assets/"))loadedAssets.push(n);});
   page.on("pageerror", error => errors.push(error.message));
+  const partial=process.env.HVP_CUT_EVENTS;
+  if(partial){
+    writeFileSync(partial,"",{flag:"wx"});
+    await page.exposeFunction("__hvpCutEvidence",entry=>appendFileSync(partial,JSON.stringify(entry)+"\n"));
+    page.on("crash",()=>appendFileSync(partial,JSON.stringify({kind:"crash"})+"\n"));
+  }
   await page.addInitScript(() => {
     const metrics = new Map();
     const phases=[];
@@ -27,7 +35,11 @@ try {
     const observer = new PerformanceObserver(list => {
       for (const entry of list.getEntries()) {
         if (entry.name.startsWith("hvp.cut") || entry.detail?.data?.commandId) phases.push({name:entry.name,startTime:entry.startTime,duration:entry.duration,detail:entry.detail});
-        if (keep.has(entry.name)) metrics.set(entry.name, {startTime:entry.startTime, duration:entry.duration, detail:entry.detail});
+        if (keep.has(entry.name)) {
+          const observation={startTime:entry.startTime, duration:entry.duration, detail:entry.detail};
+          metrics.set(entry.name,observation);
+          void window.__hvpCutEvidence?.({kind:entry.name,...observation});
+        }
       }
     });
     observer.observe({type:"measure"});

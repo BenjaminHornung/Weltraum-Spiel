@@ -361,7 +361,7 @@ export const copyHvpTerrainSlots=async(source:HvpTerrainSnapshot,cancelled:()=>b
 /** At most two concurrent derived jobs; accepted edits remain in the source owner. */
 type HvpNeighborTimingPhase="primaryCopy"|"eastCopy"|"inputDigest"|"workerWait"|"decode";
 export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,duration:number)=>void),
-  observeNeighbor?:((phase:HvpNeighborTimingPhase,start:number,duration:number)=>void),workerVisualOracle=true) => {
+  observeNeighbor?:((phase:HvpNeighborTimingPhase,start:number,duration:number)=>void),workerVisualOracle=true,inputPriority=false) => {
   const observeNeighborSync=<T>(phase:HvpNeighborTimingPhase,run:()=>T):T=>{
     if(observeNeighbor===undefined){return run();}
     const start=performance.now();
@@ -789,7 +789,7 @@ export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,dura
               const observe=(phase:string)=>trace===undefined?undefined:(_label:string,start:number,duration:number)=>{
                 trace({commandId:plan.request.commandId,thread:"main",phase,origin:performance.timeOrigin,start,duration});
               };
-              const pump=createHvpBodyMeshTaskPump(current,observe("cutStaticCollisionWorkMs"));let retained=0;
+              const pump=createHvpBodyMeshTaskPump(current,observe("cutStaticCollisionWorkMs"),inputPriority);let retained=0;
               try{
                 for(const id of dirty){
                   const previous=cache.collision.get(id);

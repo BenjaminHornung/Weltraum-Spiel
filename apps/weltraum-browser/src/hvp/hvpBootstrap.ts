@@ -880,7 +880,8 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
   let backend: HvpBackend | undefined;
   const weatherView=createHvpWeatherReadView();
   let frameInputs:HvpFrameInputs|undefined;
-  const framePasses=createHvpFramePasses(()=>frameInputs,()=>backend instanceof ThreeRenderBackend?backend:undefined);
+  let readCurrentFrameInputs:()=>HvpFrameInputs|undefined=()=>undefined;
+  const framePasses=createHvpFramePasses(()=>readCurrentFrameInputs(),()=>backend instanceof ThreeRenderBackend?backend:undefined);
   let camera: ReturnType<typeof createHvpCamera> | undefined;
   let hud: ReturnType<typeof createHvpHud> | undefined;
   let physics: HvpPhysicsClient | HvpLabPhysicsClient | undefined;
@@ -1018,7 +1019,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
       await attempt(()=>closingTerrainConsumer?.whenRenderIdle());
       await attempt(()=>terrainCompiler?.dispose());terrainCompiler=undefined;
       liveSupport?.dispose();liveSupport=undefined;
-      framePasses.dispose();weatherView.dispose();frameInputs=undefined;
+      framePasses.dispose();weatherView.dispose();frameInputs=undefined;readCurrentFrameInputs=()=>undefined;
       await attempt(()=>closingBodyConsumer?.whenIdle());
       await attempt(()=>closingTerrainConsumer?.whenIdle());
       await attempt(()=>closingStructuralConsumer?.whenIdle());
@@ -1469,7 +1470,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     terrainCompiler=overrides.createTerrainCompiler?overrides.createTerrainCompiler():createHvpTerrainCompiler(undefined,measurement.enabled?(phase,start,duration)=>{
       const metric={primaryCopy:"NeighborPrimaryCopyMs",eastCopy:"NeighborEastCopyMs",inputDigest:"NeighborInputDigestMs",workerWait:"NeighborWorkerWaitMs",decode:"NeighborDecodeMs"}[phase];
       measurement.record(`${startupMeasuring?"startup":"runtime"}${metric}`,start,duration);
-    }:undefined,!(measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutVisual")==="local"));
+    }:undefined,!(measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutVisual")==="local"),measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutPriority")==="input");
     const preparingCompiler=terrainCompiler,poolPreparationStart=measurement.enabled?performance.now():0;
     await preparingCompiler.prepare(()=>!disposed&&hvpMountEpoch===myEpoch&&terrainCompiler===preparingCompiler&&terrainRoot.read()===initialSource,privateCutSource?terrainRoot:undefined);
     if(measurement.enabled){measurement.record("startupCutPoolPrepareMs",poolPreparationStart,performance.now()-poolPreparationStart);}
@@ -3220,6 +3221,15 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
      let firstReadyFrame=false;
      let residencyDiagnosticFrames=0;
      let physicsTick = -1;
+    // Invalidate a deferred tile even if no subsequent render has refreshed frameInputs.
+    readCurrentFrameInputs=()=>{
+      if(!frameInputs||disposed||saveBusy)return undefined;
+      const live=terrainRoot.read(),native=physics?.read();
+      if(live.revision!==frameInputs.revision||live.sourceDigest!==frameInputs.sourceDigest||
+        live.sessionId!==frameInputs.sessionId||live.epoch!==frameInputs.epoch||renderWorldId!==frameInputs.worldId||
+        native?.terrainGeneration!==frameInputs.revision||native.ticks!==frameInputs.tick)return undefined;
+      return frameInputs;
+    };
     const submitRenderFrame=():RenderCommandResult=>{
       const terrain=terrainRoot.read(),native=physics!.read(),command=terrainConsumer?.read();
       frameInputs=undefined;

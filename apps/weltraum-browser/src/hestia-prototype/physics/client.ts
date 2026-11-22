@@ -288,7 +288,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
   let incarnation=crypto.randomUUID();
   let terrainBinding:HvpTerrainBinding|undefined,baseMotion:HvpTerrainMotion|undefined,forwardMotion:HvpTerrainMotion|undefined;
   let catalog:HvpTerrainRecoveryAssets|undefined,entry:HvpTerrainJournalEntry|undefined,priming:Promise<void>|undefined;
-  let journal:HvpTerrainJournalEntry[]=[],catalogEpoch=0,recoveryEnabled=false;
+  let journal:HvpTerrainJournalEntry[]=[],catalogEpoch=0;
   const matches=(b:HvpTerrainBinding|undefined):boolean=>b!==undefined&&terrainBinding!==undefined
     &&b.commandId===terrainBinding.commandId&&b.sessionId===terrainBinding.sessionId&&b.epoch===terrainBinding.epoch
     &&b.baseRevision===terrainBinding.baseRevision&&b.baseDigest===terrainBinding.baseDigest&&b.targetDigest===terrainBinding.targetDigest;
@@ -346,7 +346,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     const initializing=p?.kind==="Initialize"||p?.kind==="InitializeLab"||p?.kind==="InitializeFreshLab";
     if(initializing&&data.recoveryAssets&&data.snapshot===undefined){
       // Initialization remains pending until the worker reports its live clock and native snapshot.
-      catalog=data.recoveryAssets;recoveryEnabled=true;return;
+      catalog=data.recoveryAssets;return;
     }
     if(initializing&&catalog&&data.snapshot&&data.snapshot.terrainGeneration!==catalog.world.terrainGeneration){
       fail(new Error("Stale terrain startup catalog"));return;
@@ -397,7 +397,6 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
   });
   const primeTerrainRecovery=():Promise<void>=>{
-    recoveryEnabled=true;
     if(catalog&&journal.length<256){return Promise.resolve();}
     if(priming){return priming;}
     const epoch=catalogEpoch;
@@ -777,12 +776,6 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     },
     update() {
       if (disposed || mutating) { return; }
-      if(recoveryEnabled&&!catalog&&!priming&&!bodyPending&&!failure&&snapshot?.terrainTransaction==="Idle"
-        &&snapshot.moving.state==="Idle"&&snapshot.bodyResidencyTransaction==="Idle"){
-        // Rebuild after a non-terrain topology change as soon as the owner is idle.
-        // A later submit will await this same promise if the initial refresh is still running.
-        void primeTerrainRecovery().catch(()=>{});
-      }
       if (busy) { return; }
       busy = true;const readingOwner=worker;
       void send({ kind: "Read", input: playerInput, cameraOffset,cutAim,
@@ -792,7 +785,16 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     async command(kind) {
       if((terrainBinding&&mutating)||((mutating||bodyPending) && kind !== "Pause" && kind !== "Inspect")) { throw new Error("Terrain Pending"); }
       if (kind === "Pause" || kind === "Inspect" || kind === "Play") { playerInput = { x: 0, z: 0, sprint: false, jump: false }; }
-      await send({ kind }, [], !mutating);
+      if(kind!=="Pause"){await send({kind},[],!mutating);return;}
+      if(!mutating&&!bodyPending&&catalogEpoch>0&&(!catalog||journal.length>=256)){
+        const epoch=catalogEpoch;
+        await send({kind,refreshRecoveryWhilePaused:true},[],true,reply=>{
+          if(epoch===catalogEpoch&&reply.recoveryAssets&&reply.snapshot?.status==="Paused"
+            &&reply.recoveryAssets.world.terrainGeneration===reply.snapshot.terrainGeneration){
+            catalog=reply.recoveryAssets;journal=[];
+          }
+        });
+      }else{await send({ kind }, [], !mutating);}
     },
     async prepareTerrain(id,generation,replacements,fragments=[],work,publication) {
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }
@@ -943,7 +945,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         await send({ kind: "Dispose" });
         if(snapshot?.status!=="Disposed"||snapshot.bodyCount!==0||snapshot.colliderCount!==0||clock?.timers!==0){throw new Error("Missing native disposal receipt");}
       }
-      finally { disposed=true;recoveryEnabled=false;catalogEpoch+=1;catalog=undefined;journal=[];clearTerrain();fail(new Error("Physics disposed")); }
+      finally { disposed=true;catalogEpoch+=1;catalog=undefined;journal=[];clearTerrain();fail(new Error("Physics disposed")); }
     }
   };
 };
