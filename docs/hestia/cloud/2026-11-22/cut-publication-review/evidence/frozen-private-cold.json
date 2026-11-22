@@ -1,0 +1,503 @@
+{
+  "commit": "b9fef65a7dc4f08c24da6183af9a7982ff6f5607",
+  "tree": "f1990da4b00fa4199b580ea942327ce65ff508fa",
+  "driverExit": 0,
+  "build": {
+    "expectedRuntimeCommit": "f3fe1d2bf736c8149c81aad2868d4cf892aa31ab",
+    "expectedTree": "f1990da4b00fa4199b580ea942327ce65ff508fa",
+    "checkoutHead": "f3fe1d2bf736c8149c81aad2868d4cf892aa31ab",
+    "checkoutTree": "f1990da4b00fa4199b580ea942327ce65ff508fa",
+    "runtimeInputCount": 632,
+    "runtimeInputMismatches": [],
+    "recordedPriorCutBAssetsMatch": false,
+    "currentRuntimeInputCount": 632,
+    "currentRuntimeSha256": "1beeeb7add3a2d9da8f3266ce59d9b04e87b108a65c964b7b3edc81ef1b289ef",
+    "completeDistFileCount": 98,
+    "completeDistSha256": "ccae9acb2b71c48629658a90b706faf1ea04781052df2fd2d255fb6c7e0f26e8",
+    "currentDistSha256Algorithm": "SHA-256 of sorted SHA256 + 2 spaces + relative path + LF lines",
+    "capturedUtc": "2026-11-22T17:27:30.456813+00:00",
+    "chromiumSha256": "434d2607c55941dcaa7fdd19b0800ee90488922fd9744a6642ef527ba8fabf63",
+    "checkedDistEntries": {
+      "backend-DEfFsDcK.js": "07a571366656c476701cc3bf023e5a89f5f9e692cbccb4cad4d1f695f1d7058e",
+      "browserBridge-DKRLuw0I.js": "1c8fc2d197e4c0d62b9e51c09ff744aebf7587e71a95f2abcd200bffaa519606",
+      "compactTerrainApply-DinS5kZN.js": "7f1a150f6c5ca768b415eacdb53ac41062a264f1ab7fa8599fbd4f0cc7ba333e",
+      "hvpBootstrap-ksbhC1-p.js": "68d0151be85f2b232837893fe10a58965cf203649ad37d05b43543d57efd92e5",
+      "index-B1o3aGCl.js": "d328a2c36c4e1e2bb22b1255991586da3bd7fce22ad20d07000bfc4929bbd980",
+      "index-GeJ96uLU.css": "252d286768f545feda6b7a69f8242535aaa7fbe6645ab93e2fb1500e3941e188",
+      "mainThreadPhysics-DS_3k_1u.js": "f84be2e4cf527f48ec32b2f9c09a62f048ebb95f94dc908865f1758bf3677c75",
+      "physicsWorker-Cb4c_FB-.js": "47075785b457cac4af009e44235ac150389d7a8f347ee9fde889e26d15fcf66d",
+      "rapier_wasm3d_bg-B0dwcyb_.wasm": "f26e8ca898782fc1d903971bfa5c71a4b92bd7ed4c32df05e677faee9e18d0bb",
+      "streamingWorker-DYHRTkdr.js": "09265da316a53ae67a6c684730299241b8981e056745414c7393331c7e6b4518",
+      "surface-lab-B_25lAVh.js": "3c89557ac62df142c8e42371069ca39837fd1e2aee7fad95a84caacd4244e1ed"
+    },
+    "distIndexSha256": "a6a1b6a8bc8f488b735180b84dae6ef57d90e961638d310a9c7aea30e8a7f2c9",
+    "runnerSha256": "69a5c76f25a527799257af8e1ba01bb084f97a94791eb9c998f62876400a4183"
+  },
+  "samples": [
+    {
+      "file": "lab/lab-fresh-result.json",
+      "receiptSha256": "456b4ed157b722774406588e60b1281144f8b142309f5f32ec1e3e887f91d122",
+      "passed": true,
+      "mode": "fresh",
+      "processInstance": "e5388cea-384e-4080-8ff0-e071a76e6261",
+      "liveThreads": 0,
+      "checks": {
+        "source": {
+          "sessionId": "p1-coast",
+          "sourceDigest": "b8fde6b0",
+          "baseDigest": "b8fde6b0",
+          "revision": 0,
+          "size": [
+            256,
+            128,
+            256
+          ]
+        },
+        "chunkPopulation": {
+          "primaryJobs": 256,
+          "primaryEmptyBoth": 76,
+          "eastJobs": 0,
+          "eastCollisionOnlyJobs": 0,
+          "eastEmptyCollision": 0
+        },
+        "initial": {
+          "status": "Running",
+          "solver": "rapier-0.21.0-phy01.migration2:legacy-impulse-v1",
+          "bodies": 3,
+          "colliders": 184,
+          "branchGeneration": 0,
+          "parts": [
+            {
+              "ownerId": "hvp:branch:parent",
+              "anchored": true,
+              "cellCount": 384,
+              "massKg": 450,
+              "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb"
+            }
+          ],
+          "ticks": 0
+        },
+        "fallingBeforeSave": {
+          "tick": 2,
+          "position": {
+            "x": -10.5,
+            "y": 2.992628335952759,
+            "z": -13.25
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.3931486904621124,
+            "z": 0
+          }
+        },
+        "savedMotion": {
+          "position": {
+            "x": -10.5,
+            "y": 2.9569993019104004,
+            "z": -13.25
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.982871949672699,
+            "z": 0
+          }
+        },
+        "cut": {
+          "generation": 1,
+          "last": {
+            "id": "p1-lab-release",
+            "status": "Applied",
+            "removedCells": 64,
+            "removedMassKg": 75
+          },
+          "parts": [
+            {
+              "ownerId": "hvp-branch:r1:p0",
+              "anchored": true,
+              "cellCount": 192,
+              "massKg": 225,
+              "sourceDigest": "fnv1a64-v1:0aaf75536841e427"
+            },
+            {
+              "ownerId": "hvp-branch:r1:p1",
+              "anchored": false,
+              "cellCount": 128,
+              "massKg": 150,
+              "sourceDigest": "fnv1a64-v1:5c16fb39d52126c8"
+            }
+          ]
+        },
+        "persisted": {
+          "slot": "hvp-phy01-migration2-lab-r01",
+          "revision": 1,
+          "signature": "fnv1a32:a4426d0f",
+          "worldSha256": "2e0a0dfd6a694caf0888a7a8c7800e24c3353bcf580e340e0155bda772e9f6dc",
+          "checkpointWireSha256": "eabb3616fb544fee590489ce8270434bc5349e4190603828b7172f175152e98a"
+        },
+        "exportSha256": "19b913c3b84b5e6c34d2cc051ea58d737eb2940c5cb7464cbffc1cc433c597bb",
+        "exportBytes": 222565,
+        "disposed": {
+          "workers": 0,
+          "pendingJobs": 0,
+          "timers": 0,
+          "timingSinkFailures": 0,
+          "terrainRecovery": {
+            "catalogs": 0,
+            "entries": 0,
+            "sectors": 0,
+            "fragments": 0,
+            "held": 0
+          },
+          "listeners": 0,
+          "native": {
+            "status": "Disposed",
+            "bodies": 0,
+            "colliders": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "lab/lab-cold-result.json",
+      "receiptSha256": "959215dd54a6a16dde6f67859aad09ab49eaa456d816f1bc346643ff48b0cee5",
+      "passed": true,
+      "mode": "cold",
+      "processInstance": "fe16a4e7-1892-4ba3-af73-d30fe3a2dc27",
+      "liveThreads": 0,
+      "checks": {
+        "exportSha256": "19b913c3b84b5e6c34d2cc051ea58d737eb2940c5cb7464cbffc1cc433c597bb",
+        "coldPrepareBytes": 33947648,
+        "recipeRetainedBytes": 335424,
+        "source": {
+          "sessionId": "p1-coast",
+          "sourceDigest": "b8fde6b0",
+          "baseDigest": "b8fde6b0",
+          "revision": 0,
+          "size": [
+            256,
+            128,
+            256
+          ]
+        },
+        "chunkPopulation": {
+          "primaryJobs": 256,
+          "primaryEmptyBoth": 76,
+          "eastJobs": 0,
+          "eastCollisionOnlyJobs": 0,
+          "eastEmptyCollision": 0
+        },
+        "initial": {
+          "status": "Paused",
+          "solver": "rapier-0.21.0-phy01.migration2:legacy-impulse-v1",
+          "bodies": 4,
+          "colliders": 184,
+          "branchGeneration": 1,
+          "parts": [
+            {
+              "ownerId": "hvp-branch:r1:p0",
+              "anchored": true,
+              "cellCount": 192,
+              "massKg": 225,
+              "sourceDigest": "fnv1a64-v1:0aaf75536841e427"
+            },
+            {
+              "ownerId": "hvp-branch:r1:p1",
+              "anchored": false,
+              "cellCount": 128,
+              "massKg": 150,
+              "sourceDigest": "fnv1a64-v1:5c16fb39d52126c8"
+            }
+          ],
+          "ticks": 5
+        },
+        "restoredMotion": {
+          "position": {
+            "x": -10.5,
+            "y": 2.9569993019104004,
+            "z": -13.25
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.982871949672699,
+            "z": 0
+          }
+        },
+        "fallingBeforeRecut": {
+          "tick": 7,
+          "position": {
+            "x": -10.5,
+            "y": 2.916865348815918,
+            "z": -13.25
+          },
+          "velocity": {
+            "x": 0,
+            "y": -1.3760204315185547,
+            "z": 0
+          }
+        },
+        "recut": {
+          "receipt": {
+            "id": "p1-lab-recut",
+            "status": "Applied",
+            "parentId": "hvp-branch:r1:p1",
+            "children": [
+              "hvp-branch:r1:p1:r1:p0"
+            ],
+            "removedCells": 1,
+            "removedMassKg": 1.171875,
+            "issuedTick": 7,
+            "commitTick": 7,
+            "parentPose": {
+              "position": {
+                "x": -10.5,
+                "y": 2.916865348815918,
+                "z": -13.25
+              },
+              "rotation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+              },
+              "velocity": {
+                "x": 0,
+                "y": -1.3760204315185547,
+                "z": 0
+              },
+              "angularVelocity": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            },
+            "removedMomentum": {
+              "massKg": 1.171875,
+              "referencePoint": {
+                "x": -10.5,
+                "y": 2.916865348815918,
+                "z": -13.25
+              },
+              "center": {
+                "x": -10.6875,
+                "y": 2.979365348815918,
+                "z": -13.4375
+              },
+              "linear": {
+                "x": 0,
+                "y": -1.6125239431858063,
+                "z": 0
+              },
+              "angular": {
+                "x": -0.3023482393473387,
+                "y": 0,
+                "z": 0.3023482393473387
+              }
+            }
+          },
+          "priorSequence": 0,
+          "afterSequence": 1,
+          "parentMassKg": 150,
+          "remainingMassKg": 148.828125,
+          "checkpointTick": 7
+        },
+        "resave": {
+          "slot": "hvp-phy01-migration2-lab-r01",
+          "revision": 2,
+          "signature": "fnv1a32:4962b646",
+          "bytes": 223909,
+          "sha256": "746c8122cfe2b9f60c13ee8e4767c18be4579f68d4c9182cc348bb32bcfe6207"
+        },
+        "disposed": {
+          "workers": 0,
+          "pendingJobs": 0,
+          "timers": 0,
+          "timingSinkFailures": 0,
+          "terrainRecovery": {
+            "catalogs": 0,
+            "entries": 0,
+            "sectors": 0,
+            "fragments": 0,
+            "held": 0
+          },
+          "listeners": 0,
+          "native": {
+            "status": "Disposed",
+            "bodies": 0,
+            "colliders": 0
+          }
+        }
+      }
+    },
+    {
+      "file": "cross-lab/lab-cold-result.json",
+      "receiptSha256": "bf9eaeefdf12aee0f05eb1271975e2f6559564be4552acbf72ecff6b12fe7606",
+      "passed": true,
+      "mode": "cold",
+      "processInstance": "2f9cdbd0-86e7-4482-8109-9b53d974c411",
+      "liveThreads": 0,
+      "checks": {
+        "exportSha256": "c91743087ccbc69e568710ce0ecf1498a1860a967b5f46bec7542c1d4a5fd2a0",
+        "coldPrepareBytes": 33947648,
+        "recipeRetainedBytes": 335424,
+        "source": {
+          "sessionId": "p1-coast",
+          "sourceDigest": "b8fde6b0",
+          "baseDigest": "b8fde6b0",
+          "revision": 0,
+          "size": [
+            256,
+            128,
+            256
+          ]
+        },
+        "chunkPopulation": {
+          "primaryJobs": 256,
+          "primaryEmptyBoth": 76,
+          "eastJobs": 0,
+          "eastCollisionOnlyJobs": 0,
+          "eastEmptyCollision": 0
+        },
+        "initial": {
+          "status": "Paused",
+          "solver": "rapier-0.21.0-phy01.migration2:legacy-impulse-v1",
+          "bodies": 4,
+          "colliders": 184,
+          "branchGeneration": 1,
+          "parts": [
+            {
+              "ownerId": "hvp-branch:r1:p0",
+              "anchored": true,
+              "cellCount": 192,
+              "massKg": 225,
+              "sourceDigest": "fnv1a64-v1:0aaf75536841e427"
+            },
+            {
+              "ownerId": "hvp-branch:r1:p1",
+              "anchored": false,
+              "cellCount": 128,
+              "massKg": 150,
+              "sourceDigest": "fnv1a64-v1:5c16fb39d52126c8"
+            }
+          ],
+          "ticks": 2
+        },
+        "restoredMotion": {
+          "position": {
+            "x": -10.5,
+            "y": 2.992628335952759,
+            "z": -13.25
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.3931486904621124,
+            "z": 0
+          }
+        },
+        "fallingBeforeRecut": {
+          "tick": 5,
+          "position": {
+            "x": -10.5,
+            "y": 2.9569993019104004,
+            "z": -13.25
+          },
+          "velocity": {
+            "x": 0,
+            "y": -0.982871949672699,
+            "z": 0
+          }
+        },
+        "recut": {
+          "receipt": {
+            "id": "p1-lab-recut",
+            "status": "Applied",
+            "parentId": "hvp-branch:r1:p1",
+            "children": [
+              "hvp-branch:r1:p1:r1:p0"
+            ],
+            "removedCells": 1,
+            "removedMassKg": 1.171875,
+            "issuedTick": 5,
+            "commitTick": 5,
+            "parentPose": {
+              "position": {
+                "x": -10.5,
+                "y": 2.9569993019104004,
+                "z": -13.25
+              },
+              "rotation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+              },
+              "velocity": {
+                "x": 0,
+                "y": -0.982871949672699,
+                "z": 0
+              },
+              "angularVelocity": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            },
+            "removedMomentum": {
+              "massKg": 1.171875,
+              "referencePoint": {
+                "x": -10.5,
+                "y": 2.9569993019104004,
+                "z": -13.25
+              },
+              "center": {
+                "x": -10.6875,
+                "y": 3.0194993019104004,
+                "z": -13.4375
+              },
+              "linear": {
+                "x": 0,
+                "y": -1.151803066022694,
+                "z": 0
+              },
+              "angular": {
+                "x": -0.21596307487925515,
+                "y": 0,
+                "z": 0.21596307487925515
+              }
+            }
+          },
+          "priorSequence": 0,
+          "afterSequence": 1,
+          "parentMassKg": 150,
+          "remainingMassKg": 148.828125,
+          "checkpointTick": 5
+        },
+        "resave": {
+          "slot": "hvp-phy01-migration2-lab-r01",
+          "revision": 2,
+          "signature": "fnv1a32:2bdf0265",
+          "bytes": 223906,
+          "sha256": "c60f362871def23cd3199ca41abc48830eb73a706b4f07e552bb6fd66fa9c078"
+        },
+        "disposed": {
+          "workers": 0,
+          "pendingJobs": 0,
+          "timers": 0,
+          "timingSinkFailures": 0,
+          "terrainRecovery": {
+            "catalogs": 0,
+            "entries": 0,
+            "sectors": 0,
+            "fragments": 0,
+            "held": 0
+          },
+          "listeners": 0,
+          "native": {
+            "status": "Disposed",
+            "bodies": 0,
+            "colliders": 0
+          }
+        }
+      }
+    }
+  ]
+}

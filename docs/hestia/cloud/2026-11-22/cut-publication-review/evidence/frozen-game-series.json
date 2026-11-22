@@ -1,0 +1,182 @@
+{
+  "commit": "b9fef65a7dc4f08c24da6183af9a7982ff6f5607",
+  "tree": "f1990da4b00fa4199b580ea942327ce65ff508fa",
+  "seriesExit": 1,
+  "hardware": "Shared cloud Chromium 149 / SwiftShader",
+  "pairs": 2,
+  "referenceDeviceVerified": false,
+  "physicalPresentationMeasured": false,
+  "summarySha256": "9085d7c3545e4d513e82578d90aa9b4a6066e9dee44e4e00e2a05515d6126104",
+  "attempts": [
+    {
+      "placement": "worker",
+      "exit": 1,
+      "error": "page.waitForFunction: Timeout 65000ms exceeded.",
+      "sourceLine": "70",
+      "eventsSha256": "a0128072c3985deb4ec940c6c04afbe3b90d35d6d0c3331024be6781c37f46ec",
+      "events": [
+        "{\"kind\":\"crash\"}"
+      ]
+    },
+    {
+      "placement": "main",
+      "exit": 1,
+      "error": "page.waitForFunction: Timeout 40000ms exceeded.",
+      "sourceLine": "93",
+      "eventsSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "placement": "main",
+      "exit": 1,
+      "error": "page.waitForFunction: Timeout 40000ms exceeded.",
+      "sourceLine": "93",
+      "eventsSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "placement": "worker",
+      "exit": 0,
+      "physicsMs": 275.5,
+      "submitMs": 2180.89985351637,
+      "result": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "gameplay": {
+        "inputToReleaseMs": 275.400146484375,
+        "inputToFirstStepMs": 297.800048828125,
+        "inputToGameplayReadyMs": 275.5
+      },
+      "criticalPath": {
+        "scope": "Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
+        "complete": true,
+        "placement": "worker",
+        "handler": 1,
+        "crossThreadDeliveries": 2,
+        "dispatches": 1,
+        "replies": 1,
+        "recoveryMessages": 0,
+        "collisionResumes": 0,
+        "copyResumes": 0,
+        "planResumes": 0,
+        "recoveryMailbox": {
+          "writes": 2,
+          "timedWrites": 1,
+          "bodies": 5,
+          "captureAndCloneMs": 0.30000000447034836
+        },
+        "activationDispatches": 1,
+        "activationReplies": 1,
+        "observedStagesThroughRelease": 4,
+        "observedStages": 3,
+        "targetStages": 3,
+        "withinStageBudget": true,
+        "activeElapsedMs": {
+          "index": 12.800000000745058,
+          "staticCollision": 3.399999998509884,
+          "nativePlan": 6.300000000745058
+        }
+      },
+      "frameBoundariesAfterAckBeforeSubmit": 9,
+      "activeCutFrameIntervalsMs": {
+        "n": 4,
+        "p50": 100,
+        "p95": 233.20000000000073,
+        "p99": 233.20000000000073,
+        "max": 233.20000000000073
+      },
+      "observedSolverStepsMs": {
+        "n": 236,
+        "p50": 0.30000000074505806,
+        "p95": 1.8999999985098839,
+        "p99": 7.5,
+        "max": 38.5
+      },
+      "eventsSha256": "0c65ff696c5115e987aad5ab6b9c56e96b58e94d3beba58755dbcb3680cbf297"
+    }
+  ],
+  "byPlacement": {
+    "worker": {
+      "checks": {
+        "complete": false,
+        "everyCutUnderLimit": false,
+        "everySolverReleasedUnderLimit": false,
+        "everyCutWithinStageBudget": false,
+        "solverWithinBudget": true,
+        "framesWithinBudget": false,
+        "passed": false
+      },
+      "cutFrameIntervalsMs": {
+        "n": 4,
+        "p50": 100,
+        "p95": 233.20000000000073,
+        "p99": 233.20000000000073,
+        "max": 233.20000000000073
+      },
+      "solverStepsMs": {
+        "n": 236,
+        "p50": 0.30000000074505806,
+        "p95": 1.8999999985098839,
+        "p99": 7.5,
+        "max": 38.5
+      },
+      "attempted": 2,
+      "completed": 1,
+      "inputToPublicationMs": {
+        "n": 1,
+        "p50": 275.5,
+        "p95": 275.5,
+        "p99": 275.5,
+        "max": 275.5
+      },
+      "inputToGameplayReadyMs": {
+        "n": 1,
+        "p50": 275.5,
+        "p95": 275.5,
+        "p99": 275.5,
+        "max": 275.5
+      },
+      "meetingGameplay10ms": 0,
+      "meeting10ms": 0,
+      "meetingThreeStages": 1,
+      "meetingSolverP95": 1,
+      "meetingFrameIntervalP95AndP99": 0
+    },
+    "main": {
+      "checks": {
+        "complete": false,
+        "everyCutUnderLimit": false,
+        "everySolverReleasedUnderLimit": false,
+        "everyCutWithinStageBudget": false,
+        "solverWithinBudget": false,
+        "framesWithinBudget": false,
+        "passed": false
+      },
+      "cutFrameIntervalsMs": {
+        "n": 0
+      },
+      "solverStepsMs": {
+        "n": 0
+      },
+      "attempted": 2,
+      "completed": 0,
+      "inputToPublicationMs": {
+        "n": 0
+      },
+      "inputToGameplayReadyMs": {
+        "n": 0
+      },
+      "meetingGameplay10ms": 0,
+      "meeting10ms": 0,
+      "meetingThreeStages": 0,
+      "meetingSolverP95": 0,
+      "meetingFrameIntervalP95AndP99": 0
+    }
+  }
+}

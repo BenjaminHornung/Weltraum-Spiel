@@ -1,0 +1,89 @@
+{
+  "commit": "b9fef65a7dc4f08c24da6183af9a7982ff6f5607",
+  "tree": "f1990da4b00fa4199b580ea942327ce65ff508fa",
+  "exit": 0,
+  "measurement": "Trusted DOM mousedown to first observed matching HUD receipt plus native generation, which includes presentation of that HUD snapshot in the DOM. This does not locate native publication or actual display.",
+  "scope": "DOM input to HUD receipt and physics snapshot for the same revision",
+  "results": [
+    {
+      "performanceMode": false,
+      "version": "149.0.7827.0",
+      "softwareRenderer": true,
+      "loaded": {
+        "/assets/hvpBootstrap-ksbhC1-p.js": "68d0151be85f2b232837893fe10a58965cf203649ad37d05b43543d57efd92e5",
+        "/assets/physicsWorker-Cb4c_FB-.js": "47075785b457cac4af009e44235ac150389d7a8f347ee9fde889e26d15fcf66d"
+      },
+      "outcome": {
+        "passed": true,
+        "hudElapsedMs": 377.19999999925494,
+        "seen": true,
+        "result": {
+          "hudObserved": 20043.60000000149,
+          "receipt": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "generation": 1,
+          "fragments": [
+            {
+              "id": "hvp:terrain-fragment:r1:1b4aa69d",
+              "cells": 384,
+              "massKg": 1722.65625
+            }
+          ],
+          "status": "Running"
+        },
+        "input": 19666.400000002235,
+        "inputTarget": "debug-scene",
+        "testBridge": false,
+        "measureMounts": 0
+      }
+    },
+    {
+      "performanceMode": true,
+      "version": "149.0.7827.0",
+      "softwareRenderer": true,
+      "loaded": {
+        "/assets/hvpBootstrap-ksbhC1-p.js": "68d0151be85f2b232837893fe10a58965cf203649ad37d05b43543d57efd92e5",
+        "/assets/physicsWorker-Cb4c_FB-.js": "47075785b457cac4af009e44235ac150389d7a8f347ee9fde889e26d15fcf66d"
+      },
+      "outcome": {
+        "passed": true,
+        "hudElapsedMs": 141.69999999925494,
+        "seen": true,
+        "result": {
+          "hudObserved": 18597.60000000149,
+          "receipt": {
+            "commandId": "cut-1",
+            "status": "Applied",
+            "removedCells": 64,
+            "reason": "Terrain and collision committed",
+            "revision": 1,
+            "transferredCells": 384,
+            "transferredMassKg": 1722.65625,
+            "materialRemovedKg": 300
+          },
+          "generation": 1,
+          "fragments": [
+            {
+              "id": "hvp:terrain-fragment:r1:1b4aa69d",
+              "cells": 384,
+              "massKg": 1722.65625
+            }
+          ],
+          "status": "Running"
+        },
+        "input": 18455.900000002235,
+        "inputTarget": "debug-scene",
+        "testBridge": false,
+        "measureMounts": 0
+      }
+    }
+  ]
+}
