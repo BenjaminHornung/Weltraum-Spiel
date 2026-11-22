@@ -1,0 +1,72 @@
+{
+  "localSourceCommit": "31cfad6607806d39e3474578dc4d23f8d73250b8",
+  "browser": "149.0.7827.0",
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "result": {
+    "commandId": "cut-1",
+    "status": "Applied",
+    "removedCells": 64,
+    "reason": "Terrain and collision committed",
+    "revision": 1,
+    "transferredCells": 384,
+    "transferredMassKg": 1722.65625,
+    "materialRemovedKg": 300
+  },
+  "loadedAssets": [
+    "/assets/backend-qdmxEOIX.js",
+    "/assets/compactTerrainApply-CIShmqZa.js",
+    "/assets/hvpBootstrap-Dt3EnB8K.js",
+    "/assets/index-GeJ96uLU.css",
+    "/assets/index-x5VYwfvm.js",
+    "/assets/physicsWorker-BaId_rRi.js",
+    "/assets/streamingWorker-DYHRTkdr.js"
+  ],
+  "documentTimeOrigin": 1795368263727.6,
+  "inputTimeStamp": 20234.099999997765,
+  "cutWork": {
+    "scope": "Indexed terrain cut, client/physics transport envelopes, main & native plan pump resumes",
+    "complete": true,
+    "placement": "worker",
+    "handler": 1,
+    "crossThreadDeliveries": 2,
+    "dispatches": 1,
+    "replies": 1,
+    "recoveryMessages": 0,
+    "collisionResumes": 0,
+    "copyResumes": 0,
+    "planResumes": 0,
+    "recoveryMailbox": {
+      "writes": 2,
+      "timedWrites": 1,
+      "bodies": 5,
+      "captureAndCloneMs": 0.29999999701976776
+    },
+    "observedStages": 3,
+    "targetStages": 3,
+    "withinStageBudget": true,
+    "activeElapsedMs": {
+      "index": 13.600000001490116,
+      "staticCollision": 3,
+      "nativePlan": 6.399999998509884
+    }
+  },
+  "activation": {
+    "commandId": "cut-1",
+    "publishedEpochMs": 1795368284288,
+    "releasedEpochMs": 1795368284513.4,
+    "releaseRequestId": 18,
+    "releaseCommandKind": "Read",
+    "holdMs": 225.39999999850988,
+    "skippedTimerCallbacks": 15,
+    "commitTick": 60,
+    "firstStepTick": 61,
+    "firstStepEpochMs": 1795368284542.9,
+    "firstStepAfterMs": 254.89999999850988
+  },
+  "inputToQueryableAckMs": 551.6000000014901,
+  "inputToSolverReleaseMs": 551.69970703125,
+  "inputToFirstStepMs": 581.19970703125,
+  "inputToRenderSubmitMs": 4952.400097656995,
+  "sourceLogSha256": "84069c589f4b7f21bd37155748421d14269d23704835a2920a1631d539fc3939",
+  "processExit": 0
+}

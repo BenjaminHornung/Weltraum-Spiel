@@ -1,0 +1,297 @@
+{
+  "browser": "149.0.7827.0",
+  "viewport": {
+    "width": 640,
+    "height": 400
+  },
+  "referenceDeviceVerified": false,
+  "first": {
+    "receipt": {
+      "commandId": "cut-1",
+      "status": "Applied",
+      "removedCells": 64,
+      "reason": "Terrain and collision committed",
+      "revision": 1,
+      "transferredCells": 384,
+      "transferredMassKg": 1722.65625,
+      "materialRemovedKg": 300
+    },
+    "fragment": {
+      "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+      "sourceDigest": "hvp-material-cells-v1:02005d2b8da9f1c1",
+      "centerOfMass": {
+        "x": 23.50561224489796,
+        "y": 10.49158163265306,
+        "z": 9.755612244897959
+      },
+      "cellCount": 384,
+      "massKg": 1722.65625,
+      "colliders": 1,
+      "sourceBytes": 262144
+    },
+    "fallenPose": {
+      "x": 7.534614562988281,
+      "y": 0.9915060997009277,
+      "z": -5.204206943511963
+    },
+    "hit": {
+      "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+      "sourceDigest": "hvp-material-cells-v1:02005d2b8da9f1c1",
+      "revision": 0,
+      "issuedTick": 937,
+      "cell": [
+        189,
+        85,
+        76
+      ],
+      "pose": {
+        "position": {
+          "x": 7.534614562988281,
+          "y": 0.9915060997009277,
+          "z": -5.204206943511963
+        },
+        "rotation": {
+          "x": -1.8425926100462675e-05,
+          "y": 0.5355134010314941,
+          "z": -1.427653569407994e-05,
+          "w": 0.8445268273353577
+        }
+      }
+    }
+  },
+  "recut": null,
+  "toolReceipt": {
+    "id": "moving-cut-1",
+    "status": "Rejected",
+    "reason": "Error: SimulationHold: body stage requires a running or player-paused World"
+  },
+  "threadCpu": {
+    "sampled": true,
+    "kernelTickMs": 10,
+    "byRole": {
+      "main": {
+        "pid": 71,
+        "tid": 71,
+        "samples": 2232,
+        "phases": [
+          {
+            "name": "beginAndTransport",
+            "elapsedMs": 573.5,
+            "cpuLowerMs": 80,
+            "cpuUpperMs": 140
+          },
+          {
+            "name": "hvp.cutBodyOwnerPlanMs",
+            "elapsedMs": 532.5,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 60
+          },
+          {
+            "name": "hvp.cutBodyMeshWorkerMs",
+            "elapsedMs": 74,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 40
+          },
+          {
+            "name": "hvp.cutBodyNativeAdmissionMs",
+            "elapsedMs": 26.100000001490116,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyRenderStageMs",
+            "elapsedMs": 9.900000002235174,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 40
+          },
+          {
+            "name": "hvp.cutBodyInputToRejectedMs",
+            "elapsedMs": 1272.300048828125,
+            "cpuLowerMs": 160,
+            "cpuUpperMs": 210
+          },
+          {
+            "name": "hvp.cutBodyTotalRejectedMs",
+            "elapsedMs": 1270.5999999977648,
+            "cpuLowerMs": 160,
+            "cpuUpperMs": 210
+          },
+          {
+            "name": "hvp.cutBodyMeshReleaseMs",
+            "elapsedMs": 2.400000002235174,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          }
+        ]
+      },
+      "physicsWorker-COoqw_tA.js#2": {
+        "pid": 71,
+        "tid": 106,
+        "samples": 2232,
+        "phases": [
+          {
+            "name": "beginAndTransport",
+            "elapsedMs": 573.5,
+            "cpuLowerMs": 140,
+            "cpuUpperMs": 200
+          },
+          {
+            "name": "hvp.cutBodyOwnerPlanMs",
+            "elapsedMs": 532.5,
+            "cpuLowerMs": 300,
+            "cpuUpperMs": 350
+          },
+          {
+            "name": "hvp.cutBodyMeshWorkerMs",
+            "elapsedMs": 74,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 30
+          },
+          {
+            "name": "hvp.cutBodyNativeAdmissionMs",
+            "elapsedMs": 26.100000001490116,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 40
+          },
+          {
+            "name": "hvp.cutBodyRenderStageMs",
+            "elapsedMs": 9.900000002235174,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyInputToRejectedMs",
+            "elapsedMs": 1272.300048828125,
+            "cpuLowerMs": 490,
+            "cpuUpperMs": 540
+          },
+          {
+            "name": "hvp.cutBodyTotalRejectedMs",
+            "elapsedMs": 1270.5999999977648,
+            "cpuLowerMs": 490,
+            "cpuUpperMs": 540
+          },
+          {
+            "name": "hvp.cutBodyMeshReleaseMs",
+            "elapsedMs": 2.400000002235174,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          }
+        ]
+      },
+      "streamingWorker-DYHRTkdr.js#1": {
+        "pid": 71,
+        "tid": 99,
+        "samples": 2232,
+        "phases": [
+          {
+            "name": "beginAndTransport",
+            "elapsedMs": 573.5,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyOwnerPlanMs",
+            "elapsedMs": 532.5,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyMeshWorkerMs",
+            "elapsedMs": 74,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyNativeAdmissionMs",
+            "elapsedMs": 26.100000001490116,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyRenderStageMs",
+            "elapsedMs": 9.900000002235174,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyInputToRejectedMs",
+            "elapsedMs": 1272.300048828125,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyTotalRejectedMs",
+            "elapsedMs": 1270.5999999977648,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyMeshReleaseMs",
+            "elapsedMs": 2.400000002235174,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          }
+        ]
+      },
+      "streamingWorker-DYHRTkdr.js#0": {
+        "pid": 71,
+        "tid": 98,
+        "samples": 2232,
+        "phases": [
+          {
+            "name": "beginAndTransport",
+            "elapsedMs": 573.5,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyOwnerPlanMs",
+            "elapsedMs": 532.5,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyMeshWorkerMs",
+            "elapsedMs": 74,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 40
+          },
+          {
+            "name": "hvp.cutBodyNativeAdmissionMs",
+            "elapsedMs": 26.100000001490116,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 30
+          },
+          {
+            "name": "hvp.cutBodyRenderStageMs",
+            "elapsedMs": 9.900000002235174,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          },
+          {
+            "name": "hvp.cutBodyInputToRejectedMs",
+            "elapsedMs": 1272.300048828125,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 40
+          },
+          {
+            "name": "hvp.cutBodyTotalRejectedMs",
+            "elapsedMs": 1270.5999999977648,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 40
+          },
+          {
+            "name": "hvp.cutBodyMeshReleaseMs",
+            "elapsedMs": 2.400000002235174,
+            "cpuLowerMs": 0,
+            "cpuUpperMs": 20
+          }
+        ]
+      }
+    }
+  },
+  "worker": "http://127.0.0.1:46151/assets/physicsWorker-COoqw_tA.js",
+  "error": "AssertionError [ERR_ASSERTION]: Error: SimulationHold: body stage requires a running or player-paused World\n+ actual - expected\n\n+ 'Rejected'\n- 'Applied'\n\n    at file:///workspace/scratch/5b1f8c0d748a/followup-player-compact/apps/weltraum-browser/tests/performance/cut-moving-player.mjs:188:10",
+  "sha256Original": "b9c8b1ebab9d95a10949f658a237dd7ee070ffa51121e012f6a160ffc07804e4"
+}
