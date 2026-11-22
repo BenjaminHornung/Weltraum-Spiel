@@ -1,7 +1,8 @@
 import { resolveHvpGravity, HVP_INERTIA_CELLS, HVP_INERTIA_KEY, HVP_PLAYER_PROFILE, HVP_SOLVER_VERSION, assertHvpPublicSaveCutover } from "./profile";
 import {validateHvpChunkStaticLayout,validateHvpChunkCollisionSteps,type HvpChunkStaticLayout} from "./staticTerrainLayout";
 export { resolveHvpGravity } from "./profile";
-import { R, initializeHvpRapier, isHvpSolidNonKinematicCollider } from "./rapierPort";
+import { R, initializeHvpRapier } from "./rapierPort";
+import {castHvpPlayerRay, type HvpPlayerContact} from "./playerAimRay";
 import { createHvpTick, HVP_PHYSICS_DT } from "./tick";
 import type { HvpCollisionSector } from "./terrainColliders";
 import { createHvpLocomotion, type HvpCollisionCoverage, type HvpPlayerInput } from "../player/locomotion";
@@ -539,7 +540,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
     const currentBodyHost=()=>moving.resources()?.reservedBytes?borrowedBodyHost:bodyPlanHost;
     let externalBodyMeshWork:{id:string;budget:HvpBodyMeshBudget;release:()=>void}|undefined;
     let impulseTarget:HvpImpulseTarget=noImpulseTarget;
-    const queryImpulse=(direction?:Readonly<{x:number;y:number;z:number}>):{
+    const queryImpulse=(direction?:Readonly<{x:number;y:number;z:number}>,contact?:HvpPlayerContact):{
       preview:HvpImpulseTarget;reason:string;body?:R.RigidBody;magnitude?:number
     }=>{
       const blocked=(kind:HvpImpulseTarget["kind"],reason:string)=>({preview:Object.freeze({...noImpulseTarget,kind}),reason});
@@ -549,9 +550,7 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       if(!direction||![direction.x,direction.y,direction.z].every(Number.isFinite)||Math.abs(Math.hypot(direction.x,direction.y,direction.z)-1)>1e-6){return blocked("InvalidAim","Invalid aim");}
       if(tick.read().ticks-lastImpulseTick<15){return blocked("Cooldown","Cooldown 250 ms");}
       const origin={x:avatar.position.x,y:avatar.position.y+HVP_PLAYER_PROFILE.eyeHeight-HVP_PLAYER_PROFILE.height/2,z:avatar.position.z};
-      world.propagateModifiedBodyPositionsToColliders();world.updateSceneQueries();
-      const hit=world.castRayAndGetNormal(new R.Ray(origin,direction),4,true,undefined,undefined,undefined,undefined,
-        isHvpSolidNonKinematicCollider);
+      const hit=contact===undefined?castHvpPlayerRay(world,origin,direction):contact;
       if(!hit){return blocked("NoContact","No contact within 4 m");}
       const point=Object.freeze({x:origin.x+direction.x*hit.timeOfImpact,y:origin.y+direction.y*hit.timeOfImpact,z:origin.z+direction.z*hit.timeOfImpact});
       const body=hit.collider.parent();
@@ -831,9 +830,14 @@ const physicsSessionFor = <C extends HvpWorldCheckpoint|HvpLabWorldCheckpoint>(w
       input(value: HvpPlayerInput): void { character?.setInput(value); },
       camera(offset?: Readonly<{ x: number; y: number; z: number }>): void { character?.setCameraOffset(offset); },
       aimBranch(direction?:Readonly<{x:number;y:number;z:number}>):void {
-        impulseTarget=queryImpulse(direction).preview;
-        if(branch&&!branch.busy) {branch.preview(character?.read().status==="Walking"&&tick.read().status==="Running"?playerEye():undefined,direction);}
-        moving.preview(character?.read().status==="Walking"&&tick.read().status==="Running"?playerEye():undefined,direction,tick.read().ticks);
+        const clock=tick.read(),eye=character?.read().status==="Walking"&&clock.status==="Running"?playerEye():undefined;
+        if(eye&&direction&&(![direction.x,direction.y,direction.z].every(Number.isFinite)||Math.abs(Math.hypot(direction.x,direction.y,direction.z)-1)>1e-6)){
+          throw new Error("Invalid body ray");
+        }
+        const contact=eye&&direction?castHvpPlayerRay(world,eye,direction):null;
+        impulseTarget=queryImpulse(direction,contact).preview;
+        if(branch&&!branch.busy){branch.preview(eye,direction,contact);}
+        moving.preview(eye,direction,clock.ticks,contact);
       },
       beginBodyCut(request:HvpMovingCutRequest){
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Running"){throw new Error("Moving cut unavailable");}

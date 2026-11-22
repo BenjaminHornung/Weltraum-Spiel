@@ -3,7 +3,8 @@ import {R,initializeHvpRapier} from "../../src/hestia-prototype/physics/rapierPo
 import {HVP_PHYSICS_DT} from "../../src/hestia-prototype/physics/tick";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
 import {installHvpRigidBody,prepareHvpRigidBody} from "../../src/hestia-prototype/physics/rigidBody";
-import {captureHvpBodyHit,prepareHvpBodyCut,stageHvpBodyCut} from "../../src/hestia-prototype/physics/bodyCut";
+import {castHvpPlayerRay} from "../../src/hestia-prototype/physics/playerAimRay";
+import {captureHvpBodyHit,previewHvpBodyHit,prepareHvpBodyCut,stageHvpBodyCut} from "../../src/hestia-prototype/physics/bodyCut";
 import {readHvpBodyCells} from "../../src/hestia-prototype/physics/bodyCutPlan";
 
 beforeAll(initializeHvpRapier);
@@ -40,6 +41,23 @@ it("binds a rotated native first hit to a local cell, and rejects occlusion or o
     world.createCollider(R.ColliderDesc.cuboid(.5,.5,.05).setTranslation(1,2.1875,2.5));
     expect(captureHvpBodyHit(world,targets,{x:.9375,y:2.1875,z:2},{x:0,y:0,z:1},9)).toBeNull();
   }finally{world.free();}
+});
+it("keeps a shared rotated preview read-only and recasts against a newly installed blocker",()=>{
+  const world=new R.World({x:0,y:0,z:0});
+  try {
+    const target=make(world),targets=new Map([[target.ownerId,target]]);
+    const eye={x:.9375,y:2.1875,z:2},direction={x:0,y:0,z:1};
+    const contact=castHvpPlayerRay(world,eye,direction);
+    const preview=previewHvpBodyHit(world,targets,eye,direction,10,contact)!;
+    expect(preview.cell).toEqual([1,0,0]);
+    expect(()=>prepareHvpBodyCut(preview,target,"preview-only",1)).toThrow();
+    const wall=world.createCollider(R.ColliderDesc.cuboid(.4,.4,.05).setTranslation(eye.x,eye.y,2.5));
+    expect(captureHvpBodyHit(world,targets,eye,direction,10)).toBeNull();
+    world.removeCollider(wall,false);
+    const confirmed=captureHvpBodyHit(world,targets,eye,direction,11)!;
+    expect(confirmed.cell).toEqual(preview.cell);
+    expect(prepareHvpBodyCut(confirmed,target,"fresh-hit",1).local.plan.removedCells).toBe(1);
+  } finally { world.free(); }
 });
 it("stages only the originally issued hit after the camera points away",()=>{
   const world=new R.World({x:0,y:0,z:0});try{

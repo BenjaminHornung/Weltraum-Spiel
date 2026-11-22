@@ -1,7 +1,8 @@
 import {StructuralPhysicsCommitError} from "../../voxel/structural";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {readHvpBodyCells} from "./bodyCutPlan";
-import {captureHvpBodyHit,prepareHvpBodyCutOwnedHashSteps,prepareHvpBodyCutSteps,stageHvpBodyCut,type HvpBodyCutPlan,type HvpBodyHit,type HvpCuttableBody} from "./bodyCut";
+import {castHvpPlayerRay, type HvpPlayerContact} from "./playerAimRay";
+import {captureHvpBodyHit,previewHvpBodyHit,prepareHvpBodyCutOwnedHashSteps,prepareHvpBodyCutSteps,stageHvpBodyCut,type HvpBodyCutPlan,type HvpBodyHit,type HvpCuttableBody} from "./bodyCut";
 import type {R} from "./rapierPort";
 import {HVP_PLAN_FINAL_PHASE,type HvpPlanProbe} from "./structuralPlan";
 import {HVP_CHILD_HASH_PHASE,type HvpRigidRecipeSpans} from "./rigidRecipe";
@@ -360,8 +361,9 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       if(pending||held||retiredWork!==undefined){throw new Error("Moving checkpoint requires confirmed ownership");}
       return Object.freeze({sequence,last});
     },
-    preview(eye:Vec|undefined,direction:Vec|undefined,tick:number):void {
-      preview=!pending&&!held&&eye&&direction?captureHvpBodyHit(world,targets,eye,direction,tick):null;
+    preview(eye:Vec|undefined,direction:Vec|undefined,tick:number,contact?:HvpPlayerContact):void {
+      preview=!pending&&!held&&eye&&direction?previewHvpBodyHit(world,targets,eye,direction,tick,
+        contact===undefined?castHvpPlayerRay(world,eye,direction):contact):null;
     },
     begin(request:HvpMovingCutRequest,eye:Vec,tick:number):HvpMovingCutPreparation {
       if(pending||held||retiredWork!==undefined||!request||!/^[A-Za-z0-9:._-]{1,128}$/.test(request.id)||!Number.isSafeInteger(request.edge)||request.edge<1||request.edge>8){throw new Error("Body cut Pending or invalid");}

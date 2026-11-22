@@ -1,3 +1,4 @@
+import {castHvpPlayerRay, type HvpPlayerContact} from "./playerAimRay";
 import { rotateStructuralWorldVector, StructuralPhysicsCommitError,encodeStructuralObject,type StructuralObject } from "../../voxel/structural";
 import { ingestHvpStructuralCells } from "../terrain/structuralIngest";
 import { pickHvpCell } from "../terrain/picking";
@@ -5,7 +6,7 @@ import { HVP_BRANCH_CELLS, HVP_BRANCH_KEY, HVP_BRANCH_SUPPORT,HVP_SALVAGE_CELLS 
 import { prepareHvpRigidBody, installHvpRigidBody } from "./rigidBody";
 import {hvpObjectLocalCenterOfMass} from "./rigidRecipe";
 import { prepareHvpStructuralBreak, stageHvpStructuralBreak } from "./structuralBreak";
-import { R, isHvpSolidCollider } from "./rapierPort";
+import { R } from "./rapierPort";
 import {fnv1aHash} from "../../core/hash";
 import {readHvpBodyCells} from "./bodyCutPlan";
 import type {HvpCuttableBody} from "./bodyCut";
@@ -41,12 +42,10 @@ export const createHvpBranchSession=(world:R.World,origin:Vec,targets=new Map<st
   let last:HvpBranchReceipt|null=restored?.checkpoint.last??null;
   const receipts=new Map<string,{signature:string;receipt:HvpBranchReceipt}>();
   const parentCells=recipe?readHvpBodyCells(recipe.source):[],occupied=new Set(parentCells.map(c=>`${c.x}:${c.y}:${c.z}`));
-  function hitCell(eye:Vec,direction:Vec):Readonly<{cell:readonly[number,number,number];point:Vec}>|null {
+  function hitCell(eye:Vec,direction:Vec,contact?:HvpPlayerContact):Readonly<{cell:readonly[number,number,number];point:Vec}>|null {
     if(generation!==0||!parent||!recipe||stage||held||![eye.x,eye.y,eye.z,direction.x,direction.y,direction.z].every(Number.isFinite)
       ||Math.abs(Math.hypot(direction.x,direction.y,direction.z)-1)>1e-6) { return null; }
-    world.propagateModifiedBodyPositionsToColliders();world.updateSceneQueries();
-    const hit=world.castRay(new R.Ray(eye,direction),4,true,undefined,undefined,undefined,undefined,
-      c=>isHvpSolidCollider(c)&&c.parent()?.isKinematic()!==true);
+    const hit=contact===undefined?castHvpPlayerRay(world,eye,direction):contact;
     if(hit?.collider.parent()?.handle!==parent.handle) { return null; }
     const rotation=parent.rotation(),inverse={x:-rotation.x,y:-rotation.y,z:-rotation.z,w:rotation.w};
     const p=parent.translation(),center=hvpObjectLocalCenterOfMass(recipe.source,recipe.mass.centerOfMassMeters!);
@@ -70,7 +69,7 @@ export const createHvpBranchSession=(world:R.World,origin:Vec,targets=new Map<st
     fixedOwners:()=>parts.map(p=>({ownerId:p.ownerId,body:p.body,recipe:p.recipe,family:"branch" as const})),
     retainedRecipes:()=>[...(recipe?[recipe]:[]),...parts.map(p=>p.recipe),...previousParts.map(p=>p.recipe),...(plan?.parts.map(p=>p.recipe)??[])],
     retainedSources:()=>[source,previousSource,plan?.after].filter((value):value is StructuralObject=>value!==null&&value!==undefined),
-    preview(eye:Vec|undefined,direction:Vec|undefined):void {preview=eye&&direction?hitCell(eye,direction):null;},
+    preview(eye:Vec|undefined,direction:Vec|undefined,contact?:HvpPlayerContact):void {preview=eye&&direction?hitCell(eye,direction,contact):null;},
     prepare(request:HvpBranchRequest,eye:Vec):void {
       if(!/^[A-Za-z0-9:._-]{1,128}$/.test(request.id)) {throw new Error("Invalid branch command");}
       const signature=JSON.stringify(request),prior=receipts.get(request.id);

@@ -184,6 +184,25 @@ describe("HVP full canonical inertia", () => {
     } finally { vi.restoreAllMocks();world.free(); }
   });
 
+  it("publishes one native query for all previews and a fresh query for the impulse",async()=>{
+    const session=await createHvpPhysicsSession([],{x:0,y:2,z:0},9.81,
+      {spawn:{x:0,y:.91,z:0},coverage:[{minX:-4,maxX:4,minZ:-4,maxZ:4}]},{x:2.25,y:2.5,z:0},{x:-2,y:2,z:0});
+    const publish=vi.spyOn(R.World.prototype,"updateSceneQueries");
+    const cast=vi.spyOn(R.World.prototype,"castRay");
+    try {
+      session.play();
+      const s=session.read(),p=s.inertia!.aimPoint,a=s.player!.position;
+      const dx=p.x-a.x,dy=p.y-a.y-.75,dz=p.z-a.z,n=Math.hypot(dx,dy,dz);
+      const direction={x:dx/n,y:dy/n,z:dz/n};
+      publish.mockClear();cast.mockClear();
+      session.aimBranch(direction);
+      expect(publish).toHaveBeenCalledTimes(1);expect(cast).toHaveBeenCalledTimes(1);
+      expect(session.read().impulseTarget.kind).toBe("Dynamic");
+      session.impulse(direction);
+      expect(publish).toHaveBeenCalledTimes(2);expect(cast).toHaveBeenCalledTimes(2);
+      expect(session.read().lastImpulse?.status).toBe("Applied");
+    } finally {cast.mockRestore();publish.mockRestore();session.dispose();}
+  });
   it("applies a capped impulse only at a real nearby contact, with cooldown and paused rejection", async () => {
     const session=await createHvpPhysicsSession([], {x:0,y:2,z:0},9.81,
       {spawn:{x:0,y:0.91,z:0},coverage:[{minX:-4,maxX:4,minZ:-4,maxZ:4}]},{x:2.25,y:2.5,z:0});

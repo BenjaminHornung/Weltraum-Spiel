@@ -1,6 +1,7 @@
 import {deriveStructuralWorldSplitVelocity,rotateStructuralWorldVector} from "../../voxel/structural";
 import {pickHvpCell,type HvpCell,type HvpCellReader} from "../terrain/picking";
-import {R,isHvpSolidNonKinematicCollider} from "./rapierPort";
+import {R} from "./rapierPort";
+import {castHvpPlayerRay, type HvpPlayerContact} from "./playerAimRay";
 import {assertHvpRigidRecipe,hvpObjectLocalCenterOfMass,type HvpRigidRecipe} from "./rigidRecipe";
 import {prepareHvpLocalBodyCutOwnedHashSteps,prepareHvpLocalBodyCutSteps,readHvpBodyCells} from "./bodyCutPlan";
 import {stageHvpStructuralBreak} from "./structuralBreak";
@@ -28,12 +29,11 @@ const readerFor=(recipe:HvpRigidRecipe)=>{
   readers.set(recipe,result);return result;
 };
 
-const bodyContact=<T extends {body:R.RigidBody}>(world:R.World,targets:ReadonlyMap<string,T>,eye:Vec,direction:Vec,issuedTick:number)=>{
+const validateBodyRay=(eye:Vec,direction:Vec,issuedTick:number)=>{
   if(![eye.x,eye.y,eye.z,direction.x,direction.y,direction.z].every(Number.isFinite)
     ||Math.abs(Math.hypot(direction.x,direction.y,direction.z)-1)>1e-6||!Number.isSafeInteger(issuedTick)||issuedTick<0){throw new Error("Invalid body ray");}
-  world.propagateModifiedBodyPositionsToColliders();world.updateSceneQueries();
-  const contact=world.castRay(new R.Ray(eye,direction),4,true,undefined,undefined,undefined,undefined,
-    isHvpSolidNonKinematicCollider);
+};
+const bodyContact=<T extends {body:R.RigidBody}>(targets:ReadonlyMap<string,T>,contact:HvpPlayerContact)=>{
   const body=contact?.collider.parent();
   if(!body?.isDynamic()||!contact){return null;}
   const target=[...targets.values()].find(t=>t.body===body);if(!target){return null;}
@@ -56,8 +56,8 @@ function pickCompactContact(world:R.World,body:R.RigidBody,owner:HvpCompactNativ
     sizeX:max[0]-min[0],sizeY:max[1]-min[1],sizeZ:max[2]-min[2],cellMeters:.125,
     originMeters:{x:min[0]*.125,y:min[1]*.125,z:min[2]*.125},readSlot:(x,y,z)=>owner.readMaterial(x+min[0],y+min[1],z+min[2])}});
 }
-export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number)=>{
-  const contact=bodyContact(world,targets,eye,direction,issuedTick);if(!contact){return null;}
+const projectBodyContact=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number,ray:HvpPlayerContact)=>{
+  const contact=bodyContact(targets,ray);if(!contact){return null;}
   const {target,distance}=contact;
   const owner=target.compactOwner;
   if(owner) {
@@ -65,19 +65,30 @@ export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCutt
     const picked=pickCompactContact(world,target.body,owner,eye,direction,distance);
     if(!picked)return null;
     const hit=Object.freeze({ownerId:target.ownerId,sourceDigest:owner.identity.membershipDigest,revision:0,issuedTick,...picked});
-    hits.set(hit,{source:owner,body:target.body});return hit;
+    return {hit,target};
   }
   const center=hvpObjectLocalCenterOfMass(target.recipe.source,target.recipe.mass.centerOfMassMeters!);
   const picked=pickContact(target.body,eye,direction,distance,center,readerFor(target.recipe));if(!picked){return null;}
   const hit=Object.freeze({ownerId:target.ownerId,sourceDigest:hvpFragmentArchiveDigest(target.recipe),revision:target.recipe.source.objectRevision,issuedTick,...picked});
-  hits.set(hit,{source:target.recipe,body:target.body});return hit;
+  return {hit,target};
+};
+/** A projection carries no authority to cut a body, even on its original tick. */
+export const previewHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number,ray:HvpPlayerContact)=>
+  projectBodyContact(world,targets,eye,direction,issuedTick,ray)?.hit ?? null;
+export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCuttableBody>,eye:Vec,direction:Vec,issuedTick:number)=>{
+  validateBodyRay(eye,direction,issuedTick);
+  const result=projectBodyContact(world,targets,eye,direction,issuedTick,castHvpPlayerRay(world,eye,direction));
+  if(!result){return null;}
+  hits.set(result.hit,{source:result.target.compactOwner??result.target.recipe,body:result.target.body});
+  return result.hit;
 };
 
 export interface HvpCompactCuttableBody {readonly owner:HvpCompactNativeOwner; readonly body:R.RigidBody}
 /** The runtime tag remains separate from a Structural v1 source hash. Only the issuing World may
  * promote this particular hit at the moving-cut archive boundary. Camera or body motion is allowed. */
 export function captureHvpCompactBodyHit(world:R.World,targets:ReadonlyMap<string,HvpCompactCuttableBody>,eye:Vec,direction:Vec,issuedTick:number){
-  const contact=bodyContact(world,targets,eye,direction,issuedTick);if(!contact){return null;}
+  validateBodyRay(eye,direction,issuedTick);
+  const contact=bodyContact(targets,castHvpPlayerRay(world,eye,direction));if(!contact){return null;}
   const {body,owner}=contact.target;
   const ownerId=owner.identity.ownerId;
   const picked=pickCompactContact(world,body,owner,eye,direction,contact.distance);
