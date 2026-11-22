@@ -143,6 +143,16 @@ export type AdaptiveOwnedJournalOptions = Readonly<{
   hash: (payload: unknown) => Generator<void, string, void>;
 }>;
 
+// A compact ingest holds the same immutable journal while materializing each brick and
+// issuing resident proofs. Only this module can record a genuinely constructed result.
+const issuedJournals = new WeakMap<AdaptiveOwnedJournalOptions, WeakSet<AdaptiveEditJournal>>();
+export function openOwnedJournalReuse(options: AdaptiveOwnedJournalOptions): () => void {
+  if (!Object.isFrozen(options) || issuedJournals.has(options)) throw new Error("Invalid journal reuse scope");
+  options.reserve(256, true);
+  issuedJournals.set(options, new WeakSet());
+  return () => { issuedJournals.delete(options); };
+}
+
 export function* adaptiveEditJournalSteps(inputs: readonly (AdaptiveEditInput | AdaptiveEditRecord)[],
   initialRevisionValue = 0, owned?: AdaptiveOwnedJournalOptions): Generator<void, AdaptiveEditJournal, void> {
   const reserve = owned?.reserve;
@@ -223,7 +233,11 @@ export function* adaptiveEditJournalSteps(inputs: readonly (AdaptiveEditInput | 
     records: frozenRecords,
     digest
   };
-  return reserve === undefined ? deepFreeze(result) : Object.freeze(result);
+  if (!owned) return deepFreeze(result);
+  const frozen = Object.freeze(result);
+  const issued = issuedJournals.get(owned);
+  if (issued) { owned.reserve(128, true); issued.add(frozen); }
+  return frozen;
 }
 
 export const appendAdaptiveEdit = (journal: AdaptiveEditJournal, input: AdaptiveEditInput): AdaptiveEditJournal => {
@@ -237,6 +251,7 @@ export const validateAdaptiveEditJournal = (journal: AdaptiveEditJournal): Adapt
 export function* adaptiveValidateEditJournalSteps(journal: AdaptiveEditJournal,
   owned?: AdaptiveOwnedJournalOptions): Generator<void, AdaptiveEditJournal, void> {
   owned?.reserve(1_024);
+  if (owned && issuedJournals.get(owned)?.has(journal)) return journal;
   const record = requirePlainRecord(journal, "journal");
   requireExactKeys(record, ["schemaVersion", "initialRegionRevision", "revision", "records", "digest"], "journal");
   if (record.schemaVersion !== ADAPTIVE_JOURNAL_SCHEMA_VERSION) {
