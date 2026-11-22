@@ -23,6 +23,21 @@ type Vec=typeof zero;
 function closeVec(a:Vec,b:Vec){
   for(const k of ["x","y","z"] as const)expect(a[k]).toBeCloseTo(b[k],3);
 }
+// Read the solver's world-space tensor independently of the material-run mass calculation.
+function nativeAngularMomentum(body: R.RigidBody, about: Vec): Vec {
+  const omega = body.angvel();
+  const center = body.worldCom();
+  const offset = {x:center.x - about.x, y:center.y - about.y, z:center.z - about.z};
+  const velocity = body.linvel();
+  const mass = body.mass();
+  // This vendor binding returns its shared readback buffer unless we supply a destination.
+  const inertia = body.effectiveAngularInertia(new R.SdpMatrix3(new Float32Array(6)));
+  return {
+    x:inertia.m11 * omega.x + inertia.m12 * omega.y + inertia.m13 * omega.z + mass * (offset.y * velocity.z - offset.z * velocity.y),
+    y:inertia.m21 * omega.x + inertia.m22 * omega.y + inertia.m23 * omega.z + mass * (offset.z * velocity.x - offset.x * velocity.z),
+    z:inertia.m31 * omega.x + inertia.m32 * omega.y + inertia.m33 * omega.z + mass * (offset.x * velocity.y - offset.y * velocity.x),
+  };
+}
 function setup(){
   const root=createHvpTerrainRoot(prepareHvpCoastSource(materializeHvpCoastSource()),"moving-rock",1);
   const cut=cutAt(root,[176,78,76],[180,82,80]),idx=createTerrainComponentIndex(cut.before),f=idx.prepareCompact(cut).fragments[0]!;
@@ -63,6 +78,7 @@ it.each(["finalize","rollback staged","rollback committed","dispose"])("uses the
     if(terminal==="dispose"){f.moving.dispose();expect(f.moving.busy).toBe(false);expect(f.moving.resources()?.reservedBytes).toBe(0);return;}
     const p={x:5,y:7,z:9},v={x:2,y:-1,z:.5},w={x:.1,y:.4,z:-.3},q={x:0,y:.6,z:0,w:.8};
     f.body.setTranslation(p,true);f.body.setRotation(q,true);f.body.setLinvel(v,true);f.body.setAngvel(w,true);
+    const parentAngular = nativeAngularMomentum(f.body, p);
     await f.moving.preparePlan(id,host);f.moving.completePlan(id);
     expect(()=>f.moving.stage(id,{...projection,parts:[{...cooked,sourceDigest:prep.compact!.removedDigest}]},11)).toThrow("Foreign compact");
     f.moving.stage(id,projection,11);
@@ -76,6 +92,12 @@ it.each(["finalize","rollback staged","rollback committed","dispose"])("uses the
     const momentum=f.moving.read().last!.removedMomentum!.linear;
     closeVec({x:target.body.mass()*target.body.linvel().x+momentum.x,y:target.body.mass()*target.body.linvel().y+momentum.y,z:target.body.mass()*target.body.linvel().z+momentum.z},
       {x:1722.65625*v.x,y:1722.65625*v.y,z:1722.65625*v.z});
+    const remainingAngular = nativeAngularMomentum(target.body, p);
+    const removedAngular = f.moving.read().last!.removedMomentum!.angular;
+    for (const axis of ["x", "y", "z"] as const) {
+      // The solver stores poses and tensors as f32. The angular impulse is in kg m²/s.
+      expect(remainingAngular[axis] + removedAngular[axis]).toBeCloseTo(parentAngular[axis], 2);
+    }
     if(terminal==="rollback committed"){
       f.moving.rollback(id);expect(f.targets.get(f.owner.identity.ownerId)?.body).toBe(f.body);
       expect(f.targets.has(cooked.ownerId)).toBe(false);expect(f.body.isEnabled()).toBe(true);
