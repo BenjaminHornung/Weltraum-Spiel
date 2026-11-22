@@ -105,6 +105,33 @@ function compactRuns(input:readonly Span[], maxInput=128) {
   return {spans,count};
 }
 
+/** Six-face connectivity on occupied x-runs. A cut through a bridge cannot relabel both
+ * disconnected halves as a single child, even when their union plus the cut equals the parent. */
+function hasOneComponent(spans:readonly Span[]):boolean {
+  const rows=new Map<number,number[]>();
+  for(let i=0;i<spans.length;i++){
+    const span=spans[i]!,key=span.y+256*span.z,row=rows.get(key);
+    if(row)row.push(i);else rows.set(key,[i]);
+  }
+  const seen=new Uint8Array(spans.length),queue=[0];
+  seen[0]=1;
+  for(let cursor=0;cursor<queue.length;cursor++){
+    const span=spans[queue[cursor]!]!,key=span.y+256*span.z;
+    for(const offset of [0,-1,1,-256,256]){
+      const row=rows.get(key+offset);
+      if(!row)continue;
+      for(const i of row){
+        if(seen[i])continue;
+        const other=spans[i]!;
+        if(offset===0 ? span.end===other.x || other.end===span.x : span.x<other.end && other.x<span.end){
+          seen[i]=1;queue.push(i);
+        }
+      }
+    }
+  }
+  return queue.length===spans.length;
+}
+
 export function compactRemovedMembershipDigest(sorted:readonly Span[],count:number):string {
   const cellsDigest=compactRuntimeMembershipDigest(sorted,count);
   return cellsDigest.replace("hvp-material-cells-v1:","hvp-material-removed-v1:");
@@ -129,7 +156,7 @@ export function createHvpCompactChildIdentity(parent:{ownerId:string;revision:nu
   const match=terrainRoot.exec(parent.ownerId);
   if (parent.revision!==0 || partIndex!==0 || !match || !Number.isSafeInteger(Number(match[1]))) return;
   const old=compactRuns(parent.spans), cut=compactRuns(removed), child=compactRuns(retained);
-  if (!old || !cut || !child || old.count!==child.count+cut.count) return;
+  if (!old || !cut || !child || old.count!==child.count+cut.count || !hasOneComponent(child.spans)) return;
   const joined=compactRuns([...child.spans,...cut.spans].sort(spanOrder),256);
   if (!joined || old.spans.length!==joined.spans.length || !old.spans.every((s,i)=>{
     const other=joined.spans[i]!;

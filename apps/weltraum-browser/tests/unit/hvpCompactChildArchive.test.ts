@@ -6,10 +6,12 @@ import {createStructuralOwnerLedger} from "../../src/voxel/structural/model";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
 import {bindHvpCompactChildArchive,compactRuntimeMembershipDigest,createHvpCompactChildIdentity,
   hvpCompactChildArchiveProof,hvpFragmentArchiveDigest} from "../../src/hestia-prototype/physics/compactFragmentIdentity";
+import {createHvpLabPhysicsSession} from "../../src/hestia-prototype/physics/session";
+import {decodeHvpColdLabWorld,hvpColdLabWorldAllocationBytes} from "../../src/hestia-prototype/persistence/worldCheckpoint";
 import {R,initializeHvpRapier} from "../../src/hestia-prototype/physics/rapierPort";
 import {installHvpRigidBody,prepareHvpRigidBody} from "../../src/hestia-prototype/physics/rigidBody";
 import {createHvpWorkerBodyResidency} from "../../src/hestia-prototype/physics/bodyResidency";
-import type {HvpCuttableBody} from "../../src/hestia-prototype/physics/bodyCut";
+import {captureHvpBodyHit,prepareHvpBodyCut,stageHvpBodyCut,type HvpCuttableBody} from "../../src/hestia-prototype/physics/bodyCut";
 import {decodeHvpBody,decodeHvpColdBody,encodeHvpBody} from "../../src/hestia-prototype/persistence/bodyCheckpoint";
 import body384 from "../fixtures/hvp-contact-r90-body384.json";
 
@@ -29,6 +31,12 @@ it("binds the retained and removed materials to the original root independently 
   expect(issued.removedDigest).toMatch(/^hvp-material-removed-v1:[0-9a-f]{16}$/);
   expect(createHvpCompactChildIdentity(parent,[row(18,19,3),row(19,20,3)],[row(13,16,1),row(16,18,1)])).toEqual(issued);
   expect(createHvpCompactChildIdentity(parent,removed,[row(13,15,1)])).toBeUndefined(); // sibling omitted
+  expect(createHvpCompactChildIdentity(parent,[row(15,16,1)],[row(13,15,1),row(16,18,1),row(18,20,3)])).toBeUndefined(); // two siblings mislabeled as one
+  const around=[row(13,15,1),row(16,18,1),row(18,20,3),{...row(14,17,2),y:16}];
+  const bridged=[...whole,{...row(14,17,2),y:16}];
+  const alternative={...parent,spans:bridged,ownerId:"hvp:terrain-fragment:r1:"+compactTerrainOwnerDigest(bridged),
+    sourceDigest:compactRuntimeMembershipDigest(bridged,10)};
+  expect(createHvpCompactChildIdentity(alternative,[row(15,16,1)],around)).toBeDefined(); // another path crosses the leaf seam
   expect(createHvpCompactChildIdentity(parent,removed,[row(12,17,1)])).toBeUndefined();
   expect(createHvpCompactChildIdentity(parent,[row(18,20,2)],retained)).toBeUndefined();
   expect(createHvpCompactChildIdentity(parent,[row(17,19,3)],retained)).toBeUndefined();
@@ -105,6 +113,37 @@ it("preserves one child identity, canonical source, colliders and motion across 
       expect(encodeHvpBody(issued.ownerId,"terrain",target.recipe,target.body)).toEqual(saved);
       expect(parked.park(issued.ownerId,{x:30,y:0,z:30})).toBe(true);
       expect(decodeHvpBody(parked.checkpoint()[0]!).checkpoint).toEqual(saved);
+      expect(parked.restore(issued.ownerId)).toBe(true);
+      const current=targets.get(issued.ownerId)!,center=current.body.translation();
+      const hit=captureHvpBodyHit(world,targets,{x:center.x,y:center.y,z:center.z+1},{x:0,y:0,z:-1},0);
+      expect(hit).toMatchObject({ownerId:issued.ownerId,sourceDigest:issued.sourceDigest,cell:[15,15,9]});
+      const recut=prepareHvpBodyCut(hit!,current,"recut-after-wake",1);
+      expect(recut.local.plan.removedCells).toBe(1);
+      expect(recut.local.plan.parts.map(p=>p.cells.length)).toEqual([2,2]);
+      const stage=stageHvpBodyCut(world,current,recut);
+      stage.commit();stage.finalize();
+      expect(world.getRigidBody(current.body.handle)).toBeNull();
+      expect(world.bodies.len()).toBe(2);
     }finally{parked.dispose();}
   }finally{live.dispose();ledger.release();world.free();}
+},120000);
+
+it("validates a parked child beside legacy bodies in the private solver world before allocating a replacement",async()=>{
+  const issued=createHvpCompactChildIdentity(parent,removed,retained)!;
+  const recipe=makeRecipe(issued.ownerId,retained),world=new R.World({x:0,y:0,z:0});
+  const live=await createHvpLabPhysicsSession([],{x:0,y:2,z:0});
+  try{
+    bindHvpCompactChildArchive(recipe,issued.proof);
+    const body=installHvpRigidBody(world,recipe);body.sleep();
+    const child=encodeHvpBody(issued.ownerId,"terrain",recipe,body);
+    if(child.version!=="hvp-body-checkpoint-v2")throw new Error("missing lineage");
+    live.pause();
+    const before=live.checkpoint(), saved={...before,bodies:[...before.bodies,child],parked:[issued.ownerId]};
+    const prepared=decodeHvpColdLabWorld(JSON.parse(JSON.stringify(saved)),()=>{});
+    expect(prepared.bodies.find(b=>b.checkpoint.ownerId===issued.ownerId)?.recipe.source.contentHash).toBe(recipe.source.contentHash);
+    expect(hvpFragmentArchiveDigest(prepared.bodies.find(b=>b.checkpoint.ownerId===issued.ownerId)!.recipe)).toBe(issued.sourceDigest);
+    expect(hvpColdLabWorldAllocationBytes(saved).checkpointBytes).toBeGreaterThan(hvpColdLabWorldAllocationBytes(before).checkpointBytes);
+    expect(()=>hvpColdLabWorldAllocationBytes({...saved,bodies:[...before.bodies,{...child,lineage:{
+      ...child.lineage,removed:Array.from({length:129},()=>removed[0]!)}}]})).toThrow(/proof/);
+  }finally{live.dispose();world.free();}
 },120000);
