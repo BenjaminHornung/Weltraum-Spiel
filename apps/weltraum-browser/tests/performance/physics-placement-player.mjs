@@ -30,8 +30,12 @@ for(const placement of order) {
     await writeFile(prefix+".log",stderr);
     const published=x.metrics["hvp.cutDomInputToPhysicsPublishedMs"];
     const beforeAck=x.frames.filter(f=>f.start+f.duration>=x.eventTimeStamp && f.start<x.eventTimeStamp+published.duration);
+    const ackAt = published.startTime + published.duration;
+    const submitAt = x.eventTimeStamp + x.domToSubmitMs;
+    const frameBoundaries = x.frames.filter(f => f.start + f.duration > ackAt && f.start + f.duration <= submitAt);
     outcome={placement,exit:0,owner:x.ownerPlacement,physicsMs:published.duration,submitMs:x.domToSubmitMs,
-      result:x.result,renderer:x.renderer,criticalPath:x.criticalPath,trace:x.browserTrace,activeCutFrameIntervalsMs:stats(beforeAck),observedSolverStepsMs:stats(x.solver)};
+      browser:x.browser, result:x.result, renderer:x.renderer, ackToSubmitMs:submitAt - ackAt,
+      frameBoundariesAfterAckBeforeSubmit:frameBoundaries.length, criticalPath:x.criticalPath,trace:x.browserTrace,activeCutFrameIntervalsMs:stats(beforeAck),observedSolverStepsMs:stats(x.solver)};
   }catch(error){
     await writeFile(prefix+".log",String(error.stderr??"")+"\n"+String(error.message));
     outcome={placement,exit:error.code??error.signal??1,error:String(error.message).slice(0,1000)};
@@ -49,7 +53,9 @@ const summary={url,pairs,physicalPresentationMeasured:false,referenceDeviceVerif
     return [mode,{attempted:sample.length,completed:sample.filter(r=>r.exit===0).length,
       inputToPublicationMs:stats(sample.filter(r=>r.exit===0).map(r=>({duration:r.physicsMs}))),
       meeting10ms:sample.filter(r=>r.exit===0&&r.physicsMs<=10).length,
-      meetingThreeStages:sample.filter(r=>r.criticalPath?.withinStageBudget).length}];
+      meetingThreeStages:sample.filter(r=>r.criticalPath?.withinStageBudget).length,
+      meetingSolverP95:sample.filter(r=>r.observedSolverStepsMs?.p95<=4).length,
+      meetingFrameIntervalP95AndP99:sample.filter(r=>r.activeCutFrameIntervalsMs?.p95<=20 && r.activeCutFrameIntervalsMs?.p99<=33.34).length}];
   }))};
 await writeFile(join(output,"summary.json"),JSON.stringify(summary,null,2)+"\n");
 if(hardwareMatches===false||attempts.some(row=>row.exit!==0||row.physicsMs>10||!row.criticalPath?.withinStageBudget))process.exitCode=1;

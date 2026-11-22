@@ -21,6 +21,7 @@ if (placement) {
 }
 const browser = await chromium.launch({
   executablePath: process.env.CHROMIUM_BIN,
+  headless: process.env.HVP_HEADFUL !== "1",
   args: process.env.HVP_SOFTWARE_RENDERER === "1" ? ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] : [],
 });
 try {

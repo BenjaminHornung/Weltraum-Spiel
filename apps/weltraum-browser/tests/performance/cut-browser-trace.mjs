@@ -44,32 +44,41 @@ export function summarizeCutBrowserTrace(events, state) {
 
 export async function startCutBrowserTrace(page, file) {
   const client=await page.context().browser().newBrowserCDPSession();
-  await client.send("Tracing.start",{categories:"toplevel,devtools.timeline,disabled-by-default-devtools.timeline,blink.user_timing,v8",transferMode:"ReturnAsStream"});
-  const clockSync=await page.evaluate(()=>performance.mark("hvpProbeClockSync").startTime);
-  return async state=>{
+  const events = [];
+  const collect = batch => {
+    for (const event of batch.value) events.push(event);
+  };
+  client.on("Tracing.dataCollected", collect);
+  await client.send("Tracing.start", {
+    categories: "toplevel,devtools.timeline,blink.user_timing,v8",
+    transferMode: "ReportEvents"
+  });
+  const clockSync = await page.evaluate(() => performance.mark("hvpProbeClockSync").startTime);
+  return async state => {
     let timeout;
-    const complete=new Promise((resolve,reject)=>{
-      client.once("Tracing.tracingComplete",resolve);
-      timeout=setTimeout(()=>reject(Error("Chromium trace stream did not finish")),12000);
+    let onComplete;
+    const complete = new Promise((resolve, reject) => {
+      onComplete = resolve;
+      client.once("Tracing.tracingComplete", onComplete);
+      timeout = setTimeout(() => reject(new Error("Chromium did not finish tracing")), 30_000);
     });
-    let stream;
-    try{
-      const [finished]=await Promise.all([complete,client.send("Tracing.end")]);
-      stream=finished.stream;
-    } catch(error) {
-      await client.detach().catch(()=>{});
-      return {sampled:false,reason:String(error.message)};
-    } finally{clearTimeout(timeout);}
-    const buffers=[];
+    let failure;
     try {
-      for(;;){
-        const chunk=await client.send("IO.read",{handle:stream});
-        buffers.push(Buffer.from(chunk.data,chunk.base64Encoded?"base64":"utf8"));
-        if(chunk.eof) break;
-      }
-    }finally{await client.send("IO.close",{handle:stream});await client.detach();}
-    const raw=Buffer.concat(buffers);
-    await writeFile(file,gzipSync(raw),{flag:"wx"});
-    return summarizeCutBrowserTrace(JSON.parse(raw).traceEvents,{...state,clockSync});
+      const [result] = await Promise.all([complete, client.send("Tracing.end")]);
+      if (result.dataLossOccurred) failure = "Chromium reported lost trace data";
+    } catch (error) {
+      failure = error.message;
+    } finally {
+      clearTimeout(timeout);
+      client.off("Tracing.tracingComplete", onComplete);
+      client.off("Tracing.dataCollected", collect);
+      await client.detach().catch(() => {});
+    }
+    if (events.length) {
+      const trace = JSON.stringify({traceEvents: events});
+      await writeFile(file, gzipSync(trace), {flag: "wx"});
+    }
+    if (failure) return {sampled: false, reason: failure, receivedEvents: events.length};
+    return summarizeCutBrowserTrace(events, {...state, clockSync});
   };
 }
