@@ -14,6 +14,7 @@ const browser = await chromium.launch({
 });
 const viewport = {width: Number(process.env.HVP_PLAYER_WIDTH ?? 640), height: Number(process.env.HVP_PLAYER_HEIGHT ?? 400)};
 const page = await browser.newPage({viewport});
+page.setDefaultTimeout(10000);
 const cdp = await page.context().newCDPSession(page);
 const report = {browser: browser.version(), viewport, allowResume, pageErrors: [], resumes: [], referenceDeviceVerified: false};
 page.on("pageerror", error => report.pageErrors.push(error.message));
@@ -63,6 +64,7 @@ async function handleHold(s) {
   }
 }
 async function waitState(label, select, timeout) {
+  report.phase = label;
   const expires = Date.now() + timeout;
   while (Date.now() < expires) {
     const s = await read();
@@ -95,11 +97,13 @@ async function steer(orientation, eye, body) {
 try {
   const scenario = new URL(url);
   scenario.search = new URLSearchParams({hestiaPrototype: "1", hvpScenario: "rock-arm", hvpMeasure: "1"});
-  await page.goto(scenario.href);
+  report.phase = "startup";
+  await page.goto(scenario.href, {waitUntil: "domcontentloaded", timeout: 30000});
   await page.waitForFunction(() => document.querySelector("#hvp-state")?.textContent.includes("State: Ready"), null, {timeout: 150000});
   const initial = await read();
   assert.equal(initial.generation, 0);
   assert.equal(initial.fragments.length, 0);
+  report.phase = "select support and enter player mode";
   await pressButton("Stütze anvisieren (2 + Klick)");
   await pressButton("Spielen · WASD / Maus / Space");
   await waitState("normal support preview", s => s.locked && s.status === "Running" && s.player.grounded && s.tool.message.startsWith("64 Stützzellen"), 30000);
@@ -112,7 +116,14 @@ try {
     const [fragment] = s.fragments;
     if (!fragment || s.open || !s.tool.message || s.lastNativeCommand === "Play" || s.tool.last?.status !== "Applied" || s.transaction !== "Idle" || s.status !== "Running" || !s.locked) return;
     if (!s.body || s.body.position.y >= -8 + fragment.centerOfMass.y - .2) return;
-    if (s.moving.preview?.ownerId === fragment.ownerId && s.tool.message.startsWith("Loses Fragment")) return s;
+    if (s.moving.preview?.ownerId === fragment.ownerId && s.tool.message.startsWith("Loses Fragment")) {
+      await cdp.send("Input.dispatchMouseEvent", {type:"mousePressed", button:"left", buttons:1, clickCount:1, x:firstClick.x, y:firstClick.y});
+      await cdp.send("Input.dispatchMouseEvent", {type:"mouseReleased", button:"left", buttons:0, clickCount:1, x:firstClick.x, y:firstClick.y});
+      const delivered = await page.evaluate(() => window.readObservedPlayerInput().clicks.at(-1));
+      if (delivered?.target === "debug-scene" && delivered.locked === "debug-scene" && delivered.trusted && delivered.handled) return s;
+      if (allowResume && delivered?.target === "hvp-player-pause" && !delivered.handled) return;
+      throw Error("Moving click did not reach an active player");
+    }
     if (s.body.sleeping && s.camera && Date.now() - lastSteer > 500) {
       await steer(s.camera.orientation, s.player.position, s.body.position);
       lastSteer = Date.now();
@@ -128,8 +139,6 @@ try {
   assert.equal(first.tool.last.transferredMassKg, fragment.massKg);
   assert.equal(fragment.cellCount, 384);
   assert.equal(fragment.massKg, 1722.65625);
-  await cdp.send("Input.dispatchMouseEvent", {type:"mousePressed", button:"left", buttons:1, clickCount:1, x:firstClick.x, y:firstClick.y});
-  await cdp.send("Input.dispatchMouseEvent", {type:"mouseReleased", button:"left", buttons:0, clickCount:1, x:firstClick.x, y:firstClick.y});
   report.clicksAtIssue = await page.evaluate(() => window.readObservedPlayerInput().clicks);
   const after = await waitState("second player receipt", s => s.tool.moving.last ? s : null, 60000);
   const recut = after.moving.last;
