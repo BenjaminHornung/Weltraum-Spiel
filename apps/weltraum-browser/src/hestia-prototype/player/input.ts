@@ -33,7 +33,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   dialog.id = "hvp-player-pause";
   dialog.setAttribute("aria-label", "Spiel pausiert");
   const instruction = doc.createElement("p");
-  instruction.textContent = "WASD: Gehen · Shift: Sprint · Space: Springen · V: Ego/3. Person · F kurz drücken: Stoß auf einen gelösten Körper (max. 4 m) · Escape: Pause";
+  instruction.textContent = "WASD: Gehen · Maus/Pfeiltasten: Zielen · Shift: Sprint · Space: Springen · V: Ego/3. Person · F kurz drücken: Stoß auf einen gelösten Körper (max. 4 m) · Escape: Pause";
   const resumeButton = doc.createElement("button");
   resumeButton.textContent = "Spiel fortsetzen";
   const inspectButton = doc.createElement("button");
@@ -59,6 +59,14 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   };
   const keyDown = (event: KeyboardEvent): void => {
     if (!active || isBlocked() || doc.pointerLockElement !== canvas) { return; }
+    // Small repeatable turns also allow fine aiming on keyboards and captured touchpads.
+    const arrowStep = Math.PI / 90;
+    switch (event.code) {
+      case "ArrowLeft": yaw += arrowStep; event.preventDefault(); return;
+      case "ArrowRight": yaw -= arrowStep; event.preventDefault(); return;
+      case "ArrowUp": pitch = Math.min(1.4, pitch + arrowStep); event.preventDefault(); return;
+      case "ArrowDown": pitch = Math.max(-1.4, pitch - arrowStep); event.preventDefault(); return;
+    }
     if (event.code === "Escape") { event.preventDefault(); stop(); return; }
     if (/^Digit[123]$/.test(event.code)) { event.preventDefault(); if(!event.repeat) { tool.select(Number(event.code.slice(-1))); } return; }
     if (event.code === "KeyV" && !event.repeat) { event.preventDefault(); thirdPerson = !thirdPerson; return; }
