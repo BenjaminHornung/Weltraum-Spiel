@@ -14,9 +14,11 @@ const visual=process.env.HVP_CUT_VISUAL;
 if (visual && visual!=="worker" && visual!=="local") throw new Error("Invalid HVP_CUT_VISUAL");
 if (visual) target.searchParams.set("hvpCutVisual",visual);
 if(process.env.HVP_CUT_PRIORITY==="input")target.searchParams.set("hvpCutPriority","input");
-const placement = process.env.HVP_PHYSICS_PLACEMENT ?? "worker";
-if (!["worker", "main"].includes(placement)) throw new Error("Invalid HVP_PHYSICS_PLACEMENT");
-target.searchParams.set("hvpPhysicsPlacement", placement);
+const placement = process.env.HVP_PHYSICS_PLACEMENT;
+if (placement) {
+  if (!["worker", "main"].includes(placement)) throw new Error("Invalid HVP_PHYSICS_PLACEMENT");
+  target.searchParams.set("hvpPhysicsPlacement", placement);
+}
 const browser = await chromium.launch({
   executablePath: process.env.CHROMIUM_BIN,
   args: process.env.HVP_SOFTWARE_RENDERER === "1" ? ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] : [],
@@ -33,7 +35,7 @@ try {
     await page.exposeFunction("__hvpCutEvidence",entry=>appendFileSync(partial,JSON.stringify(entry)+"\n"));
     page.on("crash",()=>appendFileSync(partial,JSON.stringify({kind:"crash"})+"\n"));
   }
-  await page.addInitScript(() => {
+  await page.addInitScript(({recordPlacement}) => {
     const metrics = new Map();
     const phases=[];
     const solver=[],frames=[];
@@ -43,11 +45,11 @@ try {
       previousFrame=at;
       requestAnimationFrame(frame);
     }
-    requestAnimationFrame(frame);
+    if (recordPlacement) requestAnimationFrame(frame);
     const keep = new Set(["hvp.cutDomInputToPhysicsPublishedMs", "hvp.cutInputToAppliedMs", "hvp.cutFirstCommittedRenderSubmitMs"]);
     const observer = new PerformanceObserver(list => {
       for (const entry of list.getEntries()) {
-        if (entry.name==="hvp.solverStepCpuMs" && solver.length<8192) solver.push({start:entry.startTime,duration:entry.duration});
+        if (recordPlacement && entry.name==="hvp.solverStepCpuMs" && solver.length<8192) solver.push({start:entry.startTime,duration:entry.duration});
         if (entry.name.startsWith("hvp.cut") || entry.detail?.data?.commandId) phases.push({name:entry.name,startTime:entry.startTime,duration:entry.duration,detail:entry.detail});
         if (keep.has(entry.name)) {
           const observation={startTime:entry.startTime, duration:entry.duration, detail:entry.detail};
@@ -61,8 +63,8 @@ try {
     document.addEventListener("mousedown", event => {
       if (event.isTrusted && event.button === 0 && document.pointerLockElement === event.target) eventTimeStamp = event.timeStamp;
     }, true);
-    window.readCutPublication = () => ({eventTimeStamp, metrics:Object.fromEntries(metrics), phases,solver,frames});
-  });
+    window.readCutPublication = () => ({eventTimeStamp, metrics:Object.fromEntries(metrics), phases,...(recordPlacement?{solver,frames}:{})});
+  }, {recordPlacement:Boolean(placement)});
   await page.goto(target.href);
   await page.waitForFunction(() => document.querySelector("#hvp-state")?.textContent.includes("State: Ready"), null, {timeout:65000});
   await page.getByRole("button", {name:"Stütze anvisieren (2 + Klick)", exact:true}).press("Enter");
@@ -114,7 +116,7 @@ try {
   assert.equal(ack.detail.data.commandId, state.result.commandId);
   assert.equal(submit.detail.data.commandId, state.result.commandId);
   assert.ok(ack.duration >= 0 && submit.startTime + submit.duration >= ack.startTime + ack.duration - 0.01);
-  assert.equal(state.ownerPlacement, placement);
+  if (placement) assert.equal(state.ownerPlacement, placement);
   assert.equal(state.transaction, "Idle");
   assert.equal(state.result.revision, 1);
   assert.equal(state.result.revision, ack.detail.data.revision);
