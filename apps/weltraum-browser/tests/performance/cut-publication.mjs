@@ -1,5 +1,7 @@
 // Run against a built Vite preview. CHROMIUM_BIN can select an installed target browser.
 import assert from "node:assert/strict";
+import {cutWork} from "./cut-work.mjs";
+import {startCutBrowserTrace} from "./cut-browser-trace.mjs";
 import {chromium} from "playwright";
 import {appendFileSync, writeFileSync} from "node:fs";
 
@@ -56,6 +58,7 @@ try {
   await page.waitForFunction(() => document.pointerLockElement?.id === "debug-scene"
     && JSON.parse(document.body.dataset.hestiaPrototypePhysics).player.grounded
     && JSON.parse(document.body.dataset.hestiaPrototypeTool).message.startsWith("64 Stützzellen"), null, {timeout:35000});
+  const finishTrace=process.env.HVP_CUT_CHROME_TRACE ? await startCutBrowserTrace(page,process.env.HVP_CUT_CHROME_TRACE) : undefined;
   await page.mouse.down();
   await page.mouse.up();
   try {
@@ -109,9 +112,11 @@ try {
   assert.deepEqual(errors, []);
   assert.equal(state.testBridgePresent, false);
   assert.equal(ack.detail.data.sourceDigest, submit.detail.data.savedDigest);
+  const browserTrace=finishTrace ? await finishTrace(state) : undefined;
   if(process.env.QA_SHOT) await page.screenshot({path:process.env.QA_SHOT,timeout:30000});
   console.log(JSON.stringify({browser:browser.version(), target:target.pathname+target.search, loadedAssets:[...new Set(loadedAssets)].sort(), ...state,
     domToSubmitMs:submit.startTime + submit.duration - state.eventTimeStamp,
+    browserTrace, criticalPath:cutWork(state.phases,state.result.commandId,planner),
     within10ms:ack.duration <= 10, presentMeasured:false}, null, 2));
 } finally {
   await browser.close();

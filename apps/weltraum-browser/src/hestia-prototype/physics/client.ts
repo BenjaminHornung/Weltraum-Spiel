@@ -23,7 +23,7 @@ import {validateHvpChunkStaticLayout,type HvpChunkStaticLayout} from "./staticTe
 import {prepareHvpChunkPhysicsInputSteps,hvpChunkPhysicsInputCredits,bindHvpLabChunkGameInput,bindHvpFreshLabChunkInput,
   type HvpChunkPhysicsInput,type HvpFreshLabChunkBinding} from "../terrain/terrainProducts";
 import {validateHvpNeighborCheckpoint,type HvpNeighborCheckpoint} from "../runtime/residency";
-import {measureHvpCutAsync,type HvpCutTrace} from "../runtime/cutTrace";
+import {measureHvpCutAsync,traceHvpCutBoundary,type HvpCutTrace} from "../runtime/cutTrace";
 import {createStructuralOwnerLedger} from "../../voxel/structural/model";
 import {ownHvpLabCompleteStaticCollision} from "./labCollisionCapture";
 
@@ -286,13 +286,14 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
   const openWorker = () => new Worker(new URL("./physicsWorker.ts", import.meta.url), { type: "module", name: "hvp-simulation-owner" });
   let worker=openWorker(),nextId=0;
   let incarnation=crypto.randomUUID();
+  let terrainTrace:HvpCutTrace|undefined;
   let terrainBinding:HvpTerrainBinding|undefined,baseMotion:HvpTerrainMotion|undefined,forwardMotion:HvpTerrainMotion|undefined;
   let catalog:HvpTerrainRecoveryAssets|undefined,entry:HvpTerrainJournalEntry|undefined,priming:Promise<void>|undefined;
   let journal:HvpTerrainJournalEntry[]=[],catalogEpoch=0;
   const matches=(b:HvpTerrainBinding|undefined):boolean=>b!==undefined&&terrainBinding!==undefined
     &&b.commandId===terrainBinding.commandId&&b.sessionId===terrainBinding.sessionId&&b.epoch===terrainBinding.epoch
     &&b.baseRevision===terrainBinding.baseRevision&&b.baseDigest===terrainBinding.baseDigest&&b.targetDigest===terrainBinding.targetDigest;
-  const clearTerrain=()=>{baseMotion=undefined;forwardMotion=undefined;entry=undefined;terrainBinding=undefined;heldSnapshot=undefined;mutating=false;};
+  const clearTerrain=()=>{terrainTrace=undefined;baseMotion=undefined;forwardMotion=undefined;entry=undefined;terrainBinding=undefined;heldSnapshot=undefined;mutating=false;};
   // Request barriers protect atomic held publication; reply sequence owns snapshot freshness.
   let publishRequestFloor = -1;
   let lastSnapshotSequence=-1,lastClockSequence=-1,lastRestoreSequence=-1;
@@ -316,7 +317,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
   let playerInput: HvpPlayerInput = { x: 0, z: 0, sprint: false, jump: false };
   let cameraOffset: { x: number; y: number; z: number } | undefined;
   let cutAim: {x:number;y:number;z:number}|undefined;
-  const pending = new Map<number, { kind:HvpClientRequest["kind"];resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;ownsState:boolean;ownsClock:boolean;onReply?:(reply:HvpClientReply)=>void }>();
+  const pending = new Map<number, { measuredCut?:string;kind:HvpClientRequest["kind"];resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;ownsState:boolean;ownsClock:boolean;onReply?:(reply:HvpClientReply)=>void }>();
   const terminate=()=>{if(!terminated){worker.terminate();terminated=true;}worker.onmessage=null;worker.onerror=null;worker.onmessageerror=null;};
   const fail = (error: Error): void => {
     failure = error;
@@ -342,6 +343,9 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     if(data.protocol!==HVP_PHYSICS_PROTOCOL||!Number.isSafeInteger(data.sequence)||data.sequence<1){
       if(p!==undefined||data.id===-1){fail(new Error("Invalid physics reply binding"));}
       return;
+    }
+    if(p?.measuredCut){
+      traceHvpCutBoundary(terrainTrace,p.measuredCut,"main",data.beforeTerrainInstall?"cutRecoverySideband":"cutPhysicsReply");
     }
     const initializing=p?.kind==="Initialize"||p?.kind==="InitializeLab"||p?.kind==="InitializeFreshLab";
     if(initializing&&data.recoveryAssets&&data.snapshot===undefined){
@@ -389,12 +393,17 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     const ownsState=ownsClock&&message.kind!=="Read"&&message.kind!=="Pause"&&message.kind!=="Inspect"&&message.kind!=="PrepareBodyChildProjection";
     if(!publish&&ownsState){publishRequestFloor=Math.max(publishRequestFloor,id);}
     const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
-    pending.set(id, {kind:message.kind,resolve,reject,timeout,publish,ownsState,ownsClock,onReply});
+    const measuredCut=terrainTrace&&terrainBinding&&(
+      ("transactionId" in message && message.transactionId===terrainBinding.commandId)
+      || message.kind==="PrimeTerrainRecovery"
+    )?terrainBinding.commandId:undefined;
+    pending.set(id, {measuredCut,kind:message.kind,resolve,reject,timeout,publish,ownsState,ownsClock,onReply});
     const wireMessage=ownerKind==="phy01-lab"
       ?("labMode" in message?message:{...message,labMode:HVP_LAB_PHYSICS_MODE}) as HvpLabPhysicsRequest
       :message as HvpPhysicsRequest;
     try { worker.postMessage({ ...wireMessage, id,protocol:HVP_PHYSICS_PROTOCOL,incarnation } as HvpPhysicsMessage|HvpLabPhysicsMessage, transfers); }
-    catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
+    catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); return; }
+    if(measuredCut)traceHvpCutBoundary(terrainTrace,measuredCut,"main","cutPhysicsDispatch");
   });
   const primeTerrainRecovery=():Promise<void>=>{
     if(catalog&&journal.length<256){return Promise.resolve();}
@@ -799,7 +808,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
     async prepareTerrain(id,generation,replacements,fragments=[],work,publication) {
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }
       if(fragments.length>32||fragments.reduce((n,f)=>n+f.cells.length,0)>32_768){throw new Error("Fragment transfer BudgetExceeded");}
-      heldSnapshot=undefined;terrainBinding=publication;baseMotion=undefined;forwardMotion=undefined;entry=undefined;
+      heldSnapshot=undefined;terrainBinding=publication;terrainTrace=work?.trace;baseMotion=undefined;forwardMotion=undefined;entry=undefined;
       if(publication){
         bodyPending=true;
         try{
@@ -814,7 +823,8 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
         bodyPending=true;
         let prepareRequestId:number|undefined;
         let sourceViews:readonly HvpPhysicsSnapshot["preparedTerrainFragments"][number][]|undefined;
-        const pump=createHvpBodyMeshTaskPump(()=>{if(failure){throw failure;}if(disposed||terminated){throw new Error("Physics disposed");}});
+        const pump=createHvpBodyMeshTaskPump(()=>{if(failure){throw failure;}if(disposed||terminated){throw new Error("Physics disposed");}},
+          undefined,false,work.trace?()=>traceHvpCutBoundary(work.trace,id,"main","cutInputCopyTaskResume"):undefined);
         try{
           const reserve=createHvpBodyMeshPhaseReserve(work.copyBytes);
           // Capture the immutable plain packet before any cell-copy yield. Quote the transported bytes.
@@ -841,6 +851,7 @@ const createHvpPhysicsClientCore = async (sources: readonly HvpCollisionSource[]
               reserve(256+1024*copies.length);
               if(work.trace&&Array.isArray(ready.spans)&&ready.spans.length<=97){for(const span of ready.spans){try{work.trace(span);}catch{/* Diagnostic sinks cannot invalidate admission. */}}}
               if(work.trace&&ready.sourceTiming){const timing=ready.sourceTiming;
+                traceHvpCutBoundary(work.trace,id,"main","cutPhysicsPlanTaskResumes",timing.taskYields,timing.workElapsedMs);
                 for(const [phase,span,count] of [["cutNativePrepareWorkElapsedMs",timing.maxWork,timing.workSteps],["cutNativePrepareYieldWaitMs",timing.maxYield,timing.taskYields]] as const){
                   if(Number.isSafeInteger(count)&&count>0&&Number.isFinite(timing.origin)&&span&&typeof span.label==="string"&&span.label.length<=32&&Number.isFinite(span.start)&&span.start>=0&&Number.isFinite(span.duration)&&span.duration>=0){
                     try{work.trace({commandId:id,thread:"physics",phase,origin:timing.origin,start:span.start,duration:span.duration});}catch{/* Diagnostic sinks cannot invalidate admission. */}

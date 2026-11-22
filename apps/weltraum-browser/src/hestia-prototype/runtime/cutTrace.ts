@@ -2,12 +2,26 @@ export interface HvpCutSpan {
   readonly commandId: string;
   readonly thread: "main" | "support" | "body" | "physics";
   readonly phase: string;
+  readonly count?: number;
+  readonly activeMs?: number;
   readonly origin: number;
   readonly start: number;
   readonly duration: number;
 }
 
 export type HvpCutTrace = (span: HvpCutSpan) => void;
+
+/** Logical handoffs and discontiguous active work are metadata, never fabricated elapsed spans. */
+export function traceHvpCutBoundary(
+  trace: HvpCutTrace | undefined, commandId: string, thread: HvpCutSpan["thread"],
+  phase: string, count = 1, activeMs?: number
+): void {
+  if (!trace) return;
+  try {
+    trace({commandId, thread, phase, count, ...(activeMs === undefined ? {} : {activeMs}),
+      origin: performance.timeOrigin, start: performance.now(), duration: 0});
+  } catch { /* Diagnostics may be detached while a request is in flight. */ }
+}
 
 export function measureHvpCut<T>(
   trace: HvpCutTrace | undefined,
@@ -110,6 +124,8 @@ type HvpCutObservationSink = Pick<ReturnType<typeof createHvpMeasurements>, "rec
 type HvpCutTerminalStatus = "Applied" | "NoOp" | "Rejected" | "RecoveryHold";
 type HvpCutDropReason = keyof HvpCutObservationDropReasons;
 type HvpRawSpan = Readonly<{
+  count?: number;
+  activeMs?: number;
   commandId: string;
   thread: HvpCutSpan["thread"];
   phase: string;
@@ -201,7 +217,11 @@ const readRawSpan = (span: HvpCutSpan): HvpRawSpan | undefined => {
     if (!Number.isFinite(end) || end < 0) {
       return undefined;
     }
-    return { commandId: span.commandId, thread: span.thread, phase: span.phase, origin: span.origin,
+    if (span.count !== undefined && !isSafeNonNegativeInteger(span.count)) return undefined;
+    if (span.activeMs !== undefined && !isFiniteNonNegative(span.activeMs)) return undefined;
+    return { ...(span.count === undefined ? {} : {count:span.count}),
+      ...(span.activeMs === undefined ? {} : {activeMs:span.activeMs}),
+      commandId: span.commandId, thread: span.thread, phase: span.phase, origin: span.origin,
       start: span.start, duration: span.duration };
   } catch {
     return undefined;
@@ -327,6 +347,8 @@ export function createHvpCutObservation(
     try {
       sink.record(span.phase, timing.start, span.duration, Object.freeze({
         commandId: span.commandId, thread: span.thread, phase: span.phase,
+        ...(span.count === undefined ? {} : {count:span.count}),
+        ...(span.activeMs === undefined ? {} : {activeMs:span.activeMs}),
         origin: span.origin, start: span.start, duration: span.duration
       }));
     } catch {

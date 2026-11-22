@@ -38,14 +38,15 @@ for(let index=1;index<=count;index++){
   const phase="hvp.cutDomInputToPhysicsPublishedMs";
   const measured=result?.metrics[phase]??events.find(e=>e.kind===phase);
   attempts.push({index,exit,failure,nativeMs:measured?.duration??null,submitMs:result?.domToSubmitMs??null,
-    renderer:result?.renderer??null,crash:events.some(e=>e.kind==="crash"),complete:Boolean(result),within10ms:Boolean(result&&measured?.duration<=10)});
+    criticalPath:result?.criticalPath??null,renderer:result?.renderer??null,crash:events.some(e=>e.kind==="crash"),complete:Boolean(result),within10ms:Boolean(result&&measured?.duration<=10)});
 }
 const values=attempts.filter(a=>a.nativeMs!==null).map(a=>a.nativeMs).sort((a,b)=>a-b);
 const quantile=q=>values.length?values[Math.ceil(q*values.length)-1]:null;
 const report={url,count,node:process.version,cpu:cpus()[0]?.model,referenceDeviceVerified:false,physicalPresentationMeasured:false,
   complete:attempts.filter(a=>a.complete).length,qualifiedWithin10ms:attempts.filter(a=>a.within10ms).length,
   missingNativeConfirmation:count-values.length,nativeOver10ms:values.filter(v=>v>10).length,
+  qualifiedWithinThreeStages:attempts.filter(a=>a.criticalPath?.withinStageBudget).length,
   observedNativeMs:{count:values.length,p50:quantile(.5),p95:quantile(.95),p99:quantile(.99),max:values.at(-1)??null},attempts};
 await writeFile(join(output,"summary.json"),JSON.stringify(report,null,2)+"\n");
 console.log(JSON.stringify(report,null,2));
-if(report.qualifiedWithin10ms!==count)process.exitCode=1;
+if(report.qualifiedWithin10ms!==count || report.qualifiedWithinThreeStages!==count)process.exitCode=1;

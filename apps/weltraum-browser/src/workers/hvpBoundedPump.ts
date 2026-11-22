@@ -34,7 +34,7 @@ export async function runHvpBounded<T, R>(
 }
 
 /** Private first-party body work: real task ports, 2ms quantum and bounded cursor cleanup. */
-export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:string,start:number,duration:number)=>void),inputPriority=false)=>{
+export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:string,start:number,duration:number)=>void),inputPriority=false,onTaskResumed?:()=>void)=>{
   const scheduler=inputPriority?(globalThis as typeof globalThis & {
     scheduler?:{postTask:(callback:()=>void,options:{priority:"user-blocking";signal:AbortSignal})=>Promise<void>}
   }).scheduler:undefined;
@@ -46,7 +46,8 @@ export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:
     yieldTask:()=>new Promise<void>((resolve,reject)=>{
       current();if(waiting!==undefined){reject(new Error("Concurrent body mesh task yield"));return;}
       const resume=()=>{
-        const task=waiting;waiting=undefined;sliceStart=performance.now();units=0;task?.resolve();
+        const task=waiting;waiting=undefined;sliceStart=performance.now();units=0;
+        if(task){try{onTaskResumed?.();}catch{onTaskResumed=undefined;}task.resolve();}
       };
       waiting={resolve,reject};
       if(abort && scheduler){
