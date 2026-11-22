@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+import tomllib
 
 import prepare
 
@@ -16,6 +17,24 @@ def load_binding():
 
 
 class BuildBindingTest(unittest.TestCase):
+    def test_nested_shaders_resolve_the_abi_crates_used_by_the_host(self):
+        pins = json.loads(prepare.BINDINGS.read_text())
+        root = prepare.HERE
+        host = tomllib.loads((root.parents[1] / pins["harness"] / "Cargo.lock").read_text())
+        abi = {"spirv-std", "rapier3d", "parry3d", "glamx", "khal-std", "vortx-shaders"}
+        expected = {(p["name"], p["version"]) for p in host["package"] if p["name"] in abi}
+        for name, digest in pins["shaderLockSha256"].items():
+            data = (root / "shader-locks" / f"{name}.lock").read_bytes()
+            self.assertEqual(hashlib.sha256(data).hexdigest(), digest)
+            graph = tomllib.loads(data.decode())["package"]
+            actual = {(p["name"], p["version"]) for p in graph if p["name"] in abi}
+            needed = abi if name == "nexus" else abi - {"rapier3d", "parry3d"}
+            self.assertEqual(actual, {pkg for pkg in expected if pkg[0] in needed})
+            for p in graph:
+                if p["name"] in {"khal-std", "vortx-shaders"} and p.get("source"):
+                    repo = "khal" if p["name"] == "khal-std" else "vortx"
+                    self.assertEqual(p["source"].split("#")[-1], pins["upstream"][repo]["commit"])
+
     def test_upstream_changed_or_extra_input_is_rejected(self):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)

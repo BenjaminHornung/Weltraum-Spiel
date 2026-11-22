@@ -48,7 +48,7 @@ rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal --target wasm32-u
 rustc --version --verbose
 cargo --version
 gpu_version=$(pin cargoGpu)
-if [[ ! -x "$CARGO_HOME/bin/cargo-gpu" || "$(cargo gpu --version)" != *" $gpu_version" ]]; then
+if [[ ! -x "$CARGO_HOME/bin/cargo-gpu" || "$(cargo gpu --version) " != "cargo-gpu $gpu_version "* ]]; then
     cargo install cargo-gpu --locked --version "=$gpu_version" --jobs "$CARGO_BUILD_JOBS"
 fi
 cargo gpu --version
@@ -63,9 +63,22 @@ fi
 wasm-bindgen --version
 cd "$run_dir"
 export CARGO_TARGET_DIR="$run_dir/target"
+# Both upstream shader workspaces resolve independently of the WASM harness.
+# Their unseeded locks resolve newer Rapier, glam, wgpu and naga versions.
+for shader in nexus vortx; do
+    lock="$script_dir/shader-locks/$shader.lock"
+    expected=$(python3 -c 'import json,sys;print(json.load(open(sys.argv[1]))["shaderLockSha256"][sys.argv[2]])' "$script_dir/SourceBindings.json" "$shader")
+    echo "$expected  $lock" | sha256sum -c -
+    shader_workspace=(upstream/source/"$shader"-*)
+    cp "$lock" "${shader_workspace[0]}/Cargo.lock"
+done
 cargo fetch --manifest-path harness/Cargo.toml --locked
 cargo gpu install --shader-crate harness --spirv-builder-version "$gpu_version" --auto-install-rust-toolchain
 cargo build --locked --release --target wasm32-unknown-unknown --jobs "$CARGO_BUILD_JOBS" \
     --manifest-path harness/Cargo.toml --message-format=json-render-diagnostics > cargo-build.jsonl
+for shader in nexus vortx; do
+    shader_workspace=(upstream/source/"$shader"-*)
+    cmp "$script_dir/shader-locks/$shader.lock" "${shader_workspace[0]}/Cargo.lock"
+done
 wasm-bindgen --target web --out-name nexus --out-dir web "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/phy04_nexus_browser.wasm"
 python3 "$script_dir/bind-artifacts.py" "$run_dir"

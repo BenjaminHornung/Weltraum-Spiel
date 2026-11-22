@@ -1,6 +1,6 @@
 # PHY-04 Nexus build on Linux x86-64
 
-The portable build compiles the existing PHY-04 Rust/WebGPU harness. It materializes verified upstream source trees and applies a hash-pinned browser overlay to the shipped harness. Its transitive `bvh → rand → getrandom` dependency requires the `js` feature on wasm32-unknown-unknown. The overlay enables the Web Crypto entropy backend on the browser target. Its lockfile changes add three dependency edges and retain the original package versions and checksums. The historical Windows handoff and its PLT/PHY-01 review receipts use a separate schema and remain in the handoff directory.
+The portable build compiles the existing PHY-04 Rust/WebGPU harness. It materializes verified upstream source trees and applies a hash-pinned browser overlay to the shipped harness. Its transitive `bvh → rand → getrandom` dependency requires the `js` feature on wasm32-unknown-unknown. The overlay enables the Web Crypto entropy backend on the browser target. Its lockfile changes add three dependency edges and retain the original package versions and checksums. The Nexus and Vortx GPU shader builds have independent Cargo workspaces. The two `shader-locks/*.lock` files were resolved from the harness lock and pin these workspace resolutions. Without them, Nexus selected Rapier 0.36.1 for its shaders while the host harness selected 0.36.0. The portable build verifies both locks before and after compilation. The historical Windows handoff and its PLT/PHY-01 review receipts use a separate schema and remain in the handoff directory.
 
 ## Build
 
@@ -24,3 +24,13 @@ python3 -m unittest discover -s spikes/nexus-gpu -p test_build.py -v
 The run directory contains `source-receipt.json`, `build.log` and the terminal `exit-code`. A successful release build also emits `web/nexus.js`, `web/nexus_bg.wasm`, and a `web/bindings.json` compatible with the existing PHY-04 browser runner. Binding requires SPIR-V from the Vortx and Nexus rigid-body build scripts and locates the exact shader byte sequences inside the built WebAssembly module. GPU dispatch, numerical agreement, device loss and reference performance require subsequent browser runs.
 
 [Source and tool pins](SourceBindings.json)
+
+## Chromium functional comparison
+
+With the app's existing Playwright dependencies installed, use the following on the allocated Chromium/SwiftShader runner. Generate the CPU/WASM reference with the same pinned fixtures and pass the allocated runner ID and reference JSON. The run records the actual adapter used for each device, fixture hashes, body-level deltas against Rapier R05, analytical errors, CPU-side WebGPU times and software renderer details. It exercises 30 steps for each fixture at 10, 100 and 1,000 bodies, one geometry change, explicit device destruction and a fresh device. The receipt reports failure if any fixture or numerical bound fails. Reference-device performance needs a separate hardware run.
+
+```sh
+node spikes/nexus-gpu/r05-reference.mjs /path/to/pinned/nexus > /tmp/r05.json
+CHROMIUM_BIN=/path/to/chromium node spikes/nexus-gpu/browser-smoke.mjs \
+    /tmp/hestia-nexus-build/run-ID/web /tmp/nexus-comparison.json YOUR_ALLOCATED_RUNNER_ID /tmp/r05.json
+```

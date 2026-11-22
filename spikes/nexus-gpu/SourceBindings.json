@@ -38,5 +38,9 @@
       "Cargo.lock": "b144cdcfb89c9d6fa235730099fd14c24f063ec6eb78ed20c7c27317b83a3740",
       "src/lib.rs": "09facd906b50a0f7a5c401bd2bc88446e11ea075dcf9d2d392a7d5576895ce43"
     }
+  },
+  "shaderLockSha256": {
+    "nexus": "d5eaabaf8918b3a880ae36be42ba0b7180dc9779714097d80c9177f296cac839",
+    "vortx": "2029c6c75b28a136c2d2f0885fb868451afb50f4a0b14c67f6468677586cd4e8"
   }
 }
