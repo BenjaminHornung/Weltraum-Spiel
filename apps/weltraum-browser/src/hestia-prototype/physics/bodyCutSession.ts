@@ -18,7 +18,7 @@ import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 import {countHvpOwnedBodyMeshSteps,quoteHvpBodyMeshWork,HVP_BODY_RENDER_BYTES_PER_FACE,type HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
 
 type Vec=Readonly<{x:number;y:number;z:number}>;
-export interface HvpMovingCutRequest {readonly id:string;readonly ownerId:string;readonly sourceDigest:string;readonly edge:number;readonly direction:Vec;readonly brush?:"Box"|"Sphere"}
+export interface HvpMovingCutRequest {readonly id:string;readonly ownerId:string;readonly sourceDigest:string;readonly edge:number;readonly direction:Vec;readonly expectedEye?:Vec;readonly brush?:"Box"|"Sphere"}
 export interface HvpMovingCutPreparation {readonly payload:HvpBodyCutPayload;readonly cells:ReturnType<typeof readHvpBodyCells>;readonly issuedTick:number;readonly compact?:Readonly<{version:"hvp-compact-moving-cut-v1";removedDigest:string;projection:HvpBodyChildProjection}>}
 /** Private mesh input from a finished owner-local plan; data only, never native/recipe authority. */
 export interface HvpBodyChildProjection extends Pick<HvpBodyCutPayload,"sessionId"|"epoch"|"commandId"|"ownerId"|"sourceId"|"sourceDigest"|"revision"> {
@@ -359,6 +359,11 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
   const capture=(request:HvpMovingCutRequest,eye:Vec,tick:number)=>{
       if(opening||pending||held||retiredWork!==undefined||!request||!/^[A-Za-z0-9:._-]{1,128}$/.test(request.id)||!Number.isSafeInteger(request.edge)||request.edge<1||request.edge>8){throw new Error("Body cut Pending or invalid");}
       if(request.brush!==undefined&&request.brush!=="Box"&&request.brush!=="Sphere"){throw new Error("Invalid body brush");}
+      // A player ray enters only from the confirmed eye. A deferred click cannot move its ray to a new origin.
+      const origin=request.expectedEye;
+      if(origin&&(![origin.x,origin.y,origin.z].every(Number.isFinite)||Math.hypot(origin.x-eye.x,origin.y-eye.y,origin.z-eye.z)>1e-5)){
+        throw Error("Augenposition geändert. Fragment erneut anvisieren.");
+      }
       const hit=captureHvpBodyHit(world,targets,eye,request.direction,tick),target=targets.get(request.ownerId);
       if(!hit||!target||hit.ownerId!==request.ownerId||hit.sourceDigest!==request.sourceDigest){throw new Error("Stale or missing moving contact within 4 m");}
       return {hit,target};

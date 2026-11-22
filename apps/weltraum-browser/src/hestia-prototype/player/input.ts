@@ -113,6 +113,11 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   listeners.add(win,"keydown",keyDown as EventListener);
   listeners.add(win,"keyup",keyUp as EventListener);
   listeners.add(win,"blur",stop);
+  const captureCutRay=(s=physics.read())=>{
+    if(!active||activating||isBlocked()||!s.player||doc.pointerLockElement!==canvas)return;
+    return {origin:new Vector3(s.player.position.x,s.player.position.y+0.75,s.player.position.z),
+      direction:new Vector3(0,0,-1).applyEuler(new Euler(pitch,yaw,0,"YXZ"))};
+  };
   return {
     get listenerCount(){return listeners.size;},
     get active() { return active; },
@@ -138,11 +143,11 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
       const direction=new Vector3(target.x-p.position.x,target.y-p.position.y-0.75,target.z-p.position.z).normalize();
       yaw=Math.atan2(-direction.x,-direction.z);pitch=Math.asin(direction.y);
     },
+    captureCutRay,
     readAim() {
       const s=physics.read();
-      if(!active||activating||isBlocked()||!s.player||s.status!=="Running"||s.terrainTransaction!=="Idle"||s.neighborTransaction!=="Idle"||s.bodyResidencyTransaction!=="Idle") { return undefined; }
-      return {origin:new Vector3(s.player.position.x,s.player.position.y+0.75,s.player.position.z),
-        direction:new Vector3(0,0,-1).applyEuler(new Euler(pitch,yaw,0,"YXZ"))};
+      if(s.status!=="Running"||s.terrainTransaction!=="Idle"||s.neighborTransaction!=="Idle"||s.bodyResidencyTransaction!=="Idle") { return undefined; }
+      return captureCutRay(s);
     },
     update(): void {
       if (disposed) { return; }

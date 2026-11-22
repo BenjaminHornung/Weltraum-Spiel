@@ -1895,7 +1895,7 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
     playerInput = createHvpPlayerInput(canvas, ownedCamera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
      },{confirm:eventTimeStamp=>{
-       const run=()=>{void plasmaTool?.confirm();};
+       const run=()=>{void plasmaTool?.confirm(eventTimeStamp);};
        if(cutObservation!==undefined){cutObservation.confirm(run,eventTimeStamp);}else{run();}
      },select:mode=>plasmaTool?.select(mode)},()=>!cutReady||saveBusy||saveHold||supportPending||Boolean(dormancy?.read().recoveryHold));
     if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
@@ -2723,7 +2723,9 @@ const startHvpCore=async(overrides:HvpBootstrapOverrides,owner:HvpBootstrapOwner
        admit:()=>admitScene({...ledger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,ledger,0,physicsPrepareBytes)})},bodyCutConsumer,{
        readAim:()=>playerInput!.readAim(),
        request:(primary,x)=>neighbor?.requestEastCutCoverage(primary,x)??Promise.resolve(undefined)
-     });
+     },{captureRay:()=>playerInput!.captureCutRay(),
+       busy:()=>Boolean(neighbor?.read().busy||dormancy?.read().busy||saveBusy||supportPending),
+       observe:(run,stamp)=>{if(cutObservation)cutObservation.confirm(run,stamp);else run();}});
     const previewRockSupport=async():Promise<void>=>{
       if(supportPending||disposed){return;}
       supportPending=true;

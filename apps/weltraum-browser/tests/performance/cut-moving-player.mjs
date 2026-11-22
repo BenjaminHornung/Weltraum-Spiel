@@ -57,6 +57,7 @@ const read = () => page.evaluate(() => {
   const fragment = native.terrainFragments[0];
   return {
     status: native.status, tick: native.ticks, transaction: native.terrainTransaction,
+    residency:JSON.parse(d.hestiaPrototypeBodyResidency??"null"),neighbor:JSON.parse(d.hestiaPrototypeNeighbor??"null"),
     generation: native.terrainGeneration, rootViewGeneration: Number(d.hestiaPrototypeTerrainGeneration),
     lastNativeCommand: JSON.parse(d.hestiaPrototypePhysicsClock ?? "{}")?.lastCommand,
     manualBodyHold: JSON.parse(d.hestiaPrototypePhysicsClock ?? "{}")?.lastBodyManualPause,
@@ -93,7 +94,7 @@ async function waitState(label, select, timeout) {
   const expires = Date.now() + timeout; let nextLog=0;
   while (Date.now() < expires) {
     const s = await watchdog(read(),label+" read");
-    if(Date.now()>nextLog){progress(JSON.stringify({phase:label,tick:s.tick,status:s.status,open:s.open,locked:s.locked,grounded:s.player.grounded,terrain:s.tool.last?.status,body:s.tool.moving?.last?.status,tool:s.tool.message}));nextLog=Date.now()+3000;}
+    if(Date.now()>nextLog){progress(JSON.stringify({phase:label,tick:s.tick,status:s.status,open:s.open,locked:s.locked,grounded:s.player.grounded,terrain:s.tool.last?.status,body:s.tool.moving?.last?.status,tool:s.tool.message,edges:s.tool.edges,movingIssued:s.tool.moving?.issued,movingInputPending:s.tool.movingInputPending,movingNativeState:s.moving.state,residencyBusy:s.residency?.busy,neighborBusy:s.neighbor?.busy}));nextLog=Date.now()+3000;}
     const value = await watchdog(select(s),label+" input",pauseAfterClick?45000:12000);
     if (value) return value;
     if (!(report.playerPauseRequested && s.open)) await watchdog(handleHold(s),label+" resume");
@@ -199,7 +200,13 @@ try {
   assert.equal(fragment.cellCount, 384);
   assert.equal(fragment.massKg, 1722.65625);
   report.clicksAtIssue = await page.evaluate(() => window.readObservedPlayerInput().clicks);
-  const after = await waitState("second player receipt", s => s.tool.moving.last ? s : null, 60000);
+  const after = await waitState("second player receipt", s => {
+    if(s.tool.moving.last)return s;
+    if(s.tool.edges>=2 && s.tool.moving?.issued===0 && s.tool.movingInputPending===false && s.tool.movingInputFeedback){
+      throw Error("Second click declined by player tool: "+s.tool.movingInputFeedback);
+    }
+    return null;
+  }, 60000);
   const recut = after.moving.last;
   report.recut = recut;
   report.toolReceipt = after.tool.moving.last;

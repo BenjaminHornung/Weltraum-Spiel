@@ -49,7 +49,9 @@ it.each(["move", "rollback", "replace", "dispose"] as const)("captures before th
     await Promise.resolve();
   }};
   try {
-    const pending = moving.beginCompact(request,eye,42,host,() => command);
+    await expect(moving.beginCompact({...request,expectedEye:{...eye,x:eye.x+.125}},eye,42,host,() => command)).rejects.toThrow("Augenposition");
+    expect(moving.busy).toBe(false);
+    const pending = moving.beginCompact({...request,expectedEye:eye},eye,42,host,() => command);
     if (action === "move") {
       const ready = await pending;
       expect(ready.issuedTick).toBe(42);

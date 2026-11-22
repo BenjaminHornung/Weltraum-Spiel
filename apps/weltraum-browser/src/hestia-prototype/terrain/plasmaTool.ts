@@ -16,27 +16,65 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
   preview: (cells:readonly HvpCell[], allowed:boolean)=>void,
    supports: readonly Readonly<{x:number;z:number}>[],
    structure?:{physics:Pick<HvpPhysicsClient,"read"|"setCutAim">;consumer:ReturnType<typeof createHvpStructuralConsumer>;admit:()=>void},
-   moving?:ReturnType<typeof createHvpBodyCutConsumer>,regional?:HvpRegionalCutCoveragePort) => {
+   moving?:ReturnType<typeof createHvpBodyCutConsumer>,regional?:HvpRegionalCutCoveragePort,
+   player?:{captureRay:()=>ReturnType<typeof readAim>; busy:()=>boolean; observe:(run:()=>void,stamp:number)=>void}) => {
   const coverage=regional?createHvpRegionalCutRead(root.read,regional):undefined;
   let mode=1, sequence=0, key="", target:HvpCutShape|undefined, message="Spielen: 1 Zelle · 2 Box · 3 Kugel · Linksklick";
   let terrainHit:Readonly<{cell:HvpCell;slot:number}>|undefined;
   let edges=0;
   let structureSequence=0;
   let movingSequence=0;
+  let displayedBody:{ownerId:string;sourceDigest:string}|undefined;
+  type PlayerRay=NonNullable<ReturnType<typeof readAim>>;
+  type MovingIntent={ownerId:string;sourceDigest:string;mode:number;origin:PlayerRay["origin"];direction:PlayerRay["direction"];
+    sessionId:string;epoch:number;stamp:number;expires:number};
+  let pending:MovingIntent|undefined;
+  let feedback:{text:string;until:number}|undefined;
+  const explain=(text:string)=>{feedback={text,until:performance.now()+2000};};
+  const hardStop=()=>{
+    const state=structure!.physics.read();
+    return state.status!=="Running"||state.moving?.state==="RecoveryHold"
+      ||moving!.read().state==="RecoveryHold"||consumer.read().state==="RecoveryHold";
+  };
+  const writable=()=>!player!.busy()&&!!readAim()&&moving!.read().state==="Idle"&&structure!.consumer.read().state==="Ready"
+    &&consumer.read().state!=="Pending";
+  const submitMoving=async(intent:MovingIntent)=>{
+    const {ownerId,sourceDigest,direction,origin}=intent;
+    coverage?.cancel();feedback=undefined;
+    try{
+      await moving!.submit({id:`moving-cut-${++movingSequence}`,ownerId,sourceDigest,direction,expectedEye:origin,
+        edge:intent.mode===1?1:4,...(intent.mode===3?{brush:"Sphere" as const}:{})});
+      const outcome=moving!.read().last;
+      if(outcome?.status==="Rejected")explain(outcome.reason);
+    }catch(error){explain(String(error));}
+    key="";
+  };
+  const retryMoving=()=>{
+    if(!pending)return;
+    const intent=pending,snapshot=root.read();
+    if(snapshot.sessionId!==intent.sessionId||snapshot.epoch!==intent.epoch||performance.now()>intent.expires||hardStop()||!player!.captureRay()){
+      pending=undefined;explain("Schnitt verworfen. Fragment erneut anvisieren.");return;
+    }
+    if(!writable())return;
+    pending=undefined;
+    player!.observe(()=>{void submitMoving(intent);},intent.stamp);
+  };
   const request=(shape:HvpCutShape,id:string)=>{
     const s=root.read();
     return {sessionId:s.sessionId,epoch:s.epoch,revision:s.revision,sourceDigest:s.sourceDigest,
       commandId:id,toolPolicy:"hvp-plasma-v1" as const,shape};
   };
   const update=():void=>{
+    retryMoving();
     const aim=readAim();
     structure?.physics.setCutAim(aim?.direction);
     if(!aim) {
       if(coverage?.read()?.state==="PendingCoverage"&&!regional?.readAim())coverage.cancel();
       if(key!=="") { preview([],false);key=""; }
-      target=undefined;terrainHit=undefined;return;
+      displayedBody=undefined;target=undefined;terrainHit=undefined;message="Schnitt derzeit nicht verfügbar";return;
     }
     const state=structure?.physics.read(),body=state?.moving?.preview,branch=state?.structural;
+    displayedBody=body?{ownerId:body.ownerId,sourceDigest:body.sourceDigest}:undefined;
     if(body&&moving){
       target=undefined;const next=JSON.stringify(["moving",mode,body.ownerId,body.sourceDigest,body.cell]);
       if(next===key){return;}key=next;message="Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)";
@@ -75,18 +113,29 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
     preview(cells,allowed);
   };
   return {
-    checkpoint():HvpToolCheckpoint{coverage?.cancel();return Object.freeze({mode,sequence,structureSequence,movingSequence,edges});},
+    checkpoint():HvpToolCheckpoint{if(pending)throw Error("Schnitt wartet auf Bestätigung");coverage?.cancel();return Object.freeze({mode,sequence,structureSequence,movingSequence,edges});},
     restore(value:HvpToolCheckpoint):void{
       if(readAim()||![value.sequence,value.structureSequence,value.movingSequence,value.edges].every(n=>Number.isSafeInteger(n)&&n>=0)
         ||!Number.isInteger(value.mode)||value.mode<1||value.mode>3){throw new Error("Invalid paused tool checkpoint");}
-      coverage?.cancel();({mode,sequence,structureSequence,movingSequence,edges}=value);key="";target=undefined;preview([],false);
+      coverage?.cancel();pending=undefined;displayedBody=undefined;feedback=undefined;({mode,sequence,structureSequence,movingSequence,edges}=value);key="";target=undefined;preview([],false);
     },
     select(value:number):void { if(Number.isInteger(value)&&value>=1&&value<=3) { coverage?.cancel();mode=value;key="";update(); } },
     update,
-    async confirm():Promise<void> {
+    async confirm(eventStamp?:number):Promise<void> {
+      if(player&&structure&&moving&&displayedBody){
+        edges++;
+        const ray=player.captureRay(),now=performance.now();
+        if(!ray||hardStop()){explain("Schnitt nicht verfügbar ("+structure.physics.read().status+").");return;}
+        if(pending){explain("Ein Fragmentschnitt wartet bereits.");return;}
+        const state=root.read();
+        const intent:MovingIntent={...displayedBody,origin:ray.origin.clone(),direction:ray.direction.clone(),mode,
+          sessionId:state.sessionId,epoch:state.epoch,stamp:eventStamp??now,expires:now+1500};
+        if(!writable()){pending=intent;explain("Fragmentschnitt wartet auf die Weltfreigabe.");return;}
+        await submitMoving(intent);return;
+      }
       const inputAim=readAim();
       if(!inputAim){
-        if(coverage?.tryRequest())edges+=1;
+        if(coverage?.tryRequest())edges+=1;else if(player){edges++;explain("Schnitt derzeit nicht verfügbar.");}
         return;
       }
       edges+=1;
@@ -96,7 +145,7 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
         coverage?.cancel();
         if(["Pending","RecoveryHold"].includes(consumer.read().state)||structure.consumer.read().state!=="Ready"){message="Andere Mutation Pending";return;}
         const aim=readAim();if(!aim){return;}
-        try{await moving.submit({id:`moving-cut-${++movingSequence}`,ownerId:body.ownerId,sourceDigest:body.sourceDigest,edge:mode===1?1:4,direction:aim.direction,
+        try{await moving.submit({id:`moving-cut-${++movingSequence}`,ownerId:body.ownerId,sourceDigest:body.sourceDigest,edge:mode===1?1:4,direction:aim.direction,...(player?{expectedEye:inputAim.origin}:{}),
           ...(mode===3?{brush:"Sphere" as const}:{})});}
         catch(error){message=String(error);}key="";return;
       }
@@ -131,8 +180,8 @@ export const createHvpPlasmaTool = (root: ReturnType<typeof createHvpTerrainRoot
     },
     read:()=>{
       const regional=coverage?.read();
-      const feedback=regional&&(regional.state==="PendingCoverage"||!terrainHit)?regional.reason:message;
-      return Object.freeze({...(regional?{coverage:regional}:{}),mode:["","Zelle","Box 0,5 m","Kugel 0,25 m"][mode],edges,issued:sequence,message:feedback,...consumer.read(),structural:structure?.consumer.read(),moving:moving?.read()});},
-    dispose():void { coverage?.cancel();preview([],false); }
+      const regionalFeedback=regional&&(regional.state==="PendingCoverage"||!terrainHit)?regional.reason:message;
+      return Object.freeze({...(regional?{coverage:regional}:{}),mode:["","Zelle","Box 0,5 m","Kugel 0,25 m"][mode],edges,issued:sequence,message:feedback&&performance.now()<=feedback.until?feedback.text:regionalFeedback,...(player?{movingInputPending:!!pending,movingInputFeedback:feedback?.text}:{}),...consumer.read(),structural:structure?.consumer.read(),moving:moving?.read()});},
+    dispose():void { pending=undefined;displayedBody=undefined;feedback=undefined;coverage?.cancel();preview([],false); }
   };
 };

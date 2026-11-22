@@ -37,11 +37,13 @@ export const createHvpBodyCutConsumer=(physics:Pick<HvpPhysicsClient,"read"|"com
     submit(input:HvpMovingCutRequest):Promise<void>{
       if(!input||![input.id,input.ownerId,input.sourceDigest].every(v=>typeof v==="string"&&v.length>0&&v.length<=128)
         ||(input.brush!==undefined&&input.brush!=="Box"&&input.brush!=="Sphere")
+        ||input.expectedEye!==undefined&&(!input.expectedEye||![input.expectedEye.x,input.expectedEye.y,input.expectedEye.z].every(Number.isFinite))
         ||!input.direction||![input.direction.x,input.direction.y,input.direction.z].every(Number.isFinite)
         ||Math.abs(Math.hypot(input.direction.x,input.direction.y,input.direction.z)-1)>1e-6||!Number.isSafeInteger(input.edge)||input.edge<1||input.edge>8){
         return Promise.reject(new Error("Invalid moving intent"));
       }
       const request={id:input.id,ownerId:input.ownerId,sourceDigest:input.sourceDigest,edge:input.edge,direction:{x:input.direction.x,y:input.direction.y,z:input.direction.z},
+        ...(input.expectedEye?{expectedEye:{x:input.expectedEye.x,y:input.expectedEye.y,z:input.expectedEye.z}}:{}),
         ...(input.brush==="Sphere"?{brush:"Sphere" as const}:{})};
       const signature=JSON.stringify(request),old=receipts.get(request.id);
       if(old){return old.signature===signature?old.promise:Promise.reject(new Error("Moving command id conflict"));}
